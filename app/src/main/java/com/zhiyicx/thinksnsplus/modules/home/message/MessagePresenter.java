@@ -683,7 +683,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-
+                    System.out.println("commentsNoti.get(i).getId() = " + commentsNoti.get(i).getId());
                 }
 
             } else {

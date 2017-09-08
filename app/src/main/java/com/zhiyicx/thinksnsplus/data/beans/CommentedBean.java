@@ -5,6 +5,9 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -20,7 +23,10 @@ import java.io.Serializable;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC_SPECIALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
  * @Describe {@see https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5%88%97%E8%A1%A8.md}
@@ -208,31 +214,59 @@ public class CommentedBean extends BaseListBean implements Serializable {
         if (target_image != null || commentable == null) {
             return target_image;
         }
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
-                try {
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
+
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
                     target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_MUSIC:
 
-                break;
-            case APP_LIKE_NEWS:
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
+                    JSONArray jsonArray2 = jsonObject2.getJSONArray("images");
+                    target_image = (long) jsonArray2.getJSONObject(0).getDouble("file_id");
 
-                break;
+                    break;
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null && musicDetaisBean.getStorage() != null) {
+                        target_image = (long) musicDetaisBean.getStorage().getId();
+                    }
 
+                    break;
+
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null && musicAlbumDetailsBean.getStorage() != null) {
+                        target_image = (long) musicAlbumDetailsBean.getStorage().getId();
+                    }
+
+                    break;
+
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);
+                    if (infoListDataBean != null && infoListDataBean.getImage() != null) {
+                        target_image = (long) infoListDataBean.getImage().getId();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(commentable), QAListInfoBean.class);
+                    if (data != null) {
+                    }
+                    break;
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        target_image = (long) RegexUtils.getImageId(answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+
+            }
+        } catch (Exception e) {
         }
         return this.target_image;
     }
@@ -253,31 +287,59 @@ public class CommentedBean extends BaseListBean implements Serializable {
         if (!TextUtils.isEmpty(target_title) || commentable == null) {
             return this.target_title;
         }
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
 
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
-                try {
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     target_title = jsonObject.getString("feed_content");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    target_title = jsonObject.getString("content");
-                } catch (Exception e) {
-                }
-                break;
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonObject2.getString("content");
 
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null) {
+                        target_title = musicDetaisBean.getTitle();
+                    }
 
-                break;
+                    break;
 
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null) {
+                        target_title = musicAlbumDetailsBean.getTitle();
+                    }
+
+                    break;
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);
+                    if (infoListDataBean != null && infoListDataBean.getImage() != null) {
+                        target_title = infoListDataBean.getTitle();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(commentable), QAListInfoBean.class);
+                    if (data != null) {
+                        target_title = data.getSubject();
+                    }
+                    break;
+
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        target_title = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+
+
+            }
+        } catch (Exception e) {
         }
         return target_title;
     }
@@ -317,29 +379,42 @@ public class CommentedBean extends BaseListBean implements Serializable {
         if (source_id != 0) {
             return this.source_id;
         }
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
 
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
+                    break;
+                case APP_LIKE_GROUP_POST:
 
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     source_id = jsonObject.getLong("group_id");
-                } catch (Exception e) {
-                }
-                break;
 
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC:
 
-                break;
+                    break;
 
+                case APP_LIKE_MUSIC_SPECIALS:
+
+                    break;
+                case APP_LIKE_NEWS:
+
+                    break;
+                case APP_QUESTIONS:
+
+                    break;
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                    }
+                    break;
+                default:
+
+            }
+        } catch (Exception e) {
         }
-
 
         return source_id;
     }

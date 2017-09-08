@@ -441,8 +441,11 @@ public class ApiConfig {
      */
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
+    public static final String APP_LIKE_MUSIC_SPECIALS = "music_specials";
     public static final String APP_LIKE_NEWS = "news";
     public static final String APP_LIKE_GROUP_POST = "group-posts";
+    public static final String APP_QUESTIONS = "questions";
+    public static final String APP_QUESTIONS_ANSWER = "question-answers";
 
     /*******************************************  API V2  *********************************************/
 

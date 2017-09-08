@@ -613,4 +613,11 @@
     <string name="default_certify">当前用户还没有认证呢</string>
     <string name="invite_friend">邀请您的好友使用TS+吧！http://www.thinksns.com/</string>
     <string name="reward_type_error">打赏类型错误</string>
+    <!--评论的、赞的-->
+    <string name="digg_format_feed">%s赞了你的动态</string>
+    <string name="digg_format_group_feed">%s赞了你的圈子</string>
+    <string name="digg_format_music">%s赞了你的音乐</string>
+    <string name="digg_format_news">%s赞了你的文章</string>
+    <string name="digg_format_questions">%s赞了你的问题</string>
+    <string name="digg_format_questions_answer">%s赞了你的回答</string>
 </resources>

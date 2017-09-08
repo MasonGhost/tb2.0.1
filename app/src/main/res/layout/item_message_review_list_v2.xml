@@ -69,6 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:minHeight="@dimen/headpic_for_notification"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
@@ -95,11 +96,13 @@
         android:id="@+id/tv_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:maxLines="1"
         android:paddingRight="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="6分钟前"/>
+        tools:text="6分钟前"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

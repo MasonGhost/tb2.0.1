@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -16,13 +19,17 @@ import org.json.JSONObject;
 import java.util.List;
 
 import static android.R.attr.data;
+import static android.R.attr.track;
 import static android.R.id.list;
 import static com.umeng.analytics.pro.x.J;
 import static com.umeng.analytics.pro.x.l;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC_SPECIALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
  * @Describe {@see https://github.com/zhiyicx/plus-likeable_type-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%B5%9E%E5%88%97%E8%A1%A8.md}
@@ -64,17 +71,21 @@ public class DigedBean extends BaseListBean {
 
     private String source_content;
     private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 2113720789)
     private transient DigedBeanDao myDao;
 
 
     @Generated(hash = 1442865455)
     public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, boolean isDelete,
-            Long source_cover, String source_content, long source_id) {
+                     Long source_cover, String source_content, long source_id) {
         this.id = id;
         this.user_id = user_id;
         this.target_user = target_user;
@@ -172,35 +183,64 @@ public class DigedBean extends BaseListBean {
         if (source_cover != null || likeable == null) {
             return source_cover;
         }
-        Gson gson = new Gson();
-        switch (likeable_type) {
-            case APP_LIKE_FEED:
-                try {
+        try {
+            Gson gson = new Gson();
+            switch (likeable_type) {
+                case APP_LIKE_FEED:
+
                     JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
-                    JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                }
-                break;
+                    if (jsonArray.length() > 0) {
+                        source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                    }
 
-            case APP_LIKE_MUSIC:
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    JSONObject jsonObject2 = new JSONObject(gson.toJson(likeable));
+                    JSONArray jsonArray2 = jsonObject2.getJSONArray("images");
+                    source_cover = (long) jsonArray2.getJSONObject(0).getDouble("file_id");
 
-                break;
-            case APP_LIKE_NEWS:
+                    break;
 
-                break;
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(likeable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null && musicDetaisBean.getStorage() != null) {
+                        source_cover = (long) musicDetaisBean.getStorage().getId();
+                    }
 
+                    break;
+
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(likeable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null && musicAlbumDetailsBean.getStorage() != null) {
+                        source_cover = (long) musicAlbumDetailsBean.getStorage().getId();
+                    }
+
+                    break;
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(likeable), InfoListDataBean.class);
+                    if (infoListDataBean != null && infoListDataBean.getImage() != null) {
+                        source_cover = (long) infoListDataBean.getImage().getId();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(likeable), QAListInfoBean.class);
+                    if (data != null) {
+                        source_cover = (long) RegexUtils.getImageId(data.getBody());
+                    }
+                    break;
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(likeable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        source_cover = (long) RegexUtils.getImageId(answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return source_cover;
     }
 
@@ -216,28 +256,60 @@ public class DigedBean extends BaseListBean {
         if (source_content != null) {
             return source_content;
         }
+        try {
+            switch (likeable_type) {
+                case APP_LIKE_FEED:
+                    DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
+                    if (dynamicDetailBeanV2 != null) {
+                        source_content = dynamicDetailBeanV2.getFeed_content();
+                    }
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    try {
+                        JSONObject jsonObject = new JSONObject(new Gson().toJson(likeable));
+                        source_content = jsonObject.getString("content");
+                    } catch (Exception e) {
+                    }
+                    break;
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(likeable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null) {
+                        source_content = musicDetaisBean.getTitle();
+                    }
 
-        switch (likeable_type) {
-            case APP_LIKE_FEED:
-                DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
-                if (dynamicDetailBeanV2 != null) {
-                    source_content = dynamicDetailBeanV2.getFeed_content();
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(new Gson().toJson(likeable));
-                    source_content = jsonObject.getString("content");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(likeable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null) {
+                        source_content = musicAlbumDetailsBean.getTitle();
+                    }
 
-                break;
+                    break;
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(likeable), InfoListDataBean.class);
+                    if (infoListDataBean != null) {
+                        source_content = infoListDataBean.getTitle();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(likeable), QAListInfoBean.class);
+                    if (data != null) {
+                        source_content = data.getSubject();
+                    }
+                    break;
 
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(likeable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        source_content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return source_content;
@@ -280,29 +352,44 @@ public class DigedBean extends BaseListBean {
         if (source_id != 0) {
             return this.source_id;
         }
+        try {
+            Gson gson = new Gson();
+            switch (likeable_type) {
+                case APP_LIKE_FEED:
 
-        Gson gson = new Gson();
-        switch (likeable_type) {
-            case APP_LIKE_FEED:
-
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
+                    break;
+                case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
                     source_id = jsonObject.getLong("group_id");
-                } catch (Exception e) {
-                }
-                break;
 
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC:
 
-                break;
+                    break;
+                case APP_LIKE_MUSIC_SPECIALS:
 
+                    break;
+                case APP_LIKE_NEWS:
+
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(likeable), QAListInfoBean.class);
+                    if (data != null) {
+                    }
+                    break;
+
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(likeable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                    }
+                    break;
+                default:
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
 
         return source_id;
     }
@@ -311,7 +398,9 @@ public class DigedBean extends BaseListBean {
         this.source_id = source_id;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1880931547)
     public UserInfoBean getDigUserInfo() {
         Long __key = this.user_id;
@@ -330,7 +419,9 @@ public class DigedBean extends BaseListBean {
         return digUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 272986475)
     public void setDigUserInfo(UserInfoBean digUserInfo) {
         synchronized (this) {
@@ -340,7 +431,9 @@ public class DigedBean extends BaseListBean {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 316022512)
     public UserInfoBean getDigedUserInfo() {
         Long __key = this.target_user;
@@ -359,7 +452,9 @@ public class DigedBean extends BaseListBean {
         return digedUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 744662438)
     public void setDigedUserInfo(UserInfoBean digedUserInfo) {
         synchronized (this) {

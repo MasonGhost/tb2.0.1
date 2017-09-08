@@ -233,18 +233,15 @@ public class MessageRepository implements MessageContract.Repository {
         return mUserInfoClient.getNotificationList(notification, type, limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<List<TSPNotificationBean>, List<TSPNotificationBean>>() {
-                    @Override
-                    public List<TSPNotificationBean> call(List<TSPNotificationBean> tspNotificationBeen) {
-                        for (TSPNotificationBean tspNotificationBean : tspNotificationBeen) {
-                            if(tspNotificationBean.getUserInfo()==null){
+                .map(tspNotificationBeen -> {
+                    for (TSPNotificationBean tspNotificationBean : tspNotificationBeen) {
+                        if(tspNotificationBean.getUserInfo()==null){
 
-                                System.out.println("tspNotificationBean = " + tspNotificationBean.getId());
-                            }
-
+                            System.out.println("tspNotificationBean = " + tspNotificationBean.getId());
                         }
-                        return tspNotificationBeen;
+
                     }
+                    return tspNotificationBeen;
                 });
     }
 
