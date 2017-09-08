@@ -276,12 +276,16 @@ public class RegexUtils {
      * @return
      */
     public static int getImageIdFromMarkDown(String regex, String input) {
-        try {
-            Matcher matcher = Pattern.compile(regex).matcher(input);
-            return Integer.parseInt(matcher.group(1));
-        } catch (NumberFormatException e) {
-            return -1;
+        if (regex == null || input == null) return -1;
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        if (matcher.find()) {
+            try {
+                return Integer.parseInt(matcher.group(1));
+            } catch (NumberFormatException e) {
+                return -1;
+            }
         }
+        return -1;
     }
 
     public static String replaceImageId(String regex, String input) {

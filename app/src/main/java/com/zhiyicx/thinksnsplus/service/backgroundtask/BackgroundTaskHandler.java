@@ -701,7 +701,7 @@ public class BackgroundTaskHandler {
         final SendDynamicDataBeanV2 sendDynamicDataBean = (SendDynamicDataBeanV2) params.get("sendDynamicDataBean");
         final DynamicDetailBeanV2 detailBeanV2;
         detailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feedMark);
-
+        final int[] position = new int[1];
         if (sendDynamicDataBean == null || detailBeanV2 == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
@@ -719,7 +719,6 @@ public class BackgroundTaskHandler {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
-            int[] position = new int[1];
 
             for (int i = 0; i < photos.size(); i++) {
                 ImageBean imageBean = photos.get(i);
@@ -733,49 +732,43 @@ public class BackgroundTaskHandler {
             observable = Observable.concat(upLoadPics)
                     .map(integerBaseJson -> {
                         if (integerBaseJson.isStatus()) {
+                            if (integerBaseJson.getId() < 0) {
+                                if (position[0] > 0) {
+                                    position[0]--;
+                                }
+                            }
                             sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
                             position[0]++;// 完成后+1
                         } else {
+                            if (position[0] > 0) {
+                                position[0]--;
+                            }
                             throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                         }
                         sendDynamicDataBean.setPhotos(null);
                         return sendDynamicDataBean;
                     })
                     .filter(sendDynamicDataBeanV2 -> position[0] == photos.size())
-
-//            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
-//                List<Integer> integers = new ArrayList<>();
-//                for (int i = 0; i < args.length; i++) {
-//                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
-//                    if (baseJson.isStatus()) {
-//                        sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
-//                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-//                    } else {
-//                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-//                    }
-//                }
-//                return integers;
-//            })
                     .map(integers -> {
-                sendDynamicDataBean.setPhotos(null);
-                return sendDynamicDataBean;
-            }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
-                @Override
-                public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-                    return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
-                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                @Override
-                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                    BaseJson<Object> baseJson = new BaseJson<>();
-                                    baseJson.setData((double) objectBaseJsonV2.getId());
-                                    String msg = objectBaseJsonV2.getMessage().get(0);
-                                    baseJson.setStatus(msg.equals("发布成功"));
-                                    baseJson.setMessage(msg);
-                                    return Observable.just(baseJson);
-                                }
-                            });
-                }
-            });
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+                            return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                            BaseJson<Object> baseJson = new BaseJson<>();
+                                            baseJson.setData((double) objectBaseJsonV2.getId());
+                                            String msg = objectBaseJsonV2.getMessage().get(0);
+                                            baseJson.setStatus(msg.equals("发布成功"));
+                                            baseJson.setMessage(msg);
+                                            return Observable.just(baseJson);
+                                        }
+                                    });
+                        }
+                    });
         } else {
             // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
@@ -804,12 +797,19 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
+                        if (position[0] > 0) {
+                            position[0]--;
+                        }
+
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
+                        if (position[0] > 0) {
+                            position[0]--;
+                        }
                         // 发送动态到动态列表：状态为发送失败
                         sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }

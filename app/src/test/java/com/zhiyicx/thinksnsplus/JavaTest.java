@@ -181,6 +181,13 @@ public class JavaTest {
     }
 
     @Test
+    public void singleImageTest() {
+        String input="@![image](2580)";
+
+        System.out.println("result::" + RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, input));
+    }
+
+    @Test
     public void bigDoubleTest() {
         double d = 11111111111111111111d;
         BigDecimal totalAmount = new BigDecimal(d);

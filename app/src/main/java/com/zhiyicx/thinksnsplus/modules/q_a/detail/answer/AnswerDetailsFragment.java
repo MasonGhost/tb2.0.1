@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
@@ -86,6 +87,9 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
+    @BindView(R.id.answer_empty_view)
+    protected EmptyView mAnswerEmptyView;
+
 
     private AnswerDetailHeaderView mAnswerDetailHeaderView;
 
@@ -180,6 +184,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mEmptyView = mAnswerEmptyView;
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mAnswerInfoBean = (AnswerInfoBean) getArguments().getSerializable(BUNDLE_ANSWER);
         if (mAnswerInfoBean == null) {

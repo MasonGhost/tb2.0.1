@@ -102,8 +102,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         } else {
             imageView.setVisibility(View.GONE);
         }
-        contentTextView.setVisibility(infoBean.getAnswer() == null ? View.GONE : View.VISIBLE);
-        if (infoBean.getAnswer()!=null){
+
+        if (infoBean.getAnswer() != null) {
+            contentTextView.setVisibility(View.VISIBLE);
             ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
                     infoBean.getAnswer().getAnonymity() == 1
                             && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
@@ -117,6 +118,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
                     });
+        } else {
+            contentTextView.setText("");
+            contentTextView.setVisibility(View.GONE);
         }
 
     }

@@ -202,7 +202,7 @@ public interface QAClient {
      * 申请围观
      */
     @POST(ApiConfig.APP_PATH_QA_ANSWER_LOOK)
-    Observable<BaseJsonV2<Object>> payForOnlook(@Path("answer_id") Long answer_id);
+    Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(@Path("answer_id") Long answer_id);
 
     /**
      * 获取问题的评论列表

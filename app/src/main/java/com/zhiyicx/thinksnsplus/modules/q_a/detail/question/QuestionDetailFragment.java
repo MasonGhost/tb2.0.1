@@ -470,7 +470,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        mPresenter.payForOnlook(answerInfoBean.getId());
+                        mPresenter.payForOnlook(answerInfoBean.getId(),mCurrentPosition);
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())

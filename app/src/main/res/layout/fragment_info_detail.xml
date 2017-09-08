@@ -116,4 +116,11 @@
         app:limitSize="@integer/comment_input_max_size"
         app:showLimitSize="@integer/show_comment_input_size"/>
 
+    <com.zhiyicx.baseproject.widget.EmptyView
+        android:id="@+id/answer_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
 </android.support.design.widget.CoordinatorLayout>

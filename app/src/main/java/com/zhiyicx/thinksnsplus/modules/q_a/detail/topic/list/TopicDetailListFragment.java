@@ -79,7 +79,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
             @Override
             protected int getExcellentTag(boolean isExcellent) {
                 boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]);
-                return isNewOrExcellent && !isExcellent ? 0 : R.mipmap.icon_choice;
+                return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
