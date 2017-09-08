@@ -73,18 +73,37 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected boolean setUseStatusView() {
-        return false;
+        return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.message);
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-//        mToolbarRight.setVisibility(View.GONE);
+        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
     }
 
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
     @Override
     protected boolean isRefreshEnable() {
         return false;
@@ -150,7 +169,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout
                 .view_header_message_list, null);
-        mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
+//        mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
@@ -381,13 +400,13 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void onLeftClick(int position) {
-        position = position - 1;// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         toChat(mListDatas.get(position), position);
     }
 
     @Override
     public void onRightClick(int position) {
-        position = position - 1;// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mPresenter.deletConversation(position);
         refreshData();
     }
@@ -397,8 +416,4 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
 }
