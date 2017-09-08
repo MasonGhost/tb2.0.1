@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
@@ -40,6 +41,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
@@ -135,8 +137,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 (qaListInfoBean, answerInfoBeanList) -> {
                     if (!isLoadMore) {
                         qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
-                        mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
                     }
+                    mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -227,7 +229,15 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void applyForExcellent(Long question_id) {
-        Subscription subscription = mRepository.applyForExcellent(question_id)
+        Subscription subscription = handleWalletBlance((long) getSystemConfig().getExcellentQuestion())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<Object>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<Object>> call(Object o) {
+                        return mRepository.applyForExcellent(question_id);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing)))
                 .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
@@ -264,7 +274,16 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void payForOnlook(long answer_id, int position) {
-        Subscription subscription = mRepository.payForOnlook(answer_id)
+
+        Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
+                        return mRepository.payForOnlook(answer_id);
+                    }
+                })
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override

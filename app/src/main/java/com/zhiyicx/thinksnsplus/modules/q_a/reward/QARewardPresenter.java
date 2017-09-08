@@ -41,27 +41,16 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
     }
 
     @Override
-    public void publishQuestion(QAPublishBean qaPublishBean) {
-        mCommentRepository.getCurrentLoginUserInfo()
+    public void publishQuestion(final QAPublishBean qaPublishBean) {
+        handleWalletBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<QAPublishBean>>>() {
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<QAPublishBean>>>() {
                     @Override
-                    public Observable<BaseJsonV2<QAPublishBean>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < qaPublishBean.getAmount()) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
-                        }
+                    public Observable<BaseJsonV2<QAPublishBean>> call(Object o) {
                         return mRepository.publishQuestion(qaPublishBean);
                     }
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<QAPublishBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<QAPublishBean> data) {

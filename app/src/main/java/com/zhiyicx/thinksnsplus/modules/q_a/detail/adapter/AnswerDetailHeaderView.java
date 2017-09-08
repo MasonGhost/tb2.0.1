@@ -13,7 +13,6 @@ import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -196,8 +195,7 @@ public class AnswerDetailHeaderView {
 
             boolean isAnonmity = answerInfoBean.getAnonymity() == 1;
             boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
-
-            mDescription.setText((isAnonmity || !isSelf) ? "" : answerInfoBean.getUser().getIntro());
+            mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
             mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
             mName.setText(isAnonmity && !isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
             mUserFollow.setChecked(!isAnonmity && answerInfoBean.getUser().isFollower());
