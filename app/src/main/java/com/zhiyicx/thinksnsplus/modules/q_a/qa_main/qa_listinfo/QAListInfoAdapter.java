@@ -72,6 +72,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         String content = infoBean.getBody();
 
         boolean isExcellent = infoBean.getExcellent() == 1;
+        int test = getExcellentTag(isExcellent);
+
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
         int id = 0;

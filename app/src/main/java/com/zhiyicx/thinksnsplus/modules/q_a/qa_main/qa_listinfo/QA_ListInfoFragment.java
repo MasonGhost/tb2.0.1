@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -95,14 +96,18 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
+        mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
+    }
+
+    @Override
     protected void initData() {
         DaggerQA_ListInfoComponent
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-        QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
-        mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
-
         super.initData();
 
     }
@@ -127,7 +132,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             @Override
             protected int getExcellentTag(boolean isExcellent) {
                 boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[0]) || getQAInfoType().equals(QA_TYPES[1]);
-                return isNewOrExcellent && !isExcellent ? 0 : R.mipmap.icon_choice;
+                return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

@@ -327,13 +327,16 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
     public void updateLike(AnswerInfoBean data) {
         if (data != null) {
-            mRootView.getListDatas().add(data);
-            mRootView.refreshData();
+            if (mRootView.getListDatas().get(0).getUser() == null) {// 占位
+                mRootView.getListDatas().remove(0);
+                mRootView.getListDatas().add(data);
+                mRootView.refreshData();
+            }
         }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
-    public void updateData(long tag) {
+    public void updateData(Long tag) {
         requestNetData(tag, false);
     }
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -119,10 +120,19 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             }
         };
 
+        addFirstEditText("");
+    }
+
+    public void addFirstEditText(String hint) {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        EditText firstEdit = createEditText(mHint, dip2px(context, 0));
+        EditText firstEdit;
+        if (!hint.isEmpty()) {
+            firstEdit = createEditText(hint, dip2px(getContext(), 0));
+        } else {
+            firstEdit = createEditText(mHint, dip2px(getContext(), 0));
+        }
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         firstEdit.addTextChangedListener(this);
         firstEdit.setLayoutParams(firstEditParam);
@@ -374,6 +384,9 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
      * 在特定位置添加ImageView
      */
     public void updateImageViewAtIndex(final int index, int id, String imagePath, String markdonw, boolean isLast) {
+        if (allLayout.getChildCount() == 0) {
+            addFirstEditText(" ");
+        }
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         imageView.setId(id);

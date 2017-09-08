@@ -85,7 +85,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
             protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
                 data.getData().setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
                 data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
-//                EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
+                EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
                 mRootView.publishSuccess(data.getData());
             }
 

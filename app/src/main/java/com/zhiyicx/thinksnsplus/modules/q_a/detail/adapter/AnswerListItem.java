@@ -59,11 +59,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     @Override
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
-        boolean isInvited = answerInfoBean.getInvited() == 1;// 是否是被邀请的回答
         boolean isOnlook = mQaListInfoBean.getLook() == 1; // 是否开启了围观
-        boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
-                != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
-                != AppApplication.getmCurrentLoginAuth().getUser_id());// 是否要付费才能查看
+
+        boolean canNotLook = answerInfoBean.getBody().isEmpty();// 是否要付费才能查看
 
         // 发布者信息
         boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
@@ -97,7 +95,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
         TextView contentView = holder.getView(R.id.tv_content);
 
-        if (!isNeedOnlook) {
+        if (!canNotLook) {
             TextViewUtils.newInstance(contentView, content)
                     .spanTextColor(SkinUtils.getColor(R
                             .color.normal_for_assist_text))
@@ -144,7 +142,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(isOnlook ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isOnlook && canNotLook ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
@@ -155,7 +153,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mListener != null) {
-                        mListener.onToWatchClick(answerInfoBean, position, isNeedOnlook);
+                        mListener.onToWatchClick(answerInfoBean, position, canNotLook);
                     }
                 });
         // 评论数量

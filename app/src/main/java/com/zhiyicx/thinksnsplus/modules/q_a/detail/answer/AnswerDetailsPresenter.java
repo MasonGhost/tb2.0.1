@@ -101,6 +101,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
 
+
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
@@ -334,6 +335,11 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
                 }, throwable -> throwable.printStackTrace());
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
+    public void updateData(long tag) {
+        requestNetData(tag, false);
     }
 
     @Override
