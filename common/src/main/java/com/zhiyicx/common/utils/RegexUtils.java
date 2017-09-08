@@ -293,6 +293,11 @@ public class RegexUtils {
         }
     }
 
+    /**
+     * 内容分段
+     * @param targetStr
+     * @return
+     */
     public static List<String> cutStringByImgTag(String targetStr) {
         List<String> splitTextList = new ArrayList<>();
         Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");

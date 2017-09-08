@@ -77,6 +77,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
         int id = 0;
+
         try {
             id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
         } catch (Exception e) {
@@ -85,21 +86,6 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         if (id > 0) {
             imageView.setVisibility(View.VISIBLE);
-            contentTextView.setVisibility(View.VISIBLE);
-            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
-                    infoBean.getAnswer().getAnonymity() == 1
-                            && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
-            RxView.clicks(contentTextView)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(BUNDLE_ANSWER, infoBean.getAnswer());
-                        bundle.putLong(BUNDLE_SOURCE_ID, infoBean.getAnswer().getId());
-                        intent.putExtras(bundle);
-                        mContext.startActivity(intent);
-                    });
-
             RxView.clicks(imageView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> contentTextView.performClick());
@@ -113,11 +99,24 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .into(imageView);
-
-
         } else {
             imageView.setVisibility(View.GONE);
-            contentTextView.setVisibility(View.GONE);
+        }
+        contentTextView.setVisibility(infoBean.getAnswer() == null ? View.GONE : View.VISIBLE);
+        if (infoBean.getAnswer()!=null){
+            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
+                    infoBean.getAnswer().getAnonymity() == 1
+                            && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
+            RxView.clicks(contentTextView)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(BUNDLE_ANSWER, infoBean.getAnswer());
+                        bundle.putLong(BUNDLE_SOURCE_ID, infoBean.getAnswer().getId());
+                        intent.putExtras(bundle);
+                        mContext.startActivity(intent);
+                    });
         }
 
     }
