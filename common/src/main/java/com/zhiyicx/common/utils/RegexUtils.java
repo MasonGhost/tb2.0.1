@@ -269,17 +269,19 @@ public class RegexUtils {
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
     }
 
+    /**
+     * 提取第一个 图片 id
+     * @param regex
+     * @param input
+     * @return
+     */
     public static int getImageIdFromMarkDown(String regex, String input) {
-        if (regex == null || input == null) return -1;
-        Matcher matcher = Pattern.compile(regex).matcher(input);
-        if (matcher.find()) {
-            try {
-                return Integer.parseInt(matcher.group(1));
-            } catch (NumberFormatException e) {
-                return -1;
-            }
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
+            return Integer.parseInt(matcher.group(1));
+        } catch (NumberFormatException e) {
+            return -1;
         }
-        return -1;
     }
 
     public static String replaceImageId(String regex, String input) {
@@ -316,15 +318,15 @@ public class RegexUtils {
         return splitTextList;
     }
 
+    /**
+     * 提取第一个 图片 id
+     * @param input
+     * @return
+     */
     public static int getImageId(String input) {
-        String reg = "@!\\[.*]\\((\\d+)\\)";
-        Matcher matcher2 = Pattern.compile(reg).matcher(input);
-        System.out.println("result 2 :: " + input);
-        if (matcher2.find()) {
-            System.out.println("matcher 2 :: " + matcher2.group(0));
-            System.out.println("matcher 2 :: " + matcher2.group(1));
-        }
         try {
+            String reg = "@!\\[.*]\\((\\d+)\\)";
+            Matcher matcher2 = Pattern.compile(reg).matcher(input);
             return Integer.parseInt(matcher2.group(1));
         } catch (NumberFormatException e) {
             return -1;

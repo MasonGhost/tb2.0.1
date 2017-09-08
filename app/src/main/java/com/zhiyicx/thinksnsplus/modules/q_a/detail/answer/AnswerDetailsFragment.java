@@ -156,6 +156,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean) {
+        mToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
@@ -422,7 +423,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         boolean isMineAdopted = answerInfoBean.getAdoption() == 1;
         boolean isAdopted = !answerInfoBean.getQuestion().getAdoption_answers().isEmpty();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(answerIsMine ? getString(R.string.info_delete) : "")
+                .item1Str(answerIsMine && !isMineAdopted ? getString(R.string.info_delete) : "")
                 .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.qa_question_answer_adopt : R.string.empty)
                         : questionIsMine ? R.string.qa_question_answer_adopting : R.string.empty))
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
