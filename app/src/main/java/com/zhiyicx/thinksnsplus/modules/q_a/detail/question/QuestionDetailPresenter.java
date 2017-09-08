@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
@@ -134,8 +133,10 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
                 (qaListInfoBean, answerInfoBeanList) -> {
-                    qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
-                    mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
+                    if (!isLoadMore) {
+                        qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
+                        mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
+                    }
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -262,12 +263,14 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public void payForOnlook(long answer_id) {
+    public void payForOnlook(long answer_id, int position) {
         Subscription subscription = mRepository.payForOnlook(answer_id)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
+                    protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
+                        mRootView.getListDatas().set(position, data.getData());
+                        mRootView.refreshData(position);
                         mRootView.showSnackMessage("成功", Prompt.DONE);
                     }
 
@@ -327,13 +330,16 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
     public void updateLike(AnswerInfoBean data) {
         if (data != null) {
-            mRootView.getListDatas().add(data);
-            mRootView.refreshData();
+            if (mRootView.getListDatas().get(0).getUser() == null) {// 占位
+                mRootView.getListDatas().remove(0);
+                mRootView.getListDatas().add(data);
+                mRootView.refreshData();
+            }
         }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
-    public void updateData(long tag) {
+    public void updateData(Long tag) {
         requestNetData(tag, false);
     }
 

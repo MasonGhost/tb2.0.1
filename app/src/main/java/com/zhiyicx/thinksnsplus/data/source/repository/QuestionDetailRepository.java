@@ -59,7 +59,7 @@ public class QuestionDetailRepository extends BaseQARepository implements Questi
         return mQAClient.applyForExcellent(String.valueOf(question_id));
     }
 
-    public Observable<BaseJsonV2<Object>> payForOnlook(Long answer_id) {
+    public Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(Long answer_id) {
         return mQAClient.payForOnlook(answer_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

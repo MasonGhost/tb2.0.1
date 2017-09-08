@@ -4,17 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -34,13 +28,12 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -248,7 +241,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
                         mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
                                 data.getRewarders());
-                        mRootView.updateAnswerHeader(data);
+                        mRootView.updateAnswerHeader(data, isLoadMore);
                     }
 
                     @Override
@@ -334,6 +327,11 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
                 }, throwable -> throwable.printStackTrace());
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
+    public void updateData(long tag) {
+        requestNetData(tag, false);
     }
 
     @Override

@@ -546,7 +546,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
         dynamicDetailBeanV2.setComments(new ArrayList<>());
         dynamicDetailBeanV2.setUser_id(userId);
-        dynamicDetailBeanV2.setAmount(mTollMoney);
+        dynamicDetailBeanV2.setAmount((long) mTollMoney);
 
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
@@ -801,7 +801,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void initInstructionsPop(String title, String des) {
         if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow= mInstructionsPopupWindow.newBuilder()
+            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
                     .item1Str(title)
                     .desStr(des)
                     .build();

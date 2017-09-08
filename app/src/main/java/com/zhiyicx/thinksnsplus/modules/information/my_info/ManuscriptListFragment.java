@@ -47,6 +47,16 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
         DaggerManuscriptListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())

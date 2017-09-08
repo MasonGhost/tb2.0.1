@@ -72,9 +72,12 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         String content = infoBean.getBody();
 
         boolean isExcellent = infoBean.getExcellent() == 1;
+        int test = getExcellentTag(isExcellent);
+
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
         int id = 0;
+
         try {
             id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
         } catch (Exception e) {
@@ -83,6 +86,24 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         if (id > 0) {
             imageView.setVisibility(View.VISIBLE);
+            RxView.clicks(imageView)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> contentTextView.performClick());
+
+            int w = DeviceUtils.getScreenWidth(mContext);
+            int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+            String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
+            Glide.with(mContext).load(url)
+                    .override(w, h)
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .into(imageView);
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
+
+        if (infoBean.getAnswer() != null) {
             contentTextView.setVisibility(View.VISIBLE);
             ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
                     infoBean.getAnswer().getAnonymity() == 1
@@ -97,24 +118,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
                     });
-
-            RxView.clicks(imageView)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> contentTextView.performClick());
-
-            int w = DeviceUtils.getScreenWidth(mContext);
-            int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
-            String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
-            Glide.with(mContext).load(url)
-                    .override(w, h)
-                    .placeholder(R.drawable.shape_default_image)
-                    .error(R.drawable.shape_default_image)
-                    .into(imageView);
-
-
         } else {
-            imageView.setVisibility(View.GONE);
+            contentTextView.setText("");
             contentTextView.setVisibility(View.GONE);
         }
 

@@ -7,8 +7,11 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
 
@@ -33,6 +36,11 @@ public class CollectInformationListFragment extends InfoListFragment {
     @Override
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<BaseListBean> data) {
+        return (long) mListDatas.size();
     }
 
     public static CollectInformationListFragment newInstance() {

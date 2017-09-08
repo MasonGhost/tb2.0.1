@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
@@ -131,6 +134,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
+
+        RxView.touches(mRvList).subscribe(motionEvent -> DeviceUtils.hideSoftKeyboard(getActivity(),mEtQustion));
 
         RxTextView.editorActionEvents(mEtQustion).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.collect.album;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicPresenter;

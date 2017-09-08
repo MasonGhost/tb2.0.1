@@ -134,13 +134,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
 
-        boolean isOnlook = mQaListInfoBean.getLook() == 1;
-        boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
-                != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
-                != AppApplication.getmCurrentLoginAuth().getUser_id());
+        boolean canNotLook = answerInfoBean.getBody().isEmpty();
 
         // 开启了围观并且不是作者本人点击
-        if (isNeedOnlook) {
+        if (canNotLook) {
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -150,7 +147,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
-        onToWatchClick(null,position,canNotRead);
+        onToWatchClick(null, position, canNotRead);
     }
 
     private void startToAnswerDetail(AnswerInfoBean answerInfoBean) {
@@ -198,7 +195,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
-        mQuestionDetailHeader.setDetail(questionDetail,mPresenter.getSystemConfig().getOnlookQuestion());
+        mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion());
     }
 
     @Override
@@ -426,7 +423,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
-                            .string.buy_pay_member),
+                                    .string.buy_pay_member),
                             PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
@@ -464,7 +461,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
-                            .string.buy_pay_member),
+                                    .string.buy_pay_member),
                             PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
@@ -473,7 +470,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        mPresenter.payForOnlook(answerInfoBean.getId());
+                        mPresenter.payForOnlook(answerInfoBean.getId(),mCurrentPosition);
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
@@ -562,9 +559,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook) {
+    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean canNotRead) {
         mCurrentPosition = position - mHeaderAndFooterWrapper.getHeadersCount();
-        if (isNeedOnlook) {
+        if (canNotRead) {
             mPayWatchPopWindow.show();
         } else {
             onLookToAnswerDetail(false);

@@ -88,6 +88,11 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<QAListInfoBean> data) {
+        return (long) mListDatas.size();
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_qa_search_list;
     }
