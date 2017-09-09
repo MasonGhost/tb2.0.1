@@ -732,15 +732,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     private void checkBottomMessageTip() {
         // 是否显示底部红点
-        boolean isShowMessgeTip;
-        if (mItemBeanDigg != null && mItemBeanComment != null
-                && mItemBeanDigg.getUnReadMessageNums() == 0
-                && mItemBeanComment.getUnReadMessageNums() == 0) {
-            isShowMessgeTip = false;
-        } else {
-            isShowMessgeTip = true;
-        }
-        if (!isShowMessgeTip) {
+        boolean isShowMessgeTip=false;
+//        if (mItemBeanDigg != null
+//                && mItemBeanComment != null
+//                && mItemBeanDigg.getUnReadMessageNums() == 0
+//                && mItemBeanComment.getUnReadMessageNums() == 0) {
+//            isShowMessgeTip = false;
+//        } else {
+//            isShowMessgeTip = true;
+//        }
+//        if (!isShowMessgeTip) {
             for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
                 if (messageItemBean.getUnReadMessageNums() > 0) {
                     isShowMessgeTip = true;
@@ -749,7 +750,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     isShowMessgeTip = false;
                 }
             }
-        }
+//        }
 
         EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
     }
