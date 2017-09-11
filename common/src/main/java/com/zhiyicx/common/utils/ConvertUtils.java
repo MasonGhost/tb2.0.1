@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -77,7 +79,7 @@ public class ConvertUtils {
                 .build();
     }
 
-    public static void stringLinkConvert(TextView textView, List<Link> links,boolean onlyFirst) {
+    public static void stringLinkConvert(TextView textView, List<Link> links, boolean onlyFirst) {
         if (links.isEmpty()) {
             return;
         }
@@ -85,6 +87,40 @@ public class ConvertUtils {
                 .setFindOnlyFirstMatchesForAnyLink(onlyFirst)
                 .addLinks(links)
                 .build();
+    }
+
+    /**
+     * 解析错误信息 des to see {@see https://slimkit.github.io/plus-docs/v2/#messages }
+     *
+     * @param response1 需要解析的数据，json str
+     * @return 抛给用户的 message
+     */
+    public static String praseErrorMessage(String response1) {
+        String message = "";
+
+        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
+                new TypeToken<Map<String, Object>>() {
+                }.getType());
+        for (Map.Entry<String, Object> entry : errorMessageMap.entrySet()) {
+
+            if (entry.getValue() instanceof String) {
+                if ("message".equals(entry.getKey())) {
+                    message = (String) entry.getValue();
+                }
+            } else if (entry.getValue() instanceof Map) {
+                if ("errors".equals(entry.getKey())) {
+                    message = praseErrorMessage((new Gson().toJson(entry.getValue())));
+                }
+            } else if (entry.getValue() instanceof String[]) {
+                message = ((String[]) entry.getValue())[0];
+                break;
+            } else if (entry.getValue() instanceof List) {
+                message = (String) ((List) entry.getValue()).get(0);
+                break;
+            }
+        }
+        return message;
+
     }
 
     /**
