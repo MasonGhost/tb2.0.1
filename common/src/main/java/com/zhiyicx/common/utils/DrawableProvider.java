@@ -28,10 +28,6 @@ public class DrawableProvider {
 
     /**
      * 获得选择器
-     *
-     * @param normalDrawable
-     * @param pressDrawable
-     * @return
      */
     public static Drawable getStateListDrawable(Drawable normalDrawable, Drawable pressDrawable) {
         StateListDrawable stateListDrawable = new StateListDrawable();
@@ -42,10 +38,6 @@ public class DrawableProvider {
 
     /**
      * 将 radiobutton 的 drawable 动态的缩放
-     *
-     * @param percent
-     * @param rb
-     * @return
      */
     public static Drawable getScaleDrawableForRadioButton(float percent, TextView rb) {
         Drawable[] compoundDrawables = rb.getCompoundDrawables();
@@ -61,9 +53,6 @@ public class DrawableProvider {
 
     /**
      * 将 radiobutton 的 drawable 动态的缩放
-     *
-     * @param rb
-     * @return
      */
     public static Drawable getScaleDrawableForRadioButton2(float width, TextView rb) {
         Drawable[] compoundDrawables = rb.getCompoundDrawables();
@@ -80,9 +69,6 @@ public class DrawableProvider {
 
     /**
      * 传入图片，将图片按传入比例缩小
-     *
-     * @param percent
-     * @return
      */
     public static Drawable getScaleDrawable(float percent, Drawable drawable) {
         drawable.setBounds(0, 0, (int) (drawable.getIntrinsicWidth() * percent + 0.5f), (int) (drawable.getIntrinsicHeight() * percent + 0.5f));
@@ -91,9 +77,6 @@ public class DrawableProvider {
 
     /**
      * 传入图片，将图片按传入比例缩小
-     *
-     * @param width
-     * @return
      */
     public static Drawable getScaleDrawable2(float width, Drawable drawable) {
         float percent = width * 1.0f / drawable.getIntrinsicWidth();
@@ -103,9 +86,6 @@ public class DrawableProvider {
 
     /**
      * 设置左边的 drawable
-     *
-     * @param tv
-     * @param drawable
      */
     public static void setLeftDrawable(TextView tv, Drawable drawable) {
         tv.setCompoundDrawables(drawable, null, null, null);
@@ -113,9 +93,6 @@ public class DrawableProvider {
 
     /**
      * 改变 Bitmap 的长宽
-     *
-     * @param bitmap
-     * @return
      */
     public static Bitmap getReSizeBitmap(Bitmap bitmap, float targetWidth, float targetheight) {
         Bitmap returnBm = null;
@@ -198,6 +175,25 @@ public class DrawableProvider {
     }
 
     /**
+     * 将图片的旋转角度置为0  ，此方法可以解决某些机型拍照后图像，出现了旋转情况
+     *
+     * @return void
+     * @Title: setPictureDegreeZero
+     */
+    public static void setPictureDegreeZero(String path) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 修正图片的旋转角度，设置其不旋转。这里也可以设置其旋转的角度，可以传值过去，
+            // 例如旋转90度，传值ExifInterface.ORIENTATION_ROTATE_90，需要将这个值转换为String类型的
+            exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL));
+            exifInterface.saveAttributes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
      * 获取文件为图片时的图片宽高
      * options.outWidth
      * options.outHeight
@@ -215,9 +211,6 @@ public class DrawableProvider {
 
     /**
      * 获取imageview的rect属性:上下左右的位置
-     *
-     * @param imageView
-     * @return
      */
     public static Rect getBitmapRectFromImageView(ImageView imageView) {
         Drawable drawable = imageView.getDrawable();
@@ -270,7 +263,6 @@ public class DrawableProvider {
     /**
      * 保存bitmap到文件
      *
-     * @param bm
      * @param picName 图片名称
      * @param imgPath 图片目录
      * @return 失败返回各种提示，成功返回图片路径 -2 sd卡不存在 -1 图片保存失败 其他 图片保存成功
@@ -286,7 +278,7 @@ public class DrawableProvider {
             }
         }
         try {
-            File f = new File(dir +"/"+ picName);
+            File f = new File(dir + "/" + picName);
             FileOutputStream out = new FileOutputStream(f);
             boolean isSuccess = bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
