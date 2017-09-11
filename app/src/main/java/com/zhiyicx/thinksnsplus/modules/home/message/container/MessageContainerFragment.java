@@ -44,7 +44,7 @@ import butterknife.BindView;
  * @contact email:648129313@qq.com
  */
 
-public class MessageContainerFragment extends TSViewPagerFragment{
+public class MessageContainerFragment extends TSViewPagerFragment {
 
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color.important_for_content;// 缺省的tab被选择文字
@@ -57,9 +57,11 @@ public class MessageContainerFragment extends TSViewPagerFragment{
     @BindView(R.id.v_status_bar_placeholder)
     View mStatusBarPlaceholder;
 
+    private CommonNavigatorAdapter mCommonNavigatorAdapter;
+    private List<BadgePagerTitleView> mBadgePagerTitleViews;
     List<Fragment> mFragments;
 
-    public MessageContainerFragment instance(){
+    public MessageContainerFragment instance() {
         return new MessageContainerFragment();
     }
 
@@ -81,7 +83,7 @@ public class MessageContainerFragment extends TSViewPagerFragment{
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null){
+        if (mFragments == null) {
             mFragments = new ArrayList<>();
         }
         mFragments.add(MessageFragment.newInstance());
@@ -98,7 +100,9 @@ public class MessageContainerFragment extends TSViewPagerFragment{
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mBadgePagerTitleViews = new ArrayList<>();
+        mCommonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
+        mTsvToolbar.initTabView(mVpFragment, initTitles(), mCommonNavigatorAdapter);
     }
 
     @Override
@@ -109,6 +113,27 @@ public class MessageContainerFragment extends TSViewPagerFragment{
     @Override
     protected boolean setUseStatusView() {
         return false;
+    }
+
+    /**
+     * 设置提示的红点的显示和隐藏
+     * @param isShow 状态
+     * @param position 位置 0-消息 1=通知
+     */
+    private void setNewMessageNoticeState(boolean isShow, int position) {
+        if (position < 0 && position > 1) {
+            return;
+        }
+        BadgePagerTitleView badgePagerTitleView = mBadgePagerTitleViews.get(position);
+        if (isShow) {
+            ImageView badgeImageView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.simple_count_badge_layout, null);
+            badgePagerTitleView.setBadgeView(badgeImageView);
+            badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, UIUtil.dip2px(getContext(), 10)));
+            badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, -UIUtil.dip2px(getContext(), 3)));
+        }
+        if (!isShow) {
+            badgePagerTitleView.setBadgeView(null);
+        }
     }
 
     private void initToolBar() {
@@ -132,7 +157,6 @@ public class MessageContainerFragment extends TSViewPagerFragment{
             @Override
             public IPagerTitleView getTitleView(Context context, final int index) {
                 final BadgePagerTitleView badgePagerTitleView = new BadgePagerTitleView(context);
-
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
                 int leftRightPadding = UIUtil.dip2px(context, getContext().getResources().getInteger(DEFAULT_TAB_MARGIN));
@@ -142,26 +166,12 @@ public class MessageContainerFragment extends TSViewPagerFragment{
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
                 simplePagerTitleView.setOnClickListener(v -> {
                     mVpFragment.setCurrentItem(index);
-                    badgePagerTitleView.setBadgeView(null); // cancel badge when click tab
+                    setNewMessageNoticeState(index == 0, index);
                 });
                 badgePagerTitleView.setInnerPagerTitleView(simplePagerTitleView);
-
-                // setup badge
-                TextView badgeTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.simple_count_badge_layout, null);
-//                badgeTextView.setText("" + (index + 1));
-                badgePagerTitleView.setBadgeView(badgeTextView);
-
-                // set badge position
-                if (index == 0) {
-                    badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, -UIUtil.dip2px(context, 6)));
-                    badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, 0));
-                } else if (index == 1) {
-                    badgePagerTitleView.setXBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_RIGHT, -UIUtil.dip2px(context, 10)));
-                    badgePagerTitleView.setYBadgeRule(new BadgeRule(BadgeAnchor.CONTENT_TOP, 0));
-                }
-
                 // don't cancel badge when tab selected
                 badgePagerTitleView.setAutoCancelBadge(false);
+                mBadgePagerTitleViews.add(badgePagerTitleView);
                 return badgePagerTitleView;
             }
 
