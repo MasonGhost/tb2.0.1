@@ -543,6 +543,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
                 .ORDER_BY_TIME;
         requestNetData(0L, false);
+        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()){
+            mOrderTypeSelectPop.dismiss();
+        }
     }
 
     @Override
