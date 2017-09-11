@@ -241,10 +241,12 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         RxView.clicks(rewardType)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    // 是否已经有已采纳的答案
+                    boolean isNotAdoption = mQaListInfoBean.getAdoption_answers() == null || mQaListInfoBean.getAdoption_answers().size() == 0;
                     if (mQaListInfoBean.getInvitations() != null
                             && mQaListInfoBean.getInvitations().size() > 0) {
                         initPop();
-                    } else if (mQaListInfoBean.getAmount() == 0 || mQaListInfoBean.getAdoption_answers() == null || mQaListInfoBean.getAdoption_answers().size() == 0) {
+                    } else if (isNotAdoption && mQaListInfoBean.getAmount() == 0) {
                         if (mListener != null) {
                             mListener.onRewardTypeClick(null, 1);
                         }
