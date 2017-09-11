@@ -279,7 +279,7 @@ public class ImageUtils {
             }
             laste_request_time = System.currentTimeMillis();
         }
-        Glide.with(AppApplication.getContext())
+        Glide.with(contentTextView.getContext())
                 .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(R.mipmap.pic_default_portrait1)
@@ -352,7 +352,7 @@ public class ImageUtils {
                 userInfoBean.getVerified().setIcon("");
             }
             int w = (int) (headImage.getBounds().width() / 3.5f);
-            Glide.with(AppApplication.getContext())
+            Glide.with(contentTextView.getContext())
                     .load(userInfoBean.getVerified().getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                     .override(w, w)

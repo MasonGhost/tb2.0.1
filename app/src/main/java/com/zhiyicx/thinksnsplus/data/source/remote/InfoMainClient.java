@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,7 @@ public interface InfoMainClient {
 
     @GET(APP_PATH_GET_MY_INFO)
     Observable<List<InfoListDataBean>> getMyInfoList(@Query("after") Long max_id,
-                                                            @Query("limit") Long limit,@Query("type") String type);
+                                                     @Query("limit") Long limit, @Query("type") String type);
 
     // 订阅某类资讯
     @PATCH(APP_PATH_INFO_FOLLOW_LIST)
@@ -112,6 +113,7 @@ public interface InfoMainClient {
     Observable<InfoCommentBean> getInfoCommentListV2(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
                                                      @Query("limit") Long limit);
+
     /**
      * 资讯投稿
      *
@@ -135,6 +137,7 @@ public interface InfoMainClient {
 
     /**
      * 置顶资讯评论
+     *
      * @param news_id
      * @param comment_id
      * @param amount
@@ -143,7 +146,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
-    Observable<BaseJsonV2<Integer>>  stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 
@@ -178,4 +181,30 @@ public interface InfoMainClient {
      */
     @GET(APP_PATH_INFO_REWARDS_COUNT)
     Observable<RewardsCountBean> getRewardCount(@Path("news_id") long news_id);
+
+    /**
+     * 获取资讯评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_REVIEW_INFO_COMMENT)
+    Observable<List<TopNewsCommentListBean>> getNewsReviewComment(@Query("after") int after, @Query("limit")
+            int limit);
+
+    /**
+     * 资讯评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_APPROVED_INFO_COMMENT)
+    Observable<BaseJsonV2> approvedNewsTopComment(@Path("news_id") Long feed_id, @Path("comment_id")
+            int comment_id, @Path("pinned_id") int pinned_id);
+
+    /**
+     * 资讯评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_REFUSE_INFO_COMMENT)
+    Observable<BaseJsonV2> refuseNewsTopComment(@Path("pinned_id") int pinned_id);
 }

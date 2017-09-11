@@ -272,6 +272,7 @@
     <!--置顶评论-->
     <string name="review">审核通知</string>
     <string name="review_ing">待审核</string>
+    <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该动态已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
@@ -282,6 +283,14 @@
     <string name="dynamic_comment_top_success">置顶评论成功</string>
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>
     <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
+    <string name="stick_type_dynamic_commnet">动态评论置顶</string>
+    <string name="stick_type_dynamic_commnet_message">对你的动态“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_news_commnet">文章评论置顶</string>
+    <string name="stick_type_news_commnet_message">对你的文章“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_group_commnet">圈子帖子置顶</string>
+    <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
+    <string name="stick_type_group_join">圈子加入申请</string>
+    <string name="stick_type_group_join_message">申请加入你创建的圈子“%1$s”，请及时审核。</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

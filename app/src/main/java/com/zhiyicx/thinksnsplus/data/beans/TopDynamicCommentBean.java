@@ -4,17 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicImagesBeanConvert;
 
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,53 +16,82 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-@Entity
 public class TopDynamicCommentBean extends BaseListBean {
 
     public static final int TOP_REFUSE = 0;
     public static final int TOP_REVIEWING = 1;
     public static final int TOP_SUCCESS = 2;
 
+
     /**
-     * id : 2
-     * amount : 10
-     * day : 1
+     * id : 4
+     * channel : comment
+     * target : 1
      * user_id : 1
-     * expires_at : 2017-07-05 08:29:49
-     * created_at : 2017-06-30 12:04:15
-     * comment : {"id":2,"content":"我是第2条评论","pinned":true,"user_id":1,"reply_to_user_id":0,
-     * "created_at":"2017-06-27 08:59:14"}
-     * feed : {"id":1,"content":"动态内容"}
+     * amount : 1
+     * day : 3
+     * expires_at : null
+     * created_at : 2017-07-21 03:47:09
+     * updated_at : 2017-07-21 03:47:09
+     * target_user : 1
+     * raw : 1
+     * feed : {"id":1,"user_id":1,"feed_content":"动态内容","feed_from":1,"like_count":1,"feed_view_count":0,"feed_comment_count":6,"feed_latitude":null,"feed_longtitude":null,"feed_geohash":null,"audit_status":1,"feed_mark":1,"pinned":0,"created_at":"2017-06-27 07:04:32","updated_at":"2017-07-20 08:53:24","deleted_at":null,"pinned_amount":0,"images":[],"paid_node":null}
+     * comment : {"id":1,"user_id":1,"target_user":1,"reply_user":0,"body":"我是第一条评论","commentable_id":1,"commentable_type":"feeds","created_at":"2017-07-20 08:34:41","updated_at":"2017-07-20 08:34:41"}
      */
-    @Id
-    @Unique
+
     private Long id;
+    private String channel;
+    private int target;
+    private Long user_id;
     private int amount;
     private int day;
-    private Long user_id;
     private String expires_at;
     private String created_at;
-    private int state = TOP_REVIEWING;// 置顶状态 0：置顶被拒绝 1：置顶审核中 2：置顶成功
-    @Convert(converter = CommentConvert.class, columnType = String.class)
-    private CommentBean comment;
-    @Convert(converter = FeedConvert.class, columnType = String.class)
+    private String updated_at;
+    private int target_user;
+    private int raw;
     private FeedBean feed;
-    @ToOne(joinProperty = "user_id")
+    private CommentedBean comment;
     private UserInfoBean userInfoBean;
-    @ToOne(joinProperty = "id")
-    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
 
-    @Override
-    public Long getMaxId() {
+    public UserInfoBean getUserInfoBean() {
+        return userInfoBean;
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        this.userInfoBean = userInfoBean;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public int getState() {
-        return this.state;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public int getAmount() {
@@ -106,12 +126,28 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.created_at = created_at;
     }
 
-    public CommentBean getComment() {
-        return comment;
+    public String getUpdated_at() {
+        return updated_at;
     }
 
-    public void setComment(CommentBean comment) {
-        this.comment = comment;
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public int getTarget_user() {
+        return target_user;
+    }
+
+    public void setTarget_user(int target_user) {
+        this.target_user = target_user;
+    }
+
+    public int getRaw() {
+        return raw;
+    }
+
+    public void setRaw(int raw) {
+        this.raw = raw;
     }
 
     public FeedBean getFeed() {
@@ -122,89 +158,161 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.feed = feed;
     }
 
-    public static class CommentBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = 536871009L;
+    public CommentedBean getComment() {
+        return comment;
+    }
+
+    public void setComment(CommentedBean comment) {
+        this.comment = comment;
+    }
+
+    public static class FeedBean implements Parcelable,Serializable{
+
+        private static final long serialVersionUID = 1461771570674420147L;
         /**
-         * id : 2
-         * content : 我是第2条评论
-         * pinned : true
+         * id : 1
          * user_id : 1
-         * reply_to_user_id : 0
-         * created_at : 2017-06-27 08:59:14
+         * feed_content : 动态内容
+         * feed_from : 1
+         * like_count : 1
+         * feed_view_count : 0
+         * feed_comment_count : 6
+         * feed_latitude : null
+         * feed_longtitude : null
+         * feed_geohash : null
+         * audit_status : 1
+         * feed_mark : 1
+         * pinned : 0
+         * created_at : 2017-06-27 07:04:32
+         * updated_at : 2017-07-20 08:53:24
+         * deleted_at : null
+         * pinned_amount : 0
+         * images : []
+         * paid_node : null
          */
-        private Long id;
-        private int user_id;
-        private Long target_user;
-        private boolean pinned;
-        private Long reply_user;
-        private String body;
-        private int commentable_id;
-        private String commentable_type;
+
+        private int id;
+        private Long user_id;
+        private String feed_content;
+        private int feed_from;
+        private int like_count;
+        private int feed_view_count;
+        private int feed_comment_count;
+        private String feed_latitude;
+        private String feed_longtitude;
+        private String feed_geohash;
+        private int audit_status;
+        private Long feed_mark;
+        private int pinned;
         private String created_at;
         private String updated_at;
+        private String deleted_at;
+        private int pinned_amount;
+        private PaidNote paid_node;
+        private List<DynamicDetailBeanV2.ImagesBean> images;
 
-        public Long getId() {
+        public int getId() {
             return id;
         }
 
-        public void setId(Long id) {
+        public void setId(int id) {
             this.id = id;
         }
 
-        public int getUser_id() {
+        public Long getUser_id() {
             return user_id;
         }
 
-        public void setUser_id(int user_id) {
+        public void setUser_id(Long user_id) {
             this.user_id = user_id;
         }
 
-        public Long getTarget_user() {
-            return target_user;
+        public String getFeed_content() {
+            return feed_content;
         }
 
-        public void setTarget_user(Long target_user) {
-            this.target_user = target_user;
+        public void setFeed_content(String feed_content) {
+            this.feed_content = feed_content;
         }
 
-        public boolean isPinned() {
+        public int getFeed_from() {
+            return feed_from;
+        }
+
+        public void setFeed_from(int feed_from) {
+            this.feed_from = feed_from;
+        }
+
+        public int getLike_count() {
+            return like_count;
+        }
+
+        public void setLike_count(int like_count) {
+            this.like_count = like_count;
+        }
+
+        public int getFeed_view_count() {
+            return feed_view_count;
+        }
+
+        public void setFeed_view_count(int feed_view_count) {
+            this.feed_view_count = feed_view_count;
+        }
+
+        public int getFeed_comment_count() {
+            return feed_comment_count;
+        }
+
+        public void setFeed_comment_count(int feed_comment_count) {
+            this.feed_comment_count = feed_comment_count;
+        }
+
+        public String getFeed_latitude() {
+            return feed_latitude;
+        }
+
+        public void setFeed_latitude(String feed_latitude) {
+            this.feed_latitude = feed_latitude;
+        }
+
+        public String getFeed_longtitude() {
+            return feed_longtitude;
+        }
+
+        public void setFeed_longtitude(String feed_longtitude) {
+            this.feed_longtitude = feed_longtitude;
+        }
+
+        public String getFeed_geohash() {
+            return feed_geohash;
+        }
+
+        public void setFeed_geohash(String feed_geohash) {
+            this.feed_geohash = feed_geohash;
+        }
+
+        public int getAudit_status() {
+            return audit_status;
+        }
+
+        public void setAudit_status(int audit_status) {
+            this.audit_status = audit_status;
+        }
+
+        public Long getFeed_mark() {
+            return feed_mark;
+        }
+
+        public void setFeed_mark(Long feed_mark) {
+            this.feed_mark = feed_mark;
+        }
+
+        public int getPinned() {
             return pinned;
         }
 
-        public void setPinned(boolean pinned) {
+        public void setPinned(int pinned) {
             this.pinned = pinned;
-        }
-
-        public Long getReply_user() {
-            return reply_user;
-        }
-
-        public void setReply_user(Long reply_user) {
-            this.reply_user = reply_user;
-        }
-
-        public String getBody() {
-            return body;
-        }
-
-        public void setBody(String body) {
-            this.body = body;
-        }
-
-        public int getCommentable_id() {
-            return commentable_id;
-        }
-
-        public void setCommentable_id(int commentable_id) {
-            this.commentable_id = commentable_id;
-        }
-
-        public String getCommentable_type() {
-            return commentable_type;
-        }
-
-        public void setCommentable_type(String commentable_type) {
-            this.commentable_type = commentable_type;
         }
 
         public String getCreated_at() {
@@ -223,65 +331,29 @@ public class TopDynamicCommentBean extends BaseListBean {
             this.updated_at = updated_at;
         }
 
-
-        @Override
-        public int describeContents() {
-            return 0;
+        public String getDeleted_at() {
+            return deleted_at;
         }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.user_id);
-            dest.writeValue(this.target_user);
-            dest.writeValue(this.id);
-            dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
-            dest.writeValue(this.reply_user);
-            dest.writeString(this.body);
-            dest.writeInt(this.commentable_id);
-            dest.writeString(this.commentable_type);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
+        public void setDeleted_at(String deleted_at) {
+            this.deleted_at = deleted_at;
         }
 
-        public CommentBean() {
+        public int getPinned_amount() {
+            return pinned_amount;
         }
 
-        protected CommentBean(Parcel in) {
-            this.user_id = in.readInt();
-            this.target_user = (Long) in.readValue(Long.class.getClassLoader());
-            this.id = (Long) in.readValue(Long.class.getClassLoader());
-            this.pinned = in.readByte() != 0;
-            this.reply_user = (Long) in.readValue(Long.class.getClassLoader());
-            this.body = in.readString();
-            this.commentable_id = in.readInt();
-            this.commentable_type = in.readString();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
+        public void setPinned_amount(int pinned_amount) {
+            this.pinned_amount = pinned_amount;
         }
 
-        public static final Creator<CommentBean> CREATOR = new Creator<CommentBean>() {
-            @Override
-            public CommentBean createFromParcel(Parcel source) {
-                return new CommentBean(source);
-            }
+        public PaidNote getPaid_node() {
+            return paid_node;
+        }
 
-            @Override
-            public CommentBean[] newArray(int size) {
-                return new CommentBean[size];
-            }
-        };
-    }
-
-    public static class FeedBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = 536871009L;
-        /**
-         * id : 1
-         * content : 动态内容
-         */
-
-        private int id;
-        private String content;
-        private List<DynamicDetailBeanV2.ImagesBean> images;
+        public void setPaid_node(PaidNote paid_node) {
+            this.paid_node = paid_node;
+        }
 
         public List<DynamicDetailBeanV2.ImagesBean> getImages() {
             return images;
@@ -291,23 +363,6 @@ public class TopDynamicCommentBean extends BaseListBean {
             this.images = images;
         }
 
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-
         @Override
         public int describeContents() {
             return 0;
@@ -316,7 +371,23 @@ public class TopDynamicCommentBean extends BaseListBean {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
-            dest.writeString(this.content);
+            dest.writeValue(this.user_id);
+            dest.writeString(this.feed_content);
+            dest.writeInt(this.feed_from);
+            dest.writeInt(this.like_count);
+            dest.writeInt(this.feed_view_count);
+            dest.writeInt(this.feed_comment_count);
+            dest.writeString(this.feed_latitude);
+            dest.writeString(this.feed_longtitude);
+            dest.writeString(this.feed_geohash);
+            dest.writeInt(this.audit_status);
+            dest.writeLong(this.feed_mark);
+            dest.writeInt(this.pinned);
+            dest.writeString(this.created_at);
+            dest.writeString(this.updated_at);
+            dest.writeString(this.deleted_at);
+            dest.writeInt(this.pinned_amount);
+            dest.writeParcelable(this.paid_node, flags);
             dest.writeTypedList(this.images);
         }
 
@@ -325,7 +396,23 @@ public class TopDynamicCommentBean extends BaseListBean {
 
         protected FeedBean(Parcel in) {
             this.id = in.readInt();
-            this.content = in.readString();
+            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+            this.feed_content = in.readString();
+            this.feed_from = in.readInt();
+            this.like_count = in.readInt();
+            this.feed_view_count = in.readInt();
+            this.feed_comment_count = in.readInt();
+            this.feed_latitude = in.readString();
+            this.feed_longtitude = in.readString();
+            this.feed_geohash = in.readString();
+            this.audit_status = in.readInt();
+            this.feed_mark = in.readLong();
+            this.pinned = in.readInt();
+            this.created_at = in.readString();
+            this.updated_at = in.readString();
+            this.deleted_at = in.readString();
+            this.pinned_amount = in.readInt();
+            this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
             this.images = in.createTypedArrayList(DynamicDetailBeanV2.ImagesBean.CREATOR);
         }
 
@@ -342,240 +429,4 @@ public class TopDynamicCommentBean extends BaseListBean {
         };
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUser_id() {
-        return this.user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 2083937831)
-    private transient TopDynamicCommentBeanDao myDao;
-
-    @Generated(hash = 28345850)
-    public TopDynamicCommentBean(Long id, int amount, int day, Long user_id, String expires_at, String created_at,
-                                 int state, CommentBean comment, FeedBean feed) {
-        this.id = id;
-        this.amount = amount;
-        this.day = day;
-        this.user_id = user_id;
-        this.expires_at = expires_at;
-        this.created_at = created_at;
-        this.state = state;
-        this.comment = comment;
-        this.feed = feed;
-    }
-
-    @Generated(hash = 2134686559)
-    public TopDynamicCommentBean() {
-    }
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
-    /**
-     * To-one relationship, resolved on first access.
-     */
-    @Generated(hash = 1288178437)
-    public UserInfoBean getUserInfoBean() {
-        Long __key = this.user_id;
-        if (userInfoBean__resolvedKey == null || !userInfoBean__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean userInfoBeanNew = targetDao.load(__key);
-            synchronized (this) {
-                userInfoBean = userInfoBeanNew;
-                userInfoBean__resolvedKey = __key;
-            }
-        }
-        return userInfoBean;
-    }
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
-    @Generated(hash = 251524817)
-    public void setUserInfoBean(UserInfoBean userInfoBean) {
-        synchronized (this) {
-            this.userInfoBean = userInfoBean;
-            user_id = userInfoBean == null ? null : userInfoBean.getUser_id();
-            userInfoBean__resolvedKey = user_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    public static class CommentConvert implements PropertyConverter<CommentBean, String> {
-        @Override
-        public CommentBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(CommentBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    public static class FeedConvert implements PropertyConverter<FeedBean, String> {
-        @Override
-        public FeedBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(FeedBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeInt(this.amount);
-        dest.writeInt(this.day);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.expires_at);
-        dest.writeString(this.created_at);
-        dest.writeInt(this.state);
-        dest.writeParcelable(this.comment, flags);
-        dest.writeParcelable(this.feed, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1468529555)
-    public DynamicDetailBeanV2 getMDynamicDetailBeanV2() {
-        Long __key = this.id;
-        if (mDynamicDetailBeanV2__resolvedKey == null || !mDynamicDetailBeanV2__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            DynamicDetailBeanV2Dao targetDao = daoSession.getDynamicDetailBeanV2Dao();
-            DynamicDetailBeanV2 mDynamicDetailBeanV2New = targetDao.load(__key);
-            synchronized (this) {
-                mDynamicDetailBeanV2 = mDynamicDetailBeanV2New;
-                mDynamicDetailBeanV2__resolvedKey = __key;
-            }
-        }
-        return mDynamicDetailBeanV2;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 128069292)
-    public void setMDynamicDetailBeanV2(DynamicDetailBeanV2 mDynamicDetailBeanV2) {
-        synchronized (this) {
-            this.mDynamicDetailBeanV2 = mDynamicDetailBeanV2;
-            id = mDynamicDetailBeanV2 == null ? null : mDynamicDetailBeanV2.getFeed_mark();
-            mDynamicDetailBeanV2__resolvedKey = id;
-        }
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2079522954)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getTopDynamicCommentBeanDao() : null;
-    }
-
-    protected TopDynamicCommentBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.amount = in.readInt();
-        this.day = in.readInt();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.expires_at = in.readString();
-        this.created_at = in.readString();
-        this.state = in.readInt();
-        this.comment = in.readParcelable(CommentBean.class.getClassLoader());
-        this.feed = in.readParcelable(FeedBean.class.getClassLoader());
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-    }
-
-    public static final Creator<TopDynamicCommentBean> CREATOR = new Creator<TopDynamicCommentBean>() {
-        @Override
-        public TopDynamicCommentBean createFromParcel(Parcel source) {
-            return new TopDynamicCommentBean(source);
-        }
-
-        @Override
-        public TopDynamicCommentBean[] newArray(int size) {
-            return new TopDynamicCommentBean[size];
-        }
-    };
-    @Generated(hash = 1412668450)
-    private transient Long mDynamicDetailBeanV2__resolvedKey;
 }

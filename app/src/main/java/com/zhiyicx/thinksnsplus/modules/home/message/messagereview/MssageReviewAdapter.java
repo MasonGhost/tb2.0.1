@@ -52,17 +52,17 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
 public class MssageReviewAdapter extends CommonAdapter<TSPNotificationBean> {
 
     private Gson mGson;
-    
+
     public MssageReviewAdapter(Context context, int layoutId, List<TSPNotificationBean> datas) {
         super(context, layoutId, datas);
-        mGson=new Gson();
+        mGson = new Gson();
     }
 
     @Override
     protected void convert(ViewHolder holder, TSPNotificationBean
             tspNotificationBean, int position) {
         String jsonString = mGson.toJson(tspNotificationBean.getData().getExtra(), Map.class);
-        TSNotifyExtraBean extraBean =mGson.fromJson(jsonString,TSNotifyExtraBean.class);
+        TSNotifyExtraBean extraBean = mGson.fromJson(jsonString, TSNotifyExtraBean.class);
         if (position == getItemCount() - 1) {
             holder.setVisible(R.id.v_bottom_line, View.GONE);
         } else {
@@ -71,7 +71,7 @@ public class MssageReviewAdapter extends CommonAdapter<TSPNotificationBean> {
         ImageUtils.loadCircleUserHeadPic(extraBean.getUser(), holder.getView(R.id.iv_headpic));
         DynamicDetailBeanV2 feedBean = extraBean.getFeed();
         CommentedBean commentBean = extraBean.getComment();
-        PinnedBean pinnedBean=extraBean.getPinned();
+        PinnedBean pinnedBean = extraBean.getPinned();
         boolean hasImage = feedBean != null && !feedBean.getImages().isEmpty();
 
         holder.setVisible(R.id.iv_detail_image, hasImage ? View.VISIBLE : View.GONE);
@@ -109,7 +109,7 @@ public class MssageReviewAdapter extends CommonAdapter<TSPNotificationBean> {
 
 
         flagView.setText(getString((commentBean == null) ? R.string.review_comment_deleted :
-                (pinnedBean.getState()==PinnedBean.TOP_SUCCESS ? R.string.review_approved : ((pinnedBean.getExpires_at() == null &&
+                (pinnedBean.getState() == PinnedBean.TOP_SUCCESS ? R.string.review_approved : ((pinnedBean.getExpires_at() == null &&
                         pinnedBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse))));
         if (feedBean == null) {
             flagView.setText("");

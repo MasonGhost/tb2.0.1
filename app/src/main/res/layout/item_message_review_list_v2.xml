@@ -98,6 +98,8 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:paddingLeft="@dimen/spacing_mid_small_8dp"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"

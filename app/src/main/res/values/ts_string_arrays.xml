@@ -15,4 +15,11 @@
         <item>hot</item>
         <item>all</item>
     </string-array>
+
+    <string-array name="top_type">
+        <item>comment</item>
+        <item>news:comment</item>
+        <item>group:comment</item>
+        <item>group:join</item>
+    </string-array>
 </resources>
