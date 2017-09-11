@@ -12,8 +12,7 @@
     <RelativeLayout
         android:id="@+id/rl_userinfo_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/headpic_for_user_center">
+        android:layout_height="@dimen/headpic_for_user_center">
 
         <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_head_icon"
@@ -46,9 +45,9 @@
             android:layout_toLeftOf="@+id/tv_user_follow"
             android:textColor="@color/normal_for_dynamic_list_content"
             android:textSize="@dimen/size_icon_assist"
-            android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_marginTop="@dimen/spacing_small"
             tools:text="xxxxx"/>
 
         <CheckBox
@@ -57,7 +56,6 @@
             android:layout_height="@dimen/channel_subscrib_btn_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_normal"
             android:background="@drawable/shape_channel_list_subscrib_button"
             android:button="@null"
@@ -69,8 +67,8 @@
             android:textSize="@dimen/size_content_comment"/>
 
         <View
-                android:layout_below="@+id/tv_user_desc"
-            style="@style/style_divider_horizontal"/>
+            style="@style/style_divider_horizontal"
+                android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
     <FrameLayout
