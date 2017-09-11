@@ -12,6 +12,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
@@ -106,7 +107,16 @@ public class JpushReceiver extends BroadcastReceiver {
     @NonNull
     private JpushMessageBean packgeJpushMessage(Bundle bundle, boolean isNofiy) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA); // {"channel":"feed:comment"}
-        JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
+        JpushMessageBean jpushMessageBean = null;
+        try {
+            jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
+            if (TextUtils.isEmpty(jpushMessageBean.getType())) {
+                jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+            }
+        } catch (Exception e) {
+            jpushMessageBean = new JpushMessageBean();
+            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+        }
         jpushMessageBean.setCreat_time(System.currentTimeMillis());
         jpushMessageBean.setNofity(isNofiy);
         jpushMessageBean.setMessage(bundle.getString(JPushInterface.EXTRA_MESSAGE));

@@ -229,12 +229,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected boolean setUseCenterLoading() {
         return true;
     }
-
-    @Override
-    public void setPresenter(InfoDetailsConstract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public Long getNewsId() {
         return (long) mInfoMation.getId();
@@ -272,13 +266,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             }
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if (!isLoadMore) {
-            Observable.timer(500, TimeUnit.MILLISECONDS)
-                    .subscribe(aLong -> {
-                        mPresenter.reqReWardsData(mInfoMation.getId());// 刷新打赏
-                    });
-
-        }
     }
 
     @Override

@@ -102,10 +102,55 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         if (mRootView.getCurrentInfo().getRelateInfoList() == null
-                || mRootView.getCurrentInfo().getRelateInfoList().size() == 0){
-            getInfoDetail(String.valueOf(mRootView.getNewsId()));
+                || mRootView.getCurrentInfo().getRelateInfoList().size() == 0) {
+            Subscription subscribe = Observable.zip(mRepository.getInfoDetail(String.valueOf(mRootView.getNewsId())),
+                    mRepository.getInfoDigListV2(String.valueOf(mRootView.getNewsId()), 0L),
+                    mRepository.getRelateInfoList(String.valueOf(mRootView.getNewsId())),
+                    mRepository.getInfoCommentListV2(String.valueOf(mRootView.getNewsId()), 0L, 0L),
+                    mRepository.getRewardCount(mRootView.getCurrentInfo().getId()),
+                    mRepository.rewardInfoList(mRootView.getCurrentInfo().getId(),
+                            TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null),
+                    (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean, rewardsCountBean, rewardsListBeen) -> {
+                        infoListDataBean.setDigList(infoDigListBeen);
+                        infoListDataBean.setRelateInfoList(infoRelateBean);
+                        infoListDataBean.setCommentList(dealComment(infoCommentBean, 0));
+                        Observable.empty()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new rx.Subscriber<Object>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(Object o) {
+
+                                    }
+                                });
+
+                        return infoListDataBean;
+                    }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<InfoListDataBean>() {
+                        @Override
+                        protected void onSuccess(InfoListDataBean data) {
+                            mRootView.updateInfoHeader(data);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                        }
+                    });
+            addSubscrebe(subscribe);
+
         } else {
-            mRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
+            Subscription subscribe = mRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<InfoCommentBean>() {
                         @Override
@@ -124,6 +169,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                             mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
+            addSubscrebe(subscribe);
         }
 
     }
@@ -192,15 +238,15 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         digListBean.setUser_id(userInfoBean.getUser_id());
         digListBean.setId(System.currentTimeMillis());
         digListBean.setDiggUserInfo(userInfoBean);
-        if (mRootView.getCurrentInfo().getDigList() == null){
+        if (mRootView.getCurrentInfo().getDigList() == null) {
             mRootView.getCurrentInfo().setDigList(new ArrayList<>());
         }
-        if (isLiked){
+        if (isLiked) {
             mRootView.getCurrentInfo().getDigList().add(digListBean);
             mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() + 1);
         } else {
-            for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()){
-                if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())){
+            for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()) {
+                if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())) {
                     mRootView.getCurrentInfo().getDigList().remove(infoDigListBean);
                     mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() - 1);
                     break;
@@ -228,7 +274,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void reqReWardsData(int id) {
-        Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
+        Subscription subscribe = Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
                 , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
                 , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 
@@ -239,6 +285,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 .subscribe(o -> {
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -269,11 +316,11 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         addSubscrebe(subscription);
     }
 
-    private List<InfoCommentListBean> dealComment(InfoCommentBean infoCommentBean, long max_id){
+    private List<InfoCommentListBean> dealComment(InfoCommentBean infoCommentBean, long max_id) {
         List<InfoCommentListBean> all = new ArrayList<>();
-        if (max_id == 0){
-            if (infoCommentBean.getPinneds() != null){
-                for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()){
+        if (max_id == 0) {
+            if (infoCommentBean.getPinneds() != null) {
+                for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
                     commentListBean.setPinned(true);
                 }
                 mInfoCommentListBeanDao.saveMultiData(infoCommentBean.getPinneds());
@@ -294,7 +341,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 all.addAll(localComment);
             }
         }
-        if (infoCommentBean.getComments() != null){
+        if (infoCommentBean.getComments() != null) {
             mInfoCommentListBeanDao.saveMultiData(infoCommentBean.getComments());
             all.addAll(infoCommentBean.getComments());
         }
@@ -350,7 +397,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
         LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
-        Observable.just(infoCommentListBean)
+        Subscription subscribe = Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(infoCommentListBean1 -> {
@@ -376,6 +423,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 

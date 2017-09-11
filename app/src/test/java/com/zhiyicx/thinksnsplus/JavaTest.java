@@ -16,6 +16,7 @@ import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -633,6 +634,14 @@ public class JavaTest {
         Assert.assertTrue("value1".equals(praseErrorMessage(response4)));
 
 
+    }
+
+    @Test
+    public void testIMData() {
+        JpushMessageBean jpushMessageBean;
+        String response1 = "{\"seq\":1,\"msg_type\":0,\"cid\":461,\"mid\":445579829106966533,\"type\":\"im\",\"uid\":270}";
+        jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
+        System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
 
 }
