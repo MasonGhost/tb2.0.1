@@ -47,7 +47,6 @@ public class QuestionSelectListTypePopWindow extends PopupWindow {
         setFocusable(true);
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(0x00000000));
-
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }
