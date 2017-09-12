@@ -28,7 +28,7 @@ public class QA$RewardRepositoryPublish extends BaseQARepository implements QARe
     }
 
     @Override
-    public Observable<BaseJsonV2<QAPublishBean>> publishQuestion(QAPublishBean qaPublishBean) {
+    public Observable<Object> publishQuestion(QAPublishBean qaPublishBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(qaPublishBean));
         return mQAClient.publishQuestion(body).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

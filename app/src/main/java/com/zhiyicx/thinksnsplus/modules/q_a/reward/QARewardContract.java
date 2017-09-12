@@ -5,6 +5,7 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
 import rx.Observable;
@@ -20,6 +21,7 @@ public interface QARewardContract {
 
     interface View extends IBaseView<Presenter>{
         void resetRewardSuccess();
+        void publishQuestionSuccess(QAListInfoBean qaListInfoBean);
     }
 
     interface Presenter extends IBasePresenter{
@@ -31,7 +33,7 @@ public interface QARewardContract {
     }
 
     interface RepositoryPublish extends IBasePublishQuestionRepository {
-        Observable<BaseJsonV2<QAPublishBean>> publishQuestion(QAPublishBean qaPublishBean);
+        Observable<Object> publishQuestion(QAPublishBean qaPublishBean);
         Observable<BaseJsonV2<Object>> resetReward(Long question_id, double amount);
     }
 }
