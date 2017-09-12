@@ -33,7 +33,7 @@ import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.S_TO_M
 
 public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repository, AccountBindContract.View>
         implements AccountBindContract.Presenter {
-    public static final int DEFAULT_DELAY_CLOSE_TIME = 3_000;
+    public static final int DEFAULT_DELAY_CLOSE_TIME = 2_000;
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
 
     private int mTimeOut = SNS_TIME;

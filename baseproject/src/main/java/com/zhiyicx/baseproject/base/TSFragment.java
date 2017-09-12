@@ -184,7 +184,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackMessage(String message, final Prompt prompt) {
-        if (mSnackBar != null && mSnackBar.isShown()) {
+        if (mSnackBar != null) {
             mSnackBar.dismiss();
             mSnackBar = null;
         }
