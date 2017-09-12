@@ -23,6 +23,7 @@ public interface NotificationContract {
 
     interface Presenter extends ITSListPresenter<TSPNotificationBean>{
 
+        void readNotification();
     }
 
     interface Repository{

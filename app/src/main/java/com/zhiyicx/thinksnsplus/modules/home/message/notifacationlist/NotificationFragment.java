@@ -24,7 +24,7 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
         implements NotificationContract.View{
 
     @Inject
-    NotificationPresenter mPresenter;
+    NotificationPresenter mNotificationPresenter;
 
     public NotificationFragment instance(){
         NotificationFragment fragment = new NotificationFragment();
@@ -55,6 +55,15 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     @Override
     protected boolean setUseStatusView() {
         return false;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(mPresenter!=null&&isVisibleToUser){
+            mPresenter.readNotification();
+        }
+
     }
 
     @Override

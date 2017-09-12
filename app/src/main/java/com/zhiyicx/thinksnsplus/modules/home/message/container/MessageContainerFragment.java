@@ -120,7 +120,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
      * @param isShow 状态
      * @param position 位置 0-消息 1=通知
      */
-    private void setNewMessageNoticeState(boolean isShow, int position) {
+    public void setNewMessageNoticeState(boolean isShow, int position) {
         if (position < 0 && position > 1) {
             return;
         }

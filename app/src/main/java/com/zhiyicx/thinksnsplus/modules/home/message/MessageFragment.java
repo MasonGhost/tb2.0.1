@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -180,53 +181,50 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         TextView tvHeaderReviewTime = null;
         BadgeView tvHeaderReviewTip = null;
 
-        if (rlCritical == null) {
+        rlCritical = headerview.findViewById(R.id.rl_critical);
+        RxView.clicks(rlCritical)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    toCommentList();
+                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS);
+                    mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
+                    updateCommnetItemData(mPresenter.updateCommnetItemData());
 
-            rlCritical = headerview.findViewById(R.id.rl_critical);
-            RxView.clicks(rlCritical)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                    .subscribe(aVoid -> {
-                        toCommentList();
-                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS);
-                        mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
-                        updateCommnetItemData(mPresenter.updateCommnetItemData());
+                });
 
-                    });
+        liked = headerview.findViewById(R.id.rl_liked);
+        RxView.clicks(liked)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    toLikeList();
+                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS);
+                    mPresenter.updateLikeItemData().setUnReadMessageNums(0);
+                    updateCommnetItemData(mPresenter.updateLikeItemData());
+                });
 
-            liked = headerview.findViewById(R.id.rl_liked);
-            RxView.clicks(liked)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                    .subscribe(aVoid -> {
-                        toLikeList();
-                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS);
-                        mPresenter.updateLikeItemData().setUnReadMessageNums(0);
-                        updateCommnetItemData(mPresenter.updateLikeItemData());
-                    });
+        review = headerview.findViewById(R.id.rl_review);
+        RxView.clicks(review)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    toReviewList();
+                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
+                    mPresenter.updateReviewItemData().setUnReadMessageNums(0);
+                    updateCommnetItemData(mPresenter.updateReviewItemData());
+                });
 
-            review = headerview.findViewById(R.id.rl_review);
-            RxView.clicks(review)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        toReviewList();
-                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
-                        mPresenter.updateReviewItemData().setUnReadMessageNums(0);
-                        updateCommnetItemData(mPresenter.updateReviewItemData());
-                    });
+        tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
+                .tv_header_comment_content);
+        tvHeaderCommentTime = (TextView) headerview.findViewById(R.id.tv_header_comment_time);
+        tvHeaderCommentTip = (BadgeView) headerview.findViewById(R.id.tv_header_comment_tip);
 
-            tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
-                    .tv_header_comment_content);
-            tvHeaderCommentTime = (TextView) headerview.findViewById(R.id.tv_header_comment_time);
-            tvHeaderCommentTip = (BadgeView) headerview.findViewById(R.id.tv_header_comment_tip);
+        tvHeaderLikeContent = (TextView) headerview.findViewById(R.id.tv_header_like_content);
+        tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
+        tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
 
-            tvHeaderLikeContent = (TextView) headerview.findViewById(R.id.tv_header_like_content);
-            tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
-            tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
-
-            tvHeaderReviewContent = (TextView) headerview.findViewById(R.id
-                    .tv_header_review_content);
-            tvHeaderReviewTime = (TextView) headerview.findViewById(R.id.tv_header_review_time);
-            tvHeaderReviewTip = (BadgeView) headerview.findViewById(R.id.tv_header_review_tip);
-        }
+        tvHeaderReviewContent = (TextView) headerview.findViewById(R.id
+                .tv_header_review_content);
+        tvHeaderReviewTime = (TextView) headerview.findViewById(R.id.tv_header_review_time);
+        tvHeaderReviewTip = (BadgeView) headerview.findViewById(R.id.tv_header_review_tip);
 
         tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt
                 ());
@@ -336,6 +334,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         ((AnimationDrawable) (mToolbarRight.getCompoundDrawables())[2]).stop();
         mToolbarRight.setVisibility(View.GONE);
 
+    }
+
+    @Override
+    public BaseFragment getCureenFragment() {
+        return this;
     }
 
 

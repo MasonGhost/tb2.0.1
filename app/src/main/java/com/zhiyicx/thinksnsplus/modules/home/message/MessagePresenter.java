@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -37,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -117,6 +120,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
     List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
     List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
+
+    private boolean mMessageContainerRedDotIsShow;
+    private boolean mMessageRedDotIsShow;
+    private boolean mNotificaitonRedDotIsShow;
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -393,6 +400,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         return notificationIds;
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE)
+    private void updateNotificaitonReddot(boolean isHide) {
+        mNotificaitonRedDotIsShow=false;
+        checkBottomMessageTip();
+    }
+
     /*******************************************
      * IM 相关
      *********************************************/
@@ -578,6 +591,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
+                                    if (tspNotificationBean.getRead_at() != null) {
+                                        mNotificaitonRedDotIsShow = true;
+                                    }
+
                             }
                         }
                         /**
@@ -755,9 +772,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
             }
         }
-
-
+        mMessageRedDotIsShow = isShowMessgeTip;
+        mMessageContainerRedDotIsShow = mMessageRedDotIsShow && mNotificaitonRedDotIsShow;
         EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+
+        Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
+        if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
+            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
+            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
+        }
+
     }
 
 }

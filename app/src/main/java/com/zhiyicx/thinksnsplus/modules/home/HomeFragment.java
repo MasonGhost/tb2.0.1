@@ -481,13 +481,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         this.mCheckInBean = data;
         if (mCheckInPopWindow != null) {
             if (mCheckInPopWindow.isShowing()) {
-                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
             } else {
-                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
                 mCheckInPopWindow.show();
             }
         } else {
-            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data,mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
             mCheckInPopWindow.show();
         }
     }

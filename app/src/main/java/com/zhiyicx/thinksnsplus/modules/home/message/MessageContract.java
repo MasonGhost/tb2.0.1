@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
@@ -54,6 +55,7 @@ public interface MessageContract {
          */
         void closeTopRightLoading();
 
+        BaseFragment getCureenFragment();
     }
 
     /**

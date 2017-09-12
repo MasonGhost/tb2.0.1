@@ -1,11 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.List;
 
@@ -22,6 +29,10 @@ import rx.Subscription;
 @FragmentScoped
 public class NotificationPresenter extends AppBasePresenter<NotificationContract.Repository, NotificationContract.View>
         implements NotificationContract.Presenter {
+
+
+    @Inject
+    MessageRepository mMessageRepository;
 
     @Inject
     public NotificationPresenter(NotificationContract.Repository repository, NotificationContract.View rootView) {
@@ -44,6 +55,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                     }
                 });
         addSubscrebe(subscription);
+
     }
 
     @Override
@@ -54,5 +66,29 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
     @Override
     public boolean insertOrUpdateData(@NotNull List<TSPNotificationBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void readNotification() {
+        StringBuilder notificationIds = new StringBuilder();
+        //代表未读
+        mRootView.getListDatas().stream().filter(tspNotificationBean -> TextUtils.isEmpty(tspNotificationBean.getRead_at())).forEach(tspNotificationBean -> { //代表未读
+            notificationIds.append(tspNotificationBean.getId());
+            notificationIds.append(",");
+            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
+        });
+
+        if (TextUtils.isEmpty(notificationIds.toString())) {
+            return;
+        }
+        Subscription subscribe = mMessageRepository.makeNotificationReaded(notificationIds.toString())
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
+                    }
+                });
+        addSubscrebe(subscribe);
+        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
     }
 }

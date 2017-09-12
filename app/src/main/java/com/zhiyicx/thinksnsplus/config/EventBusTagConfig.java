@@ -123,6 +123,7 @@ public class EventBusTagConfig {
      * 消息底部提示信息相关
      */
     public static final String EVENT_IM_SET_MESSAGE_TIP_VISABLE = "setMessageTipVisable";
+    public static final String EVENT_IM_SET_NOTIFICATION_TIP_VISABLE = "setNotificationTipVisable";
     public static final String EVENT_IM_SET_MINE_TIP_VISABLE = "setMineTipVisable";
     public static final String EVENT_IM_SET_MINE_FANS_TIP_VISABLE = "setMineFansTipVisable";
     /**
