@@ -142,7 +142,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         creatTsHelperConversation();
     }
 
-    /**
+    /**mNotificaitonRedDotIsShow
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
@@ -591,7 +591,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
-                                    if (tspNotificationBean.getRead_at() != null) {
+                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())){
                                         mNotificaitonRedDotIsShow = true;
                                     }
 
@@ -773,14 +773,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             }
         }
         mMessageRedDotIsShow = isShowMessgeTip;
-        mMessageContainerRedDotIsShow = mMessageRedDotIsShow && mNotificaitonRedDotIsShow;
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
-
         Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
         if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
         }
+        mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;
+        EventBus.getDefault().post(mMessageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
 
     }
 
