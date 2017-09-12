@@ -289,7 +289,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
-                    , null);
+                    , null, mQaListInfoBean.getSubject());
         }
     }
 
@@ -348,7 +348,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
                     // 发布者
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
+                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody(), "");
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_5:// 收藏
                     // 非发布者
