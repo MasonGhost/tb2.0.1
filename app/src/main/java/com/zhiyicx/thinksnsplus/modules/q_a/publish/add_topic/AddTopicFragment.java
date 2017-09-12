@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -139,6 +140,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             }
         });
 
+        RxTextView.textChanges(mEtQustion)
+                .subscribe(charSequence -> {
+                    if (TextUtils.isEmpty(charSequence)){
+                        // 清空输入框之后，加载全部数据
+                        requestNetData(0L, false);
+                    }
+                });
     }
 
     private void initTopicsView() {
