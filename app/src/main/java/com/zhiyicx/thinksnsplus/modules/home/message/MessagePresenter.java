@@ -620,15 +620,21 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 diggTip);
 
                         String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
-                        if (!TextUtils.isEmpty(reviewTip)) {
-                            reviewTip += mContext.getString(R.string.recieved_review);
+//                        if (!TextUtils.isEmpty(reviewTip)) {
+//                            reviewTip += mContext.getString(R.string.recieved_review);
+//                        } else {
+//                            reviewTip = mContext.getString(R.string.has_no_body)
+//                                    + mContext.getString(R.string.recieved_review);
+//                        }
+                        if (getUnreadNums(mReviewNoti) > 0) {
+                            reviewTip = mContext.getString(R.string.new_apply_data);
                         } else {
-                            reviewTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.recieved_review);
+                            reviewTip = mContext.getString(R.string.no_apply_data);
+                            mItemBeanReview.getConversation().setLast_message_time(0);
+
                         }
                         mItemBeanReview.getConversation().getLast_message().setTxt(
                                 reviewTip);
-
 
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
@@ -683,7 +689,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println("commentsNoti.get(i).getId() = " + commentsNoti.get(i).getId());
                 }
 
             } else {
@@ -750,6 +755,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
             }
         }
+
 
         EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
     }

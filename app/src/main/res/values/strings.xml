@@ -642,4 +642,6 @@
     <string name="comment_format_news">%s评论了你的文章</string>
     <string name="comment_format_questions">%s评论了你的问题</string>
     <string name="comment_format_questions_answer">%s评论了你的回答</string>
+    <string name="new_apply_data">新的申请请及时查看</string>
+    <string name="no_apply_data">暂无未查看的申请</string>
 </resources>
