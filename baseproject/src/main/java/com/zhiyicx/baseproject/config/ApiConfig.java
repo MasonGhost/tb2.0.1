@@ -204,7 +204,11 @@ public class ApiConfig {
      */
     public static final String INFO_TYPE_COLLECTIONS = "-1000";// 资讯收藏列表
 
-    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";// 资讯投稿
+    // 资讯投稿
+    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";
+
+    // 修改资讯投稿
+    public static final String APP_PATH_UPDATE_INFO = "api/" + API_VERSION_2 + "/news/categories/{category_id}/news/{news_id}";
 
     // 订阅资讯频道
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";

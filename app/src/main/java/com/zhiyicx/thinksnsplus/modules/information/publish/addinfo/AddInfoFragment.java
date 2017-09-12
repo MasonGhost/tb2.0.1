@@ -63,7 +63,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     private InfoPublishBean mInfoPublishBean;
 
     public static AddInfoFragment newInstance(Bundle bundle) {
-
         AddInfoFragment fragment = new AddInfoFragment();
         fragment.setArguments(bundle);
         return fragment;

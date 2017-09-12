@@ -201,6 +201,22 @@ public interface InfoMainClient {
             int comment_id, @Path("pinned_id") int pinned_id);
 
     /**
+     * 更新编辑被驳回的投稿
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_UPDATE_INFO)
+    Observable<BaseJsonV2> updateInfo(@Path("category_id") int cates_id, @Path("news_id") int news_id);
+
+    /**
+     * 删除我的投稿
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_UPDATE_INFO)
+    Observable<BaseJsonV2> deleteInfo(@Path("category_id") int cates_id, @Path("news_id") int news_id);
+
+    /**
      * 资讯评论置顶审核通过 V2
      *
      * @return
