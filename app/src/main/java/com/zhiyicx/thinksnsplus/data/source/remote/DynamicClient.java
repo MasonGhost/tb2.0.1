@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 
 import java.util.List;
 
@@ -126,7 +127,7 @@ public interface DynamicClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
-    Observable<List<TopDynamicCommentBean>> getReviewComment(@Query("after") int after, @Query("limit")
+    Observable<List<TopDynamicCommentBean>> getDynamicReviewComment(@Query("after") int after, @Query("limit")
             int limit);
 
     /**
@@ -135,7 +136,7 @@ public interface DynamicClient {
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> approvedTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
+    Observable<BaseJsonV2> approvedDynamicTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
             int comment_id, @Path("pinned_id") int pinned_id);
 
     /**
@@ -144,7 +145,7 @@ public interface DynamicClient {
      * @return
      */
     @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id") int pinned_id);
+    Observable<BaseJsonV2> refuseDynamicTopComment(@Path("pinned_id") int pinned_id);
 
     /**
      * 动态评论置顶审核通过 V2

@@ -32,7 +32,7 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
 
     @Override

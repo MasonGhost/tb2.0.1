@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
@@ -16,12 +19,18 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSNotifyExtraBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.BaseTopItem;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
@@ -34,17 +43,18 @@ import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KE
  * @Description
  */
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
-        TSPNotificationBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
+        BaseListBean> implements MessageReviewContract.View{
 
     public static final String REVIEW_LIST = "review_list";
 
+    private String[] mTopTypes;
+    private String mTopType;
+
     private ActionPopupWindow mReviewPopWindow;
-    private ActionPopupWindow mInstructionsPopupWindow;
+    private ActionPopupWindow mActionPopupWindow;
 
-    private TSPNotificationBean mTspNotificationBean;
-
-    public MessageReviewFragment() {
-    }
+    @BindView(R.id.v_shadow)
+    View mVshadow;
 
     public static MessageReviewFragment newInstance(Bundle args) {
         MessageReviewFragment fragment = new MessageReviewFragment();
@@ -53,23 +63,15 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
-    protected boolean isRefreshEnable() {
-        return false;
+    public String getType() {
+        return mTopType;
     }
 
     @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.review);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTopTypes = getResources().getStringArray(R.array.top_type);
+        mTopType = mTopTypes[0];
     }
 
     @Override
@@ -88,22 +90,34 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
-    protected CommonAdapter<TSPNotificationBean> getAdapter() {
-        CommonAdapter<TSPNotificationBean> adapter = new MssageReviewAdapter
-                (getContext(), R.layout.item_message_review_list_v2, mListDatas);
-        adapter.setOnItemClickListener(this);
-        return adapter;
+    protected MultiItemTypeAdapter<BaseListBean> getAdapter() {
+        MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
+        TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(),mPresenter);
+        multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
+        return multiItemTypeAdapter;
     }
 
     @Override
-    protected void requestNetData(Long maxId, boolean isLoadMore) {
-        onNetResponseSuccess((ArrayList<TSPNotificationBean>) getArguments().getSerializable(REVIEW_LIST), isLoadMore);
+    protected String setCenterTitle() {
+        mToolbarCenter.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
+        return getString(R.string.review);
     }
 
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        initTopPopWindow();
+    }
 
     @Override
-    protected List<TSPNotificationBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    protected void setCenterClick() {
+        mActionPopupWindow.showTop();
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_review_list;
     }
 
     @Override
@@ -111,94 +125,57 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         return R.mipmap.img_default_nothing;
     }
 
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        mTspNotificationBean = mListDatas.get(position);
-
-        String jsonString = new Gson().toJson(mTspNotificationBean.getData().getExtra(), Map.class);
-        TSNotifyExtraBean extraBean =new Gson().fromJson(jsonString,TSNotifyExtraBean.class);
-
-        DynamicDetailBeanV2 feedBean = extraBean.getFeed();
-        CommentedBean commentBean = extraBean.getComment();
-        PinnedBean pinnedBean = extraBean.getPinned();
-        if (commentBean == null || feedBean == null) {
-            if (commentBean == null) {
-                initInstructionsPop(R.string.review_comment_deleted);
-            } else {
-                initInstructionsPop(R.string.review_dynamic_deleted);
-            }
+    private void initTopPopWindow() {
+        if (mActionPopupWindow != null) {
             return;
         }
-        initReviewPopWindow(mTspNotificationBean.getData());
-    }
-
-    @Override
-    public TSPNotificationBean getCurrentComment() {
-        return mTspNotificationBean;
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-        return false;
-    }
-
-    private void initReviewPopWindow(TSPNotificationBean.DataBean dataBean) {
-        Long source_id;
-
-        String jsonString = new Gson().toJson(dataBean.getExtra(), Map.class);
-        TSNotifyExtraBean extraBean =new Gson().fromJson(jsonString,TSNotifyExtraBean.class);
-
-        switch (dataBean.getChannel()) {
-            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                source_id = extraBean.getFeed().getId();
-                break;
-            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                source_id = (long) extraBean.getNews().getId();
-                break;
-            default:
-                source_id = null;
-                break;
-        }
-        mReviewPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.review_approved))
-                .item2Str(getString(R.string.review_refuse))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
+        mActionPopupWindow = ActionPopupWindow.builder()
                 .with(getActivity())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .parentView(mDriver)
+                .animationStyle(ActionPopupWindow.NO_ANIMATION)
+                .item1Str(getString(R.string.stick_type_dynamic_commnet))
+                .item2Str(getString(R.string.stick_type_news_commnet))
+                .item3Str(getString(R.string.stick_type_group_commnet))
+                .item4Str(getString(R.string.stick_type_group_join))
                 .item1ClickListener(() -> {
-                    mPresenter.approvedTopComment(dataBean.getChannel(), source_id,
-                            extraBean.getComment().getId().intValue(), extraBean.getPinned().getId());
-                    mReviewPopWindow.hide();
+                    mToolbarCenter.setText(getString(R.string.withdraw_all));
+                    mTopType = mTopTypes[0];
+                    mPresenter.requestNetData(mMaxId, false);
+                    mActionPopupWindow.hide();
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.refuseTopComment(dataBean.getChannel(), extraBean.getPinned().getId());
-                    mReviewPopWindow.hide();
+                    mToolbarCenter.setText(getString(R.string.withdraw_out));
+                    mTopType = mTopTypes[1];
+                    mPresenter.requestNetData(mMaxId, false);
+                    mActionPopupWindow.hide();
                 })
-                .bottomClickListener(() -> mReviewPopWindow.hide())
-                .build();
-        mReviewPopWindow.show();
-    }
+                .item3ClickListener(() -> {
+                    mToolbarCenter.setText(getString(R.string.withdraw_in));
+                    mTopType = mTopTypes[2];
+                    mPresenter.requestNetData(mMaxId, false);
+                    mActionPopupWindow.hide();
+                })
+                .item3ClickListener(() -> {
+                    mToolbarCenter.setText(getString(R.string.withdraw_in));
+                    mTopType = mTopTypes[3];
+                    mPresenter.requestNetData(mMaxId, false);
+                    mActionPopupWindow.hide();
+                })
+                .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
+                    @Override
+                    public void onShow() {
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowup, 0);
+                        mVshadow.setVisibility(View.VISIBLE);
+                    }
 
-    public void initInstructionsPop(int resDesStr) {
-        if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
-                    .desStr(getString(resDesStr))
-                    .build();
-            mInstructionsPopupWindow.show();
-            return;
-        }
-        mInstructionsPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.instructions))
-                .desStr(getString(resDesStr))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                    @Override
+                    public void onDismiss() {
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
+                        mVshadow.setVisibility(View.GONE);
+                    }
+                })
                 .build();
-        mInstructionsPopupWindow.show();
     }
 }

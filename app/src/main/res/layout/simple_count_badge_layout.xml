@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/message_badge_count_width"
-    android:layout_height="@dimen/message_badge_count_width"
-    android:background="@drawable/simple_count_badge_bg"
-    android:gravity="center"
-    android:textColor="@android:color/white"
-    android:textSize="@dimen/size_note_assist" />
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:src="@drawable/simple_count_badge_bg" />

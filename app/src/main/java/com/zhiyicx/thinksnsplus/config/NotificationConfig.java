@@ -123,4 +123,11 @@ public class NotificationConfig {
     public static final String NOTIFICATION_KEY_QUESTION_INVITE = "question";
 
 
+    /**
+     * 置顶审核
+     */
+    public static final String TOP_DYNAMIC_COMMENT = "comment";
+    public static final String TOP_NEWS_COMMENT = "news:comment";
+
+
 }

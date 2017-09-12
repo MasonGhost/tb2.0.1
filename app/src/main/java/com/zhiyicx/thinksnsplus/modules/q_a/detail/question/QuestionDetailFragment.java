@@ -521,9 +521,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (prompt == Prompt.DONE) {
-            onLookToAnswerDetail(true);
-        }
+        // 付款成功后 不用跳转 只用刷新列表
+//        if (prompt == Prompt.DONE) {
+//            onLookToAnswerDetail(true);
+//        }
     }
 
     private void onLookToAnswerDetail(boolean isNeedOnlook) {
