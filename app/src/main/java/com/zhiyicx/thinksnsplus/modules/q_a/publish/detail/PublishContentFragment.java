@@ -28,7 +28,6 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
@@ -441,6 +440,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     .build();
         }
         if (isChecked) {
+            mRicheTest.hideKeyBoard();
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();

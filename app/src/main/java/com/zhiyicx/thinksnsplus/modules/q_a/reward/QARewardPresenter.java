@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
 import com.google.gson.Gson;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
@@ -74,7 +75,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                                     (jsonObject.getString("question"), QAListInfoBean.class);
                             mRootView.publishQuestionSuccess(qaListInfoBean);
                             JSONArray array = jsonObject.getJSONArray("message");
-                            mRootView.showSnackSuccessMessage(array.getString(0));
+                            mRootView.showSnackMessage(array.getString(0), Prompt.DONE);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             mRootView.showSnackErrorMessage(e.toString());

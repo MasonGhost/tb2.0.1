@@ -228,7 +228,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
-        if (prompt == Prompt.SUCCESS) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
             // 发布成功后，要跳转问题详情
 //            startActivity(new Intent(getActivity(), QA_Activity.class));
             goToQuestionDetail();
@@ -238,13 +239,17 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        mPresenter.saveQuestion(packgQuestion());
+        if (mQAPublishBean != null){
+            mPresenter.saveQuestion(packgQuestion());
+        }
         super.setLeftClick();
     }
 
     @Override
     public void onBackPressed() {
-        mPresenter.saveQuestion(packgQuestion());
+        if (mQAPublishBean != null){
+            mPresenter.saveQuestion(packgQuestion());
+        }
         super.onBackPressed();
     }
 
