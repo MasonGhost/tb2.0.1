@@ -4,6 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
+import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -13,6 +17,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -42,6 +47,16 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     private Long user_id;
     private String updated_at;
     private String created_at;
+    @Transient
+    private boolean isAgainEdite;
+
+    public boolean isAgainEdite() {
+        return isAgainEdite;
+    }
+
+    public void setAgainEdite(boolean againEdite) {
+        isAgainEdite = againEdite;
+    }
 
     public String getSubject() {
         return subject;
@@ -154,8 +169,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.created_at = created_at;
     }
 
-    public static class Topic implements Parcelable, Serializable {
-        private static final long serialVersionUID = -8734687577864836617L;
+    public static class Topic implements Parcelable ,Serializable{
+        private static final long serialVersionUID = -7016435261647250643L;
         private int id;
         @Expose
         private String name;
@@ -208,8 +223,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         };
     }
 
-    public static class Invitations implements Parcelable, Serializable {
-        private static final long serialVersionUID = -8734687577864836617L;
+    public static class Invitations implements Parcelable,Serializable {
+        private static final long serialVersionUID = -4339393354491900423L;
         private int user;
         @Expose
         private String name;
@@ -270,47 +285,6 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     public static class InvitationsConvert extends BaseConvert<List<Invitations>> {
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.subject);
-        dest.writeTypedList(this.topics);
-        dest.writeTypedList(this.invitations);
-        dest.writeString(this.body);
-        dest.writeInt(this.anonymity);
-        dest.writeInt(this.automaticity);
-        dest.writeInt(this.look);
-        dest.writeDouble(this.amount);
-        dest.writeValue(this.id);
-        dest.writeValue(this.mark);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.created_at);
-    }
-
-    public QAPublishBean() {
-    }
-
-    protected QAPublishBean(Parcel in) {
-        this.subject = in.readString();
-        this.topics = in.createTypedArrayList(Topic.CREATOR);
-        this.invitations = in.createTypedArrayList(Invitations.CREATOR);
-        this.body = in.readString();
-        this.anonymity = in.readInt();
-        this.automaticity = in.readInt();
-        this.look = in.readInt();
-        this.amount = in.readDouble();
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.updated_at = in.readString();
-        this.created_at = in.readString();
-    }
-
     @Generated(hash = 1977474578)
     public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations,
                          String body, int anonymity, int automaticity, int look, double amount, Long id,
@@ -328,6 +302,87 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.user_id = user_id;
         this.updated_at = updated_at;
         this.created_at = created_at;
+    }
+
+    public static QAPublishBean qaListInfo2QAPublishBean(QAListInfoBean mQaListInfoBean) {
+        QAPublishBean qaPublishBean = new QAPublishBean();
+        String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                .currentTimeMillis();
+        qaPublishBean.setAgainEdite(true);
+        qaPublishBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        qaPublishBean.setMark(Long.parseLong(mark));
+        qaPublishBean.setSubject(mQaListInfoBean.getSubject());
+        qaPublishBean.setBody(mQaListInfoBean.getBody());
+        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
+        for (QATopicBean qaTopicBean : mQaListInfoBean.getTopics()) {
+            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
+            typeIds.setId(qaTopicBean.getId().intValue());
+            typeIds.setName(qaTopicBean.getName());
+            typeIdsList.add(typeIds);
+        }
+        qaPublishBean.setTopics(typeIdsList);
+
+        if (mQaListInfoBean.getInvitations() != null && !mQaListInfoBean.getInvitations().isEmpty()) {
+            List<QAPublishBean.Invitations> invitations = new ArrayList<>();
+            for (UserInfoBean userInfoBean : mQaListInfoBean.getInvitations()) {
+                QAPublishBean.Invitations invitation = new QAPublishBean.Invitations();
+                invitation.setName(userInfoBean.getName());
+                invitation.setUser(userInfoBean.getUser_id().intValue());
+                invitations.add(invitation);
+            }
+            qaPublishBean.setInvitations(invitations);
+        }
+        qaPublishBean.setAutomaticity(mQaListInfoBean.getAutomaticity());
+        qaPublishBean.setAmount(mQaListInfoBean.getAmount());
+        qaPublishBean.setAnonymity(mQaListInfoBean.getAnonymity());
+        qaPublishBean.setLook(mQaListInfoBean.getLook());
+        qaPublishBean.setUser_id(mQaListInfoBean.getUser_id());
+        return qaPublishBean;
+    }
+
+    public QAPublishBean() {
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.subject);
+        dest.writeTypedList(this.topics);
+        dest.writeTypedList(this.invitations);
+        dest.writeString(this.body);
+        dest.writeInt(this.anonymity);
+        dest.writeInt(this.automaticity);
+        dest.writeInt(this.look);
+        dest.writeDouble(this.amount);
+        dest.writeValue(this.id);
+        dest.writeValue(this.mark);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.created_at);
+        dest.writeByte(this.isAgainEdite ? (byte) 1 : (byte) 0);
+    }
+
+    protected QAPublishBean(Parcel in) {
+        this.subject = in.readString();
+        this.topics = in.createTypedArrayList(Topic.CREATOR);
+        this.invitations = in.createTypedArrayList(Invitations.CREATOR);
+        this.body = in.readString();
+        this.anonymity = in.readInt();
+        this.automaticity = in.readInt();
+        this.look = in.readInt();
+        this.amount = in.readDouble();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.updated_at = in.readString();
+        this.created_at = in.readString();
+        this.isAgainEdite = in.readByte() != 0;
     }
 
     public static final Creator<QAPublishBean> CREATOR = new Creator<QAPublishBean>() {

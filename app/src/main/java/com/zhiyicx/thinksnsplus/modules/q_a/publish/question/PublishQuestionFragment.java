@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -128,19 +129,21 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
-        initListener();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+
+        }
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-        try {
-            mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        if (mDraftQuestion != null) {
             mEtQustion.setText(mDraftQuestion.getSubject());
-        } catch (Exception e) {
         }
+        initListener();
     }
 
     @Override

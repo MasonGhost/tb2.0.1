@@ -74,6 +74,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    public void onPareseBodyEnd(boolean hasContent) {
+
+    }
+
+    @Override
     protected boolean usePermisson() {
         return true;
     }

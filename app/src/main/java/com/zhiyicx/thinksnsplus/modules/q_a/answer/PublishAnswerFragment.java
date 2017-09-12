@@ -34,6 +34,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
+    public static final String BUNDLE_SOURCE_TITLE = "source_title";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
 
     private PublishType mType;
@@ -134,7 +135,6 @@ public class PublishAnswerFragment extends PublishContentFragment {
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
                                       String body) {
-
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
@@ -142,7 +142,24 @@ public class PublishAnswerFragment extends PublishContentFragment {
         bundle.putString(BUNDLE_SOURCE_BODY, body);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
 
+    /**
+     * @param context
+     * @param type
+     * @param sourceId
+     * @param body
+     */
+    public static void startQActivity(Context context, PublishType type, long sourceId,
+                                      String body,String title) {
+        Intent intent = new Intent(context, PublishAnswerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
+        bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
+        bundle.putString(BUNDLE_SOURCE_BODY, body);
+        bundle.putString(BUNDLE_SOURCE_TITLE, title);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     /**

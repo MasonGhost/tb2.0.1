@@ -127,7 +127,6 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     private void handleInfoHasBeDeleted(int code) {
         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mAnswerInfoListBeanGreenDao.deleteSingleCache(mRootView.getAnswerInfo());
-            EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();
         } else {
             mRootView.loadAllError();

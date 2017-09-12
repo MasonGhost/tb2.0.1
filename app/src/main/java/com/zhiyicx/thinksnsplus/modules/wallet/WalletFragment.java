@@ -98,8 +98,14 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     }
 
     @Override
-    protected void initData() {
+    public void onResume() {
+        super.onResume();
         mPresenter.updateUserInfo();
+    }
+
+    @Override
+    protected void initData() {
+//        mPresenter.updateUserInfo();
     }
 
     @Override
