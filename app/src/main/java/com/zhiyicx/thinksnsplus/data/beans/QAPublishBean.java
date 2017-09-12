@@ -47,16 +47,18 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     private Long user_id;
     private String updated_at;
     private String created_at;
+
     @Transient
-    private boolean isAgainEdite;
+    private boolean hasAgainEdite;
 
-    public boolean isAgainEdite() {
-        return isAgainEdite;
+    public boolean isHasAgainEdite() {
+        return hasAgainEdite;
     }
 
-    public void setAgainEdite(boolean againEdite) {
-        isAgainEdite = againEdite;
+    public void setHasAgainEdite(boolean hasAgainEdite) {
+        this.hasAgainEdite = hasAgainEdite;
     }
+
 
     public String getSubject() {
         return subject;
@@ -308,7 +310,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         QAPublishBean qaPublishBean = new QAPublishBean();
         String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
                 .currentTimeMillis();
-        qaPublishBean.setAgainEdite(true);
+        qaPublishBean.setHasAgainEdite(true);
         qaPublishBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         qaPublishBean.setMark(Long.parseLong(mark));
         qaPublishBean.setSubject(mQaListInfoBean.getSubject());
@@ -365,10 +367,11 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         dest.writeValue(this.user_id);
         dest.writeString(this.updated_at);
         dest.writeString(this.created_at);
-        dest.writeByte(this.isAgainEdite ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasAgainEdite ? (byte) 1 : (byte) 0);
     }
 
     protected QAPublishBean(Parcel in) {
+        super(in);
         this.subject = in.readString();
         this.topics = in.createTypedArrayList(Topic.CREATOR);
         this.invitations = in.createTypedArrayList(Invitations.CREATOR);
@@ -382,7 +385,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.updated_at = in.readString();
         this.created_at = in.readString();
-        this.isAgainEdite = in.readByte() != 0;
+        this.hasAgainEdite = in.readByte() != 0;
     }
 
     public static final Creator<QAPublishBean> CREATOR = new Creator<QAPublishBean>() {
