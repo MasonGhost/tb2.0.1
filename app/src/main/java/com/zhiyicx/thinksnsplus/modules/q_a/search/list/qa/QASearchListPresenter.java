@@ -62,7 +62,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
         }
         final String searchContent = mRootView.getSearchInput();
         if(TextUtils.isEmpty(searchContent)){// 无搜索内容
-            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
+            mRootView.hideRefreshState(isLoadMore);
             return;
         }
         all = mBaseQARepository.getQAQuestion(searchContent, maxId, "all")

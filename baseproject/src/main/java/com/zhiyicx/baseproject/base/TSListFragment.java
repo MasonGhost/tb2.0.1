@@ -572,7 +572,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
+        hideRefreshState(isLoadMore);
         handleReceiveData(data, isLoadMore, false);
     }
 
@@ -584,7 +584,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onCacheResponseSuccess( List<T> data, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
+        hideRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             getNewDataFromNet();
         } else {
@@ -604,7 +604,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
+        hideRefreshState(isLoadMore);
         closeLoadingView();
         if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
@@ -682,7 +682,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @param isLoadMore
      */
-    private void handleRefreshState(boolean isLoadMore) {
+    @Override
+    public void hideRefreshState(boolean isLoadMore) {
         if (isLoadMore) {
             mRefreshlayout.setLoadingMore(false);
         } else {

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
@@ -111,7 +112,7 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
      */
     public void onSearhChanged(String string) {
         this.mCurrentSearchContent = string;
-        if (tsViewPagerAdapter == null || mVpFragment == null) {
+        if (tsViewPagerAdapter == null || mVpFragment == null|| TextUtils.isEmpty(string)) {
             return;
         }
         try {

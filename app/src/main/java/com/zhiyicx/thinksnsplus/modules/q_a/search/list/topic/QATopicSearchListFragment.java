@@ -77,6 +77,12 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_qa_topic_search_list;
     }
@@ -222,7 +228,6 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         }
         mSearchContent = str;
         if (TextUtils.isEmpty(str)) {
-            onNetResponseSuccess(new ArrayList<>(), false);
             return;
         }
         // 请求网络数据，就隐藏历史

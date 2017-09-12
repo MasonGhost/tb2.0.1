@@ -83,7 +83,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
         }
         if (mRootView.getType().equals(TOPIC_TYPE_SEARCH) && TextUtils.isEmpty(name)) {
             // 无搜索内容
-            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
+            mRootView.hideRefreshState(isLoadMore);
             return;
         }
         all = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {

@@ -88,6 +88,11 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<QAListInfoBean> data) {
         return (long) mListDatas.size();
     }
@@ -246,6 +251,10 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     @Override
+    public void onCacheResponseSuccess(List<QAListInfoBean> data, boolean isLoadMore) {
+    }
+
+    @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         super.onResponseError(throwable, isLoadMore);
         checkEmptyView();
@@ -266,7 +275,6 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
         }
         mSearchContent = str;
         if (TextUtils.isEmpty(str)) {
-            onNetResponseSuccess(new ArrayList<>(), false);
             return;
         }
         // 请求网络数据，就隐藏历史

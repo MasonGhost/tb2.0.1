@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
@@ -8,6 +9,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
@@ -73,8 +75,11 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
 
     private void initListener() {
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
-            if (textViewEditorActionEvent.actionId()== EditorInfo.IME_ACTION_SEARCH) {
-                mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
+                    mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
+                    DeviceUtils.hideSoftKeyboard(getContext(),mFragmentInfoSearchEdittext);
+                }
             }
         });
     }
