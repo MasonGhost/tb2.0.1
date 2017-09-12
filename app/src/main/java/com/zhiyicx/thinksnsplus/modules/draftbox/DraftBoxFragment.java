@@ -83,7 +83,7 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
         }else if (draftBean instanceof AnswerDraftBean){
             AnswerDraftBean realData = (AnswerDraftBean) draftBean;
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                    .UPDATE_ANSWER, realData.getId(), realData.getBody());
+                    .UPDATE_ANSWER, realData.getId(), realData.getBody(), "");
         }
     }
 

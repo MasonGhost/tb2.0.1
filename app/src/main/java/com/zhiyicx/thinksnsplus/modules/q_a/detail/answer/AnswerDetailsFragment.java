@@ -460,8 +460,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {// 编辑
                     mDealInfoMationPopWindow.hide();
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                                    .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
-                            mAnswerInfoBean.getQuestion().getSubject());
+                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(), mAnswerInfoBean.getQuestion().getSubject());
 
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())

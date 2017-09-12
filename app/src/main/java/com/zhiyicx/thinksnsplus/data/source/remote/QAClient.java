@@ -41,7 +41,7 @@ public interface QAClient {
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
-    Observable<BaseJsonV2<QAPublishBean>> publishQuestion(@Body RequestBody body);
+    Observable<Object> publishQuestion(@Body RequestBody body);
 
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)

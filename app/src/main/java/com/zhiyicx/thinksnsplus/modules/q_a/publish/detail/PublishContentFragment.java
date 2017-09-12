@@ -26,12 +26,16 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 import java.util.Locale;
@@ -219,8 +223,8 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
         LogUtils.d("photo degree", "before // " + DrawableProvider.getBitmapDegree(path));
-        DrawableProvider.setPictureDegreeZero(path);
-        LogUtils.d("photo degree", "after // " + DrawableProvider.getBitmapDegree(path));
+        path = DealPhotoUtils.amendRotatePhoto(path, getContext());
+        LogUtils.d("photo degree", "after // path : " + path + " degree //" + DrawableProvider.getBitmapDegree(path));
         mPresenter.uploadPic(path, "", true, 0, 0);
         test = mRicheTest.insertImage(path, mRicheTest.getWidth());
     }
@@ -441,6 +445,17 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         } else {
             mAnonymityAlertPopWindow.dismiss();
         }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
+    public void onPublishQuestionSuccess(Bundle bundle){
+        // 发布成功后关闭这个页面
+        getActivity().finish();
     }
 
 }

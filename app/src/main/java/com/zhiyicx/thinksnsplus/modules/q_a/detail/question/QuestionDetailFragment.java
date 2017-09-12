@@ -293,7 +293,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
-                    , null);
+                    , null, mQaListInfoBean.getSubject());
         }
     }
 
@@ -485,7 +485,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        mPresenter.payForOnlook(answerInfoBean.getId(), mCurrentPosition);
+                        mPresenter.payForOnlook(answerInfoBean.getId(),mCurrentPosition);
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
@@ -559,7 +559,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
                 .ORDER_BY_TIME;
         requestNetData(0L, false);
-        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()) {
+        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()){
             mOrderTypeSelectPop.dismiss();
         }
     }

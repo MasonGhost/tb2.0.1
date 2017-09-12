@@ -1,22 +1,35 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
+import com.google.gson.Gson;
+
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.simple.eventbus.EventBus;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
 
 /**
  * @author Catherine
@@ -45,16 +58,27 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
         handleWalletBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<QAPublishBean>>>() {
+                .flatMap(new Func1<Object, Observable<Object>>() {
                     @Override
-                    public Observable<BaseJsonV2<QAPublishBean>> call(Object o) {
+                    public Observable<Object> call(Object o) {
                         return mRepository.publishQuestion(qaPublishBean);
                     }
                 })
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<QAPublishBean>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<QAPublishBean> data) {
-                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                    protected void onSuccess(Object data) {
+                        // 解析数据，在跳转到问题详情页时需要用到
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            QAListInfoBean qaListInfoBean = new Gson().fromJson
+                                    (jsonObject.getString("question"), QAListInfoBean.class);
+                            mRootView.publishQuestionSuccess(qaListInfoBean);
+                            JSONArray array = jsonObject.getJSONArray("message");
+                            mRootView.showSnackSuccessMessage(array.getString(0));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mRootView.showSnackErrorMessage(e.toString());
+                        }
                     }
 
                     @Override

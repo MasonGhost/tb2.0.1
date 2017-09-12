@@ -120,7 +120,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             }
         };
 
-        addFirstEditText("");
+        addFirstEditText(mHint);
     }
 
     public void addFirstEditText(String hint) {
@@ -514,5 +514,9 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
      */
     public void setHint(String hint) {
         this.mHint = hint;
+        if (allLayout.getChildAt(0) instanceof EditText){
+            EditText text = (EditText) allLayout.getChildAt(0);
+            text.setHint(mHint);
+        }
     }
 }

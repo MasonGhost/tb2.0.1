@@ -5,28 +5,25 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +140,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             }
         });
 
+        RxTextView.textChanges(mEtQustion)
+                .subscribe(charSequence -> {
+                    if (TextUtils.isEmpty(charSequence)){
+                        // 清空输入框之后，加载全部数据
+                        requestNetData(0L, false);
+                    }
+                });
     }
 
     private void initTopicsView() {
@@ -226,4 +230,14 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         return true;
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
+    public void onPublishQuestionSuccess(Bundle bundle){
+        // 发布成功后关闭这个页面，暂时不传递数据
+        getActivity().finish();
+    }
 }
