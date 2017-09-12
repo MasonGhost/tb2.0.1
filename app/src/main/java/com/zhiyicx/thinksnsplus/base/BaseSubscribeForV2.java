@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -12,6 +14,7 @@ import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
+import static android.R.attr.value;
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
 
 /**
@@ -40,22 +43,12 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                     //解析response content
                     String bodyString = ConvertUtils.getResponseBodyString(response);
                     // 打印返回的json结果
-                    LogUtils.d(TAG, "------onError-body--------" + bodyString);
-                    // api v2版本的数据， 错误信息带有 n +1 表示  详情查看 ：https://github.com/slimkit/thinksns-plus/blob/master/docs/zh-CN/api-overview.md#messages
-                    Map<String, Object> errorMessageMap = new Gson().fromJson(bodyString,
-                            new TypeToken<Map<String, Object>>() {
-                            }.getType());
-                    for (Object value : errorMessageMap.values()) {
-                        if (value instanceof String) {
-                            onFailure((String) value, ((HttpException) e).code());
-                        } else if (value instanceof String[]) {
-                            onFailure(((String[]) value)[0], ((HttpException) e).code());
-                        } else if (value instanceof List) {
-                            onFailure((String) ((List) value).get(0), ((HttpException) e).code());
-                        } else {
-                            onFailure(bodyString, ((HttpException) e).code());
-                        }
-                        return;
+                    LogUtils.e(TAG, "------onError-body--------" + bodyString);
+                    // api v2版本的数据， 错误信息带有 n +1 表示  详情查看 ：https://slimkit.github.io/plus-docs/v2/#messages
+                    String message = "";
+                    message = ConvertUtils.praseErrorMessage(bodyString);
+                    if (!TextUtils.isEmpty(message)) {
+                        onFailure(message, ((HttpException) e).code());
                     }
                 } else {
                     handleError(e);

@@ -73,9 +73,11 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     private void hanldeRewardResult(Observable<Object> result, WalletBean walletBean, double rewardMoney) {
 
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.apply_doing)))
-                .doAfterTerminate(() -> mRootView.setSureBtEnable(true))
+                .doOnSubscribe(() ->
+                {
+                    mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.apply_doing));
+                })
                 .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
                     @Override
                     public Observable<Object> call(UserInfoBean userInfoBean) {
@@ -90,9 +92,11 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                         return result;
                     }
                 }, throwable -> {
+                    throwable.printStackTrace();
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
                 }, () -> null)
+                .doAfterTerminate(() -> mRootView.setSureBtEnable(true))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

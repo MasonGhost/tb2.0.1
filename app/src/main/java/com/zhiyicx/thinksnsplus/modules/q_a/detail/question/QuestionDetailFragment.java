@@ -106,7 +106,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         Long userId = mQaListInfoBean.getUser_id();
-        mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
+        mIsMine = userId.equals(AppApplication.getMyUserIdWithdefault());
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();

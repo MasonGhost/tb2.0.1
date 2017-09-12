@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,6 +16,7 @@ import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -45,6 +47,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.common.utils.ConvertUtils.praseErrorMessage;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
@@ -182,7 +185,7 @@ public class JavaTest {
 
     @Test
     public void singleImageTest() {
-        String input="@![image](2580)";
+        String input = "@![image](2580)";
 
         System.out.println("result::" + RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, input));
     }
@@ -625,29 +628,20 @@ public class JavaTest {
                 "    }\n" +
                 "}";
 
-        praseMessage(response1);
-        praseMessage(response2);
-        praseMessage(response3);
-        praseMessage(response4);
+        Assert.assertTrue("this is a message.".equals(praseErrorMessage(response1)));
+        Assert.assertTrue("This is amessage array item.".equals(praseErrorMessage(response2)));
+        Assert.assertTrue("value".equals(praseErrorMessage(response3)));
+        Assert.assertTrue("value1".equals(praseErrorMessage(response4)));
 
 
     }
 
-    private void praseMessage(String response1) {
-        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
-                new TypeToken<Map<String, Object>>() {
-                }.getType());
-        for (Object value : errorMessageMap.values()) {
-            if (value instanceof String) {
-                System.out.println(response1 + " = " + (String) value);
-            } else if (value instanceof String[]) {
-                System.out.println(response1 + " = " + ((String[]) value)[0]);
-            } else if (value instanceof List) {
-                System.out.println(response1 + " = " + ((List) value).get(0));
-
-            }
-            return;
-        }
+    @Test
+    public void testIMData() {
+        JpushMessageBean jpushMessageBean;
+        String response1 = "{\"seq\":1,\"msg_type\":0,\"cid\":461,\"mid\":445579829106966533,\"type\":\"im\",\"uid\":270}";
+        jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
+        System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
 
 }

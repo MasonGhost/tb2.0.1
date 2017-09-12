@@ -22,6 +22,8 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -216,6 +218,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         }
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
+        LogUtils.d("photo degree", "before // " + DrawableProvider.getBitmapDegree(path));
+        DrawableProvider.setPictureDegreeZero(path);
+        LogUtils.d("photo degree", "after // " + DrawableProvider.getBitmapDegree(path));
         mPresenter.uploadPic(path, "", true, 0, 0);
         test = mRicheTest.insertImage(path, mRicheTest.getWidth());
     }
