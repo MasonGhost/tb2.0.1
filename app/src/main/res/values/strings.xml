@@ -313,6 +313,7 @@
     <string name="withdraw">提现</string>
     <string name="withdraw_doing">提现中&#8230;</string>
     <string name="withdraw_succes">提现成功</string>
+    <string name="withdraw_apply_succes">提现申请成功</string>
     <string name="withdraw_failed">提现失败</string>
     <string name="recharge_and_withdraw_rule">充值提现规则</string>
     <string name="recharge_instructions">充值说明</string>

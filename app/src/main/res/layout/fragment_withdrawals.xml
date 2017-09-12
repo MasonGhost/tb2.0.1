@@ -80,6 +80,7 @@
                 android:digits="@null"
                 android:hint="@string/withdraw_account_input"
                 android:inputType="none"
+                android:maxLength="@null"
                 tools:hint="@string/withdraw_account_input"/>
 
         </LinearLayout>
@@ -102,8 +103,8 @@
 
             <TextView
                 android:id="@+id/bt_sure"
-                android:layout_marginTop="@dimen/button_login_margin_top"
                 style="@style/style_login_button"
+                android:layout_marginTop="@dimen/button_login_margin_top"
                 android:enabled="false"
                 android:text="@string/determine"
                 tools:text="@string/determine"/>
