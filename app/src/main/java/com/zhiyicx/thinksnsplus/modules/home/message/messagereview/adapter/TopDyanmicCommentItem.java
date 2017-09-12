@@ -75,6 +75,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
         } else {
+            holder.setVisible(R.id.fl_detial, View.GONE);
             String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
                     dynamicCommentBean.getComment().getComment_content());
 

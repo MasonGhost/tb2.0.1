@@ -50,6 +50,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -182,12 +183,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.initView(rootView);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mInfoMation = (InfoListDataBean) getArguments().getSerializable(BUNDLE_INFO);
+
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mInfoMation.setId(ids.intValue());
         }
-
+        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
         initHeaderView();

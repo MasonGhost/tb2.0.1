@@ -86,4 +86,9 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     }
                 });
     }
+
+    @Override
+    public void pareseBody(String body) {
+
+    }
 }
