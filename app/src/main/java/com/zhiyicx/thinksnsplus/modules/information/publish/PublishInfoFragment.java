@@ -19,9 +19,9 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
-import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
@@ -131,13 +131,21 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        InfoPublishBean infoPublishBean = new InfoPublishBean();
+        InfoPublishBean infoPublishBean;
+        if (mInfoPublishBean == null) {
+            infoPublishBean = new InfoPublishBean();
+        } else {
+            infoPublishBean = mInfoPublishBean;
+        }
 
-        infoPublishBean.setContent(getContentString());
+        String content = getContentString();
+        infoPublishBean.setContent(content);
         infoPublishBean.setAmout(100);
-        infoPublishBean.setCover(mImageIdArray[0]);
-        infoPublishBean.setImage(mImageIdArray[0] == 0 ? null : (long) mImageIdArray[0]);
+        long cover = RegexUtils.getImageId(content);
+        infoPublishBean.setCover(RegexUtils.getImageId(content));
+        infoPublishBean.setImage(cover < 0 ? null : cover);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
@@ -173,14 +181,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected void initData() {
-        mImageIdArray = new int[10];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (mInfoPublishBean!=null){
-            if (TextUtils.isEmpty(mInfoPublishBean.getContent())){
+        if (mInfoPublishBean != null) {
+            if (TextUtils.isEmpty(mInfoPublishBean.getContent())) {
                 mPresenter.pareseBody(mInfoPublishBean.getContent());
                 mEtInfoTitle.setText(mInfoPublishBean.getTitle());
             }
