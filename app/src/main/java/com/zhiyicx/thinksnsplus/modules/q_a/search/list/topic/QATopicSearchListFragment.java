@@ -140,7 +140,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
     @Override
     protected int setEmptView() {
-        return R.mipmap.img_default_nothing;
+        return R.mipmap.img_default_search;
     }
 
     public void getHistoryAdapter() {

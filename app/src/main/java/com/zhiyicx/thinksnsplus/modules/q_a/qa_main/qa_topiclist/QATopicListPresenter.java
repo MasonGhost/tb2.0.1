@@ -131,6 +131,9 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
      * @param searchContent save content
      */
     private void saveSearhDatq(String searchContent) {
+        if(TextUtils.isEmpty(searchContent)){
+            return;
+        }
         QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA_TOPIC);
         mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean,QASearchHistoryBean.TYPE_QA_TOPIC);
     }
