@@ -156,7 +156,8 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_ANSWER_OR_QUESTION = "event_update_answer_or_question";
     // 发布答案
     public static final String EVENT_PUBLISH_ANSWER = "event_publish_answer";
-
+    // 发布问题
+    public static final String EVENT_PUBLISH_QUESTION = "event_publish_question";
 
     /**
      * 签到

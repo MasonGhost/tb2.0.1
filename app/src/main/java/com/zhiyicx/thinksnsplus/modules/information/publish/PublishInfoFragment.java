@@ -85,7 +85,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+        if (getArguments() != null) {
+            mInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+        }
     }
 
     @Override
@@ -187,7 +189,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
         if (mInfoPublishBean != null) {
-            if (TextUtils.isEmpty(mInfoPublishBean.getContent())) {
+            if (!TextUtils.isEmpty(mInfoPublishBean.getContent())) {
+                mRicheTest.clearAllLayout();
                 mPresenter.pareseBody(mInfoPublishBean.getContent());
                 mEtInfoTitle.setText(mInfoPublishBean.getTitle());
             }
@@ -226,6 +229,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void addEditTextAtIndex(String text) {
         mRicheTest.updateEditTextAtIndex(mRicheTest.getLastIndex(), text);
+    }
+
+    @Override
+    public void onPareseBodyEnd(boolean hasContent) {
+        mToolbarRight.setEnabled(hasContent);
     }
 
     @Override

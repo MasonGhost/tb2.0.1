@@ -36,6 +36,11 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.my_info);
     }

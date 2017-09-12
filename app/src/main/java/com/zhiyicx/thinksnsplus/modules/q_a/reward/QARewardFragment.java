@@ -23,11 +23,16 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,7 @@ import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_IDS;
 import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
@@ -109,6 +115,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     private QAPublishBean mQAPublishBean;
     private Long mQuestionId = 0L; //  发布之后重新设置悬赏
+    private QAListInfoBean mQaListInfoBean;
 
     public static QARewardFragment instance(Bundle bundle) {
         QARewardFragment fragment = new QARewardFragment();
@@ -222,7 +229,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.SUCCESS) {
-            startActivity(new Intent(getActivity(), QA_Activity.class));
+            // 发布成功后，要跳转问题详情
+//            startActivity(new Intent(getActivity(), QA_Activity.class));
+            goToQuestionDetail();
             getActivity().finish();
         }
     }
@@ -501,5 +510,21 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void publishQuestionSuccess(QAListInfoBean qaListInfoBean) {
+        this.mQaListInfoBean = qaListInfoBean;
+    }
+
+    private void goToQuestionDetail(){
+        if (mQAPublishBean != null){
+            EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
+            Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);
+            intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+            startActivity(intent);
+        }
     }
 }

@@ -63,6 +63,9 @@ public class UserTagAdapter extends BaseAdapter implements OnInitSelectedPositio
     }
 
     public void clearAndAddAll(List<UserTagBean> datas) {
+        if (datas == null) {
+            return;
+        }
         mDataList.clear();
         onlyAddAll(datas);
     }

@@ -21,13 +21,14 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
@@ -35,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.QuestionCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -43,6 +45,7 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +57,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_QUESTION_ID;
 import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.Builder;
 import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.OnOrderTypeSelectListener;
@@ -289,7 +293,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
-                    , null);
+                    , null, mQaListInfoBean.getSubject());
         }
     }
 
@@ -346,9 +350,20 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     mPresenter.shareQuestion(mQuestionDetailHeader.getShareBitmap());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
-                    // 发布者
-                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
+
+                    QAPublishBean qaPublishBean = QAPublishBean.qaListInfo2QAPublishBean(mQaListInfoBean);
+                    mPresenter.saveQuestion(qaPublishBean);
+
+                    Intent publishQaIntent = new Intent(getActivity(), PublishQuestionActivity.class);
+                    Bundle publishQaBundle = new Bundle();
+
+                    publishQaBundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
+                    publishQaIntent.putExtras(publishQaBundle);
+
+                    startActivity(publishQaIntent);
+
+//                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+//                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_5:// 收藏
                     // 非发布者

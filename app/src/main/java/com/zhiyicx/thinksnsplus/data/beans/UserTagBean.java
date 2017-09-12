@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
@@ -19,7 +20,7 @@ import java.io.Serializable;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class UserTagBean extends BaseListBean implements Serializable{
+public class UserTagBean extends BaseListBean implements Serializable,Parcelable{
 
     @Transient
     private static final long serialVersionUID = -7587963206423470086L;
@@ -71,29 +72,7 @@ public class UserTagBean extends BaseListBean implements Serializable{
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.tagName);
-        dest.writeLong(this.tag_category_id);
-        dest.writeByte(this.mine_has ? (byte) 1 : (byte) 0);
-    }
-
     public UserTagBean() {
-    }
-
-    protected UserTagBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.tagName = in.readString();
-        this.tag_category_id = in.readLong();
-        this.mine_has = in.readByte() != 0;
     }
 
     @Generated(hash = 490526204)
@@ -104,18 +83,6 @@ public class UserTagBean extends BaseListBean implements Serializable{
         this.tag_category_id = tag_category_id;
         this.mine_has = mine_has;
     }
-
-    public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
-        @Override
-        public UserTagBean createFromParcel(Parcel source) {
-            return new UserTagBean(source);
-        }
-
-        @Override
-        public UserTagBean[] newArray(int size) {
-            return new UserTagBean[size];
-        }
-    };
 
     @Override
     public String toString() {
@@ -149,4 +116,39 @@ public class UserTagBean extends BaseListBean implements Serializable{
     public boolean getMine_has() {
         return this.mine_has;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.tagName);
+        dest.writeLong(this.tag_category_id);
+        dest.writeByte(this.mine_has ? (byte) 1 : (byte) 0);
+    }
+
+    protected UserTagBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.tagName = in.readString();
+        this.tag_category_id = in.readLong();
+        this.mine_has = in.readByte() != 0;
+    }
+
+    public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
+        @Override
+        public UserTagBean createFromParcel(Parcel source) {
+            return new UserTagBean(source);
+        }
+
+        @Override
+        public UserTagBean[] newArray(int size) {
+            return new UserTagBean[size];
+        }
+    };
 }

@@ -24,6 +24,8 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -119,6 +121,11 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     private void requestNetData(int size, String topic_ids, boolean isLoadMore) {
         mPresenter.requestNetData(size, topic_ids, TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())
                 ? null : mFragmentInfoSearchEdittext.getText().toString(), isLoadMore);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<ExpertBean> data) {
+        return (long)mListDatas.size();
     }
 
     @Override

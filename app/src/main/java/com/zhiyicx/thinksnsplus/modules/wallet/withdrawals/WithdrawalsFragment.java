@@ -97,7 +97,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     protected void initData() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
-            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit),PayConfig.realCurrencyFen2Yuan(mWalletConfigBean.getCase_min_amount())));
+            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean.getCase_min_amount())));
         }
     }
 
@@ -113,6 +113,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     @Override
     public void minMoneyLimit() {
+        configSureBtn(true);
         initWithdrawalsInstructionsPop(R.string.min_withdraw_money);
     }
 
@@ -143,14 +144,14 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     @Override
     public void showSnackErrorMessage(String message) {
         super.showSnackErrorMessage(message);
-        mBtSure.setEnabled(true);
+        configSureBtn(true);
     }
 
     private void initListener() {
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    mBtSure.setEnabled(false);
+                    configSureBtn(false);
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
                     mPresenter.withdraw(mWithdrawalsMoney
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
@@ -176,6 +177,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     @Override
     public void initWithdrawalsInstructionsPop(int resDesStr) {
+        configSureBtn(true);
         if (mWithdrawalsInstructionsPopupWindow != null) {
             mWithdrawalsInstructionsPopupWindow = mWithdrawalsInstructionsPopupWindow.newBuilder()
                     .desStr(getString(resDesStr))

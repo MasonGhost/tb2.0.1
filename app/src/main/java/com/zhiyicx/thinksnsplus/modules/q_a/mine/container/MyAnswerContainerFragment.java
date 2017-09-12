@@ -55,11 +55,11 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
 
     // 缺省的tab的线的高度
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
-            .no_line_height;
+            .line_height;
 
     public static final String TYPE_ALL = "all";
 //    public static final String TYPE_NOT_READ = "not_read";
-    public static final String TYPE_INVITE = "invite";
+    public static final String TYPE_INVITE = "invitation";
     public static final String TYPE_ADOPTION = "adoption";
     public static final String TYPE_OTHER = "other";
 
@@ -87,8 +87,8 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
         }
         mFragments.add(new MyAnswerFragment().instance(TYPE_ALL));
 //        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
         mFragments.add(new MyAnswerFragment().instance(TYPE_ADOPTION));
+        mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
         mFragments.add(new MyAnswerFragment().instance(TYPE_OTHER));
         return mFragments;
     }

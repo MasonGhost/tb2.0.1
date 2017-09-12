@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -79,6 +80,8 @@ public class AuthRepository implements IAuthRepository {
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -158,6 +161,7 @@ public class AuthRepository implements IAuthRepository {
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
         mGroupInfoBeanGreenDao.clearTable();
+        mRechargeSuccessBeanGreenDao.clearTable();
         mDynamicDetailBeanV2GreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();

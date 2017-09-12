@@ -32,6 +32,8 @@
         android:layout_marginLeft="0dp"
         android:background="@color/white"
         android:imeOptions="actionSearch"
+        android:maxLines="1"
+        android:inputType="text"
         android:drawableLeft="@mipmap/search_icon_search"
         android:drawablePadding="@dimen/spacing_mid"
         android:drawableStart="@mipmap/search_icon_search"

@@ -82,6 +82,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public void saveQuestion(QAPublishBean qaPublishBean) {
+        mRepository.saveQuestion(qaPublishBean);
+    }
+
+    @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
         getQuestionDetail(mRootView.getCurrentQuestion().getId() + "", maxId, isLoadMore);

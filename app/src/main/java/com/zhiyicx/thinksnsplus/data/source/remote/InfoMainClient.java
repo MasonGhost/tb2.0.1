@@ -206,18 +206,10 @@ public interface InfoMainClient {
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_UPDATE_INFO)
-    Observable<BaseJsonV2> updateInfo(@Path("category_id") int cates_id, @Path("news_id") int news_id);
+    Observable<BaseJsonV2<Object>> updateInfo(@Path("category_id") long cates_id, @Path("news_id") int news_id,@Body RequestBody requestBody);
 
     /**
-     * 删除我的投稿
-     *
-     * @return
-     */
-    @DELETE(ApiConfig.APP_PATH_UPDATE_INFO)
-    Observable<BaseJsonV2> deleteInfo(@Path("category_id") int cates_id, @Path("news_id") int news_id);
-
-    /**
-     * 资讯评论置顶审核通过 V2
+     * 拒绝资讯评论置顶 V2
      *
      * @return
      */

@@ -271,19 +271,20 @@ public class RegexUtils {
 
     /**
      * 提取第一个 图片 id
+     *
      * @param regex
      * @param input
      * @return
      */
     public static int getImageIdFromMarkDown(String regex, String input) {
         if (regex == null || input == null) return -1;
-        Matcher matcher = Pattern.compile(regex).matcher(input);
-        if (matcher.find()) {
-            try {
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
+            if (matcher.find()) {
                 return Integer.parseInt(matcher.group(1));
-            } catch (NumberFormatException e) {
-                return -1;
             }
+        } catch (Exception e) {
+            return -1;
         }
         return -1;
     }
@@ -299,6 +300,7 @@ public class RegexUtils {
 
     /**
      * 内容分段
+     *
      * @param targetStr
      * @return
      */
@@ -329,6 +331,7 @@ public class RegexUtils {
 
     /**
      * 提取第一个 图片 id
+     *
      * @param input
      * @return
      */
@@ -337,7 +340,7 @@ public class RegexUtils {
             String reg = "@!\\[.*]\\((\\d+)\\)";
             Matcher matcher2 = Pattern.compile(reg).matcher(input);
             return Integer.parseInt(matcher2.group(1));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return -1;
         }
     }

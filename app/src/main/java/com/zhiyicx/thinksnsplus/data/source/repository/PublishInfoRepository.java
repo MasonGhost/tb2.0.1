@@ -25,13 +25,21 @@ public class PublishInfoRepository implements PublishInfoContract.Repository {
 
     @Inject
     public PublishInfoRepository(ServiceManager serviceManager) {
-        mInfoMainClient=serviceManager.getInfoMainClient();
+        mInfoMainClient = serviceManager.getInfoMainClient();
     }
 
     @Override
     public Observable<BaseJsonV2<Object>> publishInfo(InfoPublishBean infoPublishBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(infoPublishBean));
-        return mInfoMainClient.publishInfo(infoPublishBean.getCategoryId(),body)
+        return mInfoMainClient.publishInfo(infoPublishBean.getCategoryId(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> updateInfo(InfoPublishBean infoPublishBean) {
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(infoPublishBean));
+        return mInfoMainClient.updateInfo(infoPublishBean.getCategoryId(), infoPublishBean.getNews_id(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

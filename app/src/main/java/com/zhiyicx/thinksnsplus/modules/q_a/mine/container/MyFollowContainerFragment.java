@@ -55,7 +55,7 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
 
     // 缺省的tab的线的高度
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
-            .no_line_height;
+            .line_height;
 
     public static final String TYPE_QUESTION = "type_question";
     public static final String TYPE_TOPIC = "type_topic";
