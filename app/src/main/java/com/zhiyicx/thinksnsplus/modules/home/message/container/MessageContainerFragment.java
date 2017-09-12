@@ -164,10 +164,6 @@ public class MessageContainerFragment extends TSViewPagerFragment {
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
-                simplePagerTitleView.setOnClickListener(v -> {
-                    mVpFragment.setCurrentItem(index);
-                    setNewMessageNoticeState(index == 0, index);
-                });
                 badgePagerTitleView.setInnerPagerTitleView(simplePagerTitleView);
                 // don't cancel badge when tab selected
                 badgePagerTitleView.setAutoCancelBadge(false);
