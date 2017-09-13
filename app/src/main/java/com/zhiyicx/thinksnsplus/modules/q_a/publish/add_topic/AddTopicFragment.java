@@ -161,7 +161,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
-
+        mToolbarRight.setEnabled(false);
         mRvList.setOnTouchListener((v, event) -> {
             DeviceUtils.hideSoftKeyboard(AddTopicFragment.this.getActivity(), mEtQustion);
             return false;
@@ -222,6 +222,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
                             ());
                     mQATopicBeanList.add(qaTopicBean);
                 }
+                mToolbarRight.setEnabled(true);
                 mTopicsAdapter.notifyDataChanged();
             }
         }
@@ -239,6 +240,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         DeviceUtils.hideSoftKeyboard(AddTopicFragment.this.getActivity(), mEtQustion);
         if (mQATopicBeanList.size() < mMaxTagNums) {
+            mToolbarRight.setEnabled(true);
             if (mQATopicBeanList.contains(mListDatas.get(position))) {
                 showSnackErrorMessage(getString(R.string.qa_publish_select_topic_repeat));
                 return;

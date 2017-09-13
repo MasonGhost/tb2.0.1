@@ -106,7 +106,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
             addTopic();
         } else {
-            showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
+            showSnackErrorMessage(getString(R.string.qa_publish_title_hint));
         }
     }
 
@@ -136,7 +136,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+        }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mDraftQuestion != null) {
+            mDraftQuestion = mPresenter.getDraftQuestion(mDraftQuestion.getMark());
         }
     }
 
@@ -238,7 +245,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     mQuestionStr = charSequence.toString().trim();
                     if (!TextUtils.isEmpty(mQuestionStr)) {
                         mToolbarRight.setEnabled(true);
-                        // TODO: 20177/25  搜索相同的問題
                     } else {
                         mToolbarRight.setEnabled(false);
                     }

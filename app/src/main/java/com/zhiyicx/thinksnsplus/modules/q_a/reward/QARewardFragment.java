@@ -129,6 +129,15 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mQAPublishBean != null) {
+            mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        }
+
+    }
+
+    @Override
     protected void initView(View rootView) {
         if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
@@ -153,14 +162,19 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         QAPublishBean draft = mQAPublishBean == null ? null : mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null && draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
-            List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
-            QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
-            typeIds.setUser(draft.getInvitations().get(0).getUser());
-            typeIdsList.add(typeIds);
-            mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
+        if (draft != null ) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
+            mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
+            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()){
+                List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
+                QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
+                typeIds.setUser(draft.getInvitations().get(0).getUser());
+                typeIds.setName(draft.getInvitations().get(0).getName());
+                typeIdsList.add(typeIds);
+                mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
+            }
+
             configSureButton();
         }
     }
@@ -239,18 +253,14 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        if (mQAPublishBean != null){
-            mPresenter.saveQuestion(packgQuestion());
-        }
+        mPresenter.saveQuestion(packgQuestion());
         super.setLeftClick();
     }
 
     @Override
     public void onBackPressed() {
-        if (mQAPublishBean != null){
-            mPresenter.saveQuestion(packgQuestion());
-        }
-        super.onBackPressed();
+        mPresenter.saveQuestion(packgQuestion());
+        getActivity().finish();
     }
 
     private void initAlertPopupWindow() {
@@ -522,8 +532,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         this.mQaListInfoBean = qaListInfoBean;
     }
 
-    private void goToQuestionDetail(){
-        if (mQAPublishBean != null){
+    private void goToQuestionDetail() {
+        if (mQAPublishBean != null) {
             EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
             Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
             Bundle bundle = new Bundle();
