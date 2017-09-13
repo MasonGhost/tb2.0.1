@@ -38,6 +38,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_VERSION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
@@ -65,6 +66,16 @@ public interface CommonClient {
 
     /*******************************************  系统相关  *********************************************/
 
+    /**
+     * 获取客户端更新列表
+     *
+     * @param after 查询标识，传入当前客户端的版本id
+     * @param type  客户端版本类型，暂定参数有 android、ios
+     * @param limit 返回数据条数，默认15条
+     * @return
+     */
+    @GET(APP_PATH_GET_APP_VERSION)
+    Observable<Object> getAppVersions(@Query("after") Integer after, @Query("type") String type, @Query("limit") Integer limit);
 
     /**
      * 获取会员验证码 ：使用场景如登陆、找回密码，其他用户行为验证等。
@@ -162,7 +173,7 @@ public interface CommonClient {
      * mime_type       文件mimeType
      * width           图片宽度
      * height          图片高度
-     *
+     * <p>
      * 校验文件hash V2 api
      *
      * @param hash 文件 MD5 值

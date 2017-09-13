@@ -5,7 +5,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -143,8 +145,11 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    initCheckVersionPopWindow();
-                    mCheckVersionPopupWindow.show();
+//                    initCheckVersionPopWindow();
+//                    mCheckVersionPopupWindow.show();
+                    AppUpdateManager.getInstance(getContext()
+                            , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                            .startVersionCheck();
                 });
     }
 

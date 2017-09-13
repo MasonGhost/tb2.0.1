@@ -31,9 +31,9 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
     //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+//    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
 //
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
@@ -472,6 +472,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NON_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes/register";
     // 获取会员短信验证码，使用场景如登陆、找回密码，其他用户行为验证等。
     public static final String APP_PATH_GET_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes";
+    public static final String APP_PATH_GET_APP_VERSION = "api/" + API_VERSION_2 + "/plus-appversion";
 
     /**
      * 用户相关

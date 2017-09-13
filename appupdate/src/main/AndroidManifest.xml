@@ -1,0 +1,26 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+          package="com.zhiyicx.appupdate"
+    >
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        >
+        <service
+            android:name="com.zhiyicx.appupdate.UpdateService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <activity
+            android:name="com.zhiyicx.appupdate.CustomVersionDialogActivity"
+            android:theme="@style/versionCheckLibvtransparentTheme"/>
+
+    </application>
+
+</manifest>

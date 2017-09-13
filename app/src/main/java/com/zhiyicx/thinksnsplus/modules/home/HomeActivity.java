@@ -39,13 +39,14 @@ public class HomeActivity extends TSActivity {
         super.onCreate(savedInstanceState, persistentState);
     }
 
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             JpushMessageBean jpushMessageBean = bundle.getParcelable(BUNDLE_JPUSH_MESSAGE);
-            if (jpushMessageBean != null&& jpushMessageBean.getType()!=null) {
+            if (jpushMessageBean != null && jpushMessageBean.getType() != null) {
                 switch (jpushMessageBean.getType()) {
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
                         ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MINE);
