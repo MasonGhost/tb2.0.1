@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.settings;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
 
 import rx.Observable;
 
@@ -37,6 +38,13 @@ public interface SettingsContract {
          * 清理缓存
          */
         Observable<Boolean> cleanCache();
+
+        /**
+         * 检查更新
+         *
+         * @return update info
+         */
+        Observable<UpdateInfoBean> checkUpdate();
     }
 
     interface Presenter extends IBasePresenter {
@@ -52,9 +60,15 @@ public interface SettingsContract {
 
         /**
          * 退出登录
+         *
          * @return true 退出成功，false 退出失败
          */
         boolean loginOut();
+
+        /**
+         * 检查是否有更新
+         */
+        void checkUpdate();
     }
 
 }

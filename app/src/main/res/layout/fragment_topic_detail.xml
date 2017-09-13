@@ -136,4 +136,17 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <ImageView
+            android:id="@+id/btn_publish_question"
+            android:layout_width="@dimen/channel_detail_float_btn_height"
+            android:layout_height="@dimen/channel_detail_float_btn_height"
+            android:layout_gravity="bottom|center_horizontal"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="@dimen/floating_button_bottom_margin"
+            android:src="@mipmap/channel_btn_suspension"
+            app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.BottomLayoutBehavior"
+            android:visibility="visible"/>
+
+
+
 </android.support.design.widget.CoordinatorLayout>
