@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -21,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -176,6 +179,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         setCurrentPage();
         // 支持魅族手机首页状太栏文字白色问题
         supportFlymeSutsusbar();
+        // app更新
+        AppUpdateManager.getInstance(getContext()
+                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                .startVersionCheck();
     }
 
     private void supportFlymeSutsusbar() {

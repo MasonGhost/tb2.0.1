@@ -1,4 +1,7 @@
-package com.zhiyicx.thinksnsplus.data.beans;
+package com.zhiyicx.appupdate;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * @Describe
@@ -6,10 +9,11 @@ package com.zhiyicx.thinksnsplus.data.beans;
  * @Date 2017/9/13
  * @Contact master.jungle68@gmail.com
  */
-public class AppVersionBean {
+public class AppVersionBean implements Parcelable {
 
     /**
      * id : 1  更新记录自增id，可以此判断版本顺序
+     * version_code : 1  最新包的版本号
      * type : android 客户端的版本类型
      * version : v1.0.0  后台填写的版本
      * description : ### 安卓初始版本上线  markdown 格式的更新说明
@@ -20,6 +24,7 @@ public class AppVersionBean {
      */
 
     private int id;
+    private int version_code;
     private String type;
     private String version;
     private String description;
@@ -34,6 +39,14 @@ public class AppVersionBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getVersion_code() {
+        return version_code;
+    }
+
+    public void setVersion_code(int version_code) {
+        this.version_code = version_code;
     }
 
     public String getType() {
@@ -91,4 +104,49 @@ public class AppVersionBean {
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.version_code);
+        dest.writeString(this.type);
+        dest.writeString(this.version);
+        dest.writeString(this.description);
+        dest.writeString(this.link);
+        dest.writeInt(this.is_forced);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+    }
+
+    public AppVersionBean() {
+    }
+
+    protected AppVersionBean(Parcel in) {
+        this.id = in.readInt();
+        this.version_code = in.readInt();
+        this.type = in.readString();
+        this.version = in.readString();
+        this.description = in.readString();
+        this.link = in.readString();
+        this.is_forced = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+    }
+
+    public static final Parcelable.Creator<AppVersionBean> CREATOR = new Parcelable.Creator<AppVersionBean>() {
+        @Override
+        public AppVersionBean createFromParcel(Parcel source) {
+            return new AppVersionBean(source);
+        }
+
+        @Override
+        public AppVersionBean[] newArray(int size) {
+            return new AppVersionBean[size];
+        }
+    };
 }
