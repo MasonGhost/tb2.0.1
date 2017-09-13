@@ -144,7 +144,7 @@
             android:scaleType="fitXY"
             android:layout_marginBottom="@dimen/floating_button_bottom_margin"
             android:src="@mipmap/channel_btn_suspension"
-            app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.BottomLayoutBehavior"
+            app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"
             android:visibility="visible"/>
 
 
