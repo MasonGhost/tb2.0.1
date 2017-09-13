@@ -228,6 +228,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <!--查看头像页-->
+        <activity android:name=".modules.personal_center.portrait.HeadPortraitViewActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.music_fm.music_comment.MusicCommentActivity"
             android:screenOrientation="portrait"
