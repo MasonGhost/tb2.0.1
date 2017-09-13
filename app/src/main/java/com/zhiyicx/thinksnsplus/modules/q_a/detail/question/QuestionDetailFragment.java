@@ -232,6 +232,12 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void updateAnswerCount() {
+        mQuestionDetailHeader.updateAnswerView(mQaListInfoBean);
+        mQuestionDetailHeader.updateIsAddedAnswerState(mQaListInfoBean);
+    }
+
+    @Override
     public void handleLoading(boolean isLoading, boolean success, String message) {
         if (isLoading) {
             showSnackLoadingMessage(message);

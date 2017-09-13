@@ -49,6 +49,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener, OnLoadMoreListener, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_SIZE = 20; // 默认每页的数量
+    public static final int DEFAULT_PAGE_SIZE_X = 10; // 有的地方是10条哦
     public static final int DEFAULT_ONE_PAGE_SIZE = 15; // 一个页面显示的最大条数，用来判断是否显示加载更多
 
     public static final Long DEFAULT_PAGE_MAX_ID = 0L;// 默认初始化列表 id

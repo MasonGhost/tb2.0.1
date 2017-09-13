@@ -358,6 +358,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 mRootView.getListDatas().remove(0);
                 mRootView.getListDatas().add(data);
                 mRootView.refreshData();
+                mRootView.getCurrentQuestion().setAnswers_count(mRootView.getCurrentQuestion().getAnswers_count() + 1);
+                mRootView.getCurrentQuestion().setMy_answer(data);
+                mRootView.updateAnswerCount();
             }
         }
     }

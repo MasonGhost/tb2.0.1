@@ -48,6 +48,11 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Observable<List<UserInfoBean>> observable = null;
         int size = mRootView.getListDatas().size();
+        if (size >= 100){
+            // 大于100条就不再请求了
+            mRootView.onNetResponseSuccess(null, isLoadMore);
+            return;
+        }
         if (maxId == 0){
             size = 0;
         }
