@@ -70,7 +70,17 @@
 
             <EditText
                 android:id="@+id/et_top_total"
-                style="@style/style_dynamic_editext"
+                android:maxLength="@null"
+                android:layout_marginRight="@dimen/spacing_small"
+                android:textSize="@dimen/size_content_assist"
+                android:textColorHint="@color/general_for_hint"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:gravity="right"
+                android:background="@null"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/themeColor"
                 android:enabled="false"
                 android:hint="@string/et_top_total"
                 tools:hint="@string/et_top_total"/>

@@ -77,7 +77,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
      */
     @Override
     public void stickTop(long parent_id) {
-        if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
+        if (mRootView.getInputMoney() < 0) {
             mRootView.initStickTopInstructionsPop();
             return;
         }
@@ -89,7 +89,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
             return;
         }
 
-        double amount=PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas());
+        double amount = PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas());
 
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R

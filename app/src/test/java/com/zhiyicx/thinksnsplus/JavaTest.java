@@ -197,8 +197,8 @@ public class JavaTest {
 
     @Test
     public void doubleBitMoney() {
-        float test = 11111111111f;
-        long money =(long)  (5 * test);
+        int test = 99999999;
+        long money =10 * test;
 
         System.out.println("result::" + money);
     }
