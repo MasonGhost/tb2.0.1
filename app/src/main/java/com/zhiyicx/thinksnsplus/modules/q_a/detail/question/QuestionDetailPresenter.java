@@ -140,9 +140,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
                 (qaListInfoBean, answerInfoBeanList) -> {
-                    if (!isLoadMore) {
-                        qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
-                    }
+                    qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(maxId, qaListInfoBean, answerInfoBeanList));
                     mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
@@ -170,12 +168,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         addSubscrebe(subscription);
     }
 
-    private List<AnswerInfoBean> dealAnswerList(QAListInfoBean qaListInfoBean, List<AnswerInfoBean> list) {
+    private List<AnswerInfoBean> dealAnswerList(long maxId, QAListInfoBean qaListInfoBean, List<AnswerInfoBean> list) {
         List<AnswerInfoBean> totalList = new ArrayList<>();
-        if (qaListInfoBean.getInvitation_answers() != null) {
+        if (qaListInfoBean.getInvitation_answers() != null && maxId == 0L) {
             totalList.addAll(qaListInfoBean.getInvitation_answers());
         }
-        if (qaListInfoBean.getAdoption_answers() != null) {
+        if (qaListInfoBean.getAdoption_answers() != null && maxId == 0L) {
             totalList.addAll(qaListInfoBean.getAdoption_answers());
         }
         totalList.addAll(list);

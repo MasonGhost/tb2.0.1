@@ -217,7 +217,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         long size = mListDatas.size();
         if (mQaListInfoBean != null) {
             if (mQaListInfoBean.getInvitations() != null) {
-                size += mQaListInfoBean.getInvitations().size();
+                size -= mQaListInfoBean.getInvitations().size();
             }
             if (mQaListInfoBean.getAdoption_answers() != null) {
                 size -= mQaListInfoBean.getAdoption_answers().size();
