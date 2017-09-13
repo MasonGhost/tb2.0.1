@@ -125,17 +125,23 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (dynamicCommentBean.getExpires_at() == null)
-                        initReviewPopWindow(dynamicCommentBean,position);
+                        initReviewPopWindow(dynamicCommentBean, position);
                 });
     }
 
     @Override
     public void onReviewApprovedClick(BaseListBean data, int position) {
-
+        TopNewsCommentListBean newsCommentListBean = (TopNewsCommentListBean) data;
+        newsCommentListBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() + 1000000));
+        BaseListBean result = newsCommentListBean;
+        mPresenter.approvedTopComment((long) newsCommentListBean.getNews().getId(),
+                newsCommentListBean.getComment().getId().intValue(), (int) newsCommentListBean.getId(), result, position);
     }
 
     @Override
     public void onReviewRefuseClick(BaseListBean data, int position) {
-
+        TopNewsCommentListBean newsCommentListBean = (TopNewsCommentListBean) data;
+        newsCommentListBean.setExpires_at(TimeUtils.getCurrenZeroTimeStr());
+        mPresenter.refuseTopComment((int) newsCommentListBean.getId(), data, position);
     }
 }

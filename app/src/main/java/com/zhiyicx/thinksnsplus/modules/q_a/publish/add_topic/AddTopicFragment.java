@@ -99,8 +99,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         }
         saveQustion();
 
-        if (mQAPublishBean.isHasAgainEdite()) {
-            mToolbarRight.setText(getString(R.string.publish));
+        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
             mPresenter.updateQuestion(mQAPublishBean);
             return;
         }
@@ -202,6 +201,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     public void onResume() {
         super.onResume();
         mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+            mToolbarRight.setText(getString(R.string.publish));
+        }
     }
 
     @Override

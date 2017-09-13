@@ -143,7 +143,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         dynamicCommentBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() + 1000000));
         BaseListBean result = dynamicCommentBean;
         mPresenter.approvedTopComment((long) dynamicCommentBean.getFeed().getId(),
-                dynamicCommentBean.getComment().getId().intValue(), dynamicCommentBean.getFeed().getPinned(), result, position);
+                dynamicCommentBean.getComment().getId().intValue(), dynamicCommentBean.getId().intValue(), result, position);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) data;
         dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_REFUSE);
         dynamicCommentBean.setExpires_at(TimeUtils.getCurrenZeroTimeStr());
-        mPresenter.refuseTopComment(dynamicCommentBean.getFeed().getPinned(), data, position);
+        mPresenter.refuseTopComment(dynamicCommentBean.getId().intValue(), data, position);
     }
 
 }

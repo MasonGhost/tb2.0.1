@@ -171,7 +171,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.created_at = created_at;
     }
 
-    public static class Topic implements Parcelable ,Serializable{
+    public static class Topic implements Parcelable, Serializable {
         private static final long serialVersionUID = -7016435261647250643L;
         private int id;
         @Expose
@@ -225,7 +225,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         };
     }
 
-    public static class Invitations implements Parcelable,Serializable {
+    public static class Invitations implements Parcelable, Serializable {
         private static final long serialVersionUID = -4339393354491900423L;
         private int user;
         @Expose
@@ -289,8 +289,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
 
     @Generated(hash = 1527409719)
     public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
-            int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
-            String updated_at, String created_at, boolean hasAgainEdite) {
+                         int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
+                         String updated_at, String created_at, boolean hasAgainEdite) {
         this.subject = subject;
         this.topics = topics;
         this.invitations = invitations;
@@ -312,6 +312,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
                 .currentTimeMillis();
         qaPublishBean.setHasAgainEdite(true);
+        qaPublishBean.setId(mQaListInfoBean.getId());
         qaPublishBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         qaPublishBean.setMark(Long.parseLong(mark));
         qaPublishBean.setSubject(mQaListInfoBean.getSubject());
