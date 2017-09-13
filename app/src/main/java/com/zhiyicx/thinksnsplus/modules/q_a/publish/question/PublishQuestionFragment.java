@@ -156,6 +156,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
+        if (TextUtils.isEmpty(mQuestionStr)) {
+            return;
+        }
         requestNetData(null, maxId, "all", isLoadMore);
     }
 
@@ -269,7 +272,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
-    public void onPublishQuestionSuccess(Bundle bundle){
+    public void onPublishQuestionSuccess(Bundle bundle) {
         // 发布成功后关闭这个页面
         getActivity().finish();
     }

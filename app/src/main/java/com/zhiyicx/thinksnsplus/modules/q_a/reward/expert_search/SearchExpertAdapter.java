@@ -58,7 +58,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         answerCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getAnswers_count();
         digCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getLikes_count();
         tvDigCount.setText(String.format(Locale.getDefault(), mContext.getString(R.string.qa_publish_show_expert), answerCount, digCount));
-        ConvertUtils.stringLinkConvert(tvDigCount, setLinks());
+        ConvertUtils.stringLinkConvert(tvDigCount, setLinks(),false);
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
 
@@ -97,13 +97,6 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(numberCountLink);
-        Link digCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .normal_for_assist_text))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(digCountLink);
         return links;
     }
 

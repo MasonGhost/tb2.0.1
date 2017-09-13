@@ -1,9 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
@@ -68,18 +69,24 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
     @Override
     public void requestNetData(int size, String topic_ids, String keyword, boolean isLoadMore) {
         // mRepository.getExpertList(size, topic_ids, keyword)
+        Observable<List<ExpertBean>> observable;
+        if (!TextUtils.isEmpty(topic_ids)) {
+            observable = mRepository.getExpertList(size, topic_ids, keyword);
+        } else {
+            observable = mUserInfoRepository.searchUserInfo(null, keyword, null, null, null)
+                    .flatMap(new Func1<List<UserInfoBean>, Observable<List<ExpertBean>>>() {
+                        @Override
+                        public Observable<List<ExpertBean>> call(List<UserInfoBean> userInfoBeen) {
+                            Gson gson = new Gson();
+                            java.lang.reflect.Type needType = new TypeToken<List<ExpertBean>>() {
+                            }.getType();
+                            String result = gson.toJson(userInfoBeen);
+                            return Observable.just(gson.fromJson(result, needType));
+                        }
+                    });
+        }
         Subscription subscription =
-                mUserInfoRepository.searchUserInfo(null, keyword, null, null, null)
-                        .flatMap(new Func1<List<UserInfoBean>, Observable<List<ExpertBean>>>() {
-                            @Override
-                            public Observable<List<ExpertBean>> call(List<UserInfoBean> userInfoBeen) {
-                                Gson gson = new Gson();
-                                java.lang.reflect.Type needType = new TypeToken<List<ExpertBean>>() {
-                                }.getType();
-                                String result = gson.toJson(userInfoBeen);
-                                return Observable.just(gson.fromJson(result, needType));
-                            }
-                        })
+                observable
                         .subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
                             @Override
                             protected void onSuccess(List<ExpertBean> data) {
