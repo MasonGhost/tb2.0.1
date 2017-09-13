@@ -488,10 +488,10 @@
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
-        <item>最新</item>
+        <item>热门</item>
         <item>精选</item>
         <item>悬赏</item>
-        <item>热门</item>
+        <item>最新</item>
         <item>全部</item>
     </string-array>
     <string name="qa_topic_expert_count">%d位相关专家</string>

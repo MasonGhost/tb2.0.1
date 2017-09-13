@@ -113,10 +113,10 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     @Override
     protected void initData() {
         mTypeList = new ArrayList<>();
-        mTypeList.add(TYPE_NEW);
+        mTypeList.add(TYPE_HOT);
         mTypeList.add(TYPE_EXCELLENT);
         mTypeList.add(TYPE_REWARD);
-        mTypeList.add(TYPE_HOT);
+        mTypeList.add(TYPE_NEW);
         mTypeList.add(TYPE_ALL);
         mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         mPresenter.getTopicDetail(String.valueOf(mQaTopicBean.getId()));
@@ -189,7 +189,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     }
 
     private void initViewPager() {
-        mVpList.setOffscreenPageLimit(4);
+        mVpList.setOffscreenPageLimit(5);
         mTsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         mTsViewPagerAdapter.bindData(initFragments());
         mVpList.setAdapter(mTsViewPagerAdapter);
