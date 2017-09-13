@@ -43,6 +43,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
+    public static final String BUNDLE_PUBLISHQA_TOPIC = "publish_topic_id";
 
     @BindView(R.id.et_qustion)
     UserInfoInroduceInputView mEtQustion;

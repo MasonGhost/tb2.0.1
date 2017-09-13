@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -23,11 +24,6 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getString(R.string.info_published), getString(R.string.info_publishing), getString(R.string.info_publishfailed));
-    }
-
-    @Override
-    protected int setLeftImg() {
-        return 0;
     }
 
     @Override
@@ -61,5 +57,11 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void initViewPager(View rootView) {
+        super.initViewPager(rootView);
+        mTsvToolbar.setLeftImg(0);
     }
 }

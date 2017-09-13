@@ -30,6 +30,7 @@ public interface QuestionDetailContract {
         String getCurrentOrderType();
 //        int getRealSize();
         void updateFollowState();
+        void updateAnswerCount();
         void handleLoading(boolean isLoading, boolean success, String message);
     }
 

@@ -29,18 +29,16 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
-
 import java.util.ArrayList;
-import java.util.List;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity.BUNDLE_USER_INFO;
 
 /**
  * @author LiuChao
@@ -279,7 +277,12 @@ public class PersonalCenterHeaderViewItem {
         });
         // 点击头像
         iv_head_icon.setOnClickListener(v -> {
-
+            // 跳转查看头像页面，暂时先屏蔽
+//            Intent intent = new Intent(mActivity, HeadPortraitViewActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(BUNDLE_USER_INFO, userInfoBean);
+//            intent.putExtra(BUNDLE_USER_INFO, bundle);
+//            mActivity.startActivity(intent);
         });
         // 跳转到粉丝列表
         tv_user_fans.setOnClickListener(v -> {

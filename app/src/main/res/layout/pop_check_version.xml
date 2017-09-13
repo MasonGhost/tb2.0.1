@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/margin_25"
+              android:background="@color/white">
+
+    <!--版本号-->
+    <TextView
+            android:id="@+id/tv_version_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="版本号：1.0.1"/>
+
+    <!--更新包大小-->
+    <TextView
+            android:id="@+id/tv_file_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_12"
+            tools:text="大小：7.89M"/>
+
+    <!--更新的内容-->
+    <TextView
+            android:id="@+id/tv_update_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_12"
+            android:lineSpacingExtra="@dimen/spacing_normal"
+            android:maxLines="5"
+            tools:text="lalalallallalllllllllllllllllllllllllll"/>
+
+    <!--下载进度条-->
+    <ProgressBar
+            android:id="@+id/pb_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_marginTop="@dimen/margin_12"
+            android:max="100"
+            android:progress="50"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_12">
+
+        <!--更新-->
+        <TextView
+                android:id="@+id/tv_update_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/download_new_version"
+                android:textColor="@color/themeColor"/>
+        <!--忽略-->
+        <TextView
+                android:id="@+id/tv_ignore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ignore_new_version"
+                android:layout_toLeftOf="@+id/tv_update_now"
+                android:layout_marginRight="@dimen/margin_12"
+                android:textColor="@color/themeColor"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView;
@@ -51,6 +52,7 @@ import butterknife.BindView;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_TOPIC;
 
 /**
  * @author Catherine
@@ -86,6 +88,8 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     View mViewDiver;
     @BindView(R.id.vp_list)
     ViewPager mVpList;
+    @BindView(R.id.btn_publish_question)
+    ImageView mBtnPublishQuestion;
 
     protected TSViewPagerAdapter mTsViewPagerAdapter;
     private CommonNavigator mCommonNavigator;
@@ -109,10 +113,10 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     @Override
     protected void initData() {
         mTypeList = new ArrayList<>();
-        mTypeList.add(TYPE_NEW);
+        mTypeList.add(TYPE_HOT);
         mTypeList.add(TYPE_EXCELLENT);
         mTypeList.add(TYPE_REWARD);
-        mTypeList.add(TYPE_HOT);
+        mTypeList.add(TYPE_NEW);
         mTypeList.add(TYPE_ALL);
         mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         mPresenter.getTopicDetail(String.valueOf(mQaTopicBean.getId()));
@@ -185,7 +189,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     }
 
     private void initViewPager() {
-        mVpList.setOffscreenPageLimit(4);
+        mVpList.setOffscreenPageLimit(5);
         mTsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         mTsViewPagerAdapter.bindData(initFragments());
         mVpList.setAdapter(mTsViewPagerAdapter);
@@ -303,6 +307,18 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
                     bundle.putSerializable(BUNDLE_TOPIC_BEAN, mQaTopicBean);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                });
+        RxView.clicks(mBtnPublishQuestion)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    if (mQaTopicBean != null){
+                        Intent intent = new Intent(getActivity(), PublishQuestionActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_PUBLISHQA_TOPIC, mQaTopicBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 });
     }
 
