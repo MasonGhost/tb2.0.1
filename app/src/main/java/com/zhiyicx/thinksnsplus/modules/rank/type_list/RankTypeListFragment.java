@@ -90,11 +90,12 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
-    @Override
-    protected int getPagesize() {
-        if (getRankType().equals(RankTypeConfig.RANK_USER_CHECK_ID)){
-            return DEFAULT_PAGE_SIZE_X;
-        }
-        return super.getPagesize();
-    }
+    // 这个白石 又加上了limit 😔
+//    @Override
+//    protected int getPagesize() {
+//        if (getRankType().equals(RankTypeConfig.RANK_USER_CHECK_ID)){
+//            return DEFAULT_PAGE_SIZE_X;
+//        }
+//        return super.getPagesize();
+//    }
 }
