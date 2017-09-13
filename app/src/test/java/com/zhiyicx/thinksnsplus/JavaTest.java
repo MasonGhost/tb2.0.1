@@ -164,8 +164,20 @@ public class JavaTest {
     }
 
     @Test
-    public void matchTest() {
+    public void matchTest() {// @![image](2604)
         String reg = "(@!\\[.*]\\((\\d+)\\))";
+
+        try {
+            String sss = "@!\\[.*]\\((\\d+)\\)";
+            Matcher matcher2 = Pattern.compile(sss).matcher("@![image](2604)");
+            if (matcher2.find()) {
+                System.out.println("result:count:" + matcher2.group(1));
+            }
+
+        } catch (Exception e) {
+            System.out.println("result::" + e.toString());
+        }
+
         String test = "xxx@![image](123)ssss@![image](123)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
@@ -181,6 +193,14 @@ public class JavaTest {
     public void doubleTest() {
         double d = 5.0;
         System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+    }
+
+    @Test
+    public void doubleBitMoney() {
+        float test = 11111111111f;
+        long money =(long)  (5 * test);
+
+        System.out.println("result::" + money);
     }
 
     @Test

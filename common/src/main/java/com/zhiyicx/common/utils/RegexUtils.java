@@ -339,7 +339,10 @@ public class RegexUtils {
         try {
             String reg = "@!\\[.*]\\((\\d+)\\)";
             Matcher matcher2 = Pattern.compile(reg).matcher(input);
-            return Integer.parseInt(matcher2.group(1));
+            if (matcher2.find()){
+                return Integer.parseInt(matcher2.group(1));
+            }
+            return -1;
         } catch (Exception e) {
             return -1;
         }
