@@ -57,6 +57,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_NEWS_COMMENT:
                 observable = mRepository.getNewsReviewComment(maxId.intValue());
                 break;
+            default:
+                observable = mRepository.getDynamicReviewComment(maxId.intValue());
+                break;
         }
 
         Subscription commentSub = observable.subscribe(new BaseSubscribeForV2() {

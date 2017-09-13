@@ -52,6 +52,11 @@ public class TopNewsCommentListBean extends BaseListBean implements Parcelable, 
     private UserInfoBean commentUser;
     private UserInfoBean replyUser;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public long getId() {
         return id;
     }
