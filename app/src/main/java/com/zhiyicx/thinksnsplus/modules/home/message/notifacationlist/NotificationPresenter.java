@@ -49,9 +49,15 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        mRootView.onResponseError(e, isLoadMore);
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.onResponseError(null, isLoadMore);
                     }
                 });
         addSubscrebe(subscription);
@@ -72,11 +78,19 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
     public void readNotification() {
         StringBuilder notificationIds = new StringBuilder();
         //代表未读
-        mRootView.getListDatas().stream().filter(tspNotificationBean -> TextUtils.isEmpty(tspNotificationBean.getRead_at())).forEach(tspNotificationBean -> { //代表未读
-            notificationIds.append(tspNotificationBean.getId());
-            notificationIds.append(",");
-            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
-        });
+        for (TSPNotificationBean tspNotificationBean:mRootView.getListDatas()){
+            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
+                notificationIds.append(tspNotificationBean.getId());
+                notificationIds.append(",");
+                tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
+            }
+        }
+        // stream() 部分机型并不支持 Java 8 的循环(魅族 M5 NOTE)
+//        mRootView.getListDatas().stream().filter(tspNotificationBean -> TextUtils.isEmpty(tspNotificationBean.getRead_at())).forEach(tspNotificationBean -> { //代表未读
+//            notificationIds.append(tspNotificationBean.getId());
+//            notificationIds.append(",");
+//            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
+//        });
 
         if (TextUtils.isEmpty(notificationIds.toString())) {
             return;

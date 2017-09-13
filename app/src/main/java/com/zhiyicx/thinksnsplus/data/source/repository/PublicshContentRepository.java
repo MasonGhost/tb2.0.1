@@ -42,8 +42,6 @@ public class PublicshContentRepository extends BaseQARepository implements Publi
     @Override
     public Observable<BaseJsonV2<Object>> updateQuestion(Long question_id, String body, int
             anonymity) {
-        return mQAClient.uplaodQuestion(question_id,body,anonymity)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return null;
     }
 }

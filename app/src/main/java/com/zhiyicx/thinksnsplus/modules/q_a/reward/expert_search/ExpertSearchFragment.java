@@ -100,7 +100,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                mPresenter.requestNetData(0, topic_ids, mFragmentInfoSearchEdittext.getText().toString(), false);
+                mPresenter.requestNetData(0, null, mFragmentInfoSearchEdittext.getText().toString(), false);
             }
         });
     }

@@ -43,14 +43,13 @@ import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KE
  * @Description
  */
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
-        BaseListBean> implements MessageReviewContract.View{
+        BaseListBean> implements MessageReviewContract.View {
 
     public static final String REVIEW_LIST = "review_list";
 
     private String[] mTopTypes;
     private String mTopType;
 
-    private ActionPopupWindow mReviewPopWindow;
     private ActionPopupWindow mActionPopupWindow;
 
     @BindView(R.id.v_shadow)
@@ -92,7 +91,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     protected MultiItemTypeAdapter<BaseListBean> getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(),mPresenter);
+        TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(), mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
         return multiItemTypeAdapter;
     }
@@ -107,12 +106,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initTopPopWindow();
     }
 
     @Override
     protected void setCenterClick() {
-        mActionPopupWindow.showTop();
+        initTopPopWindow();
     }
 
     @Override
@@ -126,9 +124,6 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     private void initTopPopWindow() {
-        if (mActionPopupWindow != null) {
-            return;
-        }
         mActionPopupWindow = ActionPopupWindow.builder()
                 .with(getActivity())
                 .isFocus(true)
@@ -136,9 +131,13 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .parentView(mDriver)
                 .animationStyle(ActionPopupWindow.NO_ANIMATION)
                 .item1Str(getString(R.string.stick_type_dynamic_commnet))
+                .item1Color(mTopType.equals(mTopTypes[0]) ? R.color.themeColor : 0)
                 .item2Str(getString(R.string.stick_type_news_commnet))
+                .item2Color(mTopType.equals(mTopTypes[1]) ? R.color.themeColor : 0)
                 .item3Str(getString(R.string.stick_type_group_commnet))
+                .item3Color(mTopType.equals(mTopTypes[2]) ? R.color.themeColor : 0)
                 .item4Str(getString(R.string.stick_type_group_join))
+                .item4Color(mTopType.equals(mTopTypes[3]) ? R.color.themeColor : 0)
                 .item1ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.withdraw_all));
                     mTopType = mTopTypes[0];
@@ -177,5 +176,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                     }
                 })
                 .build();
+        mActionPopupWindow.showTop();
+
     }
 }

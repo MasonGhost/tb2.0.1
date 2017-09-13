@@ -48,13 +48,10 @@ public interface QAClient {
     Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
-     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
-     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @param body  如果 anonymity 不传，则本字段必须存在， 回答详情。
      */
-    @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
-    Observable<BaseJsonV2<Object>> uplaodQuestion(@Path("question") Long question_id, @Field("body")
-            String body, @Field("anonymity") int anonymity);
+    Observable<Object> uplaodQuestion(@Path("question") Long question_id,@Body RequestBody body);
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。

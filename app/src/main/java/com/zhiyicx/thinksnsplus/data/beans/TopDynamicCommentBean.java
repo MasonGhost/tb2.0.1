@@ -54,6 +54,11 @@ public class TopDynamicCommentBean extends BaseListBean {
     private CommentedBean comment;
     private UserInfoBean userInfoBean;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public UserInfoBean getUserInfoBean() {
         return userInfoBean;
     }

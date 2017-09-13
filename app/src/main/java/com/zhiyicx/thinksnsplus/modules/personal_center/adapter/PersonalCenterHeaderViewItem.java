@@ -277,12 +277,12 @@ public class PersonalCenterHeaderViewItem {
         });
         // 点击头像
         iv_head_icon.setOnClickListener(v -> {
-            // 跳转查看头像页面
-            Intent intent = new Intent(mActivity, HeadPortraitViewActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(BUNDLE_USER_INFO, userInfoBean);
-            intent.putExtra(BUNDLE_USER_INFO, bundle);
-            mActivity.startActivity(intent);
+            // 跳转查看头像页面，暂时先屏蔽
+//            Intent intent = new Intent(mActivity, HeadPortraitViewActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(BUNDLE_USER_INFO, userInfoBean);
+//            intent.putExtra(BUNDLE_USER_INFO, bundle);
+//            mActivity.startActivity(intent);
         });
         // 跳转到粉丝列表
         tv_user_fans.setOnClickListener(v -> {

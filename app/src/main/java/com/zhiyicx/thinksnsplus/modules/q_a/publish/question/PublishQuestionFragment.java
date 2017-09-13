@@ -7,8 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -22,7 +20,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -46,6 +43,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
+    public static final String BUNDLE_PUBLISHQA_TOPIC = "publish_topic_id";
 
     @BindView(R.id.et_qustion)
     UserInfoInroduceInputView mEtQustion;
@@ -106,7 +104,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
             addTopic();
         } else {
-            showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
+            showSnackErrorMessage(getString(R.string.qa_publish_title_hint));
         }
     }
 
@@ -136,7 +134,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+        }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mDraftQuestion != null) {
+            mDraftQuestion = mPresenter.getDraftQuestion(mDraftQuestion.getMark());
         }
     }
 
@@ -156,6 +161,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
+        if (TextUtils.isEmpty(mQuestionStr)) {
+            return;
+        }
         requestNetData(null, maxId, "all", isLoadMore);
     }
 
@@ -235,7 +243,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     mQuestionStr = charSequence.toString().trim();
                     if (!TextUtils.isEmpty(mQuestionStr)) {
                         mToolbarRight.setEnabled(true);
-                        // TODO: 20177/25  搜索相同的問題
                     } else {
                         mToolbarRight.setEnabled(false);
                     }
@@ -269,7 +276,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
-    public void onPublishQuestionSuccess(Bundle bundle){
+    public void onPublishQuestionSuccess(Bundle bundle) {
         // 发布成功后关闭这个页面
         getActivity().finish();
     }

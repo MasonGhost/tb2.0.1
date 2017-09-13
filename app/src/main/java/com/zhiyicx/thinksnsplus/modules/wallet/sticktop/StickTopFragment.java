@@ -62,7 +62,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     private List<Integer> mSelectDays;
     private int mCurrentDays;
-    private float mInputMoney;
+    private int mInputMoney;
     private double mBlance;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
@@ -175,16 +175,16 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 .subscribe(charSequence -> {
                     if (!TextUtils.isEmpty(charSequence)) {
                         try {
-                            mInputMoney = Float.parseFloat(charSequence.toString());
-                        } catch (NumberFormatException e) {
-                            mInputMoney = 0f;
+                            mInputMoney = Integer.parseInt(charSequence.toString());
+                        } catch (Exception e) {
+                            mInputMoney = -1;
                         }
                     } else {
-                        mInputMoney = 0f;
+                        mInputMoney = 0;
                     }
                     setConfirmEnable();
                 }, throwable -> {
-                    mInputMoney = 0f;
+                    mInputMoney = 0;
                     setConfirmEnable();
                 });
 
@@ -216,7 +216,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         mBtTop.setEnabled(enable);
 //        if (!enable)
 //            return;
-        mEtTopTotal.setText(String.valueOf((long) mCurrentDays * mInputMoney));
+        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
     }
 
     @Override

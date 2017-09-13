@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -59,10 +56,8 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
         }
     }
 
-    public  Observable<Object> handleWalletBlance(long amount) {
-       return mCommentRepository.getCurrentLoginUserInfo()
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(com.zhiyicx.thinksnsplus.R
-                        .string.transaction_doing)))
+    public Observable<Object> handleWalletBlance(long amount) {
+        return mCommentRepository.getCurrentLoginUserInfo()
                 .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
                     @Override
                     public Observable<Object> call(UserInfoBean userInfoBean) {

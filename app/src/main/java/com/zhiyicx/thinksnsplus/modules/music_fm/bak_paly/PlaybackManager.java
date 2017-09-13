@@ -96,7 +96,6 @@ public class PlaybackManager implements Playback.Callback {
 
         //noinspection ResourceType
         stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
-
         MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             stateBuilder.setActiveQueueItemId(currentMusic.getQueueId());
@@ -178,7 +177,12 @@ public class PlaybackManager implements Playback.Callback {
 
     @Override
     public void onError(String error) {
-        updatePlaybackState(error);
+        if (mQueueManager.getCurrentQueueSize() == 1) {
+            updatePlaybackState(error);// 如果不止一首歌，那么久播放下一个
+        } else {
+            onCompletion();
+        }
+
     }
 
     @Override

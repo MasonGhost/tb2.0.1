@@ -54,15 +54,17 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         CheckBox subscrib = holder.getView(R.id.tv_expert_subscrib);
         FlowTagLayout ftlTags = holder.getView(R.id.ftl_tags);
         tvName.setText(expertBean.getName());
-        tvDigCount.setText(String.format(Locale.getDefault(), mContext.getString(R.string.qa_publish_show_expert),
-                expertBean.getExtra().getAnswers_count(), expertBean.getExtra().getLikes_count()));
-        ConvertUtils.stringLinkConvert(tvDigCount, setLinks(expertBean));
+        int answerCount, digCount;
+        answerCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getAnswers_count();
+        digCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getLikes_count();
+        tvDigCount.setText(String.format(Locale.getDefault(), mContext.getString(R.string.qa_publish_show_expert), answerCount, digCount));
+        ConvertUtils.stringLinkConvert(tvDigCount, setLinks(),false);
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
 
 
         UserInfoBean userInfoBean = new UserInfoBean();
-        userInfoBean.setUser_id((long) expertBean.getExtra().getUser_id());
+        userInfoBean.setUser_id((long) expertBean.getId());
         userInfoBean.setFollower(expertBean.isFollower());
         userInfoBean.setName(expertBean.getName());
         userInfoBean.setVerified(expertBean.getVerified());
@@ -86,7 +88,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         ImageUtils.loadCircleUserHeadPic(userInfoBean, ivHeadpic);
     }
 
-    private List<Link> setLinks(ExpertBean expertBean) {
+    private List<Link> setLinks() {
         List<Link> links = new ArrayList<>();
         Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
@@ -95,13 +97,6 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(numberCountLink);
-        Link digCountLink = new Link(String.valueOf(expertBean.getExtra().getLikes_count())).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .normal_for_assist_text))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(digCountLink);
         return links;
     }
 

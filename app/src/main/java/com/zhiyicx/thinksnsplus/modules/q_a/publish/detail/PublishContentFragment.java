@@ -291,6 +291,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
             case R.id.im_arrowc:
                 break;
             case R.id.im_pic:
+                mRicheTest.hideKeyBoard();
                 initPhotoPopupWindow();
                 break;
             case R.id.im_setting:

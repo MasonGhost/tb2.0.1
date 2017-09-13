@@ -5,24 +5,29 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -30,9 +35,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment
-        .BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 
 /**
@@ -61,6 +67,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     private int mMaxTagNums;
 
     private QAPublishBean mQAPublishBean;
+    private QAListInfoBean mQAListInfoBean;
 
     public static AddTopicFragment newInstance(Bundle args) {
         AddTopicFragment fragment = new AddTopicFragment();
@@ -91,11 +98,33 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             return;
         }
         saveQustion();
+
+        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+            mPresenter.updateQuestion(mQAPublishBean);
+            return;
+        }
+
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS) {
+            if (mQAListInfoBean != null) {
+                goToQuestionDetail();
+                getActivity().finish();
+            }
+        }
+    }
+
+    @Override
+    public void updateSuccess(QAListInfoBean listInfoBean) {
+        mQAListInfoBean = listInfoBean;
     }
 
     private void saveQustion() {
@@ -131,9 +160,11 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
-
-        RxView.touches(mRvList).subscribe(motionEvent -> DeviceUtils.hideSoftKeyboard(getActivity(),mEtQustion));
-
+        mToolbarRight.setEnabled(false);
+        mRvList.setOnTouchListener((v, event) -> {
+            DeviceUtils.hideSoftKeyboard(AddTopicFragment.this.getActivity(), mEtQustion);
+            return false;
+        });
         RxTextView.editorActionEvents(mEtQustion).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 requestNetData(mEtQustion.getText().toString(), 0L, null, false);
@@ -142,7 +173,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
         RxTextView.textChanges(mEtQustion)
                 .subscribe(charSequence -> {
-                    if (TextUtils.isEmpty(charSequence)){
+                    if (TextUtils.isEmpty(charSequence)) {
                         // 清空输入框之后，加载全部数据
                         requestNetData(0L, false);
                     }
@@ -170,6 +201,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     public void onResume() {
         super.onResume();
         mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+            mToolbarRight.setText(getString(R.string.publish));
+        }
     }
 
     @Override
@@ -190,6 +224,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
                             ());
                     mQATopicBeanList.add(qaTopicBean);
                 }
+                mToolbarRight.setEnabled(true);
                 mTopicsAdapter.notifyDataChanged();
             }
         }
@@ -205,7 +240,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        DeviceUtils.hideSoftKeyboard(AddTopicFragment.this.getActivity(), mEtQustion);
         if (mQATopicBeanList.size() < mMaxTagNums) {
+            mToolbarRight.setEnabled(true);
             if (mQATopicBeanList.contains(mListDatas.get(position))) {
                 showSnackErrorMessage(getString(R.string.qa_publish_select_topic_repeat));
                 return;
@@ -236,8 +273,19 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
-    public void onPublishQuestionSuccess(Bundle bundle){
+    public void onPublishQuestionSuccess(Bundle bundle) {
         // 发布成功后关闭这个页面，暂时不传递数据
         getActivity().finish();
+    }
+
+    private void goToQuestionDetail() {
+        if (mQAListInfoBean != null) {
+            EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
+            Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQAListInfoBean);
+            intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+            startActivity(intent);
+        }
     }
 }

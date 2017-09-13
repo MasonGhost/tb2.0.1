@@ -445,13 +445,14 @@
 
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
+    <string name="publish_doing">发布中&#8230;</string>
     <string name="qa_update_publish">更新问题</string>
     <string name="qa_publish_answer">添加回答</string>
     <string name="qa_update_answer">更新回答</string>
     <string name="qa_update_question">更新问题</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
-    <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
+    <string name="qa_publish_title_hint">请输入正确的问题并以问号结尾</string>
     <string name="qa_publish_title_toast">输入问题请以“？”结束</string>
     <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
     <string name="qa_publish_anonymous">匿名提问</string>
@@ -488,10 +489,10 @@
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
-        <item>最新</item>
+        <item>热门</item>
         <item>精选</item>
         <item>悬赏</item>
-        <item>热门</item>
+        <item>最新</item>
         <item>全部</item>
     </string-array>
     <string name="qa_topic_expert_count">%d位相关专家</string>
