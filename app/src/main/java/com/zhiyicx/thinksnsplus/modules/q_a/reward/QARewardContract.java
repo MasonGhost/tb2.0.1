@@ -34,6 +34,7 @@ public interface QARewardContract {
 
     interface RepositoryPublish extends IBasePublishQuestionRepository {
         Observable<Object> publishQuestion(QAPublishBean qaPublishBean);
+        Observable<Object> updateQuestion(QAPublishBean qaPublishBean);
         Observable<BaseJsonV2<Object>> resetReward(Long question_id, double amount);
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,13 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -70,7 +73,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (getChildCount() == 1) {
+        if (allLayout.getChildCount() == 1) {
             lastAddEdit.requestFocus();
             showKeyBoard();
         }
@@ -385,12 +388,11 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
      */
     public void updateImageViewAtIndex(final int index, int id, String imagePath, String markdonw, boolean isLast) {
         if (allLayout.getChildCount() == 0) {
-            addFirstEditText(" ");
+            addFirstEditText(" ");// 这个空格是有必要的，没有空格就是默认文字
         }
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         imageView.setId(id);
-        Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
         imageView.setAbsolutePath(markdonw);//保留这句，后面保存数据会用
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
 
@@ -404,7 +406,41 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                     LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
             lp.bottomMargin = 10;
             imageView.setLayoutParams(lp);
+        } else {
+            imageHeight = allLayout.getWidth();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            imageView.setLayoutParams(lp);
+            imageView.setImageResource(R.drawable.shape_default_image);
         }
+        LogUtils.d("updateImageViewAtIndex::" + imagePath);
+        Glide.with(getContext())
+                .load(imagePath)
+                .asBitmap()
+                .centerCrop()
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        int width = allLayout.getWidth();
+                        int height = (int) (((float) width / resource.getWidth()) * resource.getHeight());
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, height);//设置图片固定高度
+                        imageView.setLayoutParams(lp);
+                        imageView.setImageBitmap(Bitmap.createScaledBitmap(resource,width,height,false));
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT, allLayout.getWidth());//设置图片固定高度
+                        imageView.setLayoutParams(lp);
+                        imageView.setImageResource(R.drawable.shape_default_image);
+                    }
+                });
+
         allLayout.addView(imageLayout, index);
         if (isLast) {
             addEditTextAtIndex(getLastIndex(), "");
@@ -514,7 +550,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
      */
     public void setHint(String hint) {
         this.mHint = hint;
-        if (allLayout.getChildAt(0) instanceof EditText){
+        if (allLayout.getChildAt(0) instanceof EditText) {
             EditText text = (EditText) allLayout.getChildAt(0);
             text.setHint(mHint);
         }

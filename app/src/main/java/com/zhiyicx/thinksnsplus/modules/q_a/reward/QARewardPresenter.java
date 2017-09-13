@@ -58,11 +58,12 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
     public void publishQuestion(final QAPublishBean qaPublishBean) {
         handleWalletBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
+                        .string.publish_doing)))
                 .flatMap(new Func1<Object, Observable<Object>>() {
                     @Override
                     public Observable<Object> call(Object o) {
-                        return mRepository.publishQuestion(qaPublishBean);
+                        return qaPublishBean.isHasAgainEdite() ? mRepository.updateQuestion(qaPublishBean)
+                                : mRepository.publishQuestion(qaPublishBean);
                     }
                 })
                 .subscribe(new BaseSubscribeForV2<Object>() {

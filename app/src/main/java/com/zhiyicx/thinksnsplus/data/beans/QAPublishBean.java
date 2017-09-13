@@ -48,7 +48,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     private String updated_at;
     private String created_at;
 
-    @Transient // 不建议 用 is 开头的不二类型，序列化时找不到 get set 等方法导致失败
+    // 不建议 用 is 开头的不二类型，序列化时找不到 get set 等方法导致失败
     private boolean hasAgainEdite;
 
     public boolean isHasAgainEdite() {
@@ -287,10 +287,10 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     public static class InvitationsConvert extends BaseConvert<List<Invitations>> {
     }
 
-    @Generated(hash = 1977474578)
-    public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations,
-                         String body, int anonymity, int automaticity, int look, double amount, Long id,
-                         Long mark, Long user_id, String updated_at, String created_at) {
+    @Generated(hash = 1527409719)
+    public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
+            int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
+            String updated_at, String created_at, boolean hasAgainEdite) {
         this.subject = subject;
         this.topics = topics;
         this.invitations = invitations;
@@ -304,6 +304,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.user_id = user_id;
         this.updated_at = updated_at;
         this.created_at = created_at;
+        this.hasAgainEdite = hasAgainEdite;
     }
 
     public static QAPublishBean qaListInfo2QAPublishBean(QAListInfoBean mQaListInfoBean) {
@@ -368,6 +369,10 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         dest.writeString(this.updated_at);
         dest.writeString(this.created_at);
         dest.writeByte(this.hasAgainEdite ? (byte) 1 : (byte) 0);
+    }
+
+    public boolean getHasAgainEdite() {
+        return this.hasAgainEdite;
     }
 
     protected QAPublishBean(Parcel in) {

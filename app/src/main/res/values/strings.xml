@@ -440,6 +440,7 @@
 
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
+    <string name="publish_doing">发布中&#8230;</string>
     <string name="qa_update_publish">更新问题</string>
     <string name="qa_publish_answer">添加回答</string>
     <string name="qa_update_answer">更新回答</string>
