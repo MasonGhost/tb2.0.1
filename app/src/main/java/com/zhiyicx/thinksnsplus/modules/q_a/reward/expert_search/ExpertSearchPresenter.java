@@ -74,12 +74,9 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
                             @Override
                             public Observable<List<ExpertBean>> call(List<UserInfoBean> userInfoBeen) {
                                 Gson gson = new Gson();
-
                                 java.lang.reflect.Type needType = new TypeToken<List<ExpertBean>>() {
                                 }.getType();
-
                                 String result = gson.toJson(userInfoBeen);
-
                                 return Observable.just(gson.fromJson(result, needType));
                             }
                         })

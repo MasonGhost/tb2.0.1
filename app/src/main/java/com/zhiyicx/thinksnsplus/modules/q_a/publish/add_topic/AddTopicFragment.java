@@ -237,6 +237,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        DeviceUtils.hideSoftKeyboard(AddTopicFragment.this.getActivity(), mEtQustion);
         if (mQATopicBeanList.size() < mMaxTagNums) {
             if (mQATopicBeanList.contains(mListDatas.get(position))) {
                 showSnackErrorMessage(getString(R.string.qa_publish_select_topic_repeat));
