@@ -7,7 +7,7 @@
     android:background="@android:color/white"
     android:orientation="vertical"
     android:paddingBottom="@dimen/spacing_mid"
-    android:paddingTop="@dimen/spacing_mid">
+    android:paddingTop="@dimen/spacing_normal">
 
     <TextView
         android:id="@+id/item_info_title"
@@ -28,7 +28,7 @@
         android:id="@+id/item_info_imag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/qa_info_iamge_height"
-        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid_small_8dp"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
 

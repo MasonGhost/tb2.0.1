@@ -22,6 +22,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 
 import java.util.List;
@@ -212,8 +213,14 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.DONE) {
+            Intent intent = new Intent();
+            if (mInfoPublishBean.isRefuse()) {
+                intent.setClass(getActivity(), ManuscriptsActivity.class);
+            } else {
+                intent.setClass(getActivity(), InfoActivity.class);
+            }
+            startActivity(intent);
             getActivity().finish();
-            startActivity(new Intent(getActivity(), InfoActivity.class));
         }
     }
 

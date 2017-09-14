@@ -123,6 +123,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
             mUserTagBeens.addAll(mInfoPublishBean.getTags());
         }
         if (!TextUtils.isEmpty(mInfoPublishBean.getCategoryName())) {
+            mToolbarRight.setEnabled(true);
             mBtAddCategory.setRightText(mInfoPublishBean.getCategoryName());
             mTvFrom.setEditInputString(mInfoPublishBean.getFrom());
             mTvAuthor.setEditInputString(mInfoPublishBean.getAuthor());

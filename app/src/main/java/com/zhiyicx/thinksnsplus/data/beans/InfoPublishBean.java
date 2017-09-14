@@ -106,7 +106,7 @@ public class InfoPublishBean implements Parcelable {
         if (TextUtils.isEmpty(subject)) {
             return;
         }
-        this.subject = !subject.startsWith(DEFALUT_SUBJECT) ? DEFALUT_SUBJECT + subject : subject;
+        this.subject = !subject.contains(DEFALUT_SUBJECT) ? DEFALUT_SUBJECT + subject : subject;
     }
 
     public String getContent() {

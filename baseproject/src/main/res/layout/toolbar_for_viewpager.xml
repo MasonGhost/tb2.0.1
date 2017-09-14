@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
             android:layout_gravity="bottom"
-            android:background="@color/general_for_line"></View>
+            android:background="@color/general_for_line"/>
         <!--用于viewpager页面切换的tab选项卡-->
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:background="@android:color/transparent"></net.lucode.hackware.magicindicator.MagicIndicator>
+                android:background="@android:color/transparent"/>
 
             <TextView
                 android:id="@+id/tv_toolbar_left"

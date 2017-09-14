@@ -505,7 +505,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
-
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());

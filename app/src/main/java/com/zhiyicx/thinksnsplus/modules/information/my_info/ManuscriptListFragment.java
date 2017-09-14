@@ -51,6 +51,11 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected boolean setUseStatusView() {
         return false;
     }
