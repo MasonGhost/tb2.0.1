@@ -48,7 +48,7 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.like);
+        return getString(R.string.liked);
     }
 
     @Override
