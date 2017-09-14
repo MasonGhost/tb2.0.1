@@ -35,7 +35,9 @@ import com.zhiyicx.common.utils.UIUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -66,6 +68,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
+    private Subscription mStatusbarSupport = null;// View 树监听订阅器
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
 
@@ -734,6 +737,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return getResources().getColor(resId);
     }
 
+    protected void supportFlymeSutsusbar() {
+        mStatusbarSupport = Observable.timer(1500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            try {
+                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                });
+
+    }
+
+
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {
@@ -742,7 +763,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
             mSnackBar = null;
         }
-
+        if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
+            mStatusbarSupport.unsubscribe();
+        }
+        if (mViewTreeSubscription != null && !mViewTreeSubscription.isUnsubscribed()) {
+            mViewTreeSubscription.unsubscribe();
+        }
         super.onDestroyView();
     }
 }
