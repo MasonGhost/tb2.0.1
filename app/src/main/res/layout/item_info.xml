@@ -42,42 +42,60 @@
                 android:textColor="@color/important_for_content"/>
 
         <!--资讯信息-->
-        <LinearLayout
+        <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                android:layout_height="wrap_content">
+            <!--仅在被驳回和投稿中显示-->
             <TextView
-                    android:id="@+id/tv_top_flag"
+                    android:id="@+id/tv_info_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/shape_info_top_bg"
-                    android:text="@string/info_top"
-                    android:textColor="@color/info_top"
-                    android:layout_marginRight="@dimen/spacing_small_3dp"
-                    android:textSize="@dimen/size_note_assist"
-                    android:padding="@dimen/spacing_tiny"/>
-
-            <TextView
-                    android:id="@+id/tv_from_channel"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    tools:text="xxxx"
+                    android:visibility="gone"/>
+            <!--通用信息-->
+            <LinearLayout
+                    android:id="@+id/ll_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/themeColor"
-                    tools:text="时政"
-                    android:background="@drawable/shape_info_list_channel"
-                    android:textSize="@dimen/size_note_assist"
-                    android:padding="@dimen/spacing_tiny"/>
+                    android:orientation="horizontal">
 
-            <TextView
-                    android:textColor="@color/general_for_hint"
-                    android:id="@+id/item_info_timeform"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_advert_launche"
-                    android:layout_marginLeft="@dimen/spacing_small_3dp"
-                    android:layout_marginStart="@dimen/spacing_small_3dp"
-                    tools:text="三小时前   来自火星"/>
-        </LinearLayout>
+                <TextView
+                        android:id="@+id/tv_top_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_info_top_bg"
+                        android:text="@string/info_top"
+                        android:textColor="@color/info_top"
+                        android:layout_marginRight="@dimen/spacing_small_3dp"
+                        android:textSize="@dimen/size_note_assist"
+                        android:padding="@dimen/spacing_tiny"/>
+
+                <TextView
+                        android:id="@+id/tv_from_channel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/themeColor"
+                        tools:text="时政"
+                        android:background="@drawable/shape_info_list_channel"
+                        android:textSize="@dimen/size_note_assist"
+                        android:padding="@dimen/spacing_tiny"/>
+
+                <TextView
+                        android:textColor="@color/general_for_hint"
+                        android:id="@+id/item_info_timeform"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/size_advert_launche"
+                        android:layout_marginLeft="@dimen/spacing_small_3dp"
+                        android:layout_marginStart="@dimen/spacing_small_3dp"
+                        tools:text="三小时前   来自火星"/>
+            </LinearLayout>
+        </FrameLayout>
+
 
     </LinearLayout>
 

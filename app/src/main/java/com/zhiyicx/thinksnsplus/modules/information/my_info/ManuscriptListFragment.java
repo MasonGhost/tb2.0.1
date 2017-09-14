@@ -82,7 +82,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
-        adapter.addItemViewDelegate(new InfoListItem() {
+        adapter.addItemViewDelegate(new InfoListItem(!getMyInfoType().endsWith(MY_INFO_TYPE_DONE)) {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
