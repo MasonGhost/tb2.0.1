@@ -94,20 +94,28 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
             String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
-            Glide.with(mContext).load(url)
-                    .override(w, h)
-                    .placeholder(R.drawable.shape_default_image)
-                    .error(R.drawable.shape_default_image)
-                    .into(imageView);
+            try {
+                Glide.with(mContext).load(url)
+                        .override(w, h)
+                        .placeholder(R.drawable.shape_default_image)
+                        .error(R.drawable.shape_default_image)
+                        .into(imageView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             imageView.setVisibility(View.GONE);
         }
 
         if (infoBean.getAnswer() != null) {
             contentTextView.setVisibility(View.VISIBLE);
-            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
-                    infoBean.getAnswer().getAnonymity() == 1
-                            && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
+            try {
+                ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
+                        infoBean.getAnswer().getAnonymity() == 1
+                                && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             RxView.clicks(contentTextView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {

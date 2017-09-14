@@ -530,6 +530,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.information.my_info.ManuscriptsActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.music_fm.paided_music.MyMusicActivity"

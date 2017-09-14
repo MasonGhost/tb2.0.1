@@ -144,7 +144,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
          */
 
         private int id;
-        private Double amount;
+        private Long amount;
         private String type;
 
         public int getId() {
@@ -155,11 +155,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
             this.id = id;
         }
 
-        public Double getAmount() {
+        public Long getAmount() {
             return amount;
         }
 
-        public void setAmount(Double amount) {
+        public void setAmount(Long amount) {
             this.amount = amount;
         }
 
@@ -179,7 +179,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
-            dest.writeDouble(this.amount);
+            dest.writeLong(this.amount);
             dest.writeString(this.type);
         }
 
@@ -188,7 +188,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
 
         protected StorageTaskBean(Parcel in) {
             this.id = in.readInt();
-            this.amount = in.readDouble();
+            this.amount = in.readLong();
             this.type = in.readString();
         }
 
