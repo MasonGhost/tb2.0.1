@@ -733,11 +733,6 @@ public class BackgroundTaskHandler {
             observable = Observable.concat(upLoadPics)
                     .map(integerBaseJson -> {
                         if (integerBaseJson.isStatus()) {
-                            if (integerBaseJson.getId() < 0) {
-                                if (position[0] > 0) {
-                                    position[0]--;
-                                }
-                            }
                             sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
                             position[0]++;// 完成后+1
                         } else {

@@ -73,7 +73,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (allLayout.getChildCount() == 1) {
+        if (allLayout.getChildCount() == 1 && ev.getAction() == MotionEvent.ACTION_DOWN) {
             lastAddEdit.requestFocus();
             showKeyBoard();
         }
@@ -318,13 +318,15 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     public void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public void showKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInputFromInputMethod(lastFocusEdit.getWindowToken(), 0);
+        imm.showSoftInput(lastFocusEdit, InputMethodManager.SHOW_FORCED);
+//        imm.showSoftInputFromInputMethod(lastFocusEdit.getApplicationWindowToken(),
+//                InputMethodManager.SHOW_FORCED);
     }
 
     /**
@@ -428,7 +430,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                                 LayoutParams.MATCH_PARENT, height);//设置图片固定高度
                         imageView.setLayoutParams(lp);
-                        imageView.setImageBitmap(Bitmap.createScaledBitmap(resource,width,height,false));
+                        imageView.setImageBitmap(Bitmap.createScaledBitmap(resource, width, height, false));
                     }
 
                     @Override

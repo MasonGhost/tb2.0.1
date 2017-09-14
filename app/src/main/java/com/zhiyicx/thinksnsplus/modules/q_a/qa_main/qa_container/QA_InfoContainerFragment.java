@@ -109,6 +109,7 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.setIndicatorMatchWidth(true);
     }
 
     @NonNull
@@ -135,6 +136,8 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
+                int leftRightPadding = UIUtil.dip2px(context, getResources().getInteger(DEFAULT_TAB_MARGIN));
+                simplePagerTitleView.setPadding(leftRightPadding, 0, leftRightPadding, 0);
 
                 simplePagerTitleView.setOnClickListener(v -> mVpFragment.setCurrentItem(index));
                 return simplePagerTitleView;
