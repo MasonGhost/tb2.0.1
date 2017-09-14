@@ -151,7 +151,11 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Override
     public String getTipPopRule() {
-        return mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "")).getRule();
+        WalletConfigBean walletConfigBean = mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
+            if(walletConfigBean==null){
+                return "钱包规则";
+            }
+        return walletConfigBean.getRule();
     }
 
     /**

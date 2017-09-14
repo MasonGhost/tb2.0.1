@@ -112,7 +112,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> showRulePopupWindow());
+            getView().post(() -> mPresenter.getTipPopRule());
         }
     }
 
