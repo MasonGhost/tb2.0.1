@@ -527,6 +527,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 replyToUserId, creatComment.getComment_mark());
     }
 
+    @Override
+    public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
+        commentBean.setState(DynamicCommentBean.SEND_ING);
+        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
+        mRootView.refreshData();
+    }
+
     /**
      * 处理发送动态数据,动态发布成功回调
      *

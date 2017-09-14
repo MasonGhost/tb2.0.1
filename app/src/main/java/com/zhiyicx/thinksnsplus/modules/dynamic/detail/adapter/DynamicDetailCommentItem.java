@@ -22,6 +22,9 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -34,9 +37,14 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     private OnUserInfoClickListener mOnUserInfoClickListener;
     private OnUserInfoLongClickListener mOnUserInfoLongClickListener;
     private OnCommentTextClickListener mOnCommentTextClickListener;
+    private OnCommentResendListener mOnCommentResendListener;
 
     public void setOnCommentTextClickListener(OnCommentTextClickListener onCommentTextClickListener) {
         mOnCommentTextClickListener = onCommentTextClickListener;
+    }
+
+    public void setOnCommentResendListener(OnCommentResendListener onCommentResendListener) {
+        mOnCommentResendListener = onCommentResendListener;
     }
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
@@ -69,8 +77,17 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
             }
         });
 
-//        holder.setVisible(R.id.fl_tip,dynamicCommentBean.getState()==DynamicCommentBean.SEND_ERROR?View.VISIBLE:View.GONE);
-        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        holder.setVisible(R.id.fl_tip, dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR ? View.VISIBLE : View.GONE);
+
+        RxView.clicks(holder.getView(R.id.fl_tip))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    if (mOnCommentResendListener != null) {
+                        mOnCommentResendListener.reSendComment(dynamicCommentBean);
+                    }
+                });
+
+        TextView topFlag = holder.getView(R.id.tv_top_flag);
         topFlag.setVisibility(!dynamicCommentBean.getPinned() ? View.GONE : View.VISIBLE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
@@ -137,5 +154,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         return content;
     }
 
-
+    public interface OnCommentResendListener {
+        void reSendComment(DynamicCommentBean dynamicCommentBean);
+    }
 }

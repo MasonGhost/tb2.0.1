@@ -973,6 +973,7 @@ public class BackgroundTaskHandler {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
+        dynamicCommentBean.setState(DynamicCommentBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
@@ -1080,6 +1081,7 @@ public class BackgroundTaskHandler {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
+        dynamicCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
