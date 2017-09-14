@@ -350,16 +350,16 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
-    public void updateLike(AnswerInfoBean data) {
+    public void publishAnswer(AnswerInfoBean data) {
         if (data != null) {
             if (mRootView.getListDatas().get(0).getUser() == null) {// 占位
                 mRootView.getListDatas().remove(0);
-                mRootView.getListDatas().add(data);
-                mRootView.refreshData();
-                mRootView.getCurrentQuestion().setAnswers_count(mRootView.getCurrentQuestion().getAnswers_count() + 1);
-                mRootView.getCurrentQuestion().setMy_answer(data);
-                mRootView.updateAnswerCount();
             }
+            mRootView.getListDatas().add(data);
+            mRootView.refreshData();
+            mRootView.getCurrentQuestion().setAnswers_count(mRootView.getCurrentQuestion().getAnswers_count() + 1);
+            mRootView.getCurrentQuestion().setMy_answer(data);
+            mRootView.updateAnswerCount();
         }
     }
 
