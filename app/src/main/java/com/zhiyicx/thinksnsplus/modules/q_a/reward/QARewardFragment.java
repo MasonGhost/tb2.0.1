@@ -165,7 +165,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (draft != null ) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
-            mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
+            double money = PayConfig.realCurrencyFen2Yuan(draft.getAmount());
+            if (money > 0){
+                mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
+            }
             if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()){
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
                 QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
