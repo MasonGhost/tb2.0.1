@@ -267,7 +267,7 @@ public class DigedBean extends BaseListBean {
                 case APP_LIKE_GROUP_POST:
                     try {
                         JSONObject jsonObject = new JSONObject(new Gson().toJson(likeable));
-                        source_content = jsonObject.getString("content");
+                        source_content = jsonObject.getString("title");
                     } catch (Exception e) {
                     }
                     break;
