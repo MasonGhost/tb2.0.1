@@ -112,6 +112,7 @@ public class SystemConfigBean implements Serializable {
      */
 
     public static class ImHelperBean implements Serializable {
+        private static final long serialVersionUID = 2932201693891980990L;
         private String uid;
         private String url;
         private boolean isDelete;
@@ -170,6 +171,7 @@ public class SystemConfigBean implements Serializable {
      * }
      */
     public static class Advert implements Serializable {
+        private static final long serialVersionUID = -261781358771084800L;
         private int id;
         private String title;
         private String type;
