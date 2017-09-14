@@ -86,25 +86,35 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         userInfoBeanDao.insertOrReplaceInTx(newData);
     }
 
+    /**
+     * 获取本地关注列表
+     * @param maxId
+     * @return
+     */
     public List<UserInfoBean> getFollowingUserInfo(long maxId) {
         if (maxId == 0) {
             maxId = System.currentTimeMillis();
         }
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
-                .where(UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
+                .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
                 .limit(TSListFragment.DEFAULT_ONE_PAGE_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();
     }
 
+    /**
+     * 获取本地粉丝列表
+     * @param maxId
+     * @return
+     */
     public List<UserInfoBean> getFollowerUserInfo(long maxId) {
         if (maxId == 0) {
             maxId = System.currentTimeMillis();
         }
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
-                .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
+                .where(UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
                 .limit(TSListFragment.DEFAULT_ONE_PAGE_SIZE)
                 .orderDesc(UserInfoBeanDao.Properties.User_id)
                 .list();

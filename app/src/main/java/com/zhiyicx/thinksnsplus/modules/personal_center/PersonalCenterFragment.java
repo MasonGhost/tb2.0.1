@@ -912,7 +912,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
-    private void supportFlymeSutsusbar() {
+    protected void supportFlymeSutsusbar() {
         mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {

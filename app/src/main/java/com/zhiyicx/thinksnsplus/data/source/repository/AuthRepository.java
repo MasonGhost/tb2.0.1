@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -82,6 +83,9 @@ public class AuthRepository implements IAuthRepository {
     SystemRepository mSystemRepository;
     @Inject
     RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -170,6 +174,7 @@ public class AuthRepository implements IAuthRepository {
         mCommentedBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(mContext).delDataBase();
+        mUserInfoBeanGreenDao.clearTable();
         AppApplication.setmCurrentLoginAuth(null);
 
         //处理 Ts 助手
