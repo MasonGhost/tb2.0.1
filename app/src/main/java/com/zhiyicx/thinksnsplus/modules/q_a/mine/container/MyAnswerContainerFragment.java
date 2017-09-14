@@ -74,7 +74,10 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
     protected boolean setUseStatusView() {
         return false;
     }
-
+    @Override
+    protected boolean isAdjustMode() {
+        return false;
+    }
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getResources().getStringArray(R.array.qa_mine_answer_title));
@@ -102,7 +105,9 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+//        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @NonNull

@@ -25,8 +25,6 @@ import java.util.List;
  */
 public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
 
-    public static final int PAGE_POSITION_QA = 0;
-    public static final int PAGE_POSITION_TOPIC = 1;
     private String mCurrentSearchContent = "";
 
     @Override

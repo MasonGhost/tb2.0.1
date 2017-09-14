@@ -63,6 +63,6 @@ public interface WalletContract {
          *
          * @param tag action tag
          */
-        void checkWalletConfig(int tag);
+        void checkWalletConfig(int tag, final boolean isNeedTip);
     }
 }

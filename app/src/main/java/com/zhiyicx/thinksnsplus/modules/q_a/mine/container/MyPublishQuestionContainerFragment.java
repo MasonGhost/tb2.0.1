@@ -72,6 +72,11 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -85,7 +90,10 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(setLeftImg());
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+//        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @Override
