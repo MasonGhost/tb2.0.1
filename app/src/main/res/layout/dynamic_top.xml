@@ -70,9 +70,9 @@
 
             <EditText
                 android:id="@+id/et_top_total"
-                android:maxLength="@null"
                 android:layout_marginRight="@dimen/spacing_small"
                 android:textSize="@dimen/size_content_assist"
+                android:text=""
                 android:textColorHint="@color/general_for_hint"
                 android:layout_marginLeft="@dimen/spacing_small"
                 android:gravity="right"

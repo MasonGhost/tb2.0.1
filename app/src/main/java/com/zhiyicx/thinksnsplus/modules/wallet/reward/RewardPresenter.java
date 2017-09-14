@@ -1,25 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Func1;
 
 /**
@@ -71,32 +64,15 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     }
 
     private void hanldeRewardResult(Observable<Object> result, WalletBean walletBean, double rewardMoney) {
-
-        Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
-                .doOnSubscribe(() ->
-                {
-                    mRootView.showSnackLoadingMessage(mContext.getString(R
-                            .string.apply_doing));
-                })
-                .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
+        Subscription subscription = handleWalletBlance((long) rewardMoney)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<Object, Observable<Object>>() {
                     @Override
-                    public Observable<Object> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < rewardMoney) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
-                        }
+                    public Observable<Object> call(Object o) {
                         return result;
                     }
-                }, throwable -> {
-                    throwable.printStackTrace();
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
-                .doAfterTerminate(() -> mRootView.setSureBtEnable(true))
+                }).doAfterTerminate(() -> mRootView.setSureBtEnable(true))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

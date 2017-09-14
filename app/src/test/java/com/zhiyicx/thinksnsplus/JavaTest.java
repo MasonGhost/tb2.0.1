@@ -193,6 +193,7 @@ public class JavaTest {
     public void doubleTest() {
         double d = 5.0;
         System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+        System.out.println("result:11:" + String.valueOf(10 * 111111111));
     }
 
     @Test
