@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopNewsCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import butterknife.BindView;
@@ -56,7 +57,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -73,7 +76,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     protected MultiItemTypeAdapter<BaseListBean> getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(), mPresenter);
+        TopNewsCommentItem newsCommentItem = new TopNewsCommentItem(getActivity(), mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
+        multiItemTypeAdapter.addItemViewDelegate(newsCommentItem);
         return multiItemTypeAdapter;
     }
 

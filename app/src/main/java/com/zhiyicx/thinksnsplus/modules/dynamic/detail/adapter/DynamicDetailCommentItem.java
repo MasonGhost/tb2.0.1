@@ -68,6 +68,8 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                 mOnCommentTextClickListener.onCommentTextClick(position);
             }
         });
+
+//        holder.setVisible(R.id.fl_tip,dynamicCommentBean.getState()==DynamicCommentBean.SEND_ERROR?View.VISIBLE:View.GONE);
         TextView topFlag=holder.getView(R.id.tv_top_flag);
         topFlag.setVisibility(!dynamicCommentBean.getPinned() ? View.GONE : View.VISIBLE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));

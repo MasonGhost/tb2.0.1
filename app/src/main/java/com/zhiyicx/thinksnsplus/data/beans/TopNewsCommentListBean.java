@@ -15,6 +15,10 @@ import java.io.Serializable;
  */
 public class TopNewsCommentListBean extends BaseListBean implements Parcelable, Serializable {
 
+    public static final int TOP_REVIEW = 0;
+    public static final int TOP_SUCCESS = 1;
+    public static final int TOP_REFUSE = 2;
+
     private static final long serialVersionUID = -4707561156899223475L;
     /**
      * id : 12

@@ -56,6 +56,21 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         holder.setVisible(R.id.fl_detial, View.GONE);
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
+        TextView review_flag = holder.getTextView(R.id.tv_review);
+        if (dynamicCommentBean.getExpires_at() == null) {
+            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
+            review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
+        } else {
+            long nowTime = System.currentTimeMillis();
+            long expires_at = TimeUtils.utc2LocalLong(dynamicCommentBean.getExpires_at());
+            if (nowTime >= expires_at) {
+                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
+                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
+            } else {
+                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
+                review_flag.setText(holder.itemView.getResources().getString(R.string.review_approved));
+            }
+        }
 
         if (dynamicCommentBean.getFeed() != null && dynamicCommentBean.getFeed().getImages() != null
                 && !dynamicCommentBean.getFeed().getImages().isEmpty()) {
@@ -74,13 +89,15 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
 
         if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
+            holder.setVisible(R.id.tv_content, View.GONE);
+            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
+            review_flag.setText(holder.itemView.getResources().getString(dynamicCommentBean.getFeed() == null ?
+                    R.string.review_dynamic_deleted : R.string.review_comment_deleted));
         } else {
             holder.setVisible(R.id.fl_detial, View.GONE);
-            String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                    dynamicCommentBean.getComment().getComment_content());
-
+            holder.setVisible(R.id.tv_content, View.VISIBLE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), commentBody));
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), dynamicCommentBean.getFeed().getFeed_content()));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
@@ -92,21 +109,6 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         holder.setText(R.id.tv_name, dynamicCommentBean.getUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getUpdated_at()));
 
-        TextView review_flag = holder.getTextView(R.id.tv_review);
-        if (dynamicCommentBean.getExpires_at() == null) {
-            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
-            review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
-        } else {
-            long nowTime = System.currentTimeMillis();
-            long expires_at = TimeUtils.utc2LocalLong(dynamicCommentBean.getExpires_at());
-            if (nowTime >= expires_at) {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
-            } else {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_approved));
-            }
-        }
 
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
@@ -131,7 +133,9 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (dynamicCommentBean.getExpires_at() == null)
+                    if (dynamicCommentBean.getExpires_at() == null
+                            && dynamicCommentBean.getFeed() != null
+                            && dynamicCommentBean.getComment() != null)
                         initReviewPopWindow(dynamicCommentBean, position);
                 });
     }
