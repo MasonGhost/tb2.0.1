@@ -121,7 +121,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (dynamicCommentBean.getFeed() == null) {
+                    if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }

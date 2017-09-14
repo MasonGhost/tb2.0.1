@@ -114,7 +114,7 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (dynamicCommentBean.getNews() == null) {
+                    if (dynamicCommentBean.getNews() == null || dynamicCommentBean.getComment() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
