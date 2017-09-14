@@ -76,10 +76,10 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         return mQaListInfoBean;
     }
 
-//    @Override
-//    protected boolean showToolBarDivider() {
-//        return true;
-//    }
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
 
 //    @Override
 //    protected String setCenterTitle() {
