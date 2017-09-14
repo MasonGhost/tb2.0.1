@@ -3,21 +3,15 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -42,6 +36,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommen
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -447,6 +443,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
     }
+
     @Override
     public void updateReward() {
 
@@ -600,10 +597,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
-                    intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
-                    mDeletCommentPopWindow.hide();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, getCurrentDynamic().getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID, comment_id);// 该资源的评论id,非评论置顶不传这个
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 })
                 .item2ClickListener(() -> {

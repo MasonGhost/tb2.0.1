@@ -216,9 +216,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         mBtTop.setEnabled(enable);
 //        if (!enable)
 //            return;
-        long money=mCurrentDays * mInputMoney;
-        String value=String.valueOf(mCurrentDays * mInputMoney);
-        mEtTopTotal.setText(money+"");
+        long money = mCurrentDays * mInputMoney;
+        mEtTopTotal.setText(money > 0 ? money + "" : "");
     }
 
     @Override
