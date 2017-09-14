@@ -287,7 +287,6 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         return mRepository.payForOnlook(answer_id);
                     }
                 })
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {

@@ -604,6 +604,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
