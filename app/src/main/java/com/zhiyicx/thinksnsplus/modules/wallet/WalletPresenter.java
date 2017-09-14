@@ -40,6 +40,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
     public static final int TAG_DEfault = 0; // do nothing
     public static final int TAG_RECHARGE = 1; // recharge
     public static final int TAG_WITHDRAW = 2; // withdraw
+    public static final int TAG_SHOWRULE_POP = 3; // show rulepop
+    public static final int TAG_SHOWRULE_JUMP = 4; // jump rule
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -71,7 +73,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Override
     public void updateUserInfo() {
-        getWalletConfigFromServer(TAG_DEfault, false); // 默认主动获取一次
+//        getWalletConfigFromServer(TAG_DEfault, false); // 默认主动获取一次
         Subscription timerSub = Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
@@ -151,11 +153,14 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Override
     public String getTipPopRule() {
-        WalletConfigBean walletConfigBean = mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
-            if(walletConfigBean==null){
+        if (mWalletConfigBean == null) {
+            mWalletConfigBean = mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
+            if (mWalletConfigBean == null) {
                 return "钱包规则";
             }
-        return walletConfigBean.getRule();
+        }
+        return mWalletConfigBean.getRule();
+
     }
 
     /**

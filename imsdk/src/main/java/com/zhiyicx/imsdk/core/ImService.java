@@ -183,6 +183,9 @@ public class ImService {
      */
 
     public void connect() {
+        if(TextUtils.isEmpty(mUri)){
+            return;
+        }
         LogUtils.debugInfo("SocketService", mUri);
         try {
             mConnection.connect(mUri, new WebSocketConnectionHandler() {

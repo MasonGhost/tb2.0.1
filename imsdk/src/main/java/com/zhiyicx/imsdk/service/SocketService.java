@@ -388,7 +388,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             connectivityManager.requestNetwork(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
-                @Override public void onAvailable(Network network) {
+                @Override
+                public void onAvailable(Network network) {
                     super.onAvailable(network);
                     socketReconnect();
                 }
@@ -478,6 +479,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * IM登出
                  */
                 case TAG_IM_LOGINOUT:
+                    mService.setUrl(null);
                     result = disConnect();
                     break;
                 /**
