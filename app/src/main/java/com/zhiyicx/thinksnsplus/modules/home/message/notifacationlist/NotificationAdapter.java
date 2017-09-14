@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
 import android.content.Context;
 
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -25,6 +26,6 @@ public class NotificationAdapter extends CommonAdapter<TSPNotificationBean>{
     @Override
     protected void convert(ViewHolder holder, TSPNotificationBean tspNotificationBean, int position) {
         holder.setText(R.id.tv_notification_content, tspNotificationBean.getData().getContent());
-        holder.setText(R.id.tv_time, tspNotificationBean.getCreated_at());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(tspNotificationBean.getCreated_at()));
     }
 }
