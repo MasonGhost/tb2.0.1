@@ -101,7 +101,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         .error(R.drawable.shape_default_image)
                         .into(imageView);
             } catch (Exception e) {
-                e.printStackTrace();
+                // 加载图片 context 被销毁了
             }
         } else {
             imageView.setVisibility(View.GONE);
@@ -114,7 +114,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         infoBean.getAnswer().getAnonymity() == 1
                                 && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
             } catch (Exception e) {
-                e.printStackTrace();
+                // 加载图片 context 被销毁了
             }
             RxView.clicks(contentTextView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

@@ -7,34 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
-import com.zhiyicx.thinksnsplus.data.beans.TSNotifyExtraBean;
-import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
-import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.BaseTopItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
-
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 
 /**
  * @Author Jliuer
@@ -131,35 +112,35 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .parentView(mDriver)
                 .animationStyle(ActionPopupWindow.NO_ANIMATION)
                 .item1Str(getString(R.string.stick_type_dynamic_commnet))
-                .item1Color(mTopType.equals(mTopTypes[0]) ? R.color.themeColor : 0)
+                .item1Color(mTopType.equals(mTopTypes[0]) ? getColor(R.color.themeColor) : 0)
                 .item2Str(getString(R.string.stick_type_news_commnet))
-                .item2Color(mTopType.equals(mTopTypes[1]) ? R.color.themeColor : 0)
+                .item2Color(mTopType.equals(mTopTypes[1]) ? getColor(R.color.themeColor) : 0)
                 .item3Str(getString(R.string.stick_type_group_commnet))
-                .item3Color(mTopType.equals(mTopTypes[2]) ? R.color.themeColor : 0)
+                .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
                 .item4Str(getString(R.string.stick_type_group_join))
-                .item4Color(mTopType.equals(mTopTypes[3]) ? R.color.themeColor : 0)
+                .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
                 .item1ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.withdraw_all));
+                    mToolbarCenter.setText(getString(R.string.stick_type_dynamic_commnet));
                     mTopType = mTopTypes[0];
-                    mPresenter.requestNetData(mMaxId, false);
+                    mPresenter.requestNetData(0L, false);
                     mActionPopupWindow.hide();
                 })
                 .item2ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.withdraw_out));
+                    mToolbarCenter.setText(getString(R.string.stick_type_news_commnet));
                     mTopType = mTopTypes[1];
-                    mPresenter.requestNetData(mMaxId, false);
+                    mPresenter.requestNetData(0L, false);
                     mActionPopupWindow.hide();
                 })
                 .item3ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.withdraw_in));
+                    mToolbarCenter.setText(getString(R.string.stick_type_group_commnet));
                     mTopType = mTopTypes[2];
-                    mPresenter.requestNetData(mMaxId, false);
+                    mPresenter.requestNetData(0L, false);
                     mActionPopupWindow.hide();
                 })
                 .item3ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.withdraw_in));
+                    mToolbarCenter.setText(getString(R.string.stick_type_group_join));
                     mTopType = mTopTypes[3];
-                    mPresenter.requestNetData(mMaxId, false);
+                    mPresenter.requestNetData(0L, false);
                     mActionPopupWindow.hide();
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
