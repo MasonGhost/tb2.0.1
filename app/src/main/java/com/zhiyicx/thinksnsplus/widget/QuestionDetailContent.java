@@ -107,9 +107,11 @@ public class QuestionDetailContent extends FrameLayout {
             String imageMarkDown = matcher.group(0);
             String image_id = matcher.group(1);
 
-            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + image_id + "?q=80";
-            String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
-            content = content.replace(imageMarkDown, iamgeTag);
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + image_id/* + "?q=80"*/;
+            String imageTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            // 先手动加上换行吧 =_，=
+            imageTag = "    \n" + imageTag + "    \n";
+            content = content.replace(imageMarkDown, imageTag);
 
             // 处理图片列表
             ImageBean imageBean = new ImageBean();
@@ -214,7 +216,7 @@ public class QuestionDetailContent extends FrameLayout {
 
             @Override
             public void onImageTap(String s, int width, int height) {
-                LogUtils.d("Cathy", "onImageTap // " + s);
+                LogUtils.d("Cathy", "onImageTap // " + s + " width :" + width + " height : " + height);
                 int position = 0;
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getImgUrl().equals(s)) {
