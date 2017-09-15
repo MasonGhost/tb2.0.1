@@ -248,7 +248,7 @@ public class TimeUtils {
                 result = "8天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 9:
-                result = "九天前 " + getStandardTimeWithHour(timesamp);
+                result = "9天前 " + getStandardTimeWithHour(timesamp);
                 break;
 
             default:

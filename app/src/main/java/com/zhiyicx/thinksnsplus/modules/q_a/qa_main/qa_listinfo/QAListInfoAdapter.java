@@ -60,7 +60,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
         TextView titleView = holder.getTextView(R.id.item_info_title);
         titleView.setText(infoBean.getSubject());
-        holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
+        holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyNormal(infoBean.getCreated_at()));
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
         holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
