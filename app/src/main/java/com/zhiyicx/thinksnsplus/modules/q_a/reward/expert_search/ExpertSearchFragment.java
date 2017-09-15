@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_RESULT;
@@ -70,6 +72,11 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         return fragment;
     }
 
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+
     @Override
     protected void initView(View rootView) {
         if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_BEAN)) {
@@ -105,9 +112,14 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                mTvRecommendHint.setVisibility(View.GONE);
                 mPresenter.requestNetData(0, null, mFragmentInfoSearchEdittext.getText().toString(), false);
             }
         });
+
+        RxTextView.textChanges(mFragmentInfoSearchEdittext)
+                .filter(charSequence -> charSequence.length() == 0)
+                .subscribe(charSequence -> mTvRecommendHint.setVisibility(View.VISIBLE));
     }
 
     @Override
@@ -130,7 +142,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected Long getMaxId(@NotNull List<ExpertBean> data) {
-        return (long)mListDatas.size();
+        return (long) mListDatas.size();
     }
 
     @Override

@@ -42,7 +42,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.SpanTextClickable;
 
 import java.io.InputStream;
 import java.util.Locale;
@@ -207,8 +207,8 @@ public class ImageUtils {
      * @param withBorder
      * @description 单纯的一个丑字根本描述不了这段代码 by tym
      */
-    public static void loadQAUserHead(UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
-        loadQAUserAvatar(userInfoBean, contentTextView, content, isAnonymity, withBorder);
+    public static void loadQAUserHead(int position, SpanTextClickable.SpanTextClickListener spanTextClickListener, int tag, UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
+        loadQAUserAvatar(position, spanTextClickListener, tag, userInfoBean, contentTextView, content, isAnonymity, withBorder);
     }
 
     /**
@@ -259,7 +259,7 @@ public class ImageUtils {
      * @param userInfoBean
      * @param withBorder
      */
-    private static void loadQAUserAvatar(UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
+    private static void loadQAUserAvatar(int position, SpanTextClickable.SpanTextClickListener spanTextClickListener, int tag, UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null) {
             avatar = userInfoBean.getAvatar();
@@ -290,14 +290,14 @@ public class ImageUtils {
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        laodAvatar(laod(resource, contentTextView, isAnonymity, userInfoBean, content),
+                        laodAvatar(position, spanTextClickListener, tag, laod(resource, contentTextView, isAnonymity, userInfoBean, content),
                                 userInfoBean, contentTextView, content, isAnonymity, withBorder);
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        laodAvatar(laod(errorDrawable, contentTextView, isAnonymity, userInfoBean, content),
+                        laodAvatar(position, spanTextClickListener, tag, laod(errorDrawable, contentTextView, isAnonymity, userInfoBean, content),
                                 userInfoBean, contentTextView, content, isAnonymity, withBorder);
                     }
                 });
@@ -346,7 +346,7 @@ public class ImageUtils {
      * @param isAnonymity
      * @param withBorder
      */
-    private static void laodAvatar(final CircleImageDrawable headImage, UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
+    private static void laodAvatar(int position, SpanTextClickable.SpanTextClickListener spanTextClickListener, int tag, final CircleImageDrawable headImage, UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
         if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
             if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
                 userInfoBean.getVerified().setIcon("");
@@ -364,22 +364,47 @@ public class ImageUtils {
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
-                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
-                            spannableString.setSpan(imgSpan, 0, 1, Spannable
-                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-                            contentTextView.setText(spannableString);
+                            LogUtils.d("onResourceReady tag::" + tag);
+                            LogUtils.d("onResourceReady content::" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                            LogUtils.d("onResourceReady getTag::" + contentTextView.getTag());
+                            if (tag == (int) contentTextView.getTag()) {
+                                ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
+                                String first = "T" + userInfoBean.getName() + "：";
+                                SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                spannableString.setSpan(imgSpan, 0, 1, Spannable
+                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
+                                clickable.setSpanTextClickListener(spanTextClickListener);
+                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
+                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
+                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+                                contentTextView.setText(spannableString);
+                            }
                         }
 
                         @Override
                         public void onLoadFailed(Exception e, Drawable errorDrawable) {
                             super.onLoadFailed(e, errorDrawable);
-                            errorDrawable.setBounds(0, 0, w, w);
-                            ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
-                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
-                            spannableString.setSpan(imgSpan, 0, 1, Spannable
-                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-                            contentTextView.setText(spannableString);
+                            LogUtils.d("onLoadFailed tag::" + tag);
+                            LogUtils.d("onLoadFailed content::" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                            LogUtils.d("onLoadFailed getTag::" + contentTextView.getTag());
+                            if (tag == (int) contentTextView.getTag()) {
+                                errorDrawable.setBounds(0, 0, w, w);
+                                ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
+                                String first = "T" + userInfoBean.getName() + "：";
+                                SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                spannableString.setSpan(imgSpan, 0, 1, Spannable
+                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
+                                clickable.setSpanTextClickListener(spanTextClickListener);
+                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
+
+                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
+                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+                                contentTextView.setText(spannableString);
+
+                            }
                         }
 
                     });

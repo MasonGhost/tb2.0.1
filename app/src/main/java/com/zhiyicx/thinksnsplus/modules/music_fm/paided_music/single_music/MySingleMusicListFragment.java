@@ -128,18 +128,18 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
                 String music_name = item.getTitle();
                 musicName.setText(music_name);
                 authorName.setText("-" + item.getSinger().getName());
-
-                if (item.getStorage().getAmount() != 0) {// 有收费
-                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
-                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());
-                    ImageSpan imgSpan = new CenterImageSpan(top_drawable);
-                    SpannableString spannableString = SpannableString.valueOf("T" + music_name);
-                    spannableString.setSpan(imgSpan, 0, 1, Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-                    musicName.setText(spannableString);
-                } else {
-                    musicName.setText(music_name);
-                }
+                musicName.setText(music_name);
+//                if (item.getStorage().getAmount() != 0) {// 有收费
+//                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
+//                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());
+//                    ImageSpan imgSpan = new CenterImageSpan(top_drawable);
+//                    SpannableString spannableString = SpannableString.valueOf("T" + music_name);
+//                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+//                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    musicName.setText(spannableString);
+//                } else {
+//
+//                }
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

@@ -162,14 +162,14 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         QAPublishBean draft = mQAPublishBean == null ? null : mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null ) {
+        if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
             double money = PayConfig.realCurrencyFen2Yuan(draft.getAmount());
-            if (money > 0){
+            if (money > 0) {
                 mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
             }
-            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()){
+            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
                 QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
                 typeIds.setUser(draft.getInvitations().get(0).getUser());
@@ -256,19 +256,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        if (mQAPublishBean != null){
-            // 重新单独设置悬赏，没有传对应的数据过来
-            mPresenter.saveQuestion(packgQuestion());
-        }
+        mPresenter.saveQuestion(packgQuestion());
         super.setLeftClick();
     }
 
     @Override
     public void onBackPressed() {
-        if (mQAPublishBean != null){
-            // 重新单独设置悬赏，没有传对应的数据过来
-            mPresenter.saveQuestion(packgQuestion());
-        }
+        mPresenter.saveQuestion(packgQuestion());
         getActivity().finish();
     }
 
@@ -438,6 +432,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     }
 
     private QAPublishBean packgQuestion() {
+        if (mQAPublishBean == null) {
+            return null;
+        }
         mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);

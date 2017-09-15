@@ -112,6 +112,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     private ActionPopupWindow mOtherDynamicPopWindow;
     private ActionPopupWindow mMyDynamicPopWindow;
 
+    private ActionPopupWindow mReSendCommentPopWindow;
+
     private PayPopWindow mPayImagePopWindow;
 
     @Override

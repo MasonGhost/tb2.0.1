@@ -7,6 +7,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import org.simple.eventbus.EventBus;
@@ -178,6 +179,7 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void onError(String error) {
         if (mQueueManager.getCurrentQueueSize() == 1) {
+            WindowUtils.hidePopupWindow();
             updatePlaybackState(error);// 如果不止一首歌，那么久播放下一个
         } else {
             onCompletion();

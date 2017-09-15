@@ -65,13 +65,13 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
 
-
         UserInfoBean userInfoBean = new UserInfoBean();
         userInfoBean.setUser_id((long) expertBean.getId());
         userInfoBean.setFollower(expertBean.isFollower());
         userInfoBean.setName(expertBean.getName());
         userInfoBean.setVerified(expertBean.getVerified());
         if (mIsShowFollow){
+            // 不是不要 是邀请才不要
             subscrib.setVisibility(View.VISIBLE);
             boolean isJoined = expertBean.isFollower();
             userInfoBean.setFollower(isJoined);
