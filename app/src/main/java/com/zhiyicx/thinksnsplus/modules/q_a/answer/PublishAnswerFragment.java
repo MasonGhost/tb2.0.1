@@ -94,6 +94,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setRightClick() {
+        mRicheTest.hideKeyBoard();
         if (mType == PublishType.PUBLISH_ANSWER) {
             mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString()
                     , mAnonymity);
