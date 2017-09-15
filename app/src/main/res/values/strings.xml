@@ -461,6 +461,7 @@
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
+    <string name="create_topic">申请创建话题</string>
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
@@ -585,8 +586,8 @@
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
     <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
-    <string name="not_find_qa_topic_to_publish">未找到相关话题~</string>
-    <string name="request_to_publish_topic">申请创建话题~</string>
+    <string name="not_find_qa_topic_to_publish">未找到相关话题</string>
+    <string name="request_to_publish_topic">申请创建话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
     <string name="bind_success">账号绑定成功</string>

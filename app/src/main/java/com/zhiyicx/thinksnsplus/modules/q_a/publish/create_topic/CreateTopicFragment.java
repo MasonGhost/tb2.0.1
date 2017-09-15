@@ -43,6 +43,11 @@ public class CreateTopicFragment extends TSFragment<CreateTopicContract.Presente
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.create_topic);
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         mPresenter.createTopic(mEtTopicTitle.getInputContent(), mEtTopicDesc.getInputContent());

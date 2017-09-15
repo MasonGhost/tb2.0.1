@@ -297,7 +297,7 @@ public class ApiConfig {
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
     // 申请创建话题
-    public static final String APP_PATH_CREATE_TOPIC = "api/" + API_VERSION_2 + "/api/v2/user/question-topics/application";
+    public static final String APP_PATH_CREATE_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics/application";
     // 获取认证用户关注的话题或者专家话题
     public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
     // 获取话题下专家列表

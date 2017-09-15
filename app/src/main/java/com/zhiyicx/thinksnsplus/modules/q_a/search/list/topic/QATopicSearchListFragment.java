@@ -140,6 +140,10 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     }
 
     @Override
+    public void onCacheResponseSuccess(List<QATopicBean> data, boolean isLoadMore) {
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<QATopicBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
         checkEmptyView();
@@ -257,6 +261,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     }
 
     private void checkEmptyView() {
+        mEmptyView.setVisibility(View.GONE);
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {
