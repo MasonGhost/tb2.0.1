@@ -305,6 +305,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
      * 初始化图片选择弹框
      */
     private void initPhotoPopupWindow() {
+        mRicheTest.hideKeyBoard();
         if (mPicTag == 9) {
             initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault(), getString(R.string.choose_max_photos), 9));
             return;
@@ -402,12 +403,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
-        mRicheTest.hideKeyBoard();
         mAnonymityPopWindow.showParentViewTop();
         mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked) {
+        mRicheTest.hideKeyBoard();
         if (mAnonymityAlertPopWindow == null) {
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
@@ -444,7 +445,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     .build();
         }
         if (isChecked) {
-            mRicheTest.hideKeyBoard();
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();
