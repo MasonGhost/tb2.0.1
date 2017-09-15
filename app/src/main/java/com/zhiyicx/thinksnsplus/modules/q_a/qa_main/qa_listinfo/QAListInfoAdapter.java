@@ -50,6 +50,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFr
 public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private int mContentMaxShowNum;
+    private SpanTextClickable.SpanTextClickListener mSpanTextClickListener;
 
 
     public QAListInfoAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
@@ -109,9 +110,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         }
 
         if (infoBean.getAnswer() != null) {
+            contentTextView.setTag(infoBean.getAnswer().getId().intValue());
             contentTextView.setVisibility(View.VISIBLE);
             try {
-                ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
+                ImageUtils.loadQAUserHead(position,mSpanTextClickListener, infoBean.getAnswer().getId().intValue(),
+                        infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
                         infoBean.getAnswer().getAnonymity() == 1
                                 && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
             } catch (Exception e) {
@@ -159,9 +162,12 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         return links;
     }
 
+    public void setSpanTextClickListener(SpanTextClickable.SpanTextClickListener spanTextClickListener) {
+        mSpanTextClickListener = spanTextClickListener;
+    }
+
     protected int getExcellentTag(boolean isExcellent) {
         return 0;
     }
-
 
 }

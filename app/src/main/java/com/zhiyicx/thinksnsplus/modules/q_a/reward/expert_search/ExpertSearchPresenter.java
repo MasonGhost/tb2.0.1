@@ -96,6 +96,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
                             @Override
                             protected void onFailure(String message, int code) {
                                 super.onFailure(message, code);
+                                mRootView.showMessage(message);
                             }
 
                             @Override

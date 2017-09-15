@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -26,6 +28,8 @@ public interface IBasePublishQuestionRepository {
     Observable<List<QAListInfoBean>> getQAQuestion(String subject, Long maxId, String type);
 
     Observable<List<QAListInfoBean>> getUserQAQustion(String type,Long after);
+
+    Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(Long answer_id);
 
     Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId, String type);
 

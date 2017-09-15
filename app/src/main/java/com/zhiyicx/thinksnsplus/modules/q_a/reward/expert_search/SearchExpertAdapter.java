@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -70,6 +71,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         userInfoBean.setVerified(expertBean.getVerified());
         boolean isJoined = expertBean.isFollower();
         userInfoBean.setFollower(isJoined);
+        subscrib.setVisibility(View.GONE);// 为甚么不要呢
         subscrib.setChecked(isJoined);
         subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
         subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
