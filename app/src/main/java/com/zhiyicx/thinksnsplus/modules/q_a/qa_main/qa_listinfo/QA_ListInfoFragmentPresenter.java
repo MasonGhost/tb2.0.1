@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,11 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
+
+    @Inject
+    SystemRepository mSystemRepository;
+
+    private SystemConfigBean mSystemConfigBean;
 
     @Inject
     public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.Repository repository, QA_ListInfoConstact.View rootView) {
@@ -116,6 +122,9 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Override
     public SystemConfigBean getSystemConfig() {
-        return null;
+        if (mSystemConfigBean == null) {
+            mSystemConfigBean = mSystemRepository.getBootstrappersInfoFromLocal();
+        }
+        return mSystemConfigBean;
     }
 }

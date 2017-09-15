@@ -373,11 +373,11 @@ public class ImageUtils {
                                 SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                                 spannableString.setSpan(imgSpan, 0, 1, Spannable
                                         .SPAN_EXCLUSIVE_EXCLUSIVE);
-                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
-                                clickable.setSpanTextClickListener(spanTextClickListener);
-                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
-                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
-                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+//                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
+//                                clickable.setSpanTextClickListener(spanTextClickListener);
+//                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
+//                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
+//                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
                                 contentTextView.setText(spannableString);
                             }
                         }
@@ -396,12 +396,12 @@ public class ImageUtils {
                                 spannableString.setSpan(imgSpan, 0, 1, Spannable
                                         .SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
-                                clickable.setSpanTextClickListener(spanTextClickListener);
-                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
-
-                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
-                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+//                                SpanTextClickable clickable = new SpanTextClickable((long) tag, contentTextView.getTextSize() / 3, position);
+//                                clickable.setSpanTextClickListener(spanTextClickListener);
+//                                SpanTextClickable.dealTextViewClickEvent(contentTextView);
+//
+//                                spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
+//                                        .SPAN_EXCLUSIVE_EXCLUSIVE);
                                 contentTextView.setText(spannableString);
 
                             }

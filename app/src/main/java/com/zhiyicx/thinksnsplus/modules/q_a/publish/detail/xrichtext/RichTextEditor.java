@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -363,18 +364,38 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     private DataImageView addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
-        Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
-        imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
 
-        // 调整imageView的高度，根据宽度来调整高度
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath);
-        int imageHeight = 500;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath,options);
+        int imageHeight;
         if (bmp != null) {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
             bmp.recycle();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            lp.bottomMargin = 10;
+            imageView.setLayoutParams(lp);
+        } else {
+            imageHeight = allLayout.getWidth();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            imageView.setLayoutParams(lp);
+            imageView.setImageResource(R.drawable.shape_default_image);
         }
-        // TODO: 17/8/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
+
+        Glide.with(getContext())
+                .load(imagePath)
+                .asBitmap()
+                .override(allLayout.getWidth(),imageHeight)
+                .centerCrop()
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(imageView);
+
+        imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
+
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
         lp.bottomMargin = 10;
@@ -399,7 +420,9 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
 
         // 调整imageView的高度，根据宽度来调整高度
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath,options);
         int imageHeight = 500;
         if (bmp != null) {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
