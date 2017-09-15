@@ -92,7 +92,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否邀请
         holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
         // 时间
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyForDetail( answerInfoBean.getCreated_at()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
 
