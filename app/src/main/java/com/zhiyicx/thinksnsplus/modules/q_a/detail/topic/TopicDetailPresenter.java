@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
@@ -72,7 +73,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
     @Override
     public void handleTopicFollowState(String topic_id, boolean isFollow) {
         mRootView.getCurrentTopicBean().setHas_follow(isFollow);
-        if (isFollow){
+        if (isFollow) {
             mRootView.getCurrentTopicBean().setFollows_count(mRootView.getCurrentTopicBean().getFollows_count() + 1);
         } else {
             mRootView.getCurrentTopicBean().setFollows_count(mRootView.getCurrentTopicBean().getFollows_count() - 1);
@@ -104,6 +105,11 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qaPublishBean) {
+        mRepository.saveQuestion(qaPublishBean);
     }
 
     @Override

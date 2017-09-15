@@ -10,13 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -111,6 +106,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
     private ActionPopupWindow mMyDynamicPopWindow;
+
+    private ActionPopupWindow mReSendCommentPopWindow;
 
     private PayPopWindow mPayImagePopWindow;
 

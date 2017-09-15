@@ -1,25 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.create_topic.CreateTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
@@ -34,12 +33,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_ALL;
 import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_SEARCH;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
@@ -53,6 +49,12 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
+    @BindView(R.id.ll_empty)
+    LinearLayout mLlEmpty;
+    @BindView(R.id.tv_tip)
+    TextView mTvTip;
+    @BindView(R.id.bt_do)
+    Button mBtDo;
 
     private MultiItemTypeAdapter mHsitoryAdapter;
     private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
@@ -101,6 +103,8 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     protected void initData() {
         super.initData();
         initHistoryView();
+        mTvTip.setText(getString(R.string.not_find_qa_topic_to_publish));
+        mBtDo.setText(getString(R.string.request_to_publish_topic));
     }
 
     private void initHistoryView() {
@@ -127,6 +131,22 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         } else {
             mRvSearchHistory.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        checkEmptyView();
+    }
+
+    @Override
+    public void onCacheResponseSuccess(List<QATopicBean> data, boolean isLoadMore) {
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<QATopicBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        checkEmptyView();
     }
 
     @Override
@@ -169,6 +189,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
+                                onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
 
@@ -238,6 +259,21 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         } else {
             mRefreshlayout.setRefreshing(true);
         }
+    }
+
+    private void checkEmptyView() {
+        mEmptyView.setVisibility(View.GONE);
+        if (mListDatas.isEmpty()) {
+            mLlEmpty.setVisibility(View.VISIBLE);
+        } else {
+            mLlEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    @OnClick(R.id.bt_do)
+    public void onViewClicked() {
+        // 发布话题
+        startActivity(new Intent(getActivity(), CreateTopicActivity.class));
     }
 
 }

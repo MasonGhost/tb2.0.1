@@ -1,7 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.q_a;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,6 +22,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActi
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerActivity;
+import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior;
 
 import java.util.concurrent.TimeUnit;
 
@@ -51,6 +56,10 @@ public class QA_Fragment extends TSFragment {
     LinearLayout mLlToolbarContainerParent;
     @BindView(R.id.btn_send_dynamic)
     ImageView mBtnSendDynamic;
+
+    private boolean mIsAnimatingOut = false;
+    private static final android.view.animation.Interpolator INTERPOLATOR =
+            new FastOutSlowInInterpolator();
 
     private QA_InfoContainerFragment mQA_ListInfoFragment;
     private QATopicFragmentContainerFragment mQA_TopicInfoFragment;
@@ -98,6 +107,7 @@ public class QA_Fragment extends TSFragment {
                     } else {
                         fragmentTransaction.show(mQA_ListInfoFragment);
                     }
+                    mBtnSendDynamic.setVisibility(View.VISIBLE);
                     break;
                 case R.id.rb_topic:
                     if (mQA_TopicInfoFragment == null) {
@@ -106,6 +116,7 @@ public class QA_Fragment extends TSFragment {
                     } else {
                         fragmentTransaction.show(mQA_TopicInfoFragment);
                     }
+                    mBtnSendDynamic.setVisibility(View.GONE);
                     break;
                 default:
                     break;
@@ -137,6 +148,34 @@ public class QA_Fragment extends TSFragment {
         if (mQA_TopicInfoFragment != null) {
             fragmentTransaction.hide(mQA_TopicInfoFragment);
         }
+    }
+
+    // 退出动画
+    public void animateOut() {
+        ViewCompat.animate(mBtnSendDynamic).translationY(100.0f).alpha(0.0f).scaleX(0.0f).scaleY(0.0f)
+                .setInterpolator(INTERPOLATOR).withLayer()
+                .setListener(new ViewPropertyAnimatorListener() {
+                    public void onAnimationStart(View view) {
+                        mIsAnimatingOut = true;
+                    }
+
+                    public void onAnimationCancel(View view) {
+                        mIsAnimatingOut = false;
+                    }
+
+                    public void onAnimationEnd(View view) {
+                        mIsAnimatingOut = false;
+                    }
+                }).start();
+    }
+
+    // 进入动画
+    public void animateIn() {
+        // 这里的translationY表示的是移动到起始点
+        ViewCompat.animate(mBtnSendDynamic).translationY(0.0F).alpha(1.0F).scaleX(1.0F).scaleY(1.0F)
+                .setInterpolator(INTERPOLATOR).withLayer().setListener(null)
+                .start();
+
     }
 
 }

@@ -98,12 +98,10 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             return;
         }
         saveQustion();
-
         if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
             mPresenter.updateQuestion(mQAPublishBean);
             return;
         }
-
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);

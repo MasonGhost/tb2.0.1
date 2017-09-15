@@ -213,6 +213,6 @@ public interface InfoMainClient {
      *
      * @return
      */
-    @DELETE(ApiConfig.APP_PATH_REFUSE_INFO_COMMENT)
-    Observable<BaseJsonV2> refuseNewsTopComment(@Path("pinned_id") int pinned_id);
+    @PATCH(ApiConfig.APP_PATH_REFUSE_INFO_COMMENT)
+    Observable<BaseJsonV2> refuseNewsTopComment(@Path("news_id") int news_id,@Path("comment_id") long comment_id,@Path("pinned_id") int pinned_id);
 }

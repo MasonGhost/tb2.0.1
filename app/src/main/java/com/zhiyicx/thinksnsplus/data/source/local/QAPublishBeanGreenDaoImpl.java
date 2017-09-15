@@ -31,7 +31,11 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public long saveSingleData(QAPublishBean singleData) {
-        return mQAPublishBeanDao.insertOrReplace(singleData);
+        if (singleData != null) {
+            return mQAPublishBeanDao.insertOrReplace(singleData);
+        }
+        return -1L;
+
     }
 
     @Override
@@ -76,7 +80,7 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public void deleteSingleCache(QAPublishBean dta) {
-        if (dta!=null){
+        if (dta != null) {
             mQAPublishBeanDao.delete(dta);
         }
     }

@@ -82,8 +82,8 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
-    public Observable<BaseJsonV2> refuseNewsTopComment(int pinned_id) {
-        return mInfoMainClient.refuseNewsTopComment(pinned_id)
+    public Observable<BaseJsonV2> refuseNewsTopComment(int news_id,Long comment_id, int pinned_id) {
+        return mInfoMainClient.refuseNewsTopComment(news_id,comment_id,pinned_id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
