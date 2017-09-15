@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -97,7 +98,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     protected void initData() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
-            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean.getCase_min_amount())));
+            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean
+                    .getCase_min_amount())));
         }
     }
 
@@ -109,6 +111,14 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     @Override
     public void withdrawResult(WithdrawResultBean withdrawResultBean) {
 
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -206,8 +216,10 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
         List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
         mActionPopupWindow = ActionPopupWindow.builder()
-                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)) : "")
+                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                        .string.alipay)) : "")
+                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                        .string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
