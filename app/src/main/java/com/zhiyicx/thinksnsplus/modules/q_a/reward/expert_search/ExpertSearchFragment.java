@@ -72,14 +72,13 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         return fragment;
     }
 
-    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
 
+
     @Override
-    protected void initData() {
-        super.initData();
+    protected void initView(View rootView) {
         if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_BEAN)) {
             mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
             mTvRecommendHint.setVisibility(View.GONE);
@@ -92,6 +91,12 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
             mFragmentInfoSearchContainer.setVisibility(View.VISIBLE);
             mToolbarContainer.setVisibility(View.GONE);
         }
+        super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         initListener();
     }
 
@@ -147,7 +152,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter);
+        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter, mQaTopicBean != null);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
