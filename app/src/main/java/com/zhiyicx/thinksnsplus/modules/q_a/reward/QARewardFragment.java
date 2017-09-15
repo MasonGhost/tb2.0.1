@@ -162,11 +162,11 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         QAPublishBean draft = mQAPublishBean == null ? null : mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null ) {
+        if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
             mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
-            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()){
+            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
                 QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
                 typeIds.setUser(draft.getInvitations().get(0).getUser());
@@ -214,6 +214,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
                 mBtQaSelectExpert.setRightText(expertBean.getName());
                 mQAPublishBean.setInvitations(typeIdsList);
+                mPresenter.saveQuestion(mQAPublishBean);
             }
             configSureButton();
         }
