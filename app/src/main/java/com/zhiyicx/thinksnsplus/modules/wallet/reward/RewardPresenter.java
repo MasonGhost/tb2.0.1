@@ -88,7 +88,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.reward_failed));
                     }
                 });
         addSubscrebe(subscription);
