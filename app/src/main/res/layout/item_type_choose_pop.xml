@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.AppCompatCheckedTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_title"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_normal"
+    android:layout_marginRight="@dimen/spacing_normal"
+    android:checkMark="@drawable/selector_answer_list_order"
+    android:checked="true"
+    android:gravity="center"
+    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_mid"
+    android:text="@string/qa_answer_list_order_default"
+    android:textColor="@color/selector_type_choose_textcolor"
+    android:textSize="@dimen/size_icon_assist"/>
+

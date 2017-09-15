@@ -95,13 +95,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
     @Override
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson()
+                .toJson(dynamicDetailBean));
         return mDynamicClient.sendDynamicV2(body);
     }
 
 
     @Override
-    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore,
+                                                                  String screen) {
         Observable<DynamicBeanV2> observable;
         if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
             observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
@@ -114,7 +116,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                     });
         } else {
-            observable = mDynamicClient.getDynamicListV2(type, after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
+            observable = mDynamicClient.getDynamicListV2(type, after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE,screen);
         }
         return dealWithDynamicListV2(observable, type, isLoadMore);
     }
@@ -136,11 +138,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 //                    params.put("feed_id", feed_id);
                     // 后台处理
                     if (aBoolean) {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2, feed_id));
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                                .POST_V2, params);
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                                .APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2, feed_id));
                     } else {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2, feed_id));
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                                .DELETE_V2, params);
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                                .APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2, feed_id));
                     }
 
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
@@ -172,7 +178,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT_V2, feed_id, comment_id));
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT_V2, feed_id,
+                comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
@@ -188,7 +195,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         }
 
         // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_COMMENT, params);
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .SEND_DYNAMIC_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, feed_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
@@ -225,9 +233,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
 
     private void dealLocalTypeDataV2(DynamicDetailBeanV2 dynamicBeanTmp) {
-        DynamicDetailBeanV2 localDynamicBean = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
+        DynamicDetailBeanV2 localDynamicBean = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(dynamicBeanTmp
+                .getFeed_mark());
         if (localDynamicBean != null) {
-            if ((dynamicBeanTmp.getHot_creat_time() == null || dynamicBeanTmp.getHot_creat_time() == 0) && localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
+            if ((dynamicBeanTmp.getHot_creat_time() == null || dynamicBeanTmp.getHot_creat_time() == 0) &&
+                    localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
                 dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
             }
             if (localDynamicBean.getIsFollowed()) {
@@ -254,16 +264,19 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(userids)
                                     .map(listBaseJson -> {
-                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                for (UserInfoBean userInfoBean : listBaseJson) {
-                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                                }
-                                                for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
-                                                    dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
-                                                    dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
-                                                }
-                                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                            return dynamicDigListBeanList;
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(),
+                                                    userInfoBean);
+                                        }
+                                        for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
+                                            dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get
+                                                    (dynamicDigListBean.getUser_id().intValue()));
+                                            dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get
+                                                    (dynamicDigListBean.getTarget_user().intValue()));
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                        return dynamicDigListBeanList;
                                     });
                         } else {
                             // 返回期待以外的数据，比如状态为false，或者数据为空，发射空数据
@@ -314,13 +327,16 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
                                     for (int i = 0; i < listBaseJson.getPinneds().size(); i++) {
-                                        listBaseJson.getPinneds().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getUser_id()));
-                                        if (listBaseJson.getPinneds().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                        listBaseJson.getPinneds().get(i).setCommentUser(userInfoBeanSparseArray.get(
+                                                (int) listBaseJson.getPinneds().get(i).getUser_id()));
+                                        if (listBaseJson.getPinneds().get(i).getReply_to_user_id() == 0) { // 如果
+                                            // reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
                                             listBaseJson.getPinneds().get(i).setReplyUser(userInfoBean);
                                         } else {
-                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
+                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBeanSparseArray.get
+                                                    ((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
                                         }
                                     }
                                     mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
@@ -345,8 +361,10 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
 
-    protected Observable<List<GroupDynamicListBean>> dealWithGroupDynamicList(Observable<List<GroupDynamicListBean>> observable,
-                                                                              final String type, final boolean isLoadMore) {
+    protected Observable<List<GroupDynamicListBean>> dealWithGroupDynamicList(Observable<List<GroupDynamicListBean>>
+                                                                                      observable,
+                                                                              final String type, final boolean
+                                                                                      isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -356,7 +374,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         final List<Object> user_ids = new ArrayList<>();
                         for (GroupDynamicListBean groupDynamicListBean : groupDynamicList) {
                             user_ids.add(groupDynamicListBean.getUser_id());
-                            if (groupDynamicListBean.getNew_comments() == null || groupDynamicListBean.getNew_comments().isEmpty()) {
+                            if (groupDynamicListBean.getNew_comments() == null || groupDynamicListBean
+                                    .getNew_comments().isEmpty()) {
                                 continue;
                             }
                             for (GroupDynamicCommentListBean commentListBean : groupDynamicListBean.getNew_comments()) {
@@ -369,33 +388,40 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (GroupDynamicListBean dynamicBean : groupDynamicList) {
+                                        dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean
+                                                .getUser_id().intValue()));
+                                        if (dynamicBean.getNew_comments() == null || dynamicBean.getNew_comments()
+                                                .isEmpty()) {
+                                            continue;
                                         }
-                                        for (GroupDynamicListBean dynamicBean : groupDynamicList) {
-                                            dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
-                                            if (dynamicBean.getNew_comments() == null || dynamicBean.getNew_comments().isEmpty()) {
-                                                continue;
+                                        for (int i = 0; i < dynamicBean.getNew_comments().size(); i++) {
+                                            UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean
+                                                    .getNew_comments().get(i).getUser_id());
+                                            if (tmpUserinfo != null) {
+                                                dynamicBean.getNew_comments().get(i).setCommentUser(tmpUserinfo);
                                             }
-                                            for (int i = 0; i < dynamicBean.getNew_comments().size(); i++) {
-                                                UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getUser_id());
-                                                if (tmpUserinfo != null) {
-                                                    dynamicBean.getNew_comments().get(i).setCommentUser(tmpUserinfo);
-                                                }
-                                                if (dynamicBean.getNew_comments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                    UserInfoBean userInfoBean = new UserInfoBean();
-                                                    userInfoBean.setUser_id(0L);
-                                                    dynamicBean.getNew_comments().get(i).setReplyUser(userInfoBean);
-                                                } else {
-                                                    if (userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getReply_to_user_id()) != null) {
-                                                        dynamicBean.getNew_comments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getReply_to_user_id()));
-                                                    }
+                                            if (dynamicBean.getNew_comments().get(i).getReply_to_user_id() == 0) { //
+                                                // 如果 reply_user_id = 0 回复动态
+                                                UserInfoBean userInfoBean = new UserInfoBean();
+                                                userInfoBean.setUser_id(0L);
+                                                dynamicBean.getNew_comments().get(i).setReplyUser(userInfoBean);
+                                            } else {
+                                                if (userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments()
+                                                        .get(i).getReply_to_user_id()) != null) {
+                                                    dynamicBean.getNew_comments().get(i).setReplyUser
+                                                            (userInfoBeanSparseArray.get((int) dynamicBean
+                                                                    .getNew_comments().get(i).getReply_to_user_id()));
                                                 }
                                             }
+                                        }
 
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return groupDynamicList;
                                 });
                     }
@@ -403,14 +429,17 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
     }
 
-    protected Observable<List<GroupDynamicListBean>> dealWithGroupCollectDynamicList(Observable<List<CollectGroupDyanmciListBean>> observable,
-                                                                                     final String type, final boolean isLoadMore) {
+    protected Observable<List<GroupDynamicListBean>> dealWithGroupCollectDynamicList
+            (Observable<List<CollectGroupDyanmciListBean>> observable,
+             final String type, final boolean
+                     isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<List<CollectGroupDyanmciListBean>, Observable<List<GroupDynamicListBean>>>() {
                     @Override
-                    public Observable<List<GroupDynamicListBean>> call(List<CollectGroupDyanmciListBean> groupDynamicList) {
+                    public Observable<List<GroupDynamicListBean>> call(List<CollectGroupDyanmciListBean>
+                                                                               groupDynamicList) {
                         final List<Object> user_ids = new ArrayList<>();
                         List<GroupDynamicListBean> result = new ArrayList<>();
                         for (CollectGroupDyanmciListBean groupDynamicListBean : groupDynamicList) {
@@ -423,34 +452,43 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (CollectGroupDyanmciListBean dynamicBean : groupDynamicList) {
+                                        dynamicBean.getPost().setId((long) dynamicBean.getPost_id());
+                                        dynamicBean.getPost().setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean
+                                                .getPost().getUser_id().intValue()));
+                                        if (dynamicBean.getPost().getNew_comments() == null || dynamicBean.getPost()
+                                                .getNew_comments().isEmpty()) {
+                                            continue;
                                         }
-                                        for (CollectGroupDyanmciListBean dynamicBean : groupDynamicList) {
-                                            dynamicBean.getPost().setId((long) dynamicBean.getPost_id());
-                                            dynamicBean.getPost().setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getPost().getUser_id().intValue()));
-                                            if (dynamicBean.getPost().getNew_comments() == null || dynamicBean.getPost().getNew_comments().isEmpty()) {
-                                                continue;
+                                        for (int i = 0; i < dynamicBean.getPost().getNew_comments().size(); i++) {
+                                            UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean
+                                                    .getPost().getNew_comments().get(i).getUser_id());
+                                            if (tmpUserinfo != null) {
+                                                dynamicBean.getPost().getNew_comments().get(i).setCommentUser
+                                                        (tmpUserinfo);
                                             }
-                                            for (int i = 0; i < dynamicBean.getPost().getNew_comments().size(); i++) {
-                                                UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getPost().getNew_comments().get(i).getUser_id());
-                                                if (tmpUserinfo != null) {
-                                                    dynamicBean.getPost().getNew_comments().get(i).setCommentUser(tmpUserinfo);
-                                                }
-                                                if (dynamicBean.getPost().getNew_comments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                    UserInfoBean userInfoBean = new UserInfoBean();
-                                                    userInfoBean.setUser_id(0L);
-                                                    dynamicBean.getPost().getNew_comments().get(i).setReplyUser(userInfoBean);
-                                                } else {
-                                                    if (userInfoBeanSparseArray.get((int) dynamicBean.getPost().getNew_comments().get(i).getReply_to_user_id()) != null) {
-                                                        dynamicBean.getPost().getNew_comments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getPost().getNew_comments().get(i).getReply_to_user_id()));
-                                                    }
+                                            if (dynamicBean.getPost().getNew_comments().get(i).getReply_to_user_id()
+                                                    == 0) { // 如果 reply_user_id = 0 回复动态
+                                                UserInfoBean userInfoBean = new UserInfoBean();
+                                                userInfoBean.setUser_id(0L);
+                                                dynamicBean.getPost().getNew_comments().get(i).setReplyUser
+                                                        (userInfoBean);
+                                            } else {
+                                                if (userInfoBeanSparseArray.get((int) dynamicBean.getPost()
+                                                        .getNew_comments().get(i).getReply_to_user_id()) != null) {
+                                                    dynamicBean.getPost().getNew_comments().get(i).setReplyUser
+                                                            (userInfoBeanSparseArray.get((int) dynamicBean.getPost()
+                                                                    .getNew_comments().get(i).getReply_to_user_id()));
                                                 }
                                             }
+                                        }
 
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return result;
                                 });
                     }
@@ -470,41 +508,54 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         return getDynamicCommentListV2(dynamicBean.getFeed_mark(), dynamicBean.getId(), 0L)
                                 .flatMap(new Func1<List<DynamicCommentBean>, Observable<DynamicDetailBeanV2>>() {
                                     @Override
-                                    public Observable<DynamicDetailBeanV2> call(List<DynamicCommentBean> dynamicCommentBeen) {
+                                    public Observable<DynamicDetailBeanV2> call(List<DynamicCommentBean>
+                                                                                        dynamicCommentBeen) {
                                         for (DynamicCommentBean dynamicCommentBean : dynamicCommentBeen) {
                                             user_ids.add(dynamicCommentBean.getUser_id());
                                             user_ids.add(dynamicCommentBean.getReply_to_user_id());
-                                            dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
+                                            dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加
+                                            // feed_mark \和用户标记
                                             dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
                                         }
-                                        mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());// 删除本条动态的本地评论
+                                        mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark())
+                                        ;// 删除本条动态的本地评论
                                         dynamicBean.setComments(dynamicCommentBeen);
                                         return Observable.just(dynamicBean);
                                     }
                                 }).flatMap(new Func1<DynamicDetailBeanV2, Observable<DynamicDetailBeanV2>>() {
                                     @Override
-                                    public Observable<DynamicDetailBeanV2> call(DynamicDetailBeanV2 dynamicDetailBeanV2) {
+                                    public Observable<DynamicDetailBeanV2> call(DynamicDetailBeanV2
+                                                                                        dynamicDetailBeanV2) {
                                         if (user_ids.isEmpty()) {
                                             return Observable.just(dynamicBean);
                                         }
                                         return mUserInfoRepository.getUserInfo(user_ids)
                                                 .map(userinfobeans -> {
-                                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                                            SparseArray<>();
+                                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                                                .intValue(), userInfoBean);
+                                                    }
+                                                    dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get
+                                                            (dynamicBean.getUser_id().intValue()));
+                                                    for (int i = 0; i < dynamicBean.getComments().size(); i++) {
+                                                        dynamicBean.getComments().get(i).setCommentUser
+                                                                (userInfoBeanSparseArray.get((int) dynamicBean
+                                                                        .getComments().get(i).getUser_id()));
+                                                        if (dynamicBean.getComments().get(i).getReply_to_user_id() ==
+                                                                0) { // 如果 reply_user_id = 0 回复动态
+                                                            UserInfoBean userInfoBean = new UserInfoBean();
+                                                            userInfoBean.setUser_id(0L);
+                                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
+                                                        } else {
+                                                            dynamicBean.getComments().get(i).setReplyUser
+                                                                    (userInfoBeanSparseArray.get((int) dynamicBean
+                                                                            .getComments().get(i).getReply_to_user_id
+                                                                                    ()));
                                                         }
-                                                        dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
-                                                        for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                            dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
-                                                            if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                                UserInfoBean userInfoBean = new UserInfoBean();
-                                                                userInfoBean.setUser_id(0L);
-                                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
-                                                            } else {
-                                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
-                                                            }
-                                                        }
-                                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                                    }
+                                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                                     return dynamicBean;
                                                 });
                                     }
@@ -523,7 +574,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
                         }
-                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !type.equals(ApiConfig.DYNAMIC_TYPE_USERS)) {
+                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !type.equals(ApiConfig
+                                .DYNAMIC_TYPE_USERS)) {
                             dynamicBeanV2.getFeeds().addAll(0, topData);
                         }
                     }
@@ -546,7 +598,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
                                 dynamicBean.setFollowed(true);
                             }
-                            if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time 标识，最新与关注都是通过 feed_id 标识
+                            if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time
+                                // 标识，最新与关注都是通过 feed_id 标识
                                 dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
                             } else {
                                 dynamicBean.setMaxId(dynamicBean.getId());
@@ -562,36 +615,44 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        List<DynamicDetailBeanV2> topData = new ArrayList<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
-                                            dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
-                                            for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()) != null) {
-                                                    dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
-                                                }
-                                                if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                    UserInfoBean userInfoBean = new UserInfoBean();
-                                                    userInfoBean.setUser_id(0L);
-                                                    dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
-                                                } else {
-                                                    dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
-                                                }
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    List<DynamicDetailBeanV2> topData = new ArrayList<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
+                                        dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean
+                                                .getUser_id().intValue()));
+                                        for (int i = 0; i < dynamicBean.getComments().size(); i++) {
+                                            if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i)
+                                                    .getUser_id()) != null) {
+                                                dynamicBean.getComments().get(i).setCommentUser
+                                                        (userInfoBeanSparseArray.get((int) dynamicBean.getComments()
+                                                                .get(i).getUser_id()));
                                             }
-                                            if (dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
-                                                topData.add(dynamicBean);
+                                            if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果
+                                                // reply_user_id = 0 回复动态
+                                                UserInfoBean userInfoBean = new UserInfoBean();
+                                                userInfoBean.setUser_id(0L);
+                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
+                                            } else {
+                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray
+                                                        .get((int) dynamicBean.getComments().get(i)
+                                                                .getReply_to_user_id()));
                                             }
                                         }
-                                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {// 置顶只有 热门、最新
-                                            TopDynamicBean topDynamicBean = new TopDynamicBean();
-                                            topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW : TYPE_HOT);
-                                            topDynamicBean.setTopDynamics(topData);
-                                            mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
+                                        if (dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
+                                            topData.add(dynamicBean);
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {// 置顶只有 热门、最新
+                                        TopDynamicBean topDynamicBean = new TopDynamicBean();
+                                        topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW :
+                                                TYPE_HOT);
+                                        topDynamicBean.setTopDynamics(topData);
+                                        mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return listBaseJson;
                                 });
                     }

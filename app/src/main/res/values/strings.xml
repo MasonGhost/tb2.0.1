@@ -642,7 +642,7 @@
     <string name="comment_format_reply">%1$s回复%2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的圈子</string>
+    <string name="comment_format_group_feed">%s评论了你的帖子</string>
     <string name="comment_format_music">%s评论了你的音乐</string>
     <string name="comment_format_music_specials">%s评论了你的专辑</string>
     <string name="comment_format_news">%s评论了你的文章</string>
@@ -650,4 +650,12 @@
     <string name="comment_format_questions_answer">%s评论了你的回答</string>
     <string name="new_apply_data">新的申请请及时查看</string>
     <string name="no_apply_data">暂无未查看的申请</string>
+    <string-array name="personal_dynamic_typpe">
+        <item>全部动态</item>
+        <item>付费动态</item>
+        <item>置顶动态</item>
+    </string-array>
+    <string name="all_dynamic">全部动态</string>
+    <string name="pay_dynamic">付费动态</string>
+    <string name="top_dynamic">置顶动态</string>
 </resources>

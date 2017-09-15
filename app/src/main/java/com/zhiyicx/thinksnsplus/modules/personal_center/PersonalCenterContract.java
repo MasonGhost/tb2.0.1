@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
@@ -8,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
@@ -39,7 +42,6 @@ public interface PersonalCenterContract {
 
         /**
          * 设置封面上传的状态
-         *
          */
         void setUpLoadCoverState(boolean upLoadState);
 
@@ -71,6 +73,25 @@ public interface PersonalCenterContract {
          * @return
          */
         Bitmap getUserHeadPic();
+
+        /**
+         * @return null-全部 paid-付费动态 pinned - 置顶动态
+         */
+        String getDynamicType();
+
+        /**
+         * 选择的动态类型修改  {@@link MyDynamicTypeEnum}
+         *
+         * @param type
+         */
+        void onDynamicTypeChanged(PersonalCenterRepository.MyDynamicTypeEnum type);
+
+        /**
+         * 刷新回调
+         */
+        void refreshStart();
+
+        void refreshEnd();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -80,7 +101,7 @@ public interface PersonalCenterContract {
         /**
          * 获取某个人的动态列表
          */
-        Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id);
+        Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen);
 
     }
 
@@ -115,7 +136,7 @@ public interface PersonalCenterContract {
         /**
          * 上传封面图片
          */
-        void uploadUserCover(String filePath,UserInfoBean userInfoBean);
+        void uploadUserCover(String filePath, UserInfoBean userInfoBean);
 
         /**
          * 分享用户信息
