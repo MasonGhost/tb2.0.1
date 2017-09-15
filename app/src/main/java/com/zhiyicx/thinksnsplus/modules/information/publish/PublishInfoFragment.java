@@ -180,6 +180,10 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mToolbarRight.setEnabled(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
+        RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)mImPic.getLayoutParams();
+        layout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        mImPic.setLayoutParams(layout);
+        mImSetting.setVisibility(View.GONE);
     }
 
     @Override

@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -367,27 +366,13 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath,options);
-        int imageHeight;
-        if (bmp != null) {
-            imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
-            bmp.recycle();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
-            lp.bottomMargin = 10;
-            imageView.setLayoutParams(lp);
-        } else {
-            imageHeight = allLayout.getWidth();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
-            imageView.setLayoutParams(lp);
-            imageView.setImageResource(R.drawable.shape_default_image);
-        }
+        BitmapFactory.decodeFile(imagePath, options);
+        int imageHeight = allLayout.getWidth() * options.outHeight / options.outWidth;
 
         Glide.with(getContext())
                 .load(imagePath)
                 .asBitmap()
-                .override(allLayout.getWidth(),imageHeight)
+                .override(allLayout.getWidth(), imageHeight)
                 .centerCrop()
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -422,7 +407,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         // 调整imageView的高度，根据宽度来调整高度
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath,options);
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
         int imageHeight = 500;
         if (bmp != null) {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
