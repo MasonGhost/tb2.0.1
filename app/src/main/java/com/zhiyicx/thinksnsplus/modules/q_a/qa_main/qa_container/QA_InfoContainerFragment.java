@@ -101,7 +101,12 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected void initData() {
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        supportFlymeSutsusbar();
     }
 
     @Override

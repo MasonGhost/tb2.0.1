@@ -112,7 +112,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP));
+            getView().post(() -> mPresenter.checkWalletConfig(TAG_SHOWRULE_POP,false));
         }
     }
 
@@ -127,18 +127,18 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE));
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE,true));
         // 提现
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW));
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP);
+                    mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP,true);
                     jumpWalletRuleActivity();
                 });
     }

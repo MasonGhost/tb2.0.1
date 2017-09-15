@@ -101,7 +101,7 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
-        adapter.addItemViewDelegate(new InfoListItem() {
+        adapter.addItemViewDelegate(new InfoListItem(false) {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
 

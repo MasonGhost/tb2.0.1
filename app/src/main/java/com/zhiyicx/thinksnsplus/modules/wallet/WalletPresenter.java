@@ -142,12 +142,12 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
      * @param tag action tag
      */
     @Override
-    public void checkWalletConfig(int tag) {
+    public void checkWalletConfig(int tag, final boolean isNeedTip) {
         if (mWalletConfigBean != null) {
             mRootView.walletConfigCallBack(mWalletConfigBean, tag);
             return;
         }
-        getWalletConfigFromServer(tag, true);
+        getWalletConfigFromServer(tag, isNeedTip);
 
     }
 
@@ -159,7 +159,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                 return "钱包规则";
             }
         }
-        return mWalletConfigBean.getRule();
+            return mWalletConfigBean.getRule();
 
     }
 

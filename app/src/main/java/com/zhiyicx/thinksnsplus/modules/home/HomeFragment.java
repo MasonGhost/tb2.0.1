@@ -53,6 +53,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
@@ -183,16 +184,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         AppUpdateManager.getInstance(getContext()
                 , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
                 .startVersionCheck();
-    }
-
-    private void supportFlymeSutsusbar() {
-        Observable.timer(1500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                    }
-                });
     }
 
     @Override

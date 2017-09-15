@@ -189,6 +189,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
+                                onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
 

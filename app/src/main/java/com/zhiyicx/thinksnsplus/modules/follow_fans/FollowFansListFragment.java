@@ -55,7 +55,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
                 .build().inject(this);
         pageType = getArguments().getInt(PAGE_TYPE, FOLLOW_FRAGMENT_PAGE);
         userId = getArguments().getLong(PAGE_DATA);
-        //mAuthBean = AppApplication.getmCurrentLoginAuth();
         super.initView(rootView);
     }
 

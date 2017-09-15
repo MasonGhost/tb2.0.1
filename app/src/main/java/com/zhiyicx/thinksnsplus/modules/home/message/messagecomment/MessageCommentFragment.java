@@ -97,6 +97,11 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 //    }
 
     @Override
+    protected String setCenterTitle() {
+        return super.setCenterTitle();
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }
@@ -126,7 +131,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         mToolbar.setBackgroundResource(R.color.white);
         mToolbar.setPadding(0, setUseStatusView() ? 0 : DeviceUtils.getStatuBarHeight(getContext
                 ()), 0, 0);
-        mTvToolBarCenter.setText(R.string.comment);
+        mTvToolBarCenter.setText(R.string.critical);
         mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg
                 ()), null, null, null);
         mTvToolBarLeft.setOnClickListener(v -> setLeftClick());
