@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="雪花火"
         android:textColor="@color/important_for_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
         android:textSize="@dimen/size_sub_title"/>
 
     <TextView
