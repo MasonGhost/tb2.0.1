@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BlurMaskFilter;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +21,7 @@ import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -33,8 +37,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import rx.functions.Action1;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
@@ -48,6 +50,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFr
 public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private int mContentMaxShowNum;
+
 
     public QAListInfoAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
         super(context, layoutId, datas);
@@ -69,10 +72,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
-        String content = infoBean.getBody();
 
         boolean isExcellent = infoBean.getExcellent() == 1;
-        int test = getExcellentTag(isExcellent);
 
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
@@ -116,6 +117,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             } catch (Exception e) {
                 // 加载图片 context 被销毁了
             }
+
             RxView.clicks(contentTextView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
@@ -160,4 +162,6 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
     protected int getExcellentTag(boolean isExcellent) {
         return 0;
     }
+
+
 }

@@ -408,6 +408,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
+        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(),mToolbarRight);
         if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {

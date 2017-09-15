@@ -156,10 +156,8 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         if (commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0) { // 回复
             if (AppApplication.getMyUserIdWithdefault() == commentedBean.getReply_user()) {
                 result = getContext().getResources().getString(R.string.comment_format_reply_you, commentedBean.getCommentUserInfo().getName());
-
             } else {
                 result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(), commentedBean.getReplyUserInfo().getName());
-
             }
             return result;
         }

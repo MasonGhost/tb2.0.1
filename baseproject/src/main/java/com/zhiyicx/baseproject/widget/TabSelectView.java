@@ -2,13 +2,9 @@ package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -252,6 +248,7 @@ public class TabSelectView extends FrameLayout {
         mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
         mCommonNavigator = new CommonNavigator(mContext);
         mCommonNavigator.setAdapter(customAdapter);
+        mCommonNavigator.setAdjustMode(mIsAdjustMode);
         mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }
@@ -263,6 +260,7 @@ public class TabSelectView extends FrameLayout {
         mMagicIndicator.setBackgroundResource(resId);
         mCommonNavigator = new CommonNavigator(mContext);
         mCommonNavigator.setAdapter(customAdapter);
+        mCommonNavigator.setAdjustMode(mIsAdjustMode);
         mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }

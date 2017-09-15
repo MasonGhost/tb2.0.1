@@ -244,7 +244,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             } else {
                 mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(),
                         DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean.getUser_id() + "");
-                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), false);
+                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), true);
             }
         }
     }

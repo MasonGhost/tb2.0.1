@@ -27,6 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
  * @Describe
@@ -101,6 +102,9 @@ public class CommentRepository implements ICommentRepository {
                 break;
             case APP_QUESTIONS:
                 path = String.format(ApiConfig.APP_PATH_SEND_QUESTION_COMMENT_S, source_id);
+                break;
+            case APP_QUESTIONS_ANSWER:
+                path = String.format(Locale.getDefault(),ApiConfig.APP_PATH_COMMENT_QA_ANSWER_FORMAT, source_id);
                 break;
             default:
                 break;

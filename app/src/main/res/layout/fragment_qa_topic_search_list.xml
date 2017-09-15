@@ -64,6 +64,40 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/not_find_qa_topic_to_publish"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/qa_search_empty_size"/>
+
+            <Button
+                android:id="@+id/bt_do"
+                android:layout_width="@dimen/qa_search_empty_bt_with"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_huge"
+                android:layout_gravity="center_horizontal"
+                android:paddingRight="@dimen/spacing_huge"
+                android:paddingTop="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="to_publish_qa"
+                android:background="@drawable/selector_button_corner_solid_small"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_sub_title"
+
+                />
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

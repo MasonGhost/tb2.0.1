@@ -2,12 +2,14 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,12 +39,13 @@ import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.SpanTextClickable;
 
 import java.io.InputStream;
 import java.util.Locale;
@@ -365,8 +368,22 @@ public class ImageUtils {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                             ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
-                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+
+                            String first = "T" + userInfoBean.getName() + "：";
+                            SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                             spannableString.setSpan(imgSpan, 0, 1, Spannable
+                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                            SpanTextClickable clickable = new SpanTextClickable(1L, contentTextView.getTextSize() / 3){
+                                @Override
+                                public void onClick(View widget) {
+                                    super.onClick(widget);
+                                    ToastUtils.showToast("~~~~~~~~~~");
+                                }
+                            };
+                            SpanTextClickable.dealTextViewClickEvent(contentTextView);
+
+                            spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
                             contentTextView.setText(spannableString);
                         }
@@ -376,10 +393,27 @@ public class ImageUtils {
                             super.onLoadFailed(e, errorDrawable);
                             errorDrawable.setBounds(0, 0, w, w);
                             ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
-                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+
+
+                            String first = "T" + userInfoBean.getName() + "：";
+                            SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                             spannableString.setSpan(imgSpan, 0, 1, Spannable
                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                            SpanTextClickable clickable = new SpanTextClickable(1L, contentTextView.getTextSize() / 3){
+                                @Override
+                                public void onClick(View widget) {
+                                    super.onClick(widget);
+                                    ToastUtils.showToast("~~~~~~~~~~");
+                                }
+                            };
+                            SpanTextClickable.dealTextViewClickEvent(contentTextView);
+
+                            spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
+                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
                             contentTextView.setText(spannableString);
+
+
                         }
 
                     });

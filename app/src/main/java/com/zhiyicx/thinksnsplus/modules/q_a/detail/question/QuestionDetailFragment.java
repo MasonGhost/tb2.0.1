@@ -138,7 +138,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
 
-        boolean canNotLook = answerInfoBean.getBody().isEmpty();
+        boolean canNotLook = TextUtils.isEmpty(answerInfoBean.getBody());
 
         // 开启了围观并且不是作者本人点击
         if (canNotLook) {

@@ -43,9 +43,26 @@ public interface QAClient {
     @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
     Observable<Object> publishQuestion(@Body RequestBody body);
 
+    /**
+     * 发布答案
+     * @param question_id
+     * @param body
+     * @param anonymity 是否匿名
+     * @return
+     */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
     Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+
+    /**
+     * 申请创建话题
+     * @param name
+     * @param description
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_CREATE_TOPIC)
+    Observable<BaseJsonV2> createTopic(@Field("name") String name, @Field("description") String description);
 
     /**
      * @param body  如果 anonymity 不传，则本字段必须存在， 回答详情。

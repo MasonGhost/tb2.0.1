@@ -297,7 +297,7 @@ public class CommentedBean extends BaseListBean implements Serializable {
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
-                    target_title = jsonObject2.getString("content");
+                    target_title = jsonObject2.getString("title");
 
                     break;
 
@@ -318,7 +318,7 @@ public class CommentedBean extends BaseListBean implements Serializable {
                     break;
                 case APP_LIKE_NEWS:
                     InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);
-                    if (infoListDataBean != null && infoListDataBean.getImage() != null) {
+                    if (infoListDataBean != null && infoListDataBean.getTitle() != null) {
                         target_title = infoListDataBean.getTitle();
                     }
                     break;

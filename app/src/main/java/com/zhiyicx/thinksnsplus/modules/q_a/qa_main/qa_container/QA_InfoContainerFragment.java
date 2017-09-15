@@ -105,11 +105,15 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+
+    @Override
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
-        mTsvToolbar.setIndicatorMatchWidth(true);
     }
 
     @NonNull
