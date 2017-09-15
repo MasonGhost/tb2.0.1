@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
- * @describe
+ * @describe 专家列表页面，如果是搜索，则不要关注按钮，但是我总感觉这里还是要的，而且居然是关注而不是那个人像按钮，啧啧
  * @date 2017/7/26
  * @contact email:648129313@qq.com
  */
@@ -40,10 +41,12 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
 
     ExpertSearchContract.Presenter mPresenter;
+    private boolean mIsShowFollow; // 是否显示关注按钮，邀请的页面不显示
 
-    public SearchExpertAdapter(Context context, List<ExpertBean> datas, ExpertSearchContract.Presenter presenter) {
+    public SearchExpertAdapter(Context context, List<ExpertBean> datas, ExpertSearchContract.Presenter presenter, boolean isShowFollow) {
         super(context, R.layout.item_search_expert, datas);
         mPresenter = presenter;
+        this.mIsShowFollow = isShowFollow;
     }
 
     @Override
@@ -68,17 +71,21 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         userInfoBean.setFollower(expertBean.isFollower());
         userInfoBean.setName(expertBean.getName());
         userInfoBean.setVerified(expertBean.getVerified());
-        boolean isJoined = expertBean.isFollower();
-        userInfoBean.setFollower(isJoined);
-        subscrib.setChecked(isJoined);
-        subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
-        subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-        subscrib.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mPresenter.handleFollowUser(userInfoBean);
-            subscrib.setText(userInfoBean.getFollower() ? getContext().getString(R.string.qa_topic_followed) :
-                    getContext().getString(R.string.qa_topic_follow));
-        });
-
+        if (mIsShowFollow){
+            subscrib.setVisibility(View.VISIBLE);
+            boolean isJoined = expertBean.isFollower();
+            userInfoBean.setFollower(isJoined);
+            subscrib.setChecked(isJoined);
+            subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
+            subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+            subscrib.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                mPresenter.handleFollowUser(userInfoBean);
+                subscrib.setText(userInfoBean.getFollower() ? getContext().getString(R.string.qa_topic_followed) :
+                        getContext().getString(R.string.qa_topic_follow));
+            });
+        } else {
+            subscrib.setVisibility(View.GONE);
+        }
         UserTagAdapter adapter = new UserTagAdapter(mContext);
         ftlTags.setAdapter(adapter);
         adapter.clearAndAddAll(tagBeenList);
