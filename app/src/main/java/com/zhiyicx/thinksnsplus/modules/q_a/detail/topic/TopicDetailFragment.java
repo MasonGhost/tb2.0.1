@@ -23,6 +23,8 @@ import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment;
@@ -52,6 +54,7 @@ import butterknife.BindView;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_TOPIC;
 
 /**
@@ -312,12 +315,33 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mQaTopicBean != null){
-                        Intent intent = new Intent(getActivity(), PublishQuestionActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(BUNDLE_PUBLISHQA_TOPIC, mQaTopicBean);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                    if (mQaTopicBean != null) {
+                        QAPublishBean qaPublishBean = new QAPublishBean();
+                        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
+                        QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
+                        typeIds.setId(mQaTopicBean.getId().intValue());
+                        typeIds.setName(mQaTopicBean.getName());
+                        typeIdsList.add(typeIds);
+                        qaPublishBean.setTopics(typeIdsList);
+
+                        String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                                .currentTimeMillis();
+                        qaPublishBean.setMark(Long.parseLong(mark));
+                        mPresenter.saveQuestion(qaPublishBean);
+
+                        Intent publishQaIntent = new Intent(getActivity(), PublishQuestionActivity.class);
+                        Bundle publishQaBundle = new Bundle();
+
+                        publishQaBundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
+                        publishQaIntent.putExtras(publishQaBundle);
+
+                        startActivity(publishQaIntent);
+
+//                        Intent intent = new Intent(getActivity(), PublishQuestionActivity.class);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable(BUNDLE_PUBLISHQA_TOPIC, mQaTopicBean);
+//                        intent.putExtras(bundle);
+//                        startActivity(intent);
                     }
                 });
     }

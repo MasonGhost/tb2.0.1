@@ -6,6 +6,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -140,7 +141,8 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 observable = mRepository.refuseTopComment(pinned_id);
                 break;
             case TOP_NEWS_COMMENT:
-                observable = mRepository.refuseNewsTopComment(pinned_id);
+                TopNewsCommentListBean data=(TopNewsCommentListBean)result;
+                observable = mRepository.refuseNewsTopComment(data.getNews().getId(),data.getComment().getId(),pinned_id);
                 break;
         }
 

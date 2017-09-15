@@ -32,7 +32,7 @@ public interface MessageReviewContract {
         Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id);
         Observable<BaseJsonV2> refuseTopComment(int pinned_id);
         Observable<BaseJsonV2> approvedNewsTopComment(Long feed_id, int comment_id, int pinned_id);
-        Observable<BaseJsonV2> refuseNewsTopComment(int pinned_id);
+        Observable<BaseJsonV2> refuseNewsTopComment(int news_id,Long comment_id,int pinned_id);
         Observable<BaseJsonV2> deleteTopComment(Long feed_id,int comment_id);
 
     }

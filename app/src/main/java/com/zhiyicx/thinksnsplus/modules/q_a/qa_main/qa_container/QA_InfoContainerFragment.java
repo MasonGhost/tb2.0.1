@@ -8,8 +8,10 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
+import com.zhiyicx.thinksnsplus.modules.q_a.QA_Fragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QA_ListInfoFragment;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -165,6 +167,17 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
                 return linePagerIndicator;
             }
         };
+    }
+
+    public void test(boolean up) {
+        QA_Fragment qaFragment = (QA_Fragment) getParentFragment();
+        if (up){
+            qaFragment.animateOut();
+        }else{
+            qaFragment.animateIn();
+        }
+        LogUtils.d("test::" + getFragmentManager().getFragments().get(0).getClass().getSimpleName());
+
     }
 
 }
