@@ -1,11 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -400,6 +402,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
+        mRicheTest.hideKeyBoard();
         mAnonymityPopWindow.showParentViewTop();
         mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }

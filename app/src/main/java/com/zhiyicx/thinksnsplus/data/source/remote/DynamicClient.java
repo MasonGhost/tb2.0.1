@@ -32,12 +32,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
 
 /**
- * @author LiuChao
- * @describe 动态相关的接口
- * @date 2017/2/21
- * @contact email:450127106@qq.com
+ * @Describe 动态相关的接口
+ * @Author Jungle68
+ * @Date 2017/3/15
+ * @Contact master.jungle68@gmail.com
  */
-
 public interface DynamicClient {
 
     /**
@@ -52,33 +51,45 @@ public interface DynamicClient {
     /**
      * 获取动态列表
      *
-     * @param type     "" 代表最新；follows 代表关注 ； hots 代表热门
+     * @param type    "" 代表最新；follows 代表关注 ； hots 代表热门
      * @param after   用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param user_id     动态所属人
-     * @param limit    请求数据条数 默认10条
+     * @param user_id 动态所属人
+     * @param limit   请求数据条数 默认10条
+     * @param screen  type = users 时可选，paid-付费动态 pinned - 置顶动态
      * @return dynamic list
      */
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
-            ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
+            ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit,
+                                               @Query("screen") String screen);
 
+    /**
+     * 获取搜索的动态
+     *
+     * @param after
+     * @param user_id
+     * @param limit
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
-    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
-                                                                          ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
+    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query("after") Long after, @Query("user") Long
+            user_id, @Query("limit") Long limit);
 
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)
-    Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("after") Long max_id, @Query("limit") Integer limitCount);
+    Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("after") Long
+            max_id, @Query("limit") Integer limitCount);
 
     /**
      * 一条动态的评论列表
      *
      * @param feed_id 动态的唯一 id
-     * @param after  返回的 feed_digg_id 作为 after,对象为null表示不传
+     * @param after   返回的 feed_digg_id 作为 after,对象为null表示不传
      * @param limit
      * @return
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_V2)
-    Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long after, @Query("limit") Long limit);
+    Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long
+            after, @Query("limit") Long limit);
 
     /**
      * 获取动态详情 V2
@@ -108,7 +119,8 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
-    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") long amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") long amount,
+                                                    @Field("day") int day);
 
 
     /**
@@ -119,7 +131,8 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long
+            comment_id, @Field("amount") long amount, @Field("day") int day);
 
     /**
      * 获取动态评论置顶审核列表 V2
@@ -183,8 +196,9 @@ public interface DynamicClient {
      * @return
      */
     @GET(APP_PATH_DYNAMIC_REWARDS_USER_LIST)
-    Observable<List<RewardsListBean>> rewardDynamicList(@Path("feed_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
-
+    Observable<List<RewardsListBean>> rewardDynamicList(@Path("feed_id") long news_id, @Query("limit") Integer limit,
+                                                        @Query("since") Integer since, @Query("order") String order,
+                                                        @Query("order_type") String order_type);
 
 
 }

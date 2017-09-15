@@ -25,6 +25,17 @@ import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_USERS;
 
 public class PersonalCenterRepository extends BaseDynamicRepository implements PersonalCenterContract.Repository {
 
+    public enum MyDynamicTypeEnum{
+        ALL(null),
+        PAID("paid"),
+        PINNED("pinned");
+        public String value;
+
+        MyDynamicTypeEnum(String value) {
+            this.value = value;
+        }
+    }
+
     @Inject
     public PersonalCenterRepository(ServiceManager serviceManager) {
         super(serviceManager);
@@ -32,8 +43,8 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
 
 
     @Override
-    public Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id) {
-        return getDynamicListV2(DYNAMIC_TYPE_USERS, max_id, user_id, false);
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen) {
+        return getDynamicListV2(DYNAMIC_TYPE_USERS, max_id, user_id, false, screen);
     }
 
 }

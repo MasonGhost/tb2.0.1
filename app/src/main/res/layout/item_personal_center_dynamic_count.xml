@@ -6,15 +6,29 @@
               android:layout_height="@dimen/personal_center_dynamic_count_view_height"
               android:background="@color/general_for_bg_light"
               android:gravity="center_vertical"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
     <TextView
         android:id="@+id/tv_dynamic_count"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_weight="1"
         android:text="200条动态"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_comment"/>
+    <!--修改排序-->
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:drawablePadding="@dimen/spacing_normal"
+        android:drawableRight="@mipmap/icon_question_sort"
+        android:gravity="right|center_vertical"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_normal"
+        android:text="@string/all_dynamic"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_icon_assist"/>
 
 </LinearLayout>

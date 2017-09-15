@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -29,16 +30,20 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterContract;
+import com.zhiyicx.thinksnsplus.modules.rank.adapter.TypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity;
+import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
+import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 import com.zhy.view.flowlayout.TagFlowLayout;
+
 import java.util.ArrayList;
-import static com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity.BUNDLE_USER_INFO;
+import java.util.Arrays;
 
 /**
  * @author LiuChao
@@ -47,7 +52,7 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPort
  * @contact email:450127106@qq.com
  */
 
-public class PersonalCenterHeaderViewItem {
+public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnTypeChoosedListener {
     private static final String TAG = "PersonalCenterHeaderVie";
     /**********************************
      * headerView控件
@@ -61,6 +66,8 @@ public class PersonalCenterHeaderViewItem {
     private TextView tv_user_fans;// 用户粉丝数量
     private LinearLayout ll_dynamic_count_container;// 动态数量的容器
     private TextView tv_dynamic_count;// 动态数量
+    private TextView tv_type;// 动态分类，付费、置顶
+
     private TagFlowLayout mFlTags;
     private TextView tv_certify;// 认证
     private TextView tv_addres;// 地址
@@ -78,6 +85,9 @@ public class PersonalCenterHeaderViewItem {
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private PhotoSelectorImpl mPhotoSelector;
     private ImageLoader mImageLoader;
+
+    private TypeChoosePopupWindow mTypeChoosePopupWindow;// 类型选择框 付费、置顶
+    private PersonalCenterContract.View mView;
 
     /**
      * 标题文字的颜色:#333333
@@ -111,8 +121,10 @@ public class PersonalCenterHeaderViewItem {
     private int userNameFirstY = 0;
     private UserInfoTagsAdapter mUserInfoTagsAdapter;
 
-    public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
+    public PersonalCenterHeaderViewItem(Activity activity, PersonalCenterContract.View view, PhotoSelectorImpl photoSelector, RecyclerView
+            recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
+        mView = view;
         this.mPhotoSelector = photoSelector;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
@@ -156,12 +168,15 @@ public class PersonalCenterHeaderViewItem {
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
                 //toolbar文字上边缘距离toolbar上边缘的距离
-                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) -
+                        mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
                 // 滑动距离为多少时，toolbar完全不透明
                 int needDistanceY = userNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
-                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " +
+                        "" + needDistanceY + " mDistanceY " + mDistanceY);
                 // toolbar文字移动到toolbar中间，这期间的最大滑动距离
-                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+                int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen
+                        .toolbar_height);
                 if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
                     userName.setTranslationY(maxDistance - mDistanceY);
                 } else if (mDistanceY > maxDistance) {
@@ -221,7 +236,7 @@ public class PersonalCenterHeaderViewItem {
         more.setColorFilter(colorFilter);// 纯黑色
     }
 
-    public void initHeaderViewData(final UserInfoBean userInfoBean) {
+    public void initHeaderViewData(final UserInfoBean userInfoBean, PersonalCenterRepository.MyDynamicTypeEnum dynamicType) {
 
         // 显示头像
         ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, iv_head_icon);
@@ -240,7 +255,8 @@ public class PersonalCenterHeaderViewItem {
         tv_user_intro.setText(mActivity.getString(R.string.default_intro_format, userInfoBean.getIntro()));
 
         // 设置关注人数
-        String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()) + ">";
+        String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()
+        ) + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.white))
@@ -248,7 +264,8 @@ public class PersonalCenterHeaderViewItem {
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) + ">";
+        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) +
+                ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.white))
@@ -311,20 +328,48 @@ public class PersonalCenterHeaderViewItem {
             tv_certify.setVisibility(View.GONE);
         } else {
             tv_certify.setVisibility(View.VISIBLE);
-            tv_certify.setText(mActivity.getString(R.string.default_certify_format, userInfoBean.getVerified().getDescription()));
+            tv_certify.setText(mActivity.getString(R.string.default_certify_format, userInfoBean.getVerified()
+                    .getDescription()));
         }
         if (TextUtils.isEmpty(userInfoBean.getLocation())) {
             tv_addres.setVisibility(View.GONE);
         } else {
             tv_addres.setVisibility(View.VISIBLE);
-            tv_addres.setText(mActivity.getString(R.string.default_location_format,userInfoBean.getLocation()));
+            tv_addres.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getLocation()));
         }
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
         mFlTags.setAdapter(mUserInfoTagsAdapter);
+        // 当前登录用户才可以操作
+        if (AppApplication.getMyUserIdWithdefault() == userInfoBean.getUser_id()) {
+            tv_type.setVisibility(View.VISIBLE);
+            initTypePop(dynamicType);
+            tv_type.setOnClickListener(v -> {
+                if (mTypeChoosePopupWindow != null) {
+                    mTypeChoosePopupWindow.show();
+                }
+            });
+        } else {
+            tv_type.setVisibility(View.GONE);
+        }
+    }
+
+    private void initTypePop(PersonalCenterRepository.MyDynamicTypeEnum dynamicType) {
+        CommonAdapter commonAdapter = new TypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
+                .personal_dynamic_typpe)), dynamicType, this);
+        mTypeChoosePopupWindow = TypeChoosePopupWindow.Builder()
+                .with(mActivity)
+                .adapter(commonAdapter)
+                .asVertical()
+                .alpha(1.0f)
+                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.divider_line))
+                .parentView(tv_type)
+                .build();
+
     }
 
     private void initHeaderViewUI(View headerView) {
-        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
         fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
         iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
@@ -335,14 +380,17 @@ public class PersonalCenterHeaderViewItem {
         tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
         ll_dynamic_count_container = (LinearLayout) headerView.findViewById(R.id.ll_dynamic_count_container);
         tv_dynamic_count = (TextView) headerView.findViewById(R.id.tv_dynamic_count);
+        tv_type = (TextView) headerView.findViewById(R.id.tv_type);
         mFlTags = (TagFlowLayout) headerView.findViewById(R.id.fl_tags);
         tv_certify = (TextView) headerView.findViewById(R.id.tv_verify);
         tv_addres = (TextView) headerView.findViewById(R.id.tv_address);
 
         // 高度为屏幕宽度一半加上20dp
         int width = UIUtils.getWindowWidth(mActivity);
-        int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen
+                .spacing_large);
+        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
+                .MATCH_PARENT, height);
         fl_cover_contaner.setLayoutParams(containerLayoutParams);
         // 添加头部放缩
         new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
@@ -423,5 +471,27 @@ public class PersonalCenterHeaderViewItem {
 
     public ImageView getHeadView() {
         return iv_head_icon.getIvAvatar();
+    }
+
+    @Override
+    public void onChoosed(PersonalCenterRepository.MyDynamicTypeEnum type) {
+        mView.onDynamicTypeChanged(type);
+        switch (type) {
+            case ALL:
+                tv_type.setText(mActivity.getString(R.string.all_dynamic));
+                break;
+            case PAID:
+                tv_type.setText(mActivity.getString(R.string.pay_dynamic));
+                break;
+            case PINNED:
+                tv_type.setText(mActivity.getString(R.string.top_dynamic));
+
+                break;
+            default:
+
+        }
+        if (mTypeChoosePopupWindow != null) {
+            mTypeChoosePopupWindow.dismiss();
+        }
     }
 }

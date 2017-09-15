@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -82,7 +84,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     public boolean checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
         if (userInfoBean != null && userInfoBean.getVerified() != null) {
-            if (userInfoBean.getVerified().getType() == null) {
+            if (TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
                 return false;
             } else {
                 return true;

@@ -136,7 +136,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
+        Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId,mRootView.getDynamicType())
                 .subscribeOn(Schedulers.io())
                 .map(dynamicDetailBeanV2s -> {
                     List<DynamicDetailBeanV2> result = new ArrayList<>();
