@@ -256,13 +256,19 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        mPresenter.saveQuestion(packgQuestion());
+        if (mQAPublishBean != null){
+            // 重新单独设置悬赏，没有传对应的数据过来
+            mPresenter.saveQuestion(packgQuestion());
+        }
         super.setLeftClick();
     }
 
     @Override
     public void onBackPressed() {
-        mPresenter.saveQuestion(packgQuestion());
+        if (mQAPublishBean != null){
+            // 重新单独设置悬赏，没有传对应的数据过来
+            mPresenter.saveQuestion(packgQuestion());
+        }
         getActivity().finish();
     }
 
