@@ -408,7 +408,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked) {
-        mRicheTest.hideKeyBoard();
         if (mAnonymityAlertPopWindow == null) {
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
@@ -424,6 +423,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     .buildCenterPopWindowItem1ClickListener(new CenterAlertPopWindow.CenterPopWindowItemClickListener() {
                         @Override
                         public void onRightClicked() {
+                            View view = getActivity().getWindow().peekDecorView();
+                            if (view != null) {
+                                InputMethodManager inputmanger = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 1;
                             if (mAnonymityPopWindow != null) {
@@ -457,7 +461,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_QUESTION)
-    public void onPublishQuestionSuccess(Bundle bundle){
+    public void onPublishQuestionSuccess(Bundle bundle) {
         // 发布成功后关闭这个页面
         getActivity().finish();
     }
