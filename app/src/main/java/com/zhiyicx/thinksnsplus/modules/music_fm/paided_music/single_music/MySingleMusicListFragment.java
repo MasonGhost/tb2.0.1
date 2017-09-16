@@ -129,6 +129,7 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
                 musicName.setText(music_name);
                 authorName.setText("-" + item.getSinger().getName());
                 musicName.setText(music_name);
+                musicName.setPadding(ConvertUtils.px2dp(getContext(), 15), 0, 0, 0);
 //                if (item.getStorage().getAmount() != 0) {// 有收费
 //                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
 //                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());

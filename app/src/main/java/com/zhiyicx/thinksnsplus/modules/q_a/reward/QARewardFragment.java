@@ -27,7 +27,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
@@ -214,9 +213,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 typeIds.setUser(expertBean.getId());
                 typeIds.setName(expertBean.getName());
                 typeIdsList.add(typeIds);
-
                 mBtQaSelectExpert.setRightText(expertBean.getName());
                 mQAPublishBean.setInvitations(typeIdsList);
+                mPresenter.saveQuestion(mQAPublishBean);
             }
             configSureButton();
         }

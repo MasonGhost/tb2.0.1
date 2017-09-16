@@ -97,7 +97,7 @@ public interface InfoMainClient {
 
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECTION_LIST)
-    Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long max_id,
+    Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long after,
                                                             @Query("limit") Long limit);
 
     @GET(APP_PATH_GET_MY_INFO)

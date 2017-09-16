@@ -66,13 +66,13 @@ public interface DynamicClient {
     /**
      * 获取搜索的动态
      *
-     * @param after
+     * @param offset 偏移值
      * @param user_id
      * @param limit
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
-    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query("after") Long after, @Query("user") Long
+    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query("offset") Long offset, @Query("user") Long
             user_id, @Query("limit") Long limit);
 
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)

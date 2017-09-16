@@ -82,7 +82,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackMessage("发布成功", Prompt.DONE);
+                        mRootView.showSnackMessage("投稿成功，等待审核", Prompt.DONE);
                     }
 
                     @Override

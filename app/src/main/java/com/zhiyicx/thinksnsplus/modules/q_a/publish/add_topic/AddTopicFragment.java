@@ -99,6 +99,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         }
         saveQustion();
         if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+            mQAPublishBean.setAmount(0);
             mPresenter.updateQuestion(mQAPublishBean);
             return;
         }

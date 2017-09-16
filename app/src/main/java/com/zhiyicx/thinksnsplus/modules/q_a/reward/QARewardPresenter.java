@@ -71,6 +71,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     protected void onSuccess(Object data) {
                         // 解析数据，在跳转到问题详情页时需要用到
                         try {
+                            mRepository.deleteQuestion(qaPublishBean);
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             QAListInfoBean qaListInfoBean = new Gson().fromJson
                                     (jsonObject.getString("question"), QAListInfoBean.class);

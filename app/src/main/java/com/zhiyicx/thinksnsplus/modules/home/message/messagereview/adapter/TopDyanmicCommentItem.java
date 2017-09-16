@@ -86,7 +86,6 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
             holder.setVisible(R.id.iv_detail_image, View.GONE);
         }
 
-
         if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
             holder.setVisible(R.id.tv_content, View.GONE);
