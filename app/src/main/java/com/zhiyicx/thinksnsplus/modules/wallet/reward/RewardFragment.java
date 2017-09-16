@@ -58,8 +58,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
-
-    private RewardType mRewardType; // reward type
+    /**
+     * reward type
+     */
+    private RewardType mRewardType;
     private long mSourceId;
 
 
