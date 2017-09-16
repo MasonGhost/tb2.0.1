@@ -65,9 +65,6 @@ public class MyQuestionFragment extends TSViewPagerFragment {
         return new MyQuestionFragment();
     }
 
-    @Override
-    public void setPresenter(Object presenter) {
-    }
 
     @Override
     protected List<String> initTitles() {

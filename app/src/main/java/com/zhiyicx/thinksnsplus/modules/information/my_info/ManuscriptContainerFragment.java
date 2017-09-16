@@ -36,6 +36,7 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
         return true;
     }
 
+
     @Override
     protected String setCenterTitle() {
         return getString(R.string.my_info);
