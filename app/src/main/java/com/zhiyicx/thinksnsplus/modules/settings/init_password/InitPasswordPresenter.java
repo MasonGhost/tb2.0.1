@@ -1,0 +1,85 @@
+package com.zhiyicx.thinksnsplus.modules.settings.init_password;
+
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
+
+import javax.inject.Inject;
+
+import rx.Subscription;
+import rx.functions.Action0;
+
+/**
+ * @author Catherine
+ * @describe
+ * @date 2017/9/18
+ * @contact email:648129313@qq.com
+ */
+@FragmentScoped
+public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract.Repository, InitPasswordContract.View>
+        implements InitPasswordContract.Presenter {
+
+    @Inject
+    ChangePasswordRepository mChangePasswordRepository;
+
+    @Inject
+    public InitPasswordPresenter(InitPasswordContract.Repository repository, InitPasswordContract.View rootView) {
+        super(repository, rootView);
+    }
+
+
+    @Override
+    public void initPassword(String password, String confirm_password) {
+        if (checkPasswordLength(password, mContext.getString(R.string.old_password_toast_hint))) {
+            return;
+        }
+        if (checkPasswordLength(password, mContext.getString(R.string.new_password_toast_hint))) {
+            return;
+        }
+        if (checkPasswordLength(confirm_password, mContext.getString(R.string.sure_new_password_toast_hint))) {
+            return;
+        }
+        if (!password.equals(confirm_password)) {
+            mRootView.showMessage(mContext.getString(R.string.password_diffrent));
+            return;
+        }
+        Subscription subscription = mChangePasswordRepository.changePasswordV2(null, password)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.initPasswordResult(true);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showMessage(message);
+                        mRootView.initPasswordResult(false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.initPasswordResult(false);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    /**
+     * 检查密码是否是最小长度
+     *
+     * @param password 密码
+     * @return 是否可用
+     */
+    private boolean checkPasswordLength(String password, String hint) {
+        if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
+            mRootView.showMessage(hint);
+            return true;
+        }
+        return false;
+    }
+}

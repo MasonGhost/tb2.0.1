@@ -15,8 +15,10 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.init_password.InitPasswordActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +100,9 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑手机号
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                            intent.setClass(getActivity(), InitPasswordActivity.class);
+                        }
                         Bundle bundle = new Bundle();
                         bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
                         bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
@@ -113,6 +118,9 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑邮箱
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                            intent.setClass(getActivity(), InitPasswordActivity.class);
+                        }
                         Bundle bundle = new Bundle();
                         bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
                         bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
