@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -67,7 +69,6 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                         mRootView.setInfoType(data);
                     }
                 });
-
         addSubscrebe(subscription);
 
         mRepository.getInfoType().subscribe(data -> {
@@ -83,7 +84,11 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     public boolean checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
         if (userInfoBean != null && userInfoBean.getVerified() != null) {
-            return true;
+            if (TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
+                return false;
+            } else {
+                return true;
+            }
         }
         return false;
     }

@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -30,7 +32,6 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -38,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -56,11 +58,21 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
 
 /**
  * @Describe
@@ -82,9 +94,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -112,6 +121,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
     List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
 
+    private boolean mMessageContainerRedDotIsShow;
+    private boolean mMessageRedDotIsShow;
+    private boolean mNotificaitonRedDotIsShow;
+
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
@@ -129,7 +142,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         creatTsHelperConversation();
     }
 
-    /**
+    /**mNotificaitonRedDotIsShow
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
@@ -285,7 +298,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void deletConversation(int position) {
         final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
         // ts 助手标记为已删除
-        Observable.empty()
+        Subscription subscribe = Observable.empty()
                 .observeOn(Schedulers.newThread())
                 .subscribe(new rx.Subscriber<Object>() {
                     @Override
@@ -306,10 +319,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     }
                 });
+
         // 删除对话信息
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
         mRootView.getListDatas().remove(position);
         checkBottomMessageTip();
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -342,14 +357,26 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void readMessageByKey(String key) {
         String notificationIds = "";
         switch (key) {
+            // 所有评论
             case NOTIFICATION_KEY_FEED_COMMENTS:
-            case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+            case NOTIFICATION_KEY_NEWS_COMMENT:
+            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+            case NOTIFICATION_KEY_QUESTION_COMMENT:
+            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+            case NOTIFICATION_KEY_ANSWER_COMMENT:
+            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                 notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
                 break;
+            // 所有点赞
             case NOTIFICATION_KEY_FEED_DIGGS:
                 notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
+            // 所有审核
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                 notificationIds = getNotificationIds(mReviewNoti, notificationIds);
                 break;
             default:
@@ -371,6 +398,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             }
         }
         return notificationIds;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE)
+    private void updateNotificaitonReddot(boolean isHide) {
+        mNotificaitonRedDotIsShow=false;
+        checkBottomMessageTip();
     }
 
     /*******************************************
@@ -468,24 +501,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
                 handleIMPush(jpushMessageBean);
                 break;
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_CHANNEL:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_MUSIC:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_NEWS:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_USER:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED_CONTENT:
+
             default:
-                switch (jpushMessageBean.getAction()) {
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_FOLLOW:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_NOTICE:
-                        // 服务器同步未读评论和点赞消息
-                        handleFlushMessage();
-                        break;
-                    default:
-                }
+                // 服务器同步未读评论和点赞消息
+                handleFlushMessage();
                 break;
+
 
         }
     }
@@ -545,17 +567,34 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mReviewNoti.clear();
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
+                                // 所有评论
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
-                                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+                                case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_NEWS_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                                     mCommentsNoti.add(tspNotificationBean);
                                     break;
+                                // 所有点赞
                                 case NOTIFICATION_KEY_FEED_DIGGS:
                                     mDiggNoti.add(tspNotificationBean);
                                     break;
+                                // 所有审核
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
+                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())){
+                                        mNotificaitonRedDotIsShow = true;
+                                    }
+
                             }
                         }
                         /**
@@ -598,15 +637,21 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 diggTip);
 
                         String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
-                        if (!TextUtils.isEmpty(reviewTip)) {
-                            reviewTip += mContext.getString(R.string.recieved_review);
+//                        if (!TextUtils.isEmpty(reviewTip)) {
+//                            reviewTip += mContext.getString(R.string.recieved_review);
+//                        } else {
+//                            reviewTip = mContext.getString(R.string.has_no_body)
+//                                    + mContext.getString(R.string.recieved_review);
+//                        }
+                        if (getUnreadNums(mReviewNoti) > 0) {
+                            reviewTip = mContext.getString(R.string.new_apply_data);
                         } else {
-                            reviewTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.recieved_review);
+                            reviewTip = mContext.getString(R.string.no_apply_data);
+                            mItemBeanReview.getConversation().setLast_message_time(0);
+
                         }
                         mItemBeanReview.getConversation().getLast_message().setTxt(
                                 reviewTip);
-
 
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
@@ -617,6 +662,28 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+
+    @Override
+    public List<TSPNotificationBean> getReviewListData() {
+        return mReviewNoti;
+    }
+
+    @Override
+    public List<TSPNotificationBean> getCommentsNoti() {
+        return mCommentsNoti;
+    }
+
+    @Override
+    public List<TSPNotificationBean> getDiggNoti() {
+        return mDiggNoti;
+    }
+
+    /**
+     * 没有阅读时间说明没有阅读
+     *
+     * @param datas
+     * @return
+     */
     private int getUnreadNums(List<TSPNotificationBean> datas) {
         int nums = 0;
         for (TSPNotificationBean tspNotificationBean : datas) {
@@ -637,7 +704,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     } else {
                         tip += commentsNoti.get(i).getUserInfo().getName() + "、";
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -705,8 +772,15 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
             }
         }
+        mMessageRedDotIsShow = isShowMessgeTip;
+        Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
+        if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
+            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
+            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
+        }
+        mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;
+        EventBus.getDefault().post(mMessageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
 
-        EventBus.getDefault().post(isShowMessgeTip, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
     }
 
 }

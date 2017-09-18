@@ -1,13 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Activity;
 import android.app.Application;
 
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
@@ -21,7 +18,6 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
-import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -29,10 +25,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -47,8 +44,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @Describe
@@ -81,13 +76,16 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
     @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
-    @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -167,15 +165,16 @@ public class AuthRepository implements IAuthRepository {
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
         mGroupInfoBeanGreenDao.clearTable();
+        mRechargeSuccessBeanGreenDao.clearTable();
         mDynamicDetailBeanV2GreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
         mTopDynamicBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
-        mFlushMessageBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(mContext).delDataBase();
+        mUserInfoBeanGreenDao.clearTable();
         AppApplication.setmCurrentLoginAuth(null);
 
         //处理 Ts 助手

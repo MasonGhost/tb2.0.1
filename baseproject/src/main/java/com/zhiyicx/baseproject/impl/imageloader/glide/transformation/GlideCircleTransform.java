@@ -49,7 +49,7 @@ public class GlideCircleTransform extends BitmapTransformation {
         Paint paint = new Paint();
         paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
         paint.setAntiAlias(true);
-        canvas.drawCircle(r, r, r, paint);
+        canvas.drawCircle(r, r, r - 0.1f, paint);
 
         return result;
     }
@@ -59,4 +59,3 @@ public class GlideCircleTransform extends BitmapTransformation {
         return getClass().getName();
     }
 }
-

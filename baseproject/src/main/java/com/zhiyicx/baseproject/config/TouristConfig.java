@@ -100,4 +100,8 @@ public class TouristConfig {
      * 是否可以点击查看更多评论
      */
     public static final boolean MORE_COMMENT_CAN_LOOK = false;
+    /**
+     * 是否可以查看问答页
+     */
+    public static final boolean MORE_QUESTION_LIST_CAN_LOOK = false;
 }

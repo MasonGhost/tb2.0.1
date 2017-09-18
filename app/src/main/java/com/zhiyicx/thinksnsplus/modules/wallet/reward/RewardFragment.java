@@ -18,6 +18,9 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -55,14 +58,19 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
-
-    private RewardType mRewardType; // reward type
+    /**
+     * reward type
+     */
+    private RewardType mRewardType;
     private long mSourceId;
 
 
     private double mRewardMoney; // money choosed for reward
 
     private List<Float> mRechargeLables; // recharge lables
+
+    private ActionPopupWindow mStickTopInstructionsPopupWindow;
+
 
     public static RewardFragment newInstance(Bundle bundle) {
         RewardFragment rechargeFragment = new RewardFragment();
@@ -183,8 +191,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    mBtTop.setEnabled(false);
-                    mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                    if (mRewardMoney != (int) mRewardMoney) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), mBtTop);
+                        initStickTopInstructionsPop();
+                    } else {
+                        setSureBtEnable(false);
+                        mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                    }
                 });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
@@ -237,10 +250,14 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     private void configSureButton() {
-        mBtTop.setEnabled(mRewardMoney > 0);
+        setSureBtEnable(mRewardMoney > 0);
         mToolbarRight.setEnabled(mRewardMoney > 0);
     }
 
+    @Override
+    public void setSureBtEnable(boolean b) {
+        mBtTop.setEnabled(b);
+    }
 
     /**
      * @param context    not application context clink
@@ -259,5 +276,23 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             throw new IllegalAccessError("context must instance of Activity");
         }
 
+    }
+
+    public void initStickTopInstructionsPop() {
+        if (mStickTopInstructionsPopupWindow != null) {
+            mStickTopInstructionsPopupWindow.show();
+            return;
+        }
+        mStickTopInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.sticktop_reward_instructions))
+                .desStr(getString(R.string.sticktop_reward_instructions_detail))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mStickTopInstructionsPopupWindow.hide())
+                .build();
+        mStickTopInstructionsPopupWindow.show();
     }
 }

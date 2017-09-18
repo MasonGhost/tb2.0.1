@@ -13,7 +13,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 
-public interface ITSListView<T,P> extends IBaseView<P> {
+public interface ITSListView<T, P> extends IBaseView<P> {
     /**
      * 服务器返回数据
      *
@@ -21,6 +21,7 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * @param isLoadMore 加载状态
      */
     void onNetResponseSuccess(List<T> data, boolean isLoadMore);
+
     /**
      * 数据库返回数据
      *
@@ -28,6 +29,7 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * @param isLoadMore 加载状态
      */
     void onCacheResponseSuccess(List<T> data, boolean isLoadMore);
+
     /**
      * 错误信息
      *
@@ -36,6 +38,7 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      */
     void onResponseError(Throwable throwable, boolean isLoadMore);
 
+    void hideRefreshState(boolean isLoadMore);
 
     /**
      * 显示常驻信息
@@ -47,6 +50,7 @@ public interface ITSListView<T,P> extends IBaseView<P> {
     /**
      * 显示常驻信息 html 格式
      * 动态列表广告
+     *
      * @param html 信息内容
      */
     void showStickyHtmlMessage(@NotNull String html);
@@ -58,12 +62,14 @@ public interface ITSListView<T,P> extends IBaseView<P> {
 
     /**
      * 当 max_id 无法使用的时候标识分页
+     *
      * @return
      */
     int getPage();
 
     /**
      * 获取数据源数据
+     *
      * @return
      */
     List<T> getListDatas();
@@ -71,17 +77,17 @@ public interface ITSListView<T,P> extends IBaseView<P> {
     /**
      * 刷新数据
      */
-     void refreshData();
+    void refreshData();
 
     /**
      * 刷新数据
      */
-     void refreshData(List<T> datas);
+    void refreshData(List<T> datas);
 
     /**
      * 刷新单条数据
      */
-     void refreshData(int index);
+    void refreshData(int index);
 
 
 }

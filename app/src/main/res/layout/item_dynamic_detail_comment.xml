@@ -8,7 +8,6 @@
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingRight="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid"
-
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
@@ -67,6 +66,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:layout_below="@+id/tv_name"
+
         android:layout_toLeftOf="@+id/fl_tip"
         android:layout_toRightOf="@+id/iv_headpic"
         android:paddingBottom="@dimen/spacing_mid"
@@ -77,8 +77,8 @@
 
 
     <include
-        android:visibility="gone"
         android:id="@+id/fl_tip"
+        android:visibility="gone"
         layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

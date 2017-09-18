@@ -19,24 +19,24 @@
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_dynamic_title"
             style="@style/style_edit_cursor"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_normal_large"
             android:layout_marginRight="@dimen/spacing_normal_large"
             android:layout_marginTop="@dimen/spacing_large"
+            android:visibility="gone"
             app:hintContent="@string/dynamic_title_hint"
             app:limitSize="@integer/dynamic_title_max_size"
             app:showLimitSize="@integer/dynamic_title_input_size"/>
 
         <include
-            android:visibility="gone"
             layout="@layout/include_horizontal_divider_light"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
+            android:visibility="gone"
             />
 
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
@@ -122,11 +122,11 @@
                 style="@style/style_divider_horizontal_light"/>
 
             <TextView
+                android:id="@+id/tv_word_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_normal"
-                android:id="@+id/tv_word_limit"
                 android:text="@string/dynamic_send_toll_notes"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_comment"/>

@@ -228,6 +228,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <!-- 查看头像页 -->
+        <activity
+            android:name=".modules.personal_center.portrait.HeadPortraitViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.music_fm.music_comment.MusicCommentActivity"
             android:screenOrientation="portrait"
@@ -288,9 +293,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-                android:name=".modules.q_a.mine.container.MyQuestionActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.q_a.mine.container.MyQuestionActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
@@ -311,9 +316,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-                android:name=".modules.rank.type_list.RankTypeListActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.rank.type_list.RankTypeListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
@@ -471,7 +477,7 @@
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name=".modules.wallet.reward.RewardActivity"
@@ -526,15 +532,18 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.information.my_info.ManuscriptsActivity"
-            android:screenOrientation="portrait"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.music_fm.paided_music.MyMusicActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.draftbox.DraftBoxActivity"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.q_a.publish.create_topic.CreateTopicActivity">
+        </activity>
     </application>
 
 </manifest>

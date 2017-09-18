@@ -10,14 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -42,6 +37,8 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommen
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -75,7 +72,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
         implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
-        TextViewUtils.OnSpanTextClickListener {
+        TextViewUtils.OnSpanTextClickListener, DynamicDetailCommentItem.OnCommentResendListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -119,8 +116,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
     private ActionPopupWindow mMyDynamicPopWindow;
-
     private PayPopWindow mPayImagePopWindow;
+
+    private ActionPopupWindow mReSendCommentPopWindow;
 
     @Override
     protected boolean showToolbar() {
@@ -284,6 +282,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         dynamicDetailCommentItem.setOnCommentTextClickListener(this);
+        dynamicDetailCommentItem.setOnCommentResendListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
         DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
@@ -447,6 +446,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
     }
+
     @Override
     public void updateReward() {
 
@@ -552,6 +552,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public void reSendComment(DynamicCommentBean dynamicCommentBean) {
+        initReSendCommentPopupWindow(dynamicCommentBean, getCurrentDynamic().getId());
+    }
+
+    @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         handleItemClick(position);
     }
@@ -594,18 +599,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
-                    intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
-                    mDeletCommentPopWindow.hide();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, getCurrentDynamic().getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID, comment_id);// 该资源的评论id,非评论置顶不传这个
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
                     startActivity(intent);
+                    mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
@@ -725,7 +732,28 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 })
                 .build();
         mPayImagePopWindow.show();
+    }
 
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long
+            feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mReSendCommentPopWindow.hide();
+                    mPresenter.reSendComment(commentBean, feed_id);
+                })
+                .bottomClickListener(() -> mReSendCommentPopWindow.hide())
+                .build();
+        mReSendCommentPopWindow.show();
     }
 
     /**
@@ -757,7 +785,5 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 }
             }
         }
-
-
     }
 }

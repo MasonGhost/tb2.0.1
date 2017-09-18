@@ -5,19 +5,26 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
-
+import com.zhiyicx.thinksnsplus.widget.CheckVersionPopupWindow;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import okhttp3.OkHttpClient;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -28,7 +35,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class SettingsFragment extends TSFragment<SettingsContract.Presenter> implements SettingsContract.View {
+public class SettingsFragment extends TSFragment<SettingsContract.Presenter> implements SettingsContract.View,
+        CheckVersionPopupWindow.OnUpdateClickListener {
 
     @BindView(R.id.bt_login_out)
     CombinationButton mBtLoginOut;
@@ -42,11 +50,14 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     CombinationButton mBtAboutUs;
     @BindView(R.id.bt_account_manager)
     CombinationButton mBtAccountManager;
+    @BindView(R.id.bt_check_version)
+    CombinationButton mBtCheckVersion;
 
     //    private AlertDialog.Builder mLoginoutDialogBuilder;// 退出登录选择弹框
 //    private AlertDialog.Builder mCleanCacheDialogBuilder;// 清理缓存选择弹框
     private ActionPopupWindow mLoginoutPopupWindow;// 退出登录选择弹框
     private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
+    private CheckVersionPopupWindow mCheckVersionPopupWindow;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -80,7 +91,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     @Override
     protected void initData() {
         mPresenter.getDirCacheSize();// 获取缓存大小
-        mBtAboutUs.setRightText("V" + DeviceUtils.getVersionName(getContext()));
+        mBtCheckVersion.setRightText("V" + DeviceUtils.getVersionName(getContext()));
     }
 
     @Override
@@ -129,6 +140,17 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     initLoginOutPopupWindow();
                     mLoginoutPopupWindow.show();
                 });
+        // 检查版本是否有更新
+        RxView.clicks(mBtCheckVersion)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+//                    initCheckVersionPopWindow();
+//                    mCheckVersionPopupWindow.show();
+                    AppUpdateManager.getInstance(getContext()
+                            , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                            .startVersionCheck();
+                });
     }
 
 
@@ -141,7 +163,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         }
         mCleanCachePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_clean_cache))
-                .item2Str(getString(R.string.sure))
+                .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -178,6 +200,30 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     mLoginoutPopupWindow.hide();
                 })
                 .bottomClickListener(() -> mLoginoutPopupWindow.hide()).build();
+
+    }
+
+    private void initCheckVersionPopWindow(){
+        if (mCheckVersionPopupWindow != null){
+            return;
+        }
+        UpdateInfoBean updateInfoBean = new UpdateInfoBean();
+        updateInfoBean.setLength(1024);
+        updateInfoBean.setContent("xxxxxxxxxx");
+        updateInfoBean.setName("V1.0.1");
+        mCheckVersionPopupWindow = CheckVersionPopupWindow.Builder()
+                .with(getActivity())
+                .parentView(mBtCheckVersion)
+                .bindListener(this)
+                .bindData(updateInfoBean)
+                .isOutsideTouch(false)
+                .alpha(0.8f)
+                .build();
+
+    }
+
+    @Override
+    public void onUpdateClick() {
 
     }
 //    /**

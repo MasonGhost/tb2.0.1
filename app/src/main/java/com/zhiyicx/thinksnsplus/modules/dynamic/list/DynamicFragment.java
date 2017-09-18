@@ -309,11 +309,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
         if (mListDatas.size() > 0) {
-            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
-                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
-            } else {
                 return mListDatas.get(mListDatas.size() - 1).getId();
-            }
         } else {
             return DEFAULT_PAGE_MAX_ID;
         }

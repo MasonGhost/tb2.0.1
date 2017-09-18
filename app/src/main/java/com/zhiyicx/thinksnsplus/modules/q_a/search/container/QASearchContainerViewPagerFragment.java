@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
@@ -24,9 +25,17 @@ import java.util.List;
  */
 public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
 
-    public static final int PAGE_POSITION_QA = 0;
-    public static final int PAGE_POSITION_TOPIC = 1;
     private String mCurrentSearchContent = "";
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -65,6 +74,11 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+
+    @Override
     protected List<Fragment> initFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(QASearchListFragment.newInstance(getArguments()));
@@ -96,7 +110,7 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
      */
     public void onSearhChanged(String string) {
         this.mCurrentSearchContent = string;
-        if (tsViewPagerAdapter == null || mVpFragment == null) {
+        if (tsViewPagerAdapter == null || mVpFragment == null|| TextUtils.isEmpty(string)) {
             return;
         }
         try {

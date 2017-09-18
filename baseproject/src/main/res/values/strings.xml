@@ -20,10 +20,12 @@
     <string name="close">关闭</string>
     <string name="seconds">s后重发</string>
     <string name="username">用户名</string>
+    <string name="set_password">设置密码</string>
     <string name="password">密码</string>
     <string name="old_password">旧密码</string>
     <string name="new_password">新密码</string>
     <string name="sure_new_password">确认新密码</string>
+    <string name="duplicate_password">重复密码</string>
     <string name="vertify_code">验证码</string>
     <string name="phone_number">手机号</string>
     <string name="phone_hint">手机</string>
@@ -41,6 +43,7 @@
     <string name="send_failure">发送失败</string>
     <string name="send">发送</string>
     <string name="sure">确认</string>
+    <string name="determine">确定</string>
     <string name="change_head_icon">更换头像</string>
     <string name="change_bg_cover">更换封面</string>
     <string name="select_certification">选择证件图片</string>

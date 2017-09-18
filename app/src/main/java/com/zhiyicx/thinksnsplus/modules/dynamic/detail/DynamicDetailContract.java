@@ -150,6 +150,8 @@ public interface DynamicDetailContract {
          */
         void sendCommentV2(long replyToUserId, String commentContent);
 
+        void reSendComment(DynamicCommentBean commentBean, long feed_id);
+
         /**
          * delete a comment
          *

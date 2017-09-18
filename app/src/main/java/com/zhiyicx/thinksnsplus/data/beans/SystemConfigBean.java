@@ -21,6 +21,8 @@ public class SystemConfigBean implements Serializable {
      * im_serve : 127.0.0.1:9900
      * im_helper : [{"uid":"1","url":"https://plus.io/users/1"}]
      * "ad": [],
+     * "question:apply_amount": 200,  //  申请精选所需支付金额
+     *"question:onlookers_amount": 100  //  围观答案所需支付金额
      * "checkin": false
      */
     @SerializedName("wallet:ratio")
@@ -33,9 +35,28 @@ public class SystemConfigBean implements Serializable {
     private ArrayList<Advert> mAdverts;
     @SerializedName("wallet:recharge-type")
     private String[] mWalletTtype;
-
+    @SerializedName("question:apply_amount")
+    private int excellentQuestion;
+    @SerializedName("question:onlookers_amount")
+    private int onlookQuestion;
     private boolean checkin;
 
+
+    public int getExcellentQuestion() {
+        return excellentQuestion;
+    }
+
+    public void setExcellentQuestion(int excellentQuestion) {
+        this.excellentQuestion = excellentQuestion;
+    }
+
+    public int getOnlookQuestion() {
+        return onlookQuestion;
+    }
+
+    public void setOnlookQuestion(int onlookQuestion) {
+        this.onlookQuestion = onlookQuestion;
+    }
 
     public String[] getWalletTtype() {
         return mWalletTtype;
@@ -91,6 +112,7 @@ public class SystemConfigBean implements Serializable {
      */
 
     public static class ImHelperBean implements Serializable {
+        private static final long serialVersionUID = 2932201693891980990L;
         private String uid;
         private String url;
         private boolean isDelete;
@@ -149,6 +171,7 @@ public class SystemConfigBean implements Serializable {
      * }
      */
     public static class Advert implements Serializable {
+        private static final long serialVersionUID = -261781358771084800L;
         private int id;
         private String title;
         private String type;

@@ -41,20 +41,34 @@ public interface QAClient {
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
-    Observable<BaseJsonV2<QAPublishBean>> publishQuestion(@Body RequestBody body);
-
-    @FormUrlEncoded
-    @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
-    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<Object> publishQuestion(@Body RequestBody body);
 
     /**
-     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
-     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * 发布答案
+     * @param question_id
+     * @param body
+     * @param anonymity 是否匿名
+     * @return
      */
     @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
+    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+
+    /**
+     * 申请创建话题
+     * @param name
+     * @param description
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_CREATE_TOPIC)
+    Observable<BaseJsonV2> createTopic(@Field("name") String name, @Field("description") String description);
+
+    /**
+     * @param body  如果 anonymity 不传，则本字段必须存在， 回答详情。
+     */
     @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
-    Observable<BaseJsonV2<Object>> uplaodQuestion(@Path("question") Long question_id, @Field("body")
-            String body, @Field("anonymity") int anonymity);
+    Observable<Object> uplaodQuestion(@Path("question") Long question_id,@Body RequestBody body);
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
@@ -199,6 +213,12 @@ public interface QAClient {
     Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
 
     /**
+     * 申请围观
+     */
+    @POST(ApiConfig.APP_PATH_QA_ANSWER_LOOK)
+    Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(@Path("answer_id") Long answer_id);
+
+    /**
      * 获取问题的评论列表
      *
      * @param question_id id
@@ -234,7 +254,7 @@ public interface QAClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_QA_ANSWER_REWARD)
-    Observable<Object> rewardQA(@Path("answer_id") long answer_id, @Field("amount") Integer amount);
+    Observable<Object> rewardQA(@Path("answer_id") long answer_id, @Field("amount") long amount);
 
 
     /**

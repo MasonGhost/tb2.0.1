@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
-import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerContract;
-
 import dagger.Module;
 import dagger.Provides;
 

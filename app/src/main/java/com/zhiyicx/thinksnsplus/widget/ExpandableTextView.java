@@ -58,6 +58,7 @@ public class ExpandableTextView extends AppCompatTextView {
     private boolean mToggleEnable = TOGGLE_ENABLE;
     private boolean mShowToExpandHint = SHOW_TO_EXPAND_HINT;
     private boolean mShowToShrinkHint = SHOW_TO_SHRINK_HINT;
+    private boolean mIsNeedShrink = SHOW_TO_SHRINK_HINT;
     private int mMaxLinesOnShrink = MAX_LINES_ON_SHRINK;
     private int mToExpandHintColor = TO_EXPAND_HINT_COLOR;
     private int mToShrinkHintColor = TO_SHRINK_HINT_COLOR;
@@ -89,13 +90,13 @@ public class ExpandableTextView extends AppCompatTextView {
 
     public ExpandableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttr(context,attrs);
+        initAttr(context, attrs);
         init();
     }
 
     public ExpandableTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttr(context,attrs);
+        initAttr(context, attrs);
         init();
     }
 
@@ -112,54 +113,56 @@ public class ExpandableTextView extends AppCompatTextView {
             int attr = a.getIndex(i);
             if (attr == R.styleable.ExpandableTextView_etv_MaxLinesOnShrink) {
                 mMaxLinesOnShrink = a.getInteger(attr, MAX_LINES_ON_SHRINK);
-            }else if (attr == R.styleable.ExpandableTextView_etv_EllipsisHint){
+            } else if (attr == R.styleable.ExpandableTextView_etv_EllipsisHint) {
                 mEllipsisHint = a.getString(attr);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHint) {
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHint) {
                 mToExpandHint = a.getString(attr);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHint) {
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHint) {
                 mToShrinkHint = a.getString(attr);
-            }else if (attr == R.styleable.ExpandableTextView_etv_EnableToggle) {
+            } else if (attr == R.styleable.ExpandableTextView_etv_EnableToggle) {
                 mToggleEnable = a.getBoolean(attr, TOGGLE_ENABLE);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintShow){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintShow) {
                 mShowToExpandHint = a.getBoolean(attr, SHOW_TO_EXPAND_HINT);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintShow){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintShow) {
                 mShowToShrinkHint = a.getBoolean(attr, SHOW_TO_SHRINK_HINT);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintColor){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintColor) {
                 mToExpandHintColor = a.getInteger(attr, TO_EXPAND_HINT_COLOR);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintColor){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintColor) {
                 mToShrinkHintColor = a.getInteger(attr, TO_SHRINK_HINT_COLOR);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintColorBgPressed){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToExpandHintColorBgPressed) {
                 mToExpandHintColorBgPressed = a.getInteger(attr, TO_EXPAND_HINT_COLOR_BG_PRESSED);
-            }else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintColorBgPressed){
+            } else if (attr == R.styleable.ExpandableTextView_etv_ToShrinkHintColorBgPressed) {
                 mToShrinkHintColorBgPressed = a.getInteger(attr, TO_SHRINK_HINT_COLOR_BG_PRESSED);
-            }else if (attr == R.styleable.ExpandableTextView_etv_InitState){
+            } else if (attr == R.styleable.ExpandableTextView_etv_InitState) {
                 mCurrState = a.getInteger(attr, STATE_SHRINK);
-            }else if (attr == R.styleable.ExpandableTextView_etv_GapToExpandHint){
+            } else if (attr == R.styleable.ExpandableTextView_etv_GapToExpandHint) {
                 mGapToExpandHint = a.getString(attr);
-            }else if (attr == R.styleable.ExpandableTextView_etv_GapToShrinkHint){
+            } else if (attr == R.styleable.ExpandableTextView_etv_GapToShrinkHint) {
                 mGapToShrinkHint = a.getString(attr);
+            } else if (attr == R.styleable.ExpandableTextView_etv_IsNeedShrink) {
+                mIsNeedShrink = a.getBoolean(attr, TOGGLE_ENABLE);
             }
         }
         a.recycle();
     }
 
-    public void setMaxLinesOnShrink(int maxLine){
+    public void setMaxLinesOnShrink(int maxLine) {
         this.mMaxLinesOnShrink = maxLine;
     }
 
     private void init() {
         mTouchableSpan = new TouchableSpan();
         setMovementMethod(new LinkTouchMovementMethod());
-        if(TextUtils.isEmpty(mEllipsisHint)) {
+        if (TextUtils.isEmpty(mEllipsisHint)) {
             mEllipsisHint = ELLIPSIS_HINT;
         }
-        if(TextUtils.isEmpty(mToExpandHint)){
+        if (TextUtils.isEmpty(mToExpandHint)) {
             mToExpandHint = getResources().getString(R.string.qa_topic_open_all);
         }
-        if(TextUtils.isEmpty(mToShrinkHint)){
+        if (TextUtils.isEmpty(mToShrinkHint) && mIsNeedShrink) {
             mToShrinkHint = getResources().getString(R.string.qa_topic_close_all);
         }
-        if(mToggleEnable){
+        if (mToggleEnable) {
             mExpandableClickListener = new ExpandableClickListener();
             setOnClickListener(mExpandableClickListener);
         }
@@ -179,63 +182,61 @@ public class ExpandableTextView extends AppCompatTextView {
 
     /**
      * used in ListView or RecyclerView to update ExpandableTextView
-     * @param text
-     *          original text
-     * @param futureTextViewWidth
-     *          the width of ExpandableTextView in px unit,
-     *          used to get max line number of original text by given the width
-     * @param expandState
-     *          expand or shrink
+     *
+     * @param text                original text
+     * @param futureTextViewWidth the width of ExpandableTextView in px unit,
+     *                            used to get max line number of original text by given the width
+     * @param expandState         expand or shrink
      */
-    public void updateForRecyclerView(CharSequence text, int futureTextViewWidth, int expandState){
+    public void updateForRecyclerView(CharSequence text, int futureTextViewWidth, int expandState) {
         mFutureTextViewWidth = futureTextViewWidth;
         mCurrState = expandState;
         setText(text);
     }
 
-    public void updateForRecyclerView(CharSequence text, BufferType type, int futureTextViewWidth){
+    public void updateForRecyclerView(CharSequence text, BufferType type, int futureTextViewWidth) {
         mFutureTextViewWidth = futureTextViewWidth;
         setText(text, type);
     }
 
-    public void updateForRecyclerView(CharSequence text, int futureTextViewWidth){
+    public void updateForRecyclerView(CharSequence text, int futureTextViewWidth) {
         mFutureTextViewWidth = futureTextViewWidth;
         setText(text);
     }
 
     /**
      * get the current state of ExpandableTextView
-     * @return
-     *      STATE_SHRINK if in shrink state
-     *      STATE_EXPAND if in expand state
+     *
+     * @return STATE_SHRINK if in shrink state
+     * STATE_EXPAND if in expand state
      */
-    public int getExpandState(){
+    public int getExpandState() {
         return mCurrState;
     }
 
     /**
      * refresh and get a will-be-displayed text by current configuration
-     * @return
-     *      get a will-be-displayed text
+     *
+     * @return get a will-be-displayed text
      */
-    private CharSequence getNewTextByConfig(){
-        if(TextUtils.isEmpty(mOrigText)){
+    private CharSequence getNewTextByConfig() {
+        if (TextUtils.isEmpty(mOrigText)) {
             return mOrigText;
         }
 
         mLayout = getLayout();
-        if(mLayout != null){
+        if (mLayout != null) {
             mLayoutWidth = mLayout.getWidth();
         }
 
-        if(mLayoutWidth <= 0){
-            if(getWidth() == 0) {
+        if (mLayoutWidth <= 0) {
+            if (getWidth() == 0) {
                 if (mFutureTextViewWidth == 0) {
                     return mOrigText;
                 } else {
                     mLayoutWidth = mFutureTextViewWidth - getPaddingLeft() - getPaddingRight();
                 }
-            }else{
+            } else {
                 mLayoutWidth = getWidth() - getPaddingLeft() - getPaddingRight();
             }
         }
@@ -243,7 +244,7 @@ public class ExpandableTextView extends AppCompatTextView {
         mTextPaint = getPaint();
 
         mTextLineCount = -1;
-        switch (mCurrState){
+        switch (mCurrState) {
             case STATE_SHRINK: {
                 mLayout = new DynamicLayout(mOrigText, mTextPaint, mLayoutWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 mTextLineCount = mLayout.getLineCount();
@@ -331,25 +332,25 @@ public class ExpandableTextView extends AppCompatTextView {
         return str;
     }
 
-    public void setExpandListener(OnExpandListener listener){
+    public void setExpandListener(OnExpandListener listener) {
         mOnExpandListener = listener;
     }
 
-    private Layout getValidLayout(){
+    private Layout getValidLayout() {
         return mLayout != null ? mLayout : getLayout();
     }
 
-    private void toggle(){
-        switch (mCurrState){
+    private void toggle() {
+        switch (mCurrState) {
             case STATE_SHRINK:
                 mCurrState = STATE_EXPAND;
-                if(mOnExpandListener != null){
+                if (mOnExpandListener != null) {
                     mOnExpandListener.onExpand(this);
                 }
                 break;
             case STATE_EXPAND:
                 mCurrState = STATE_SHRINK;
-                if(mOnExpandListener != null){
+                if (mOnExpandListener != null) {
                     mOnExpandListener.onShrink(this);
                 }
                 break;
@@ -364,28 +365,29 @@ public class ExpandableTextView extends AppCompatTextView {
         setTextInternal(getNewTextByConfig(), type);
     }
 
-    private void setTextInternal(CharSequence text, TextView.BufferType type){
+    private void setTextInternal(CharSequence text, TextView.BufferType type) {
         super.setText(text, type);
     }
 
-    private int getLengthOfString(String string){
-        if(string == null)
+    private int getLengthOfString(String string) {
+        if (string == null)
             return 0;
         return string.length();
     }
 
-    private String getContentOfString(String string){
-        if(string == null)
+    private String getContentOfString(String string) {
+        if (string == null)
             return "";
         return string;
     }
 
-    public interface OnExpandListener{
+    public interface OnExpandListener {
         void onExpand(ExpandableTextView view);
+
         void onShrink(ExpandableTextView view);
     }
 
-    private class ExpandableClickListener implements View.OnClickListener{
+    private class ExpandableClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             toggle();
@@ -393,7 +395,7 @@ public class ExpandableTextView extends AppCompatTextView {
     }
 
     public View.OnClickListener getOnClickListener(View view) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return getOnClickListenerV14(view);
         } else {
             return getOnClickListenerV(view);
@@ -440,22 +442,23 @@ public class ExpandableTextView extends AppCompatTextView {
 
     /**
      * Copy from:
-     *  http://stackoverflow.com/questions
-     *  /20856105/change-the-text-color-of-a-single-clickablespan-when-pressed-without-affecting-o
+     * http://stackoverflow.com/questions
+     * /20856105/change-the-text-color-of-a-single-clickablespan-when-pressed-without-affecting-o
      * By:
-     *  Steven Meliopoulos
+     * Steven Meliopoulos
      */
     private class TouchableSpan extends ClickableSpan {
         private boolean mIsPressed;
+
         public void setPressed(boolean isSelected) {
             mIsPressed = isSelected;
         }
 
         @Override
         public void onClick(View widget) {
-            if(hasOnClickListeners()
+            if (hasOnClickListeners()
                     && (getOnClickListener(ExpandableTextView.this) instanceof ExpandableClickListener)) {
-            }else{
+            } else {
                 toggle();
             }
         }
@@ -463,7 +466,7 @@ public class ExpandableTextView extends AppCompatTextView {
         @Override
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
-            switch (mCurrState){
+            switch (mCurrState) {
                 case STATE_SHRINK:
                     ds.setColor(mToExpandHintColor);
                     ds.bgColor = mIsPressed ? mToExpandHintColorBgPressed : 0;
@@ -479,10 +482,10 @@ public class ExpandableTextView extends AppCompatTextView {
 
     /**
      * Copy from:
-     *  http://stackoverflow.com/questions
-     *  /20856105/change-the-text-color-of-a-single-clickablespan-when-pressed-without-affecting-o
+     * http://stackoverflow.com/questions
+     * /20856105/change-the-text-color-of-a-single-clickablespan-when-pressed-without-affecting-o
      * By:
-     *  Steven Meliopoulos
+     * Steven Meliopoulos
      */
     public class LinkTouchMovementMethod extends LinkMovementMethod {
         private TouchableSpan mPressedSpan;
@@ -536,5 +539,9 @@ public class ExpandableTextView extends AppCompatTextView {
             }
             return touchedSpan;
         }
+    }
+
+    public int getTextLineCount() {
+        return mTextLineCount;
     }
 }

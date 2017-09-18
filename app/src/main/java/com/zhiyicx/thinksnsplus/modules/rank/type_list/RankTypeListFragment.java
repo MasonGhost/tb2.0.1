@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeItem;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeMineItem;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -88,4 +89,13 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
+
+    // 这个白石 又加上了limit 😔
+//    @Override
+//    protected int getPagesize() {
+//        if (getRankType().equals(RankTypeConfig.RANK_USER_CHECK_ID)){
+//            return DEFAULT_PAGE_SIZE_X;
+//        }
+//        return super.getPagesize();
+//    }
 }

@@ -70,12 +70,18 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
     @Override
     protected void initView(View rootView) {
+        mBtBindQq.setEnabled(false);
+        mBtBindWechat.setEnabled(false);
+        mBtBindWeibo.setEnabled(false);
+        mBtBindPhone.setEnabled(false);
+        mBtBindEmail.setEnabled(false);
 
+        initUserListener();
+        initThirdListener();
     }
 
     @Override
     protected void initData() {
-        initListener();
         mPresenter.getBindSocialAcounts();
     }
 
@@ -84,33 +90,42 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         return getString(R.string.account_manager);
     }
 
-    private void initListener() {
+    private void initUserListener() {
         RxView.clicks(mBtBindPhone)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑手机号
-                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
-                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    if (mCurrentUser != null) {
+                        // 跳转绑定/解绑手机号
+                        Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
+                        bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
+                        bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 });
         RxView.clicks(mBtBindEmail)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑邮箱
-                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
-                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    if (mCurrentUser != null) {
+                        // 跳转绑定/解绑邮箱
+                        Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
+                        bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
+                        bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 });
+
+    }
+
+    private void initThirdListener() {
+
         RxView.clicks(mBtBindQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -124,6 +139,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑微信
                     handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
+
                 });
         RxView.clicks(mBtBindWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -189,6 +205,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            showSnackSuccessMessage(getString(R.string.loading_state));
             String provider = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -267,6 +284,10 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         setColor(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setColor(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setColor(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
+        mBtBindQq.setEnabled(true);
+        mBtBindWechat.setEnabled(true);
+        mBtBindWeibo.setEnabled(true);
+
     }
 
     private void setColor(CombinationButton combinationButton, boolean b) {
@@ -293,6 +314,14 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
             setColor(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
             setColor(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
+            mBtBindPhone.setEnabled(true);
+            mBtBindEmail.setEnabled(true);
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
+    }
+
 }

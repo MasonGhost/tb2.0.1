@@ -72,14 +72,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public static final int MALE = 1;
     public static final int FEMALE = 2;
     public static final int SECRET = 0;
+
     @Id
-    @SerializedName(value="user_id", alternate={"id"})
+    @SerializedName(value = "user_id", alternate = {"id"})
     private Long user_id;
     private String name;
-    @SerializedName(value="phone", alternate={"mobi"})
+    @SerializedName(value = "phone", alternate = {"mobi"})
     private String phone;
     private String email;
-    @SerializedName(value="intro", alternate={"bio"})
+    @SerializedName(value = "intro", alternate = {"bio"})
     private String intro;
     private int sex;            // 1 2 3  1男 2女 3其他
     @Transient
@@ -91,13 +92,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private String city;        // 城市
     @Transient
     private String area;        // 区
-
+    /**
+     * 基于这条消息的用户是否关注了我
+     */
     private boolean following;
     private boolean follower;
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
-    @SerializedName(value="cover", alternate={"bg"})
+    @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
     @Transient
     private WalletBean wallet;
@@ -312,7 +315,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public UserInfoBean() {
     }
-
 
 
     /**
@@ -627,9 +629,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Generated(hash = 1966877277)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags) {
+                        String location, boolean following, boolean follower, String created_at, String updated_at,
+                        String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+                        List<UserTagBean> tags) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;

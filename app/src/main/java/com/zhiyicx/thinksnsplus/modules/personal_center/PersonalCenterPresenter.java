@@ -136,7 +136,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
+        Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId,mRootView.getDynamicType())
                 .subscribeOn(Schedulers.io())
                 .map(dynamicDetailBeanV2s -> {
                     List<DynamicDetailBeanV2> result = new ArrayList<>();
@@ -264,12 +264,14 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void setCurrentUserInfo(Long userId) {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
+        if (AppApplication.getmCurrentLoginAuth() == null || userId == null) {
             return;
         }
 
-        Subscription subscription = Observable.zip(mUserInfoRepository.getUserTags(userId), mUserInfoRepository.getUserInfoByIds(String.valueOf(userId))
-                .map(userInfoBeen -> userInfoBeen.get(0)), (userTagBeanList, userInfoBean) -> {
+        Subscription subscription = Observable.zip(mUserInfoRepository.getUserTags(userId),
+                AppApplication.getMyUserIdWithdefault() == userId ? mUserInfoRepository.getCurrentLoginUserInfo()
+                        : mUserInfoRepository.getUserInfoByIds(String.valueOf(userId))
+                        .map(userInfoBeen -> userInfoBeen.get(0)), (userTagBeanList, userInfoBean) -> {
                     userInfoBean.setTags(userTagBeanList);
                     return userInfoBean;
                 })
@@ -390,6 +392,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
         mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
+        if (mRootView.getListDatas().isEmpty()) { // 增加空数据，用于显示占位图
+            DynamicDetailBeanV2 emptyData = new DynamicDetailBeanV2();
+            mRootView.getListDatas().add(emptyData);
+        }
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
             mRepository.deleteDynamic(dynamicBean.getId());

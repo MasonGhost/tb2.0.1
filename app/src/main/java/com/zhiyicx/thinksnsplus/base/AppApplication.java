@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
+import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -26,6 +27,7 @@ import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
 import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -119,6 +121,7 @@ public class AppApplication extends TSApplication {
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
         // 通讯录
         Contacts.initialize(this);
+
     }
 
     /**
@@ -244,7 +247,7 @@ public class AppApplication extends TSApplication {
                                 }
                                 return false;
                             })
-                            .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
+                            .setPositiveButton(R.string.determine, (dialogInterface, i) -> {
                                 // TODO: 2017/2/8  清理登录信息 token 信息
                                 mAuthRepository.clearAuthBean();
                                 mAuthRepository.clearThridAuth();
@@ -462,4 +465,5 @@ public class AppApplication extends TSApplication {
         super.onLowMemory();
         LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
     }
+
 }

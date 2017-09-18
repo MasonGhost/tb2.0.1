@@ -10,13 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -111,6 +106,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
     private ActionPopupWindow mMyDynamicPopWindow;
+
+    private ActionPopupWindow mReSendCommentPopWindow;
 
     private PayPopWindow mPayImagePopWindow;
 
@@ -242,7 +239,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             } else {
                 mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(),
                         DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean.getUser_id() + "");
-                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), false);
+                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), true);
             }
         }
     }
@@ -574,28 +571,32 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      * @param commentPosition current comment position
      */
     private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
-        mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(false ? getString(R.string.dynamic_list_top_comment) : null)
-                .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item1ClickListener(() -> {
-                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
-                    intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
-                    mDeletCommentPopWindow.hide();
-                    startActivity(intent);
-                })
-                .item2ClickListener(() -> {
-                    mDeletCommentPopWindow.hide();
-                    mPresenter.deleteCommentV2(comment_id, commentPosition);
-                })
-                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
-                .build();
+        if (mDeletCommentPopWindow != null && mDeletCommentPopWindow.isShowing()) {
+            mDeletCommentPopWindow.dismiss();
+        } else {
+            mDeletCommentPopWindow = ActionPopupWindow.builder()
+                    .item1Str(false ? getString(R.string.dynamic_list_top_comment) : null)
+                    .item2Str(getString(R.string.dynamic_list_delete_comment))
+                    .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(() -> {
+                        Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
+                        intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
+                        intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
+                        mDeletCommentPopWindow.hide();
+                        startActivity(intent);
+                    })
+                    .item2ClickListener(() -> {
+                        mDeletCommentPopWindow.hide();
+                        mPresenter.deleteCommentV2(comment_id, commentPosition);
+                    })
+                    .bottomClickListener(() -> mDeletCommentPopWindow.hide())
+                    .build();
+        }
     }
 
     /**

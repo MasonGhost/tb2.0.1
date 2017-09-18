@@ -2,27 +2,33 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
@@ -30,8 +36,8 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.QuestionCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter.OnItemClickListener;
@@ -39,6 +45,7 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -48,12 +55,12 @@ import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment
-        .BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
-        .BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_QUESTION_ID;
-import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.*;
+import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.Builder;
+import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.OnOrderTypeSelectListener;
 
 /**
  * @author Catherine
@@ -64,7 +71,7 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.*;
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        OnOrderTypeSelectListener,OnItemClickListener, OnGoToWatchClickListener {
+        OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 
     public static final int REWARD_CODE = 1;
 
@@ -94,11 +101,16 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
         Long userId = mQaListInfoBean.getUser_id();
-        mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
+        mIsMine = userId.equals(AppApplication.getMyUserIdWithdefault());
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -111,8 +123,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        AnswerListItem answerListItem = new AnswerListItem(mPresenter);
+        AnswerListItem answerListItem = new AnswerListItem(mPresenter, mQaListInfoBean);
         answerListItem.setOnGoToWatchClickListener(this);
+        answerListItem.setOnSpanTextClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -123,9 +136,12 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
-        AnswerInfoBean answerInfoBean =  mListDatas.get(mCurrentPosition);
+        AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+
+        boolean canNotLook = TextUtils.isEmpty(answerInfoBean.getBody());
+
         // 开启了围观并且不是作者本人点击
-        if (!answerInfoBean.getCould() && answerInfoBean.getInvited() == 1){
+        if (canNotLook) {
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -133,7 +149,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     }
 
-    private void startToAnswerDetail(AnswerInfoBean answerInfoBean){
+    @Override
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        onToWatchClick(null, position, canNotRead);
+    }
+
+    private void startToAnswerDetail(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean.getId() == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
@@ -152,20 +176,30 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
 
     @Override
     protected boolean setUseCenterLoading() {
-        return false;
+        return true;
     }
 
     @Override
-    public void setQuestionDetail(QAListInfoBean questionDetail) {
+    public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
-        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), false);
-        mQuestionDetailHeader.setDetail(questionDetail);
+        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
+        mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion());
     }
 
     @Override
@@ -179,14 +213,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public int getRealSize() {
-        int size = mListDatas.size();
+    protected Long getMaxId(@NotNull List<AnswerInfoBean> data) {
+        long size = mListDatas.size();
         if (mQaListInfoBean != null) {
-            if (mQaListInfoBean.getAnswerInfoBeanList() != null) {
-                size = size - mQaListInfoBean.getAnswerInfoBeanList().size();
+            if (mQaListInfoBean.getInvitations() != null) {
+                size -= mQaListInfoBean.getInvitations().size();
             }
             if (mQaListInfoBean.getAdoption_answers() != null) {
-                size = size - mQaListInfoBean.getAdoption_answers().size();
+                size -= mQaListInfoBean.getAdoption_answers().size();
             }
         }
         return size;
@@ -195,6 +229,12 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void updateFollowState() {
         mQuestionDetailHeader.updateFollowState(mQaListInfoBean);
+    }
+
+    @Override
+    public void updateAnswerCount() {
+        mQuestionDetailHeader.updateAnswerView(mQaListInfoBean);
+        mQuestionDetailHeader.updateIsAddedAnswerState(mQaListInfoBean);
     }
 
     @Override
@@ -235,7 +275,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
         // 仅自己发布的可以跳转设置
-        if (mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
+        if (mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())) {
             // 跳转设置悬赏
             Intent intent = new Intent(getActivity(), QARewardActivity.class);
             Bundle bundle = new Bundle();
@@ -247,7 +287,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onAddAnswerClick(AnswerInfoBean answerInfoBean) {
-        if (answerInfoBean != null){
+        if (answerInfoBean != null) {
             // 点击跳转到 回答详情 查看自己的回答
             Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
             Bundle bundle = new Bundle();
@@ -258,8 +298,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         } else {
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
-                    , null);
+                            .PUBLISH_ANSWER, mQaListInfoBean.getId()
+                    , null, mQaListInfoBean.getSubject());
         }
     }
 
@@ -316,9 +356,20 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     mPresenter.shareQuestion(mQuestionDetailHeader.getShareBitmap());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
-                    // 发布者
-                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
+
+                    QAPublishBean qaPublishBean = QAPublishBean.qaListInfo2QAPublishBean(mQaListInfoBean);
+                    mPresenter.saveQuestion(qaPublishBean);
+
+                    Intent publishQaIntent = new Intent(getActivity(), PublishQuestionActivity.class);
+                    Bundle publishQaBundle = new Bundle();
+
+                    publishQaBundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
+                    publishQaIntent.putExtras(publishQaBundle);
+
+                    startActivity(publishQaIntent);
+
+//                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+//                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_5:// 收藏
                     // 非发布者
@@ -373,15 +424,16 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                         mMorePop.hide();
                     })
                     .item2ClickListener(() -> {
-                        if (mDeleteQuestionPopWindow != null){
+                        if (mDeleteQuestionPopWindow != null) {
                             mDeleteQuestionPopWindow.show();
                         }
                         mMorePop.hide();
                     })
+                    .bottomClickListener(() -> mMorePop.hide())
                     .build();
         }
 
-        if (mPayImagePopWindow == null){
+        if (mPayImagePopWindow == null) {
             mPayImagePopWindow = PayPopWindow.builder()
                     .with(getActivity())
                     .isWrap(true)
@@ -392,12 +444,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
-                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(1000)))
+                                    .string.buy_pay_member),
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(1000)))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -418,7 +471,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .build();
         }
 
-        if (mPayWatchPopWindow == null){
+        if (mPayWatchPopWindow == null) {
             mPayWatchPopWindow = PayPopWindow.builder()
                     .with(getActivity())
                     .isWrap(true)
@@ -429,25 +482,19 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
-                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(10)))
+                                    .string.buy_pay_member),
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(10)))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
-                        // 跳转查看 围观肯定是第一个
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        if (answerInfoBean != null){
-                            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
-                            refreshData();
-                            startToAnswerDetail(answerInfoBean);
-                        }
+                        mPresenter.payForOnlook(answerInfoBean.getId(),mCurrentPosition);
                         mPayWatchPopWindow.hide();
                     })
-                    .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
+                    .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
                     .buildCenterPopWindowLinkClickListener(new PayPopWindow
                             .CenterPopWindowLinkClickListener() {
                         @Override
@@ -463,7 +510,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .build();
         }
 
-        if (mDeleteQuestionPopWindow == null){
+        if (mDeleteQuestionPopWindow == null) {
             mDeleteQuestionPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
                     .parentView(getView())
@@ -486,9 +533,30 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
                         }
                     })
+
                     .build();
         }
 
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        // 付款成功后 不用跳转 只用刷新列表
+//        if (prompt == Prompt.DONE) {
+//            onLookToAnswerDetail(true);
+//        }
+    }
+
+    private void onLookToAnswerDetail(boolean isNeedOnlook) {
+        // 跳转查看 围观肯定是第一个
+        AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+        if (answerInfoBean != null && isNeedOnlook) {
+            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            refreshData();
+        }
+        startToAnswerDetail(answerInfoBean);
     }
 
     @Override
@@ -497,14 +565,17 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
                 .ORDER_BY_TIME;
         requestNetData(0L, false);
+        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()){
+            mOrderTypeSelectPop.dismiss();
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REWARD_CODE && resultCode == RESULT_OK){
+        if (requestCode == REWARD_CODE && resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
-            if (bundle != null){
+            if (bundle != null) {
                 Double amount = bundle.getDouble(BUNDLE_QUESTION_ID, 0);
                 mQaListInfoBean.setAmount(amount);
                 mQuestionDetailHeader.updateRewardType(mQaListInfoBean);
@@ -513,9 +584,30 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position) {
-        mCurrentPosition = position - mHeaderAndFooterWrapper
-                .getHeadersCount();
-        mPayWatchPopWindow.show();
+    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean canNotRead) {
+        mCurrentPosition = position - mHeaderAndFooterWrapper.getHeadersCount();
+        if (canNotRead) {
+            mPayWatchPopWindow.show();
+        } else {
+            onLookToAnswerDetail(false);
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        cancelPop(mOrderTypeSelectPop);
+        cancelPop(mDeleteQuestionPopWindow);
+        cancelPop(mMorePop);
+        cancelPop(mPayImagePopWindow);
+        cancelPop(mPayWatchPopWindow);
+    }
+
+    private void cancelPop(PopupWindow popupWindow) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
     }
 }

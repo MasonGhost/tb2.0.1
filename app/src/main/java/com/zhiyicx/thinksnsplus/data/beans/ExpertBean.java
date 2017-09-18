@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import java.io.Serializable;
@@ -34,7 +35,7 @@ public class ExpertBean extends BaseListBean {
      * extra : {"user_id":1,"likes_count":0,"comments_count":8,"followers_count":0,"followings_count":1,"updated_at":"2017-08-01 06:06:37","feeds_count":0,"questions_count":5,"answers_count":3}
      * tags : [{"id":1,"name":"标签1","tag_category_id":1}]
      */
-
+    @SerializedName(value = "id", alternate = {"user_id"})
     private int id;
     private String name;
     private String bio;

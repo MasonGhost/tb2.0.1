@@ -1,38 +1,34 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.Gson;
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.converter.PropertyConverter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
+import org.greenrobot.greendao.annotation.Generated;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
- * @Describe detail to @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
+ * @Describe detail to @see{
+ * https://github.com/slimkit/thinksns-plus/blob/master/docs/zh-CN/api2/notifications.md
+ * https://github.com/zhiyicx/thinksns-plus-document/blob/master/Summary/notifications.md#%E8%AF%84%E8%AE%BA%E5%8A%A8%E6%80%81
+ * }
  * @Author Jungle68
  * @Date 2017/7/11
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class TSPNotificationBean implements Parcelable {
+public class TSPNotificationBean extends BaseListBean {
 
 
     /**
@@ -49,8 +45,7 @@ public class TSPNotificationBean implements Parcelable {
     private String created_at;
     @Convert(converter = DataBeanParamsConverter.class, columnType = String.class)
     private DataBean data;
-    private long user_id;// 这条通知的操作者
-    @ToOne(joinProperty = "user_id")
+    @Transient
     private UserInfoBean userInfo;
 
     public String getId() {
@@ -93,52 +88,25 @@ public class TSPNotificationBean implements Parcelable {
         this._id = _id;
     }
 
-    public long getUser_id() {
-        if (user_id != 0) {
-            return user_id;
-        }
-        if (data != null) {
-            Gson gson = new Gson();
-            switch (data.getChannel()) {
-                case NOTIFICATION_KEY_FEED_COMMENTS:
-                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
-
-                    try {
-                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
-                        user_id = (long) jsonObject.getDouble("user_id");
-                    } catch (JSONException e) {
-                    }
-
-                    break;
-                case NOTIFICATION_KEY_FEED_DIGGS:
-                    try {
-                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
-                        user_id = (long) jsonObject.getDouble("user_id");
-                    } catch (JSONException e) {
-                    }
-
-                    break;
-                case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                    try {
-                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
-                        user_id = (long) jsonObject.getDouble("user_id");
-                    } catch (JSONException e) {
-                    }
-                    break;
-                default:
-
+    public UserInfoBean getUserInfo() {
+        if (userInfo == null && data != null) {
+            try {
+                Gson gson = new Gson();
+                JSONObject jsonObject = new JSONObject(gson.toJson(data.getExtra()));
+                if(jsonObject.has("user")) {
+                    JSONObject userStr = jsonObject.getJSONObject("user");
+                    userInfo = gson.fromJson(userStr.toString(), UserInfoBean.class);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
-        return user_id;
+        return userInfo;
     }
 
-    public void setUser_id(long user_id) {
-        if (user_id != 0) {
-            this.user_id = user_id;
-        } else {
-            this.user_id = getUser_id();
-        }
-
+    public void setUserInfo(UserInfoBean userInfo) {
+        this.userInfo = userInfo;
     }
 
     public static class DataBean implements Serializable {
@@ -149,7 +117,31 @@ public class TSPNotificationBean implements Parcelable {
          * content : 我是测试消息
          * extra : null
          */
-
+        /**
+         * 辛辛苦苦复制半天 总不能不要了吧 先写在这儿
+         * 参考 ：https://github.com/zhiyicx/thinksns-plus-document/blob/master/Summary/notifications.md#%E7%94%B3%E8%AF%B7%E8%B5%84%E8%AE%AF%E7%BD%AE%E9%A1%B6
+         * 分类：
+         * 1、user:reward 打赏
+         * 2、paid:xxxxx 付费截点
+         * 3、feed:comment 评论
+         * 4、feed:comment-reply 被回复
+         * 5、feed:pinned-comment 他人在自己发布的内容中申请评论置顶
+         * 6、feed:digg 点赞通知
+         * 7、music:comment-reply 有回复者时，被回复者通知
+         * 8、music:special-comment-reply 专辑 有回复者时，被回复者通知
+         * 9、news:comment 资讯评论
+         * 10、news:comment-reply 资讯被回复
+         * 11、news:pinned-comment 他人在资讯评论申请置顶，通过，驳回
+         * 12、news:pinned-news 申请资讯置顶
+         * 13、news:reward 咨询的打赏 被打赏
+         * 14、question:answer 被邀请者回答时，问题发起者消息 其他回答时，问题发起者消息
+         * 15、question:comment 问题被评论
+         * 16、question:comment-reply 问题的评论被回复
+         * 17、answer:comment 答案被评论
+         * 18、answer:comment-reply 答案被回复
+         * 19、question:answer-adoption 答案被采纳
+         * 20、question 邀请回答
+         */
         private String channel;
         private int target;
         private String content;
@@ -201,24 +193,9 @@ public class TSPNotificationBean implements Parcelable {
     /**
      * list<DataBean> 转 String 形式存入数据库
      */
-    public static class DataBeanParamsConverter implements PropertyConverter<DataBean, String> {
-
-        @Override
-        public DataBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(DataBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
+    public static class DataBeanParamsConverter extends BaseConvert<DataBean> {
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -244,10 +221,14 @@ public class TSPNotificationBean implements Parcelable {
                 ", read_at='" + read_at + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", data=" + data +
-                ", user_id=" + user_id +
                 ", userInfo=" + userInfo +
                 '}';
     }
+
+
+    public TSPNotificationBean() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -256,114 +237,35 @@ public class TSPNotificationBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeValue(this._id);
         dest.writeString(this.id);
         dest.writeString(this.read_at);
         dest.writeString(this.created_at);
         dest.writeSerializable(this.data);
-        dest.writeLong(this.user_id);
         dest.writeParcelable(this.userInfo, flags);
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 669954399)
-    public UserInfoBean getUserInfo() {
-        long __key = this.user_id;
-        if (userInfo__resolvedKey == null || !userInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean userInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                userInfo = userInfoNew;
-                userInfo__resolvedKey = __key;
-            }
-        }
-        return userInfo;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1286036388)
-    public void setUserInfo(@NotNull UserInfoBean userInfo) {
-        if (userInfo == null) {
-            throw new DaoException("To-one property 'user_id' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.userInfo = userInfo;
-            user_id = userInfo.getUser_id();
-            userInfo__resolvedKey = user_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2063187465)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getTSPNotificationBeanDao() : null;
-    }
-
-    public TSPNotificationBean() {
-    }
-
     protected TSPNotificationBean(Parcel in) {
+        super(in);
         this._id = (Long) in.readValue(Long.class.getClassLoader());
         this.id = in.readString();
         this.read_at = in.readString();
         this.created_at = in.readString();
         this.data = (DataBean) in.readSerializable();
-        this.user_id = in.readLong();
         this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1589879726)
-    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data, long user_id) {
+    @Generated(hash = 917704485)
+    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data) {
         this._id = _id;
         this.id = id;
         this.read_at = read_at;
         this.created_at = created_at;
         this.data = data;
-        this.user_id = user_id;
     }
 
-    public static final Parcelable.Creator<TSPNotificationBean> CREATOR = new Parcelable.Creator<TSPNotificationBean>() {
+    public static final Creator<TSPNotificationBean> CREATOR = new Creator<TSPNotificationBean>() {
         @Override
         public TSPNotificationBean createFromParcel(Parcel source) {
             return new TSPNotificationBean(source);
@@ -374,12 +276,4 @@ public class TSPNotificationBean implements Parcelable {
             return new TSPNotificationBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 523085633)
-    private transient TSPNotificationBeanDao myDao;
-    @Generated(hash = 2066097151)
-    private transient Long userInfo__resolvedKey;
 }

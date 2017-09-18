@@ -31,6 +31,18 @@ public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListCo
             protected void onSuccess(List<MusicDetaisBean> data) {
                 mRootView.onNetResponseSuccess(data,isLoadMore);
             }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.onResponseError(null,isLoadMore);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.onResponseError(throwable,isLoadMore);
+            }
         });
     }
 

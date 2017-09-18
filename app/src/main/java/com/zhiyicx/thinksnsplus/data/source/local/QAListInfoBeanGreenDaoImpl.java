@@ -29,12 +29,12 @@ public class QAListInfoBeanGreenDaoImpl extends CommonCacheImpl<QAListInfoBean>{
 
     @Override
     public long saveSingleData(QAListInfoBean singleData) {
-        return mQaListInfoBeanDao.insertOrReplace(singleData);
+        return getWDaoSession().getQAListInfoBeanDao().insertOrReplace(singleData);
     }
 
     @Override
     public void saveMultiData(List<QAListInfoBean> multiData) {
-        mQaListInfoBeanDao.insertOrReplaceInTx(multiData);
+        getWDaoSession().getQAListInfoBeanDao().insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -69,11 +69,11 @@ public class QAListInfoBeanGreenDaoImpl extends CommonCacheImpl<QAListInfoBean>{
 
     @Override
     public void updateSingleData(QAListInfoBean newData) {
-        mQaListInfoBeanDao.update(newData);
+        getWDaoSession().getQAListInfoBeanDao().update(newData);
     }
 
     @Override
     public long insertOrReplace(QAListInfoBean newData) {
-        return mQaListInfoBeanDao.insertOrReplace(newData);
+        return getWDaoSession().getQAListInfoBeanDao().insertOrReplace(newData);
     }
 }

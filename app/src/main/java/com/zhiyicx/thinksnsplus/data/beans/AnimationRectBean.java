@@ -121,7 +121,7 @@ public class AnimationRectBean implements Parcelable {
         Drawable drawable = imageView.getDrawable();
         int intrinsicWidth = drawable.getIntrinsicWidth();
         int intrinsicHeight = drawable.getIntrinsicHeight();
-        LogUtils.i("animationRect-->drawable width:" + drawable.getIntrinsicWidth() + "bitmap width:" + intrinsicWidth);
+//        LogUtils.i("animationRect-->drawable width:" + drawable.getIntrinsicWidth() + "bitmap width:" + intrinsicWidth);
         rect.widgetWidth = imageView.getWidth();
 
         rect.widgetHeight = imageView.getHeight();

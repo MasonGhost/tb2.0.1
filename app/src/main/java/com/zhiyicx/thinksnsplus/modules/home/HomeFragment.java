@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -21,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -36,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicT
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
@@ -49,6 +53,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
@@ -175,16 +180,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         setCurrentPage();
         // 支持魅族手机首页状太栏文字白色问题
         supportFlymeSutsusbar();
-    }
-
-    private void supportFlymeSutsusbar() {
-        Observable.timer(1500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                    }
-                });
+        // app更新
+        AppUpdateManager.getInstance(getContext()
+                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                .startVersionCheck();
     }
 
     @Override
@@ -322,7 +321,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(MessageFragment.newInstance());
+            mFragmentList.add(new MessageContainerFragment().instance());
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
@@ -480,13 +479,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         this.mCheckInBean = data;
         if (mCheckInPopWindow != null) {
             if (mCheckInPopWindow.isShowing()) {
-                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
             } else {
-                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
                 mCheckInPopWindow.show();
             }
         } else {
-            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data,mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
             mCheckInPopWindow.show();
         }
     }

@@ -300,7 +300,7 @@ public interface UserInfoClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_REWARD_USER)
-    Observable<Object> rewardUser(@Path("user_id") long user_id, @Field("amount") Integer amount);
+    Observable<Object> rewardUser(@Path("user_id") long user_id, @Field("amount") long amount);
 
     /*******************************************  找人  *********************************************/
 

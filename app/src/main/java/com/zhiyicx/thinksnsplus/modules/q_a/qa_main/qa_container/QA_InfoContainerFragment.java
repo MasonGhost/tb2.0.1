@@ -8,8 +8,10 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
+import com.zhiyicx.thinksnsplus.modules.q_a.QA_Fragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QA_ListInfoFragment;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -32,7 +34,7 @@ import java.util.List;
  */
 public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
-    protected static final int DEFAULT_OFFSET_PAGE = 3;
+    private static final int DEFAULT_OFFSET_PAGE = 5;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -61,9 +63,7 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     public String[] QA_TYPES;
 
-    private List<String> mTitle;
     private List<Fragment> mFragments;
-    private CommonNavigator mCommonNavigator;
 
     @Override
     protected boolean setUseSatusbar() {
@@ -77,6 +77,11 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     public static QA_InfoContainerFragment getInstance() {
         return new QA_InfoContainerFragment();
+    }
+
+    @Override
+    protected int getOffsetPage() {
+        return DEFAULT_OFFSET_PAGE;
     }
 
     @Override
@@ -98,7 +103,17 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected void initData() {
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        supportFlymeSutsusbar();
+    }
+
+    @Override
+    protected boolean isAdjustMode() {
+        return true;
     }
 
     @Override
@@ -132,6 +147,8 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
+                int leftRightPadding = UIUtil.dip2px(context, getResources().getInteger(DEFAULT_TAB_MARGIN));
+                simplePagerTitleView.setPadding(leftRightPadding, 0, leftRightPadding, 0);
 
                 simplePagerTitleView.setOnClickListener(v -> mVpFragment.setCurrentItem(index));
                 return simplePagerTitleView;
@@ -150,6 +167,17 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
                 return linePagerIndicator;
             }
         };
+    }
+
+    public void test(boolean up) {
+        QA_Fragment qaFragment = (QA_Fragment) getParentFragment();
+        if (up){
+            qaFragment.animateOut();
+        }else{
+            qaFragment.animateIn();
+        }
+        LogUtils.d("test::" + getFragmentManager().getFragments().get(0).getClass().getSimpleName());
+
     }
 
 }

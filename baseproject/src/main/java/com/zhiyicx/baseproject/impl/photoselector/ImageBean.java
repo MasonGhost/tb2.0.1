@@ -25,7 +25,7 @@ public class ImageBean implements Parcelable, Serializable {
     private int position;// 图片位置
     private int dynamicPosition;// 动态位置
     private int toll_type;
-    private float toll_monye;
+    private long toll_monye;
     private double width;
     private double height;
     private int part;// 图片压缩比例
@@ -44,7 +44,7 @@ public class ImageBean implements Parcelable, Serializable {
             return;
         }
         setToll_type(toll.toll_type);
-        setToll_monye(toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money);
+        setToll_monye((long) (toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money));
     }
 
     public int getDynamicPosition() {
@@ -79,11 +79,11 @@ public class ImageBean implements Parcelable, Serializable {
         this.toll_type = toll_way;
     }
 
-    public float getToll_monye() {
+    public long getToll_monye() {
         return toll_monye;
     }
 
-    public void setToll_monye(float toll_monye) {
+    public void setToll_monye(long toll_monye) {
         this.toll_monye = toll_monye;
     }
 
@@ -169,7 +169,7 @@ public class ImageBean implements Parcelable, Serializable {
         dest.writeInt(this.storage_id);
         dest.writeInt(this.position);
         dest.writeInt(this.toll_type);
-        dest.writeFloat(this.toll_monye);
+        dest.writeLong(this.toll_monye);
         dest.writeDouble(this.width);
         dest.writeDouble(this.height);
         dest.writeInt(this.part);
@@ -183,7 +183,7 @@ public class ImageBean implements Parcelable, Serializable {
         this.storage_id = in.readInt();
         this.position = in.readInt();
         this.toll_type = in.readInt();
-        this.toll_monye = in.readFloat();
+        this.toll_monye = in.readLong();
         this.width = in.readDouble();
         this.height = in.readDouble();
         this.part = in.readInt();

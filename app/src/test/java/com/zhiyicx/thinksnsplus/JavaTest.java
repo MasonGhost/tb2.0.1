@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,6 +16,7 @@ import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -25,9 +27,11 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +47,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.common.utils.ConvertUtils.praseErrorMessage;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
@@ -100,6 +105,56 @@ public class JavaTest {
     }
 
     @Test
+    public void timeTest() {
+        String time = "2017-08-04 09:16:19";
+
+        long timeMillisSpace = System.currentTimeMillis() - TimeUtils.utc2LocalLong(time);
+
+        double daySpace = (timeMillisSpace / (double) (1000 * 60 * 60 * 24));
+
+        long test = TimeUnit.DAYS.convert(timeMillisSpace, TimeUnit.MILLISECONDS);
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+
+        Date today = new Date(System.currentTimeMillis());
+
+        Date otherDay = new Date(TimeUtils.utc2LocalLong(time));
+
+        int now = Integer.parseInt(sdf.format(today));
+        int other = Integer.parseInt(sdf.format(otherDay));
+
+        int day = TimeUtils.getifferenceDays(System.currentTimeMillis() - TimeUtils.utc2LocalLong(time));
+        String str = TimeUtils.getTimeFriendlyForDetail(time);
+
+        if (daySpace > test && daySpace < 9) {
+            System.out.println("result:daySpace:" + (now - other));
+        } else {
+            System.out.println("result:daySpace:" + daySpace);
+        }
+
+
+    }
+
+    @Test
+    public void testContain() {
+
+        String str = "1号线@![image]号漕宝路";
+        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
+        if (str.matches(reg)) {
+            System.out.println("result1::" + str);
+        }
+
+        String text = "ggfdd@![image](2537)dddd@![image](2538)";
+        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
+            int id = RegexUtils.getImageId(text);
+            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            System.out.println("result1:id:" + id);
+            System.out.println("result2:imagePath:" + imagePath);
+        }
+    }
+
+    @Test
     public void testTime() {
         String time = "2017-06-15 02:15:25";
         System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
@@ -109,8 +164,20 @@ public class JavaTest {
     }
 
     @Test
-    public void matchTest() {
+    public void matchTest() {// @![image](2604)
         String reg = "(@!\\[.*]\\((\\d+)\\))";
+
+        try {
+            String sss = "@!\\[.*]\\((\\d+)\\)";
+            Matcher matcher2 = Pattern.compile(sss).matcher("@![image](2604)");
+            if (matcher2.find()) {
+                System.out.println("result:count:" + matcher2.group(1));
+            }
+
+        } catch (Exception e) {
+            System.out.println("result::" + e.toString());
+        }
+
         String test = "xxx@![image](123)ssss@![image](123)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
@@ -126,6 +193,22 @@ public class JavaTest {
     public void doubleTest() {
         double d = 5.0;
         System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+        System.out.println("result:11:" + String.valueOf(10 * 111111111));
+    }
+
+    @Test
+    public void doubleBitMoney() {
+        int test = 99999999;
+        long money =10 * test;
+
+        System.out.println("result::" + money);
+    }
+
+    @Test
+    public void singleImageTest() {
+        String input = "@![image](2580)";
+
+        System.out.println("result::" + RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, input));
     }
 
     @Test
@@ -192,7 +275,7 @@ public class JavaTest {
             if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
-                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+","tym").replaceAll("@",""));
+                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+", "tym").replaceAll("@", ""));
             }
             lastIndex = matcher1.end();
         }
@@ -566,29 +649,20 @@ public class JavaTest {
                 "    }\n" +
                 "}";
 
-        praseMessage(response1);
-        praseMessage(response2);
-        praseMessage(response3);
-        praseMessage(response4);
+        Assert.assertTrue("this is a message.".equals(praseErrorMessage(response1)));
+        Assert.assertTrue("This is amessage array item.".equals(praseErrorMessage(response2)));
+        Assert.assertTrue("value".equals(praseErrorMessage(response3)));
+        Assert.assertTrue("value1".equals(praseErrorMessage(response4)));
 
 
     }
 
-    private void praseMessage(String response1) {
-        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
-                new TypeToken<Map<String, Object>>() {
-                }.getType());
-        for (Object value : errorMessageMap.values()) {
-            if (value instanceof String) {
-                System.out.println(response1 + " = " + (String) value);
-            } else if (value instanceof String[]) {
-                System.out.println(response1 + " = " + ((String[]) value)[0]);
-            }else if(value instanceof List){
-                System.out.println(response1 + " = " + ((List) value).get(0));
-
-            }
-            return;
-        }
+    @Test
+    public void testIMData() {
+        JpushMessageBean jpushMessageBean;
+        String response1 = "{\"seq\":1,\"msg_type\":0,\"cid\":461,\"mid\":445579829106966533,\"type\":\"im\",\"uid\":270}";
+        jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
+        System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
 
 }

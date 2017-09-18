@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
-            android:layout_marginLeft="@dimen/spacing_normal_large"
-            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/info_title_hint"
             app:limitSize="@integer/dynamic_title_input_size"
@@ -44,13 +44,14 @@
     </LinearLayout>
 
     <include layout="@layout/view_publish"/>
+
     <LinearLayout
         android:id="@+id/pb_image_upload"
-        android:gravity="center"
-        android:visibility="gone"
-        android:background="#90ffffff"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#90ffffff"
+        android:gravity="center"
+        android:visibility="gone">
 
         <android.support.v4.widget.ContentLoadingProgressBar
             style="@style/Widget.AppCompat.ProgressBar"

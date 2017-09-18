@@ -1,12 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,21 +19,20 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionTopicsAdapter;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.widget.QuestionDetailContent;
 import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
+import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 
 /**
  * @author Catherine
@@ -42,7 +41,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailHeader {
+public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
 
     public static final String ORDER_DEFAULT = "default";
     public static final String ORDER_BY_TIME = "time";
@@ -55,7 +54,7 @@ public class QuestionDetailHeader {
     private TextView mTvRewardAmount;
     private QuestionDetailContent mQdContent;
     private TextView mTvQuestionFeedCount;
-    private TextView mTvQuestionRewardAmount;
+    private TextView mTvQuestionOnlookAmount;
     private CheckBox mTvTopicChangeFollow;
     private ImageView mIvRewardType;
     private TextView mTvRewardType;
@@ -63,7 +62,7 @@ public class QuestionDetailHeader {
     private TextView mTvAddAnswer;
     private TextView mTvAnswerCount;
     private TextView mTvChangeOrder;
-    private LinearLayout mLlAnswerInfo;
+    private LinearLayout mLlAnswerInfo, rewardType, addAnswer;
 
     private QAListInfoBean mQaListInfoBean;
     private OnActionClickListener mListener;
@@ -83,18 +82,20 @@ public class QuestionDetailHeader {
         mTvRewardAmount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_reward_amount);
         mQdContent = (QuestionDetailContent) mQuestionHeaderView.findViewById(R.id.qd_content);
         mTvQuestionFeedCount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_feed_count);
-        mTvQuestionRewardAmount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_reward_amount);
+        mTvQuestionOnlookAmount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_question_onlook_amount);
         mTvTopicChangeFollow = (CheckBox) mQuestionHeaderView.findViewById(R.id.tv_topic_change_follow);
         mIvRewardType = (ImageView) mQuestionHeaderView.findViewById(R.id.iv_reward_type);
         mTvRewardType = (TextView) mQuestionHeaderView.findViewById(R.id.tv_reward_type);
         mTvAddAnswer = (TextView) mQuestionHeaderView.findViewById(R.id.tv_add_answer);
+        rewardType = (LinearLayout) mQuestionHeaderView.findViewById(R.id.ll_reward_type);
+        addAnswer = (LinearLayout) mQuestionHeaderView.findViewById(R.id.ll_add_answer);
         mTvAnswerCount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_answer_count);
         mTvChangeOrder = (TextView) mQuestionHeaderView.findViewById(R.id.tv_change_order);
         mLlAnswerInfo = (LinearLayout) mQuestionHeaderView.findViewById(R.id.ll_answer_info);
         mIvAddAnswer = (ImageView) mQuestionHeaderView.findViewById(R.id.iv_add_answer);
     }
 
-    public void setDetail(QAListInfoBean qaListInfoBean) {
+    public void setDetail(QAListInfoBean qaListInfoBean, double amount) {
         if (qaListInfoBean == null) {
             return;
         }
@@ -104,18 +105,23 @@ public class QuestionDetailHeader {
         if (tagBeanList != null && tagBeanList.size() > 0) {
             QuestionTopicsAdapter mUserInfoTagsAdapter = new QuestionTopicsAdapter(tagBeanList, mContext);
             mTflQuestion.setAdapter(mUserInfoTagsAdapter);
+            mTflQuestion.setOnTagClickListener(this);
         }
         // 标题信息
         mTvQuestionTitle.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, qaListInfoBean.getSubject()));
         // 正文
         mQdContent.setQuestionDetail(qaListInfoBean);
-        // 关注回答数
-        mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_topic_followed),
-                qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
-        // 是否有围观
-        if (qaListInfoBean.getLook() == 1) {
-            updateOutLook(qaListInfoBean);
+        // 关注&&悬赏金额
+        if (qaListInfoBean.getAmount() > 0) {
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+        } else {
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
+                    qaListInfoBean.getWatchers_count()));
         }
+
+        // 是否有围观
+        updateOutLook(qaListInfoBean.getLook() == 1, amount);
         initListener();
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);
@@ -127,23 +133,35 @@ public class QuestionDetailHeader {
         updateIsAddedAnswerState(qaListInfoBean);
     }
 
+    @Override
+    public boolean onTagClick(View view, int position, FlowLayout parent) {
+        QATopicBean qaTopicBean = mQaListInfoBean.getTopics().get(position);
+        Intent intent = new Intent(mContext, TopicDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_TOPIC_BEAN, qaTopicBean);
+        intent.putExtra(BUNDLE_TOPIC_BEAN, bundle);
+        mContext.startActivity(intent);
+        return true;
+    }
+
     /**
-     * 更新悬赏状态 amount == 0 表示公开开悬赏 点击可以设置悬赏
+     * 更新悬赏状态 amount == 0 表示还没有设置悬赏 点击可以设置悬赏
      * amount != 0 && anonymity == 0 表示已设置但是没有邀请
      *
      * @param qaListInfoBean bean
      */
     public void updateRewardType(QAListInfoBean qaListInfoBean) {
-        // 悬赏金额
-        if (qaListInfoBean.getAmount() != 0) {
-            mTvRewardAmount.setVisibility(View.VISIBLE);
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+        // 关注&&悬赏金额
+        if (qaListInfoBean.getAmount() > 0) {
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
-            mTvRewardAmount.setVisibility(View.GONE);
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
+                    qaListInfoBean.getWatchers_count()));
         }
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
-            mTvRewardType.setText(mContext.getString(R.string.qa_reward_public));
+            mTvRewardType.setText(mContext.getString(R.string.qa_not_set_reward));
         } else if (qaListInfoBean.getInvitations() != null
                 && qaListInfoBean.getInvitations().size() > 0) {
             mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
@@ -175,19 +193,16 @@ public class QuestionDetailHeader {
     /**
      * 更新围观信息
      */
-    public void updateOutLook(QAListInfoBean qaListInfoBean) {
-        if (qaListInfoBean.getInvitation_answers() != null && qaListInfoBean.getInvitation_answers().size() > 0) {
-            AnswerInfoBean answerInfoBean = qaListInfoBean.getInvitation_answers().get(0);
-            double totalAmount = answerInfoBean.getOnlookers_count() * 0.01;
-            mTvQuestionRewardAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), totalAmount));
-        }
+    public void updateOutLook(boolean onlook, double amount) {
+        mTvQuestionOnlookAmount.setVisibility(onlook ? View.VISIBLE : View.GONE);
+        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrencyFen2Yuan(amount)));
     }
 
     /**
      * 更新是否已经回答的状态
      */
     protected void updateIsAddedAnswerState(QAListInfoBean qaListInfoBean) {
-        if (qaListInfoBean.getMy_answer() != null){
+        if (qaListInfoBean.getMy_answer() != null) {
             mTvAddAnswer.setText(mContext.getString(R.string.qa_go_to_answer));
             mIvAddAnswer.setVisibility(View.GONE);
         } else {
@@ -209,7 +224,7 @@ public class QuestionDetailHeader {
                         mListener.onFollowClick();
                     }
                 });
-        RxView.clicks(mTvAddAnswer)
+        RxView.clicks(addAnswer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mListener != null) {
@@ -223,13 +238,15 @@ public class QuestionDetailHeader {
                         mListener.onChangeListOrderClick(mCurrentOrderType);
                     }
                 });
-        RxView.clicks(mTvRewardType)
+        RxView.clicks(rewardType)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    // 是否已经有已采纳的答案
+                    boolean isNotAdoption = mQaListInfoBean.getAdoption_answers() == null || mQaListInfoBean.getAdoption_answers().size() == 0;
                     if (mQaListInfoBean.getInvitations() != null
                             && mQaListInfoBean.getInvitations().size() > 0) {
                         initPop();
-                    } else if (mQaListInfoBean.getAmount() == 0) {
+                    } else if (isNotAdoption && mQaListInfoBean.getAmount() == 0) {
                         if (mListener != null) {
                             mListener.onRewardTypeClick(null, 1);
                         }

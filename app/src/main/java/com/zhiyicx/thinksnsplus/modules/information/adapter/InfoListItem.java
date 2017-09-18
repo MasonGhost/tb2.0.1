@@ -8,8 +8,10 @@ import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -27,6 +29,12 @@ import rx.functions.Action1;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
+
+    private boolean mIsShowContent;
+
+    public InfoListItem(boolean isShowContent) {
+        this.mIsShowContent = isShowContent;
+    }
 
     @Override
     public int getItemViewLayoutId() {
@@ -59,6 +67,10 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> itemClick(position, imageView, title, realData));
+        // 被驳回和投稿中只显示内容
+        holder.setVisible(R.id.ll_info, mIsShowContent ? View.GONE : View.VISIBLE);
+        holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
+        holder.setText(R.id.tv_info_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent()));
         // 投稿来源，浏览数，时间
         String from = realData.getFrom().equals(title.getContext().getString(R.string
                 .info_publish_original)) ?
@@ -98,7 +110,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .into(imageView);
         }
         // 来自单独分开
-        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != -1) ? "" : realData.getCategory().getName();
+        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != null && realData.getInfo_type() != -1) ? "" : realData.getCategory().getName();
         holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
         holder.setText(R.id.tv_from_channel, category);
         // 是否置顶

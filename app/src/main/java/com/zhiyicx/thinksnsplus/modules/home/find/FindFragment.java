@@ -204,10 +204,14 @@ public class FindFragment extends TSFragment {
             case R.id.find_nearby:
                 break;
             case R.id.find_qa:
-                Intent intent = new Intent(getActivity(), QA_Activity.class);
-                Bundle bundle = new Bundle();
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (TouristConfig.MORE_QUESTION_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    Intent intent = new Intent(getActivity(), QA_Activity.class);
+                    Bundle bundle = new Bundle();
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else {
+                    showLoginPop();
+                }
                 break;
             case R.id.find_quiz:
                 startActivity(new Intent(getActivity(), QARewardActivity.class));

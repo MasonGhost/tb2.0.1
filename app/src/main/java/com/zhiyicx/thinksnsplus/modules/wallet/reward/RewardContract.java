@@ -22,6 +22,8 @@ public interface RewardContract {
 
 
         void rewardSuccess();
+
+        void setSureBtEnable(boolean b);
     }
 
     interface Repository extends IRewardRepository {

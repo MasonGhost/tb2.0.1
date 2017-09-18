@@ -61,7 +61,8 @@ public interface UserInfoContract {
         /**
          * 设置地域选择的数据
          */
-        void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items);
+        void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>> options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>>
+                options3Items);
 
         /**
          * 设置头像上传的状态
@@ -183,6 +184,7 @@ public interface UserInfoContract {
 
         /**
          * 更新认证用户的手机号码和邮箱
+         *
          * @param phone
          * @param email
          * @param verifiable_code
@@ -273,10 +275,10 @@ public interface UserInfoContract {
         Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset);
 
         /**
-         *
          * @return 后台推荐用户
          */
         Observable<List<UserInfoBean>> getRecommendUserInfo();
+
         /**
          * phone 推荐用户
          * <p>

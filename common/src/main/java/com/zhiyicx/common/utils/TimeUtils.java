@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Describe 时间格式化工具类 ,api接口里 的时间返回 统一用时间空间字符串格式 UTC+ 0 时区 例如; 2017-03-01 01:28:33
@@ -247,7 +248,7 @@ public class TimeUtils {
                 result = "8天前 " + getStandardTimeWithHour(timesamp);
                 break;
             case 9:
-                result = "九天前 " + getStandardTimeWithHour(timesamp);
+                result = "9天前 " + getStandardTimeWithHour(timesamp);
                 break;
 
             default:
@@ -293,7 +294,23 @@ public class TimeUtils {
      * @return 输入时间和当前时间间隔的天数
      */
     public static int getifferenceDays(long timesamp) {
-        return (int) ((System.currentTimeMillis() - timesamp)/(1000 * 60 * 60 * 24));
+
+        long timeMillisSpace = System.currentTimeMillis() - timesamp;
+
+        double daySpaceDouble = (timeMillisSpace / (double) (1000 * 60 * 60 * 24));
+
+        long daySpace = TimeUnit.DAYS.convert(timeMillisSpace, TimeUnit.MILLISECONDS);
+
+        if (daySpaceDouble > daySpace && daySpaceDouble < 9) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd");
+            Date today = new Date(System.currentTimeMillis());
+            Date otherDay = new Date(timesamp);
+            int now = Integer.parseInt(sdf.format(today));
+            int other = Integer.parseInt(sdf.format(otherDay));
+            return now - other;
+        } else {
+            return (int) daySpace;
+        }
     }
 
 

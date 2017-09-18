@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -16,6 +17,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
@@ -34,9 +36,11 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
+    public static final String BUNDLE_SOURCE_TITLE = "source_title"; // 发布回答的提示语是问题的标题
 
     private PublishType mType;
     private String mBody;
+    private String mTitle;
 
     private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
@@ -51,7 +55,6 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void initData() {
-        mImageIdArray = new int[100];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
@@ -60,6 +63,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
+        mTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "");
 
         if (mType == PublishType.PUBLISH_ANSWER) {
             mToolbarCenter.setText(getString(R.string.qa_publish_answer));
@@ -72,6 +76,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
         if (!mBody.isEmpty()) {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
+        }
+        if (!TextUtils.isEmpty(mTitle)){
+            mRicheTest.setHint(mTitle);
         }
     }
 
@@ -87,6 +94,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setRightClick() {
+        mRicheTest.hideKeyBoard();
         if (mType == PublishType.PUBLISH_ANSWER) {
             mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString()
                     , mAnonymity);
@@ -101,7 +109,8 @@ public class PublishAnswerFragment extends PublishContentFragment {
     }
 
     @Override
-    public void publishSuccess(QAAnswerBean answerBean) {
+    public void publishSuccess(AnswerInfoBean answerBean) {
+        super.publishSuccess(answerBean);
         getActivity().finish();
     }
 
@@ -132,13 +141,14 @@ public class PublishAnswerFragment extends PublishContentFragment {
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                      String body) {
+                                      String body, String title) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
         bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
         bundle.putString(BUNDLE_SOURCE_BODY, body);
+        bundle.putString(BUNDLE_SOURCE_TITLE, title);
         intent.putExtras(bundle);
         context.startActivity(intent);
 

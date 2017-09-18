@@ -4,17 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -34,13 +28,12 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -103,35 +96,37 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        if (mRootView.getAnswerInfo().getCommentList() == null) {
-            getAnswerDetail(mRootView.getAnswerInfo().getId());
-        } else {
-            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
-                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
-                        @Override
-                        protected void onSuccess(List<AnswerCommentListBean> data) {
-                            mRootView.onNetResponseSuccess(data, isLoadMore);
-                        }
 
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                            handleInfoHasBeDeleted(code);
-                        }
+        getAnswerDetail(mRootView.getAnswerInfo().getId(), maxId, isLoadMore);
 
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                            mRootView.onResponseError(throwable, isLoadMore);
-                        }
-                    });
-        }
+//        if (mRootView.getAnswerInfo().getCommentList() == null) {
+//
+//        } else {
+//            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
+//                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
+//                        @Override
+//                        protected void onSuccess(List<AnswerCommentListBean> data) {
+//                            mRootView.onNetResponseSuccess(data, isLoadMore);
+//                        }
+//
+//                        @Override
+//                        protected void onFailure(String message, int code) {
+//                            super.onFailure(message, code);
+//                            handleInfoHasBeDeleted(code);
+//                        }
+//
+//                        @Override
+//                        protected void onException(Throwable throwable) {
+//                            super.onException(throwable);
+//                            mRootView.onResponseError(throwable, isLoadMore);
+//                        }
+//                    });
+//        }
     }
 
     private void handleInfoHasBeDeleted(int code) {
         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mAnswerInfoListBeanGreenDao.deleteSingleCache(mRootView.getAnswerInfo());
-            EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();
         } else {
             mRootView.loadAllError();
@@ -154,7 +149,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         }
         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mRootView.getAnswerInfo().getBody());
 
-        String shareUrl="";
+        String shareUrl = "";
         if (id > 0) {
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
@@ -221,7 +216,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void reqReWardsData(int id) {
-
+        getAnswerDetail(id, 0, false);
     }
 
     @Override
@@ -231,7 +226,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public void getAnswerDetail(long answer_id) {
+    public void getAnswerDetail(long answer_id, long max_id, boolean isLoadMore) {
         Subscription subscription = Observable.zip(mRepository.getAnswerDetail(answer_id),
                 mRepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
                     answerInfoBean.setCommentList(answerCommentListBeen);
@@ -242,10 +237,24 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                 .subscribe(new BaseSubscribeForV2<AnswerInfoBean>() {
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
+                        mAnswerInfoListBeanGreenDao.saveSingleData(data);
                         mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
                                 data.getRewarders());
-                        mRootView.updateAnswerHeader(data);
+                        mRootView.updateAnswerHeader(data, isLoadMore);
                     }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        handleInfoHasBeDeleted(code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+
                 });
         addSubscrebe(subscription);
     }
@@ -317,6 +326,11 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
                 }, throwable -> throwable.printStackTrace());
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
+    public void updateData(long tag) {
+        requestNetData(tag, false);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings.bind;
 
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -9,6 +10,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 
@@ -18,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.S_TO_MS_SPACING;
 
@@ -30,7 +33,7 @@ import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.S_TO_M
 
 public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repository, AccountBindContract.View>
         implements AccountBindContract.Presenter {
-    public static final int DEFAULT_DELAY_CLOSE_TIME = 3_000;
+    public static final int DEFAULT_DELAY_CLOSE_TIME = 2_000;
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
 
     private int mTimeOut = SNS_TIME;
@@ -41,6 +44,8 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
     @Inject
     UserInfoRepository mUserInfoRepository;
 
+    @Inject
+    ChangePasswordRepository mChangePasswordRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
@@ -67,7 +72,7 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
     /**
      * 获取验证码
      *
-     * @param phone 电话号码
+     * @param phone  电话号码
      * @param isBind true, 解绑
      */
     @Override
@@ -77,7 +82,7 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
         }
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
-        Subscription getVertifySub = (isBind?mVertifyCodeRepository.getMemberVertifyCode(phone):mVertifyCodeRepository.getNonMemberVertifyCode(phone))
+        Subscription getVertifySub = (isBind ? mVertifyCodeRepository.getMemberVertifyCode(phone) : mVertifyCodeRepository.getNonMemberVertifyCode(phone))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -108,7 +113,6 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
     }
 
     /**
-     *
      * @param email
      * @param isBind true, 解绑
      */
@@ -120,7 +124,7 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
 
-        Subscription getVerifySub = (isBind?mVertifyCodeRepository.getMemberVerifyCodeByEmail(email):mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email))
+        Subscription getVerifySub = (isBind ? mVertifyCodeRepository.getMemberVerifyCodeByEmail(email) : mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -206,14 +210,22 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
     }
 
     /**
+     * @param pasword
+     * @param surepassword
      * @param phone
      * @param email
      * @param verifyCode
      * @param isPhone
      */
     @Override
-    public void bindPhoneOrEmail(String phone, String email, String verifyCode, boolean isPhone) {
-
+    public void bindPhoneOrEmail(String pasword, String surepassword, String phone, String email, String verifyCode, boolean isPhone) {
+        if (!pasword.equals(surepassword)) {
+            mRootView.showMessage(mContext.getString(R.string.password_diffrent));
+            return;
+        }
+        if (checkPasswordLength(pasword)) {
+            return;
+        }
         if (isPhone && checkPhone(phone)) {
             return;
         }
@@ -224,6 +236,16 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
 
         Subscription subscribe = mUserInfoRepository.updatePhoneOrEmail(isPhone ? phone : null, isPhone ? null : email, verifyCode)
                 .doAfterTerminate(() -> mRootView.setSureBtEnabled(true))
+                .flatMap(new Func1<Object, Observable<Object>>() {
+                    @Override
+                    public Observable<Object> call(Object o) {
+                        if (TextUtils.isEmpty(surepassword)) {
+                            return Observable.just(o);
+                        } else {
+                            return mChangePasswordRepository.changePasswordV2(null, surepassword);
+                        }
+                    }
+                })
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

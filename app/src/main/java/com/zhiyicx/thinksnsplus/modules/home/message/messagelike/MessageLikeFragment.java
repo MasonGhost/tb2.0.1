@@ -48,17 +48,12 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.like);
+        return getString(R.string.liked);
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, 1, 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
     }
 
     @Override

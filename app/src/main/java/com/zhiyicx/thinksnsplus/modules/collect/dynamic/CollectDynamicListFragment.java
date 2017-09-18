@@ -23,11 +23,13 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -83,6 +85,11 @@ public class CollectDynamicListFragment extends DynamicFragment {
         dynamicListBaseItem.setShowCommentList(false)
                 .setShowReSendBtn(false)
                 .setShowToolMenu(false);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
+        return (long) mListDatas.size();
     }
 
     public static CollectDynamicListFragment newInstance() {

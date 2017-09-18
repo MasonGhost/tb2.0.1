@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,12 +20,13 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
-import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -47,6 +50,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener,
         RichTextEditor.OnContentChangeListener {
 
+    public static final String INFO_REFUSE = "info_refuse";
+
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
     @BindView(R.id.riche_test)
@@ -65,16 +70,25 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
-    private int[] mImageIdArray;// 图片id
+
+    private DataImageView test;
     private int mPicTag;
-    private int mPicAddTag;
 
     private ActionPopupWindow mInstructionsPopupWindow;
+    private InfoPublishBean mInfoPublishBean;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
         publishInfoFragment.setArguments(bundle);
         return publishInfoFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+        }
     }
 
     @Override
@@ -117,17 +131,24 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         return 0;
     }
 
-
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        InfoPublishBean infoPublishBean = new InfoPublishBean();
+        InfoPublishBean infoPublishBean;
+        if (mInfoPublishBean == null) {
+            infoPublishBean = new InfoPublishBean();
+        } else {
+            infoPublishBean = mInfoPublishBean;
+        }
 
-        infoPublishBean.setContent(getContentString());
+        String content = getContentString();
+        infoPublishBean.setContent(content);
         infoPublishBean.setAmout(100);
-        infoPublishBean.setCover(mImageIdArray[0]);
-        infoPublishBean.setImage(mImageIdArray[0] == 0 ? null : (long) mImageIdArray[0]);
+        long cover = RegexUtils.getImageId(content);
+        infoPublishBean.setCover(RegexUtils.getImageId(content));
+        infoPublishBean.setImage(cover < 0 ? null : cover);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
@@ -142,9 +163,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         for (RichTextEditor.EditData editData : datas) {
             builder.append(editData.inputStr);
             if (!editData.imagePath.isEmpty()) {
-                builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
-                mPicAddTag++;
+                if (editData.imagePath.contains("![image]")) {
+                    builder.append(editData.imagePath);
+                } else {
+                    builder.append(String.format(Locale.getDefault(),
+                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
+                            editData.imageId));
+                }
             }
         }
         return builder.toString();
@@ -155,16 +180,26 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mToolbarRight.setEnabled(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
+        RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)mImPic.getLayoutParams();
+        layout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        mImPic.setLayoutParams(layout);
+        mImSetting.setVisibility(View.GONE);
     }
 
     @Override
     protected void initData() {
-        mImageIdArray = new int[10];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+        if (mInfoPublishBean != null) {
+            if (!TextUtils.isEmpty(mInfoPublishBean.getContent())) {
+                mRicheTest.clearAllLayout();
+                mPresenter.pareseBody(mInfoPublishBean.getContent());
+                mEtInfoTitle.setText(mInfoPublishBean.getTitle());
+            }
+        }
     }
 
     @Override
@@ -184,26 +219,38 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
             return;
         }
         mPbImageUpload.setVisibility(View.VISIBLE);
-        mImageIdArray[mPicTag] = mPicTag;
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        mRicheTest.insertImage(path, mRicheTest.getWidth());
+        test = mRicheTest.insertImage(path, mRicheTest.getWidth());
 
+    }
+
+    @Override
+    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
+        mPicTag++;
+        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge_id, iamge, markdonw, isLast);
+    }
+
+    @Override
+    public void addEditTextAtIndex(String text) {
+        mRicheTest.updateEditTextAtIndex(mRicheTest.getLastIndex(), text);
+    }
+
+    @Override
+    public void onPareseBodyEnd(boolean hasContent) {
+        mToolbarRight.setEnabled(hasContent);
     }
 
     @Override
     public void uploadPicSuccess(int id) {
         mPbImageUpload.setVisibility(View.GONE);
-        mImageIdArray[mPicTag] = id;
+        test.setId(id);
         mPicTag++;
     }
 
     @Override
     public void uploadPicFailed() {
         mPbImageUpload.setVisibility(View.GONE);
-        if (mPicTag > 0) {
-            mPicTag--;
-        }
     }
 
     @Override
@@ -226,6 +273,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void publishInfoSuccess() {
 
+    }
+
+    @Override
+    public void onImageDelete() {
+        if (mPicTag > 0) {
+            mPicTag--;
+        }
     }
 
     @Override
@@ -343,7 +397,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
         mCanclePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_send_cancel_hint))
-                .item2Str(getString(R.string.sure))
+                .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

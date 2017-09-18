@@ -59,7 +59,7 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
 
     // 缺省的tab的线的高度
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
-            .no_line_height;
+            .line_height;
 
     @Override
     protected List<String> initTitles() {
@@ -72,10 +72,28 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(setLeftImg());
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+//        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @Override

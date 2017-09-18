@@ -105,6 +105,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
                 '}';
     }
 
+
+
     public int getIs_collection_news() {
         return is_collection_news;
     }
@@ -636,6 +638,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInfoListDataBeanDao() : null;
     }
+
+
 
     protected InfoListDataBean(Parcel in) {
         super(in);

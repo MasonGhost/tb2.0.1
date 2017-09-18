@@ -6,6 +6,8 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
@@ -23,22 +25,25 @@ import rx.Observable;
 public interface QuestionDetailContract {
 
     interface View extends ITSListView<AnswerInfoBean, Presenter>{
-        void setQuestionDetail(QAListInfoBean questionDetail);
+        void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore);
         QAListInfoBean getCurrentQuestion();
         String getCurrentOrderType();
-        int getRealSize();
+//        int getRealSize();
         void updateFollowState();
+        void updateAnswerCount();
         void handleLoading(boolean isLoading, boolean success, String message);
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
-        void getQuestionDetail(String questionId);
+        void getQuestionDetail(String questionId,Long maxId, boolean isLoadMore);
         void handleFollowState(String questionId, boolean isFollowed);
         void shareQuestion(Bitmap bitmap);
+        void saveQuestion(QAPublishBean qaPublishBean);
         void deleteQuestion(Long question_id);
         void applyForExcellent(Long question_id);
         void handleAnswerLike(boolean isLiked, final long answer_id, AnswerInfoBean answerInfoBean);
-        void payForExcellent();
+        void payForOnlook(long answer_id,int position);
+        SystemConfigBean getSystemConfig();
     }
 
     interface Repository extends IBasePublishQuestionRepository{
@@ -46,5 +51,6 @@ public interface QuestionDetailContract {
         Observable<List<AnswerInfoBean>> getAnswerList(String questionId, String order_type, int size);
         Observable<BaseJsonV2<Object>> deleteQuestion(Long question_id);
         Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id);
+
     }
 }

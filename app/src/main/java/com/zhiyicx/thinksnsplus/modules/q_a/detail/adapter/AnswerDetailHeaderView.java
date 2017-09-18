@@ -30,10 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -47,16 +44,18 @@ import com.zzhoujay.richtext.RichText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
-import rx.functions.Action1;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -129,7 +128,6 @@ public class AnswerDetailHeaderView {
             }
         });
 
-        mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
         if (adverts != null) {
             initAdvert(context, adverts);
         }
@@ -192,19 +190,22 @@ public class AnswerDetailHeaderView {
             RxView.clicks(mUserInfoContainer)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        if (mAnswerHeaderEventListener != null) {
+                        if (mAnswerHeaderEventListener != null && answerInfoBean.getAnonymity() != 1) {
                             mAnswerHeaderEventListener.clickUserInfo(answerInfoBean.getUser());
                         }
                     });
-            mName.setText(answerInfoBean.getUser().getName());
-            mDescription.setText(answerInfoBean.getUser().getIntro());
-            boolean isSelf = answerInfoBean.getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
-            mUserFollow.setVisibility(isSelf ? GONE : VISIBLE);
-            mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
+
+
+            boolean isAnonmity = answerInfoBean.getAnonymity() == 1;
+            boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+            mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
+            mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
+            mName.setText(isAnonmity && !isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
+            mUserFollow.setChecked(!isAnonmity && answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);
-
-            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false);
+            mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
+            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false, !isSelf && isAnonmity);
 
         }
     }
@@ -248,18 +249,15 @@ public class AnswerDetailHeaderView {
 
     private String dealPic(String markDownContent) {
         // 替换图片id 为地址
-        String tag = "@![image](";
-        while (markDownContent.contains(tag)) {
-            int start = markDownContent.indexOf(tag) + tag.length();
-            int end = markDownContent.indexOf(")", start);
-            String id = "0";
-            try {
-                id = markDownContent.substring(start, end);
-            } catch (Exception e) {
-                LogUtils.d("Cathy", e.toString());
-            }
+        Pattern pattern = Pattern.compile(IMAGE_FORMAT);
+        Matcher matcher = pattern.matcher(markDownContent);
+        while (matcher.find()) {
+            String imageMarkDown = matcher.group(0);
+            String id = matcher.group(1);
+
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
+            String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
         return markDownContent;

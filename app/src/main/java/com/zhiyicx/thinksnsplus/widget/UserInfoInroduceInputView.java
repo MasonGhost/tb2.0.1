@@ -77,7 +77,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
             mContentGrvatiy = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_content_gravity, Gravity.LEFT);// 如果为0就不要设置maxLine了
             mEtContent.setGravity(mContentGrvatiy);
             if (array.getDimensionPixelSize(R.styleable.inputLimitView_content_size, 0) != 0)
-                mEtContent.setTextSize(SP, ConvertUtils.px2dp(getContext(),array.getDimension(R.styleable.inputLimitView_content_size,0)));
+                mEtContent.setTextSize(SP, ConvertUtils.px2dp(getContext(), array.getDimension(R.styleable.inputLimitView_content_size, 0)));
 
             array.recycle();
         } else {
@@ -87,8 +87,8 @@ public class UserInfoInroduceInputView extends FrameLayout {
             mShowLines = 0;
         }
 
-        // 初始化控件属性
-        mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize)});
+        // 初始化控件属性  2*mLimitMaxSize 用于兼容 emoji
+        mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2 * mLimitMaxSize)});
         mEtContent.setHint(mHintContent);
         if (mShowLines > 0) {
             mEtContent.setLines(mShowLines);
@@ -109,8 +109,12 @@ public class UserInfoInroduceInputView extends FrameLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() >= mshowLimitSize) {
-                    mLimitTipStr = "<" + ConvertUtils.stringLenghtDealForEmoji(s) + ">" + "/" + mLimitMaxSize;
+                int praseContentLength = ConvertUtils.stringLenghtDealForEmoji(s);
+                mLimitTipStr = "<" + praseContentLength + ">" + "/" + mLimitMaxSize;
+                if (praseContentLength == mLimitMaxSize) {
+                    mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(s.length())});
+                }
+                if (praseContentLength >= mshowLimitSize) {
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
                             .innerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.important_for_note))
                             .outerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.general_for_hint))

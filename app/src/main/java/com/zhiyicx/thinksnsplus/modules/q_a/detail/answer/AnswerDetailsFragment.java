@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
@@ -86,6 +87,9 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
+    @BindView(R.id.answer_empty_view)
+    protected EmptyView mAnswerEmptyView;
+
 
     private AnswerDetailHeaderView mAnswerDetailHeaderView;
 
@@ -155,13 +159,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void updateAnswerHeader(AnswerInfoBean answerInfoBean) {
+    public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
+        mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
         setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
-        onNetResponseSuccess(answerInfoBean.getCommentList(), false);
+        onNetResponseSuccess(answerInfoBean.getCommentList(), isLoadMore);
+        closeLoadingView();
     }
 
     @Override
@@ -178,6 +184,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mEmptyView = mAnswerEmptyView;
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mAnswerInfoBean = (AnswerInfoBean) getArguments().getSerializable(BUNDLE_ANSWER);
         if (mAnswerInfoBean == null) {
@@ -245,8 +252,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean
-            isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) { // 空白展位图
                 AnswerCommentListBean emptyData = new AnswerCommentListBean();
@@ -254,13 +260,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
             }
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if (!isLoadMore) {
-            Observable.timer(500, TimeUnit.MILLISECONDS)
-                    .subscribe(aLong -> {
-                        mPresenter.reqReWardsData(mAnswerInfoBean.getId().intValue());// 刷新打赏
-                    });
-
-        }
     }
 
     @Override
@@ -422,16 +421,19 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
      */
     private void initDealAnswerPopupWindow(final AnswerInfoBean answerInfoBean, boolean
             isCollected) {
-        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
+        boolean questionIsMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
                 AppApplication.getmCurrentLoginAuth().getUser_id();
-        boolean isAdopted = answerInfoBean.getAdoption() == 1;
+        boolean answerIsMine = answerInfoBean.getUser_id() ==
+                AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean isMineAdopted = answerInfoBean.getAdoption() == 1;
+        boolean isAdopted = !answerInfoBean.getQuestion().getAdoption_answers().isEmpty();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(isMine ? getString(R.string.info_delete) : "")
-                .item2Str(getString(isAdopted ? R.string.qa_question_answer_adopt : (isMine ? R
-                        .string.qa_question_answer_adopting : R.string.empty)))
+                .item1Str(answerIsMine && !isMineAdopted ? getString(R.string.info_delete) : "")
+                .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.qa_question_answer_adopt : R.string.empty)
+                        : questionIsMine ? R.string.qa_question_answer_adopting : R.string.empty))
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
-                .item4Str(getString(isMine && !isAdopted ? R.string.edit : R.string.empty))
+                .item4Str(getString(answerIsMine && !isMineAdopted ? R.string.edit : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -443,7 +445,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 })
                 .item2ClickListener(() -> {// 采纳
                     mDealInfoMationPopWindow.hide();
-                    if (isAdopted) {
+                    if (isMineAdopted) {
                         return;
                     }
                     mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean
@@ -458,7 +460,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {// 编辑
                     mDealInfoMationPopWindow.hide();
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody());
+                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(), mAnswerInfoBean.getQuestion().getSubject());
 
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
@@ -503,7 +505,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == RewardType.INFO.id) {
+            if (requestCode == RewardType.QA_ANSWER.id) {
                 mPresenter.reqReWardsData(mAnswerInfoBean.getId().intValue());
             }
         }

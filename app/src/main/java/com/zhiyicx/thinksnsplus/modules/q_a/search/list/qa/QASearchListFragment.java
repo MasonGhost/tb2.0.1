@@ -49,7 +49,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Date 2017/8/10
  * @Contact master.jungle68@gmail.com
  */
-public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean> implements QASearchListContract.View, ISearchListener {
+public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean>
+        implements QASearchListContract.View, ISearchListener {
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
@@ -84,6 +85,16 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
             this.mIHistoryCententClickListener = (IHistoryCententClickListener) activity;
         }
 
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<QAListInfoBean> data) {
+        return (long) mListDatas.size();
     }
 
     @Override
@@ -178,6 +189,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
+                                onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
 
@@ -240,6 +252,10 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     @Override
+    public void onCacheResponseSuccess(List<QAListInfoBean> data, boolean isLoadMore) {
+    }
+
+    @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         super.onResponseError(throwable, isLoadMore);
         checkEmptyView();
@@ -260,7 +276,6 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
         }
         mSearchContent = str;
         if (TextUtils.isEmpty(str)) {
-            onNetResponseSuccess(new ArrayList<>(), false);
             return;
         }
         // 请求网络数据，就隐藏历史

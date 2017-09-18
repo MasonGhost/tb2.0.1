@@ -254,26 +254,26 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 holder.setText(R.id.item_info_channel, data.getTagName());
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.getConvertView().setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
+//            @Override
+//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
+//                RxView.clicks(viewHolder.itemView)
+//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                        .compose(bindToLifecycle())
+//                        .subscribe(o -> {
+//                            if (mOnItemClickListener != null) {
+//                                int position = viewHolder.getAdapterPosition();
+//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                            }
+//                        });
+//
+//                viewHolder.getConvertView().setOnLongClickListener(v -> {
+//                    if (mOnItemClickListener != null) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+//                    }
+//                    return true;
+//                });
+//            }
         };
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override

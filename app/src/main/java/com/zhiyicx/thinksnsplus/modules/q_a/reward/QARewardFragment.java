@@ -23,13 +23,15 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_IDS;
 import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
@@ -111,6 +114,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     private QAPublishBean mQAPublishBean;
     private Long mQuestionId = 0L; //  发布之后重新设置悬赏
+    private QAListInfoBean mQaListInfoBean;
 
     public static QARewardFragment instance(Bundle bundle) {
         QARewardFragment fragment = new QARewardFragment();
@@ -124,18 +128,31 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mQAPublishBean != null) {
+            mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        }
+
+    }
+
+    @Override
     protected void initView(View rootView) {
         if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
         if (!mQuestionId.equals(0L)) {
-            mBtPublish.setText(getString(R.string.sure));
+            mBtPublish.setText(getString(R.string.determine));
             mRlInviteContainer.setVisibility(View.GONE);
         }
         mTvChooseTip.setText(R.string.qa_publish_reward_set_money);
         mTvInviteHint.setText(getString(R.string.qa_publish_reward));
         mTvInviteHint.append(getString(R.string.qa_publish_reward_invite));
         initListener();
+
+        mEtInput.clearFocus();
+        mWcOnlooker.setFocusable(true);
+        mWcOnlooker.requestFocus();
     }
 
     @Override
@@ -143,16 +160,23 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initDefaultMoney();
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null && draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
-            List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
-            QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
-            typeIds.setUser(draft.getInvitations().get(0).getUser());
-            typeIdsList.add(typeIds);
-            mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
+        QAPublishBean draft = mQAPublishBean == null ? null : mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
+            double money = PayConfig.realCurrencyFen2Yuan(draft.getAmount());
+            if (money > 0) {
+                mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
+            }
+            if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
+                List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
+                QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
+                typeIds.setUser(draft.getInvitations().get(0).getUser());
+                typeIds.setName(draft.getInvitations().get(0).getName());
+                typeIdsList.add(typeIds);
+                mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
+            }
+
             configSureButton();
         }
     }
@@ -189,9 +213,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 typeIds.setUser(expertBean.getId());
                 typeIds.setName(expertBean.getName());
                 typeIdsList.add(typeIds);
-
                 mBtQaSelectExpert.setRightText(expertBean.getName());
                 mQAPublishBean.setInvitations(typeIdsList);
+                mPresenter.saveQuestion(mQAPublishBean);
             }
             configSureButton();
         }
@@ -220,9 +244,12 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
-        if (prompt == Prompt.SUCCESS) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            // 发布成功后，要跳转问题详情
+//            startActivity(new Intent(getActivity(), QA_Activity.class));
+            goToQuestionDetail();
             getActivity().finish();
-            startActivity(new Intent(getActivity(), QA_Activity.class));
         }
     }
 
@@ -235,7 +262,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void onBackPressed() {
         mPresenter.saveQuestion(packgQuestion());
-        super.onBackPressed();
+        getActivity().finish();
     }
 
     private void initAlertPopupWindow() {
@@ -334,10 +361,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     } else {
                         mOnLookerMoney = 0;
                     }
-                    configSureButton();
+//                    configSureButton();
                 }, throwable -> {
                     mOnLookerMoney = 0;
-                    configSureButton();
+//                    configSureButton();
                 });
         // 邀请开关
         mWcInvite.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -354,7 +381,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             if (!isChecked) {
                 resetOnLookerMoney();
             }
-            configSureButton();
+//            configSureButton();
         });
         RxView.clicks(mBtQaSelectExpert)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -378,18 +405,21 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 发布
+                    mBtPublish.setEnabled(false);
                     try {
                         if (mQuestionId.equals(0L)) {
                             if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
                                 showSnackErrorMessage("邀请的专家呢？");
+                                return;
                             }
                             packgQuestion();
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
-                            mPresenter.resetReward(mQuestionId, mRewardMoney);
+                            mPresenter.resetReward(mQuestionId, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
                         }
                     } catch (Exception e) {
+                        mBtPublish.setEnabled(true);
                         e.printStackTrace();
                     }
 
@@ -401,6 +431,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     }
 
     private QAPublishBean packgQuestion() {
+        if (mQAPublishBean == null) {
+            return null;
+        }
         mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
@@ -492,10 +525,26 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, mRewardMoney);
+        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void publishQuestionSuccess(QAListInfoBean qaListInfoBean) {
+        this.mQaListInfoBean = qaListInfoBean;
+    }
+
+    private void goToQuestionDetail() {
+        if (mQAPublishBean != null) {
+            EventBus.getDefault().post(new Bundle(), EventBusTagConfig.EVENT_PUBLISH_QUESTION);
+            Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);
+            intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+            startActivity(intent);
+        }
     }
 }

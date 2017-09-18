@@ -88,7 +88,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @SerializedName("has_like")
     private boolean has_digg;
     private boolean has_collect;
-    private double amount;
+    private long amount;
     @Convert(converter = LikeBeanConvert.class, columnType = String.class)
     private List<DynamicLikeBean> likes;
     private boolean paid;
@@ -296,11 +296,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.feed_mark = feed_mark;
     }
 
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -794,7 +794,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.has_digg = in.readByte() != 0;
         this.has_collect = in.readByte() != 0;
-        this.amount = in.readDouble();
+        this.amount = in.readLong();
         this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
         this.paid = in.readByte() != 0;
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
@@ -811,11 +811,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.reward = in.readParcelable(RewardsCountBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1721432406)
+    @Generated(hash = 1726011089)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
             Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
             int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
             List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
             PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
             List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
@@ -869,4 +869,5 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
+
 }

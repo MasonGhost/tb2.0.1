@@ -135,4 +135,8 @@ public class InfoInputEditText extends LinearLayout {
     public EditText getEditInput() {
         return mEditInput;
     }
+
+    public void setEditInputString(String inputString) {
+        mEditInput.setText(inputString);
+    }
 }

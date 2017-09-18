@@ -123,7 +123,7 @@ public class ActivityHandler {
     }
 
     /**
-     * 结束所有Activity
+     * 结束非最后一个 Activity
      */
     public void finishAllActivityEcepteCurrent() {
         Activity activity = activityStack.lastElement();

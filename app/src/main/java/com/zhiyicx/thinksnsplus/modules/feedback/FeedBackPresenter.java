@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;

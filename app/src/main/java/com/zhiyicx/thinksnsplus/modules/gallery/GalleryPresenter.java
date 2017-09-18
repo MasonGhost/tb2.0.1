@@ -97,6 +97,9 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        walletBean.setBalance(walletBean.getBalance() - amount);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);
                         mRootView.getCurrentImageBean().getToll().setPaid(true);

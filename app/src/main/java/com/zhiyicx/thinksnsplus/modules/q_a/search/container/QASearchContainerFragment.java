@@ -1,20 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -26,6 +25,8 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
 
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
+    @BindView(R.id.fragment_search_cancle)
+    View mFragmentSearchCancle;
 
     private QASearchContainerViewPagerFragment mFindSomeOneContainerViewPagerFragment;
 
@@ -33,7 +34,6 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
         QASearchContainerFragment findSomeOneContainerFragment = new QASearchContainerFragment();
         findSomeOneContainerFragment.setArguments(bundle);
         return findSomeOneContainerFragment;
-
     }
 
     @Override
@@ -47,8 +47,8 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return false;
+    protected View getRightViewOfMusicWindow() {
+        return mFragmentSearchCancle;
     }
 
     @Override
@@ -65,8 +65,6 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                 , R.id.fragment_container);
 
         initListener();
-
-
     }
 
     @Override
@@ -77,8 +75,11 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
 
     private void initListener() {
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
-            if (textViewEditorActionEvent.actionId()== EditorInfo.IME_ACTION_SEARCH) {
-                mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
+                    mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
+                    DeviceUtils.hideSoftKeyboard(getContext(),mFragmentInfoSearchEdittext);
+                }
             }
         });
     }

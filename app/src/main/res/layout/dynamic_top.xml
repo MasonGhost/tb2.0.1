@@ -35,6 +35,15 @@
                 tools:text="@string/totop_money"/>
 
             <EditText
+                android:id="@+id/et_focusable"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:hint="@string/et_top_input"
+                tools:hint="@string/et_top_input">
+                <requestFocus/>
+            </EditText>
+
+            <EditText
                 android:id="@+id/et_top_input"
                 style="@style/style_dynamic_editext"
                 android:hint="@string/et_top_input"
@@ -70,9 +79,19 @@
 
             <EditText
                 android:id="@+id/et_top_total"
-                style="@style/style_dynamic_editext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:layout_marginRight="@dimen/spacing_small"
+                android:layout_weight="1"
+                android:background="@null"
                 android:enabled="false"
+                android:gravity="right"
                 android:hint="@string/et_top_total"
+                android:text=""
+                android:textColor="@color/themeColor"
+                android:textColorHint="@color/general_for_hint"
+                android:textSize="@dimen/size_content_assist"
                 tools:hint="@string/et_top_total"/>
 
             <TextView

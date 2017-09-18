@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -9,6 +10,7 @@ import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -23,6 +25,9 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
  * @Describe
@@ -94,6 +99,12 @@ public class CommentRepository implements ICommentRepository {
                 break;
             case ApiConfig.APP_LIKE_NEWS:
                 path = String.format(ApiConfig.APP_PATH_INFO_COMMENT_V2_S, source_id);
+                break;
+            case APP_QUESTIONS:
+                path = String.format(ApiConfig.APP_PATH_SEND_QUESTION_COMMENT_S, source_id);
+                break;
+            case APP_QUESTIONS_ANSWER:
+                path = String.format(Locale.getDefault(),ApiConfig.APP_PATH_COMMENT_QA_ANSWER_FORMAT, source_id);
                 break;
             default:
                 break;

@@ -112,7 +112,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         holder.setText(R.id.tv_user_name, userInfoBean.getName());
         // 排行的信息
         if (mRankType.equals(RankTypeConfig.RANK_USER_CHECK_ID)) {
-            dealRankType(userInfoBean.getExtra().getCheckin_count(), holder.getView(R.id.tv_rank_type));
+            dealRankType(userInfoBean.getExtra().getLast_checkin_count(), holder.getView(R.id.tv_rank_type));
         } else {
             dealRankType(userInfoBean.getExtra().getCount(), holder.getView(R.id.tv_rank_type));
         }

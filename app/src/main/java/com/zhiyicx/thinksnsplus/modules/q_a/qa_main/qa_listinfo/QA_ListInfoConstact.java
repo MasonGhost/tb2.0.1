@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
@@ -19,6 +20,8 @@ public interface QA_ListInfoConstact {
 
     interface Presenter extends ITSListPresenter<QAListInfoBean>{
         void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
+        void payForOnlook(long answer_id,int position);
+        SystemConfigBean getSystemConfig();
     }
 
     interface Repository extends IBasePublishQuestionRepository {}

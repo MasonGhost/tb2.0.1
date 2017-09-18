@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -63,7 +64,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     private InfoPublishBean mInfoPublishBean;
 
     public static AddInfoFragment newInstance(Bundle bundle) {
-
         AddInfoFragment fragment = new AddInfoFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -122,6 +122,14 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         if (mInfoPublishBean.getTags() != null) {
             mUserTagBeens.addAll(mInfoPublishBean.getTags());
         }
+        if (!TextUtils.isEmpty(mInfoPublishBean.getCategoryName())) {
+            mToolbarRight.setEnabled(true);
+            mBtAddCategory.setRightText(mInfoPublishBean.getCategoryName());
+            mTvFrom.setEditInputString(mInfoPublishBean.getFrom());
+            mTvAuthor.setEditInputString(mInfoPublishBean.getAuthor());
+            mEtInfoSummary.setText(mInfoPublishBean.getSubject());
+        }
+
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
         mFlTags.setOnTouchListener((view, motionEvent) -> {

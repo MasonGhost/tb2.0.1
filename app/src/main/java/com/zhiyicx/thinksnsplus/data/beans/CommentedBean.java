@@ -5,6 +5,9 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -15,10 +18,15 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC_SPECIALS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_QUESTIONS_ANSWER;
 
 /**
  * @Describe {@see https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5%88%97%E8%A1%A8.md}
@@ -27,8 +35,9 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class CommentedBean extends BaseListBean {
+public class CommentedBean extends BaseListBean implements Serializable {
 
+    private static final long serialVersionUID = -1702831133869286746L;
     /**
      * {
      * "id": 3,
@@ -89,16 +98,20 @@ public class CommentedBean extends BaseListBean {
     private Object commentable;
 
     private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
     @Generated(hash = 8688308)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-            Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
+                         Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -201,31 +214,59 @@ public class CommentedBean extends BaseListBean {
         if (target_image != null || commentable == null) {
             return target_image;
         }
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
-                try {
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
+
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
                     target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_MUSIC:
 
-                break;
-            case APP_LIKE_NEWS:
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
+                    JSONArray jsonArray2 = jsonObject2.getJSONArray("images");
+                    target_image = (long) jsonArray2.getJSONObject(0).getDouble("file_id");
 
-                break;
+                    break;
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null && musicDetaisBean.getStorage() != null) {
+                        target_image = (long) musicDetaisBean.getStorage().getId();
+                    }
 
+                    break;
+
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null && musicAlbumDetailsBean.getStorage() != null) {
+                        target_image = (long) musicAlbumDetailsBean.getStorage().getId();
+                    }
+
+                    break;
+
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);
+                    if (infoListDataBean != null && infoListDataBean.getImage() != null) {
+                        target_image = (long) infoListDataBean.getImage().getId();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(commentable), QAListInfoBean.class);
+                    if (data != null) {
+                    }
+                    break;
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        target_image = (long) RegexUtils.getImageId(answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+
+            }
+        } catch (Exception e) {
         }
         return this.target_image;
     }
@@ -246,31 +287,59 @@ public class CommentedBean extends BaseListBean {
         if (!TextUtils.isEmpty(target_title) || commentable == null) {
             return this.target_title;
         }
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
 
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
-                try {
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     target_title = jsonObject.getString("feed_content");
-                } catch (Exception e) {
-                }
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
-                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
-                    target_title = jsonObject.getString("content");
-                } catch (Exception e) {
-                }
-                break;
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonObject2.getString("title");
 
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC:
+                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
+                    if (musicDetaisBean != null) {
+                        target_title = musicDetaisBean.getTitle();
+                    }
 
-                break;
+                    break;
 
+                case APP_LIKE_MUSIC_SPECIALS:
+                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
+                    if (musicAlbumDetailsBean != null) {
+                        target_title = musicAlbumDetailsBean.getTitle();
+                    }
+
+                    break;
+                case APP_LIKE_NEWS:
+                    InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);
+                    if (infoListDataBean != null && infoListDataBean.getTitle() != null) {
+                        target_title = infoListDataBean.getTitle();
+                    }
+                    break;
+                case APP_QUESTIONS:
+                    QAListInfoBean data = new Gson().fromJson(new Gson().toJson(commentable), QAListInfoBean.class);
+                    if (data != null) {
+                        target_title = data.getSubject();
+                    }
+                    break;
+
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                        target_title = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+                    }
+                    break;
+                default:
+
+
+            }
+        } catch (Exception e) {
         }
         return target_title;
     }
@@ -310,29 +379,42 @@ public class CommentedBean extends BaseListBean {
         if (source_id != 0) {
             return this.source_id;
         }
+        try {
+            Gson gson = new Gson();
+            switch (channel) {
+                case APP_LIKE_FEED:
 
-        Gson gson = new Gson();
-        switch (channel) {
-            case APP_LIKE_FEED:
+                    break;
+                case APP_LIKE_GROUP_POST:
 
-                break;
-            case APP_LIKE_GROUP_POST:
-                try {
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     source_id = jsonObject.getLong("group_id");
-                } catch (Exception e) {
-                }
-                break;
 
-            case APP_LIKE_MUSIC:
+                    break;
 
-                break;
-            case APP_LIKE_NEWS:
+                case APP_LIKE_MUSIC:
 
-                break;
+                    break;
 
+                case APP_LIKE_MUSIC_SPECIALS:
+
+                    break;
+                case APP_LIKE_NEWS:
+
+                    break;
+                case APP_QUESTIONS:
+
+                    break;
+                case APP_QUESTIONS_ANSWER:
+                    AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(commentable), AnswerInfoBean.class);
+                    if (answerInfoBean != null) {
+                    }
+                    break;
+                default:
+
+            }
+        } catch (Exception e) {
         }
-
 
         return source_id;
     }
@@ -342,7 +424,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 418864499)
     public UserInfoBean getCommentUserInfo() {
         Long __key = this.user_id;
@@ -362,7 +446,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 28373690)
     public void setCommentUserInfo(UserInfoBean commentUserInfo) {
         synchronized (this) {
@@ -373,7 +459,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1491152852)
     public UserInfoBean getSourceUserInfo() {
         Long __key = this.target_user;
@@ -393,7 +481,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 672311628)
     public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
         synchronized (this) {
@@ -404,7 +494,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1858190697)
     public UserInfoBean getReplyUserInfo() {
         Long __key = this.reply_user;
@@ -424,7 +516,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1797342590)
     public void setReplyUserInfo(UserInfoBean replyUserInfo) {
         synchronized (this) {
@@ -480,4 +574,6 @@ public class CommentedBean extends BaseListBean {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCommentedBeanDao() : null;
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsContract;
 
 import javax.inject.Inject;
@@ -63,5 +64,10 @@ public class SettingsRepository implements SettingsContract.Repository {
                 }
             }
         });
+    }
+
+    @Override
+    public Observable<UpdateInfoBean> checkUpdate() {
+        return null;
     }
 }

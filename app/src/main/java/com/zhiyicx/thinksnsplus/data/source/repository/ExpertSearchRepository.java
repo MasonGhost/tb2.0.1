@@ -9,6 +9,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -27,6 +29,7 @@ public class ExpertSearchRepository extends BaseQARepository implements ExpertSe
 
     @Override
     public Observable<List<ExpertBean>> getExpertList(int size, String topic_ids, String keyword) {
-        return mQAClient.getExpertListByTopicIds(topic_ids, keyword, size);
+        return mQAClient.getExpertListByTopicIds(topic_ids, keyword, size).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

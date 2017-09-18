@@ -10,16 +10,20 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment.INFO_REFUSE;
 
 /**
  * @Author Jliuer
@@ -47,6 +51,21 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initData() {
         DaggerManuscriptListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -63,12 +82,34 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
-        adapter.addItemViewDelegate(new InfoListItem() {
+        adapter.addItemViewDelegate(new InfoListItem(!getMyInfoType().endsWith(MY_INFO_TYPE_DONE)) {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(realData.getId())) {
                         AppApplication.sOverRead.add(realData.getId());
+                    }
+
+                    if (getMyInfoType().equals(MY_INFO_TYPE_ERROR)) {
+                        InfoPublishBean infoPublishBean = new InfoPublishBean();
+                        infoPublishBean.setNews_id(realData.getId());
+                        infoPublishBean.setSubject(realData.getSubject());
+                        infoPublishBean.setTitle(realData.getTitle());
+                        infoPublishBean.setAuthor(realData.getAuthor());
+                        infoPublishBean.setCategoryId(realData.getCategory().getId());
+                        infoPublishBean.setContent(realData.getContent());
+                        infoPublishBean.setCategoryName(realData.getCategory().getName());
+                        infoPublishBean.setCover(RegexUtils.getImageId(realData.getContent()));
+                        infoPublishBean.setRefuse(true);
+                        infoPublishBean.setTags(realData.getTags());
+
+                        Intent intent = new Intent(getActivity(), PublishInfoActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(INFO_REFUSE, infoPublishBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                        return;
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                             , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
@@ -83,5 +124,10 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
             }
         });
         return adapter;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 }

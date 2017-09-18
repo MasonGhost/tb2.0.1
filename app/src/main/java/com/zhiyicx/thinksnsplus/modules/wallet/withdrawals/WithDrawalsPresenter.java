@@ -54,8 +54,8 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                 .subscribe(new BaseSubscribeForV2<WithdrawResultBean>() {
                     @Override
                     protected void onSuccess(WithdrawResultBean data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.withdraw_succes));
                         mRootView.withdrawResult(data);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.withdraw_apply_succes));
                     }
 
                     @Override

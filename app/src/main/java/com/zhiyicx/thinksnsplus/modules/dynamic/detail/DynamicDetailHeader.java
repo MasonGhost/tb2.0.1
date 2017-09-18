@@ -282,7 +282,7 @@ public class DynamicDetailHeader {
                     .override(picWidth, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.mipmap.pic_locked)
+                    .error(R.drawable.shape_default_image)
                     .into(imageView);
         }
         photoContainer.addView(view);

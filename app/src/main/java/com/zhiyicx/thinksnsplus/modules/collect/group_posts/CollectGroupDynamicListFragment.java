@@ -6,6 +6,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
@@ -94,6 +95,11 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
         super.initView(rootView);
         mLlToolbarContainerParent.setVisibility(View.GONE);
         mBtnSendDynamic.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<GroupDynamicListBean> data) {
+        return (long)mListDatas.size();
     }
 
     @Override

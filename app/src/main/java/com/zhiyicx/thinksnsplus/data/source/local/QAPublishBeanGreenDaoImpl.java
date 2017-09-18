@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +31,11 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public long saveSingleData(QAPublishBean singleData) {
-        return mQAPublishBeanDao.insertOrReplace(singleData);
+        if (singleData != null) {
+            return mQAPublishBeanDao.insertOrReplace(singleData);
+        }
+        return -1L;
+
     }
 
     @Override
@@ -59,6 +64,7 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
         if (!realData.isEmpty()) {
             needData.addAll(realData);
         }
+        Collections.reverse(needData);
         return needData;
     }
 
@@ -74,7 +80,7 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public void deleteSingleCache(QAPublishBean dta) {
-        if (dta!=null){
+        if (dta != null) {
             mQAPublishBeanDao.delete(dta);
         }
     }

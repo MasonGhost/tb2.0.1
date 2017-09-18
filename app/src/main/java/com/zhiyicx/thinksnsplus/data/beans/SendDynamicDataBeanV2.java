@@ -48,7 +48,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_latitude;
     private String feed_longtitude;
     private String feed_geohash;
-    private Double amount;
+    private Long amount;
     @Convert(columnType =String.class ,converter = StorygeConvert.class)
     private List<StorageTaskBean> images;
     @Convert(converter = ImageBeanConvert.class,columnType = String.class)
@@ -119,11 +119,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_geohash = feed_geohash;
     }
 
-    public Double getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
@@ -144,7 +144,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
          */
 
         private int id;
-        private Double amount;
+        private Long amount;
         private String type;
 
         public int getId() {
@@ -155,11 +155,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
             this.id = id;
         }
 
-        public Double getAmount() {
+        public Long getAmount() {
             return amount;
         }
 
-        public void setAmount(Double amount) {
+        public void setAmount(Long amount) {
             this.amount = amount;
         }
 
@@ -179,7 +179,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
-            dest.writeDouble(this.amount);
+            dest.writeLong(this.amount);
             dest.writeString(this.type);
         }
 
@@ -188,7 +188,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
 
         protected StorageTaskBean(Parcel in) {
             this.id = in.readInt();
-            this.amount = in.readDouble();
+            this.amount = in.readLong();
             this.type = in.readString();
         }
 
@@ -211,7 +211,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
         sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
-        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ?  PayConfig.realCurrencyYuan2Fen(dynamicBean.getAmount()) : null);
+        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? (long) PayConfig.realCurrencyYuan2Fen(dynamicBean.getAmount()): null);
         return sendDynamicDataBeanV2;
     }
 
@@ -303,14 +303,14 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_latitude = in.readString();
         this.feed_longtitude = in.readString();
         this.feed_geohash = in.readString();
-        this.amount = (Double) in.readValue(Double.class.getClassLoader());
+        this.amount = (Long) in.readValue(Double.class.getClassLoader());
         this.images = in.createTypedArrayList(StorageTaskBean.CREATOR);
         this.photos = in.createTypedArrayList(ImageBean.CREATOR);
     }
 
-    @Generated(hash = 1219993735)
+    @Generated(hash = 1256387671)
     public SendDynamicDataBeanV2(Long id, String feed_title, String feed_content, String feed_from, String feed_mark, String feed_latitude,
-            String feed_longtitude, String feed_geohash, Double amount, List<StorageTaskBean> images, List<ImageBean> photos) {
+            String feed_longtitude, String feed_geohash, Long amount, List<StorageTaskBean> images, List<ImageBean> photos) {
         this.id = id;
         this.feed_title = feed_title;
         this.feed_content = feed_content;

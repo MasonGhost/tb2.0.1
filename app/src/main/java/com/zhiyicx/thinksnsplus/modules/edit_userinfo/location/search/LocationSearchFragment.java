@@ -141,13 +141,6 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     }
 
     @Override
-    public void onDismiss() {
-        super.onDismiss();
-        mFragmentInfoSearchContainer.setPadding(0, 0, 0, 0);
-    }
-
-
-    @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
         LocationBean bean = mListDatas.get(position);

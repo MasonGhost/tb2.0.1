@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 
 import java.util.List;
 import java.util.Map;
@@ -96,12 +97,12 @@ public interface InfoMainClient {
 
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECTION_LIST)
-    Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long max_id,
+    Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long after,
                                                             @Query("limit") Long limit);
 
     @GET(APP_PATH_GET_MY_INFO)
     Observable<List<InfoListDataBean>> getMyInfoList(@Query("after") Long max_id,
-                                                            @Query("limit") Long limit,@Query("type") String type);
+                                                     @Query("limit") Long limit, @Query("type") String type);
 
     // 订阅某类资讯
     @PATCH(APP_PATH_INFO_FOLLOW_LIST)
@@ -112,6 +113,7 @@ public interface InfoMainClient {
     Observable<InfoCommentBean> getInfoCommentListV2(@Path("news") String news_id,
                                                      @Query("after") Long max_id,
                                                      @Query("limit") Long limit);
+
     /**
      * 资讯投稿
      *
@@ -131,10 +133,11 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO)
-    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") long amount, @Field("day") int day);
 
     /**
      * 置顶资讯评论
+     *
      * @param news_id
      * @param comment_id
      * @param amount
@@ -143,7 +146,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
-    Observable<BaseJsonV2<Integer>>  stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 
@@ -156,7 +159,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REWARDS)
-    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") Integer amount);
+    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") long amount);
 
 
     /**
@@ -178,4 +181,38 @@ public interface InfoMainClient {
      */
     @GET(APP_PATH_INFO_REWARDS_COUNT)
     Observable<RewardsCountBean> getRewardCount(@Path("news_id") long news_id);
+
+    /**
+     * 获取资讯评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_REVIEW_INFO_COMMENT)
+    Observable<List<TopNewsCommentListBean>> getNewsReviewComment(@Query("after") int after, @Query("limit")
+            int limit);
+
+    /**
+     * 资讯评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_APPROVED_INFO_COMMENT)
+    Observable<BaseJsonV2> approvedNewsTopComment(@Path("news_id") Long feed_id, @Path("comment_id")
+            int comment_id, @Path("pinned_id") int pinned_id);
+
+    /**
+     * 更新编辑被驳回的投稿
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_UPDATE_INFO)
+    Observable<BaseJsonV2<Object>> updateInfo(@Path("category_id") long cates_id, @Path("news_id") int news_id,@Body RequestBody requestBody);
+
+    /**
+     * 拒绝资讯评论置顶 V2
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_REFUSE_INFO_COMMENT)
+    Observable<BaseJsonV2> refuseNewsTopComment(@Path("news_id") int news_id,@Path("comment_id") long comment_id,@Path("pinned_id") int pinned_id);
 }

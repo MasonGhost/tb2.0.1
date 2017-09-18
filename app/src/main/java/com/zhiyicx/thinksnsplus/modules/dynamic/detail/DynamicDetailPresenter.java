@@ -505,7 +505,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
         } else {
-
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -526,6 +525,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         mRootView.updateCommentCountAndDig();
         mRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
+    }
+
+    @Override
+    public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
+        commentBean.setState(DynamicCommentBean.SEND_ING);
+        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
+        mRootView.refreshData();
     }
 
     /**
@@ -649,6 +656,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        walletBean.setBalance(walletBean.getBalance() - amount);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
                             mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid
                                     (true);

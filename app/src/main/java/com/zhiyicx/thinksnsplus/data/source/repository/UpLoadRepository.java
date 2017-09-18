@@ -5,15 +5,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -29,7 +25,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -99,17 +94,11 @@ public class UpLoadRepository implements IUploadRepository {
                                     .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
                                         @Override
                                         public Observable<BaseJson<Integer>> call(BaseJsonV2 uploadFileResultV2) {
-                                            if (uploadFileResultV2.getMessage().get(0).equals("上传成功")) {
-                                                BaseJson<Integer> success = new BaseJson<>();
-                                                success.setData(uploadFileResultV2.getId());
-                                                success.setStatus(true);
-                                                return Observable.just(success);
-                                            } else {
-                                                BaseJson<Integer> failure = new BaseJson<>();
-                                                failure.setData(uploadFileResultV2.getId());
-                                                failure.setStatus(false);
-                                                return Observable.just(failure);
-                                            }
+                                            BaseJson<Integer> success = new BaseJson<>();
+                                            success.setData(uploadFileResultV2.getId());
+                                            baseJson.setId(1);
+                                            success.setStatus(true);
+                                            return Observable.just(success);
                                         }
                                     }, Observable::error, () -> null);
 

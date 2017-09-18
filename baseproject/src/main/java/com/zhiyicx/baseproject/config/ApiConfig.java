@@ -31,11 +31,11 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
     //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-//    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-
+    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+//
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
@@ -91,23 +91,6 @@ public class ApiConfig {
     public static final String APP_PATH_REWARD_USER = "api/" + API_VERSION_2 + "/user/{user_id}/rewards"; // 打赏一个用户
 
     /**
-     * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
-     *
-     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md}
-     * <p>
-     * feed:comment 动态被评论
-     * feed:reply-comment 动态评论被回复
-     * feed:pinned-comment 动态评论申请置顶
-     * feed:digg 动态被点赞
-     */
-    public static final String NOTIFICATION_KEY_FEED_DIGGS = "feed:digg";
-    public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
-    public static final String NOTIFICATION_KEY_FEED_REPLY_COMMENTS = "feed:reply-comment";
-    public static final String NOTIFICATION_KEY_FEED_PINNED_COMMENT = "feed:pinned-comment";
-    public static final String NOTIFICATION_KEY_FOLLOWS = "follows";
-    public static final String NOTIFICATION_KEY_NOTICES = "notices";
-
-    /**
      * 消息通知
      */
     // 未读通知数量检查
@@ -123,7 +106,6 @@ public class ApiConfig {
     public static final String NOTIFICATION_TYPE_ALL = "all";
     public static final String NOTIFICATION_TYPE_READ = "read";
     public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
-
 
     /**
      * 聊天相关
@@ -222,7 +204,11 @@ public class ApiConfig {
      */
     public static final String INFO_TYPE_COLLECTIONS = "-1000";// 资讯收藏列表
 
-    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";// 资讯投稿
+    // 资讯投稿
+    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";
+
+    // 修改资讯投稿
+    public static final String APP_PATH_UPDATE_INFO = "api/" + API_VERSION_2 + "/news/categories/{category_id}/news/{news_id}";
 
     // 订阅资讯频道
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
@@ -243,6 +229,15 @@ public class ApiConfig {
 
     // 获取用户投稿列表
     public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
+
+    // 查看资讯中申请置顶的评论列表
+    public static final String APP_PATH_GET_REVIEW_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/comments/pinneds";
+
+    // 同意资讯评论置顶
+    public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
+    // 拒绝资讯评论置顶
+    public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 + "/{news_id}/comments/{comment_id}/pinneds/{pinned_id}/reject";
 
 
     /**
@@ -301,6 +296,8 @@ public class ApiConfig {
     public static final String APP_PATH_UPDATE_QUESTION_REWARD = "api/" + API_VERSION_2 + "/questions/{question}/amount";
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
+    // 申请创建话题
+    public static final String APP_PATH_CREATE_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics/application";
     // 获取认证用户关注的话题或者专家话题
     public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
     // 获取话题下专家列表
@@ -354,6 +351,8 @@ public class ApiConfig {
 
     // 问答回答打赏
     public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+    // 问答回答围观
+    public static final String APP_PATH_QA_ANSWER_LOOK = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/onlookers";
     // 获取回答打赏列表
     public static final String APP_PATH_QA_ANSWER_REWARD_USER_LIST = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
     // 评论答案
@@ -448,8 +447,11 @@ public class ApiConfig {
      */
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
+    public static final String APP_LIKE_MUSIC_SPECIALS = "music_specials";
     public static final String APP_LIKE_NEWS = "news";
     public static final String APP_LIKE_GROUP_POST = "group-posts";
+    public static final String APP_QUESTIONS = "questions";
+    public static final String APP_QUESTIONS_ANSWER = "question-answers";
 
     /*******************************************  API V2  *********************************************/
 
@@ -472,6 +474,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NON_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes/register";
     // 获取会员短信验证码，使用场景如登陆、找回密码，其他用户行为验证等。
     public static final String APP_PATH_GET_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes";
+    public static final String APP_PATH_GET_APP_VERSION = "api/" + API_VERSION_2 + "/plus-appversion";
 
     /**
      * 用户相关

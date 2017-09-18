@@ -55,21 +55,29 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
 
     // 缺省的tab的线的高度
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
-            .no_line_height;
+            .line_height;
 
     public static final String TYPE_ALL = "all";
 //    public static final String TYPE_NOT_READ = "not_read";
-    public static final String TYPE_INVITE = "invite";
+    public static final String TYPE_INVITE = "invitation";
     public static final String TYPE_ADOPTION = "adoption";
     public static final String TYPE_OTHER = "other";
 
     private List<Fragment> mFragments;
 
     @Override
-    public void setPresenter(Object presenter) {
-
+    protected boolean setUseSatusbar() {
+        return true;
     }
 
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+    @Override
+    protected boolean isAdjustMode() {
+        return false;
+    }
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getResources().getStringArray(R.array.qa_mine_answer_title));
@@ -82,8 +90,8 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
         }
         mFragments.add(new MyAnswerFragment().instance(TYPE_ALL));
 //        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
         mFragments.add(new MyAnswerFragment().instance(TYPE_ADOPTION));
+        mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
         mFragments.add(new MyAnswerFragment().instance(TYPE_OTHER));
         return mFragments;
     }
@@ -97,7 +105,9 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+//        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @NonNull

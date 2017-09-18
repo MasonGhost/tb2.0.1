@@ -316,7 +316,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         mCanclePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_send_cancel_hint))
-                .item2Str(getString(R.string.sure))
+                .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -408,6 +408,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
+        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(),mToolbarRight);
         if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
@@ -429,7 +430,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?(long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);
@@ -449,7 +450,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?(long)( PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                 }
@@ -546,7 +547,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
         dynamicDetailBeanV2.setComments(new ArrayList<>());
         dynamicDetailBeanV2.setUser_id(userId);
-        dynamicDetailBeanV2.setAmount(mTollMoney);
+        dynamicDetailBeanV2.setAmount((long) mTollMoney);
 
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
@@ -801,7 +802,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void initInstructionsPop(String title, String des) {
         if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow= mInstructionsPopupWindow.newBuilder()
+            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
                     .item1Str(title)
                     .desStr(des)
                     .build();

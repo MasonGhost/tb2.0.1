@@ -22,7 +22,7 @@ public class MessageReviewActivity extends TSActivity<MessageReviewPresenter,Mes
     }
     @Override
     protected MessageReviewFragment getFragment() {
-        return MessageReviewFragment.newInstance();
+        return MessageReviewFragment.newInstance(getIntent().getExtras());
     }
 
 }

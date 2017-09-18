@@ -60,7 +60,7 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
                     mPopupWindow.hide();
                 })
                 .build();
-        mPopupWindow.showAsDropDown(v, -20, 10);
+        mPopupWindow.showAsDropDown(v, -100, 10);
     }
 
     public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {

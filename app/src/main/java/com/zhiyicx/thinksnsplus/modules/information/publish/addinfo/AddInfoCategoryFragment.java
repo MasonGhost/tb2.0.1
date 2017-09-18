@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -40,7 +39,7 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
     RecyclerView mFragmentChannelContentUnsubscribe;
 
     private List<InfoTypeCatesBean> mMoreCatesBeen;
-    private CommonAdapter mUnSubscribeAdapter;
+    private CommonAdapter mAdapter;
 
     public static AddInfoCategoryFragment newInstance(Bundle bundle) {
 
@@ -84,14 +83,12 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
 
     @Override
     protected void initView(View rootView) {
-
-
         mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
                 DEFAULT_COLUMN));
     }
 
     private CommonAdapter initUnsubscribeAdapter() {
-        mUnSubscribeAdapter = new CommonAdapter<InfoTypeCatesBean>(getActivity(),
+        mAdapter = new CommonAdapter<InfoTypeCatesBean>(getActivity(),
                 R.layout.item_info_channel, mMoreCatesBeen) {
             @Override
             protected void convert(ViewHolder holder, InfoTypeCatesBean data,
@@ -99,29 +96,29 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
                 holder.setText(R.id.item_info_channel, data.getName());
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.itemView.setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
+//            @Override
+//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
+//                RxView.clicks(viewHolder.itemView)
+//                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                        .compose(bindToLifecycle())
+//                        .subscribe(o -> {
+//                            if (mOnItemClickListener != null) {
+//                                int position = viewHolder.getAdapterPosition();
+//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                            }
+//                        });
+//
+//                viewHolder.itemView.setOnLongClickListener(v -> {
+//                    if (mOnItemClickListener != null) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+//                    }
+//                    return true;
+//                });
+//            }
         };
 
-        mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 InfoTypeCatesBean bean = mMoreCatesBeen.get(position);
@@ -140,7 +137,7 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
             }
         });
 
-        return mUnSubscribeAdapter;
+        return mAdapter;
     }
 
 

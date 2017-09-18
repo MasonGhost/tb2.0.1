@@ -25,4 +25,9 @@ public class QARewardActivity extends TSActivity<QARewardPresenter, QARewardFrag
                 .build()
                 .inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

@@ -11,4 +11,10 @@
 
     <solid
             android:color="@color/white"/>
+
+    <padding
+        android:left="@dimen/spacing_tiny"
+        android:top="@dimen/spacing_big_line"
+        android:right="@dimen/spacing_tiny"
+        android:bottom="@dimen/spacing_big_line"/>
 </shape>

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionSelectListTypePopWindow extends PopupWindow{
+public class QuestionSelectListTypePopWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
@@ -45,6 +46,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         setHeight(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_list_type_height));
         setFocusable(true);
         setOutsideTouchable(true);
+        setBackgroundDrawable(new ColorDrawable(0x00000000));
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }
@@ -56,8 +58,8 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         mTvDefault.setOnClickListener(v -> {
             mTvDefault.toggle();
             mTvTime.toggle();
-            if (mTvDefault.isChecked()){
-                if (mListener != null){
+            if (mTvDefault.isChecked()) {
+                if (mListener != null) {
                     mListener.onOrderTypeSelected(0);
                 }
             }
@@ -65,13 +67,15 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         mTvTime.setOnClickListener(v -> {
             mTvTime.toggle();
             mTvDefault.toggle();
-            if (mTvTime.isChecked()){
-                if (mListener != null){
+            if (mTvTime.isChecked()) {
+                if (mListener != null) {
                     mListener.onOrderTypeSelected(1);
                 }
             }
         });
-        setOnDismissListener(() -> setWindowAlpha(1.0f));
+        setOnDismissListener(() ->
+                setWindowAlpha(1.0f)
+        );
     }
 
 
@@ -82,7 +86,12 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         mActivity.getWindow().setAttributes(params);
     }
 
+
     public void show() {
+        if (isShowing()) {
+            dismiss();
+            return;
+        }
         setWindowAlpha(mAlpha);
         int width = UIUtils.getWindowWidth(mActivity) - mContentView.getResources().getDimensionPixelOffset(R.dimen.qa_top_select_width);
         showAsDropDown(mParentView == null ? mContentView : mParentView, width, 10);
@@ -116,7 +125,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
             return this;
         }
 
-        public QuestionSelectListTypePopWindow.Builder setListener(OnOrderTypeSelectListener listener){
+        public QuestionSelectListTypePopWindow.Builder setListener(OnOrderTypeSelectListener listener) {
             this.mListener = listener;
             return this;
         }
@@ -130,7 +139,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         return new QuestionSelectListTypePopWindow.Builder();
     }
 
-    public interface OnOrderTypeSelectListener{
+    public interface OnOrderTypeSelectListener {
         void onOrderTypeSelected(int type);
     }
 }

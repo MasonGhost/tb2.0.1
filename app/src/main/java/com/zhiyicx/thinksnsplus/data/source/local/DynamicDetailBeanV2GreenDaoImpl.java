@@ -174,14 +174,14 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
      *
      * @return
      */
-    public List<DynamicDetailBeanV2> getHotDynamicList(Long hotCreatTime) {
-        if (hotCreatTime == 0) {
-            hotCreatTime = System.currentTimeMillis();
+    public List<DynamicDetailBeanV2> getHotDynamicList(Long id) {
+        if (id == 0) {
+            id = System.currentTimeMillis();
         }
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " < ?  ORDER BY "
-                        + " T." + DynamicDetailBeanV2Dao.Properties.Hot_creat_time.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
-                , String.valueOf(hotCreatTime));
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " < ?  ORDER BY "
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 创建时间倒序
+                , String.valueOf(id));
     }
 
     /**

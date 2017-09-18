@@ -34,6 +34,8 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
@@ -41,6 +43,7 @@ import br.tiagohm.markdownview.css.styles.Github;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
 
 /**
  * @author Catherine
@@ -96,22 +99,48 @@ public class QuestionDetailContent extends FrameLayout {
         String content = questionDetail.getBody();
         String preContent = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, questionDetail.getBody()); // 预览的文字
         List<ImageBean> list = new ArrayList<>();
-        while (RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content) != -1) {
-            // 取出id
-            int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
-            // 替换图片地址
-            String url = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            String format = String.format(MarkdownConfig.IMAGE_RESULT, url);
-            String old = "@" + String.format(MarkdownConfig.IMAGE_RESULT, id + "");
-            content = content.replace(old, format);
+
+
+        Pattern pattern = Pattern.compile(IMAGE_FORMAT);
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            String imageMarkDown = matcher.group(0);
+            String image_id = matcher.group(1);
+
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + image_id/* + "?q=80"*/;
+            String imageTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            // 先手动加上换行吧 =_，=
+            imageTag = "    \n" + imageTag + "    \n";
+            content = content.replace(imageMarkDown, imageTag);
+
             // 处理图片列表
             ImageBean imageBean = new ImageBean();
-            imageBean.setStorage_id(id);
-            imageBean.setImgUrl(url);
+            imageBean.setStorage_id(Integer.parseInt(image_id));
+            imageBean.setImgUrl(imgPath);
             list.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
             animationRectBeanArrayList.add(rect);
         }
+
+//        while (RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content) != -1) {
+//            // 取出id
+//            int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
+//            // 替换图片地址
+//            String url = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+//
+//            String format = String.format(MarkdownConfig.IMAGE_RESULT, url);
+//            String old = "@" + String.format(MarkdownConfig.IMAGE_RESULT, id + "");
+//            content = content.replace(old, format);
+//
+//            // 处理图片列表
+//            ImageBean imageBean = new ImageBean();
+//            imageBean.setStorage_id(id);
+//            imageBean.setImgUrl(url);
+//            list.add(imageBean);
+//            AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
+//            animationRectBeanArrayList.add(rect);
+//        }
+
         // 不管有没有图哦，反正图文混排先隐藏了
         mMdvQuestionContent.setVisibility(GONE);
         dealContent(content, list);
@@ -151,8 +180,9 @@ public class QuestionDetailContent extends FrameLayout {
             mItemInfoImage.setVisibility(GONE);
             mTvQuestionContent.setText(content);
             // 此时如果正文不超过3排，那么，直接显示markdown内容就行了。
-            mTvQuestionContent.setVisibility(mTvQuestionContent.getLineCount() < 4 ? GONE : VISIBLE);
-            mMdvQuestionContent.setVisibility(mTvQuestionContent.getLineCount() < 4 ? VISIBLE : GONE);
+            int lineCount = mTvQuestionContent.getTextLineCount();
+            mTvQuestionContent.setVisibility(lineCount < 4 ? GONE : VISIBLE);
+            mMdvQuestionContent.setVisibility(lineCount < 4 ? VISIBLE : GONE);
         }
     }
 
@@ -186,7 +216,7 @@ public class QuestionDetailContent extends FrameLayout {
 
             @Override
             public void onImageTap(String s, int width, int height) {
-                LogUtils.d("Cathy", "onImageTap // " + s);
+                LogUtils.d("Cathy", "onImageTap // " + s + " width :" + width + " height : " + height);
                 int position = 0;
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getImgUrl().equals(s)) {

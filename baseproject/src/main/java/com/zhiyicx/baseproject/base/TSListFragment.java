@@ -49,6 +49,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener, OnLoadMoreListener, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_SIZE = 20; // 默认每页的数量
+    public static final int DEFAULT_PAGE_SIZE_X = 10; // 有的地方是10条哦
     public static final int DEFAULT_ONE_PAGE_SIZE = 15; // 一个页面显示的最大条数，用来判断是否显示加载更多
 
     public static final Long DEFAULT_PAGE_MAX_ID = 0L;// 默认初始化列表 id
@@ -572,7 +573,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onNetResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
+        hideRefreshState(isLoadMore);
         handleReceiveData(data, isLoadMore, false);
     }
 
@@ -584,7 +585,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onCacheResponseSuccess( List<T> data, boolean isLoadMore) {
-        handleRefreshState(isLoadMore);
+        hideRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             getNewDataFromNet();
         } else {
@@ -604,8 +605,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        hideRefreshState(isLoadMore);
         closeLoadingView();
-        handleRefreshState(isLoadMore);
         if (!isLoadMore && (mListDatas.size() == 0)) { // 刷新
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             mAdapter.notifyDataSetChanged();
@@ -682,7 +683,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      *
      * @param isLoadMore
      */
-    private void handleRefreshState(boolean isLoadMore) {
+    @Override
+    public void hideRefreshState(boolean isLoadMore) {
         if (isLoadMore) {
             mRefreshlayout.setLoadingMore(false);
         } else {

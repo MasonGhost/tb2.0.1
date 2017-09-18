@@ -48,10 +48,9 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
             return;
         }
         Subscription changePasswordSub = mRepository.changePasswordV2(oldPassword, newPassword)
-                .subscribe(new BaseSubscribeForV2<CacheBean>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
-                        mRootView.showMessage(mContext.getString(R.string.change_password_success));
+                    protected void onSuccess(Object data) {
                         mRootView.finsh();
                     }
 

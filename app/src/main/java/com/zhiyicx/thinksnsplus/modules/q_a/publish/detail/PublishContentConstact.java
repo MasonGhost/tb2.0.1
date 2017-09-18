@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
@@ -20,7 +21,7 @@ public interface PublishContentConstact {
     interface View extends IBaseView<Presenter> {
         void uploadPicSuccess(int id);
 
-        void publishSuccess(QAAnswerBean answerBean);
+        void publishSuccess(AnswerInfoBean answerBean);
 
         void updateSuccess();
 
@@ -29,6 +30,8 @@ public interface PublishContentConstact {
         void addImageViewAtIndex(String iamge,int iamge_id,String markdonw,boolean isLast);
 
         void addEditTextAtIndex(String text);
+
+        void onPareseBodyEnd(boolean hasContent);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -49,7 +52,7 @@ public interface PublishContentConstact {
     }
 
     interface Repository extends IBasePublishQuestionRepository {
-        Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity);
+        Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id,String body, int anonymity);
         Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id,String body, int anonymity);
         Observable<BaseJsonV2<Object>> updateQuestion(Long question_id,String body, int anonymity);
     }

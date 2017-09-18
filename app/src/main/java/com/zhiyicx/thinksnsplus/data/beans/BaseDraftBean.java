@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 
+import android.os.Parcel;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 /**
@@ -11,5 +13,22 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  */
 public class BaseDraftBean extends BaseListBean{
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    public BaseDraftBean() {
+    }
+
+    protected BaseDraftBean(Parcel in) {
+        super(in);
+    }
 
 }

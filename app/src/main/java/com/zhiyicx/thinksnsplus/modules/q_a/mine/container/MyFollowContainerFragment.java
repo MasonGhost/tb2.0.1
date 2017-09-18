@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.container;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -8,6 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
@@ -17,6 +19,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ClipPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
@@ -44,8 +47,6 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     private static final int DEFAULT_TAB_TEXTSIZE = com.zhiyicx.baseproject.R.integer
             .tab_text_size;
 
-    // 缺省的tab之间的空白间距
-    private static final int DEFAULT_TAB_MARGIN = com.zhiyicx.baseproject.R.integer.tab_margin;//
 
     // 缺省的tab的线和文字的边缘距离
     private static final int DEFAULT_TAB_PADDING = com.zhiyicx.baseproject.R.integer.tab_padding;
@@ -55,7 +56,7 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
 
     // 缺省的tab的线的高度
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
-            .no_line_height;
+            .line_height;
 
     public static final String TYPE_QUESTION = "type_question";
     public static final String TYPE_TOPIC = "type_topic";
@@ -63,10 +64,22 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     private List<Fragment> mFragments;
 
     @Override
-    public void setPresenter(Object presenter) {
-
+    protected boolean setUseSatusbar() {
+        return true;
     }
 
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+    @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+    @Override
+    protected int getOffsetPage() {
+        return 2;
+    }
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getResources().getStringArray(R.array.qa_mine_follow_title));
@@ -82,6 +95,7 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
         return mFragments;
     }
 
+
     @Override
     protected void initData() {
 
@@ -91,7 +105,10 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+//        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large),0,getResources().getDimensionPixelOffset(R.dimen.spacing_big_large),0);
+//        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setPadding(200,0,200,0);
     }
 
     @NonNull
@@ -135,6 +152,7 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
                         DEFAULT_TAB_LINE_COLOR));
                 return linePagerIndicator;
             }
+
         };
     }
 }

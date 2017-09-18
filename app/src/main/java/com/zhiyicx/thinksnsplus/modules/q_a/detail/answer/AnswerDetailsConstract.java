@@ -49,7 +49,7 @@ public interface AnswerDetailsConstract {
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
 
-        void updateAnswerHeader(AnswerInfoBean infoDetailBean);
+        void updateAnswerHeader(AnswerInfoBean infoDetailBean,boolean isLoadMore);
 
         void deleteAnswer();
 
@@ -70,7 +70,7 @@ public interface AnswerDetailsConstract {
 
         void reqReWardsData(int id);
 
-        void getAnswerDetail(long answer_id);
+        void getAnswerDetail(long answer_id,long max_id,boolean isLoadMore);
 
         void deleteAnswer();
 

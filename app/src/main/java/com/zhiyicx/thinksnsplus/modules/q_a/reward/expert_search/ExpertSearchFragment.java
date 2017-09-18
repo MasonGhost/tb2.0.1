@@ -24,10 +24,14 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_RESULT;
@@ -68,9 +72,13 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         return fragment;
     }
 
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+
     @Override
-    protected void initData() {
-        super.initData();
+    protected void initView(View rootView) {
         if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_BEAN)) {
             mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
             mTvRecommendHint.setVisibility(View.GONE);
@@ -83,6 +91,12 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
             mFragmentInfoSearchContainer.setVisibility(View.VISIBLE);
             mToolbarContainer.setVisibility(View.GONE);
         }
+        super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         initListener();
     }
 
@@ -98,9 +112,14 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                mPresenter.requestNetData(0, topic_ids, mFragmentInfoSearchEdittext.getText().toString(), false);
+                mTvRecommendHint.setVisibility(View.GONE);
+                mPresenter.requestNetData(0, null, mFragmentInfoSearchEdittext.getText().toString(), false);
             }
         });
+
+        RxTextView.textChanges(mFragmentInfoSearchEdittext)
+                .filter(charSequence -> charSequence.length() == 0)
+                .subscribe(charSequence -> mTvRecommendHint.setVisibility(View.VISIBLE));
     }
 
     @Override
@@ -122,13 +141,18 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<ExpertBean> data) {
+        return (long) mListDatas.size();
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_search_expert;
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter);
+        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter, mQaTopicBean != null);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

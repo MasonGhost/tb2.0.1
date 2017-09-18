@@ -35,7 +35,9 @@ import com.zhiyicx.common.utils.UIUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -66,7 +68,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
+    private Subscription mStatusbarSupport = null;// View 树监听订阅器
     private LoadingDialog mCenterLoadingDialog;
+    private TSnackbar mSnackBar;
 
     @Nullable
     @Override
@@ -183,7 +187,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackMessage(String message, final Prompt prompt) {
-        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+        if (mSnackBar != null) {
+            mSnackBar.dismiss();
+            mSnackBar = null;
+        }
+        mSnackBar = TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
                 .setPromptThemBackground(prompt)
                 .setCallback(new TSnackbar.Callback() {
                     @Override
@@ -191,12 +199,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                         super.onDismissed(TSnackbar, event);
                         switch (event) {
                             case DISMISS_EVENT_TIMEOUT:
-                                snackViewDismissWhenTimeOut(prompt);
+                                try {
+                                    snackViewDismissWhenTimeOut(prompt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 break;
                         }
                     }
-                })
-                .show();
+                });
+        mSnackBar.show();
     }
 
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
@@ -220,10 +232,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackLoadingMessage(String message) {
-        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
+        if (mSnackBar != null) {
+            mSnackBar.dismiss();
+            mSnackBar = null;
+        }
+        mSnackBar = TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
-                .addIconProgressLoading(0, true, false)
-                .show();
+                .addIconProgressLoading(0, true, false);
+
+        mSnackBar.show();
     }
 
     @Override
@@ -242,10 +259,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDismiss() {
         View view = getRightViewOfMusicWindow();
-        View view_test = getRightViewOfMusicWindowTwo();
         if (view != null && WindowUtils.getIsPause()) {
-            int rightX = ConvertUtils.dp2px(view.getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(view.getContext(), 15);
-            view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - rightX, view.getPaddingBottom());
+            // 很遗憾，我也不知道为什么，不用减去 rightX；
+            if (view.getTag() != null) {
+                int test = view.getPaddingLeft();
+                int right = (int) view.getTag();
+                view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - right, view.getPaddingBottom());
+                view.setTag(null);
+            }
+
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
@@ -446,24 +468,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 音乐悬浮窗是否正在显示
      */
-//    protected void musicWindowsStatus(boolean isShow) {
-//        final View view = getRightViewOfMusicWindow();
-//        if (view != null && isShow && !rightViewHadTranslated) {
-//            if (view.getVisibility() == View.VISIBLE) {
-//                // 向左移动一定距离
-//                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-//                view.setTranslationX(-rightX);
-//                rightViewHadTranslated = true;
-//            } else {
-//                view.setTranslationX(0);
-//                rightViewHadTranslated = false;
-//            }
-//        }
-//    }
     protected void musicWindowsStatus(final boolean isShow) {
         WindowUtils.changeToBlackIcon();
         final View view = getRightViewOfMusicWindow();
-        final View view_test = getRightViewOfMusicWindowTwo();
         if (getRightViewOfMusicWindow() != null) {
             mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
                     .subscribe(new Action1<Void>() {
@@ -473,6 +480,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                                    view.setTag(rightX);
                                     view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view.getPaddingBottom());
                                     rightViewHadTranslated = true;
                                 } else {
@@ -487,11 +495,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected View getRightViewOfMusicWindow() {
         return mToolbarRight;
     }
-
-    protected View getRightViewOfMusicWindowTwo() {
-        return null;
-    }
-
 
     protected boolean needCenterLoadingDialog() {
         return false;
@@ -732,5 +735,40 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     protected int getColor(int resId) {
         return getResources().getColor(resId);
+    }
+
+    protected void supportFlymeSutsusbar() {
+        mStatusbarSupport = Observable.timer(1500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            try {
+                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                });
+
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        if (mSnackBar != null) {
+            if (mSnackBar.isShown()) {
+                mSnackBar.dismiss();
+            }
+            mSnackBar = null;
+        }
+        if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
+            mStatusbarSupport.unsubscribe();
+        }
+        if (mViewTreeSubscription != null && !mViewTreeSubscription.isUnsubscribed()) {
+            mViewTreeSubscription.unsubscribe();
+        }
+        super.onDestroyView();
     }
 }
