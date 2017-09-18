@@ -507,6 +507,7 @@
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
     <string name="qa_question_answer_anonymity">匿</string>
     <string name="qa_question_answer_anonymity_user">匿名用户</string>
+    <string name="qa_question_answer_anonymity_current_user">(匿名)</string>
     <string name="qa_not_set_reward">未设置悬赏</string>
     <string name="qa_reward_public">公开悬赏</string>
     <string name="qa_reward_invited">已邀请悬赏</string>
