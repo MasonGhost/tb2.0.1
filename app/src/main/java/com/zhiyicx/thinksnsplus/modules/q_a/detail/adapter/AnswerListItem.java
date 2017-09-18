@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -7,7 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
@@ -17,6 +20,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -25,6 +29,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -71,7 +77,13 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
         TextView nameView = holder.getTextView(R.id.tv_name);
-        nameView.setText(answerInfoBean.getAnonymity() == 1 && !isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
+        if (answerInfoBean.getAnonymity() == 1){
+            nameView.setText(!isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
+                    : answerInfoBean.getUser().getName() + nameView.getContext().getString(R.string.qa_question_answer_anonymity_current_user));
+            ConvertUtils.stringLinkConvert(nameView, setLinks(nameView.getContext()));
+        } else {
+            nameView.setText(answerInfoBean.getUser().getName());
+        }
         // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
         holder.setVisible(R.id.tv_watcher_count, isOnlook && isInvited ? View.VISIBLE : View.GONE);
         if (isOnlook) {
@@ -183,5 +195,17 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     public interface OnGoToWatchClickListener {
         void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook);
+    }
+
+    private List<Link> setLinks(Context context) {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink = new Link(context.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(context, R.color
+                .normal_for_assist_text))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+        return links;
     }
 }
