@@ -219,13 +219,14 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
      */
     @Override
     public void bindPhoneOrEmail(String pasword, String surepassword, String phone, String email, String verifyCode, boolean isPhone) {
-        if (!pasword.equals(surepassword)) {
-            mRootView.showMessage(mContext.getString(R.string.password_diffrent));
-            return;
-        }
-        if (checkPasswordLength(pasword)) {
-            return;
-        }
+        // 现在绑定都不需要密码了
+//        if (!pasword.equals(surepassword)) {
+//            mRootView.showMessage(mContext.getString(R.string.password_diffrent));
+//            return;
+//        }
+//        if (checkPasswordLength(pasword)) {
+//            return;
+//        }
         if (isPhone && checkPhone(phone)) {
             return;
         }

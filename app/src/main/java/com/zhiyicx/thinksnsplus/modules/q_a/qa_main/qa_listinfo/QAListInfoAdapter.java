@@ -94,7 +94,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+            imageView.getLayoutParams().width = w;
+            imageView.getLayoutParams().height = h;
             String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
             try {
                 Glide.with(mContext).load(url)

@@ -28,7 +28,7 @@
         android:id="@+id/item_info_imag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/qa_info_iamge_height"
-        android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
 
