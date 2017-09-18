@@ -2,8 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.settings.init_password;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
 
 import javax.inject.Inject;
@@ -23,6 +27,8 @@ public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract
 
     @Inject
     ChangePasswordRepository mChangePasswordRepository;
+    @Inject
+    AuthRepository mAuthRepository;
 
     @Inject
     public InitPasswordPresenter(InitPasswordContract.Repository repository, InitPasswordContract.View rootView) {
@@ -51,19 +57,26 @@ public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract
                     @Override
                     protected void onSuccess(Object data) {
                         mRootView.initPasswordResult(true);
+                        // 更新状态
+                        UserInfoBean userInfoBean = mRootView.getCurrentUser();
+                        userInfoBean.setInitial_password(true);
+                        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+                        authBean.setUser(userInfoBean);
+                        AppApplication.getmCurrentLoginAuth().setUser(userInfoBean);
+                        mAuthRepository.saveAuthBean(authBean);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
                         mRootView.showMessage(message);
-                        mRootView.initPasswordResult(false);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                         mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
-                        mRootView.initPasswordResult(false);
                     }
                 });
         addSubscrebe(subscription);

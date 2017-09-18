@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings.init_password;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.base.BaseActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @author Catherine
@@ -14,11 +14,15 @@ public class InitPasswordActivity extends TSActivity<InitPasswordPresenter, Init
 
     @Override
     protected InitPasswordFragment getFragment() {
-        return null;
+        return new InitPasswordFragment().instance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerInitPasswordComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .initPasswordPresenterModule(new InitPasswordPresenterModule(mContanierFragment))
+                .build()
+                .inject(this);
     }
 }

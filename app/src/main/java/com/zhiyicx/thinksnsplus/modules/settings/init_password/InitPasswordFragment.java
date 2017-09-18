@@ -36,8 +36,8 @@ import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity
 
 public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presenter> implements InitPasswordContract.View {
 
-    @BindView(R.id.tv_pasword_tip)
-    TextView mTvPaswordTip;
+    @BindView(R.id.tv_error_tip)
+    TextView mTvErrorTip;
     @BindView(R.id.et_password)
     PasswordEditText mEtPassword;
     @BindView(R.id.ll_container_password)
@@ -56,15 +56,23 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
     private UserInfoBean mCurrentUser;
     private boolean mBindState;
 
+    public InitPasswordFragment instance(Bundle bundle){
+        InitPasswordFragment fragment = new InitPasswordFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected void initView(View rootView) {
-        mBtSure.setText(getString(R.string.sure));
+        mBtSure.setText(getString(R.string.next));
         initListener();
     }
 
     @Override
     protected void initData() {
-
+        mBindType = getArguments().getInt(BUNDLE_BIND_TYPE);
+        mCurrentUser = getArguments().getParcelable(BUNDLE_BIND_DATA);
+        mBindState = getArguments().getBoolean(BUNDLE_BIND_STATE);
     }
 
     @Override
@@ -78,8 +86,23 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    public void showMessage(String message) {
+        if (TextUtils.isEmpty(message)) {
+            mTvErrorTip.setVisibility(View.INVISIBLE);
+        } else {
+            mTvErrorTip.setVisibility(View.VISIBLE);
+            mTvErrorTip.setText(message);
+        }
+    }
+
+    @Override
     protected String setCenterTitle() {
-        return getString(R.string.next);
+        return getString(R.string.set_password);
     }
 
     private void initListener() {
@@ -168,5 +191,10 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
         } else {
             mBtSure.setEnabled(true);
         }
+    }
+
+    @Override
+    public UserInfoBean getCurrentUser() {
+        return mCurrentUser;
     }
 }
