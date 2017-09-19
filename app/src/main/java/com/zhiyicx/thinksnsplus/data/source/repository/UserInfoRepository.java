@@ -12,6 +12,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -40,6 +41,7 @@ import org.simple.eventbus.EventBus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 /**
@@ -63,6 +66,7 @@ import rx.schedulers.Schedulers;
 
 public class UserInfoRepository implements UserInfoContract.Repository {
     public static final int DEFAULT_MAX_USER_GET_NUM_ONCE = 50;
+    public static final int DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE = 100;
 
     private UserInfoClient mUserInfoClient;
 
@@ -122,7 +126,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<UserInfoBean>> getUserInfo(List<Object> user_ids) {
         ConvertUtils.removeDuplicate(user_ids); // 去重
         if (user_ids.size() > DEFAULT_MAX_USER_GET_NUM_ONCE) {
-            return Observable.zip(getUserBaseJsonObservable(user_ids.subList(0, DEFAULT_MAX_USER_GET_NUM_ONCE)), getUserBaseJsonObservable(user_ids.subList(DEFAULT_MAX_USER_GET_NUM_ONCE, user_ids.size())), (listBaseJson, listBaseJson2) -> {
+            return Observable.zip(getUserBaseJsonObservable(user_ids.subList(0, DEFAULT_MAX_USER_GET_NUM_ONCE)), getUserBaseJsonObservable(user_ids
+                    .subList(DEFAULT_MAX_USER_GET_NUM_ONCE, user_ids.size())), (listBaseJson, listBaseJson2) -> {
                 listBaseJson.addAll(listBaseJson2);
 
                 return listBaseJson;
@@ -137,11 +142,41 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         if (user_ids.isEmpty()) {
             return Observable.just(new ArrayList<>());
         }
-
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return getUserInfoByIds(userids);
+        // 添加默认删除用户的信息
+        return getUserInfoByIds(userids)
+                .observeOn(Schedulers.io())
+                .map(users -> {
+                    List<String> containerUsers = new ArrayList<>();
+                    for (Object user_id : user_ids) {
+                        try {
+                            containerUsers.add(String.valueOf(user_id));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    for (UserInfoBean user : users) {
+                        try {
+                            if (containerUsers.contains(String.valueOf(user.getUser_id()))) {
+                                containerUsers.remove(String.valueOf(user.getUser_id()));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    for (String user_id : containerUsers) {
+                        try {
+                            users.add(DefaultUserInfoConfig.getDefaultDeletUserInfo(mContext, Long.parseLong(user_id)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return users;
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -186,7 +221,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
         String currentUserId = String.valueOf(AppApplication.getMyUserIdWithdefault());
         UserInfoBean currentUserinfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
-        if (currentUserinfoBean != null) {
+        if (currentUserinfoBean != null) {//如果请求的数据中有当前登录的用户信息，直接拿取本地用户信息
             String[] users = user_ids.split(ConstantConfig.SPLIT_SMBOL);
             boolean hasCurrentUser = false;
             StringBuilder stringBuilder = new StringBuilder();
@@ -229,6 +264,14 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * @param user_ids Get multiple designated users, multiple IDs using , split.
+     * @param name     Used to retrieve users whose username contains name.
+     * @param since    The integer ID of the last User that you've seen.
+     * @param order    Sorting. Enum: asc, desc
+     * @param limit    List user limit, minimum 1 max 50.
+     * @return
+     */
     @Override
     public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
         return mUserInfoClient.searchUserinfoWithRecommend(limit, since, name)
@@ -276,7 +319,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, followFansBean.getUser_id()));
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, followFansBean.getUser_id
+                    ()));
             followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() + 1);
 
         } else {
@@ -286,7 +330,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, followFansBean.getUser_id()));
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, followFansBean
+                    .getUser_id()));
             if (followFansBean.getExtra().getFollowings_count() > 0)
                 followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() - 1);
 
@@ -383,7 +428,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 userinfo.setUser_id(0L);
                                                 commentedBean.setReplyUserInfo(userinfo);
                                             } else {
-                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user().intValue()));
+                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user()
+                                                        .intValue()));
                                             }
                                         }
                                         mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
@@ -433,7 +479,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
 
     /*******************************************  标签  *********************************************/
-
 
     @Override
     public Observable<List<UserTagBean>> getUserTags(long user_id) {
@@ -513,13 +558,30 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
-
-        if (phones.size() > 100) {
-            return Observable.zip(getListObservable(phones.subList(0, 100)), getListObservable(phones.subList(100, phones.size()))
-                    , (userInfoBeen, userInfoBeen2) -> {
-                        userInfoBeen.addAll(userInfoBeen2);
-                        return userInfoBeen;
-                    });
+        if (phones == null || phones.isEmpty()) {
+            return Observable.just(new ArrayList<>());
+        }
+        if (phones.size() > DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE) {
+            List<Observable<List<UserInfoBean>>> requests = new ArrayList<>();
+            int i = 0;
+            int end;
+            int size = phones.size();
+            while (i < size) {
+                if (i + DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE >= size) {
+                    end = size;
+                } else {
+                    end = i + DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE;
+                }
+                requests.add(getListObservable(phones.subList(i, end)));
+                i += DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE;
+            }
+            return Observable.zip(requests, args -> {
+                List<UserInfoBean> data = new ArrayList<>();
+                for (Object arg : args) {
+                    data.addAll((Collection<? extends UserInfoBean>) arg);
+                }
+                return data;
+            });
 
         } else {
             return getListObservable(phones);

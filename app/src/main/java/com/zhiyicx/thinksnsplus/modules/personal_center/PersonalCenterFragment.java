@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,6 +36,7 @@ import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -153,6 +155,47 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PersonalCenterRepository.MyDynamicTypeEnum mDynamicType = PersonalCenterRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
     // paid-付费动态 pinned - 置顶动态
 
+    /**
+     * 跳转到当前的个人中心页面
+     */
+    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        if (userInfoBean == null || userInfoBean.getUser_id() == null || context == null) {
+            return;
+        }
+        if (userInfoBean.getHas_deleted()) {
+            try {
+                if (context instanceof Activity) {
+                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string.user_had_deleted),
+                            TSnackbar.LENGTH_SHORT)
+                            .setPromptThemBackground(Prompt.WARNING)
+                            .show();
+                } else {
+                    ToastUtils.showToast(context, R.string.user_had_deleted);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
+        if (!TextUtils.isEmpty(tsHelperUrl)) {
+            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
+        } else {
+            Intent intent = new Intent(context, PersonalCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+    }
+
+    public static PersonalCenterFragment initFragment(Bundle bundle) {
+        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
+        personalCenterFragment.setArguments(bundle);
+        return personalCenterFragment;
+    }
 
     @Override
     protected int getstatusbarAndToolbarHeight() {
@@ -278,7 +321,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        if(!isLoadMore){
+        if (!isLoadMore) {
             refreshStart();
         }
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
@@ -666,25 +709,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mLlFollowContainer.setEnabled(true);
     }
 
-    /**
-     * 跳转到当前的个人中心页面
-     */
-    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
-        if (userInfoBean == null || userInfoBean.getUser_id() == null) {
-            return;
-        }
-        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (!TextUtils.isEmpty(tsHelperUrl)) {
-            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
-        } else {
-            Intent intent = new Intent(context, PersonalCenterActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        }
-
-    }
 
     /**
      * 设置底部 view 的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
@@ -696,11 +720,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mLlBottomContainer.setVisibility((authBean != null && authBean.getUser_id() == currentUserID) ? View.GONE : View.VISIBLE);
     }
 
-    public static PersonalCenterFragment initFragment(Bundle bundle) {
-        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
-        personalCenterFragment.setArguments(bundle);
-        return personalCenterFragment;
-    }
 
     private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
@@ -898,7 +917,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             data.add(emptyData);
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if(!isLoadMore){
+        if (!isLoadMore) {
             refreshEnd();
         }
     }
