@@ -182,6 +182,8 @@
     <string name="send_words_dynamic">文字</string>
     <string name="send_image_dynamic">图片</string>
     <string name="send_question">提问</string>
+    <string name="send_info">投稿</string>
+    <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>

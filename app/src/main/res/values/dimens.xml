@@ -62,6 +62,7 @@
     <dimen name="withdrawal_detail_width">60dp</dimen>
 
     <!--发布动态-->
+    <dimen name="send_dynamic_send_container">120dp</dimen>
     <dimen name="send_dynamic_send_button_img">65dp</dimen>
     <dimen name="send_dynamic_close_button_img">50dp</dimen>
 
