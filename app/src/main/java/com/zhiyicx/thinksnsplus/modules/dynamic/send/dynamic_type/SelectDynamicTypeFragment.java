@@ -55,6 +55,8 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     IconTextView mCheckIn;
     @BindView(R.id.send_image_dynamic)
     IconTextView mSendImageDynamic;
+    @BindView(R.id.send_words_question)
+    IconTextView mSendWordsQuestion;
     @BindView(R.id.im_close_dynamic)
     ImageView mImCloseDynamic;
     @BindView(R.id.select_dynamic_parent)
@@ -105,6 +107,10 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
             mCheckIn.setVisibility(View.GONE);
         }
 
+        Observable.timer(900, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> initAnimation(mSendWordsQuestion));
+
 
     }
 
@@ -138,7 +144,7 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         return R.layout.fragment_dynamic_type;
     }
 
-    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic})
+    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -170,6 +176,11 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 getActivity().finish();
                 getActivity().overridePendingTransition(0, R.anim.zoom_out);
                 break;
+
+            case R.id.send_words_question:
+                // 提问
+                break;
+            default:
         }
     }
 
