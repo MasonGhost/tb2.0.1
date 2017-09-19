@@ -190,6 +190,7 @@ dependencies {
     compile project(':tspay')
     compile project(':contacts')
     compile project(':appupdate')
+    compile project(':votesdk')
 
     // database
     compile dataDependences.greendao

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">zhibo</string>
+    <string name="cancel">取消</string>
+
+    <string name="create_poll">发起投票</string>
+    <string name="set_poll_opts">设置投票选项</string>
+    <string name="select_poll_duration">选择投票时长</string>
+    <string name="add_poll_opt">+ 添加选项</string>
+    <string name="poll">投票</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+
+    <EditText
+        android:id="@+id/item_poll_opt_et"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="25dp"
+        android:hint="选项内容，字数不超过10个"
+        android:textColorHint="@color/vote_pop_text_999999"
+        android:maxLength="10"
+        android:background="@drawable/vote_selector_pop_bg_option"
+        android:textColor="@color/vote_pop_text_999999"
+        android:textSize="@dimen/vote_pop_text_13sp" />
+    <TextView
+        android:paddingLeft="10dp"
+        android:id="@+id/item_poll_sort_tv"
+        android:layout_width="wrap_content"
+        android:text="A"
+        android:textColor="@color/vote_pop_text_ffffff"
+        android:layout_alignLeft="@id/item_poll_opt_et"
+        android:layout_alignBaseline="@id/item_poll_opt_et"
+        android:layout_height="wrap_content"
+    android:textSize="@dimen/vote_pop_text_13sp" />
+
+
+</RelativeLayout>

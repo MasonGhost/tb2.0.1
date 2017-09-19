@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.zhiyicx.votesdk.ui.view.VoteProgress
+        android:progressDrawable="@drawable/vote_shape_bg_progress_blue"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:id="@+id/item_pollresult_progress"
+        android:layout_width="120dp"
+        android:progress="20"
+        android:layout_height="15dp" />
+
+    <TextView
+        android:id="@+id/item_pollresult_count_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="20"
+        android:drawablePadding="3dp"
+        android:drawableLeft="@mipmap/vote_ico_goldcoins"
+        android:textColor="@color/vote_txt_glod_febf17"
+        android:textSize="@dimen/vote_text_9sp" />
+</LinearLayout>

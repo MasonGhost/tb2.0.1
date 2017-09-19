@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
+    defaultConfig {
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.google.dagger:dagger:2.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'com.android.support:support-annotations:22.0.0'
+    compile 'org.simple:androideventbus:1.0.5.1'
+    compile 'com.qiniu:happy-dns:0.2.+'
+    compile 'com.qiniu.pili:pili-android-qos:0.8.+'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile project(':imsdk')
+}
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+
+
+}
+task jarMyLib(type: Jar, dependsOn: ['build']) {
+    archiveName = 'zhibosdk1.1.2-beta-nop.jar'
+    from('build/intermediates/classes/release')
+    from(project.zipTree("libs/imsdk1.1.5-beta.jar")) // 添加这一行
+
+    from(project.zipTree("libs/pldroid-media-streaming-2.0.4.jar")) // 添加这一行
+
+    from(project.zipTree("libs/pldroid-player-1.3.0.jar")) // 添加这一行
+
+    destinationDir = file('build/libs')
+    exclude('com/zhiyicx/imsdk/BuildConfig.class')
+    exclude('com/zhiyicx/imsdk/BuildConfig\$*.class')
+    exclude('**/R.class')
+    exclude('**/R\$*.class')
+//    include('com/nought/hellolib/*.class')
+//    include('com/xxx/*.class') // 同时记得加上第三方的package
+}
+def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
+def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
+
+task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) {
+    injars('build/libs/zhibosdk1.1.2-beta-nop.jar')
+    outjars('build/libs/zhibosdk1.1.2-beta.jar')
+    libraryjars(androidJarDir)
+    configuration 'proguard-rules.pro'
+}

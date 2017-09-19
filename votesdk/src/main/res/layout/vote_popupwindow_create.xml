@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?><!--发起投票的弹窗-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/vote_pop_bg_000000"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/create_poll"
+            android:textColor="@color/vote_pop_title_ffffff"
+            android:textSize="@dimen/vote_pop_title_16sp" />
+
+        <TextView
+            android:id="@+id/poll_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20px"
+            android:text="@string/cancel"
+            android:textColor="@color/vote_pop_text_999999"
+            android:textSize="@dimen/vote_pop_cancel_14sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#3c3c3c" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/select_poll_duration"
+                android:textColor="@color/vote_pop_text_999999"
+                android:textSize="@dimen/vote_pop_next_14sp" />
+
+            <RadioGroup
+                android:id="@+id/rg_poll_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_poll_duration1"
+                    style="@style/style_poll_radiobutton"
+                    android:layout_marginRight="10dp"
+                    android:text="15min" />
+
+                <RadioButton
+                    android:id="@+id/rb_poll_duration2"
+                    style="@style/style_poll_radiobutton"
+                    android:layout_marginRight="10dp"
+                    android:text="20min" />
+
+                <RadioButton
+                    android:id="@+id/rb_poll_duration3"
+                    style="@style/style_poll_radiobutton"
+                    android:layout_marginRight="10dp"
+                    android:text="20min" />
+
+                <RadioButton
+                    android:id="@+id/rb_poll_duration4"
+                    style="@style/style_poll_radiobutton"
+                    android:layout_marginRight="10dp"
+                    android:text="20min" />
+
+                <RadioButton
+                    android:id="@+id/rb_poll_duration5"
+                    style="@style/style_poll_radiobutton"
+                    android:text="20min" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/set_poll_opts"
+                android:textColor="@color/vote_pop_text_999999"
+                android:textSize="@dimen/vote_pop_text_13sp" />
+
+            <LinearLayout
+                android:id="@+id/poll_opt_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.zhiyicx.votesdk.ui.view.VoteOptEdt
+                    android:id="@+id/ve_poll_opt1"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"></com.zhiyicx.votesdk.ui.view.VoteOptEdt>
+
+                <com.zhiyicx.votesdk.ui.view.VoteOptEdt
+                    android:id="@+id/ve_poll_opt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"></com.zhiyicx.votesdk.ui.view.VoteOptEdt>
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_poll_add_opt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/vote_shape_bg_3c3c3c"
+                android:gravity="center"
+                android:text="@string/add_poll_opt"
+                android:textColor="@color/vote_pop_text_999999"
+                android:textSize="@dimen/vote_pop_text_13sp" />
+
+            <Button
+                android:id="@+id/btn_poll_create_summit"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/vote_shape_btn_unable_gray"
+                android:gravity="center"
+                android:text="@string/create_poll"
+                android:textColor="@color/vote_pop_text_ffffff"
+                android:textSize="@dimen/vote_pop_text_13sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

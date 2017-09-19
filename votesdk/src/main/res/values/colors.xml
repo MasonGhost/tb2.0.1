@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="vote_pop_title_ffffff">#ffffff</color>
+    <color name="vote_pop_text_ffffff">#ffffff</color>
+    <color name="vote_text_ffffff">#ffffff</color>
+    <color name="vote_pop_text_999999">#999999</color>
+    <color name="vote_pop_text_blue">#59b6d7</color>
+    <color name="vote_pop_bg_000000">#000000</color>
+    <color name="vote_bg_60_000000">#60000000</color>
+    <color name="vote_pop_btn_stoke_3c3c3c">#3c3c3c</color>
+<color name="vote_txt_glod_febf17">#febf17</color>
+
+</resources>

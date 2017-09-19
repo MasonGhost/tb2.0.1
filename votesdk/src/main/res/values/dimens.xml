@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="vote_pop_title_16sp">16sp</dimen>
+    <dimen name="vote_pop_cancel_14sp">14sp</dimen>
+    <dimen name="vote_pop_next_14sp">14sp</dimen>
+    <dimen name="vote_pop_text_13sp">13sp</dimen>
+    <dimen name="vote_text_9sp">9sp</dimen>
+    <dimen name="vote_text_10sp">10sp</dimen>
+
+
+    <dimen name="vote_bg_stoke_0.5dp">0.5dp</dimen>
+
+
+
+    <dimen name="radious_3dp">3dp</dimen>
+    <dimen name="radious_5dp">5dp</dimen>
+
+</resources>

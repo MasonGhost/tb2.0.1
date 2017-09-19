@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha="0.9"
+    android:background="@color/vote_pop_bg_000000"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/poll"
+            android:textColor="@color/vote_pop_title_ffffff"
+            android:textSize="@dimen/vote_pop_title_16sp" />
+
+        <TextView
+            android:id="@+id/do_poll_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="@string/cancel"
+            android:textColor="@color/vote_pop_text_999999"
+            android:textSize="@dimen/vote_pop_cancel_14sp" />
+    </RelativeLayout>
+
+    <View android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#3c3c3c"/>
+
+    <LinearLayout
+        android:id="@+id/do_poll_opt_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/do_poll_opt1"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/vote_selector_pop_bg_time"
+            android:gravity="center"
+            android:text="选A"
+            android:textColor="@color/vote_pop_text_ffffff"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/do_poll_opt2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/vote_selector_pop_bg_option"
+            android:gravity="center"
+            android:text="选B"
+            android:textColor="@color/vote_pop_text_ffffff"
+            android:textSize="@dimen/vote_pop_text_13sp" />
+
+
+    </LinearLayout>
+</LinearLayout>
