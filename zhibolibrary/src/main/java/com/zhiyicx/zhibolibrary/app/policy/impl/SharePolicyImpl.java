@@ -13,7 +13,6 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
-import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.tencent.qzone.QZone;
 import cn.sharesdk.wechat.friends.Wechat;
@@ -128,29 +127,29 @@ public class SharePolicyImpl implements SharePolicy {
     @Override
     public void shareWeibo() {
         if (checkShareContent()) return;
-        SinaWeibo.ShareParams sp = new SinaWeibo.ShareParams();
-        sp.setText(mShareContent.getContent() + "  " + mShareContent.getUrl());
-        sp.setImageUrl(mShareContent.getImage());
-
-        Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
-        weibo.setPlatformActionListener(new PlatformActionListener() {
-            @Override
-            public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-
-            }
-
-            @Override
-            public void onError(Platform platform, int i, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onCancel(Platform platform, int i) {
-
-            }
-        }); // 设置分享事件回调
-// 执行图文分享
-        weibo.share(sp);
+//        SinaWeibo.ShareParams sp = new SinaWeibo.ShareParams();
+//        sp.setText(mShareContent.getContent() + "  " + mShareContent.getUrl());
+//        sp.setImageUrl(mShareContent.getImage());
+//
+//        Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
+//        weibo.setPlatformActionListener(new PlatformActionListener() {
+//            @Override
+//            public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+//
+//            }
+//
+//            @Override
+//            public void onError(Platform platform, int i, Throwable throwable) {
+//                throwable.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onCancel(Platform platform, int i) {
+//
+//            }
+//        }); // 设置分享事件回调
+//// 执行图文分享
+//        weibo.share(sp);
     }
 
     /**

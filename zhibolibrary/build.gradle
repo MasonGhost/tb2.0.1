@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.neenbedankt.android-apt'
+
 
 android {
     def gConfig = rootProject.extensions.getByName("ext")
@@ -38,12 +37,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
-
-    }
 }
 repositories {
     flatDir {
@@ -89,7 +83,7 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.google.dagger:dagger:2.0.2'
-    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0.2'
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'org.simple:androideventbus:1.0.5.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'

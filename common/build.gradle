@@ -133,4 +133,6 @@ dependencies {
 
     // font
     compile dataDependences.calligraphyFont
+    compile project(':zhibolibrary')
+
 }

@@ -14,6 +14,7 @@ import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 
 import java.util.Set;
 
@@ -32,7 +33,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends ZhiboApplication {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;
