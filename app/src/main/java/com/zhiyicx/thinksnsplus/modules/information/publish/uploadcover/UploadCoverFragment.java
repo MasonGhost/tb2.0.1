@@ -242,7 +242,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                         .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean
                         .getAmout())))
                 .buildLinksStr(getString(R.string.buy_pay_member))
-                .buildTitleStr(getString(R.string.buy_pay))
+                .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
