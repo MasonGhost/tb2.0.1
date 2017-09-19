@@ -218,6 +218,18 @@
                     app:leftText="@string/group_mine"
                     android:visibility="visible"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--我的直播-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_my_live"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:layout_marginTop="@dimen/divider_line"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/discover_ico_zhibo"
+                app:leftText="@string/mine_live"
+                android:visibility="visible"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
             <!--排行榜-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton

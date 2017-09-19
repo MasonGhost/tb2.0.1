@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       android:gravity="right"
+                                       android:paddingBottom="5px"
+                                       android:paddingTop="5px">
+
+    <com.zhy.autolayout.AutoFrameLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20px"
+        >
+
+        <ImageView
+            android:id="@+id/iv_live_chat_icon"
+            android:layout_width="50px"
+            android:layout_height="50px"
+
+            android:src="@mipmap/pic_touxiang_150"
+            />
+
+        <ImageView
+            android:id="@+id/iv_ietm_verified"
+            android:layout_width="15px"
+            android:layout_height="15px"
+            android:layout_marginLeft="35px"
+            android:layout_marginTop="35px"
+            android:background="@mipmap/ico_certified_02"
+            />
+    </com.zhy.autolayout.AutoFrameLayout>
+
+
+    <TextView
+
+        android:id="@+id/tv_live_chat_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_live_chat_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70px"
+        android:background="@drawable/chat_bg"
+        android:maxWidth="400px"
+        android:text="45456156"
+        android:textSize="@dimen/font_smart"/>
+
+
+</com.zhy.autolayout.AutoRelativeLayout>

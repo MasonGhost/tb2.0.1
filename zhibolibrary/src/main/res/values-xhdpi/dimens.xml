@@ -1,0 +1,5 @@
+<resources>
+<dimen name="publish_core_chat_height">260px</dimen>
+    <dimen name="follow_button_with">126px</dimen>
+    <dimen name="follow_button_height">56px</dimen>
+</resources>

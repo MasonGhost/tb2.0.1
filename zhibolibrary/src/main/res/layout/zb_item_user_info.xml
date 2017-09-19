@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="wrap_content"
+                                     xmlns:tool="http://schemas.android.com/tools"
+                                     android:gravity="center_vertical"
+                                     android:orientation="vertical">
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        tool:background="@color/color_red_light"
+        android:layout_height="100px"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv1_user_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            tool:src="@mipmap/ico_fans"
+            android:layout_marginLeft="30px" />
+
+        <TextView
+            android:id="@+id/tv1_user_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30px"
+            android:layout_toRightOf="@id/iv1_user_item"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            tool:text="nihao"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/iv2_user_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            tool:src="@mipmap/ic_arrow_smallgrey"
+            android:layout_marginRight="25px"
+            />
+
+        <TextView
+            android:id="@+id/tv2_user_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv2_user_item"
+            android:ellipsize="end"
+            android:gravity="center_vertical|right"
+            tool:text="nihao"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:layout_marginLeft="200px"
+            android:layout_marginRight="10px"
+            android:textColor="@color/color_blue_gray"
+            android:textSize="14sp" />
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_uav_divider"
+        style="@style/divider_style_horizontal"
+        />
+
+</com.zhy.autolayout.AutoLinearLayout>

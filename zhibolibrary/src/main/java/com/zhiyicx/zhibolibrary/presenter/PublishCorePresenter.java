@@ -1,0 +1,778 @@
+package com.zhiyicx.zhibolibrary.presenter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.zhibolibrary.R;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
+import com.zhiyicx.zhibolibrary.di.ActivityScope;
+import com.zhiyicx.zhibolibrary.model.PublishCoreModel;
+import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
+import com.zhiyicx.zhibolibrary.model.entity.ApiList;
+import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
+import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
+import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
+import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
+import com.zhiyicx.zhibolibrary.model.entity.UserMessage;
+import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
+import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.components.sweetsheet.entity.MenuEntity;
+import com.zhiyicx.zhibolibrary.ui.holder.LiveChatTextListHolder;
+import com.zhiyicx.zhibolibrary.ui.view.PublishCoreView;
+import com.zhiyicx.zhibolibrary.util.SensitivewordFilter;
+import com.zhiyicx.zhibolibrary.util.UiUtils;
+import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
+import com.zhiyicx.zhibosdk.manage.ZBPlayClient;
+import com.zhiyicx.zhibosdk.manage.ZBStreamingClient;
+import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
+import com.zhiyicx.zhibosdk.manage.listener.OnIMMessageTimeOutListener;
+import com.zhiyicx.zhibosdk.manage.listener.OnImListener;
+import com.zhiyicx.zhibosdk.manage.listener.OnImStatusListener;
+import com.zhiyicx.zhibosdk.model.entity.ZBGift;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
+/**
+ * Created by jess on 16/5/11.
+ */
+public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener, OnIMMessageTimeOutListener {
+    private Subscription mSubscription;
+    private Subscription mVoteSenderSubscirption;
+    private Subscription mGiftRank;
+    private Subscription mUserInfoSubscription;
+    private Subscription mExchangeSubscription;
+    private Subscription mUserinfoSubscription;
+    private Subscription mOrderSubscription;
+    private Subscription mRecomListSubscription;
+    private SharePolicy mSharePolicy;
+    private String mTokenGift = "";
+    private String mTokenZan = "";
+    private BaseJson<SearchResult[]> mApiList;//礼物排行榜数据
+    private boolean isJoinedChatRoom = true;//主播是否进入聊天室
+    private SearchResult[] mRecommendDatas;//推荐直播数据
+
+
+    @Inject
+    @ActivityScope
+    public PublishCorePresenter(PublishCoreModel model, PublishCoreView rootView
+            , SharePolicy sharePolicy) {
+        super(model, rootView);
+        this.mSharePolicy = sharePolicy;
+        setIMListioner();
+        initSensitiveWordFilter();
+    }
+
+    /**
+     * 不同端设置不同的IM消息监听
+     */
+    private void setIMListioner() {
+        if (mRootView.isPresenter()) {
+            ZBStreamingClient.getInstance().setOnImListener(this);
+            ZBStreamingClient.getInstance().setOnImStatusListener(this);
+            ZBStreamingClient.getInstance().setOnIMMessageTimeOutListener(this);
+        }
+        else {
+            ZBPlayClient.getInstance().setOnImListener(this);
+            ZBPlayClient.getInstance().setOnImStatusListener(this);
+            ZBPlayClient.getInstance().setOnIMMessageTimeOutListener(this);
+        }
+    }
+
+    /**
+     * 初始化敏感词过滤
+     */
+    private void initSensitiveWordFilter() {
+        if (ZBLApi.sZBApiConfig == null || ZBLApi.sZBApiConfig.filter_word_conf == null) {
+            mRootView.showMessage("str_zhibosdk_error");
+            return;
+        }
+
+        if (ZhiboApplication.filter == null)
+            ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+    }
+
+    /**
+     * 当前主播的uid
+     *
+     * @param uid
+     */
+    public void getRecomList(final String uid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("stream_uid", uid);
+
+        mRecomListSubscription = ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_GET_RECOMME_LIVE_LIST, map)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<JsonObject, ApiList>() {
+                    @Override
+                    public ApiList call(JsonObject jsonObject) {
+                        return new Gson().fromJson(jsonObject, ApiList.class);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ApiList>() {
+                    @Override
+                    public void call(ApiList apiList) {
+                        if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                            try {
+                                lauchEnd(apiList.data, uid, mRootView.getChatRoomDataCount().getReviewCount());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+                            }
+                        }
+                        else {
+                            mRootView.showMessage(apiList.message);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        try {
+                            lauchEnd(new SearchResult[]{}, uid, mRootView.getChatRoomDataCount().getReviewCount());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+                    }
+                });
+    }
+
+
+    /**
+     * 获取赠送排行榜数据
+     *
+     * @param isMore
+     * @param mPage
+     * @param usid
+     */
+    public void getList(final boolean isMore, int mPage, String usid) {
+        mGiftRank = mModel.getGiftRank(
+                usid + "", mPage).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (!isMore) {
+                        }
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        if (!isMore) {
+
+                        }
+                    }
+                })
+                .subscribe(new Action1<BaseJson<SearchResult[]>>() {
+                    @Override
+                    public void call(BaseJson<SearchResult[]> apiList) {
+                        getUserInfoFroRankList(apiList, isMore);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+                        if (!isMore) {//隐藏loading
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 获取礼物排行榜的用户信息
+     *
+     * @param apiList
+     * @param isMore
+     */
+    private void getUserInfoFroRankList(BaseJson<SearchResult[]> apiList, final boolean isMore) {
+        if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
+            mApiList = apiList;
+            /**
+             * 通过usid获取用户信息
+             */
+            String usid = "";
+            for (SearchResult searchResult : mApiList.data) {
+                usid += searchResult.user.usid + ",";
+            }
+
+            if (usid.length() > 0)
+                usid = usid.substring(0, usid.length() - 1);
+            if (usid.length() > 0) {
+                mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                    @Override
+                    public void call(BaseJson<UserInfo[]> baseJson) {
+
+
+                        for (int i = 0; i < baseJson.data.length; i++) {
+                            baseJson.data[i].gold = mApiList.data[i].user.gold;
+                            mApiList.data[i].user = baseJson.data[i];
+                        }
+
+                        mRootView.giftRankrefresh(mApiList, isMore);//刷新数据
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+            }
+
+
+        }
+        else {
+            mRootView.showMessage(apiList.message);
+        }
+    }
+
+    /**
+     * 通过uid获取用户信息
+     *
+     * @param user_id
+     */
+    public void getUserInfo(String user_id) {
+        mUserInfoSubscription = mModel.getUserInfo(user_id, null, ZhiboApplication.userInfo.auth_accesskey
+                , ZhiboApplication.userInfo.auth_secretkey
+        ).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.setClickable(false, 0);
+                        mRootView.showLoading();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.setClickable(true, 0);
+                        mRootView.hideLoading();
+                    }
+                })
+                .subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                    @Override
+                    public void call(BaseJson<UserInfo[]> apiList) {
+                        if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                            if (apiList.data.length > 0)
+                                mRootView.updatePresenterInfo(apiList.data[0]);
+                        }
+                        else {
+                            mRootView.showMessage(apiList.message);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+
+                    }
+                });
+
+
+    }
+
+    /**
+     * 增加一条直播规则
+     */
+    public void initZhiboRules() {
+        if (ZBLApi.sZBApiConfig.stream_notice != null && ZBLApi.sZBApiConfig.stream_notice.size() > 0)
+            sendTipmsg(ZBLApi.sZBApiConfig.stream_notice.get(0).text);
+        else
+            sendTipmsg(UiUtils.getString(R.string.str_chat_rule));
+
+    }
+
+    /**
+     * 增加一条直播规则，增加主播提示语
+     */
+    public void initPresenterWelcomes(UserInfo presenter) {
+//        if (!mRootView.isPresenter()) { // 主播自己也欢迎自己
+        UserMessage welcomesMsg = new UserMessage(presenter, new Message());
+        welcomesMsg.msg.type = MessageType.MESSAGE_TYPE_TEXT;
+        welcomesMsg.msg.txt = UiUtils.getString("str_zhibo_chat_welcomes");
+        mRootView.addChat(welcomesMsg);
+//        }
+    }
+
+
+    /**
+     * 公告信息
+     *
+     * @param text
+     */
+    public void sendTipmsg(String text) {
+        UserMessage usermesage = new UserMessage(new UserInfo(), new Message());
+        usermesage.msg.type = MessageType.MESSAGE_TYPE_TIP;
+        usermesage.msg.txt = text;
+        mRootView.addChat(usermesage);
+
+    }
+
+    /**
+     * 发送信息
+     *
+     * @param text
+     */
+    public void sendTextmsg(String text) {
+        if (ZhiboApplication.filter != null)
+            text = ZhiboApplication.filter.replaceSensitiveWord(text, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf.filter_word_replace);
+        else {
+            ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+            mRootView.showMessage(UiUtils.getString("str_network_error_action"));
+            return;
+        }
+        if (mRootView.isPresenter())
+            mModel.sendTextMsg(text, true);
+        else
+            mModel.sendTextMsg(text, false);
+
+    }
+
+    /**
+     * 送礼物
+     *
+     * @param gift
+     */
+    public void sendGiftMessage(Map gift, String gift_code, String count, final OnCommonCallbackListener l) {
+
+        mModel.sendGiftMessage(gift, gift_code, count, l);
+    }
+
+    /**
+     * 关注
+     */
+    public void sendAttention() {
+
+        mModel.sendAttention();
+    }
+
+    /**
+     * 送zan
+     *
+     * @param type
+     */
+    public void sendZan(int type) {
+        System.out.println("------------send  zan------- = " + type);
+        mModel.sendZan(type);
+    }
+
+
+    /**
+     * 通过usid获取用户信息
+     *
+     * @param message
+     * @param field
+     */
+    public void getLocalUserInfo(final Message message, String field) {
+        if (message == null || message.ext == null || ZhiboApplication.userInfo == null) return;
+        mSubscription = mModel.getUssidInfo(message.ext.ZBUSID, field, ZhiboApplication.userInfo.auth_accesskey
+                , ZhiboApplication.userInfo.auth_secretkey
+        ).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+                .subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                    @Override
+                    public void call(BaseJson<UserInfo[]> users) {
+                        if (users.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                            mRootView.saveAndAddChat(users, message);
+                        }
+                        else {
+                            mRootView.showMessage(users.message);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+
+                    }
+                });
+
+    }
+
+    /**
+     * 主播设置禁言
+     *
+     * @param usid
+     * @param time
+     */
+    public void imDisable(String usid, int time) {
+        ZBStreamingClient.getInstance().imDisable(usid, time, new OnCommonCallbackListener() {
+            @Override
+            public void onSuccess() {
+                mRootView.showMessage(UiUtils.getString("str_banned_success"));
+                mRootView.dimissImDisablePop();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                throwable.printStackTrace();
+                mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+            }
+
+            @Override
+            public void onFail(String code, String message) {
+                mRootView.showMessage(message);
+            }
+        });
+
+
+    }
+
+
+    /**
+     * 禁言
+     *
+     * @param gag
+     */
+    private void disableSendMsg(long gag) {
+        if (gag == 0) {//永久
+            mRootView.disableSendMsgEver();
+        }
+        else if (gag > 0) {//时段
+            mRootView.disableSendMsgSomeTime(gag);
+
+        }
+    }
+
+
+    @Subscriber(tag = LiveChatTextListHolder.EVENT_HEADPIC_CLICK, mode = ThreadMode.MAIN)
+    public void handleHeadpicClickEvent(int position) {
+        mRootView.getClickPresenterInfo(position);
+    }
+
+    private void updateUserCount(UserInfo data) {
+        ZhiboApplication.userInfo.gold = data.gold;
+        ZhiboApplication.userInfo.follow_count = data.follow_count;
+        ZhiboApplication.userInfo.fans_count = data.fans_count;
+        ZhiboApplication.userInfo.zan_count = data.zan_count;
+        mRootView.updatedGold();//刷新金币信息
+    }
+
+
+    /**
+     * 跳转到结束页面
+     *
+     * @param datas
+     * @param uid
+     * @param viewcount 观看次数
+     */
+    private void lauchEnd(SearchResult[] datas, final String uid, final int viewcount) throws Exception {
+
+        mRecommendDatas = datas;
+            /**
+             * 通过usid获取用户信息
+             */
+            String usid = "";
+            for (SearchResult searchResult : datas) {
+                usid += searchResult.user.usid + ",";
+            }
+            if (usid.length() > 0)
+                usid = usid.substring(0, usid.length() - 1);
+            if (usid.length() > 0) {
+                mUserinfoSubscription = mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                            @Override
+                            public void call(BaseJson<UserInfo[]> baseJson) {
+                                for (int i = 0; i < baseJson.data.length; i++) {
+                                    mRecommendDatas[i].user = baseJson.data[i];
+                                }
+                                doEnd(mRecommendDatas, uid, viewcount);
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                doEnd(new SearchResult[]{}, uid, viewcount);
+                            }
+                        });
+            }
+            else
+                doEnd(mRecommendDatas, uid, viewcount);
+    }
+
+    private void doEnd(SearchResult[] datas, String uid, int viewcount) {
+        Intent intent = new Intent(UiUtils.getContext(), EndStreamingActivity.class);
+        intent.putExtra("isAudience", true);//是否为观众
+        intent.putExtra("userId", uid);//uid用于关注用户
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("info", new ApiList(datas));
+        bundle.putSerializable("presenter", mRootView.getPresenterInfo());
+        bundle.putInt("view_count", viewcount);
+        intent.putExtras(bundle);
+        mRootView.launchActivity(intent);
+        mRootView.killMyself();
+    }
+
+    /**
+     * 分享
+     */
+    public void showshare(UserInfo presenterUser, Context context) {
+        mSharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(presenterUser));
+        mSharePolicy.showShare();
+    }
+
+    /**
+     * 礼物配置
+     *
+     * @param context
+     * @return
+     */
+    public List<MenuEntity> getGiftPic(Context context) {
+        ArrayList<MenuEntity> list = new ArrayList<>();
+        List<ZBGift> gifts = ZBLApi.sZBApiConfig.gift_list;
+        for (int i = 0; i < gifts.size(); i++) {
+            list.add(new MenuEntity(gifts.get(i).image, gifts.get(i).name, null, gifts.get(i).gold, gifts.get(i).gift_code));
+            mRootView.saveGiftConfigCach(gifts.get(i));
+        }
+        return list;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unSubscribe(mSubscription);
+        unSubscribe(mGiftRank);
+        unSubscribe(mUserInfoSubscription);
+        unSubscribe(mExchangeSubscription);
+        unSubscribe(mOrderSubscription);
+        unSubscribe(mRecomListSubscription);
+        unSubscribe(mVoteSenderSubscirption);
+        unSubscribe(mUserinfoSubscription);
+
+    }
+
+    /**
+     * 禁言消息
+     *
+     * @param gag
+     */
+    @Override
+    public void onBanned(long gag) {
+        disableSendMsg(gag);
+        mRootView.setbanneded(true, gag);
+
+    }
+
+    /**
+     * 收到消息
+     *
+     * @param message
+     */
+    @Override
+    public void onMessageReceived(Message message) {
+        Log.v("taglei", "onMessageReceived" + message.type);
+        mRootView.handleMessage(message);
+        switch (message.type) {
+            //文本消息
+            case MessageType.MESSAGE_TYPE_TEXT:
+
+                if (!TextUtils.isEmpty(message.txt)) {
+                    mRootView.recievedTextMessage(message);
+                }
+                break;
+            case MessageType.MESSAGE_TYPE_CUSTOM_ENAABLE:
+                if (null != message.ext.custom) {
+                    mRootView.receivedVoteMessage(message);
+                }
+                break;
+            case MessageType.MESSAGE_TYPE_CUSTOM_DISABLE:
+
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /**
+     * 收到礼物消息
+     *
+     * @param message
+     */
+    @Override
+    public void onGiftReceived(Message message) {
+        mRootView.recievedGiftMessage(message);
+    }
+
+    /**
+     * 收到赞消息
+     *
+     * @param message
+     */
+    @Override
+    public void onZanReceived(Message message) {
+
+        mRootView.recievedZanMessage(message);
+    }
+
+    /**
+     * 收到关注消息
+     *
+     * @param message
+     */
+    @Override
+    public void onAttentionMessageReceived(Message message) {
+        mRootView.recievedFllowMessage(message);
+    }
+
+    /**
+     * 收到有人进入房间广播消息
+     *
+     * @param usid
+     */
+    @Override
+    public void onSomeBodyJoinMessageReceived(String usid) {
+
+    }
+
+    /**
+     * 收到有人离开广播消息
+     *
+     * @param usid
+     */
+    @Override
+    public void onSomeBodyLeaveMessageReceived(String usid) {
+
+    }
+
+    /**
+     * 收到房间信息统计消息
+     *
+     * @param chatRoomDataCount
+     */
+    @Override
+    public void onChatRoomDataCountReceived(ChatRoomDataCount chatRoomDataCount) {
+        mRootView.getChatroomMc(chatRoomDataCount);
+    }
+
+    /**
+     * 发送消息回执
+     *
+     * @param message
+     */
+    @Override
+    public void onMessageACK(Message message) {
+        System.out.println("---------message = " + message.toString());
+        if (message.type == MessageType.MESSAGE_TYPE_TEXT)
+            mRootView.addSelfChat(true, message);
+
+
+    }
+
+    /**
+     * 主播结束直播消息
+     *
+     * @param cid
+     */
+    @Override
+    public void onConvrEnd(int cid) {
+        mRootView.convrEnd(cid);
+    }
+
+    @Override
+    public void onSystemMessageReceived(String message) {
+        sendTipmsg(message);
+    }
+
+    @Override
+    public void onJoinRoomSuccessed() {
+    }
+
+
+    /**
+     * 发送消息超时
+     *
+     * @param message
+     */
+    @Override
+    public void onMessageTimeout(Message message) {
+        mRootView.receivedTimeOutMessage(message);
+        if (message.type == MessageType.MESSAGE_TYPE_TEXT)
+            sendTipmsg("\"" + message.txt + "\"" + UiUtils.getString("str_im_send_text_timeout"));
+    }
+
+    /**
+     * IM连接成功消息
+     */
+    @Override
+    public void onConnected() {
+        isJoinedChatRoom = true;
+        sendTipmsg(UiUtils.getString("str_im_reconnect_successe_tip"));
+    }
+
+    /**
+     * IM断开消息
+     *
+     * @param code
+     * @param reason
+     */
+    @Override
+    public void onDisconnect(int code, String reason) {
+        isJoinedChatRoom = false;
+        sendTipmsg(UiUtils.getString("str_im_reconnect_tip"));
+    }
+
+
+    /**
+     * 更新本地金币数量（送出礼物后）
+     *
+     * @param decrice
+     */
+    public void refreshGoldCountReduce(int decrice) {
+        UserInfo info = ZhiboApplication.getUserInfo();
+        info.gold -= decrice;
+        ZhiboApplication.setUserInfo(info);
+    }
+
+    public boolean isJoinedChatRoom() {
+        return isJoinedChatRoom;
+    }
+}

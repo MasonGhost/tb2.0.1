@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="232px"
+        android:layout_height="114px"
+        android:background="@drawable/shape_pop_corner"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="150px"
+        >
+
+        <ImageView
+            android:id="@+id/pop_record_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/record_anim"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18px"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="手指上滑 取消发送"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="18px"
+            />
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+</com.zhy.autolayout.AutoRelativeLayout>

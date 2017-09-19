@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:tool="http://schemas.android.com/tools"
+              android:background="@mipmap/splash_bg"
+              android:orientation="vertical">
+
+    <com.zhiyicx.zhibolibrary.ui.components.AutoToolbar
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_about_back"
+            style="@style/style_back_container">
+
+            <ImageView style="@style/style_back_button" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/about_title"
+            style="@style/style_toolbar_title"
+            android:layout_gravity="center" />
+
+    </com.zhiyicx.zhibolibrary.ui.components.AutoToolbar>
+
+</LinearLayout>

@@ -666,4 +666,6 @@
     <string name="top_dynamic">置顶动态</string>
     <string name="default_delete_user_name">未知用户</string>
     <string name="user_had_deleted">用户被删除</string>
+    <string name="find_live">直播</string>
+    <string name="mine_live">我的直播</string>
 </resources>

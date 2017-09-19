@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:gravity="bottom"
+                  android:orientation="vertical"
+                  android:paddingBottom="20dp"
+                  android:paddingLeft="16dp"
+                  android:paddingRight="16dp">
+
+        <Button
+            android:id="@+id/bt_do"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_white_solid_box"
+            android:text="@string/str_shutup"
+            android:textColor="@color/color_black_light"
+            android:textSize="14sp"
+            />
+
+        <Button
+            android:id="@+id/bt_cancle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_white_solid_box"
+            android:text="@string/cancel"
+            android:textColor="@color/color_black_light"
+            android:textSize="14sp"
+            />
+
+    </LinearLayout>
+</RelativeLayout>

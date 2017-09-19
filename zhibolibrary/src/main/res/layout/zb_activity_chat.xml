@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="match_parent"
+    >
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        android:layout_height="@dimen/toolview_and_statubar_height"
+        android:background="@color/color_top_navigate"
+        android:gravity="center">
+
+
+        <TextView
+            android:id="@+id/tv_left"
+            style="@style/style_live_tab"
+            android:layout_marginLeft="15px"
+            android:layout_marginRight="15px"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30px"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30px"
+            android:drawableRight="@drawable/selector_search_icon"
+            />
+
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+    <com.zhiyicx.zhibo.ui.components.refresh.RefreshLayout
+        android:id="@+id/srl_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_message_controller"
+        android:layout_below="@+id/toolbar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_message"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </com.zhiyicx.zhibo.ui.components.refresh.RefreshLayout>
+
+    <ImageView
+        android:id="@+id/iv_message_placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
+    <com.zhy.autolayout.AutoLinearLayout
+        android:id="@+id/ll_message_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="10px"
+        android:paddingTop="10px">
+
+
+
+            <EditText
+                android:id="@+id/et_message"
+                style="@style/style_edit"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="25px"
+                android:layout_marginRight="25px"
+                android:imeOptions="actionSend"
+                android:inputType="text"
+                android:maxLength="50"
+                android:textSize="14sp"/>
+
+
+        <Button
+            android:id="@+id/bt_send"
+            android:layout_width="100px"
+            android:layout_height="70px"
+            android:layout_marginLeft="15px"
+            android:layout_marginRight="15px"
+            android:background="@drawable/selector_corner_send_button"
+            android:text="发送"/>
+
+
+
+
+    </com.zhy.autolayout.AutoLinearLayout>
+
+</com.zhy.autolayout.AutoRelativeLayout>

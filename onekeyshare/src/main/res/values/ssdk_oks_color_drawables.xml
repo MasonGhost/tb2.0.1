@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="ssdk_oks_classic_platfrom_cell_back_nor">#00000000</drawable>
+    <drawable name="gray">#88cccccc</drawable>
+    <drawable name="ssdk_oks_classic_platfrom_cell_back_sel">#00000000</drawable>
+</resources>

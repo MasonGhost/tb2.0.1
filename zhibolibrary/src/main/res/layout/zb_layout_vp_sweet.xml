@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tool="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+
+             android:background="@android:color/transparent"
+             android:orientation="vertical">
+
+    <com.zhiyicx.zhibolibrary.ui.components.sweetsheet.widget.FreeGrowUpParentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/freeGrowUpParentF"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom"
+
+        android:orientation="vertical"
+        app:offset="@dimen/arc_max_height">
+
+        <com.zhiyicx.zhibolibrary.ui.components.sweetsheet.widget.SweetView
+            android:id="@+id/sv"
+            android:layout_width="fill_parent"
+
+            android:layout_height="wrap_content"/>
+
+        <com.zhiyicx.zhibolibrary.ui.components.sweetsheet.widget.IndicatorView
+            android:id="@+id/indicatorView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_margin="0dp"
+            android:clipChildren="false"
+            android:overScrollMode="never"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/vp"
+            android:background="@color/color_gray_light"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49.5dp"
+            android:layout_below="@+id/vp"
+
+            android:layout_marginTop="0.5dp"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="7.5dp">
+
+            <ImageView
+                android:id="@+id/iv_gold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ico_goldcoin_one"/>
+
+            <TextView
+                android:id="@+id/tv_gold_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/iv_gold"
+                android:textColor="@color/color_font_gold"
+                android:textSize="12sp"
+                android:text="x5"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/tv_gold_num"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="可用"/>
+
+            <Button
+                android:id="@+id/bt_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:enabled="false"
+                android:background="@drawable/selector_blue_solid_box_deepgray"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:text="送出"/>
+
+            <Button
+                android:id="@+id/bt_buy_gold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="7.5dp"
+                android:layout_toLeftOf="@+id/bt_send"
+                android:background="@drawable/selector_blue_solid_box"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:text="购买金币"/>
+
+        </RelativeLayout>
+
+    </com.zhiyicx.zhibolibrary.ui.components.sweetsheet.widget.FreeGrowUpParentRelativeLayout>
+
+</FrameLayout>

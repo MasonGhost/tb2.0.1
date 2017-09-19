@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tool="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+
+              android:background="#33000000"
+              android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_gift"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        >
+    </android.support.v4.view.ViewPager>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_gray_light"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+
+        android:paddingRight="16dp"
+        android:paddingTop="7.5dp">
+
+        <ImageView
+            android:id="@+id/iv_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ico_goldcoin_one"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@+id/iv_gold"
+            android:textColor="@color/color_font_gold"
+            android:textSize="14sp"
+            tool:text="x5"/>
+
+        <Button
+            android:id="@+id/bt_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:alpha="1"
+            android:textSize="16sp"
+            android:background="@drawable/selector_follow_button"
+            android:textColor="#ffffff"
+            tool:text="送出"/>
+
+        <Button
+            android:id="@+id/bt_buy_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/bt_send"
+            android:layout_marginRight="7.5dp"
+            android:alpha="1"
+            android:textSize="16sp"
+            android:background="@drawable/selector_blue_solid_box"
+            android:textColor="#ffffff"
+            tool:text="购买金币"/>
+
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <com.zhiyicx.zhibolibrary.ui.components.AutoAppBarLayout
+        android:id="@+id/al_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/style_toolbar"
+            android:elevation="0dp"
+            android:translationZ="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/rl_search_back"
+                    style="@style/style_back_container">
+
+                    <ImageView style="@style/style_back_button"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60px"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10px"
+                    android:layout_marginRight="20px"
+                    android:layout_toLeftOf="@+id/tv_search_search"
+                    android:layout_toRightOf="@+id/rl_search_back"
+                    android:background="@drawable/shape_chat_bg">
+
+                    <EditText
+                        android:id="@+id/et_search_keyword"
+                        style="@style/style_edit"
+                        android:layout_width="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10px"
+                        android:hint="搜索用户、直播、回放"
+                        android:imeOptions="actionSearch"
+                        android:singleLine="true"
+                        />
+
+                    <ImageView
+                        android:id="@+id/et_search_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignRight="@+id/et_search_keyword"
+                        android:paddingLeft="10px"
+                        android:paddingRight="5px"
+                        android:layout_marginRight="18px"
+                        android:src="@mipmap/iconfont_guanbi"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/tv_search_search"
+                    style="@style/style_live_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="35px"
+                    android:src="@drawable/selector_search_icon"
+                    android:textSize="@dimen/font_smart"/>
+
+                <TextView
+                    android:id="@+id/tv_search_cancel"
+                    style="@style/style_live_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="52px"
+                    android:text="取消"
+                    android:textSize="@dimen/font_smart"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_search_tab"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:tabIndicatorColor="@color/color_blue_gray"
+            app:tabSelectedTextColor="@color/color_blue_gray"
+            app:tabTextColor="@color/color_gray_dark"/>
+    </com.zhiyicx.zhibolibrary.ui.components.AutoAppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</android.support.design.widget.CoordinatorLayout>

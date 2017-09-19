@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/publish_core_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.zhy.autolayout.AutoLinearLayout
+
+        android:id="@+id/ll_publish_core_recieve_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_publish_core_bottom_cotainer"
+        android:layout_marginBottom="-10px"
+        android:gravity="bottom"
+        android:minHeight="400px"
+        android:orientation="vertical"
+        android:paddingBottom="10px"
+        android:paddingLeft="30px">
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:id="@+id/ll_gitf3"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/zhibo_image_size"
+            android:background="@drawable/shape_solid_corner_circle_black"
+            android:orientation="horizontal"
+            android:paddingLeft="-1.5dp"
+            android:paddingRight="12dp"
+            android:visibility="invisible">
+
+            <com.zhy.autolayout.AutoFrameLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/iv_headpic3"
+                    android:layout_width="@dimen/zhibo_image_size"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="0dp"
+                    android:src="@mipmap/pic_touxiang_150" />
+
+                <ImageView
+                    android:id="@+id/iv_gift_verified3"
+                    android:layout_width="20px"
+                    android:layout_height="20px"
+                    android:layout_marginLeft="60px"
+                    android:layout_marginTop="60px"
+                    android:background="@mipmap/ico_certified_02" />
+
+            </com.zhy.autolayout.AutoFrameLayout>
+
+            <com.zhy.autolayout.AutoLinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10px"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_name3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/name"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tv_des3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+
+            </com.zhy.autolayout.AutoLinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_gift_3"
+                android:layout_width="@dimen/zhibo_image_size"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:src="@mipmap/gold_layer" />
+
+            <TextView
+                android:id="@+id/tv_gold_nums3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:gravity="center"
+                android:text="x100"
+                android:textColor="@color/color_font_gold"
+                android:textSize="11sp"
+                android:visibility="gone" />
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <TextView
+            android:id="@+id/tv_option_key3"
+            android:layout_width="60px"
+            android:layout_height="34px"
+            android:layout_gravity="right"
+            android:layout_marginRight="10px"
+            android:layout_marginTop="10px"
+            android:background="@drawable/shape_poll_audience_key"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:id="@+id/ll_gitf2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/zhibo_image_size"
+            android:layout_marginTop="48px"
+            android:background="@drawable/shape_solid_corner_circle_black"
+            android:orientation="horizontal"
+            android:paddingLeft="-1.5dp"
+            android:paddingRight="12dp"
+            android:visibility="invisible">
+
+
+            <com.zhy.autolayout.AutoFrameLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/iv_headpic2"
+                    android:layout_width="@dimen/zhibo_image_size"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="0dp"
+                    android:src="@mipmap/pic_touxiang_150" />
+
+                <ImageView
+                    android:id="@+id/iv_gift_verified2"
+                    android:layout_width="20px"
+                    android:layout_height="20px"
+                    android:layout_marginLeft="60px"
+                    android:layout_marginTop="60px"
+                    android:background="@mipmap/ico_certified_02" />
+
+            </com.zhy.autolayout.AutoFrameLayout>
+
+            <com.zhy.autolayout.AutoLinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10px"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_name2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/name"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tv_des2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+            </com.zhy.autolayout.AutoLinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_gift_2"
+                android:layout_width="@dimen/zhibo_image_size"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:src="@mipmap/gold_layer" />
+
+            <TextView
+                android:id="@+id/tv_gold_nums2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:gravity="center"
+                android:text="x100"
+                android:textColor="@color/color_font_gold"
+                android:textSize="11sp"
+                android:visibility="gone" />
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <TextView
+            android:id="@+id/tv_option_key2"
+            android:layout_width="60px"
+            android:layout_height="34px"
+            android:layout_gravity="right"
+            android:layout_marginRight="10px"
+            android:layout_marginTop="10px"
+            android:background="@drawable/shape_poll_audience_key"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:id="@+id/ll_gitf1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/zhibo_image_size"
+            android:layout_marginTop="48px"
+            android:background="@drawable/shape_solid_corner_circle_black"
+            android:orientation="horizontal"
+            android:paddingLeft="-1.5dp"
+            android:paddingRight="12dp"
+            android:visibility="invisible">
+
+
+            <com.zhy.autolayout.AutoFrameLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/iv_headpic1"
+                    android:layout_width="@dimen/zhibo_image_size"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="0dp"
+                    android:src="@mipmap/pic_touxiang_150" />
+
+                <ImageView
+                    android:id="@+id/iv_gift_verified1"
+                    android:layout_width="20px"
+                    android:layout_height="20px"
+                    android:layout_marginLeft="60px"
+                    android:layout_marginTop="60px"
+                    android:background="@mipmap/ico_certified_02" />
+            </com.zhy.autolayout.AutoFrameLayout>
+
+            <com.zhy.autolayout.AutoLinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10px"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_name1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/name"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tv_des1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/pic_touxiang_150"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+            </com.zhy.autolayout.AutoLinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_gift_1"
+                android:layout_width="@dimen/zhibo_image_size"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:src="@mipmap/gold_layer" />
+
+            <TextView
+                android:id="@+id/tv_gold_nums1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5px"
+                android:gravity="center"
+                android:text="x100"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <TextView
+            android:id="@+id/tv_option_key1"
+            android:layout_width="60px"
+            android:layout_height="34px"
+            android:layout_gravity="right"
+            android:layout_marginRight="10px"
+            android:layout_marginTop="10px"
+            android:background="@drawable/shape_poll_audience_key"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </com.zhy.autolayout.AutoLinearLayout>
+
+    <com.zhy.autolayout.AutoLinearLayout
+        android:id="@+id/ll_publish_core_bottom_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+
+        <com.zhy.autolayout.AutoRelativeLayout
+            android:id="@+id/rl_publish_core_interaction_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent">
+
+            <com.zhiyicx.zhibolibrary.ui.components.InterceptRecycleView
+                android:id="@+id/rv_publish_core"
+                android:layout_width="@dimen/publish_core_chat_with"
+                android:layout_height="@dimen/publish_core_chat_height"
+                android:layout_marginTop="170px"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+
+            <com.zhy.autolayout.AutoRelativeLayout
+                android:id="@+id/ll_publish_core_favor"
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical">
+
+                <com.zhiyicx.zhibolibrary.ui.components.FavorLayout
+                    android:id="@+id/fl_publish_core"
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="-100px"
+                    android:layout_height="375px" />
+
+
+                <ImageView
+                    android:id="@+id/iv_publis_core_online"
+                    android:layout_width="28px"
+                    android:layout_height="28px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="120px"
+                    android:layout_marginBottom="3px"
+                    android:src="@mipmap/ico_people" />
+
+                <TextView
+                    android:id="@+id/tv_publish_core_online_people"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/iv_publis_core_online"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="13px"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_normal"
+                    android:text="0" />
+            </com.zhy.autolayout.AutoRelativeLayout>
+
+        </com.zhy.autolayout.AutoRelativeLayout>
+
+        <com.zhy.autolayout.AutoRelativeLayout
+            android:id="@+id/rl_publish_core_action_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <com.zhy.autolayout.AutoRelativeLayout
+                android:id="@+id/rl_publish_core_not_input_container"
+                android:layout_width="match_parent"
+                android:layout_height="150px"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/ib_publish_core_keyboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25px"
+                    android:background="@null"
+                    android:src="@drawable/selector_talk_icon" />
+
+
+                <ImageButton
+                    android:id="@+id/ib_publish_core_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="25px"
+                    android:background="@null"
+                    android:src="@mipmap/ico_live_share" />
+                <!--投票场景主播发起按钮-->
+                <ImageButton
+                    android:id="@+id/ib_publish_core_poll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="25px"
+                    android:layout_toLeftOf="@id/ib_publish_core_share"
+                    android:background="@null"
+                    android:src="@mipmap/host_btn_vote_normal"
+                    android:visibility="invisible" />
+
+                <ImageButton
+                    android:id="@+id/ib_publish_core_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/selector_record"
+                    android:visibility="gone" />
+
+
+                <ImageButton
+                    android:id="@+id/ib_publish_core_gift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30px"
+                    android:layout_toLeftOf="@id/ib_publish_core_share"
+                    android:background="@null"
+                    android:src="@mipmap/ico_gift" />
+
+
+            </com.zhy.autolayout.AutoRelativeLayout>
+
+            <com.zhy.autolayout.AutoLinearLayout
+                android:id="@+id/ll_publish_core_input_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="10px"
+                android:paddingTop="10px"
+                android:visibility="gone">
+
+
+                <EditText
+                    android:id="@+id/et_publish_core"
+                    style="@style/style_edit"
+                    android:layout_width="510px"
+                    android:layout_height="70px"
+                    android:layout_marginLeft="15px"
+                    android:background="@drawable/shape_chat_white_bg"
+                    android:gravity="center_vertical"
+                    android:imeOptions="actionSend"
+                    android:inputType="text"
+                    android:maxLength="50"
+
+                    android:paddingLeft="25px"
+                    android:paddingRight="25px"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/bt_publish_core_send"
+                    android:layout_width="100px"
+                    android:layout_height="70px"
+                    android:enabled="false"
+                    android:layout_marginLeft="15px"
+                    android:background="@drawable/selector_corner_send_button"
+                    android:text="发送" />
+
+
+                <ImageButton
+                    android:id="@+id/ib_publish_core_gift_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15px"
+                    android:background="@null"
+                    android:src="@mipmap/ico_gift" />
+
+
+            </com.zhy.autolayout.AutoLinearLayout>
+
+        </com.zhy.autolayout.AutoRelativeLayout>
+
+
+    </com.zhy.autolayout.AutoLinearLayout>
+
+
+    <com.zhiyicx.zhibolibrary.ui.components.CountImageView
+        android:id="@+id/ib_publish_core_receive_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30px"
+        android:src="@mipmap/host_btn_speaker_number_close"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tv_publish_core_receive_prompt"
+        android:layout_width="120px"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="3px"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="10sp" />
+
+
+    <ImageView
+        android:id="@+id/iv_camear_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="@dimen/margin_top_camera_publish_core"
+        android:padding="5px"
+        android:src="@mipmap/ico_xiangji_change_select"
+        android:visibility="gone"
+
+        />
+
+    <include layout="@layout/zb_view_presenter_info" />
+
+    <com.zhy.autolayout.AutoLinearLayout
+        android:id="@+id/rl_publish_core_present_giftrank"
+        android:layout_width="wrap_content"
+        android:layout_height="76px"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="@dimen/margin_top_publish_core"
+        android:background="@drawable/shape_solid_corner_black"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:maxWidth="400px"
+        android:orientation="horizontal"
+        android:padding="10px"
+        android:visibility="invisible">
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:id="@+id/rl_publish_core_ranks"
+            android:layout_width="wrap_content"
+            android:layout_height="78px"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"></com.zhy.autolayout.AutoLinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4px"
+            android:src="@mipmap/ic_arrow_smallgrey_white" />
+
+    </com.zhy.autolayout.AutoLinearLayout>
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/rl_publish_core_vote_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_publish_core_present_giftrank"
+        android:layout_marginTop="10dp"></com.zhy.autolayout.AutoRelativeLayout>
+
+    <ImageView
+        android:id="@+id/ib_publish_core_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/host_btn_filter"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_publish_core_filter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+</com.zhy.autolayout.AutoRelativeLayout>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black_dark"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_end_stream_exception_prompt"
+        android:layout_width="380px"
+        android:layout_height="65px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48px"
+        android:background="@drawable/shape_chat_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="34px"
+            android:src="@mipmap/ico_tish" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:text="链接失败, 请确保网络稳定"
+            android:textColor="@color/color_font_black_light"
+            android:textSize="24px" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_end_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60px"
+        android:text="直播结束"
+        android:textColor="@color/white"
+        android:textSize="60px" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_end_fans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_end_play"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32px"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_end_stream_fans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_blue_gray"
+            android:textSize="35px" />
+
+        <TextView
+            android:id="@+id/tv_end_stream_fans_postfix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="人看过, 共获得"
+            android:textColor="@color/white"
+            android:textSize="36px" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_end_stream_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_end_fans"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90px"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ico_allzan" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32px"
+            android:text="x"
+            android:textColor="@color/white"
+            android:textSize="30px" />
+
+
+        <TextView
+            android:id="@+id/tv_end_stream_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32px"
+            android:textColor="@color/color_blue_gray"
+            android:textSize="60px" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_end_stream_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_end_stream_star"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38px"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ico_allgoldcoins" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32px"
+            android:text="x"
+            android:textColor="@color/white"
+            android:textSize="30px" />
+
+
+        <TextView
+            android:id="@+id/tv_end_stream_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32px"
+            android:textColor="@color/color_blue_gray"
+            android:textSize="60px" />
+
+    </LinearLayout>
+
+    <com.zhiyicx.zhibolibrary.ui.components.CarouselView
+        android:id="@+id/cv_end_stream_recommend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="240px"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/end_stream_recyclerView"
+        android:layout_width="450px"
+        android:layout_height="500px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200px"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <ImageView
+        android:layout_width="450px"
+        android:layout_height="500px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200px"
+        android:background="@drawable/shape_mask" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="620px">
+
+        <RelativeLayout
+            android:layout_width="450px"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100px">
+
+            <ImageView
+                android:layout_width="175px"
+                android:layout_height="2px"
+                android:background="@color/color_white_40_percent" />
+
+            <ImageView
+                android:layout_width="175px"
+                android:layout_height="2px"
+                android:layout_alignParentRight="true"
+                android:background="@color/color_white_40_percent" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90px"
+            android:background="@color/transparent"
+            android:text="@string/str_share"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_normal" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="160px"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/ib_end_stream_weixin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:background="@null"
+                android:src="@drawable/selector_weixin_icon" />
+
+            <ImageButton
+                android:id="@+id/ib_end_stream_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:background="@null"
+                android:src="@drawable/selector_weixin_friend_icon" />
+
+
+            <ImageButton
+                android:id="@+id/ib_end_stream_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:background="@null"
+                android:src="@drawable/selector_qq_icon" />
+
+
+            <ImageButton
+                android:id="@+id/ib_end_stream_sina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:background="@null"
+                android:src="@drawable/selector_weibo_icon" />
+
+            <ImageButton
+                android:id="@+id/ib_end_stream_zone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:background="@null"
+                android:src="@drawable/selector_qq_zone_icon" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_end_stream_my_room"
+            android:layout_width="480px"
+            android:layout_height="80px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="300px"
+            android:background="@drawable/selector_stroke_corner"
+            android:text="我的主页"
+            android:textColor="@drawable/selector_blue_text" />
+
+        <Button
+            android:id="@+id/bt_end_stream_go_home"
+            android:layout_width="480px"
+            android:layout_height="80px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="400px"
+            android:background="@drawable/selector_stroke_corner"
+            android:text="返回首页"
+            android:textColor="@drawable/selector_blue_text" />
+
+    </RelativeLayout>
+</RelativeLayout>

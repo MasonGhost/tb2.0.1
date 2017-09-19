@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                       xmlns:tool="http://schemas.android.com/tools"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_search_item_icon"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="26px"
+        tool:src="@mipmap/pic_touxiang_150" />
+
+
+    <ImageView
+        android:id="@+id/iv_search_item_verified"
+        android:layout_width="@dimen/verified_height"
+        android:layout_height="@dimen/verified_height"
+        android:layout_alignBottom="@+id/iv_search_item_icon"
+        android:layout_alignRight="@+id/iv_search_item_icon"
+        android:layout_marginBottom="4px"
+        android:layout_marginRight="4px"
+        android:visibility="invisible"
+        android:background="@mipmap/ico_certified_02"
+        />
+
+    <TextView
+        android:id="@+id/tv_search_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_search_item_icon"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="40px"
+        android:textColor="@color/color_font_black_light"
+        android:textSize="15sp"
+        tool:text="校花李" />
+
+    <ImageView
+        android:id="@+id/iv_search_item_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5px"
+        android:layout_marginTop="43px"
+        android:layout_toRightOf="@id/tv_search_item_title"
+        tool:src="@mipmap/ico_sex_woman" />
+
+    <TextView
+        android:id="@+id/tv_search_item_detail_title"
+        android:layout_width="320px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_search_item_title"
+        android:layout_toRightOf="@id/iv_search_item_icon"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="10px"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_gray_light"
+        android:textSize="13sp"
+        tool:text="校花李de" />
+
+    <ImageView
+        android:id="@+id/iv_search_item_count"
+        android:layout_width="24px"
+        android:layout_height="24px"
+        android:layout_below="@+id/tv_search_item_detail_title"
+        android:layout_toRightOf="@id/iv_search_item_icon"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="13px"
+        android:background="@mipmap/ico_fans" />
+
+
+    <TextView
+        android:id="@+id/tv_search_item_detail_fans"
+        android:layout_width="320px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_search_item_detail_title"
+        android:layout_toRightOf="@id/iv_search_item_count"
+        android:layout_marginBottom="24px"
+        android:layout_marginLeft="5px"
+        android:layout_marginTop="10px"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="#B0B1B4"
+        android:textSize="12sp"
+        tool:text="123456" />
+
+    <com.zhiyicx.zhibolibrary.ui.components.FllowButtonView
+        android:id="@+id/bt_item_attention"
+        android:layout_width="wrap_content"
+        android:layout_height="56px"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="35px"
+        android:paddingLeft="10px"
+        android:paddingRight="10px"
+        android:paddingBottom="3px"
+        android:paddingTop="3px"
+        android:background="@drawable/selector_follow_button"
+        android:gravity="center"
+      />
+</com.zhy.autolayout.AutoRelativeLayout>

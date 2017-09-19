@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30px">
+
+        <com.zhy.autolayout.AutoRelativeLayout
+            android:id="@+id/rl_filter_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_filter_border"
+                android:layout_width="125px"
+                android:layout_height="125px"
+                android:src="@color/color_blue_button"
+                android:visibility="gone"
+                tool:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/iv_filter_pic"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/pic_photo_140" />
+        </com.zhy.autolayout.AutoRelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_filter_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_filter_top"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20px"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            tool:text="晚安" />
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+</com.zhy.autolayout.AutoLinearLayout>

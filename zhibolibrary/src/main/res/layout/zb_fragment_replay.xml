@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_replay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolview_and_statubar_height"></android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:id="@+id/ll_live_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolview_and_statubar_height"
+        android:background="@color/color_gray_dark_transparent"
+        android:orientation="horizontal"
+        android:visibility="gone"></LinearLayout>
+
+    <com.zhy.autolayout.AutoLinearLayout
+        android:id="@+id/rl_live_filter_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/toolview_and_statubar_height"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingBottom="40px"
+        android:paddingLeft="60px"
+        android:paddingRight="60px"
+        android:visibility="gone">
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_50"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_filter_title1"
+                style="@style/style_live_tab"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_filter_time_start"
+                style="@style/style_live_tab"
+                android:layout_marginLeft="@dimen/margin_large"
+                android:textColor="@color/color_gray_light" />
+
+            <TextView
+                android:id="@+id/tv_filter_time_end"
+                style="@style/style_live_tab"
+                android:layout_marginLeft="60px"
+                android:textColor="@color/color_gray_light" />
+
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_50"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_filter_title2"
+                style="@style/style_live_tab"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_filter_subTitle2"
+                style="@style/style_live_tab"
+                android:layout_marginLeft="@dimen/margin_large"
+                android:textColor="@color/color_gray_light" />
+
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_50"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_filter_title3"
+                style="@style/style_live_tab"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_filter_subTitle3"
+                style="@style/style_live_tab"
+                android:layout_marginLeft="@dimen/margin_large"
+                android:textColor="@color/color_gray_light" />
+
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <Button
+            android:id="@+id/bt_filter_ok"
+            android:layout_width="360px"
+            android:layout_height="70px"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_50"
+            android:background="@drawable/selector_corner_button"
+            android:text="@string/str_ok" />
+
+    </com.zhy.autolayout.AutoLinearLayout>
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        android:layout_height="@dimen/toolview_and_statubar_height"
+        android:gravity="center"
+        android:background="@color/color_top_navigate">
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_live_subscribe_tab"
+                style="@style/style_live_tab"
+                android:layout_marginLeft="15px"
+                android:layout_marginRight="15px"
+                android:text="@string/str_subscribe"
+                android:textColor="@color/color_blue_gray" />
+
+            <TextView
+                android:id="@+id/tv_live_hot_tab"
+                android:layout_marginLeft="15px"
+                android:layout_marginRight="15px"
+                style="@style/style_live_tab"
+                android:text="@string/str_hot" />
+
+
+            <TextView
+                android:id="@+id/tv_live_news_tab"
+                android:layout_marginLeft="15px"
+                android:layout_marginRight="15px"
+                style="@style/style_live_tab"
+                android:text="@string/str_new" />
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <ImageView
+            android:id="@+id/tv_live_search"
+            android:layout_marginLeft="30px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ico_search_white"
+            />
+
+        <ImageView
+            android:id="@+id/tv_live_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30px"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_top_screening_white"
+            />
+
+
+
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+</com.zhy.autolayout.AutoFrameLayout>

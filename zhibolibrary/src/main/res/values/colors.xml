@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="test">#fb667d</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent2">#99000000</color>
+    <color name="sweetbg">#CC000000</color>
+
+    <color name="white">#ffffff</color>
+    <color name="white_gray">#55FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#cccccc</color>
+    <color name="color_light_gray">#999999</color>
+    <color name="color_font_gray">#ebebeb</color>
+    <color name="color_font_red">#e83632</color>
+
+
+    <color name="color_divider">#e1e1e1</color>
+    <color name="color_top_navigate">#353743</color>
+
+    <color name="color_blue_dark">#48b4d8</color>
+    <color name="color_blue_dark2">#00a9e5</color>
+    <color name="color_blue_dark3">#4eabcc</color>
+    <color name="color_blue_light">#49cfff</color>
+    <color name="color_blue_gray">#60C1E4</color>
+    <color name="color_blue_button">#59b6d7</color>
+    <color name="color_blue_10_button">#2259b6d7</color>
+    <color name="color_blue_button_transparent">#ee59b6d7</color>
+    <color name="color_gray_button_transparent">#eecccccc</color>
+
+    <color name="color_black_light">#1e2027</color>
+    <color name="color_black_dark">#0D0301</color>
+    <color name="color_white_40_percent">#66ffffff</color>
+
+
+    <color name="color_bottom_navigate">#363844</color>
+    <color name="color_background">#f0f0f0</color>
+    <!--字体颜色-->
+    <color name="color_font_second">#646464</color>
+    <color name="color_font_black_light">#333333</color>
+    <color name="color_font_orange">#ff9400</color>
+    <color name="color_font_gold">#febf17</color>
+
+    <color name="color_font_divide_gry">#e6e6e6</color>
+
+    <color name="color_button_gray">#e0e0e0</color>
+    <color name="color_button_disable_gray">#c5c4c3</color>
+
+    <color name="color_selector_white_press">#F5F5F5</color>
+
+    <color name="color_gray_dark">#747474</color>
+    <color name="color_gray_dark_transparent">#aa000000</color>
+    <color name="color_gray_light">#666666</color>
+    <color name="color_gray_background">#eeeff3</color>
+    <color name="color_red_light">#f96979</color>
+    <color name="color_gray_white">#f2f2f2</color>
+    <!--sweetsheet color-->
+    <color name="indicator_normal">#fff0f0f0</color>
+
+    <color name="indicator_select">#969696</color>
+    <color name="theme_gray">#F5F5F5</color>
+    <color name="slider_color_normal">#ffa6a6a6</color>
+    <color name="slider_color">#ff969696</color>
+    <color name="name">#64d7fe</color>
+    <color name="color_loading">#1691d9</color>
+    <color name="color_dot">#ea2000</color>
+
+
+</resources>

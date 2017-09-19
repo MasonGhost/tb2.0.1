@@ -1,0 +1,89 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!--字体大小-->
+    <dimen name="font_normal">12sp</dimen>
+    <dimen name="font_large">14sp</dimen>
+    <dimen name="font_smart">11sp</dimen>
+    <dimen name="font_smart_little">13sp</dimen>
+    <dimen name="font_tiny">16px</dimen>
+    <dimen name="font_huge">17sp</dimen>
+    <dimen name="font_huge_add">23sp</dimen>
+    <!--字体大小sp-->
+    <dimen name="font_normal_sp">12sp</dimen>
+    <dimen name="font_large_sp">14sp</dimen>
+    <dimen name="font_large_16sp">16sp</dimen>
+    <dimen name="font_smart_sp">11sp</dimen>
+    <dimen name="font_smart_little_sp">10sp</dimen>
+    <dimen name="font_small_9sp">9sp</dimen>
+    <dimen name="font_tiny_sp">8sp</dimen>
+    <dimen name="font_huge_sp">17sp</dimen>
+    <dimen name="font_huge_add_sp">23sp</dimen>
+    <!-- view间距 -->
+    <dimen name="spacing_large">34px</dimen>
+    <dimen name="spacing_normal">18px</dimen>
+    <dimen name="item_spacing_small">3dp</dimen>
+    <dimen name="margin_normal">20px</dimen>
+    <dimen name="margin_large">30px</dimen>
+    <dimen name="margin_big_large">212px</dimen>
+    <dimen name="margin_big">60px</dimen>
+    <dimen name="margin_huge">40px</dimen>
+    <dimen name="margin_50">50px</dimen>
+    <dimen name="margin_25">25px</dimen>
+    <dimen name="margin_62">62px</dimen>
+    <dimen name="margin_67">67px</dimen>
+    <dimen name="padding_normal">20px</dimen>
+
+
+    <!--view高度-->
+    <dimen name="edit_height_tall">90px</dimen>
+    <dimen name="textview_height_tall">64px</dimen>
+    <dimen name="divider_height">1px</dimen>
+    <dimen name="button_big_height">96px</dimen>
+    <dimen name="button_big_width">700px</dimen>
+    <dimen name="toolview_height">96px</dimen>
+    <dimen name="toolview_and_statubar_height">146px</dimen>
+    <dimen name="loading_height">50px</dimen>
+    <dimen name="back_height">35px</dimen>
+    <dimen name="back_width">20px</dimen>
+    <dimen name="loading_width">100px</dimen>
+    <dimen name="loading_rect_width">200px</dimen>
+    <dimen name="statu_bar_height">50px</dimen>
+    <dimen name="arrow_height">40px</dimen>
+    <dimen name="verified_height">25px</dimen>
+    <dimen name="shape_stroke_width">2px</dimen>
+    <dimen name="margin_statubar">50px</dimen>
+
+
+    <!--圆角-->
+    <dimen name="button_corner">8px</dimen>
+    <dimen name="send_button_corner">8px</dimen>
+    <dimen name="send_stroke_corner">10px</dimen>
+
+
+    <!--z轴-->
+    <dimen name="elevation_normal">2px</dimen>
+    <dimen name="elevation_huge">10px</dimen>
+    <dimen name="translationZ_normal">5px</dimen>
+    <dimen name="translationZ_huge">15px</dimen>
+    <!--sweetsheet-->
+    <dimen name="indicator_width">12dp</dimen>
+    <dimen name="indicator_height">2dp</dimen>
+    <dimen name="indicator_padding">2dp</dimen>
+    <dimen name="arc_max_height">-10dp</dimen>
+    <dimen name="sheet_height">290dp</dimen>
+    <!--个人中心-->
+    <dimen name="line_margin">24px</dimen>
+    <dimen name="live_imagebuttom_size">80px</dimen>
+    <integer name="line_margin_num">24</integer>
+
+    <!--直播-->
+    <dimen name="zhibo_image_size">83px</dimen>
+    <dimen name="publish_core_chat_with">550px</dimen>
+    <dimen name="publish_core_chat_height">230px</dimen>
+    <dimen name="follow_button_textsize">10sp</dimen>
+    <dimen name="follow_button_with">120px</dimen>
+    <dimen name="follow_button_height">50px</dimen>
+
+</resources>

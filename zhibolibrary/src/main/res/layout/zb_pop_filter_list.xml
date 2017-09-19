@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="245px"
+        android:layout_alignParentBottom="true"
+        android:background="#ee000000">
+
+        <ImageView
+            android:id="@+id/iv_pop_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30px"
+            android:paddingTop="15px"
+            android:paddingBottom="24px"
+            android:paddingLeft="30px"
+            android:paddingRight="30px"
+            android:src="@mipmap/filter_arrow_down" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_pop_filter"
+            android:overScrollMode="never"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/iv_pop_down"
+            android:scrollbars="none">
+
+        </android.support.v7.widget.RecyclerView>
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+</com.zhy.autolayout.AutoRelativeLayout>

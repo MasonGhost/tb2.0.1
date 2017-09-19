@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="316px"
+    android:layout_height="390px"
+    android:elevation="30dp"
+    android:orientation="vertical"
+    android:translationZ="30dp">
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ImageView
+            android:id="@+id/iv_live_item_cover"
+            android:layout_width="match_parent"
+            android:layout_height="316px"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/iv_live_item_black_cover"
+            android:layout_width="match_parent"
+            android:layout_height="316px"
+            android:background="@mipmap/ico_shade_cover"
+            android:visibility="gone" />
+
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="15px"
+            android:layout_marginTop="17px"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_live_item_shape"
+                android:layout_width="20px"
+                android:layout_height="20px"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ico_people" />
+
+            <TextView
+                android:id="@+id/tv_live_item_user_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18px" />
+
+        </com.zhy.autolayout.AutoLinearLayout>
+
+        <TextView
+            android:id="@+id/tv_live_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="95px"
+            android:layout_marginLeft="8px"
+            android:textColor="@color/white"
+            android:textSize="23px" />
+
+        <com.zhy.autolayout.AutoRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="74px"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/tv_live_item_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="76px"
+                android:layout_marginTop="12px"
+                android:textColor="@color/black"
+                android:textSize="18px" />
+
+        </com.zhy.autolayout.AutoRelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_live_item_user_icon"
+            android:layout_width="60px"
+            android:layout_height="60px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="26px"
+            android:layout_marginLeft="12px" />
+
+        <ImageView
+            android:id="@+id/iv_live_item_verified"
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="50px"
+            android:layout_marginTop="342px"
+            android:background="@mipmap/ico_certified_02"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_live_item_location"
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_marginLeft="15px"
+            android:layout_marginTop="20px"
+            android:background="@mipmap/ico_address" />
+
+        <TextView
+            android:id="@+id/tv_live_item_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35px"
+            android:layout_marginTop="19px"
+            android:textColor="@color/white"
+            android:textSize="18px" />
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+</android.support.v7.widget.CardView>

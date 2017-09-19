@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/iv_camera_capture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/rl_camera_top"
+        android:layout_width="match_parent"
+        android:layout_height="180px"
+        android:background="#dd000000">
+
+        <com.zhy.autolayout.AutoRelativeLayout
+            android:id="@+id/rl_camera_close"
+            style="@style/style_back_container"
+            android:background="@color/transparent">
+
+            <ImageView
+                style="@style/style_back_button" />
+        </com.zhy.autolayout.AutoRelativeLayout>
+
+        <ImageButton
+            android:id="@+id/bt_camera_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="35px"
+            android:background="@null"
+            android:src="@drawable/selector_camera_switch" />
+
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32px"
+        android:layout_below="@id/rl_camera_top"
+        android:background="#dd000000" />
+
+
+
+
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:id="@+id/rl_camera_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="372px"
+        android:layout_alignParentBottom="true"
+        android:background="#dd000000">
+
+        <ImageView
+            android:id="@+id/iv_camera_shoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/selector_camera_shoot"
+            />
+
+
+        <ImageButton
+            android:id="@+id/bt_camera_album"
+            android:layout_width="50px"
+            android:layout_height="50px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="35px"
+            android:background="@null"
+            android:src="@drawable/selector_camera_album"
+            />
+
+        <TextView
+            android:id="@+id/tv_camera_shoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@drawable/selector_blue_text"
+            android:layout_centerHorizontal="true"
+            android:text="拍照"
+            android:layout_alignParentBottom="true"
+            android:textSize="30px"
+            android:layout_marginBottom="70px"
+            />
+
+        <ImageButton
+            android:id="@+id/bt_camera_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40px"
+            android:src="@mipmap/ico_takephoto_yes"
+            android:background="@null"
+            android:visibility="gone"
+            />
+
+        <ImageButton
+            android:id="@+id/bt_camera_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40px"
+            android:src="@mipmap/ico_takephoto_no"
+            android:background="@null"
+            android:visibility="gone"
+            />
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+
+
+</com.zhy.autolayout.AutoRelativeLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/tv_live_chat_tip"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_marginBottom="5px"
+          android:layout_marginTop="5px"
+          android:layout_marginLeft="20px"
+          android:background="@drawable/shape_solid_corner_black"
+          android:maxWidth="380px"
+          android:paddingBottom="15px"
+          android:paddingLeft="30px"
+          android:paddingRight="30px"
+          android:paddingTop="15px"
+          android:text="@string/str_chat_rule"
+          android:textColor="@color/name"
+          android:textSize="@dimen/font_smart"/>
+
+

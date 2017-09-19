@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                       android:layout_width="48px"
+
+                                       android:layout_height="48px"
+                                       android:layout_gravity="center"
+                                       android:layout_marginLeft="6px"
+                                       android:layout_marginRight="6px">
+
+    <ImageView
+        android:id="@+id/iv_rank_gold_item_icon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/pic_touxiang_150"/>
+
+    <ImageView
+        android:id="@+id/iv_rank_gold_item_verified"
+        android:layout_width="15px"
+        android:layout_height="15px"
+        android:layout_alignBottom="@+id/iv_rank_gold_item_icon"
+        android:layout_marginRight="3px"
+        android:layout_alignRight="@+id/iv_rank_gold_item_icon"
+        android:src="@mipmap/ico_certified_02"
+        />
+
+
+</com.zhy.autolayout.AutoRelativeLayout>
+

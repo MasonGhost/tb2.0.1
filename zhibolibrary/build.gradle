@@ -1,0 +1,97 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
+    defaultConfig {
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
+    }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+dependencies {
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdksoupportDependencies = rootProject.ext.sdksoupportDependencies
+    def testDependences = rootProject.ext.testDependencies
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+    compile dataDependences.nineoldandroids
+    compile sdksoupportDependencies.annotations
+    compile sdksoupportDependencies.design
+    compile sdksoupportDependencies.appcompatV7
+    compile sdksoupportDependencies.supportV4
+    compile sdksoupportDependencies.cardview
+
+    compile dataDependences.autolayout
+    compile dataDependences.butterknife
+    annotationProcessor dataDependences.butterknifeApt
+
+    compile dataDependences.glide
+    compile dataDependences.easypermissions
+    compile project(':onekeyshare')
+    compile project(':camerafilters')
+    compile project(':carousel')
+    compile project(':pickerview')
+    compile project(':croplib')
+    compile project(':votesdk')
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile "com.qiniu.pili:pili-android-qos:0.8.+"
+    compile 'com.qiniu:happy-dns:0.2.+'
+
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.google.dagger:dagger:2.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'org.simple:androideventbus:1.0.5.1'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+}

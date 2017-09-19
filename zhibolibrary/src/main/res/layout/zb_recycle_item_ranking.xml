@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:paddingBottom="23px"
+             android:background="@color/white"
+             android:orientation="vertical">
+
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_ranking_item_icon"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginLeft="20px"
+            android:layout_marginTop="26px"
+            tools:src="@mipmap/pic_touxiang_150"/>
+
+        <ImageView
+            android:id="@+id/iv_ranking_item_verified"
+            android:layout_width="25px"
+            android:layout_height="25px"
+            android:layout_alignBottom="@+id/iv_ranking_item_icon"
+            android:layout_alignRight="@+id/iv_ranking_item_icon"
+            android:layout_marginLeft="4px"
+            android:layout_marginTop="4px"
+            android:background="@mipmap/ico_certified_02"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_ranking_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="145px"
+            android:layout_marginTop="40px"
+            android:textColor="@color/color_font_black_light"
+            android:textSize="15sp"
+            tools:text="我是把"/>
+
+        <TextView
+            android:id="@+id/tv_ranking_item_detail_title"
+            android:layout_width="400px"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ranking_item_title"
+            android:layout_marginLeft="145px"
+            android:layout_marginTop="10px"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/color_gray_light"
+            android:textSize="13sp"
+            tools:text="呵呵呵"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_ranking_item_star"
+            android:layout_marginLeft="145px"
+            android:layout_marginBottom="4px"
+            android:background="@mipmap/ico_fans"
+            />
+
+        <TextView
+            android:id="@+id/tv_ranking_item_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ranking_item_detail_title"
+            android:layout_marginLeft="173px"
+            android:layout_marginTop="8px"
+
+            android:gravity="center_vertical"
+            android:textColor="#B0B1B4"
+            android:textSize="13sp"
+            tools:text="5656"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_ranking_item_star"
+            android:layout_alignBottom="@+id/tv_ranking_item_gold"
+            android:layout_marginLeft="50px"
+            android:layout_marginBottom="3px"
+            android:background="@mipmap/ico_goidcoins_grey"
+            />
+
+        <TextView
+            android:id="@+id/tv_ranking_item_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_ranking_item_star"
+            android:layout_below="@+id/tv_ranking_item_detail_title"
+            android:layout_marginLeft="78px"
+            android:gravity="bottom"
+            android:layout_marginTop="8px"
+            android:textColor="#B0B1B4"
+            android:textSize="13sp"
+            tools:text="5656"/>
+
+        <TextView
+            android:id="@+id/tv_ranking_item_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="35px"
+            android:layout_marginTop="25px"
+            android:textColor="@color/color_font_black_light"
+            android:textSize="@dimen/font_large"
+            android:textStyle="italic|bold"
+            tools:text="6"/>
+
+
+    </com.zhy.autolayout.AutoRelativeLayout>
+
+</FrameLayout>

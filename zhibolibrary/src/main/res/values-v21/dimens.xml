@@ -1,0 +1,11 @@
+<resources>
+
+    <!--view高度-->
+    <dimen name="toolview_and_statubar_height">146px</dimen>
+    <dimen name="margin_statubar">50px</dimen>
+    <dimen name="margin_top_publish">55px</dimen>
+    <dimen name="margin_top_camera_publish_core">48px</dimen>
+    <dimen name="margin_top_publish_core">126px</dimen>
+
+
+</resources>

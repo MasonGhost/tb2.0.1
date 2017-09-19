@@ -133,7 +133,10 @@ ext {
 
             flowlayout                   : 'com.zhy:flowlayout-lib:1.0.3',
             contacts                     : 'com.github.tamir7.contacts:contacts:1.1.7',
-            update                       : 'org.lzh.nonview.updateplugin:UpdatePlugin:2.4.0'
+            update                       : 'org.lzh.nonview.updateplugin:UpdatePlugin:2.4.0',
+            autolayout                   : "com.zhy:autolayout:1.4.1",
+            easypermissions        :"pub.devrel:easypermissions:0.2.0",
+
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",

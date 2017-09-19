@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.zhy.autolayout.AutoRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="26px"
+    android:paddingTop="26px">
+
+    <ImageView
+        android:id="@+id/iv_search_item_icon"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_marginLeft="20px"
+        tool:src="@mipmap/pic_touxiang_150"/>
+
+    <ImageView
+        android:id="@+id/iv_follow_item_verified"
+        android:layout_width="@dimen/verified_height"
+        android:layout_height="@dimen/verified_height"
+        android:layout_alignBottom="@+id/iv_search_item_icon"
+        android:layout_alignRight="@+id/iv_search_item_icon"
+        android:layout_marginBottom="4px"
+        android:layout_marginRight="4px"
+        android:background="@mipmap/ico_certified_02"
+        android:visibility="gone"
+
+        />
+
+
+    <TextView
+        android:id="@+id/tv_search_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="14px"
+        android:layout_toRightOf="@+id/iv_search_item_icon"
+        android:textColor="@color/color_font_black_light"
+        android:textSize="15sp"
+        tool:text="fdsafdag"/>
+
+    <TextView
+        android:id="@+id/tv_search_item_detail_title"
+        android:layout_width="320px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_search_item_title"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="10px"
+        android:layout_toRightOf="@+id/iv_search_item_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_gray_light"
+        android:textSize="13sp"
+        tool:text="fdsafdag"/>
+
+    <TextView
+        android:id="@+id/tv_ts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_search_item_detail_title"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="10px"
+        android:layout_toRightOf="@+id/iv_search_item_icon"
+        android:drawableLeft="@mipmap/ico_fans"
+        android:textColor="@color/color_gray_light"
+        android:textSize="13sp"/>
+
+    <TextView
+        android:id="@+id/tv_search_item_detail_fans"
+        android:layout_width="320px"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_ts"
+        android:layout_marginLeft="3px"
+        android:layout_toRightOf="@+id/tv_ts"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="#B0B1B4"
+        android:textSize="13sp"
+        tool:text="123456"/>
+
+    <ImageView
+        android:id="@+id/tv_follow_item_stream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingBottom="10px"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"
+        android:paddingTop="10px"
+        android:src="@mipmap/attention_pic_live"
+        />
+
+</com.zhy.autolayout.AutoRelativeLayout>
+

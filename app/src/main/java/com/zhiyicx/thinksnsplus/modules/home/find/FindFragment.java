@@ -131,7 +131,7 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank,R.id.find_live})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
@@ -218,6 +218,9 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_rank:
                 startActivity(new Intent(getActivity(), RankIndexActivity.class));
+                break;
+//            直播
+            case R.id.find_live:
                 break;
             default:
                 break;

@@ -11,15 +11,15 @@ buildscript {
 
 
 android {
+
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig.getAt("compileSdkVersion")
-    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
-        minSdkVersion gConfig.getAt("minSdkVersion")
-        targetSdkVersion gConfig.getAt("targetSdkVersion")
-        versionCode gConfig.getAt("versionCode")
-        versionName gConfig.getAt("versionName")
-        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
     }
     lintOptions {
         abortOnError false

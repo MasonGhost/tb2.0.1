@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <com.zhiyicx.zhibolibrary.ui.components.AutoToolbar
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_rank_gold_back"
+            style="@style/style_back_container">
+
+            <ImageView style="@style/style_back_button" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/style_toolbar_title"
+            android:layout_gravity="center" />
+
+    </com.zhiyicx.zhibolibrary.ui.components.AutoToolbar>
+
+    <com.zhiyicx.zhibolibrary.ui.components.refresh.RefreshLayout
+        android:id="@+id/srl_rank_gold"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_rank_gold"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </com.zhiyicx.zhibolibrary.ui.components.refresh.RefreshLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_gold_ranking_placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/wifi_pic_default"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>
