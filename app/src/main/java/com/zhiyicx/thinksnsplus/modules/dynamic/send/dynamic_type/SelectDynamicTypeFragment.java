@@ -204,6 +204,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             case R.id.send_words_question:
                 // 提问
                 startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+                getActivity().finish();
+                getActivity().overridePendingTransition(0, R.anim.zoom_out);
                 break;
             case R.id.open_zhibo:
                 // 跳转直播
@@ -279,6 +281,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         bundle.putInt(BUNDLE_TYPE, 0);
                         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
                         startActivity(intent);
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
@@ -287,6 +291,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         bundle.putInt(BUNDLE_TYPE, 1);
                         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
                         startActivity(intent);
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
                     })
                     .build();
         }
@@ -304,6 +310,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
                     })
                     .build();
         }
