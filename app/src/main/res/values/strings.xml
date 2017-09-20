@@ -500,6 +500,7 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
+    <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
     <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
     <string name="qa_topic_open_all">展开全部</string>
