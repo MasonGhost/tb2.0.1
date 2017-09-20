@@ -91,4 +91,8 @@
     <!--登录联想的最小输入值-->
     <integer name="login_hint_mix_count">1</integer>
 
+    <!--#########################################     资讯相关      ################################-->
+    <!--完善文章信息最大输入值-->
+    <integer name="authorname_min">8</integer>
+
 </resources>

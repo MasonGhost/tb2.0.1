@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor
+    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor
         android:id="@+id/riche_test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

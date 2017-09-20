@@ -91,7 +91,7 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                     dynamicCommentBean.getComment().getComment_content());
             holder.setVisible(R.id.tv_content, View.VISIBLE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), commentBody));
+                    holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message), commentBody));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);

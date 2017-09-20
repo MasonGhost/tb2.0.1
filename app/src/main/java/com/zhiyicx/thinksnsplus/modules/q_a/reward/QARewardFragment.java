@@ -250,6 +250,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 //            startActivity(new Intent(getActivity(), QA_Activity.class));
             goToQuestionDetail();
             getActivity().finish();
+        } else if (prompt == Prompt.ERROR) {
+            configSureButton();
         }
     }
 

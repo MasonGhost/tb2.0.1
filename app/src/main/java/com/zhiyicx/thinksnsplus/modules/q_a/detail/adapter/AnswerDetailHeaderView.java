@@ -195,7 +195,6 @@ public class AnswerDetailHeaderView {
                         }
                     });
 
-
             boolean isAnonmity = answerInfoBean.getAnonymity() == 1;
             boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
             mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");

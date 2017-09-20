@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/edit_imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/image_close"

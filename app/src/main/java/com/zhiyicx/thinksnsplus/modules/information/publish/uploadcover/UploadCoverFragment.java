@@ -182,6 +182,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
+            mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject());
         }
     }
 

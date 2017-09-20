@@ -76,6 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
                 app:isRequired="gone"
+                app:rightMaxLength="@integer/authorname_min"
                 android:background="@color/white"
                 app:leftHintText="@string/info_from"
                 android:paddingLeft="@dimen/spacing_mid"
@@ -85,6 +86,7 @@
             <!--作者-->
             <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
                 android:id="@+id/tv_author"
+                app:rightMaxLength="@integer/authorname_min"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
                 app:isRequired="gone"

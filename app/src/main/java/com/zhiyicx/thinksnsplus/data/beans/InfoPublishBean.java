@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class InfoPublishBean implements Parcelable {
 
-    private static final String DEFALUT_SUBJECT = ">**[摘要]**";
+    public static final String DEFALUT_SUBJECT = ">**[摘要]**";
 
     /**
      * {@linnk https://github.com/slimkit/plus-component-news/blob/master/docs/contribute.md}
@@ -103,10 +103,7 @@ public class InfoPublishBean implements Parcelable {
     }
 
     public void setSubject(String subject) {
-        if (TextUtils.isEmpty(subject)) {
-            return;
-        }
-        this.subject = !subject.contains(DEFALUT_SUBJECT) ? DEFALUT_SUBJECT + subject : subject;
+        this.subject = subject;
     }
 
     public String getContent() {
@@ -115,9 +112,6 @@ public class InfoPublishBean implements Parcelable {
 
     public void setContent(String content) {
         this.content = content;
-        if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
-            this.subject = DEFALUT_SUBJECT;
-        }
     }
 
     public long getCategoryId() {

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -32,8 +33,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
 import org.simple.eventbus.Subscriber;
@@ -82,7 +82,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private CenterAlertPopWindow mAnonymityAlertPopWindow;
 
     private QAPublishBean mQAPublishBean;
-    private DataImageView test;
+    private SubsamplingScaleImageView test;
 
     public static PublishContentFragment newInstance(Bundle bundle) {
         PublishContentFragment publishContentFragment = new PublishContentFragment();
