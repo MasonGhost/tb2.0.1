@@ -278,6 +278,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
      */
     public DataImageView insertImage(String imagePath, int width) {
         Bitmap bmp = getScaledBitmap(imagePath, width);
+
         return insertImage(bmp, imagePath);
     }
 
@@ -371,7 +372,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
         Glide.with(getContext())
                 .load(imagePath)
-                .asBitmap()
                 .override(allLayout.getWidth(), imageHeight)
                 .centerCrop()
                 .placeholder(R.drawable.shape_default_image)
@@ -408,7 +408,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
-        int imageHeight = 500;
+        int imageHeight;
         if (bmp != null) {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
             bmp.recycle();

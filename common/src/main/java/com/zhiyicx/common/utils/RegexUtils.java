@@ -292,7 +292,7 @@ public class RegexUtils {
     public static String replaceImageId(String regex, String input) {
         try {
             Matcher matcher = Pattern.compile(regex).matcher(input);
-            return matcher.replaceAll("");
+            return matcher.replaceAll("[图片]");
         } catch (Exception e) {
             return input;
         }
