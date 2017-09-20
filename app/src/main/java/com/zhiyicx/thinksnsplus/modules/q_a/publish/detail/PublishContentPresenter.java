@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -80,51 +81,35 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void publishAnswer(Long question_id, String body, int anonymity) {
-        mRepository.publishAnswer(question_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
-                data.getData().setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-                data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
-                EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
-                mRootView.publishSuccess(data.getData());
-            }
+        mRepository.publishAnswer(question_id, body, anonymity)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.publish_doing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
+                        data.getData().setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
+                        EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
+                        mRootView.publishSuccess(data.getData());
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.publish_failed));
+                    }
+                });
     }
 
     @Override
     public void updateAnswer(Long answer_id, String body, int anonymity) {
-        mRepository.updateAnswer(answer_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<Object> data) {
-                EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
-                mRootView.updateSuccess();
-            }
-
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
-
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-            }
-        });
-    }
-
-    @Override
-    public void updateQuestion(Long question_id, String body, int anonymity) {
-        mRepository.updateQuestion(question_id, body, anonymity)
+        mRepository.updateAnswer(answer_id, body, anonymity)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -135,11 +120,38 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.update_failed));
+                    }
+                });
+    }
+
+    @Override
+    public void updateQuestion(Long question_id, String body, int anonymity) {
+        mRepository.updateQuestion(question_id, body, anonymity)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
+                        mRootView.updateSuccess();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.update_failed));
                     }
                 });
     }
