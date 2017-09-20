@@ -667,4 +667,12 @@
     <string name="top_dynamic">置顶动态</string>
     <string name="default_delete_user_name">未知用户</string>
     <string name="user_had_deleted">用户被删除</string>
+
+    <!--申请支付等公用-->
+    <string name="apply_for_success">申请成功，请等待审核</string>
+    <string name="apply_for_success_no_audit">申请成功</string>
+    <string name="apply_for_failed">申请失败</string>
+    <string name="pay_alert_ing">支付中&#8230;</string>
+    <string name="pay_alert_success">支付成功</string>
+    <string name="pay_alert_failed">支付失败</string>
 </resources>
