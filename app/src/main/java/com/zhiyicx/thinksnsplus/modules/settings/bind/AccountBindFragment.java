@@ -124,19 +124,21 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
             mLlContainerSurePassword.setVisibility(View.GONE);
 
         } else { // 绑定
-            if (mUserInfoBean.getPhone() == null && mUserInfoBean.getEmail() == null) { // 需要设置密码
-                mIsNeedSetPasswordWithBindAccount = true;
-                mLlContainerPassword.setVisibility(View.VISIBLE);
-                mLlContainerSurePassword.setVisibility(View.VISIBLE);
-                mTvPaswordTip.setText(getString(R.string.set_password));
-
-            } else {
-                mIsNeedSetPasswordWithBindAccount = false;
-                mLlContainerPassword.setVisibility(View.GONE);
-                mLlContainerSurePassword.setVisibility(View.GONE);
-                mTvPaswordTip.setText(getString(R.string.password));
-            }
-
+            // 9.18修改 在绑定的时候无需输入密码
+            mLlContainerPassword.setVisibility(View.GONE);
+            mLlContainerSurePassword.setVisibility(View.GONE);
+            mIsNeedSetPasswordWithBindAccount = false;
+//            if (mUserInfoBean.getPhone() == null && mUserInfoBean.getEmail() == null) { // 需要设置密码
+//                mIsNeedSetPasswordWithBindAccount = true;
+//                mLlContainerPassword.setVisibility(View.VISIBLE);
+//                mLlContainerSurePassword.setVisibility(View.VISIBLE);
+//                mTvPaswordTip.setText(getString(R.string.set_password));
+//            } else {
+//                mIsNeedSetPasswordWithBindAccount = false;
+//                mLlContainerPassword.setVisibility(View.GONE);
+//                mLlContainerSurePassword.setVisibility(View.GONE);
+//                mTvPaswordTip.setText(getString(R.string.password));
+//            }
         }
 
     }

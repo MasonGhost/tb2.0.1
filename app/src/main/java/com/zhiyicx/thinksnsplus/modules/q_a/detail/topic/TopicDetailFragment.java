@@ -252,7 +252,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
         setCenterText(mQaTopicBean.getName());
         mTvTopicName.setText(mQaTopicBean.getName());
         updateFollowState();
-        mTvTopicDescription.setText(mQaTopicBean.getDescription());
+        mTvTopicDescription.setText(String.format(getString(R.string.qa_topic_description), mQaTopicBean.getDescription()));
         mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
         mViewDiver.setVisibility(mQaTopicBean.getExperts_count() == 0 ? View.GONE : View.VISIBLE);

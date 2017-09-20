@@ -96,26 +96,26 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
                 holder.setText(R.id.item_info_channel, data.getName());
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.itemView.setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
+//            @Override
+//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
+//                RxView.clicks(viewHolder.itemView)
+//                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                        .compose(bindToLifecycle())
+//                        .subscribe(o -> {
+//                            if (mOnItemClickListener != null) {
+//                                int position = viewHolder.getAdapterPosition();
+//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                            }
+//                        });
+//
+//                viewHolder.itemView.setOnLongClickListener(v -> {
+//                    if (mOnItemClickListener != null) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+//                    }
+//                    return true;
+//                });
+//            }
         };
 
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

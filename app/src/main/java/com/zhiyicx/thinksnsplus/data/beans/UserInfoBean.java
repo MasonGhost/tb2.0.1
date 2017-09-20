@@ -72,14 +72,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public static final int MALE = 1;
     public static final int FEMALE = 2;
     public static final int SECRET = 0;
+
     @Id
-    @SerializedName(value="user_id", alternate={"id"})
+    @SerializedName(value = "user_id", alternate = {"id"})
     private Long user_id;
     private String name;
-    @SerializedName(value="phone", alternate={"mobi"})
+    @SerializedName(value = "phone", alternate = {"mobi"})
     private String phone;
     private String email;
-    @SerializedName(value="intro", alternate={"bio"})
+    @SerializedName(value = "intro", alternate = {"bio"})
     private String intro;
     private int sex;            // 1 2 3  1男 2女 3其他
     @Transient
@@ -91,13 +92,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private String city;        // 城市
     @Transient
     private String area;        // 区
-
+    /**
+     * 基于这条消息的用户是否关注了我
+     */
     private boolean following;
     private boolean follower;
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
-    @SerializedName(value="cover", alternate={"bg"})
+    @SerializedName(value = "cover", alternate = {"bg"})
     private String cover;// 封面
     @Transient
     private WalletBean wallet;
@@ -109,6 +112,27 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
     private List<UserTagBean> tags;
+
+    private boolean initial_password = true; // 在登陆信息中返回，用来判断是否需要设置密码，给个默认值true，false才需要设置
+
+    private boolean has_deleted; // 标记用户是否被删除了，默认没有被删除
+
+
+    public boolean isHas_deleted() {
+        return has_deleted;
+    }
+
+    public void setHas_deleted(boolean has_deleted) {
+        this.has_deleted = has_deleted;
+    }
+
+    public boolean isInitial_password() {
+        return initial_password;
+    }
+
+    public void setInitial_password(boolean initial_password) {
+        this.initial_password = initial_password;
+    }
 
     public List<UserTagBean> getTags() {
         return tags;
@@ -312,7 +336,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public UserInfoBean() {
     }
-
 
 
     /**
@@ -568,6 +591,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.verified = verified;
     }
 
+    public boolean getInitial_password() {
+        return this.initial_password;
+    }
+
+    public boolean getHas_deleted() {
+        return this.has_deleted;
+    }
+
 
     @Override
     public int describeContents() {
@@ -598,6 +629,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
         dest.writeTypedList(this.tags);
+        dest.writeByte(this.initial_password ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_deleted ? (byte) 1 : (byte) 0);
     }
 
     protected UserInfoBean(Parcel in) {
@@ -623,13 +656,15 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.initial_password = in.readByte() != 0;
+        this.has_deleted = in.readByte() != 0;
     }
 
-    @Generated(hash = 1966877277)
+    @Generated(hash = 793304063)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
             String location, boolean following, boolean follower, String created_at, String updated_at,
             String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags) {
+            List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -646,6 +681,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.extra = extra;
         this.verified = verified;
         this.tags = tags;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -684,6 +721,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 ", extra=" + extra +
                 ", verified=" + verified +
                 ", tags=" + tags +
+                ", initial_password=" + initial_password +
+                ", has_deleted=" + has_deleted +
                 '}';
     }
 }

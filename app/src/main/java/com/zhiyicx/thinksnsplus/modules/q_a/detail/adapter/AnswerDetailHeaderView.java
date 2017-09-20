@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -199,7 +202,14 @@ public class AnswerDetailHeaderView {
             boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
             mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
             mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
-            mName.setText(isAnonmity && !isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
+            // 自己的匿名回答，增加匿名提示
+            if (isAnonmity){
+                mName.setText(!isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user)
+                        : answerInfoBean.getUser().getName() + mContext.getString(R.string.qa_question_answer_anonymity_current_user));
+                ConvertUtils.stringLinkConvert(mName, setLinks());
+            } else {
+                mName.setText(answerInfoBean.getUser().getName());
+            }
             mUserFollow.setChecked(!isAnonmity && answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);
@@ -209,23 +219,16 @@ public class AnswerDetailHeaderView {
         }
     }
 
-    private void showMarkDownView(TextView textView, String content) {
-        textView.post(() -> {
-            RichText
-                    .fromMarkdown(content) // 数据源
-                    .autoFix(true) // 是否自动修复，默认true
-                    .autoPlay(true) // gif图片是否自动播放
-                    .showBorder(true) // 是否显示图片边框
-                    .borderColor(Color.BLUE) // 图片边框颜色
-                    .borderSize(10) // 边框尺寸
-                    .borderRadius(50) // 图片边框圆角弧度
-                    .scaleType(ImageHolder.ScaleType.FIT_CENTER) // 图片缩放方式
-                    .size(ImageHolder.MATCH_PARENT, ImageHolder.WRAP_CONTENT) // 图片占位区域的宽高
-                    .noImage(true) // 不显示并且不加载图片
-                    .resetSize(false) // 默认false，是否忽略img标签中的宽高尺寸（只在img标签中存在宽高时才有效），true：忽略标签中的尺寸并触发SIZE_READY回调，false：使用img标签中的宽高尺寸，不触发SIZE_READY回调
-                    .clickable(true) // 是否可点击，默认只有设置了点击监听才可点击
-                    .into(textView); // 设置目标TextView
-        });
+    private List<Link> setLinks() {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink = new Link(mContext.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(mContext, R.color
+                .normal_for_assist_text))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+        return links;
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {

@@ -231,27 +231,27 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                                    int position) {
                 holder.setText(R.id.item_info_channel, data.getName());
             }
-
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(1, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.itemView.setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
+//
+//            @Override
+//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
+//                RxView.clicks(viewHolder.itemView)
+//                        .throttleFirst(1, TimeUnit.SECONDS)
+//                        .compose(bindToLifecycle())
+//                        .subscribe(o -> {
+//                            if (mOnItemClickListener != null) {
+//                                int position = viewHolder.getAdapterPosition();
+//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                            }
+//                        });
+//
+//                viewHolder.itemView.setOnLongClickListener(v -> {
+//                    if (mOnItemClickListener != null) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+//                    }
+//                    return true;
+//                });
+//            }
         };
 
         mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -301,26 +301,26 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 holder.setText(R.id.item_info_channel, data.getName());
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(1, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.getConvertView().setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
+//            @Override
+//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
+//                RxView.clicks(viewHolder.itemView)
+//                        .throttleFirst(1, TimeUnit.SECONDS)
+//                        .compose(bindToLifecycle())
+//                        .subscribe(o -> {
+//                            if (mOnItemClickListener != null) {
+//                                int position = viewHolder.getAdapterPosition();
+//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                            }
+//                        });
+//
+//                viewHolder.getConvertView().setOnLongClickListener(v -> {
+//                    if (mOnItemClickListener != null) {
+//                        int position = viewHolder.getAdapterPosition();
+//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
+//                    }
+//                    return true;
+//                });
+//            }
         };
         mSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override

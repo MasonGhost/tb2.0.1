@@ -83,7 +83,7 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
 
     @Override
     public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mQAListInfoBeanGreenDao.getMultiDataFromCache();
+        return null;
     }
 
     @Override

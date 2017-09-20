@@ -199,7 +199,7 @@ public class JavaTest {
     @Test
     public void doubleBitMoney() {
         int test = 99999999;
-        long money =10 * test;
+        long money = 10 * test;
 
         System.out.println("result::" + money);
     }
@@ -353,7 +353,8 @@ public class JavaTest {
     @SuppressLint("LogNotUsed")
     @Test
     public void jsonObject2map() {
-//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
+//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d
+// :eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
 //
 //        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
 //                new TypeToken<Map<String, Object>>() {
@@ -392,7 +393,8 @@ public class JavaTest {
     @Test
     public void objecttst() {
         Object object = "{\n" +
-                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
+                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY" +
+                "=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
                 "            \"key\":\"2017/04/28/0701/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\n" +
                 "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
@@ -499,7 +501,11 @@ public class JavaTest {
      */
     @Test
     public void locationParseTest() {
-        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0,\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
+        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\"," +
+                "\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 " +
+                "07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\"," +
+                "\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0," +
+                "\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
         List<LocationContainerBean> lodAta = new Gson().fromJson(data, new TypeToken<List<LocationContainerBean>>() {
         }.getType());
         List<LocationBean> result = new ArrayList<>();
@@ -580,7 +586,8 @@ public class JavaTest {
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
-        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF ||
+                codePoint >= 0xE000 && codePoint <= 0xFFFD);
     }
 
 
@@ -648,12 +655,766 @@ public class JavaTest {
                 "        \"key2\": [ \"value1\", \"value2\" ]\n" +
                 "    }\n" +
                 "}";
+        String response5 = "{\n" +
+                "    \"message\": \"请绑定账号\",\n" +
+                "    \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Application.php\",\n" +
+                "    \"line\": 926,\n" +
+                "    \"trace\": [\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php\",\n" +
+                "            \"line\": 34,\n" +
+                "            \"function\": \"abort\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Application\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                404,\n" +
+                "                \"请绑定账号\",\n" +
+                "                []\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                ".php\",\n" +
+                "            \"line\": 137,\n" +
+                "            \"function\": \"abort\",\n" +
+                "            \"args\": [\n" +
+                "                404,\n" +
+                "                \"请绑定账号\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "\n" +
+                "            \"line\": 44,\n" +
+                "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Traits\\\\{closure}\",\n" +
+                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                404,\n" +
+                "                \"请绑定账号\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                ".php\",\n" +
+                "            \"line\": 138,\n" +
+                "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\{closure}\",\n" +
+                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "\n" +
+                "            \"line\": 45,\n" +
+                "            \"function\": \"abortIf\",\n" +
+                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                true,\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/API/Controllers" +
+                "/SocialiteController.php\",\n" +
+                "            \"line\": 71,\n" +
+                "            \"function\": \"authUser\",\n" +
+                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                \"D4AA7C164E58457F9B8D20E3F594A653\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php\",\n" +
+                "            \"line\": 48,\n" +
+                "            \"function\": \"checkAuth\",\n" +
+                "            \"class\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                \"QQ\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Route.php\",\n" +
+                "            \"line\": 205,\n" +
+                "            \"function\": \"dispatch\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"uri\": \"api/v2/socialite/{provider}\",\n" +
+                "                    \"methods\": [\n" +
+                "                        \"POST\"\n" +
+                "                    ],\n" +
+                "                    \"action\": {\n" +
+                "                        \"middleware\": [\n" +
+                "                            \"api\"\n" +
+                "                        ],\n" +
+                "                        \"uses\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"controller\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"namespace\": null,\n" +
+                "                        \"prefix\": \"api/v2/socialite\",\n" +
+                "                        \"where\": []\n" +
+                "                    },\n" +
+                "                    \"controller\": {},\n" +
+                "                    \"defaults\": [],\n" +
+                "                    \"wheres\": [],\n" +
+                "                    \"parameters\": {\n" +
+                "                        \"provider\": \"qq\"\n" +
+                "                    },\n" +
+                "                    \"parameterNames\": [\n" +
+                "                        \"provider\"\n" +
+                "                    ],\n" +
+                "                    \"computedMiddleware\": [\n" +
+                "                        \"api\"\n" +
+                "                    ],\n" +
+                "                    \"compiled\": {}\n" +
+                "                },\n" +
+                "                {},\n" +
+                "                \"checkAuth\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Route.php\",\n" +
+                "            \"line\": 162,\n" +
+                "            \"function\": \"runController\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": []\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"line\": 610,\n" +
+                "            \"function\": \"run\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": []\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 30,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings" +
+                ".php\",\n" +
+                "            \"line\": 41,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests" +
+                ".php\",\n" +
+                "            \"line\": 57,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {},\n" +
+                "                600,\n" +
+                "                \"1\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 102,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"line\": 612,\n" +
+                "            \"function\": \"then\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"line\": 571,\n" +
+                "            \"function\": \"runRouteWithinStack\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"uri\": \"api/v2/socialite/{provider}\",\n" +
+                "                    \"methods\": [\n" +
+                "                        \"POST\"\n" +
+                "                    ],\n" +
+                "                    \"action\": {\n" +
+                "                        \"middleware\": [\n" +
+                "                            \"api\"\n" +
+                "                        ],\n" +
+                "                        \"uses\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"controller\": \"SlimKit\\\\PlusSocialite\\\\API\\\\Controllers\\\\SocialiteController@checkAuth\",\n" +
+                "                        \"namespace\": null,\n" +
+                "                        \"prefix\": \"api/v2/socialite\",\n" +
+                "                        \"where\": []\n" +
+                "                    },\n" +
+                "                    \"controller\": {},\n" +
+                "                    \"defaults\": [],\n" +
+                "                    \"wheres\": [],\n" +
+                "                    \"parameters\": {\n" +
+                "                        \"provider\": \"qq\"\n" +
+                "                    },\n" +
+                "                    \"parameterNames\": [\n" +
+                "                        \"provider\"\n" +
+                "                    ],\n" +
+                "                    \"computedMiddleware\": [\n" +
+                "                        \"api\"\n" +
+                "                    ],\n" +
+                "                    \"compiled\": {}\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Router.php\",\n" +
+                "            \"line\": 549,\n" +
+                "            \"function\": \"dispatchToRoute\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"line\": 176,\n" +
+                "            \"function\": \"dispatch\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 30,\n" +
+                "            \"function\": \"Illuminate\\\\Foundation\\\\Http\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/fideloper/proxy/src/TrustProxies.php\",\n" +
+                "            \"line\": 56,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Fideloper\\\\Proxy\\\\TrustProxies\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/TransformsRequest.php\",\n" +
+                "            \"line\": 30,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/TransformsRequest.php\",\n" +
+                "            \"line\": 30,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/ValidatePostSize.php\",\n" +
+                "            \"line\": 27,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/CheckForMaintenanceMode.php\",\n" +
+                "            \"line\": 46,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 149,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\CheckForMaintenanceMode\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                },\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php\",\n" +
+                "            \"line\": 53,\n" +
+                "            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php\",\n" +
+                "            \"line\": 102,\n" +
+                "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
+                "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"line\": 151,\n" +
+                "            \"function\": \"then\",\n" +
+                "            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {}\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php\",\n" +
+                "            \"line\": 116,\n" +
+                "            \"function\": \"sendRequestThroughRouter\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/public/index.php\",\n" +
+                "            \"line\": 48,\n" +
+                "            \"function\": \"handle\",\n" +
+                "            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n" +
+                "            \"type\": \"->\",\n" +
+                "            \"args\": [\n" +
+                "                {\n" +
+                "                    \"attributes\": {},\n" +
+                "                    \"request\": {},\n" +
+                "                    \"query\": {},\n" +
+                "                    \"server\": {},\n" +
+                "                    \"files\": {},\n" +
+                "                    \"cookies\": {},\n" +
+                "                    \"headers\": {}\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
 
         Assert.assertTrue("this is a message.".equals(praseErrorMessage(response1)));
         Assert.assertTrue("This is amessage array item.".equals(praseErrorMessage(response2)));
         Assert.assertTrue("value".equals(praseErrorMessage(response3)));
         Assert.assertTrue("value1".equals(praseErrorMessage(response4)));
-
+        praseErrorMessage(response5);
 
     }
 

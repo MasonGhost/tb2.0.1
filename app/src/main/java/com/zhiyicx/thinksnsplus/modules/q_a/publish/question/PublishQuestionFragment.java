@@ -161,13 +161,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        if (TextUtils.isEmpty(mQuestionStr)) {
-            return;
-        }
+
         requestNetData(null, maxId, "all", isLoadMore);
     }
 
     private void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
+        if (TextUtils.isEmpty(mQuestionStr)) {
+            return;
+        }
         mPresenter.requestNetData(subject, maxId, type, isLoadMore);
     }
 

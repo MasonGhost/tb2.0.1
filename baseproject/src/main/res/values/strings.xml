@@ -127,6 +127,7 @@
 
     <!-- 中间弹窗 -->
     <string name="buy_pay">购买支付</string>
+    <string name="send_info_pay">投稿支付</string>
     <string name="buy_pay_desc">您只需¥%.2f元就可查看图片</string>
     <string name="buy_pay_words_desc">您只需¥%.2f元就可查看</string>
     <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可下载图片</string>

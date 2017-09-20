@@ -218,11 +218,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                Intent intent = new Intent(getContext(), PersonalCenterActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, mUserInfoBean);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                PersonalCenterFragment.startToPersonalCenter(getContext(),mUserInfoBean);
                 break;
             case R.id.bt_my_info:
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));

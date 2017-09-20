@@ -112,10 +112,16 @@ public class ConvertUtils {
                     message = praseErrorMessage((new Gson().toJson(entry.getValue())));
                 }
             } else if (entry.getValue() instanceof String[]) {
-                message = ((String[]) entry.getValue())[0];
+                try {
+                    message = ((String[]) entry.getValue())[0];
+                } catch (Exception ignored) {
+                }
                 break;
             } else if (entry.getValue() instanceof List) {
-                message = (String) ((List) entry.getValue()).get(0);
+                try {
+                    message = (String) ((List) entry.getValue()).get(0);
+                } catch (Exception ignored) {
+                }
                 break;
             }
         }
@@ -990,7 +996,8 @@ public class ConvertUtils {
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
-        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF ||
+                codePoint >= 0xE000 && codePoint <= 0xFFFD);
     }
 
 }

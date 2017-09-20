@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ThinkSNS加</string>
+    <string name="app_name">ThinkSNS+</string>
     <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
     <!-- 主页  -->
     <string name="home">首页</string>
@@ -181,6 +181,9 @@
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>
     <string name="send_image_dynamic">图片</string>
+    <string name="send_question">提问</string>
+    <string name="send_info">投稿</string>
+    <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
@@ -392,7 +395,7 @@
     <string name="save">保存</string>
     <string name="next">下一步</string>
     <string name="user_tag_choose_tag">选择标签</string>
-    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已选择%2$d个标签</string>
     <string name="user_tag_choosed_tag_format_tip">最多只能选择%d个标签</string>
     <string name="tips">温馨提示</string>
     <string name="tags_tips">标签为全局标签，选择合适的标签，系统可推荐你感兴趣的内容，方便找到相同身份或爱好的人，很重要哦！</string>
@@ -497,6 +500,7 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
+    <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
     <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
     <string name="qa_topic_open_all">展开全部</string>
@@ -507,6 +511,7 @@
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
     <string name="qa_question_answer_anonymity">匿</string>
     <string name="qa_question_answer_anonymity_user">匿名用户</string>
+    <string name="qa_question_answer_anonymity_current_user">(匿名)</string>
     <string name="qa_not_set_reward">未设置悬赏</string>
     <string name="qa_reward_public">公开悬赏</string>
     <string name="qa_reward_invited">已邀请悬赏</string>
@@ -660,4 +665,14 @@
     <string name="all_dynamic">全部动态</string>
     <string name="pay_dynamic">付费动态</string>
     <string name="top_dynamic">置顶动态</string>
+    <string name="default_delete_user_name">未知用户</string>
+    <string name="user_had_deleted">用户被删除</string>
+
+    <!--申请支付等公用-->
+    <string name="apply_for_success">申请成功，请等待审核</string>
+    <string name="apply_for_success_no_audit">申请成功</string>
+    <string name="apply_for_failed">申请失败</string>
+    <string name="pay_alert_ing">支付中&#8230;</string>
+    <string name="pay_alert_success">支付成功</string>
+    <string name="pay_alert_failed">支付失败</string>
 </resources>

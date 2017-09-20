@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -44,6 +45,13 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
         TopicDetailListFragment fragment = new TopicDetailListFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mRvList.addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0, 0));
+
     }
 
     @Override
