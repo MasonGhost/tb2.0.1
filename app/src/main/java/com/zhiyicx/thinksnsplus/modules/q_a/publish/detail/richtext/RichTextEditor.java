@@ -433,10 +433,10 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        String path= FileUtils.saveBitmapToFile(getContext(),resource,"qa"+id);
+                        String path = FileUtils.saveBitmapToFile(getContext(), resource, "qa" + id);
 
                         imageView.setImage(ImageSource.uri(path)
-                                        .region(new Rect(0, 0, resource.getWidth(), resource.getHeight())));
+                                .region(new Rect(0, 0, resource.getWidth(), resource.getHeight())));
                         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
                         lp.bottomMargin = 10;
                         imageView.setLayoutParams(lp);
@@ -445,7 +445,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        LogUtils.e("onLoadFailed::"+e.toString());
+                        LogUtils.e("onLoadFailed::" + e.toString() + "\n" + imagePath);
                     }
                 });
 
