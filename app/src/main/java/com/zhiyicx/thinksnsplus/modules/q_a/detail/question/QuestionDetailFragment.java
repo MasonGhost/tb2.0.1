@@ -516,6 +516,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .parentView(getView())
                     .isOutsideTouch(true)
                     .isFocus(true)
+                    .backgroundAlpha(0.8f)
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .titleStr(getString(R.string.qa_question_delete))

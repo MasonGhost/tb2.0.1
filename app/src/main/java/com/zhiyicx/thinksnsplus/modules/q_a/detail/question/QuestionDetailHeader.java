@@ -177,6 +177,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      * @param qaListInfoBean bean
      */
     public void updateFollowState(QAListInfoBean qaListInfoBean) {
+        // 关注&&悬赏金额
+        if (qaListInfoBean.getAmount() > 0) {
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+        } else {
+            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
+                    qaListInfoBean.getWatchers_count()));
+        }
         mTvTopicChangeFollow.setChecked(qaListInfoBean.getWatched());
         mTvTopicChangeFollow.setText(qaListInfoBean.getWatched() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
         mTvTopicChangeFollow.setPadding(qaListInfoBean.getWatched() ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) : mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);

@@ -184,6 +184,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void handleFollowState(String questionId, boolean isFollowed) {
         mRootView.getCurrentQuestion().setWatched(isFollowed);
+        if (isFollowed){
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() + 1);
+        } else {
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() - 1);
+        }
         mRootView.updateFollowState();
         mRepository.handleQuestionFollowState(questionId, isFollowed);
     }
