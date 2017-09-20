@@ -435,11 +435,11 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         String path= FileUtils.saveBitmapToFile(getContext(),resource,"qa"+id);
 
-//                        imageView.setImage(ImageSource.uri(path)
-//                                        .region(new Rect(0, 0, resource.getWidth(), resource.getHeight())));
-//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-//                        lp.bottomMargin = 10;
-//                        imageView.setLayoutParams(lp);
+                        imageView.setImage(ImageSource.uri(path)
+                                        .region(new Rect(0, 0, resource.getWidth(), resource.getHeight())));
+                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+                        lp.bottomMargin = 10;
+                        imageView.setLayoutParams(lp);
                     }
 
                     @Override

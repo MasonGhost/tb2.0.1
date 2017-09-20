@@ -71,13 +71,14 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
         boolean isInvited = answerInfoBean.getInvited() == 1;// 是否被邀请回答
 
-        boolean canNotLook = TextUtils.isEmpty(answerInfoBean.getBody());// 是否要付费才能查看
+        boolean canNotLook = mQaListInfoBean.getUser_id() != answerInfoBean.getUser_id()
+                && TextUtils.isEmpty(answerInfoBean.getBody());// 是否要付费才能查看
 
         // 发布者信息
         boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
         TextView nameView = holder.getTextView(R.id.tv_name);
-        if (answerInfoBean.getAnonymity() == 1){
+        if (answerInfoBean.getAnonymity() == 1) {
             nameView.setText(!isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
                     : answerInfoBean.getUser().getName() + nameView.getContext().getString(R.string.qa_question_answer_anonymity_current_user));
             ConvertUtils.stringLinkConvert(nameView, setLinks(nameView.getContext()));
