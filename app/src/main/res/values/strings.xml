@@ -458,7 +458,7 @@
     <string name="qa_publish_next">下一步</string>
     <string name="qa_publish_title_hint">请输入正确的问题并以问号结尾</string>
     <string name="qa_publish_title_toast">输入问题请以“？”结束</string>
-    <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
+    <string name="qa_publish_content_hint">详细描述你的问题，有助于收到准确的回答</string>
     <string name="qa_publish_anonymous">匿名提问</string>
     <string name="qa_publish_enable_anonymous">启用匿名</string>
     <string name="qa_topic">话题</string>

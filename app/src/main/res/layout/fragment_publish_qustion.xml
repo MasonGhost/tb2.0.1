@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_large"
-        app:hintContent="@string/qa_publish_title_toast"
+        app:hintContent="@string/qa_publish_title_hint"
         app:limitSize="@integer/introduce_input_max_size"
         app:showLimitSize="@integer/dynamic_title_max_size"/>
 
