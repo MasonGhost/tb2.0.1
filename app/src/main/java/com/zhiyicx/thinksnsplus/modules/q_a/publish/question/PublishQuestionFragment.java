@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivit
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -161,7 +162,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-
         requestNetData(null, maxId, "all", isLoadMore);
     }
 
@@ -170,6 +170,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
             return;
         }
         mPresenter.requestNetData(subject, maxId, type, isLoadMore);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        if (data.isEmpty()) {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
