@@ -57,7 +57,6 @@ public class GlideCircleBorderTransform extends BitmapTransformation {
         paint1.setColor(mBorderColor);
         canvas.drawCircle(r, r, r, paint1);
 
-
         //画图片
         Paint paint = new Paint();
         paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
