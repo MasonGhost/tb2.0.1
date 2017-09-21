@@ -33,7 +33,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
 import org.simple.eventbus.Subscriber;
@@ -403,6 +403,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
+        if (mQAPublishBean.getAnonymity() == 1) {
+            mAnonymityPopWindow.setSwitchButton(true);
+        }
         mAnonymityPopWindow.showParentViewTop();
         mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }

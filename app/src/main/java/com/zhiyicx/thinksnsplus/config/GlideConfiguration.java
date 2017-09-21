@@ -4,12 +4,19 @@ import android.content.Context;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 import com.zhiyicx.common.utils.FileUtils;
+
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 /**
  * @Describe Glide配置信息
@@ -46,6 +53,11 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-//        glide.registerByPhone(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.StreamFactory("Bearer "+AppApplication.getTOKEN()));
+        OkHttpClient client = new OkHttpClient();
+        client.newBuilder().connectTimeout(15, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new TSImageRetryIntercepter(3))
+        .readTimeout(15,TimeUnit.SECONDS);
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+        glide.register(GlideUrl.class, InputStream.class, factory);
     }
 }

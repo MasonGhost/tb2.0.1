@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,10 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.Repository, MyPublishQuestionContract.View>
-        implements MyPublishQuestionContract.Presenter{
+        implements MyPublishQuestionContract.Presenter {
+
+    @Inject
+    QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     @Inject
     public MyPublishQuestionPresenter(MyPublishQuestionContract.Repository repository, MyPublishQuestionContract.View rootView) {
@@ -28,7 +32,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getUserQAQustion(mRootView.getMyQuestionType(),maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+        mRepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
             @Override
             protected void onSuccess(List<QAListInfoBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -54,6 +58,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+        mQAListInfoBeanGreenDao.saveMultiData(data);
         return false;
     }
 }

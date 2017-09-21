@@ -33,7 +33,7 @@
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"/>
 
-        <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor
+        <com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor
             android:id="@+id/riche_test"
             android:layout_width="match_parent"
             app:panEnabled="true"

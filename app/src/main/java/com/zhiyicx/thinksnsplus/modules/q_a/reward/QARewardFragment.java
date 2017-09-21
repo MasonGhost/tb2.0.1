@@ -176,8 +176,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 typeIdsList.add(typeIds);
                 mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
             }
-
             configSureButton();
+            if (draft.isHasAgainEdite()) {
+                mRlInviteContainer.setVisibility(View.GONE);
+            }
         }
     }
 

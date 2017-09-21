@@ -28,7 +28,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;

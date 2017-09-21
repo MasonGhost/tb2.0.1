@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -59,6 +60,7 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
@@ -630,7 +632,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-//                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -656,17 +658,17 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item4Str(getString(R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-//                .item3Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Str(getString(R.string.dynamic_list_top_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
-                    mPresenter.handleCollect(dynamicBean);
+                .item1ClickListener(() -> {// 置顶
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mMyDynamicPopWindow.hide();
                 })
                 .item2ClickListener(() -> {// 删除
@@ -674,7 +676,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mMyDynamicPopWindow.hide();
                     getActivity().finish();
                 })
-                .item3ClickListener(() -> {// 分享
+                .item3ClickListener(() -> {// 收藏
+                    mPresenter.handleCollect(dynamicBean);
+                    mMyDynamicPopWindow.hide();
+                })
+                .item4ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
                     mMyDynamicPopWindow.hide();
                 })

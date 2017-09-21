@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext;
+package com.zhiyicx.thinksnsplus.modules.q_a.richtext;
 
 import android.content.ContentResolver;
 import android.content.Context;

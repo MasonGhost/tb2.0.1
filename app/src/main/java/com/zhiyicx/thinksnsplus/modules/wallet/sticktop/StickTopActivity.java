@@ -1,5 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
