@@ -130,7 +130,14 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     protected int getBodyLayoutId() {
         return R.layout.fragment_topic_detail;
     }
-
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
     @Override
     protected void setRightClick() {
         // 点击弹起分享框
@@ -346,8 +353,6 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
                 });
     }
 
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
+
+
 }
