@@ -30,4 +30,8 @@ public class SelectDynamicTypeActivity extends TSActivity<SelectDynamicTypePrese
                 .inject(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

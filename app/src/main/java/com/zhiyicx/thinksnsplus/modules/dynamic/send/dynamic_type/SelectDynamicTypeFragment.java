@@ -50,7 +50,10 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter> implements SelectDynamicTypeContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter> implements SelectDynamicTypeContract.View,
+        PhotoSelectorImpl.IPhotoBackListener {
+    public static final int DEFAULT_ANIMATE_DELAY_START = 150;
+    public static final int DEFAULT_ANIMATE_DELAY = 80;
 
     public static final String SEND_OPTION = "send_option";
     public static final String GROUP_ID = "group_id";
@@ -105,21 +108,23 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     @Override
     protected void initView(View rootView) {
-        getActivity().getWindow().getDecorView().setBackgroundColor(getColor(R.color.tym));
         initPopWindow();
         initAnimation(mSendWordsDynamic);
-        Observable.timer(300, TimeUnit.MILLISECONDS)
+        long delay = DEFAULT_ANIMATE_DELAY_START;
+        delay += DEFAULT_ANIMATE_DELAY;
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
-        Observable.timer(600, TimeUnit.MILLISECONDS)
+        delay += DEFAULT_ANIMATE_DELAY;
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mOpenZhibo));
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        long delay = 600;
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         // 如果已经签到了，则不再展示签到
         if (systemConfigBean != null && systemConfigBean.isCheckin() && mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
             mCheckIn.setVisibility(View.INVISIBLE);
-            delay += 300;
+            delay += DEFAULT_ANIMATE_DELAY;
             Observable.timer(delay, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> initAnimation(mCheckIn));
@@ -127,12 +132,12 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mCheckIn.setVisibility(View.GONE);
         }
         // 提问
-        delay += 300;
+        delay += DEFAULT_ANIMATE_DELAY;
         Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendWordsQuestion));
         // 投稿
-        delay += 300;
+        delay += DEFAULT_ANIMATE_DELAY;
         Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendInfo));
@@ -148,6 +153,9 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     private void initAnimation(final View view) {
+        if (view == null) {
+            return;
+        }
         view.post(() -> {
             AnimatorSet mAnimatorSet = new AnimatorSet();
             int vertical_distance = mSelectDynamicParent.getBottom() - view.getTop();
@@ -160,7 +168,6 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             view.setVisibility(View.VISIBLE);
             mAnimatorSet.start();
         });
-
     }
 
     @Override
@@ -168,7 +175,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         return R.layout.fragment_dynamic_type;
     }
 
-    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R.id.send_info})
+    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
+            .id.send_info})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -179,8 +187,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     sendWordsDynamicDataBean.setDynamicChannlId(getArguments().getLong(GROUP_ID));
                 }
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                closeActivity();
                 break;
             case R.id.send_image_dynamic:
                 clickSendPhotoTextDynamic();
@@ -197,15 +204,13 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 break;
 
             case R.id.im_close_dynamic:
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                closeActivity();
                 break;
 
             case R.id.send_words_question:
                 // 提问
                 startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                closeActivity();
                 break;
             case R.id.open_zhibo:
                 // 跳转直播
@@ -213,8 +218,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             case R.id.send_info:
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
-                if (mPresenter.checkCertification()){
-                    if (mPresenter.isNeedPayTip()){
+                if (mPresenter.checkCertification()) {
+                    if (mPresenter.isNeedPayTip()) {
                         mPayAlertPopWindow.show();
                         mPresenter.savePayTip(false);
                     } else {
@@ -228,6 +233,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         }
     }
 
+
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
@@ -239,8 +245,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         }
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-        getActivity().finish();
-        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+        closeActivity();
     }
 
     @Override
@@ -261,8 +266,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         mPhotoSelector.getPhotoListFromSelector(MAX_DEFAULT_COUNT, null);
     }
 
-    private void initPopWindow(){
-        if (mCertificationAlertPopWindow == null){
+    private void initPopWindow() {
+        if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item2Str(getString(R.string.certification_personage))
@@ -281,8 +286,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         bundle.putInt(BUNDLE_TYPE, 0);
                         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
                         startActivity(intent);
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                        closeActivity();
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
@@ -291,12 +295,11 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         bundle.putInt(BUNDLE_TYPE, 1);
                         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
                         startActivity(intent);
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                        closeActivity();
                     })
                     .build();
         }
-        if (mPayAlertPopWindow == null){
+        if (mPayAlertPopWindow == null) {
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
@@ -310,10 +313,20 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                        closeActivity();
                     })
                     .build();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        closeActivity();
+    }
+
+    public void closeActivity() {
+        getActivity().finish();
+        getActivity().overridePendingTransition(0, R.anim.fade_out);
+    }
+
 }
