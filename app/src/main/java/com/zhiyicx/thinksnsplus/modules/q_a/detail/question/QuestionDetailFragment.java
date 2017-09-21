@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -182,7 +183,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     protected int getstatusbarAndToolbarHeight() {
-        return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
+        return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(com
+                .zhiyicx.baseproject.R.dimen.divider_line);
     }
 
     @Override
@@ -411,6 +413,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                     .bottomStr(getString(R.string.cancel))
                     .item1ClickListener(() -> {
+                        mMorePop.hide();
                         if (mIsMine) {
                             if (mQaListInfoBean.getExcellent() != 1) {
                                 // 申请精选问答
@@ -421,13 +424,12 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                                         .qa_question_excellent_reapply));
                             }
                         }
-                        mMorePop.hide();
                     })
                     .item2ClickListener(() -> {
+                        mMorePop.hide();
                         if (mDeleteQuestionPopWindow != null) {
                             mDeleteQuestionPopWindow.show();
                         }
-                        mMorePop.hide();
                     })
                     .bottomClickListener(() -> mMorePop.hide())
                     .build();
@@ -449,8 +451,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
+                    .backgroundDrawable(new ColorDrawable(0x000000))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
+                            .getExcellentQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -488,10 +492,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
+                            .getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        mPresenter.payForOnlook(answerInfoBean.getId(),mCurrentPosition);
+                        mPresenter.payForOnlook(answerInfoBean.getId(), mCurrentPosition);
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
@@ -516,7 +521,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .parentView(getView())
                     .isOutsideTouch(true)
                     .isFocus(true)
-                    .backgroundAlpha(0.8f)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .titleStr(getString(R.string.qa_question_delete))
@@ -566,7 +571,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
                 .ORDER_BY_TIME;
         requestNetData(0L, false);
-        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()){
+        if (mOrderTypeSelectPop != null && mOrderTypeSelectPop.isShowing()) {
             mOrderTypeSelectPop.dismiss();
         }
     }
