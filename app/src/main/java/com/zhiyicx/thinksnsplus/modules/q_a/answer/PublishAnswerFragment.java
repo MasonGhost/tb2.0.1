@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
@@ -68,9 +69,11 @@ public class PublishAnswerFragment extends PublishContentFragment {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
         }
-        if (!TextUtils.isEmpty(mTitle)){
-            mRicheTest.setHint(mTitle);
-        }
+//        if (!TextUtils.isEmpty(mTitle)){
+//            mRicheTest.setHint(mTitle);
+//        }
+        // 所有都显示一样的提示语
+        mRicheTest.setHint(getString(R.string.qa_answer_content_hint));
     }
 
     @Override
@@ -109,6 +112,14 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public void updateSuccess() {
         super.updateSuccess();
         getActivity().finish();
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE){
+            getActivity().finish();
+        }
     }
 
     @Override
