@@ -62,9 +62,10 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
 
     }
 
-    private boolean isNeedHeader(){
-        return  mDatas.size() != 1;
+    private boolean isNeedHeader() {
+        return mDatas.size() != 1;
     }
+
     @Override
     public int getSectionCount() {
         return mDatas.size();
@@ -177,7 +178,9 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
             Glide.with(holder.mIvFollow.getContext())
                     .load(userTagBean.getContact().getPhotoUri())
                     .transform(false ?
-                            new GlideCircleBorderTransform(holder.mIvFollow.getContext().getApplicationContext(), holder.mIvFollow.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(holder.mIvFollow.getContext(), R.color.white))
+                            new GlideCircleBorderTransform(holder.mIvFollow.getContext().getApplicationContext(), holder.mIvFollow.getResources()
+                                    .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(holder.mIvFollow.getContext(), R.color
+                                    .white))
                             : new GlideCircleTransform(holder.mIvFollow.getContext().getApplicationContext()))
                     .error(R.mipmap.pic_default_portrait1)
                     .placeholder(R.mipmap.pic_default_portrait1)
@@ -186,7 +189,7 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
             RxView.clicks(holder.mTvInvite)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
-                        DeviceUtils.openSMS(holder.mTvInvite.getContext(), holder.mTvInvite.getResources().getString(R.string.invite_friend), userTagBean.getPhone());
+                        DeviceUtils.openSMS(holder.mTvInvite.getContext(), mPresenter.getInviteSMSTip(), userTagBean.getPhone());
                     });
 
         }

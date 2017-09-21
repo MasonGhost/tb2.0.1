@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contacts;
 
+import android.text.TextUtils;
+
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.PhoneNumber;
@@ -10,8 +12,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.ArrayList;
@@ -39,6 +43,8 @@ public class ContactsPresenter extends BasePresenter<ContactsContract.Repository
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public ContactsPresenter(ContactsContract.Repository repository, ContactsContract.View rootView) {
@@ -153,5 +159,21 @@ public class ContactsPresenter extends BasePresenter<ContactsContract.Repository
     @Override
     public void cancleFollowUser(int index, UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
+    }
+
+    /**
+     * @return 邀请模板
+     */
+    @Override
+    public String getInviteSMSTip() {
+        String tip = null;
+        SystemConfigBean systemConfigBean = mSystemRepository.getBootstrappersInfoFromLocal();
+        if (systemConfigBean != null && systemConfigBean.getSite() != null) {
+            tip = systemConfigBean.getSite().getUser_invite_template();
+        }
+        if (TextUtils.isEmpty(tip)) {
+            tip = mContext.getString(R.string.invite_friend);
+        }
+        return tip;
     }
 }
