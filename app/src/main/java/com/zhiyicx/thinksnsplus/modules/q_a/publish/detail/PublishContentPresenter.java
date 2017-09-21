@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -66,14 +67,14 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage("图片上传失败");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.upload_pic_failed));
                         mRootView.uploadPicFailed();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage("图片解析错误");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.upload_parse_pic_failed));
                         mRootView.uploadPicFailed();
                     }
                 });
@@ -89,7 +90,8 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         data.getData().setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
                         data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
                         EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
-                        mRootView.publishSuccess(data.getData());
+                        mRootView.showSnackMessage(mContext.getString(R.string.publish_success), Prompt.DONE);
+//                        mRootView.publishSuccess(data.getData());
                     }
 
                     @Override
@@ -114,7 +116,8 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
-                        mRootView.updateSuccess();
+                        mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
+//                        mRootView.updateSuccess();
                     }
 
                     @Override
@@ -139,7 +142,8 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
-                        mRootView.updateSuccess();
+                        mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
+//                        mRootView.updateSuccess();
                     }
 
                     @Override
