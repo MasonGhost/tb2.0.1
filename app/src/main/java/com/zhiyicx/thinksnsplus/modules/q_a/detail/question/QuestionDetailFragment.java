@@ -411,6 +411,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                     .bottomStr(getString(R.string.cancel))
                     .item1ClickListener(() -> {
+                        mMorePop.hide();
                         if (mIsMine) {
                             if (mQaListInfoBean.getExcellent() != 1) {
                                 // 申请精选问答
@@ -421,13 +422,12 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                                         .qa_question_excellent_reapply));
                             }
                         }
-                        mMorePop.hide();
                     })
                     .item2ClickListener(() -> {
+                        mMorePop.hide();
                         if (mDeleteQuestionPopWindow != null) {
                             mDeleteQuestionPopWindow.show();
                         }
-                        mMorePop.hide();
                     })
                     .bottomClickListener(() -> mMorePop.hide())
                     .build();
