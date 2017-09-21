@@ -496,7 +496,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                             .getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        mPresenter.payForOnlook(answerInfoBean.getId(), mCurrentPosition);
+                        if (answerInfoBean == null || answerInfoBean.getId() == null) {
+                            showSnackErrorMessage(getString(R.string.pay_fail));
+                        } else {
+                            mPresenter.payForOnlook(answerInfoBean.getId(), mCurrentPosition);
+                        }
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
