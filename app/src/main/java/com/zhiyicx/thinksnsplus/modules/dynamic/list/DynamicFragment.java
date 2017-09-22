@@ -309,7 +309,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
         if (mListDatas.size() > 0) {
-                return mListDatas.get(mListDatas.size() - 1).getId();
+            return mListDatas.get(mListDatas.size() - 1).getId();
         } else {
             return DEFAULT_PAGE_MAX_ID;
         }
@@ -347,7 +347,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
-        int dynamicPosition=holder.getAdapterPosition()-mHeaderAndFooterWrapper.getHeadersCount();
+        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -541,7 +541,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
+                onItemClick(null, null, dataPosition + mHeaderAndFooterWrapper.getHeadersCount());
                 break;
 
             case 3: // 更多
@@ -570,7 +570,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                 break;
             default:
-                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
+                onItemClick(null, null, dataPosition + mHeaderAndFooterWrapper.getHeadersCount());
 
         }
     }
@@ -783,7 +783,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                                 .dynamic_list_collect_dynamic)))
                 // 付费评论功能 移除
 //                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
-//                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
+//                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string
+// .dynamic_list_top_dynamic) : null)
                 .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
@@ -811,9 +812,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     mMyDynamicPopWindow.hide();
                 })
                 .item4ClickListener(() -> {// 申请置顶
-                    Intent intent = new Intent(getActivity(), DynamicTopActivity.class);
-                    intent.putExtra(FEEDID, dynamicBean.getId());
-                    startActivity(intent);
+                    StickTopFragment.startSticTopActivity(getContext(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mMyDynamicPopWindow.hide();
                 })
                 .item5ClickListener(() -> {// 删除

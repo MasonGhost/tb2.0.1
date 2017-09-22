@@ -33,6 +33,7 @@ import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
@@ -67,6 +68,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -165,7 +167,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (userInfoBean.getHas_deleted()) {
             try {
                 if (context instanceof Activity) {
-                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string.user_had_deleted),
+                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string
+                                    .user_had_deleted),
                             TSnackbar.LENGTH_SHORT)
                             .setPromptThemBackground(Prompt.WARNING)
                             .show();
@@ -816,10 +819,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean feedIdIsNull = feed_id == 0;
         boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic)))
-                .item3Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
-                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item3Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -830,7 +834,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     mDeletDynamicPopWindow.hide();
                 })
                 .item3ClickListener(() -> {
+                    StickTopFragment.startSticTopActivity(getContext(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mDeletDynamicPopWindow.hide();
+                })
+                .item4ClickListener(() -> {
                     updateDynamicCounts(-1);
                     mPresenter.deleteDynamic(dynamicBean, position);
                     mDeletDynamicPopWindow.hide();
