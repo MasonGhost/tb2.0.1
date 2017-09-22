@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -91,7 +92,7 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
             String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
                     dynamicCommentBean.getComment().getComment_content());
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message), commentBody));
+                    holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message), TextUtils.isEmpty(commentBody)?" ":commentBody));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);

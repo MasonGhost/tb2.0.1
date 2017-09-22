@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
 import com.amap.api.services.core.LatLonPoint;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -18,10 +19,8 @@ public interface FindSomeOneContainerContract {
     interface View extends IBaseView< Presenter> {
     }
 
-    interface Presenter extends IBasePresenter {
-
+    interface Presenter extends IBaseTouristPresenter {
         void updateUseLocation(LatLonPoint latLonPoint);
-
     }
 
     interface Repository {

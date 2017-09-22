@@ -280,6 +280,7 @@
     <!--置顶评论-->
     <string name="review">审核通知</string>
     <string name="review_ing">待审核</string>
+    <string name="review_done">已审核</string>
     <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该内容已被删除</string>
