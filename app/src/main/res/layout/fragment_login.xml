@@ -64,7 +64,7 @@
 
             <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
                 android:id="@+id/et_login_password"
-                style="@style/style_edit"
+                style="@style/style_passward_edit"
                 android:hint="@string/password_input_hint"
                 android:inputType="text"
                 android:text=""/>
