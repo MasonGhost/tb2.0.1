@@ -161,7 +161,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
-        QAListInfoBean qaListInfoBean=answerInfoBean.getQuestion();
+        QAListInfoBean qaListInfoBean = answerInfoBean.getQuestion();
         mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);

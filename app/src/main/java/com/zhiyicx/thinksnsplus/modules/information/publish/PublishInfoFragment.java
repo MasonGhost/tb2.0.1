@@ -33,12 +33,10 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
@@ -52,6 +50,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         RichTextEditor.OnContentChangeListener {
 
     public static final String INFO_REFUSE = "info_refuse";
+    public static InfoPublishBean sInfoPublishBean = new InfoPublishBean();
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
@@ -76,7 +75,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private int mPicTag;
 
     private ActionPopupWindow mInstructionsPopupWindow;
-    private InfoPublishBean mInfoPublishBean;
+//    private InfoPublishBean mInfoPublishBean;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -88,7 +87,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+            sInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
         }
     }
 
@@ -136,10 +135,10 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     protected void setRightClick() {
         super.setRightClick();
         InfoPublishBean infoPublishBean;
-        if (mInfoPublishBean == null) {
+        if (sInfoPublishBean == null) {
             infoPublishBean = new InfoPublishBean();
         } else {
-            infoPublishBean = mInfoPublishBean;
+            infoPublishBean = sInfoPublishBean;
         }
 
         String content = getContentString();
@@ -197,11 +196,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (mInfoPublishBean != null) {
-            if (!TextUtils.isEmpty(mInfoPublishBean.getContent())) {
+        if (sInfoPublishBean != null) {
+            if (!TextUtils.isEmpty(sInfoPublishBean.getContent())) {
                 mRicheTest.clearAllLayout();
-                mPresenter.pareseBody(mInfoPublishBean.getContent());
-                mEtInfoTitle.setText(mInfoPublishBean.getTitle());
+                mPresenter.pareseBody(sInfoPublishBean.getContent());
+                mEtInfoTitle.setText(sInfoPublishBean.getTitle());
             }
         }
     }

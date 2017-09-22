@@ -694,8 +694,8 @@ public class SubsamplingScaleImageView extends View {
         }
         width = Math.max(width, getSuggestedMinimumWidth());
         height = Math.max(height, getSuggestedMinimumHeight());
-        Log.d("bigimage:w::",""+width);
-        Log.d("bigimage:h::",""+height);
+        Log.d("bigimage:w::", "" + width);
+        Log.d("bigimage:h::", "" + height);
         setMeasuredDimension(width, height);
     }
 
@@ -1085,7 +1085,8 @@ public class SubsamplingScaleImageView extends View {
         if (tileMap != null && isBaseLayerReady()) {
 
             // Optimum sample size for current scale
-            int sampleSize = Math.min(fullImageSampleSize, calculateInSampleSize(scale));
+            int test = calculateInSampleSize(scale);
+            int sampleSize = Math.min(fullImageSampleSize, test);
 
             // First check for missing tiles - if there are any we need the base layer underneath to avoid gaps
             boolean hasMissingTiles = false;

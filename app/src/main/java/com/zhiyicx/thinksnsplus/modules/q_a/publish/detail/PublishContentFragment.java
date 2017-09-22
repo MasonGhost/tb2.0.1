@@ -403,7 +403,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
-        if (mQAPublishBean.getAnonymity() == 1) {
+        if (mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
             mAnonymityPopWindow.setSwitchButton(true);
         }
         mAnonymityPopWindow.showParentViewTop();
