@@ -179,7 +179,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     text = text.replaceAll("tym_last", "");
                     if (text.matches("[\\s\\S]*@!\\[\\S*][\\s\\S]*")) {
                         int id = RegexUtils.getImageId(text);
-                        String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?w=100&h=100&q=10";
+                        String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
                         if (id > 0) {
                             mRootView.addImageViewAtIndex(imagePath, id, text, isLast);
                         } else {

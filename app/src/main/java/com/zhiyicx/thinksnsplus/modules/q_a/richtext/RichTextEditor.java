@@ -33,6 +33,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -373,13 +374,10 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);
-
-        float test = (float) options.outWidth / (float) options.outHeight;
-
-        int height =(int)( allLayout.getWidth() / test);
-
-        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, allLayout.getWidth(), height)));
-        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+        float scale = (float) allLayout.getWidth() / (float) options.outWidth;
+        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, options.outWidth, options.outHeight)));
+        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+        imageView.setMaxScale(scale);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         lp.bottomMargin = 10;
 //        lp.width = allLayout.getWidth();
@@ -419,44 +417,41 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             lp.bottomMargin = 10;
             imageView.setLayoutParams(lp);
         } else {
-            imageHeight = allLayout.getWidth();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
-            imageView.setLayoutParams(lp);
             Bitmap bitmap = Bitmap.createBitmap(allLayout.getWidth(), allLayout.getWidth(), Bitmap.Config.RGB_565);
-            Drawable drawable = getResources().getDrawable(R.drawable.shape_default_image);
             Canvas canvas = new Canvas(bitmap);
-            drawable.draw(canvas);
+            canvas.drawColor(getResources().getColor(R.color.general_for_line_light));
             imageView.setImage(ImageSource.bitmap(bitmap));
         }
         LogUtils.d("updateImageViewAtIndex::" + imagePath);
         Glide.with(getContext())
                 .load(imagePath)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
+                .downloadOnly(new SimpleTarget<File>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        String path = FileUtils.saveBitmapToFile(getContext(), resource, "qa" + id);
-                        int scale = allLayout.getWidth() / resource.getWidth();
-                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-                        lp.width = allLayout.getWidth();
-                        lp.height = resource.getHeight() * scale;
-                        lp.bottomMargin = 10;
+                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(resource.getAbsolutePath(), options);
 
-                        imageView.setImage(ImageSource.bitmap(resource));
-
-//                        imageView.setImage(ImageSource.uri(path)
-//                                .region(new Rect(0, 0, resource.getWidth(), resource.getHeight()))
-//                                .dimensions(lp.width, lp.height),new ImageViewState(scale,new PointF(resource.getWidth()/2,resource.getHeight()/2),0));
-//                        imageView.setLayoutParams(lp);
+                        float scale = (float) allLayout.getWidth() / (float) options.outWidth;
+                        imageView.setImage(ImageSource.uri(resource.getAbsolutePath())
+                                .region(new Rect(0, 0, options.outWidth, options.outHeight)));
+                        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+                        imageView.setMaxScale(scale);
                     }
+
+
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        LogUtils.e("onLoadFailed::" + e.toString() + "\n" + imagePath);
+                        e.printStackTrace();
+                        LogUtils.e("onLoadFailed::" + imagePath);
                     }
                 });
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+        lp.bottomMargin = 10;
+        imageView.setLayoutParams(lp);
+        imageView.setAbsolutePath(imagePath);//保存数据会用
 
         allLayout.addView(imageLayout, index);
         if (isLast) {

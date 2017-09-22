@@ -50,6 +50,15 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
 
     // 不建议 用 is 开头的不二类型，序列化时找不到 get set 等方法导致失败
     private boolean hasAgainEdite;
+    private boolean hasAdoption;
+
+    public boolean isHasAdoption() {
+        return hasAdoption;
+    }
+
+    public void setHasAdoption(boolean hasAdoption) {
+        this.hasAdoption = hasAdoption;
+    }
 
     public boolean isHasAgainEdite() {
         return hasAgainEdite;
@@ -287,31 +296,13 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     public static class InvitationsConvert extends BaseConvert<List<Invitations>> {
     }
 
-    @Generated(hash = 1527409719)
-    public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
-                         int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
-                         String updated_at, String created_at, boolean hasAgainEdite) {
-        this.subject = subject;
-        this.topics = topics;
-        this.invitations = invitations;
-        this.body = body;
-        this.anonymity = anonymity;
-        this.automaticity = automaticity;
-        this.look = look;
-        this.amount = amount;
-        this.id = id;
-        this.mark = mark;
-        this.user_id = user_id;
-        this.updated_at = updated_at;
-        this.created_at = created_at;
-        this.hasAgainEdite = hasAgainEdite;
-    }
-
     public static QAPublishBean qaListInfo2QAPublishBean(QAListInfoBean mQaListInfoBean) {
         QAPublishBean qaPublishBean = new QAPublishBean();
         String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
                 .currentTimeMillis();
         qaPublishBean.setHasAgainEdite(true);
+        qaPublishBean.setHasAdoption(mQaListInfoBean.getAdoption_answers() != null
+                && !mQaListInfoBean.getAdoption_answers().isEmpty());
         qaPublishBean.setId(mQaListInfoBean.getId());
         qaPublishBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         qaPublishBean.setMark(Long.parseLong(mark));
@@ -370,10 +361,15 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         dest.writeString(this.updated_at);
         dest.writeString(this.created_at);
         dest.writeByte(this.hasAgainEdite ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasAdoption ? (byte) 1 : (byte) 0);
     }
 
     public boolean getHasAgainEdite() {
         return this.hasAgainEdite;
+    }
+
+    public boolean getHasAdoption() {
+        return this.hasAdoption;
     }
 
     protected QAPublishBean(Parcel in) {
@@ -392,6 +388,28 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         this.updated_at = in.readString();
         this.created_at = in.readString();
         this.hasAgainEdite = in.readByte() != 0;
+        this.hasAdoption = in.readByte() != 0;
+    }
+
+    @Generated(hash = 489344590)
+    public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
+                         int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
+                         String updated_at, String created_at, boolean hasAgainEdite, boolean hasAdoption) {
+        this.subject = subject;
+        this.topics = topics;
+        this.invitations = invitations;
+        this.body = body;
+        this.anonymity = anonymity;
+        this.automaticity = automaticity;
+        this.look = look;
+        this.amount = amount;
+        this.id = id;
+        this.mark = mark;
+        this.user_id = user_id;
+        this.updated_at = updated_at;
+        this.created_at = created_at;
+        this.hasAgainEdite = hasAgainEdite;
+        this.hasAdoption = hasAdoption;
     }
 
     public static final Creator<QAPublishBean> CREATOR = new Creator<QAPublishBean>() {
