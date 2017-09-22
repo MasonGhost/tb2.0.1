@@ -378,9 +378,8 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
         int height =(int)( allLayout.getWidth() / test);
 
-        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, allLayout.getWidth(), height)).tilingDisabled());
-        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
-        imageView.setMinScale(3);
+        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, allLayout.getWidth(), height)));
+        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         lp.bottomMargin = 10;
 //        lp.width = allLayout.getWidth();
