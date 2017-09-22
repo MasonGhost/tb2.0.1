@@ -408,7 +408,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(),mToolbarRight);
+        com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
         if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
@@ -430,7 +430,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?(long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);
@@ -450,7 +450,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?(long)( PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                 }
@@ -488,6 +488,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                if (!isToll) {
+                    mTollMoney = 0;
+                }
                 sl_send_dynamic.smoothScrollTo(0, 0);
 //                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {

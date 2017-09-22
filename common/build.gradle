@@ -76,6 +76,8 @@ dependencies {
     compile dataDependences.butterknife
     // Image
     compile dataDependences.glide
+    compile dataDependences.glideOkhttpIntegration
+    compile dataDependences.glideOkhttp
     // Eventbus
     compile dataDependences.androideventbus
     // Log

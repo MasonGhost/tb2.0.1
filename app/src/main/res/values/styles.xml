@@ -86,14 +86,4 @@
         <item name="android:textColor">@color/important_for_content</item>
     </style>
 
-    // 长图
-    <declare-styleable name="SubsamplingScaleImageView">
-        <attr name="src" format="reference"/>
-        <attr name="assetName" format="string"/>
-        <attr name="panEnabled" format="boolean"/>
-        <attr name="zoomEnabled" format="boolean"/>
-        <attr name="quickScaleEnabled" format="boolean"/>
-        <attr name="tileBackgroundColor" format="color"/>
-    </declare-styleable>
-
 </resources>

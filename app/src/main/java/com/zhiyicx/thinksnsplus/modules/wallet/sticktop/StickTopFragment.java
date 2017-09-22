@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -237,6 +238,20 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 .bottomClickListener(() -> mStickTopInstructionsPopupWindow.hide())
                 .build();
         mStickTopInstructionsPopupWindow.show();
+    }
+
+    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);// 资源id
+        bundle.putLong(StickTopFragment.CHILD_ID, child_id);
+        Intent intent = new Intent(context, StickTopActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void startSticTopActivity(Context context, String type, Long parent_id) {
+        startSticTopActivity(context, type, parent_id, null);
     }
 
 }

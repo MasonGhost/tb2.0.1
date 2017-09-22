@@ -1,13 +1,14 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext;
+package com.zhiyicx.thinksnsplus.modules.q_a.richtext;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -27,14 +28,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -326,13 +324,14 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     public void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
     }
 
     public void showKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(lastFocusEdit, InputMethodManager.SHOW_FORCED);
+        lastFocusEdit.requestFocus();
+        imm.showSoftInput(lastFocusEdit, 0);
 //        imm.showSoftInputFromInputMethod(lastFocusEdit.getApplicationWindowToken(),
 //                InputMethodManager.SHOW_FORCED);
     }
@@ -370,21 +369,24 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     private SubsamplingScaleImageView addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) imageLayout.findViewById(R.id.edit_imageView);
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);
-        int scale = options.outWidth / allLayout.getWidth();
 
-        // 暂时这样处理一下
-//        imageHeight = imageHeight > DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : imageHeight;
+        float test = (float) options.outWidth / (float) options.outHeight;
 
-        imageView.setImage(ImageSource.uri(imagePath)
-                        .region(new Rect(0, 0, options.outWidth, options.outHeight)),
-                ImageSource.resource(R.drawable.shape_default_image).dimensions(allLayout.getWidth(), allLayout.getWidth()));
+        int height =(int)( allLayout.getWidth() / test);
+
+        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, allLayout.getWidth(), height)).tilingDisabled());
+        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+        imageView.setMinScale(3);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         lp.bottomMargin = 10;
+//        lp.width = allLayout.getWidth();
+//        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         imageView.setLayoutParams(lp);
-        imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
+        imageView.setAbsolutePath(imagePath);//保存数据会用
 
 
         allLayout.addView(imageLayout, index);
@@ -422,9 +424,11 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
             imageView.setLayoutParams(lp);
-            Bitmap defalut = BitmapFactory.decodeResource(getResources(),
-                    R.mipmap.icon_256);
-            imageView.setImage(ImageSource.bitmap(defalut));
+            Bitmap bitmap = Bitmap.createBitmap(allLayout.getWidth(), allLayout.getWidth(), Bitmap.Config.RGB_565);
+            Drawable drawable = getResources().getDrawable(R.drawable.shape_default_image);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.draw(canvas);
+            imageView.setImage(ImageSource.bitmap(bitmap));
         }
         LogUtils.d("updateImageViewAtIndex::" + imagePath);
         Glide.with(getContext())
@@ -433,13 +437,19 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        String path = FileUtils.saveBitmapToFile(getContext(), resource, "qa" + id);
-
-                        imageView.setImage(ImageSource.uri(path)
-                                .region(new Rect(0, 0, resource.getWidth(), resource.getHeight())));
+//                        String path = FileUtils.saveBitmapToFile(getContext(), resource, "qa" + id);
+                        int scale = allLayout.getWidth() / resource.getWidth();
                         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+                        lp.width = allLayout.getWidth();
+                        lp.height = resource.getHeight() * scale;
                         lp.bottomMargin = 10;
-                        imageView.setLayoutParams(lp);
+
+                        imageView.setImage(ImageSource.bitmap(resource));
+
+//                        imageView.setImage(ImageSource.uri(path)
+//                                .region(new Rect(0, 0, resource.getWidth(), resource.getHeight()))
+//                                .dimensions(lp.width, lp.height),new ImageViewState(scale,new PointF(resource.getWidth()/2,resource.getHeight()/2),0));
+//                        imageView.setLayoutParams(lp);
                     }
 
                     @Override

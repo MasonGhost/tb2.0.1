@@ -28,7 +28,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.richtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
@@ -330,6 +330,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.im_arrowc:
+                mRicheTest.hideKeyBoard();
                 break;
             case R.id.im_pic:
                 initPhotoPopupWindow();
@@ -359,11 +360,6 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 }
             }
         });
-
-        RxView.clicks(mImArrowc)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mRicheTest.hideKeyBoard());
 
         mPbImageUpload.setOnTouchListener((v, event) -> true);
 

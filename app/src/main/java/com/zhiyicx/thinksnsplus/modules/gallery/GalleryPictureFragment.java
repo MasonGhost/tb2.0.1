@@ -308,8 +308,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
         if (imageBean.getImgUrl() != null) {
-            int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
-            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
+//            int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
+//            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
             // 加载本地图片
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
@@ -317,11 +317,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .error(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f)
-
                     .centerCrop();
-            if (with * height != 0) {
-                local.override(with, height);
-            }
+//            if (with * height != 0) {
+//                local.override(with, height);
+//            }
             local.into(new GallarySimpleTarget(rect));
         } else {
             // 加载网络图片

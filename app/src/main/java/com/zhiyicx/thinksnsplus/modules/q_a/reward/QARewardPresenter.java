@@ -70,17 +70,21 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     @Override
                     protected void onSuccess(Object data) {
                         // 解析数据，在跳转到问题详情页时需要用到
-                        try {
-                            mRepository.deleteQuestion(qaPublishBean);
-                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            QAListInfoBean qaListInfoBean = new Gson().fromJson
-                                    (jsonObject.getString("question"), QAListInfoBean.class);
-                            mRootView.publishQuestionSuccess(qaListInfoBean);
-                            JSONArray array = jsonObject.getJSONArray("message");
-                            mRootView.showSnackMessage(array.getString(0), Prompt.DONE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mRootView.showSnackErrorMessage(e.toString());
+                        if (data == null) {
+                            mRootView.showSnackMessage("编辑成功", Prompt.DONE);
+                        } else {
+                            try {
+                                mRepository.deleteQuestion(qaPublishBean);
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                                QAListInfoBean qaListInfoBean = new Gson().fromJson
+                                        (jsonObject.getString("question"), QAListInfoBean.class);
+                                mRootView.publishQuestionSuccess(qaListInfoBean);
+                                JSONArray array = jsonObject.getJSONArray("message");
+                                mRootView.showSnackMessage(array.getString(0), Prompt.DONE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mRootView.showSnackErrorMessage(e.toString());
+                            }
                         }
                     }
 
