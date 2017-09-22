@@ -199,7 +199,7 @@ public class AnswerDetailHeaderView {
                     });
 
             boolean isAnonmity = answerInfoBean.getAnonymity() == 1;
-            boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+            boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
             mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
             mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
             // 自己的匿名回答，增加匿名提示

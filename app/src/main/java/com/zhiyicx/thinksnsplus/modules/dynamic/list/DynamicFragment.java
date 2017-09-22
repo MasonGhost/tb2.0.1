@@ -489,8 +489,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
                 !detailBeanV2.getPaid_node().isPaid()
-                && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth()
-                .getUser_id();
+                && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
         if (canNotLookWords) {
             initImageCenterPopWindow(position, position, (float)
                             detailBeanV2.getPaid_node().getAmount(),
@@ -554,7 +553,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 } catch (Exception e) {
                 }
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)
-                        .getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                        .getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
@@ -611,7 +610,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication
-                .getmCurrentLoginAuth().getUser_id()) {
+                .getMyUserIdWithdefault()) {
             if (dynamicBean.getComments().get(position).getComment_id() != null) {
                 initDeletCommentPopupWindow(dynamicBean, mCurrentPostion, position);
                 mDeletCommentPopWindow.show();
@@ -621,7 +620,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
             String contentHint = getString(R.string.default_input_hint);
             if (dynamicBean.getComments().get(position).getUser_id() != AppApplication
-                    .getmCurrentLoginAuth().getUser_id()) {
+                    .getMyUserIdWithdefault()) {
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position)
                         .getCommentUser().getName());
             }

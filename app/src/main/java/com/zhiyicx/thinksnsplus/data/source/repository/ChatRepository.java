@@ -171,7 +171,7 @@ public class ChatRepository implements ChatContract.Repository {
             Message tmp = messages.get(i);
             UserInfoBean toChatUserInfo;
             if (tmp.getUid() == 0) {
-                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+                toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
             } else {
                 toChatUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) tmp.getUid());
             }

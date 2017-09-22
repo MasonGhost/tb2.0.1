@@ -368,15 +368,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             List<DynamicDigListBean> digUsers = mRootView.getCurrentDynamic().getDigUserInfoList();
             int digUserSize = digUsers.size();
             for (int i = 0; i < digUserSize; i++) {
-                if (digUsers.get(i).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                        .getUser_id()) {
+                if (digUsers.get(i).getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                     digUsers.remove(i);
                     break;
                 }
             }
         } else {// 喜欢
             UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                    AppApplication.getmCurrentLoginAuth().getUser_id());
+                    AppApplication.getMyUserIdWithdefault());
             DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
             dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
             dynamicDigListBean.setId(System.currentTimeMillis());
@@ -480,7 +479,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Override
     public boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark) {
-        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() &&
+        if (user_id == AppApplication.getMyUserIdWithdefault() &&
                 mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feed_mark) == null) { //
             // 检查当前动态是否已经被删除了
             return true;
@@ -496,7 +495,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         creatComment.setState(DynamicCommentBean.SEND_ING);
         creatComment.setComment_content(commentContent);
         creatComment.setFeed_mark(mRootView.getCurrentDynamic().getFeed_mark());
-        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+        String comment_mark = AppApplication.getMyUserIdWithdefault() + "" + System
                 .currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
@@ -507,9 +506,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         } else {
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
-        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setUser_id(AppApplication.getMyUserIdWithdefault());
         creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                AppApplication.getmCurrentLoginAuth().getUser_id()));
+                AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         // 处理评论数
@@ -656,7 +655,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
                         walletBean.setBalance(walletBean.getBalance() - amount);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {

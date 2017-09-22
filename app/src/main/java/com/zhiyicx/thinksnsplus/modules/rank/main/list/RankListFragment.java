@@ -45,12 +45,17 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
-    protected void initData() {
+    protected void initView(View rootView) {
         DaggerRankListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .rankListPresenterModule(new RankListPresenterModule(this))
                 .build()
                 .inject(this);
+        super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
         super.initData();
         if (mRankIndexBean == null){
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
@@ -59,7 +64,7 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        RankIndexAdapter adapter = new RankIndexAdapter(getContext(), mListDatas);
+        RankIndexAdapter adapter = new RankIndexAdapter(getContext(), mListDatas,mPresenter);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

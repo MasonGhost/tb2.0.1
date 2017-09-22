@@ -75,7 +75,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 && TextUtils.isEmpty(answerInfoBean.getBody());// 是否要付费才能查看
 
         // 发布者信息
-        boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean isMine = answerInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
         ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
         TextView nameView = holder.getTextView(R.id.tv_name);
         if (answerInfoBean.getAnonymity() == 1) {

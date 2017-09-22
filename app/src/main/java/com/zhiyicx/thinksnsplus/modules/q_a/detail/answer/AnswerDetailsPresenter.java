@@ -181,7 +181,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
             return;
         }
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao
-                .getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+                .getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         AnswerDigListBean digListBean = new AnswerDigListBean();
         digListBean.setUser_id(userInfoBean.getUser_id());
         digListBean.setId(System.currentTimeMillis());
