@@ -50,11 +50,11 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
             // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
         }
-        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed_eachother);
-        }else if(userInfoBean1.isFollower()){
+        } else if (userInfoBean1.isFollower()) {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
-        }else {
+        } else {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
         }
 
@@ -63,15 +63,19 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
+                    if (mPresenter.handleTouristControl()) { // 游客无入
+                        return;
+                    }
+
                     // 添加关注，或者取消关注
                     // 关注列表的逻辑操作：关注，互相关注 ---》未关注
                     // 粉丝列表的逻辑操作：互相关注 ---》未关注
 
-                    if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+                    if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
                         mPresenter.cancleFollowUser(position, userInfoBean1);
-                    }else if(userInfoBean1.isFollower()){
+                    } else if (userInfoBean1.isFollower()) {
                         mPresenter.cancleFollowUser(position, userInfoBean1);
-                    }else {
+                    } else {
                         mPresenter.followUser(position, userInfoBean1);
                     }
 
@@ -82,13 +86,14 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
          * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
          */
         holder.getView(R.id.iv_user_follow).setVisibility(
-                userInfoBean1.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() ? View.GONE : View.VISIBLE);
+                userInfoBean1.getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean1.getName());
 
-        holder.setText(R.id.tv_user_signature, TextUtils.isEmpty(userInfoBean1.getIntro())?getContext().getString(R.string.intro_default):userInfoBean1.getIntro());
+        holder.setText(R.id.tv_user_signature, TextUtils.isEmpty(userInfoBean1.getIntro()) ? getContext().getString(R.string.intro_default) :
+                userInfoBean1.getIntro());
         // 修改点赞数量颜色
-        String digCountString = userInfoBean1.getExtra().getLikes_count()+"";
+        String digCountString = userInfoBean1.getExtra().getLikes_count() + "";
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
         if (TextUtils.isEmpty(digCountString)) {
             digCountString = 0 + "";
@@ -113,6 +118,9 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
      * 前往用户个人中心
      */
     private void toUserCenter(Context context, UserInfoBean userInfoBean) {
+        if (mPresenter.handleTouristControl()) { // 游客无入
+            return;
+        }
         PersonalCenterFragment.startToPersonalCenter(context, userInfoBean);
     }
 
