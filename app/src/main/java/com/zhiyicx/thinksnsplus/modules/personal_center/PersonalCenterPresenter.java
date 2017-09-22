@@ -70,6 +70,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_UPDATE_TOLL;
 
 /**
  * @author LiuChao
@@ -659,9 +660,14 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(bundle -> {
-                    int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                     DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                    int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+
+                    if (bundle.getBoolean(DYNAMIC_UPDATE_TOLL)) {// 是否是更新收费信息
+                        position = mRootView.getListDatas().indexOf(dynamicBean);
+                    }
+
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
                     for (int i = 0; i < size; i++) {
@@ -671,7 +677,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                         }
                     }
                     if (dynamicPosition != -1) {// 如果列表有当前评论
-                        mRootView.getListDatas().set(position, dynamicBean);
+                        mRootView.getListDatas().get(position).setImages(dynamicBean.getImages());
                     }
 
                     return isNeedRefresh ? dynamicPosition : -1;
@@ -683,8 +689,6 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
                 }, throwable -> throwable.printStackTrace());
         addSubscrebe(subscribe);
-
-
     }
 
     @Override

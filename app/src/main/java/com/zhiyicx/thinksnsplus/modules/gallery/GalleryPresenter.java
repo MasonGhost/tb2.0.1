@@ -27,6 +27,7 @@ import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_UPDATE_TOLL;
 
 /**
  * @Author Jliuer
@@ -89,7 +90,7 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                            return Observable.just(stringBaseJsonV2);
+                        return Observable.just(stringBaseJsonV2);
 
                     }
                 })
@@ -107,6 +108,7 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicDetailBeanV2);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                         Bundle bundle = new Bundle();
+                        bundle.putBoolean(DYNAMIC_UPDATE_TOLL, true);
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
                         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);

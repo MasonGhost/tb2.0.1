@@ -139,8 +139,11 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     protected void setRightClick() {
         // 发布提示 1、首先需要认证 2、需要付费
-        if (mPresenter.checkCertification()){
-            if (mPresenter.isNeedPayTip()){
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (mPresenter.checkCertification()) {
+            if (mPresenter.isNeedPayTip()) {
                 mPayAlertPopWindow.show();
                 mPresenter.savePayTip(false);
             } else {
@@ -208,7 +211,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
         mInfoTypeBean.getMy_cates().add(0, new InfoTypeCatesBean(-1L, getString(R.string
-                .info_recommend),true));
+                .info_recommend), true));
         for (InfoTypeCatesBean myCatesBean : infoType.getMy_cates()) {
             if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
                     && !mTitle.contains(myCatesBean.getName())) {
@@ -247,8 +250,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 });
     }
 
-    private void initPopWindow(){
-        if (mCertificationAlertPopWindow == null){
+    private void initPopWindow() {
+        if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item2Str(getString(R.string.certification_personage))
@@ -278,7 +281,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     })
                     .build();
         }
-        if (mPayAlertPopWindow == null){
+        if (mPayAlertPopWindow == null) {
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))

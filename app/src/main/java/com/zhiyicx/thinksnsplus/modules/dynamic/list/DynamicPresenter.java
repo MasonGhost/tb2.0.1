@@ -668,8 +668,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     }
 
                 }, throwable -> throwable.printStackTrace());
-
-
     }
 
     @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
