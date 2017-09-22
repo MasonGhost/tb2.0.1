@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -322,13 +324,14 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     public void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
     }
 
     public void showKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(lastFocusEdit, InputMethodManager.SHOW_FORCED);
+        lastFocusEdit.requestFocus();
+        imm.showSoftInput(lastFocusEdit, 0);
 //        imm.showSoftInputFromInputMethod(lastFocusEdit.getApplicationWindowToken(),
 //                InputMethodManager.SHOW_FORCED);
     }
@@ -366,20 +369,24 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     private SubsamplingScaleImageView addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) imageLayout.findViewById(R.id.edit_imageView);
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);
 
-        // 暂时这样处理一下
-//        imageHeight = imageHeight > DeviceUtils.getScreenHeight(getContext()) ? DeviceUtils.getScreenHeight(getContext()) : imageHeight;
+        float test = (float) options.outWidth / (float) options.outHeight;
 
-        imageView.setImage(ImageSource.uri(imagePath)
-                        .region(new Rect(0, 0, options.outWidth, options.outHeight)),
-                ImageSource.resource(R.drawable.shape_default_image).dimensions(allLayout.getWidth(), allLayout.getWidth()));
+        int height =(int)( allLayout.getWidth() / test);
+
+        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, allLayout.getWidth(), height)).tilingDisabled());
+        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+        imageView.setMinScale(3);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         lp.bottomMargin = 10;
+//        lp.width = allLayout.getWidth();
+//        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         imageView.setLayoutParams(lp);
-        imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
+        imageView.setAbsolutePath(imagePath);//保存数据会用
 
 
         allLayout.addView(imageLayout, index);

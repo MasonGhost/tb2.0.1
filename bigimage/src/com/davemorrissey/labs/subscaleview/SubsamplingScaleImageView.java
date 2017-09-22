@@ -688,13 +688,14 @@ public class SubsamplingScaleImageView extends View {
                 height = sHeight();
             } else if (resizeHeight) {
                 height = (int) ((((double) sHeight() / (double) sWidth()) * width));
-//                height = Math.min(sHeight(), height);
             } else if (resizeWidth) {
                 width = (int) ((((double) sWidth() / (double) sHeight()) * height));
             }
         }
         width = Math.max(width, getSuggestedMinimumWidth());
         height = Math.max(height, getSuggestedMinimumHeight());
+        Log.d("bigimage:w::",""+width);
+        Log.d("bigimage:h::",""+height);
         setMeasuredDimension(width, height);
     }
 
