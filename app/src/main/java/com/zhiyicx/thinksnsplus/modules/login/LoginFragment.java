@@ -339,8 +339,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private void initAccount() {
         List<String> list = new ArrayList<>();
-        Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
-//        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
+
+        mEtCompleteInput.setDropDownBackgroundResource(R.color.white);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null) {
             mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
