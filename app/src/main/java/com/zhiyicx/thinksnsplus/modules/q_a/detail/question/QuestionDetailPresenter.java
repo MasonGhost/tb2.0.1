@@ -258,6 +258,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.handleLoading(false, false, throwable.getMessage());
                     }
                 });
@@ -297,6 +300,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         LogUtils.d("Cathy", "payForOnlook // " + throwable.toString());
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.pay_alert_failed));
                     }

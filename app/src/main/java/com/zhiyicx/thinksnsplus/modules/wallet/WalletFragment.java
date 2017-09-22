@@ -139,7 +139,6 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP,true);
-                    jumpWalletRuleActivity();
                 });
     }
 

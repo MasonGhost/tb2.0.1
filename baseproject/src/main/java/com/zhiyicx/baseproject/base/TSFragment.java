@@ -88,8 +88,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
             mStatusPlaceholderView = new View(getContext());
-            mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext())));
-            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
+            mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
+                    (getContext())));
+            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
+                    .WHITE) {
                 mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
             } else {
                 mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
@@ -103,7 +105,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
             mDriver = new View(getContext());
-            mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
+            mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen
+                    .divider_line)));
             mDriver.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
             linearLayout.addView(mDriver);
         }
@@ -183,6 +186,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void hideLoading() {
 
+    }
+
+    @Override
+    public void dismissSnackBar() {
+        if (mSnackBar != null) {
+            mSnackBar.dismiss();
+        }
     }
 
     @Override
@@ -375,7 +385,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return
      */
     protected int getstatusbarAndToolbarHeight() {
-        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
+        return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources()
+                .getDimensionPixelOffset(R.dimen.divider_line);
     }
 
     /**
@@ -481,7 +492,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
                                     view.setTag(rightX);
-                                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view.getPaddingBottom());
+                                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
+                                            .getPaddingBottom());
                                     rightViewHadTranslated = true;
                                 } else {
                                     rightViewHadTranslated = false;
@@ -745,7 +757,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     public void call(Long aLong) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             try {
-                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
+                                        .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                             } catch (Exception e) {
                             }
                         }

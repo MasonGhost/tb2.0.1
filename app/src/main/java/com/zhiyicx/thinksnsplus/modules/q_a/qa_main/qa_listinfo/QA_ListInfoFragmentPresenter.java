@@ -114,6 +114,9 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });

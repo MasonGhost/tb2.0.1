@@ -97,6 +97,9 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
