@@ -157,7 +157,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
+                        .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
                         mAccountBean.setId(new Date().getTime());
@@ -309,6 +310,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      * 设置登录按钮是否可点击
      */
     private void setConfirmEnable() {
+        showErrorTips(null);
         if (mIsPhoneEdited && mIsPasswordEdited) {
             mBtLoginLogin.setEnabled(true);
         } else {
@@ -451,8 +453,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void registerByThrid(String provider, String access_token) {
         Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_THIRD_INFO, new ThridInfoBean(provider, access_token, mThridName));
         intent.putExtras(bundle);
         startActivity(intent);
     }

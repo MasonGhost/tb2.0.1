@@ -29,12 +29,13 @@ public class AppUpdateManager {
     }
 
     private AppUpdateManager(Context context, String requstUrl) {
-        mContext=context;
+        mContext = context;
         builder = new VersionParams.Builder()
 //                .setHttpHeaders(headers)
 //                .setRequestMethod(requestMethod)
 //                .setRequestParams(httpParams)
                 .setRequestUrl(requstUrl)
+                .setForceRedownload(true)
 //                .setDownloadAPKPath(getApplicationContext().getFilesDir()+"/")
                 .setService(UpdateService.class);
         CustomVersionDialogActivity.customVersionDialogIndex = 2;

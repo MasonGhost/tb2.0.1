@@ -145,22 +145,22 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            // 添加关注，或者取消关注
-                            // 关注列表的逻辑操作：关注，互相关注 ---》未关注
-                            // 粉丝列表的逻辑操作：互相关注 ---》未关注
-
-                            if (userTagBean.getUser().isFollowing() && userTagBean.getUser().isFollower()) {
-                                mPresenter.cancleFollowUser(tagPosition, userTagBean.getUser());
-                            } else if (userTagBean.getUser().isFollower()) {
-                                mPresenter.cancleFollowUser(tagPosition, userTagBean.getUser());
-                            } else {
-                                mPresenter.followUser(tagPosition, userTagBean.getUser());
-                            }
-                            notifySectionDataSetChanged(categoryPosition);
+                    .subscribe(aVoid -> {
+                        if (mPresenter.handleTouristControl()) {
+                            return;
                         }
+                        // 添加关注，或者取消关注
+                        // 关注列表的逻辑操作：关注，互相关注 ---》未关注
+                        // 粉丝列表的逻辑操作：互相关注 ---》未关注
+
+                        if (userTagBean.getUser().isFollowing() && userTagBean.getUser().isFollower()) {
+                            mPresenter.cancleFollowUser(tagPosition, userTagBean.getUser());
+                        } else if (userTagBean.getUser().isFollower()) {
+                            mPresenter.cancleFollowUser(tagPosition, userTagBean.getUser());
+                        } else {
+                            mPresenter.followUser(tagPosition, userTagBean.getUser());
+                        }
+                        notifySectionDataSetChanged(categoryPosition);
                     });
 
 
@@ -168,7 +168,7 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
              * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
              */
             holder.mIvFollow.setVisibility(
-                    userTagBean.getUser().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() ? View.GONE : View.VISIBLE);
+                    userTagBean.getUser().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
 
 
         } else {
@@ -208,6 +208,9 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
      * 前往用户个人中心
      */
     private void toUserCenter(Context context, UserInfoBean userInfoBean) {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
         PersonalCenterFragment.startToPersonalCenter(context, userInfoBean);
     }
 

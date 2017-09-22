@@ -192,12 +192,9 @@ public class FindFragment extends TSFragment {
                 }
                 break;
             case R.id.find_person:
-                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
-                Bundle bundleFollow = new Bundle();
-                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment
-                        .FOLLOW_FRAGMENT_PAGE);
-                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
+
                 Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
+                Bundle bundleFollow = new Bundle();
                 itFollow.putExtras(bundleFollow);
                 startActivity(itFollow);
                 break;

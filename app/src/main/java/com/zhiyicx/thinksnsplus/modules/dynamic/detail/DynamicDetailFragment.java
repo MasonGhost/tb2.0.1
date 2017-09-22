@@ -658,29 +658,29 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item4Str(getString(R.string.dynamic_list_share_dynamic))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item1Str(getString(R.string.dynamic_list_top_dynamic))
+                .item1Str(getString(R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(R.string.dynamic_list_top_dynamic))
+                .item4Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 置顶
+                .item3ClickListener(() -> {// 置顶
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mMyDynamicPopWindow.hide();
                 })
-                .item2ClickListener(() -> {// 删除
+                .item4ClickListener(() -> {// 删除
                     EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
                     mMyDynamicPopWindow.hide();
                     getActivity().finish();
                 })
-                .item3ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mMyDynamicPopWindow.hide();
                 })
-                .item4ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
                     mMyDynamicPopWindow.hide();
                 })

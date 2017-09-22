@@ -9,6 +9,7 @@ import com.github.tamir7.contacts.Query;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
@@ -36,7 +37,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class ContactsPresenter extends BasePresenter<ContactsContract.Repository, ContactsContract.View> implements ContactsContract.Presenter {
+public class ContactsPresenter extends AppBasePresenter<ContactsContract.Repository, ContactsContract.View> implements ContactsContract.Presenter {
 
 
     @Inject
