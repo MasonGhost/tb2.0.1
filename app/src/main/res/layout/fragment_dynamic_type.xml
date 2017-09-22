@@ -23,8 +23,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/send_dynamic_send_container"
-            android:gravity="bottom"
-            android:weightSum="3">
+            android:gravity="bottom">
             <!--动态文字-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
                 android:id="@+id/send_words_dynamic"
@@ -62,7 +61,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:visibility="invisible"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
@@ -78,8 +76,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/send_dynamic_send_container"
-            android:gravity="bottom"
-            android:weightSum="3">
+            android:gravity="bottom">
             <!--签到-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
                 android:id="@+id/check_in"

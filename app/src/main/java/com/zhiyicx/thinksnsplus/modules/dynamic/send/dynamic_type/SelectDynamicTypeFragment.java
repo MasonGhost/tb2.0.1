@@ -52,7 +52,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  */
 public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter> implements SelectDynamicTypeContract.View,
         PhotoSelectorImpl.IPhotoBackListener {
-    public static final int DEFAULT_ANIMATE_DELAY_START = 150;
+    public static final int DEFAULT_ANIMATE_DELAY_START = 80;
     public static final int DEFAULT_ANIMATE_DELAY = 80;
 
     public static final String SEND_OPTION = "send_option";
@@ -115,10 +115,18 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
-        delay += DEFAULT_ANIMATE_DELAY;
-        Observable.timer(delay, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> initAnimation(mOpenZhibo));
+
+        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+            mOpenZhibo.setVisibility(View.INVISIBLE);
+
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mOpenZhibo));
+        } else {
+            mOpenZhibo.setVisibility(View.GONE);
+
+        }
         SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
                 .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         // 如果已经签到了，则不再展示签到
@@ -131,16 +139,25 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         } else {
             mCheckIn.setVisibility(View.GONE);
         }
-        // 提问
-        delay += DEFAULT_ANIMATE_DELAY;
-        Observable.timer(delay, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> initAnimation(mSendWordsQuestion));
-        // 投稿
-        delay += DEFAULT_ANIMATE_DELAY;
-        Observable.timer(delay, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> initAnimation(mSendInfo));
+        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+            mSendWordsQuestion.setVisibility(View.INVISIBLE);
+            mSendInfo.setVisibility(View.INVISIBLE);
+
+            // 提问
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mSendWordsQuestion));
+            // 投稿
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mSendInfo));
+        } else {
+            mSendWordsQuestion.setVisibility(View.GONE);
+            mSendInfo.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
