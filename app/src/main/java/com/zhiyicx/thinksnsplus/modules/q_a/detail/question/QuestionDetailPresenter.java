@@ -155,13 +155,14 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null, false);
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable, false);
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+
                     }
 
 
@@ -184,6 +185,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void handleFollowState(String questionId, boolean isFollowed) {
         mRootView.getCurrentQuestion().setWatched(isFollowed);
+        if (isFollowed){
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() + 1);
+        } else {
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() - 1);
+        }
         mRootView.updateFollowState();
         mRepository.handleQuestionFollowState(questionId, isFollowed);
     }

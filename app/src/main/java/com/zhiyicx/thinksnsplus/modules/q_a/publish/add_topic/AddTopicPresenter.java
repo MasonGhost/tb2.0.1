@@ -71,7 +71,7 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
     public void updateQuestion(QAPublishBean qaPublishBean) {
         mQA$RewardRepositoryPublish.updateQuestion(qaPublishBean)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.publish_doing)))
+                        .string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -80,7 +80,7 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                         qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                         qaListInfoBean.setLook(qaPublishBean.getLook());
                         mRootView.updateSuccess(qaListInfoBean);
-                        mRootView.showSnackSuccessMessage("修改成功");
+                        mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
                     }
 
                     @Override

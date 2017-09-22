@@ -195,31 +195,6 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     * check {user_id} is tsHelper
-     *
-     * @param context context
-     * @param user_id checked user_id
-     * @return
-     */
-    public static boolean checkHelperId(Context context, long user_id) {
-        boolean isTsHelper = false;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
-            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
-        }
-        if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
-            List<SystemConfigBean.ImHelperBean> tshleprs = systemConfigBean.getIm_helper();
-            for (SystemConfigBean.ImHelperBean tshlepr : tshleprs) {
-                if (Integer.parseInt(tshlepr.getUid()) == user_id) {
-                    isTsHelper = true;
-                    break;
-                }
-            }
-        }
-        return isTsHelper;
-    }
-
-    /**
      * update tsHelper  delete status
      *
      * @param context context
@@ -309,15 +284,6 @@ public class SystemRepository implements ISystemRepository {
                     handleTsHelperUserInfo(listBaseJson);
                     return listBaseJson;
                 });
-    }
-
-    /**
-     * 系统对话信息更具 id 排序
-     *
-     * @param datas 对话信息
-     */
-    private void descNetSystemConversation(List<SystemConversationBean> datas) {
-        Collections.sort(datas, (o1, o2) -> o1.getId().intValue() - o2.getId().intValue());
     }
 
     /**

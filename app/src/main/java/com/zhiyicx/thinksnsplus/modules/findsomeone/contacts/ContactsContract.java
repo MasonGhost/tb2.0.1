@@ -37,7 +37,8 @@ public interface ContactsContract {
 
     interface Presenter extends IBasePresenter {
 
-        void  getContacts();
+        void getContacts();
+
         /**
          * 关注用户
          *
@@ -47,6 +48,11 @@ public interface ContactsContract {
         void followUser(int index, UserInfoBean followFansBean);
 
         void cancleFollowUser(int index, UserInfoBean followFansBean);
+
+        /**
+         * @return 邀请模板
+         */
+        String getInviteSMSTip();
 
     }
 

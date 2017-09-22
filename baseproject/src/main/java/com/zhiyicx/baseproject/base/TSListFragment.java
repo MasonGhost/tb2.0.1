@@ -612,6 +612,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             mAdapter.notifyDataSetChanged();
             if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
                 mEmptyView.setVisibility(View.VISIBLE);
+            }else {
+                mEmptyView.setVisibility(View.GONE);
+                showMessageNotSticky(getString(R.string.err_net_not_work));
             }
         } else { // 加载更多
             showMessageNotSticky(getString(R.string.err_net_not_work));
