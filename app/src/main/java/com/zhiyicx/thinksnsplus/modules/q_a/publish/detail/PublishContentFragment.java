@@ -202,9 +202,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
         if (draft != null) {
             String body = draft.getBody();
-            if (!TextUtils.isEmpty(body)) {
-                mRicheTest.clearAllLayout();
-                mPresenter.pareseBody(body);
+            if (!TextUtils.isEmpty(body) && mRicheTest != null) {
+                mRicheTest.post(() -> {
+                    mRicheTest.clearAllLayout();
+                    mPresenter.pareseBody(body);
+                });
+
             }
         }
     }
