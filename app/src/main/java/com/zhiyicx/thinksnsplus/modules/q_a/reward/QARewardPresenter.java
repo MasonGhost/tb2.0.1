@@ -6,6 +6,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -71,6 +72,10 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     protected void onSuccess(Object data) {
                         // 解析数据，在跳转到问题详情页时需要用到
                         if (data == null) {
+                            QAListInfoBean qaListInfoBean = new QAListInfoBean();
+                            qaListInfoBean.setId(qaPublishBean.getId());
+                            qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
+                            mRootView.publishQuestionSuccess(qaListInfoBean);
                             mRootView.showSnackMessage("编辑成功", Prompt.DONE);
                         } else {
                             try {

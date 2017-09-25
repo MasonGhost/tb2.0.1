@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -41,8 +40,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
-import com.zzhoujay.richtext.ImageHolder;
-import com.zzhoujay.richtext.RichText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +200,7 @@ public class AnswerDetailHeaderView {
             mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
             mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
             // 自己的匿名回答，增加匿名提示
-            if (isAnonmity){
+            if (isAnonmity) {
                 mName.setText(!isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user)
                         : answerInfoBean.getUser().getName() + mContext.getString(R.string.qa_question_answer_anonymity_current_user));
                 ConvertUtils.stringLinkConvert(mName, setLinks());
@@ -300,16 +297,14 @@ public class AnswerDetailHeaderView {
         if (answerInfoBean == null) {
             return;
         }
-        // 点赞信息
+
+        mDigListView.setDigCount(answerInfoBean.getLikes_count());
+        mDigListView.setPublishTime(answerInfoBean.getUpdated_at());
+        mDigListView.setViewerCount(answerInfoBean.getViews_count());
+        mDigListView.setDigUserHeadIconAnswer(answerInfoBean.getLikes());
+
         if (answerInfoBean.getLikes() != null
                 && answerInfoBean.getLikes().size() > 0) {
-            mDigListView.setVisibility(VISIBLE);
-            mDigListView.setDigCount(answerInfoBean.getLikes_count());
-            mDigListView.setPublishTime(answerInfoBean.getUpdated_at());
-            mDigListView.setViewerCount(answerInfoBean.getViews_count());
-            // 设置点赞头像
-            mDigListView.setDigUserHeadIconAnswer(answerInfoBean.getLikes());
-
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
                 Bundle bundle = new Bundle();
@@ -317,10 +312,7 @@ public class AnswerDetailHeaderView {
                 Intent intent = new Intent(mContext, AnswerDigListActivity.class);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
-
             });
-        } else {
-            mDigListView.setVisibility(GONE);
         }
     }
 

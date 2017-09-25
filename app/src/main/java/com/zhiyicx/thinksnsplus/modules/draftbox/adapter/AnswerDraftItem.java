@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
@@ -34,7 +36,7 @@ public class AnswerDraftItem extends BaseDraftItem {
     @Override
     public void convert(ViewHolder holder, BaseDraftBean draftBean, BaseDraftBean lastT, int position, int itemCounts) {
         AnswerDraftBean realData = (AnswerDraftBean) draftBean;
-        holder.setText(R.id.tv_draft_title, realData.getSubject());
+        holder.setText(R.id.tv_draft_title, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getBody()));
         holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreated_at()));
         holder.setVisible(R.id.tv_draft_content, View.GONE);
 

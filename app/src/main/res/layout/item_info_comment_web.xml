@@ -86,8 +86,7 @@
 
 
     <include
-            layout="@layout/item_dynamic_detail_dig"
-            android:visibility="gone"/>
+            layout="@layout/item_dynamic_detail_dig"/>
 
     <include
             layout="@layout/include_reward"/>

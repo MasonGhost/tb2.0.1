@@ -303,16 +303,16 @@ public class InfoDetailHeaderView {
         if (infoMain == null) {
             return;
         }
+
+        mDigListView.setDigCount(infoMain.getDigg_count());
+        mDigListView.setPublishTime(infoMain.getUpdated_at());
+        mDigListView.setViewerCount(infoMain.getHits());
+        // 设置点赞头像
+        mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
+
         // 点赞信息
         if (infoMain.getDigList() != null
                 && infoMain.getDigList().size() > 0) {
-            mDigListView.setVisibility(VISIBLE);
-            mDigListView.setDigCount(infoMain.getDigg_count());
-            mDigListView.setPublishTime(infoMain.getUpdated_at());
-            mDigListView.setViewerCount(infoMain.getHits());
-            // 设置点赞头像
-            mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
-
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
                 Intent intent = new Intent(mContext, InfoDigListActivity.class);
@@ -321,8 +321,6 @@ public class InfoDetailHeaderView {
                 intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
                 mContext.startActivity(intent);
             });
-        } else {
-            mDigListView.setVisibility(GONE);
         }
     }
 

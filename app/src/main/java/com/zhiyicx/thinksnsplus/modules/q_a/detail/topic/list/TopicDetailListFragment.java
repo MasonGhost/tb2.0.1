@@ -86,7 +86,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
         QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
             protected int getExcellentTag(boolean isExcellent) {
-                boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]);
+                boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[1]) || getCurrentType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };

@@ -127,8 +127,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                QA_InfoContainerFragment infoContainerFragment=(QA_InfoContainerFragment)getParentFragment();
-                infoContainerFragment.test(dy>0);
+                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
+                infoContainerFragment.test(dy > 0);
                 LogUtils.d("onScrolled::" + (dy > 0 ? "向上" : "向下"));
             }
         });
@@ -154,7 +154,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
             protected int getExcellentTag(boolean isExcellent) {
-                boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[0]) || getQAInfoType().equals(QA_TYPES[1]);
+                boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };

@@ -205,16 +205,16 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-
+        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);
     }
 
     @Override
     public void deleteAnswer(AnswerDraftBean answer) {
-
+        mAnswerDraftBeanGreenDaoImpl.deleteSingleCache(answer);
     }
 
     @Override
     public AnswerDraftBean getDraftAnswer(long answer_mark) {
-        return null;
+        return mAnswerDraftBeanGreenDaoImpl.getSingleDataFromCache(answer_mark);
     }
 }
