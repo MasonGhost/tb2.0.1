@@ -73,10 +73,7 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
                         }
                         return Observable.just(userInfoBean);
                     }
-                }, throwable -> {
-//                    mRootView.showSnackErrorMessage(mContext.getString(com.zhiyicx.thinksnsplus.R.string.transaction_fail));
-                    return null;
-                }, () -> null);
+                });
     }
 
     protected boolean isBalanceCheck(Throwable throwable) {

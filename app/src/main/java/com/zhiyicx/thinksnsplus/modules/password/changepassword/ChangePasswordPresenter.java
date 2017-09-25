@@ -51,7 +51,7 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        mRootView.finsh();
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.change_success));
                     }
 
                     @Override

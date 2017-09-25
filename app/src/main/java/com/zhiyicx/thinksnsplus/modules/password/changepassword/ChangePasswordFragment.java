@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.thinksnsplus.R;
@@ -36,7 +37,7 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     private boolean isSureNewPasswordEdited;
 
     public static ChangePasswordFragment newInstance() {
-        return  new ChangePasswordFragment();
+        return new ChangePasswordFragment();
     }
 
     @Override
@@ -129,6 +130,17 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
             mToolbarRight.setEnabled(true);
         } else {
             mToolbarRight.setEnabled(false);
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.SUCCESS) {
+            try {
+                finsh();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

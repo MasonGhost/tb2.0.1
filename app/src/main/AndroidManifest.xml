@@ -268,7 +268,6 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
