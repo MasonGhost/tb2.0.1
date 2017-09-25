@@ -397,6 +397,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
         LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
+        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
         Subscription subscribe = Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
