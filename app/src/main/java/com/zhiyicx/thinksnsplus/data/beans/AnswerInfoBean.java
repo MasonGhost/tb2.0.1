@@ -48,6 +48,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean user;
     private boolean liked;
+    private boolean has_adoption;
     private boolean collected;
     @Transient
     private List<AnswerCommentListBean> commentList;
@@ -311,6 +312,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.user, flags);
         dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_adoption ? (byte) 1 : (byte) 0);
         dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.commentList);
         dest.writeByte(this.rewarded ? (byte) 1 : (byte) 0);
@@ -327,6 +329,14 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
 
     public void setOnlookers_count(int onlookers_count) {
         this.onlookers_count = onlookers_count;
+    }
+
+    public boolean getHas_adoption() {
+        return this.has_adoption;
+    }
+
+    public void setHas_adoption(boolean has_adoption) {
+        this.has_adoption = has_adoption;
     }
 
     protected AnswerInfoBean(Parcel in) {
@@ -350,6 +360,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.collected = in.readByte() != 0;
         this.commentList = in.createTypedArrayList(AnswerCommentListBean.CREATOR);
         this.rewarded = in.readByte() != 0;
+        this.has_adoption = in.readByte() != 0;
         this.likes = in.createTypedArrayList(AnswerDigListBean.CREATOR);
         this.rewarders = in.createTypedArrayList(RewardsListBean.CREATOR);
         this.question = in.readParcelable(QAListInfoBean.class.getClassLoader());
@@ -357,13 +368,13 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.onlookers_count = in.readInt();
     }
 
-    @Generated(hash = 1858838836)
+    @Generated(hash = 1266496830)
     public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
-                          int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-                          int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
-                          boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
-                          List<RewardsListBean> rewarders, QAListInfoBean question, boolean could,
-                          int onlookers_count) {
+            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
+            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
+            boolean liked, boolean has_adoption, boolean collected, boolean rewarded,
+            List<AnswerDigListBean> likes, List<RewardsListBean> rewarders, QAListInfoBean question,
+            boolean could, int onlookers_count) {
         this.id = id;
         this.question_id = question_id;
         this.user_id = user_id;
@@ -380,6 +391,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
         this.user = user;
         this.liked = liked;
+        this.has_adoption = has_adoption;
         this.collected = collected;
         this.rewarded = rewarded;
         this.likes = likes;
