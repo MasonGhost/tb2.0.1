@@ -49,9 +49,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     private String created_at;
 
     // 不建议 用 is 开头的不二类型，序列化时找不到 get set 等方法导致失败
-    private boolean hasAgainEdite;
-    private boolean hasAdoption;
-
+    private boolean hasAgainEdite;// 已经发布的问题再次编辑
+    private boolean hasAdoption;// 是否有已经采纳的回答
     public boolean isHasAdoption() {
         return hasAdoption;
     }
