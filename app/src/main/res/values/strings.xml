@@ -468,6 +468,10 @@
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
     <string name="create_topic">申请创建话题</string>
+    <string name="input_topic_tip">请输入话题名称</string>
+    <string name="input_topic_des_tip">请输入话题相关描述信息</string>
+
+
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
