@@ -222,12 +222,13 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private void initEditWarningPop() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
+        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) || mDraftQuestion == null;
         if (mEditWarningPopupWindow != null) {
             return;
         }
         mEditWarningPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.edit_quit))
-                .item2Str(getString(R.string.save_to_draft_box))
+                .item2Str(getString(canSaveDraft ? R.string.save_to_draft_box : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
