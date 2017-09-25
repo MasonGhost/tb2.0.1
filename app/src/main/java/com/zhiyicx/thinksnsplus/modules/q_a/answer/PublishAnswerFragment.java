@@ -28,6 +28,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
+    public static final String BUNDLE_SOURCE_MARK = "source_mark";
     public static final String BUNDLE_SOURCE_TITLE = "source_title"; // 发布回答的提示语是问题的标题
 
     private PublishType mType;
@@ -117,7 +118,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (prompt == Prompt.DONE){
+        if (prompt == Prompt.DONE) {
             getActivity().finish();
         }
     }
@@ -129,7 +130,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
-        if (!mToolbarRight.isEnabled() || mType != PublishType.UPDATE_ANSWER) {
+        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
             super.onBackPressed();
         } else {
             initEditWarningPop();
@@ -143,7 +144,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                      String body, String title) {
+                                       String body, String title) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
@@ -153,7 +154,19 @@ public class PublishAnswerFragment extends PublishContentFragment {
         bundle.putString(BUNDLE_SOURCE_TITLE, title);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
 
+    public static void startQActivity(Context context, PublishType type,AnswerDraftBean realData) {
+
+        Intent intent = new Intent(context, PublishAnswerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
+        bundle.putLong(BUNDLE_SOURCE_ID, realData.getId());
+        bundle.putLong(BUNDLE_SOURCE_MARK, realData.getMark());
+        bundle.putString(BUNDLE_SOURCE_BODY, realData.getBody());
+        bundle.putString(BUNDLE_SOURCE_TITLE, "");
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     /**

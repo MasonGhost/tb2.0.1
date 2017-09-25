@@ -203,7 +203,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-
+        mRepository.saveAnswer(answer);
     }
 
     @Override
