@@ -242,7 +242,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             mRootView.getCurrentInfo().setDigList(new ArrayList<>());
         }
         if (isLiked) {
-            mRootView.getCurrentInfo().getDigList().add(digListBean);
+            mRootView.getCurrentInfo().getDigList().add(0,digListBean); // 放到第一个
             mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() + 1);
         } else {
             for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()) {

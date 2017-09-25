@@ -374,8 +374,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 }
             }
         } else {// 喜欢
-            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                    AppApplication.getMyUserIdWithdefault());
+            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
             DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
             dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
             dynamicDigListBean.setId(System.currentTimeMillis());

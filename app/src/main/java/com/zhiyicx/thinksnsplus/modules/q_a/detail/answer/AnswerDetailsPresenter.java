@@ -190,7 +190,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
             mRootView.getAnswerInfo().setLikes(new ArrayList<>());
         }
         if (isLiked) {
-            mRootView.getAnswerInfo().getLikes().add(digListBean);
+            mRootView.getAnswerInfo().getLikes().add(0,digListBean);// 放到第一个
             mRootView.getAnswerInfo().setLikes_count(mRootView.getAnswerInfo().getLikes_count() + 1);
         } else {
             for (AnswerDigListBean answerDigListBean : mRootView.getAnswerInfo().getLikes()) {

@@ -89,7 +89,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicDetailBeanV2>
+public class
+DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicDetailBeanV2>
         implements DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>,
         InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView
                 .OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
