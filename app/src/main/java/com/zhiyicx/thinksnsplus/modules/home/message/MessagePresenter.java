@@ -659,6 +659,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         mUnreadNotificationTotalNums = 0;
+        checkBottomMessageTip();
 
     }
 
