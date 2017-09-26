@@ -188,13 +188,6 @@ public class AnswerDigListBean extends BaseListBean implements Serializable ,Par
     private transient Long targetUserInfo__resolvedKey;
 
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1264428331)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAnswerDigListBeanDao() : null;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -212,6 +205,13 @@ public class AnswerDigListBean extends BaseListBean implements Serializable ,Par
         dest.writeString(this.likeable_type);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1264428331)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getAnswerDigListBeanDao() : null;
     }
 
     protected AnswerDigListBean(Parcel in) {

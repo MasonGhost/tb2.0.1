@@ -664,6 +664,31 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.has_deleted = in.readByte() != 0;
     }
 
+    @Generated(hash = 793304063)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
+    }
+
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
         @Override
         public UserInfoBean createFromParcel(Parcel source) {
