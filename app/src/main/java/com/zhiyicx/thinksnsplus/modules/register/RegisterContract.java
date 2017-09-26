@@ -86,6 +86,8 @@ public interface RegisterContract {
         void register(String name, String phone, String vertifyCode, String password);
 
         void registerByEmail(String name, String email, String verifyCode, String password);
+
+        void closeTimer();
     }
 
 }

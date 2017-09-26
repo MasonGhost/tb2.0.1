@@ -191,14 +191,14 @@ public class DigedBean extends BaseListBean {
                     JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
                     if (jsonArray.length() > 0) {
-                        source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                        source_cover = (long) jsonArray.getJSONObject(0).getDouble("id");
                     }
 
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(likeable));
                     JSONArray jsonArray2 = jsonObject2.getJSONArray("images");
-                    source_cover = (long) jsonArray2.getJSONObject(0).getDouble("file_id");
+                    source_cover = (long) jsonArray2.getJSONObject(0).getDouble("id");
 
                     break;
 

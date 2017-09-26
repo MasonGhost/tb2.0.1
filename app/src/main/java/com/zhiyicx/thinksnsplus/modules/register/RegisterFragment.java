@@ -287,7 +287,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void goHome() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
-        EditUserTagFragment.startToEditTagActivity(getActivity(),TagFrom.REGISTER,null);
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
         getActivity().finish();
     }
 
@@ -336,7 +336,9 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         // 清空数据
         clearAllData();
         // 重置倒计时
+        mPresenter.closeTimer();
         setVertifyCodeBtEnabled(true);
+        setVertifyCodeBtText(getString(R.string.send_vertify_code));
         setVertifyCodeLoadin(false);
         mBtRegistSendVertifyCode.setEnabled(false);
     }

@@ -116,17 +116,18 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
 
-        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-            mOpenZhibo.setVisibility(View.INVISIBLE);
-
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mOpenZhibo));
-        } else {
-            mOpenZhibo.setVisibility(View.GONE);
-
-        }
+//        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+//            mOpenZhibo.setVisibility(View.INVISIBLE);
+//
+//            delay += DEFAULT_ANIMATE_DELAY;
+//            Observable.timer(delay, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mOpenZhibo));
+//        } else {
+//            mOpenZhibo.setVisibility(View.GONE);
+//
+//        }
+        mOpenZhibo.setVisibility(View.GONE);
         SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
                 .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         // 如果已经签到了，则不再展示签到
@@ -149,10 +150,11 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> initAnimation(mSendWordsQuestion));
             // 投稿
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mSendInfo));
+//            delay += DEFAULT_ANIMATE_DELAY;
+//            Observable.timer(delay, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mSendInfo));
+            mSendInfo.setVisibility(View.GONE);
         } else {
             mSendWordsQuestion.setVisibility(View.GONE);
             mSendInfo.setVisibility(View.GONE);
