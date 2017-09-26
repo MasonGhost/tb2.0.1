@@ -690,4 +690,5 @@
     <string name="upload_pic_failed">图片上传失败</string>
     <string name="upload_parse_pic_failed">图片解析错误</string>
     <string name="change_success">修改成功</string>
+    <string name="unknown">未知</string>
 </resources>

@@ -335,6 +335,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
+                LogUtils.i("dynamic item image" + ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
+                        propPart, AppApplication.getTOKEN()));
+
             } else {
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())

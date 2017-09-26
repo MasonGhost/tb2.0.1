@@ -176,6 +176,9 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             return;
         }
         view.post(() -> {
+            if(mSelectDynamicParent==null||view==null){
+                return;
+            }
             AnimatorSet mAnimatorSet = new AnimatorSet();
             int vertical_distance = mSelectDynamicParent.getBottom() - view.getTop();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
