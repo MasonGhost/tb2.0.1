@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
@@ -21,9 +22,8 @@ import java.io.Serializable;
  * @Description 
  */
 @Entity
-public class AnswerDigListBean extends BaseListBean implements Serializable {
+public class AnswerDigListBean extends BaseListBean implements Serializable ,Parcelable{
 
-    @Transient
     private static final long serialVersionUID = 5985608387262498425L;
 
     @Id
@@ -188,6 +188,13 @@ public class AnswerDigListBean extends BaseListBean implements Serializable {
     private transient Long targetUserInfo__resolvedKey;
 
 
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1264428331)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getAnswerDigListBeanDao() : null;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -205,13 +212,6 @@ public class AnswerDigListBean extends BaseListBean implements Serializable {
         dest.writeString(this.likeable_type);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1264428331)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAnswerDigListBeanDao() : null;
     }
 
     protected AnswerDigListBean(Parcel in) {
