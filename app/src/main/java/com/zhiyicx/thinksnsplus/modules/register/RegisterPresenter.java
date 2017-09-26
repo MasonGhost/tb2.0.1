@@ -68,6 +68,13 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
     }
 
+    @Override
+    public void closeTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+    }
+
     /**
      * 获取验证码
      *
