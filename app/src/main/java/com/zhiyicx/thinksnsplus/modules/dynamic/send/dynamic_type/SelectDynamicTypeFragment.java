@@ -150,10 +150,11 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> initAnimation(mSendWordsQuestion));
             // 投稿
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mSendInfo));
+//            delay += DEFAULT_ANIMATE_DELAY;
+//            Observable.timer(delay, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mSendInfo));
+            mSendInfo.setVisibility(View.GONE);
         } else {
             mSendWordsQuestion.setVisibility(View.GONE);
             mSendInfo.setVisibility(View.GONE);

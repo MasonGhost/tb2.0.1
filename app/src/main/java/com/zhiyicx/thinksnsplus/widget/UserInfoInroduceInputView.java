@@ -70,8 +70,10 @@ public class UserInfoInroduceInputView extends FrameLayout {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     com.zhiyicx.baseproject.R.styleable.inputLimitView);
-            mLimitMaxSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_limitSize, context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.comment_input_max_size));
-            mshowLimitSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.show_comment_input_size));
+            mLimitMaxSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_limitSize, context.getResources().getInteger(com
+                    .zhiyicx.baseproject.R.integer.comment_input_max_size));
+            mshowLimitSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger
+                    (com.zhiyicx.baseproject.R.integer.show_comment_input_size));
             mHintContent = array.getString(com.zhiyicx.baseproject.R.styleable.inputLimitView_hintContent);
             mShowLines = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLines, 0);// 如果为0就不要设置maxLine了
             mContentGrvatiy = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_content_gravity, Gravity.LEFT);// 如果为0就不要设置maxLine了
@@ -108,11 +110,21 @@ public class UserInfoInroduceInputView extends FrameLayout {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s) {  // 一下是处理适配 emoji, 让emoji 算成一个长度
                 int praseContentLength = ConvertUtils.stringLenghtDealForEmoji(s);
                 mLimitTipStr = "<" + praseContentLength + ">" + "/" + mLimitMaxSize;
-                if (praseContentLength == mLimitMaxSize) {
-                    mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(s.length())});
+                int emojiNum = ConvertUtils.stringEmojiLenght(s);
+                mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize + emojiNum + 1)});
+                if (praseContentLength > mLimitMaxSize) {
+                    String sholdShowContent = s.toString().substring(0, s.toString().length() - (praseContentLength - mLimitMaxSize));
+                    int sholdShowEmojiNum = ConvertUtils.stringEmojiLenght(sholdShowContent);
+                    int offset = emojiNum - sholdShowEmojiNum;
+                    if (offset > 0) {
+                        ConvertUtils.emojiStrLenght(offset);
+                        sholdShowContent = sholdShowContent.substring(0, sholdShowContent.length() - offset);
+                    }
+                    mEtContent.setText(sholdShowContent);
+                    mEtContent.setSelection(sholdShowContent.length());
                 }
                 if (praseContentLength >= mshowLimitSize) {
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
