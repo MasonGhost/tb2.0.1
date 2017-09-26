@@ -20,6 +20,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -115,6 +116,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private QAPublishBean mQAPublishBean;
     private Long mQuestionId = 0L; //  发布之后重新设置悬赏
     private QAListInfoBean mQaListInfoBean;
+
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     public static QARewardFragment instance(Bundle bundle) {
         QARewardFragment fragment = new QARewardFragment();
@@ -253,7 +256,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             goToQuestionDetail();
             getActivity().finish();
         } else if (prompt == Prompt.ERROR) {
-            configSureButton();
+            mBtPublish.setEnabled(true);
         }
     }
 
@@ -408,12 +411,17 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    if (mRewardMoney != (int) mRewardMoney) {
+                        initInstructionsPop(R.string.min_withdraw_money);
+                        return;
+                    }
                     // 发布
                     mBtPublish.setEnabled(false);
                     try {
                         if (mQuestionId.equals(0L)) {
                             if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
                                 showSnackErrorMessage("邀请的专家呢？");
+                                mBtPublish.setEnabled(true);
                                 return;
                             }
                             packgQuestion();
@@ -550,5 +558,26 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
             startActivity(intent);
         }
+    }
+
+    private void initInstructionsPop(int resDesStr) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
+                    .desStr(getString(resDesStr))
+                    .build();
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.withdrawal_instructions))
+                .desStr(getString(resDesStr))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 }

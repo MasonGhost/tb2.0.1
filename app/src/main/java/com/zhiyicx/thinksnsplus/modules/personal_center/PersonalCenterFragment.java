@@ -522,7 +522,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position - 1;// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = position;
         if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
@@ -541,6 +541,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         initImageCenterPopWindow(position, position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }

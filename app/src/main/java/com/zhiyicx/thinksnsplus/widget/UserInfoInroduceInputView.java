@@ -113,11 +113,11 @@ public class UserInfoInroduceInputView extends FrameLayout {
             public void afterTextChanged(Editable s) {  // 一下是处理适配 emoji, 让emoji 算成一个长度
                 int praseContentLength = ConvertUtils.stringLenghtDealForEmoji(s);
                 mLimitTipStr = "<" + praseContentLength + ">" + "/" + mLimitMaxSize;
-                int emojiNum = ConvertUtils.stringEmojiLenght(s);
+                int emojiNum = ConvertUtils.stringEmojiCount(s);
                 mEtContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mLimitMaxSize + emojiNum + 1)});
                 if (praseContentLength > mLimitMaxSize) {
                     String sholdShowContent = s.toString().substring(0, s.toString().length() - (praseContentLength - mLimitMaxSize));
-                    int sholdShowEmojiNum = ConvertUtils.stringEmojiLenght(sholdShowContent);
+                    int sholdShowEmojiNum = ConvertUtils.stringEmojiCount(sholdShowContent);
                     int offset = emojiNum - sholdShowEmojiNum;
                     if (offset > 0) {
                         ConvertUtils.emojiStrLenght(offset);

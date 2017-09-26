@@ -337,6 +337,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
+    public UserInfoBean(String name) {
+        this.name = name;
+    }
+
 
     /**
      * {
@@ -600,60 +604,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 793304063)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-        this.initial_password = initial_password;
-        this.has_deleted = has_deleted;
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                ", verified=" + verified +
-                ", tags=" + tags +
-                ", initial_password=" + initial_password +
-                ", has_deleted=" + has_deleted +
-                '}';
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -725,4 +675,33 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", extra=" + extra +
+                ", verified=" + verified +
+                ", tags=" + tags +
+                ", initial_password=" + initial_password +
+                ", has_deleted=" + has_deleted +
+                '}';
+    }
 }

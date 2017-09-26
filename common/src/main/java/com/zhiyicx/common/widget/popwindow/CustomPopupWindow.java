@@ -103,6 +103,10 @@ public class CustomPopupWindow extends PopupWindow {
      * 默认显示到中间
      */
     public void show() {
+        if (isShowing()) {
+            dismiss();
+            return;
+        }
         setWindowAlpha(mAlpha);
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
