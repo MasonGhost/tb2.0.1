@@ -187,6 +187,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         if (mediaHasChanged) {
             mCurrentPosition = 0;
             mCurrentMediaId = mediaId;
+        } else {
+            LogUtils.d("mediaHasChanged:::没有切歌");
+            return;
         }
 
         // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&
@@ -226,7 +229,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 } else {
                     Map<String, String> header = new HashMap<>();
                     header.put("Authorization", " Bearer " + AppApplication.getmCurrentLoginAuth().getToken());
-                    Uri uri=Uri.parse(source);
+                    Uri uri = Uri.parse(source);
                     mMediaPlayer.setDataSource(mContext, uri, header);
                 }
 

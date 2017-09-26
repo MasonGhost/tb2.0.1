@@ -903,6 +903,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         .getSupportMediaController();
                 String id = MediaIDHelper.createMediaID("" + item.getId(),
                         MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                MediaSessionCompat.QueueItem queueItem = AppApplication.getmQueueManager().getCurrentMusic();
                 controllerCompat.getTransportControls()
                         .playFromMediaId(id, null);
             }

@@ -481,26 +481,15 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        mCommentRepository.getCurrentLoginUserInfo()
+        handleWalletBlance((long)amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
-                        }
+                    public Observable<BaseJsonV2<String>> call(Object o) {
                         return mCommentRepository.paykNote(note);
                     }
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                })
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
@@ -545,6 +534,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 

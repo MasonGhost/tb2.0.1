@@ -141,6 +141,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
         boolean canNotLook = TextUtils.isEmpty(answerInfoBean.getBody());
 
+        if (answerInfoBean.getInvited() != 1 && canNotLook) {
+            return;
+        }
+
         // 开启了围观并且不是作者本人点击
         if (canNotLook) {
             mPayWatchPopWindow.show();
