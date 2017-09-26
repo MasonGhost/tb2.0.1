@@ -129,7 +129,6 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 super.onScrolled(recyclerView, dx, dy);
                 QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
                 infoContainerFragment.test(dy > 0);
-                LogUtils.d("onScrolled::" + (dy > 0 ? "向上" : "向下"));
             }
         });
 

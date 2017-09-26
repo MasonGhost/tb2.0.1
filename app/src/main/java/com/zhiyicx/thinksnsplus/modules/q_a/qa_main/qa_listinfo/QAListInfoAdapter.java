@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,8 +24,10 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -32,8 +35,10 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -50,6 +55,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFr
 public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private int mContentMaxShowNum;
+    private SparseArray<String> mStringSparseArray;
+    private SparseArray<UserInfoBean> mUserInfoBeanMap;
     private SpanTextClickable.SpanTextClickListener mSpanTextClickListener;
 
 
@@ -57,6 +64,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         super(context, layoutId, datas);
         mContentMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_content_max_show_size);
+        mStringSparseArray = new SparseArray<>();
+        mUserInfoBeanMap = new SparseArray<>();
     }
 
     @Override
@@ -112,13 +121,17 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         if (infoBean.getAnswer() != null) {
             contentTextView.setTag(infoBean.getAnswer().getId().intValue());
+
+            mStringSparseArray.put(infoBean.getAnswer().getId().intValue(), infoBean.getAnswer().getBody());
+            mUserInfoBeanMap.put(infoBean.getAnswer().getId().intValue(), infoBean.getAnswer().getUser());
+
             contentTextView.setVisibility(View.VISIBLE);
             try {
-                ImageUtils.loadQAUserHead(position,mSpanTextClickListener, infoBean.getAnswer().getId().intValue(),
-                        infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
+                ImageUtils.loadQAUserHead(mUserInfoBeanMap, position, mSpanTextClickListener, mStringSparseArray, contentTextView,
                         infoBean.getAnswer().getAnonymity() == 1
                                 && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
             } catch (Exception e) {
+                LogUtils.d("加载图片 context 被销毁了");
                 // 加载图片 context 被销毁了
             }
 
@@ -161,6 +174,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                 .setUnderlined(false);
         links.add(rewardMoneyLink);
         return links;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
     }
 
     public void setSpanTextClickListener(SpanTextClickable.SpanTextClickListener spanTextClickListener) {
