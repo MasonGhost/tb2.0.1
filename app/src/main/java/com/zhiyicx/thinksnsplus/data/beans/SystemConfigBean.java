@@ -22,7 +22,7 @@ public class SystemConfigBean implements Serializable {
      * im_helper : [{"uid":"1","url":"https://plus.io/users/1"}]
      * "ad": [],
      * "question:apply_amount": 200,  //  申请精选所需支付金额
-     *"question:onlookers_amount": 100  //  围观答案所需支付金额
+     * "question:onlookers_amount": 100  //  围观答案所需支付金额
      * "checkin": false
      */
     @SerializedName("wallet:ratio")
@@ -239,7 +239,8 @@ public class SystemConfigBean implements Serializable {
     }
 
 
-    public static class RegisterSettingsBean {
+    public static class RegisterSettingsBean implements Serializable {
+        private static final long serialVersionUID = 9161708076383134140L;
         /**
          * showTerms : false
          * registerMode : all
@@ -295,7 +296,7 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
-    public static class SiteBean implements Serializable{
+    public static class SiteBean implements Serializable {
         private static final long serialVersionUID = -5372367518165433839L;
         /**
          * status : true
@@ -401,7 +402,7 @@ public class SystemConfigBean implements Serializable {
             this.gold_name = gold_name;
         }
 
-        public static class AppBean implements Serializable{
+        public static class AppBean implements Serializable {
             private static final long serialVersionUID = -2995455975855810530L;
             /**
              * status : true
@@ -425,7 +426,7 @@ public class SystemConfigBean implements Serializable {
             }
         }
 
-        public static class H5Bean implements Serializable{
+        public static class H5Bean implements Serializable {
             private static final long serialVersionUID = -4543706356197674563L;
             /**
              * status : true
@@ -449,7 +450,7 @@ public class SystemConfigBean implements Serializable {
             }
         }
 
-        public static class GoldBean implements Serializable{
+        public static class GoldBean implements Serializable {
             private static final long serialVersionUID = 175809906769541494L;
             /**
              * status : true
@@ -473,7 +474,7 @@ public class SystemConfigBean implements Serializable {
             }
         }
 
-        public static class RewardBean implements Serializable{
+        public static class RewardBean implements Serializable {
             private static final long serialVersionUID = 8123957693947760523L;
             /**
              * status : true
@@ -497,7 +498,7 @@ public class SystemConfigBean implements Serializable {
             }
         }
 
-        public static class GoldNameBean implements Serializable{
+        public static class GoldNameBean implements Serializable {
             private static final long serialVersionUID = 1993148057604147543L;
             /**
              * name : 金币

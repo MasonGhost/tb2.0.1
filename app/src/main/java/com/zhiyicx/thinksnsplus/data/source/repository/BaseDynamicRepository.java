@@ -105,7 +105,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore,
                                                                   String screen) {
         Observable<DynamicBeanV2> observable;
-        if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
+        if (DYNAMIC_TYPE_MY_COLLECTION.equals(type)) {// 收藏的动态地址和返回大不一样，真滴难受
             observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicBeanV2>>() {
                         @Override

@@ -976,14 +976,22 @@ public class ConvertUtils {
      */
     public static int stringLenghtDealForEmoji(CharSequence str) {
         int emojiLenght = emojiStrLenght(str);
-        return (str.length() - emojiLenght) + stringEmojiLenght(str);
+        return (str.length() - emojiLenght) + stringEmojiCount(str);
     }
 
-    public static int stringEmojiLenght(CharSequence str) {
+    /**
+     * @param str
+     * @return 一个 emoji 占两个字，通过长度返回个数
+     */
+    public static int stringEmojiCount(CharSequence str) {
         int emojiLenght = emojiStrLenght(str);
         return emojiLenght / 2;
     }
 
+    /**
+     * @param str
+     * @return 字符串中 emoji 字符长度
+     */
     public static int emojiStrLenght(CharSequence str) {
         int emojiLenght = 0;
         int len = str.length();
