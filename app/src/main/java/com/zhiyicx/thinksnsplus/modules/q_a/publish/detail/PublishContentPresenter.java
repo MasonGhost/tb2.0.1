@@ -21,6 +21,7 @@ import org.simple.eventbus.EventBus;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -55,7 +56,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void uploadPic(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
-        mUpLoadRepository.upLoadSingleFileV2(filePath, mimeType, true, photoWidth, photoHeight)
+        Subscription subscribe = mUpLoadRepository.upLoadSingleFileV2(filePath, mimeType, true, photoWidth, photoHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Integer>() {
@@ -78,11 +79,12 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.uploadPicFailed();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void publishAnswer(Long question_id, String body, int anonymity) {
-        mRepository.publishAnswer(question_id, body, anonymity)
+        Subscription subscribe = mRepository.publishAnswer(question_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.publish_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
@@ -106,11 +108,12 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.publish_failed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void updateAnswer(Long answer_id, String body, int anonymity) {
-        mRepository.updateAnswer(answer_id, body, anonymity)
+        Subscription subscribe = mRepository.updateAnswer(answer_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -132,11 +135,12 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.update_failed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void updateQuestion(Long question_id, String body, int anonymity) {
-        mRepository.updateQuestion(question_id, body, anonymity)
+        Subscription subscribe = mRepository.updateQuestion(question_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -158,12 +162,13 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.update_failed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void pareseBody(String body) {
 
-        Observable.just(body)
+        Subscription subscribe = Observable.just(body)
                 .flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String s) {
@@ -189,6 +194,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.addEditTextAtIndex(text);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

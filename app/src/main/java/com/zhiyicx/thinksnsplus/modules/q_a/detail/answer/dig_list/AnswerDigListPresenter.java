@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author LiuChao
  * @describe
@@ -67,7 +69,7 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long id) {
-        mRepository.getAnswerDigListV2(id,maxId).subscribe(new BaseSubscribeForV2<List<AnswerDigListBean>>() {
+        Subscription subscribe = mRepository.getAnswerDigListV2(id, maxId).subscribe(new BaseSubscribeForV2<List<AnswerDigListBean>>() {
             @Override
             protected void onSuccess(List<AnswerDigListBean> data) {
                 LogUtils.i("digList_netData" + data.toString());
@@ -84,6 +86,7 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override

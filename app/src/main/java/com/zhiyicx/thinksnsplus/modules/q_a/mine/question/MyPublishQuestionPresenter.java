@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author Catherine
  * @describe
@@ -32,7 +34,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+        Subscription subscribe = mRepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
             @Override
             protected void onSuccess(List<QAListInfoBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -49,6 +51,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
