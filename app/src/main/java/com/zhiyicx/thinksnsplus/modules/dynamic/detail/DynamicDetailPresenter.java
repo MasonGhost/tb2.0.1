@@ -103,6 +103,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
     private boolean mIsNeedDynamicListRefresh = false;
+    private boolean mIsAllDataReady = false;
 
 
     @Inject
@@ -244,6 +245,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             }
         });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void allDataReady() {
+        mIsAllDataReady = true;
     }
 
     /**
@@ -581,6 +587,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (!mIsAllDataReady) { // 数据加载完毕就更新动态列表
+            return;
+        }
 
         // 清除占位图数据
         if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils
@@ -598,7 +607,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||mAllAdvertListBeanGreenDao.getDynamicDetailAdvert()==null) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicDetailAdvert() == null) {
             return new ArrayList<>();
         }
         return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();

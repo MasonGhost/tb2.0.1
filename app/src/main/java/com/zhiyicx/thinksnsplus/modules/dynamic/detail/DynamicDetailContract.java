@@ -195,5 +195,8 @@ public interface DynamicDetailContract {
          * @param id  source id
          */
         void updateRewardData(Long id);
+
+        void allDataReady();
+
     }
 }

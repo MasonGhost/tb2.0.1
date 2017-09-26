@@ -405,6 +405,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         setAllData();
+        mPresenter.allDataReady();
     }
 
     @Override
