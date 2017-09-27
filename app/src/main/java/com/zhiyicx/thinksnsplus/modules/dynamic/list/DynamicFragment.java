@@ -950,7 +950,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
             return;
         }
-        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
@@ -959,6 +958,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
         intent.putExtras(bundle);
         startActivity(intent);
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
 
