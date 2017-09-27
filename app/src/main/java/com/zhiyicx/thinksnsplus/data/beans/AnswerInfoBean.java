@@ -27,7 +27,6 @@ import java.util.List;
  */
 @Entity
 public class AnswerInfoBean extends BaseListBean implements Serializable {
-    @Transient
     private static final long serialVersionUID = -6138662175756334333L;
 
     @Id

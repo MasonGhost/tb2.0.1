@@ -35,7 +35,6 @@ import java.util.List;
  */
 @Entity
 public class QAListInfoBean extends BaseListBean implements Serializable {
-    @Transient
     private static final long serialVersionUID = -4337619110087134442L;
     /**
      * id : 1
@@ -329,6 +328,38 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         dest.writeTypedList(this.answerInfoBeanList);
         dest.writeParcelable(this.my_answer, flags);
     }
+    public QAListInfoBean() {
+    }
+
+    protected QAListInfoBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.subject = in.readString();
+        this.body = in.readString();
+        this.anonymity = in.readInt();
+        this.amount = in.readDouble();
+        this.automaticity = in.readInt();
+        this.look = in.readInt();
+        this.excellent = in.readInt();
+        this.status = in.readInt();
+        this.comments_count = in.readInt();
+        this.answers_count = in.readInt();
+        this.watchers_count = in.readInt();
+        this.likes_count = in.readInt();
+        this.views_count = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.watched = in.readByte() != 0;
+        this.answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
+        this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.topics = in.createTypedArrayList(QATopicBean.CREATOR);
+        this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.my_answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
+    }
 
     public AnswerInfoBean getAnswer() {
         return this.answer;
@@ -417,38 +448,6 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         myDao = daoSession != null ? daoSession.getQAListInfoBeanDao() : null;
     }
 
-    public QAListInfoBean() {
-    }
-
-    protected QAListInfoBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.subject = in.readString();
-        this.body = in.readString();
-        this.anonymity = in.readInt();
-        this.amount = in.readDouble();
-        this.automaticity = in.readInt();
-        this.look = in.readInt();
-        this.excellent = in.readInt();
-        this.status = in.readInt();
-        this.comments_count = in.readInt();
-        this.answers_count = in.readInt();
-        this.watchers_count = in.readInt();
-        this.likes_count = in.readInt();
-        this.views_count = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.watched = in.readByte() != 0;
-        this.answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
-        this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
-        this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
-        this.topics = in.createTypedArrayList(QATopicBean.CREATOR);
-        this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
-        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);
-        this.my_answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
-    }
 
     @Generated(hash = 2039834701)
     public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, AnswerInfoBean answer, List<AnswerInfoBean> invitation_answers, List<AnswerInfoBean> adoption_answers, List<QATopicBean> topics,
