@@ -99,6 +99,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
             mFragmentInfoSearchEdittext.setText(getArguments().getString(BUNDLE_LOCATION_STRING));
             mFragmentInfoSearchEdittext.setSelection(getArguments().getString(BUNDLE_LOCATION_STRING).length());
         }
+        mPresenter.getRecommentUser();
     }
 
     @Override
