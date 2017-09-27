@@ -51,7 +51,7 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
     public Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id, long max_id) {
         return mQAClient.getAnswerCommentList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<AnswerCommentListBean>, Observable<List<AnswerCommentListBean>>>() {
                     @Override
                     public Observable<List<AnswerCommentListBean>> call(List<AnswerCommentListBean> answerCommentListBeen) {
@@ -95,14 +95,16 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
                             });
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
     public Observable<AnswerInfoBean> getAnswerDetail(long answer_id) {
         return mQAClient.getAnswerDetail(answer_id)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<AnswerInfoBean, Observable<AnswerInfoBean>>() {
                     @Override
                     public Observable<AnswerInfoBean> call(AnswerInfoBean answerInfoBean) {
@@ -138,7 +140,9 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
                             });
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override

@@ -359,7 +359,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<DigedBean>> getMyDiggs(int max_id) {
         return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<DigedBean>, Observable<List<DigedBean>>>() {
                     @Override
                     public Observable<List<DigedBean>> call(final List<DigedBean> data) {
@@ -386,7 +386,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                     return data;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     /**
@@ -399,7 +401,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<CommentedBean>> getMyComments(int max_id) {
         return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
                     @Override
                     public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
@@ -437,7 +439,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                     return data;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     /**
@@ -626,7 +630,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page) {
         return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<NearbyBean>, Observable<List<NearbyBean>>>() {
                     @Override
                     public Observable<List<NearbyBean>> call(List<NearbyBean> nearbyBeen) {
@@ -663,7 +667,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
                     }
                     return result;
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     /*******************************************  签到  *********************************************/

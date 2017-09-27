@@ -92,7 +92,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
             observable = mChannelClient.getUserJoinedGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
         }
         return observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
                     @Override
                     public Observable<List<GroupInfoBean>> call(List<GroupInfoBean> groupInfoBeen) {
@@ -118,12 +118,14 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                     for (int i = 0; i < groupInfoBeen.size(); i++) {
                                         if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
-                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers().get(j).getUser_id());
+                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers()
+                                                        .get(j).getUser_id());
                                                 if (userInfoBean != null)
                                                     groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
                                             }
                                             for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
-                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get(m).getUser_id());
+                                                UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get
+                                                        (m).getUser_id());
                                                 if (userInfoBean != null)
                                                     groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
                                             }
@@ -132,7 +134,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                     return groupInfoBeen;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
@@ -166,7 +170,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
 
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_GROUP_DYNAMIC_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(),ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
@@ -199,7 +203,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     public Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getGroupDynamicCommentList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<GroupDynamicCommentListBean>, Observable<List<GroupDynamicCommentListBean>>>() {
                     @Override
                     public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
@@ -236,12 +240,15 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return Observable.just(groupDynamicCommentListBeen);
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 
     @Override
     public Observable<List<DynamicDigListBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<DynamicDigListBean>, Observable<List<DynamicDigListBean>>>() {
                     @Override
                     public Observable<List<DynamicDigListBean>> call(List<DynamicDigListBean> groupDynamicLikeListBeen) {
@@ -265,10 +272,12 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         }
                                         for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
                                             if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
-                                                dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
+                                                dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id()
+                                                        .intValue()));
                                             }
                                             if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
-                                                dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
+                                                dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user
+                                                        ().intValue()));
                                             }
                                         }
                                         mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
@@ -278,14 +287,15 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return Observable.just(new ArrayList<>());
                         }
                     }
-                });
+                }).observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
     public Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id) {
         return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<GroupDynamicListBean, Observable<GroupDynamicListBean>>() {
                     @Override
                     public Observable<GroupDynamicListBean> call(GroupDynamicListBean groupDynamicListBean) {
@@ -305,7 +315,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                         }
                         return null;
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
@@ -320,11 +332,13 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
                         backgroundRequestTaskBean.setPath(
-                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf
+                                        (dynamic_id)));
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         backgroundRequestTaskBean.setPath(
-                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf
+                                        (dynamic_id)));
                     }
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());

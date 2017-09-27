@@ -99,7 +99,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     Observable<List<QATopicBean>> dealMyFollowTopics(Observable<List<QATopicBean>> observable) {
         return observable
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<QATopicBean>, Observable<List<QATopicBean>>>() {
                     @Override
                     public Observable<List<QATopicBean>> call(List<QATopicBean> topicBeanList) {
@@ -108,7 +108,9 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                         }
                         return Observable.just(topicBeanList);
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
