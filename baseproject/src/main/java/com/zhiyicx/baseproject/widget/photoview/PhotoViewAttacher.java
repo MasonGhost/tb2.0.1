@@ -37,6 +37,7 @@ import com.zhiyicx.baseproject.widget.photoview.gestures.OnGestureListener;
 import com.zhiyicx.baseproject.widget.photoview.gestures.VersionedGestureDetector;
 import com.zhiyicx.baseproject.widget.photoview.log.LogManager;
 import com.zhiyicx.baseproject.widget.photoview.scrollerproxy.ScrollerProxy;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -56,6 +57,8 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     private static final boolean DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG);
 
     static final Interpolator sInterpolator = new AccelerateDecelerateInterpolator();
+    private static final float DEFAULT_WITH_SCALE_OF_VIEW = 1.5F;
+    private boolean mIsCanScal = true;
     int ZOOM_DURATION = DEFAULT_ZOOM_DURATION;
 
     static final int EDGE_NONE = -1;
@@ -351,7 +354,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
         if (DEBUG) {
             LogManager.getLogger().d(LOG_TAG,
-                    String.format(Locale.getDefault(),"onDrag: dx: %.2f. dy: %.2f", dx, dy));
+                    String.format(Locale.getDefault(), "onDrag: dx: %.2f. dy: %.2f", dx, dy));
         }
 
         ImageView imageView = getImageView();
@@ -438,11 +441,11 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         if (DEBUG) {
             LogManager.getLogger().d(
                     LOG_TAG,
-                    String.format(Locale.getDefault(),"onScale: scale: %.2f. fX: %.2f. fY: %.2f",
+                    String.format(Locale.getDefault(), "onScale: scale: %.2f. fX: %.2f. fY: %.2f",
                             scaleFactor, focusX, focusY));
         }
-
-        if (getScale() < mMaxScale || scaleFactor < 1f) {
+//        if (getScale() < mMaxScale || scaleFactor < 1f) {  // 手指放大道最大倍数后不能再放大，如果需要，就开启
+        if (mIsCanScal || scaleFactor < 1) {
             mSuppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
             checkAndDisplayMatrix();
         }
@@ -720,6 +723,16 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         }
 
         final int viewWidth = getImageViewWidth(imageView);
+//        LogUtils.d(
+//                LOG_TAG,
+//                String.format(Locale.getDefault(), "viewWith : %1$s with : %2$s MAX : %3$s", viewWidth, width, viewWidth *
+//                        DEFAULT_WITH_SCALE_OF_VIEW));
+        if (width >= viewWidth * DEFAULT_WITH_SCALE_OF_VIEW) { // 最大倍数为view 宽度的1.5倍
+            mIsCanScal = false;
+        } else {
+            mIsCanScal = true;
+        }
+
         if (width <= viewWidth) {
             switch (mScaleType) {
                 case FIT_START:
@@ -909,7 +922,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public  interface OnMatrixChangedListener {
+    public interface OnMatrixChangedListener {
         /**
          * Callback for when the Matrix displaying the Drawable has changed. This could be because
          * the View's bounds have changed, or the user has zoomed.
@@ -925,7 +938,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public  interface OnPhotoTapListener {
+    public interface OnPhotoTapListener {
 
         /**
          * A callback to receive where the user taps on a photo. You will only receive a callback if
@@ -946,7 +959,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
      *
      * @author Chris Banes
      */
-    public  interface OnViewTapListener {
+    public interface OnViewTapListener {
 
         /**
          * A callback to receive where the user taps on a ImageView. You will receive a callback if
