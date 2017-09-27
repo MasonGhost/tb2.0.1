@@ -79,7 +79,8 @@
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
-
+            <include
+                layout="@layout/view_choose_item"/>
         </LinearLayout>
     </ScrollView>
 </com.wcy.overscroll.OverScrollLayout>

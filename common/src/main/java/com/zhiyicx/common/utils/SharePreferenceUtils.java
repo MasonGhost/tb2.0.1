@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 public class SharePreferenceUtils {
     private static SharedPreferences mSharedPreferences;
     public static final String SP_NAME = "sp_name";
+    public static final String SP_DOMAIN = "sp_domain";
 
     /**
      * 存储重要信息到 sharedPreferences；

@@ -1,23 +1,36 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
 import com.zhiyicx.thinksnsplus.widget.CheckVersionPopupWindow;
+
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -52,6 +65,18 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     CombinationButton mBtAccountManager;
     @BindView(R.id.bt_check_version)
     CombinationButton mBtCheckVersion;
+    // 服务器切换使用
+    @BindView(R.id.rb_one)
+    RadioButton mRbOne;
+    @BindView(R.id.rb_two)
+    RadioButton mRbTwo;
+    @BindView(R.id.rb_three)
+    RadioButton mRbThree;
+    @BindView(R.id.rb_days_group)
+    RadioGroup mRbDaysGroup;
+    @BindView(R.id.tv_choose_tip)
+    TextView mTvChooseTip;
+    private boolean mIsDefualtCheck = true;
 
     //    private AlertDialog.Builder mLoginoutDialogBuilder;// 退出登录选择弹框
 //    private AlertDialog.Builder mCleanCacheDialogBuilder;// 清理缓存选择弹框
@@ -86,6 +111,71 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     @Override
     protected void initView(View rootView) {
         initListener();
+        if (com.zhiyicx.common.BuildConfig.USE_DOMAIN_SWITCH) {
+            mRbDaysGroup.setVisibility(View.VISIBLE);
+            mRbOne.setVisibility(View.VISIBLE);
+            mRbOne.setText(getString(R.string.domain_formal));
+            mRbTwo.setVisibility(View.VISIBLE);
+            mRbTwo.setText(getString(R.string.domain_test));
+            mRbThree.setVisibility(View.VISIBLE);
+            mRbThree.setText(getString(R.string.domain_dev));
+            switch (ApiConfig.APP_DOMAIN) {
+                case ApiConfig.APP_DOMAIN_FORMAL:
+                    mRbOne.setChecked(true);
+                    break;
+
+                case ApiConfig.APP_DOMAIN_TEST:
+                    mRbTwo.setChecked(true);
+
+                    break;
+
+                case ApiConfig.APP_DOMAIN_DEV:
+                    mRbThree.setChecked(true);
+
+                    break;
+                default:
+            }
+            mTvChooseTip.setText(R.string.domain_swith);
+
+            RxRadioGroup.checkedChanges(mRbDaysGroup)
+                    .subscribe(checkedId -> {
+                        if (mIsDefualtCheck) {
+                            mIsDefualtCheck = false;
+                            return;
+                        }
+                        String domain = null;
+                        switch (checkedId) {
+                            case R.id.rb_one:
+                                domain = ApiConfig.APP_DOMAIN_FORMAL;
+                                break;
+                            case R.id.rb_two:
+                                domain = ApiConfig.APP_DOMAIN_TEST;
+
+                                break;
+                            case R.id.rb_three:
+                                domain = ApiConfig.APP_DOMAIN_DEV;
+                                break;
+                            default:
+                        }
+                        if (!TextUtils.isEmpty(domain) && mPresenter != null && getContext() != null) {
+                            SharePreferenceUtils.saveString(getContext().getApplicationContext(), SharePreferenceUtils.SP_DOMAIN, domain);
+                            mPresenter.loginOut();
+                            Intent mStartActivity = new Intent(getContext(), GuideActivity.class);
+                            int mPendingIntentId = 123456;
+                            PendingIntent mPendingIntent = PendingIntent.getActivity(getContext(), mPendingIntentId, mStartActivity,
+                                    PendingIntent
+                                            .FLAG_CANCEL_CURRENT);
+                            AlarmManager mgr = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                            System.exit(0);
+                        }
+
+                    });
+
+        } else {
+            mRbDaysGroup.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -148,7 +238,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
 //                    initCheckVersionPopWindow();
 //                    mCheckVersionPopupWindow.show();
                     AppUpdateManager.getInstance(getContext()
-                            , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                            , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext
+                                    ()) + "&type=android")
                             .startVersionCheck();
                 });
     }
@@ -203,8 +294,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
 
     }
 
-    private void initCheckVersionPopWindow(){
-        if (mCheckVersionPopupWindow != null){
+    private void initCheckVersionPopWindow() {
+        if (mCheckVersionPopupWindow != null) {
             return;
         }
         UpdateInfoBean updateInfoBean = new UpdateInfoBean();

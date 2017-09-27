@@ -31,11 +31,11 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
     //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-//
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+    public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
 
-//    public static final String APP_DOMAIN = "https://tsplus.zhibocloud.cn/";// 正式服务器
+    public static  String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
@@ -418,7 +418,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}"; // 动态详情
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";//
+    // 取消对圈子动态的收藏
     public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态
     public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态
     public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
@@ -429,7 +430,8 @@ public class ApiConfig {
     public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 创建圈子动态评论
     public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments";// 创建圈子动态评论
     public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";
+    // 删除圈子动态评论
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
     public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}";// 删除圈子动态

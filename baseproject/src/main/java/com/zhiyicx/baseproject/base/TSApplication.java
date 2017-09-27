@@ -1,9 +1,12 @@
 package com.zhiyicx.baseproject.base;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 
 /**
  * @Describe
@@ -30,6 +33,12 @@ public abstract class TSApplication extends BaseApplication {
      */
     @Override
     public String getBaseUrl() {
+        if (com.zhiyicx.common.BuildConfig.USE_DOMAIN_SWITCH) {
+            String domain = SharePreferenceUtils.getString(getContext(), SharePreferenceUtils.SP_DOMAIN);
+            if (!TextUtils.isEmpty(domain)) {
+                ApiConfig.APP_DOMAIN = domain;
+            }
+        }
         return ApiConfig.APP_DOMAIN;
     }
 
