@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
  * @Describe
@@ -77,5 +79,16 @@ public class UserAvatarView extends FrameLayout {
 
     public ImageView getIvVerify() {
         return mIvVerify;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        try {
+            Glide.clear(mIvAvatar);
+            Glide.clear(mIvVerify);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

@@ -129,11 +129,10 @@ public class InfoDetailHeaderView {
             mTitle.setText(infoMain.getTitle());
             mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
             mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
-            String from = infoMain.getFrom().equals(mContext.getString(R.string.info_publish_original)) ?
+            String from = mContext.getString(R.string.info_publish_original).equals(infoMain.getFrom()) ?
                     infoMain.getAuthor() : infoMain.getFrom();
-            String infoData = String.format(mContext.getString(R.string.info_list_count)
-                    , from, infoMain.getHits(), TimeUtils.getTimeFriendlyNormal(infoMain
-                            .getUpdated_at()));
+            String infoData = String.format(mContext.getString(R.string.info_detail_count)
+                    , from, infoMain.getHits());
             mFrom.setText(infoData);
             // 引用
             if (!TextUtils.isEmpty(infoMain.getSubject())) {
@@ -286,7 +285,7 @@ public class InfoDetailHeaderView {
         }
 
         mDigListView.setDigCount(infoMain.getDigg_count());
-        mDigListView.setPublishTime(infoMain.getUpdated_at());
+        mDigListView.setPublishTime(infoMain.getCreated_at());
         mDigListView.setViewerCount(infoMain.getHits());
         // 设置点赞头像
         mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());

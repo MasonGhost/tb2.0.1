@@ -277,7 +277,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     private void getNewDataFromNet() {
-        if (isNeedRefreshAnimation()) {
+        if (isNeedRefreshAnimation()&&getUserVisibleHint()) {
             mRefreshlayout.setRefreshing(true);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
@@ -659,6 +659,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param isLoadMore 是否是加载更多
      */
     private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
+
         if (!isLoadMore) { // 刷新
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setLoadMoreEnabled(true);

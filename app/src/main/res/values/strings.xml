@@ -138,7 +138,8 @@
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
     <!--资讯的列表的信息汇总，来自-浏览数-时间-->
-    <string name="info_list_count">%1$s  ·  %2$s 浏览  ·  %3$s</string>
+    <string name="info_list_count">%1$s\t\t·\t\t%2$s 浏览\t\t·\t\t%3$s</string>
+    <string name="info_detail_count">%1$s \t\t\t\t %2$d 浏览 </string>
     <string name="info_publish_original">原创</string>
     <string name="info_top">顶</string>
     <string name="info_publish_hint">提示</string>
