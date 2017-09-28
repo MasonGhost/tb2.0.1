@@ -467,6 +467,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_SINGLE_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/{advert_id}/advertising";
     // 获取批量广告位的广告列表
     public static final String APP_PATH_GET_All_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/advertising";
+    // 版本更新
+    public static final String APP_PATH_GET_APP_NEW_VERSION = "api/" + API_VERSION_2 + "/plus-appversion";
 
     /**
      * 通用 CommonClient

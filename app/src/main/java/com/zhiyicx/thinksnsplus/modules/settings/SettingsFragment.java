@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.zhiyicx.appupdate.AppUpdateManager;
+import com.zhiyicx.appupdate.AppUtils;
+import com.zhiyicx.appupdate.AppVersionBean;
+import com.zhiyicx.appupdate.CustomVersionDialogActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -31,6 +34,7 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
 import com.zhiyicx.thinksnsplus.widget.CheckVersionPopupWindow;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -48,8 +52,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class SettingsFragment extends TSFragment<SettingsContract.Presenter> implements SettingsContract.View,
-        CheckVersionPopupWindow.OnUpdateClickListener {
+public class SettingsFragment extends TSFragment<SettingsContract.Presenter> implements SettingsContract.View {
 
     @BindView(R.id.bt_login_out)
     CombinationButton mBtLoginOut;
@@ -189,6 +192,21 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mBtCleanCache.setRightText(size);
     }
 
+    @Override
+    public void getAppNewVersionSuccess(List<AppVersionBean> appVersionBean) {
+        if (appVersionBean != null
+                && !appVersionBean.isEmpty()
+                && AppUtils.getVersionCode(getContext()) < appVersionBean.get(0).getVersion_code()) {
+            SharePreferenceUtils.saveObject(getContext(), CustomVersionDialogActivity.SHAREPREFERENCE_TAG_ABORD_VERION, null);
+            AppUpdateManager.getInstance(getContext()
+                    , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext
+                            ()) + "&type=android")
+                    .startVersionCheck();
+        } else {
+            showSnackSuccessMessage(getString(R.string.no_new_version));
+        }
+    }
+
     private void initListener() {
         // 认证
         RxView.clicks(mBtSetVertify)
@@ -237,10 +255,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(aVoid -> {
 //                    initCheckVersionPopWindow();
 //                    mCheckVersionPopupWindow.show();
-                    AppUpdateManager.getInstance(getContext()
-                            , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext
-                                    ()) + "&type=android")
-                            .startVersionCheck();
+                    mPresenter.checkUpdate();
                 });
     }
 
@@ -292,29 +307,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 })
                 .bottomClickListener(() -> mLoginoutPopupWindow.hide()).build();
 
-    }
-
-    private void initCheckVersionPopWindow() {
-        if (mCheckVersionPopupWindow != null) {
-            return;
-        }
-        UpdateInfoBean updateInfoBean = new UpdateInfoBean();
-        updateInfoBean.setLength(1024);
-        updateInfoBean.setContent("xxxxxxxxxx");
-        updateInfoBean.setName("V1.0.1");
-        mCheckVersionPopupWindow = CheckVersionPopupWindow.Builder()
-                .with(getActivity())
-                .parentView(mBtCheckVersion)
-                .bindListener(this)
-                .bindData(updateInfoBean)
-                .isOutsideTouch(false)
-                .alpha(0.8f)
-                .build();
-
-    }
-
-    @Override
-    public void onUpdateClick() {
 
     }
 //    /**
@@ -333,26 +325,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
 //            }
 //        }, getString(R.string.clean_cache), getString(R.string.is_sure_clean_cache), getString(R.string.cancel), getString(R.string.sure));
 //        mCleanCacheDialogBuilder.create().show();
-//    }
-
-    /**
-     * 初始化登录选择弹框
-     */
-//    private void initLoginOutPopupWindow() {
-//
-//        if (mLoginoutDialogBuilder == null) {
-//            mLoginoutDialogBuilder = new AlertDialog.Builder(getActivity());
-//        }
-//        DialogUtils.getDialog(mLoginoutDialogBuilder, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                if (mPresenter.loginOut()) {
-//                    startActivity(new Intent(getActivity(), LoginActivity.class));
-//                }
-//            }
-//        }, getString(R.string.login_out), getString(R.string.is_sure_login_out), getString(R.string.cancel), getString(R.string.sure));
-//        mLoginoutDialogBuilder.create().show();
 //    }
 
 }

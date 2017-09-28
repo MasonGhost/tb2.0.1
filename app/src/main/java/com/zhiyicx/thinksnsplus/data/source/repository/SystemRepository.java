@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -105,7 +106,8 @@ public class SystemRepository implements ISystemRepository {
      */
     @Override
     public SystemConfigBean getBootstrappersInfoFromLocal() {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -156,7 +158,8 @@ public class SystemRepository implements ISystemRepository {
      */
     public static String checkHelperUrl(Context context, long user_id) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -180,7 +183,8 @@ public class SystemRepository implements ISystemRepository {
      */
     public static void resetTSHelper(Context context) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         } else {
@@ -201,7 +205,8 @@ public class SystemRepository implements ISystemRepository {
      * @param user_id user_id
      */
     public static void updateTsHelperDeletStatus(Context context, long user_id, boolean isDelete) {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -227,7 +232,8 @@ public class SystemRepository implements ISystemRepository {
         if (systemConfigBean == null || systemConfigBean.getIm_helper() == null) {
             return false;
         }
-        SystemConfigBean localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (localSystemConfigBean == null) { // 读取本地默认配置
             localSystemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -308,7 +314,8 @@ public class SystemRepository implements ISystemRepository {
         // 新版 ts 助手
         for (final SystemConfigBean.ImHelperBean imHelperBean : getBootstrappersInfoFromLocal().getIm_helper()) {
             final String uids = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + imHelperBean.getUid();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+            final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + imHelperBean.getUid();// "pair":null,   //
+            // type=0时此项为两个uid：min_uid&max_uid
             mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
                     .subscribe(new BaseSubscribeForV2<Conversation>() {
                         @Override
@@ -378,10 +385,17 @@ public class SystemRepository implements ISystemRepository {
         UserInfoBean tsHleper = new UserInfoBean();
         tsHleper.setName(mContext.getString(R.string.ts_helper));
         for (SystemConversationBean systemConversationBean : list) {
-            systemConversationBean.setUserInfo(systemConversationBean.getUser_id() == null || systemConversationBean.getUser_id() == 0 ? tsHleper : myUserInfo);
-            systemConversationBean.setToUserInfo(systemConversationBean.getTo_user_id() == null || systemConversationBean.getTo_user_id() == 0 ? tsHleper : myUserInfo);
+            systemConversationBean.setUserInfo(systemConversationBean.getUser_id() == null || systemConversationBean.getUser_id() == 0 ? tsHleper :
+                    myUserInfo);
+            systemConversationBean.setToUserInfo(systemConversationBean.getTo_user_id() == null || systemConversationBean.getTo_user_id() == 0 ?
+                    tsHleper : myUserInfo);
         }
     }
+    @Override
+    public Observable<List<AppVersionBean>> getAppNewVersion() {
 
-
+        return mCommonClient.getAppNewVersion(DeviceUtils.getVersionCode(mContext), "android")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

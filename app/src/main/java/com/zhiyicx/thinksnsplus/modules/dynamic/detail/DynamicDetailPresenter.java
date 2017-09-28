@@ -127,7 +127,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             getDynamicDigList(mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
+        Subscription subscribe = mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
                 .getCurrentDynamic().getId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<DynamicCommentBean>>() {
                     @Override
@@ -165,6 +165,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -546,11 +547,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        LogUtils.d(TAG, "dynamic send success dynamicCommentBean = " + dynamicCommentBean
-                .toString());
-        Observable.just(dynamicCommentBean)
+
+        Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(dynamicCommentBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
@@ -569,12 +569,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
                     return dynamicPosition;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData(); // 加上 header
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 
@@ -623,7 +625,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
 
-        handleWalletBlance((long)amount)
+        Subscription subscribe = handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
@@ -699,6 +701,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

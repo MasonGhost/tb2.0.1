@@ -128,6 +128,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
         Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
+                .observeOn(Schedulers.io())
                 .map(listBaseJson -> {
                     insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
                     if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
@@ -149,6 +150,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
                     return listBaseJson;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override
                     protected void onSuccess(List<DynamicDetailBeanV2> data) {
@@ -210,7 +212,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
-        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION:" + datas.size());
         return datas;
     }
 
@@ -485,7 +486,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        handleWalletBlance((long)amount)
+        handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
@@ -579,9 +580,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        Observable.just(dynamicCommentBean)
+        Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(dynamicCommentBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
@@ -606,12 +607,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     }
                     return dynamicPosition;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData(integer);
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 
@@ -648,10 +651,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
     public void updateDynamic(Bundle data) {
-        LogUtils.e("updateDynamic::EVENT_UPDATE_DYNAMIC");
-        Observable.just(data)
+        Subscription subscribe = Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                     DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
@@ -661,12 +662,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     }
                     return isNeedRefresh ? dynamicPosition : -1;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData(integer);
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
     }
 
     @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)

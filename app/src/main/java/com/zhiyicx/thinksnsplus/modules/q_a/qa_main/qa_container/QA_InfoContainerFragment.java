@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
-    private static final int DEFAULT_OFFSET_PAGE = 5;
+    private static final int DEFAULT_OFFSET_PAGE = 2;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
