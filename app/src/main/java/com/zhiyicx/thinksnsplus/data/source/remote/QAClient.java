@@ -24,6 +24,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -233,6 +234,12 @@ public interface QAClient {
      */
     @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
     Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
+
+    /**
+     * 采纳答案
+     */
+    @PUT(ApiConfig.APP_PATH_ADOPT_ANSWER)
+    Observable<BaseJsonV2<Object>> adoptionAnswer(@Path("question_id") long question_id, @Path("answer_id") long answer_id);
 
     /**
      * 批量获取专家列表

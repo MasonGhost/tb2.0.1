@@ -78,7 +78,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Override
     public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mQAListInfoBeanGreenDao.getMultiDataFromCache();
+        return null;
     }
 
     @Override

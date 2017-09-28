@@ -76,6 +76,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     private String created_at;
     private String updated_at;
     private boolean watched;
+    private boolean has_adoption;
     @Convert(converter = AnswerInfoBeanConvert.class, columnType = String.class)
     private AnswerInfoBean answer;
     @Convert(converter = AnswerInfoListBeanConvert.class, columnType = String.class)
@@ -319,6 +320,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         dest.writeInt(this.views_count);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+        dest.writeByte(this.has_adoption ? (byte) 1 : (byte) 0);
         dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.answer, flags);
         dest.writeTypedList(this.invitation_answers);
@@ -344,6 +346,14 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
 
     public List<AnswerInfoBean> getAdoption_answers() {
         return this.adoption_answers;
+    }
+
+    public boolean getHas_adoption() {
+        return this.has_adoption;
+    }
+
+    public void setHas_adoption(boolean has_adoption) {
+        this.has_adoption = has_adoption;
     }
 
     /**
@@ -440,6 +450,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.watched = in.readByte() != 0;
+        this.has_adoption = in.readByte() != 0;
         this.answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
         this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
         this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
@@ -450,8 +461,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.my_answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
     }
 
-    @Generated(hash = 2039834701)
-    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, AnswerInfoBean answer, List<AnswerInfoBean> invitation_answers, List<AnswerInfoBean> adoption_answers, List<QATopicBean> topics,
+    @Generated(hash = 61342597)
+    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, boolean has_adoption, AnswerInfoBean answer, List<AnswerInfoBean> invitation_answers, List<AnswerInfoBean> adoption_answers, List<QATopicBean> topics,
             List<UserInfoBean> invitations, UserInfoBean user, AnswerInfoBean my_answer) {
         this.id = id;
         this.user_id = user_id;
@@ -471,6 +482,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.watched = watched;
+        this.has_adoption = has_adoption;
         this.answer = answer;
         this.invitation_answers = invitation_answers;
         this.adoption_answers = adoption_answers;
@@ -497,4 +509,5 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 1951279767)
     private transient QAListInfoBeanDao myDao;
+
 }
