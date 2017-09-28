@@ -146,12 +146,15 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
     }
 
     @Override
-    public void adoptionAnswer(long question_id, long answer_id) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.PUT, null);
-        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_ADOPT_ANSWER_S, question_id, answer_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    public Observable<BaseJsonV2<Object>> adoptionAnswer(long question_id, long answer_id) {
+        return mQAClient.adoptionAnswer(question_id, answer_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+//        BackgroundRequestTaskBean backgroundRequestTaskBean;
+//        // 后台处理
+//        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.PUT, null);
+//        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_ADOPT_ANSWER_S, question_id, answer_id));
+//        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override

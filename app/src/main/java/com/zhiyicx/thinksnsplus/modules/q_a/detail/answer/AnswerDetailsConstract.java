@@ -96,6 +96,6 @@ public interface AnswerDetailsConstract {
 
         void deleteAnswer(long answer_id);
 
-        void adoptionAnswer(long question_id,long answer_id);
+        Observable<BaseJsonV2<Object>> adoptionAnswer(long question_id,long answer_id);
     }
 }

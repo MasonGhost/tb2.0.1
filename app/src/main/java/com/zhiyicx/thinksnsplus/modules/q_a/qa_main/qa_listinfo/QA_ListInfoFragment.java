@@ -165,7 +165,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content_v2, mListDatas) {
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
             protected int getExcellentTag(boolean isExcellent) {
                 boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);

@@ -432,7 +432,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
         boolean isMineAdopted = answerInfoBean.getAdoption() == 1;// 自己的答案被采纳？
 
-        boolean isAdopted = answerInfoBean.getHas_adoption();// 问题被采纳？
+        boolean isAdopted = answerInfoBean.getQuestion().getHas_adoption();// 问题被采纳？
 
         boolean isInvited = answerInfoBean.getInvited() == 1;// 是否该回答是被邀请的人的回答。
 
