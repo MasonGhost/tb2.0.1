@@ -21,6 +21,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 
 /**
  * @Describe
@@ -48,7 +50,7 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
-        mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -65,11 +67,12 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void updateQuestion(QAPublishBean qaPublishBean) {
-        mQA$RewardRepositoryPublish.updateQuestion(qaPublishBean)
+        Subscription subscribe = mQA$RewardRepositoryPublish.updateQuestion(qaPublishBean)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -95,6 +98,7 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

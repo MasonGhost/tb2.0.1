@@ -891,6 +891,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         popAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) {
+                    return;
+                }
                 MusicDetaisBean item = mMusicList.get(position);
 
                 if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {

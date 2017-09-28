@@ -187,8 +187,8 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
-        shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
-        shareContent.setContent(mRootView.getCurrentAblum().getIntro());
+        shareContent.setTitle(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getTitle());
+        shareContent.setContent(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getIntro());
         if (bitmap == null) {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         } else {

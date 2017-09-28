@@ -138,6 +138,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         userInfoBean.setName(advert.getName());// 广告名字
         userInfoBean.setAvatar(advert.getAvatar());// 广告头像
         dynamicDetailBeanV2.setId(max_id);// max_id 转移
+        dynamicDetailBeanV2.setFeed_mark(System.currentTimeMillis());
         dynamicDetailBeanV2.setDeleted_at(advert.getLink());// 广告外链
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
         dynamicDetailBeanV2.setFeed_content(advert.getContent());// 广告内容

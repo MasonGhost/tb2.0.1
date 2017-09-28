@@ -88,6 +88,9 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Void aVoid) {
+                        if (mRlContainer==null) {
+                            return Observable.just(false);
+                        }
                         Rect rect = new Rect();
                         //获取root在窗体的可视区域
                         mRlContainer.getWindowVisibleDisplayFrame(rect);
@@ -100,6 +103,9 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
+                    if (mMessageList==null) {
+                        return;
+                    }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
 //                        LogUtils.i(TAG + "---RxView   " + aBoolean);
                     if (aBoolean) {

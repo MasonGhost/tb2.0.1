@@ -1376,7 +1376,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
             if (mEventContainerCache.get(tmp.getCid()) != null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
-                tmp.setIm_uid(mIMConfig.getImUid());
+                if (mIMConfig!=null) {
+                    tmp.setIm_uid(mIMConfig.getImUid());
+                }
                 tmp.setUsids(String.valueOf(eventContainer.mMessageContainer.msg.uid));
                 tmp.setLast_message(eventContainer.mMessageContainer.msg);
                 ConversationDao.getInstance(getApplicationContext()).insertConversation(tmp);

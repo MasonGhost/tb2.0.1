@@ -666,9 +666,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Generated(hash = 793304063)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-                        String location, boolean following, boolean follower, String created_at, String updated_at,
-                        String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-                        List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;

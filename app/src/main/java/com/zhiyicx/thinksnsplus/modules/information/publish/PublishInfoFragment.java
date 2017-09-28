@@ -346,6 +346,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
+            if (mRicheTest==null) {
+                return;
+            }
             int[] viewLacotion = new int[2];
             mRlPublishTool.getLocationOnScreen(viewLacotion);
             if (viewLacotion[1] > mRlPublishTool.getHeight()) {

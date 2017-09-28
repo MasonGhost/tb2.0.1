@@ -57,8 +57,8 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
 
     @Override
     public void publishQuestion(final QAPublishBean qaPublishBean) {
-        handleWalletBlance((long) qaPublishBean.getAmount())
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(com.zhiyicx.thinksnsplus.R
+        Subscription subscribe = handleWalletBlance((long) qaPublishBean.getAmount())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.publish_doing)))
                 .flatMap(new Func1<Object, Observable<Object>>() {
                     @Override
@@ -108,6 +108,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

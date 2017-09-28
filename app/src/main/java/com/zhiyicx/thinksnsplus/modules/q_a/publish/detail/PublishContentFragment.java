@@ -247,6 +247,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     public void uploadPicSuccess(int id) {
+        if (mPbImageUpload == null) {
+            return;
+        }
         mPbImageUpload.setVisibility(View.GONE);
         mToolbarRight.setClickable(true);
         test.setId(id);
@@ -344,6 +347,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
+            if (mRicheTest == null) {
+                return;
+            }
             int[] viewLacotion = new int[2];
             mRlPublishTool.getLocationOnScreen(viewLacotion);
             if (viewLacotion[1] > mRlPublishTool.getHeight()) {

@@ -40,7 +40,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
+public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter
+        .OnItemClickListener {
     public static final String BUNDLE_IS_FROM = "is_from";
     public static final String BUNDLE_CHOOSED_TAGS = "choosed_tags";
 
@@ -278,6 +279,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) {
+                    return;
+                }
                 switch (mFrom) {
                     case INFO_PUBLISH:
                         deleteTagSuccess(position);

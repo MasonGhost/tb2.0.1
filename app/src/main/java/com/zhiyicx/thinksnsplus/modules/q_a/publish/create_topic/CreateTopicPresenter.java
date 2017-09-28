@@ -7,6 +7,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/09/15/10:01
@@ -23,7 +25,7 @@ public class CreateTopicPresenter extends AppBasePresenter<CreateTopicContract.R
 
     @Override
     public void createTopic(String name, String desc) {
-        mRepository.createTopic(name, desc)
+        Subscription subscribe = mRepository.createTopic(name, desc)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
@@ -44,5 +46,6 @@ public class CreateTopicPresenter extends AppBasePresenter<CreateTopicContract.R
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.apply_for_failed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 }
