@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,6 +69,9 @@ public class ImageUtils {
 
     private static long mHeadPicSigture;
     private static long mCoverSigture;
+
+    private static SparseArray<CircleImageDrawable> headImageDrawable = new SparseArray<>();
+    private static SparseBooleanArray isAnonymityArray = new SparseBooleanArray();
 
     public static void updateCurrentLoginUserHeadPicSignature(Context context) {
         SharePreferenceUtils.saveLong(context.getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE, System
@@ -228,21 +232,6 @@ public class ImageUtils {
     }
 
     /**
-     * 问答那里的图文混排头像处理
-     *
-     * @param contentTextView
-     * @param isAnonymity     是否匿名回答
-     * @param withBorder
-     * @description 单纯的一个丑字根本描述不了这段代码 by tym
-     */
-    public static void loadQAUserHead(SparseArray<UserInfoBean> mUserInfoBeanMap, int position, SpanTextClickable.SpanTextClickListener spanTextClickListener,
-                                      SparseArray<String> tag, TextView contentTextView, boolean isAnonymity, boolean withBorder) {
-        LogUtils.d(tag.toString());
-        LogUtils.d(mUserInfoBeanMap.toString());
-        loadQAUserAvatar(mUserInfoBeanMap, position, spanTextClickListener, tag, contentTextView, isAnonymity, withBorder);
-    }
-
-    /**
      * 加载用户圆形图像
      *
      * @param userInfoBean 用户信息
@@ -288,178 +277,6 @@ public class ImageUtils {
                         : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                 .into(imageView);
     }
-
-    /**
-     * 问答那里的图文混排头像处理
-     *
-     * @param withBorder
-     */
-    private static void loadQAUserAvatar(SparseArray<UserInfoBean> mUserInfoBeanMap, int position,
-                                         SpanTextClickable.SpanTextClickListener spanTextClickListener, SparseArray<String> tag,
-                                         TextView contentTextView, boolean isAnonymity, boolean withBorder) {
-        if (checkImageContext(contentTextView)) return;
-        UserInfoBean userInfoBean = mUserInfoBeanMap.get((int) contentTextView.getTag());
-        String content = tag.get((int) contentTextView.getTag());
-        String avatar = "";
-        if (userInfoBean != null) {
-            avatar = userInfoBean.getAvatar();
-            long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
-            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getExtra().getUser_id() ==
-                    currentLoginUerId) {
-
-                if (userInfoBean.getExtra().getUser_id() == currentLoginUerId) {
-                    mHeadPicSigture = SharePreferenceUtils.getLong(AppApplication.getContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
-                } else {
-                    mHeadPicSigture = SharePreferenceUtils.getLong(AppApplication.getContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
-                }
-                if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
-                    mHeadPicSigture = System.currentTimeMillis();
-                }
-                SharePreferenceUtils.saveLong(AppApplication.getContext()
-                        , userInfoBean.getExtra().getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE :
-                                SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
-            }
-            laste_request_time = System.currentTimeMillis();
-        }
-        Glide.with(contentTextView.getContext())
-                .load(avatar)
-                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .error(R.mipmap.pic_default_portrait1)
-                .transform(withBorder ?
-                        new GlideCircleBorderTransform(AppApplication.getContext(), AppApplication.getContext().getResources()
-                                .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(AppApplication.getContext(), R.color.white))
-                        : new GlideCircleTransform(AppApplication.getContext()))
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        laodAvatar(mUserInfoBeanMap, position, spanTextClickListener, tag, dealImageTextView(resource, contentTextView, isAnonymity, userInfoBean, content, tag),
-                                userInfoBean, contentTextView, isAnonymity, withBorder);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        laodAvatar(mUserInfoBeanMap, position, spanTextClickListener, tag, dealImageTextView(errorDrawable, contentTextView, isAnonymity, userInfoBean, content, tag),
-                                userInfoBean, contentTextView, isAnonymity, withBorder);
-                    }
-                });
-    }
-
-    /**
-     * 问答专用
-     *
-     * @param resource
-     * @param contentTextView
-     * @param isAnonymity
-     * @param userInfoBean
-     * @param content
-     * @return
-     */
-    @NonNull
-    public static CircleImageDrawable dealImageTextView(Drawable resource, TextView contentTextView, boolean isAnonymity, UserInfoBean userInfoBean, String
-            content, SparseArray<String> tag) {
-        int tag_id = (int) contentTextView.getTag();
-        Bitmap avatar = ConvertUtils.drawable2BitmapWithWhiteBg(AppApplication.getContext()
-                , resource, R.mipmap.pic_default_portrait1);
-        Bitmap newBmp = Bitmap.createScaledBitmap(avatar,
-                contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-
-        CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
-
-        headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
-        ImageSpan imgSpan = new CenterImageSpan(headImage, isAnonymity);
-        String userName;
-        if (userInfoBean == null) {
-            userName = contentTextView.getContext().getString(R.string.qa_question_answer_anonymity_user);
-        } else {
-            userName = userInfoBean.getName();
-        }
-        SpannableString spannableString = SpannableString.valueOf("T" + userName + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                tag.get(tag_id)));
-        spannableString.setSpan(imgSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        contentTextView.setText(spannableString);
-        return headImage;
-    }
-
-    /**
-     * 问答专用
-     *
-     * @param headImage
-     * @param userInfoBean
-     * @param contentTextView
-     * @param isAnonymity
-     * @param withBorder
-     */
-    private static void laodAvatar(SparseArray<UserInfoBean> mUserInfoBeanMap, int position,
-                                   SpanTextClickable.SpanTextClickListener spanTextClickListener, SparseArray<String> tag
-            , final CircleImageDrawable
-                                           headImage, final UserInfoBean userInfoBean, TextView contentTextView, boolean isAnonymity, boolean withBorder) {
-        if (checkImageContext(contentTextView)) return;
-
-        if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
-            if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
-                userInfoBean.getVerified().setIcon("");
-            }
-            int w = (int) (headImage.getBounds().width() / 3.5f);
-            Glide.with(contentTextView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
-                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                    .override(w, w)
-                    .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
-                            .pic_identi_individual)
-                    .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
-                            .pic_identi_individual)
-                    .transform(withBorder ?
-                            new GlideCircleBorderTransform(AppApplication.getContext(), AppApplication.getContext().getResources()
-                                    .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(AppApplication.getContext(), R.color.white))
-                            : new GlideCircleTransform(AppApplication.getContext()))
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            int tag_id = (int) contentTextView.getTag();
-                            String content = tag.get(tag_id);
-                            LogUtils.d("onResourceReady::" + content);
-                            ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
-                            String first = "T" + userInfoBean.getName() + "：";
-                            SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig
-                                    .IMAGE_FORMAT, content));
-                            spannableString.setSpan(imgSpan, 0, 1, Spannable
-                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-//                            SpanTextClickable clickable = new SpanTextClickable((long) tag_id, contentTextView.getTextSize() / 3, position);
-//                            clickable.setSpanTextClickListener(spanTextClickListener);
-//                            SpanTextClickable.dealTextViewClickEvent(contentTextView);
-//                            spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
-//                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-                            contentTextView.setText(spannableString);
-
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            int tag_id = (int) contentTextView.getTag();
-                            String content = tag.get(tag_id);
-                            LogUtils.d("onLoadFailed::" + content);
-                            errorDrawable.setBounds(0, 0, w, w);
-                            ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
-                            String first = "T" + userInfoBean.getName() + "：";
-                            SpannableString spannableString = SpannableString.valueOf(first + RegexUtils.replaceImageId(MarkdownConfig
-                                    .IMAGE_FORMAT, content));
-                            spannableString.setSpan(imgSpan, 0, 1, Spannable
-                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-//                            SpanTextClickable clickable = new SpanTextClickable((long) tag_id, contentTextView.getTextSize() / 3, position);
-//                            clickable.setSpanTextClickListener(spanTextClickListener);
-//                            SpanTextClickable.dealTextViewClickEvent(contentTextView);
-//                            spannableString.setSpan(clickable, first.length(), spannableString.length(), Spannable
-//                                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-                            contentTextView.setText(spannableString);
-                        }
-
-                    });
-        }
-    }
-
 
     /**
      * 获取用户头像地址
@@ -577,6 +394,45 @@ public class ImageUtils {
 
             @Override
             public void teardown() { /* nothing to free */ }
+        }
+    }
+
+    private static class QAHolder {
+        CircleImageDrawable headImage;
+        int tag;
+        String content;
+
+        public QAHolder(int tag, CircleImageDrawable headImage, String content) {
+            this.headImage = headImage;
+            this.tag = tag;
+            this.content = content;
+        }
+
+        public QAHolder() {
+        }
+
+        public CircleImageDrawable getHeadImage() {
+            return headImage;
+        }
+
+        public void setHeadImage(CircleImageDrawable headImage) {
+            this.headImage = headImage;
+        }
+
+        public int getTag() {
+            return tag;
+        }
+
+        public void setTag(int tag) {
+            this.tag = tag;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
         }
     }
 

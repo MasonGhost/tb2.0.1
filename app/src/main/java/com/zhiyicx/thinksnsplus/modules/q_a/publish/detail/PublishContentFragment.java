@@ -224,6 +224,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         if (photoList.isEmpty()) {
             return;
         }
+        mToolbarRight.setClickable(false);
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
         LogUtils.d("photo degree", "before // " + DrawableProvider.getBitmapDegree(path));
@@ -250,6 +251,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
             return;
         }
         mPbImageUpload.setVisibility(View.GONE);
+        mToolbarRight.setClickable(true);
         test.setId(id);
         mPicTag++;
     }
@@ -257,6 +259,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     public void uploadPicFailed() {
         mPbImageUpload.setVisibility(View.GONE);
+        mToolbarRight.setClickable(true);
     }
 
     @Override

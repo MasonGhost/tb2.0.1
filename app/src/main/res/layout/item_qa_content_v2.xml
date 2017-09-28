@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingTop="@dimen/spacing_normal">
+
+    <TextView
+        android:id="@+id/item_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/spacing_tiny"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_sub_title"
+        tools:text="流动性捉襟见肘，新三板如履薄冰"/>
+
+    <ImageView
+        android:id="@+id/item_info_imag"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/qa_info_iamge_height"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_hotcomment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/item_info_hotcomment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/spacing_small"
+            android:maxLines="3"
+            android:textColor="@color/normal_for_dynamic_list_content"
+            android:textSize="@dimen/size_content"/>
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_head_icon"
+            android:layout_width="@dimen/headpic_for_question_list"
+            android:layout_height="@dimen/headpic_for_question_list"
+            app:ts_avatare_size="@dimen/headpic_for_question_list"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/item_info_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="ssss"/>
+
+        <TextView
+            android:id="@+id/item_info_reward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="ttttt"/>
+
+        <TextView
+            android:id="@+id/item_info_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="sss"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

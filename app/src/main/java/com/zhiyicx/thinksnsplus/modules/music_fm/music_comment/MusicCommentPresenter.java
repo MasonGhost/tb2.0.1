@@ -94,8 +94,8 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-//                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-//                            test.convertAndSave();
+//                            TCommonMetadataProvider addBtnAnimation = new TCommonMetadataProvider(data);
+//                            addBtnAnimation.convertAndSave();
 
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
@@ -120,8 +120,8 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                                 mCommentListBeanGreenDao.saveMultiData(data);
                             }
 
-//                            TCommonMetadataProvider test = new TCommonMetadataProvider(data);
-//                            test.convertAndSave();
+//                            TCommonMetadataProvider addBtnAnimation = new TCommonMetadataProvider(data);
+//                            addBtnAnimation.convertAndSave();
 
 //                            List<MusicCommentListBean> localComment = mCommentListBeanGreenDao.getMyAblumComment(Integer.valueOf(music_id));
 //                            if (!localComment.isEmpty()) {
