@@ -143,6 +143,7 @@ public class QuestionDetailContent extends FrameLayout {
 
         // 不管有没有图哦，反正图文混排先隐藏了
         mMdvQuestionContent.setVisibility(GONE);
+        mLlContentPreview.setVisibility(VISIBLE);
         dealContent(content, list);
         if (list.size() > 0) {
             // 如果有图片 那么显示封面
