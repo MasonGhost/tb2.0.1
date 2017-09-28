@@ -227,6 +227,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.getAnswerInfo().setAdoption(1);
+                        mRootView.getAnswerInfo().getQuestion().setHas_adoption(true);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.qa_question_answer_adopt));
                     }
 

@@ -145,6 +145,13 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            handleInfoHasBeDeleted(code);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
             addSubscrebe(subscribe);

@@ -72,8 +72,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
         holder.setText(R.id.tv_info_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent()));
         // 投稿来源，浏览数，时间
-        String from = realData.getFrom().equals(title.getContext().getString(R.string
-                .info_publish_original)) ?
+        String from = title.getContext().getString(R.string
+                .info_publish_original).equals(realData.getFrom()) ?
                 realData.getAuthor() : realData.getFrom();
         String infoData = String.format(title.getContext().getString(R.string.info_list_count)
                 , from, ConvertUtils.numberConvert(realData.getHits()), TimeUtils.getTimeFriendlyNormal(realData
