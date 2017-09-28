@@ -460,7 +460,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 }
             }
         } else {
-            refreshData(position);
+            refreshData();
         }
     }
 

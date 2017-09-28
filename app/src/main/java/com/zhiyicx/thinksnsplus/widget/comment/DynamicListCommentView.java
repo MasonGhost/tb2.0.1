@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.TimeStringSortClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -129,6 +130,11 @@ public class DynamicListCommentView extends LinearLayout {
             } else {
                 data.addAll(dynamicBean.getComments());
             }
+        }
+        try {
+            Collections.sort(data, (dynamicCommentBean, t1) -> t1.getCreated_at().compareTo(dynamicCommentBean.getCreated_at()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         mDynamicNoPullRecycleView.setTopFlagPosition(DynamicNoPullRecycleView.TopFlagPosition.WORDS_RIGHT);
         mDynamicNoPullRecycleView.setData(data);

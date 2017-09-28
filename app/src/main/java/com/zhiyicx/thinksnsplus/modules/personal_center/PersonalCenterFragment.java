@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -312,10 +313,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    mIlvComment.setVisibility(View.GONE);
-                    mIlvComment.clearFocus();
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                    mVShadow.setVisibility(View.GONE);
+                    hideCommentView();
 
                 });
 
@@ -979,5 +977,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
+    private void hideCommentView() {
+        mIlvComment.setVisibility(View.GONE);
+        mIlvComment.clearFocus();
+        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        mVShadow.setVisibility(View.GONE);
+    }
 
+
+    @Override
+    public void onBackPressed() {
+        if (mIlvComment.getVisibility() == View.GONE) {
+            getActivity().finish();
+        } else {
+            hideCommentView();
+        }
+    }
 }
