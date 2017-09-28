@@ -135,18 +135,19 @@ public class InfoDetailHeaderView {
                     , from, infoMain.getHits());
             mFrom.setText(infoData);
             // 引用
-            if (!TextUtils.isEmpty(infoMain.getSubject())) {
-                InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding:0px", "margin:0px");
-                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
-                css.addRule("p", "margin:0px", "padding:10px");
-                mContentSubject.setVisibility(VISIBLE);
-                mContentSubject.addStyleSheet(css);
-                mContentSubject.loadMarkdown(infoMain.getSubject());
-            } else {
-                mContentSubject.setVisibility(GONE);
-            }
+//            if (!TextUtils.isEmpty(infoMain.getSubject())) {
+//                InternalStyleSheet css = new Github();
+//                css.addRule(".container", "padding:0px", "margin:0px");
+//                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
+//                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+//                css.addRule("p", "margin:0px", "padding:10px");
+//                mContentSubject.setVisibility(VISIBLE);
+//                mContentSubject.addStyleSheet(css);
+//                mContentSubject.loadMarkdown(infoMain.getSubject());
+//            } else {
+//                mContentSubject.setVisibility(GONE);
+//            }
+            mContentSubject.setVisibility(GONE);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();

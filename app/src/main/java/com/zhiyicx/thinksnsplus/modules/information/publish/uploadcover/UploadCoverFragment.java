@@ -182,7 +182,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-            mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject());
+            mInfoPublishBean.setSubject(mInfoPublishBean.getSubject());
         }
     }
 
@@ -249,12 +249,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
                         .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
+                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
-                .buildCenterPopWindowItem2ClickListener(() -> {
-                    mPayInfoPopWindow.hide();
-                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayInfoPopWindow.hide())
                 .buildCenterPopWindowLinkClickListener(new PayPopWindow
                         .CenterPopWindowLinkClickListener() {
                     @Override
