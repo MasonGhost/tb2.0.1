@@ -20,6 +20,15 @@ public class CircleImageDrawable extends Drawable {
     private Paint mPaint;
     private int mWidth;
     private Bitmap mBitmap;
+    private int tag;
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
+    }
 
     public CircleImageDrawable(Bitmap bitmap) {
         mBitmap = bitmap;

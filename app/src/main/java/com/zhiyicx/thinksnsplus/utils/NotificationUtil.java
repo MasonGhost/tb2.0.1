@@ -202,9 +202,9 @@ public class NotificationUtil {
      * <p>
      * 不设置notification.contentIntent = pendingIntent;则报如下异常：
      * android.app.RemoteServiceException:
-     * Bad notification posted from package com.test.testandroid: Couldn't expand RemoteViews for: StatusBarNotification(
-     * pkg=com.test.testandroid user=UserHandle{0} id=0 tag=null score=0 key=0|com.test.testandroid|0|null|10168|0: Notification
-     * (pri=0 contentView=com.test.testandroid/0x7f040038 vibrate=null sound=null defaults=0x0 flags=0x10 color=0xff00aeff vis=PRIVATE))
+     * Bad notification posted from package com.addBtnAnimation.testandroid: Couldn't expand RemoteViews for: StatusBarNotification(
+     * pkg=com.addBtnAnimation.testandroid user=UserHandle{0} id=0 tag=null score=0 key=0|com.addBtnAnimation.testandroid|0|null|10168|0: Notification
+     * (pri=0 contentView=com.addBtnAnimation.testandroid/0x7f040038 vibrate=null sound=null defaults=0x0 flags=0x10 color=0xff00aeff vis=PRIVATE))
      */
     public void postCustomNotification() {
 //        RemoteViews contentViews = new RemoteViews(context.getPackageName(),
@@ -222,7 +222,7 @@ public class NotificationUtil {
 //        Notification.Builder builder = new Notification.Builder(context);
 //        builder.setSmallIcon(R.mipmap.icon_256);
 //        builder.setContentTitle("custom notification");
-//        builder.setContentText("custom test");
+//        builder.setContentText("custom addBtnAnimation");
 //        builder.setTicker("custom ticker");
 //        builder.setAutoCancel(true);
 //        builder.setContent(contentViews);

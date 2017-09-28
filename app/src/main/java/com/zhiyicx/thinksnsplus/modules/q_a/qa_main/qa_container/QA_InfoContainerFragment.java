@@ -169,15 +169,13 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
         };
     }
 
-    public void test(boolean up) {
+    public void addBtnAnimation(boolean up) {
         QA_Fragment qaFragment = (QA_Fragment) getParentFragment();
         if (up){
             qaFragment.animateOut();
         }else{
             qaFragment.animateIn();
         }
-        LogUtils.d("test::" + getFragmentManager().getFragments().get(0).getClass().getSimpleName());
-
     }
 
 }

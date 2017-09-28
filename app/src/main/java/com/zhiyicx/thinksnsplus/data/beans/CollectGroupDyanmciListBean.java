@@ -12,7 +12,7 @@ public class CollectGroupDyanmciListBean {
      * id : 19
      * post_id : 24
      * updated_at : 2017-07-24 07:24:28
-     * post : {"id":24,"title":"test","content":"😁😁😁😁😁😁😁😁😁😔😁😁😁😔😔😁😁😁😁😁😁😁😁😁","group_id":1,"views":1,"diggs":0,"collections":0,"comments":0,"user_id":31,"is_audit":1,"created_at":"2017-07-21 07:43:43","updated_at":"2017-07-21 07:43:43","group_post_mark":311500623022151,"images":[]}
+     * post : {"id":24,"title":"addBtnAnimation","content":"😁😁😁😁😁😁😁😁😁😔😁😁😁😔😔😁😁😁😁😁😁😁😁😁","group_id":1,"views":1,"diggs":0,"collections":0,"comments":0,"user_id":31,"is_audit":1,"created_at":"2017-07-21 07:43:43","updated_at":"2017-07-21 07:43:43","group_post_mark":311500623022151,"images":[]}
      */
 
     private int id;

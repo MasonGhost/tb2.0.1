@@ -59,7 +59,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     private List<RewardsListBean> rewarders;
     @Convert(converter = QAListInfoBeanConvert.class, columnType = String.class)
     private QAListInfoBean question;
-    private boolean could; // 是否开启了围观
+    private boolean could = true; // 是否开启了围观,true > 可以直接看到
     private int onlookers_count; // 围观人数
 
     public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>> {
@@ -370,11 +370,11 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
 
     @Generated(hash = 1266496830)
     public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
-            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
-            boolean liked, boolean has_adoption, boolean collected, boolean rewarded,
-            List<AnswerDigListBean> likes, List<RewardsListBean> rewarders, QAListInfoBean question,
-            boolean could, int onlookers_count) {
+                          int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
+                          int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
+                          boolean liked, boolean has_adoption, boolean collected, boolean rewarded,
+                          List<AnswerDigListBean> likes, List<RewardsListBean> rewarders, QAListInfoBean question,
+                          boolean could, int onlookers_count) {
         this.id = id;
         this.question_id = question_id;
         this.user_id = user_id;

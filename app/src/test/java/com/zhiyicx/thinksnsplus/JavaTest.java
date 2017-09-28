@@ -291,7 +291,7 @@ public class JavaTest {
     @Test
     public void removeSymbolStartWith() {
         String test = ",,2,3";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
     }
 
     /**
@@ -300,7 +300,7 @@ public class JavaTest {
     @Test
     public void removeSymbolEndWith() {
         String test = ",,2,3,,";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
     }
 
     /**
@@ -311,7 +311,7 @@ public class JavaTest {
         String test = "jungle68";
         List<String> datas = new ArrayList<>();
 
-//        datas.add(0, test); 没有数据的时候set异常
+//        datas.add(0, addBtnAnimation); 没有数据的时候set异常
         LogUtils.d(TAG, "datas = " + datas.toString());
         try {
             datas.set(0, test);
@@ -319,7 +319,7 @@ public class JavaTest {
             Assert.assertFalse(false);
         }
         for (int i = 0; i < 5; i++) {
-            datas.add("test   " + i);
+            datas.add("addBtnAnimation   " + i);
         }
         datas.set(0, test);
         Assert.assertTrue(datas.size() == 5);
@@ -334,7 +334,7 @@ public class JavaTest {
         List<String> datas = new ArrayList<>();
         datas.add(0, test);
         for (int i = 0; i < 5; i++) {
-            datas.add("test   " + i);
+            datas.add("addBtnAnimation   " + i);
         }
         datas.add(0, test);
         Assert.assertTrue(datas.size() == 7);
