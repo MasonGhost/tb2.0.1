@@ -214,11 +214,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             return;
         }
 
-        List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
+        List<String> cash_types = Arrays.asList(mWalletConfigBean.getCash());
         mActionPopupWindow = ActionPopupWindow.builder()
-                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                .item2Str(cash_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.alipay)) : "")
-                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
+                .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
