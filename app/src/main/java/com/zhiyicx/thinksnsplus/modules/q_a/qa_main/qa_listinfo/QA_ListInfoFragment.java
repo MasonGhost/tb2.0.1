@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -78,7 +80,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected boolean isNeedRefreshAnimation() {
-        return false;
+        return true;
     }
 
     @Override
@@ -106,16 +108,16 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         super.onCreate(savedInstanceState);
         QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
         mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
-    }
-
-    @Override
-    protected void initData() {
         DaggerQA_ListInfoComponent
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-        super.initData();
 
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -130,6 +132,21 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("getUserVisibleHint() = " + getUserVisibleHint() + mQAInfoType);
+    }
+
+    /**
+     * 是否进入页面进行懒加载
+     *
+     * @return
+     */
+    protected boolean isLayzLoad() {
+        return true;
     }
 
     @Override
@@ -225,7 +242,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
+                        .getOnlookQuestion())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();
