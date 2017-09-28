@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -95,5 +96,10 @@ public interface ISystemRepository {
      */
     Observable<List<String>> getHoCity();
 
-
+    /**
+     * 版本更新数据
+     *
+     * @return
+     */
+    Observable<List<AppVersionBean>> getAppNewVersion();
 }

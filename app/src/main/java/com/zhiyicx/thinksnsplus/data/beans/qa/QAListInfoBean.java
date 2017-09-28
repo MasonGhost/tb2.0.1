@@ -35,7 +35,6 @@ import java.util.List;
  */
 @Entity
 public class QAListInfoBean extends BaseListBean implements Serializable {
-    @Transient
     private static final long serialVersionUID = -4337619110087134442L;
     /**
      * id : 1

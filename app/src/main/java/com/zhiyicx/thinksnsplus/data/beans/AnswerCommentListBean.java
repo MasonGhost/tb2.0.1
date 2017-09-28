@@ -11,6 +11,8 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
+import java.io.Serializable;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/16/9:47
@@ -18,10 +20,11 @@ import org.greenrobot.greendao.DaoException;
  * @Description
  */
 @Entity
-public class AnswerCommentListBean extends BaseListBean {
+public class AnswerCommentListBean extends BaseListBean implements Serializable{
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;
+    private static final long serialVersionUID = 5546524549807185189L;
     /**
      * id : 22
      * user_id : 2

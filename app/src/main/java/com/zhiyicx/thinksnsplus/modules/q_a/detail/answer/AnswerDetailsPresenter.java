@@ -318,7 +318,6 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST)
     public void handleSendComment(AnswerCommentListBean answerCommentListBean) {
-        LogUtils.d(TAG, "answerCommentListBean = " + answerCommentListBean.toString());
         Subscription subscribe = Observable.just(answerCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -112,7 +112,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             getDynamicDigList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        mRepository.getGroupDynamicCommentList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), maxId)
+        Subscription subscribe = mRepository.getGroupDynamicCommentList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic()
+                .getId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<GroupDynamicCommentListBean>>() {
                     @Override
                     protected void onSuccess(List<GroupDynamicCommentListBean> data) {
@@ -148,6 +149,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -469,7 +471,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC)
     public void handleSendComment(GroupDynamicCommentListBean dynamicCommentBean) {
-        Observable.just(dynamicCommentBean)
+        Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dynamicCommentBean1 -> {
@@ -496,6 +498,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
@@ -539,7 +542,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         if (walletBean != null) {
             balance = walletBean.getBalance();
         }
-        mCommentRepository.paykNote(note)
+        Subscription subscribe = mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
@@ -607,6 +610,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {

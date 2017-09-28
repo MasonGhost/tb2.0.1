@@ -67,6 +67,7 @@ public class MessageRepository implements MessageContract.Repository {
 
         return mChatInfoClient.getConversaitonList()
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<Conversation>, Observable<List<MessageItemBean>>>() {
                     @Override
                     public Observable<List<MessageItemBean>> call(final List<Conversation> listBaseJson) {
@@ -157,7 +158,7 @@ public class MessageRepository implements MessageContract.Repository {
     public Observable<MessageItemBean> getSingleConversation(int cid) {
         return mChatInfoClient.getSingleConversaiton(cid)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .flatMap(new Func1<Conversation, Observable<MessageItemBean>>() {
                              @Override
@@ -218,7 +219,8 @@ public class MessageRepository implements MessageContract.Repository {
                              }
                          }
 
-                );
+                )
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -232,17 +234,7 @@ public class MessageRepository implements MessageContract.Repository {
     public Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset) {
         return mUserInfoClient.getNotificationList(notification, type, limit, offset)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(tspNotificationBeen -> {
-                    for (TSPNotificationBean tspNotificationBean : tspNotificationBeen) {
-                        if(tspNotificationBean.getUserInfo()==null){
-
-                            System.out.println("tspNotificationBean = " + tspNotificationBean.getId());
-                        }
-
-                    }
-                    return tspNotificationBeen;
-                });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

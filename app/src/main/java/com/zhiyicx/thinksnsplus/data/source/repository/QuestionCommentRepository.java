@@ -23,7 +23,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -47,6 +49,7 @@ public class QuestionCommentRepository extends BaseQARepository implements Quest
     @Override
     public Observable<List<QuestionCommentBean>> getQuestionCommentList(Long question_Id, Long max_id) {
         return mQAClient.getQuestionCommentList(String.valueOf(question_Id), max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<QuestionCommentBean>, Observable<List<QuestionCommentBean>>>() {
                     @Override
                     public Observable<List<QuestionCommentBean>> call(List<QuestionCommentBean> questionCommentListBeen) {
@@ -90,7 +93,8 @@ public class QuestionCommentRepository extends BaseQARepository implements Quest
                                     });
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

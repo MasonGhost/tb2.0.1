@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
@@ -38,6 +39,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_NEW_VERSION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_VERSION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
@@ -155,6 +157,15 @@ public interface CommonClient {
      */
     @GET(APP_PATH_GET_All_ADVERT_INFO)
     Observable<List<RealAdvertListBean>> getAllRealAdvert(@Query("space") String advert_id);
+
+    /**
+     *  版本更新
+     * @param version_code 当前版本号
+     * @param type  类型：android \ios
+     * @return
+     */
+    @GET(APP_PATH_GET_APP_NEW_VERSION)
+    Observable<List<AppVersionBean>> getAppNewVersion(@Query("version_code") Integer version_code, @Query("type") String type);
 
     /**
      * 获取支付信息

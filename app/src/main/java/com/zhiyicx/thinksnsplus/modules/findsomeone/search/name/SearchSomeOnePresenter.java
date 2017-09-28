@@ -57,11 +57,11 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void searchUser(String name) {
-        if (searchSub!=null&&!searchSub.isUnsubscribed()) {
+        if (searchSub != null && !searchSub.isUnsubscribed()) {
             searchSub.unsubscribe();
         }
 
-        searchSub= mUserInfoRepository.searchUserInfo(null,name,null,null,null)
+        searchSub = mUserInfoRepository.searchUserInfo(null, name, null, null, null)
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
@@ -82,6 +82,29 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
                 });
         addSubscrebe(searchSub);
 
+    }
+
+    @Override
+    public void getRecommentUser() {
+        Subscription subscribe = mUserInfoRepository.getRecommendUserInfo()
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        mRootView.onNetResponseSuccess(data, false);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.onResponseError(null, false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.onResponseError(throwable, false);
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     @Override
