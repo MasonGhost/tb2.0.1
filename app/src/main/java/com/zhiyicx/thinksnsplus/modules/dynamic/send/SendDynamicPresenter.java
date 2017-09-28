@@ -110,7 +110,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             return;
         }
         if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {// 文字收费金额整数限制
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), mContext.getResources().getString(R.string.limit_monye));
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), mContext.getResources().getString(R.string.limit_monye_death));
             return;
         }
 

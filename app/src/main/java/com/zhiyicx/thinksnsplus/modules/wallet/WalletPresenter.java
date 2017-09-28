@@ -24,6 +24,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -32,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * @Contact master.jungle68@gmail.com
  */
 public class WalletPresenter extends AppBasePresenter<WalletContract.Repository, WalletContract.View> implements WalletContract.Presenter {
-    public static final int DEFAULT_LOADING_SHOW_TIME = 2;
+    public static final int DEFAULT_LOADING_SHOW_TIME = 1;
 
     /**
      * action tag
@@ -76,24 +77,12 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 //        getWalletConfigFromServer(TAG_DEfault, false); // 默认主动获取一次
         Subscription timerSub = Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
-                        if (!mIsUsreInfoRequseted) {
-                            mRootView.handleLoading(true);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-
+                .subscribe(aLong -> {
+                    if (!mIsUsreInfoRequseted) {
+                        mRootView.handleLoading(true);
                     }
                 });
+
         Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
                 .doAfterTerminate(() -> {
                     mRootView.handleLoading(false);
@@ -159,7 +148,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                 return "钱包规则";
             }
         }
-            return mWalletConfigBean.getRule();
+        return mWalletConfigBean.getRule();
 
     }
 
@@ -184,7 +173,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                         data.setUser_id(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
                         mWalletConfigBeanGreenDao.insertOrReplace(data);
                         if (isNeedTip) {
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
+                            mRootView.dismissSnackBar();
+//                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
                         }
                         mRootView.walletConfigCallBack(data, tag);
                     }
