@@ -604,13 +604,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, getCurrentDynamic().getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID, comment_id);// 该资源的评论id,非评论置顶不传这个
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC,getCurrentDynamic().getId(), comment_id);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
