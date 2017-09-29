@@ -19,13 +19,11 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 public class GlideCircleTransform extends BitmapTransformation {
 
     private Paint mPaint;
-    private Canvas mCanvas;
 
     public GlideCircleTransform(Context context) {
         super(context);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mCanvas = new Canvas();
     }
 
     @Override
@@ -47,7 +45,7 @@ public class GlideCircleTransform extends BitmapTransformation {
         if (result == null) {
             result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         }
-        mCanvas.setBitmap(result);
+        Canvas mCanvas=new Canvas(result);
         float r = size / 2f;
         //画图片
         mPaint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
