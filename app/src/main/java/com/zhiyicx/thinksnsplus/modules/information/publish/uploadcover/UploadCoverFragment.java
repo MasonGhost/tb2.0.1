@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
@@ -96,7 +97,13 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
+        int iamge_id = RegexUtils.getImageId(mInfoPublishBean.getContent());
+        if (mInfoPublishBean.isRefuse()) {
+            mInfoPublishBean.setImage((long) iamge_id < 0 ? null : (long) iamge_id);
+        } else {
+            mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
+        }
+
     }
 
     @Override
@@ -186,9 +193,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
             mInfoPublishBean.setSubject(mInfoPublishBean.getSubject());
         }
-        if (mInfoPublishBean.isRefuse()) {
+        if (mInfoPublishBean.isRefuse() && mInfoPublishBean.getImage() != null) {
             int w = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_width);
             int h = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_height);
+            mTvInfoCover.setVisibility(View.GONE);
+            mIvInfoCoverIamge.setVisibility(View.VISIBLE);
+
             Glide.with(getActivity())
                     .load(ImageUtils.imagePathConvertV2(mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig.IMAGE_70_ZIP))
                     .centerCrop()
