@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -140,7 +143,12 @@ public class BackgroundTaskHandler {
 
     private boolean mIsExit = false; // 是否关闭
 
+    private boolean mIsNetConnected;
+
     private Thread mBackTaskDealThread;
+    private ConnectivityManager connectMgr;
+    private NetworkInfo mobNetInfo;
+    private NetworkInfo wifiNetInfo;
 
     public BackgroundTaskHandler() {
         init();
@@ -192,7 +200,8 @@ public class BackgroundTaskHandler {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(AppApplication
+                .getMyUserIdWithdefault());
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -205,11 +214,10 @@ public class BackgroundTaskHandler {
      */
     private Runnable handleTaskRunnable = () -> {
 
-        while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
-//                LogUtils.d("---------backTask-------:: "+mIsNetConnected);
-            if (NetUtils.netIsConnected(mContext) && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
-                BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
-                handleTask(backgroundRequestTaskBean);
+        while (!mIsExit && ActivityHandler.getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
+            mIsNetConnected = checkNetStatus(mContext);
+            if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+                handleTask(mTaskBeanConcurrentLinkedQueue.poll());
             }
             threadSleep();
         }
@@ -223,12 +231,34 @@ public class BackgroundTaskHandler {
     };
 
     /**
+     * 网络是否连接
+     *
+     * @param context
+     * @return
+     */
+    public boolean checkNetStatus(Context context) {
+        if (mobNetInfo == null) {
+            connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            //手机网络连接状态
+            mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            //WIFI连接状态
+            wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        }
+
+        if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
+            //当前无可用的网络
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 线程休息
      */
     private void threadSleep() {
         //防止cpu占用过高
         try {
-            if (NetUtils.netIsConnected(mContext)) {
+            if (mIsNetConnected) {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
             } else {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT);
@@ -375,7 +405,8 @@ public class BackgroundTaskHandler {
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
         params.remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, params))
+        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+                params))
                 .subscribe(new BaseSubscribeForV2() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -411,13 +442,13 @@ public class BackgroundTaskHandler {
      * 处理Post请求类型的后台任务
      */
     private void postMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        HashMap params = backgroundRequestTaskBean.getParams();
-        if (params == null) {
-            params = new HashMap();
+        if (backgroundRequestTaskBean.getParams() == null) {
+            backgroundRequestTaskBean.setParams(new HashMap());
         }
-        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
-        params.remove(NET_CALLBACK);
-        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, params))
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) backgroundRequestTaskBean.getParams().get(NET_CALLBACK);
+        backgroundRequestTaskBean.getParams().remove(NET_CALLBACK);
+        mServiceManager.getCommonClient().handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+                backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -496,7 +527,8 @@ public class BackgroundTaskHandler {
      */
     private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
-        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+        mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null,
+                backgroundRequestTaskBean.getParams()))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
                     @Override
@@ -813,7 +845,8 @@ public class BackgroundTaskHandler {
 
     }
 
-    private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
+    private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[]
+            position) {
         if (position[0] == photos.size()) {
             return sendDynamicDataBean;
         }
@@ -976,7 +1009,8 @@ public class BackgroundTaskHandler {
         dynamicCommentBean.setState(DynamicCommentBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1030,7 +1064,8 @@ public class BackgroundTaskHandler {
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1084,7 +1119,8 @@ public class BackgroundTaskHandler {
         dynamicCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1145,7 +1181,8 @@ public class BackgroundTaskHandler {
             return;
         }
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
@@ -1189,7 +1226,8 @@ public class BackgroundTaskHandler {
             return;
         }
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -1305,7 +1343,8 @@ public class BackgroundTaskHandler {
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override

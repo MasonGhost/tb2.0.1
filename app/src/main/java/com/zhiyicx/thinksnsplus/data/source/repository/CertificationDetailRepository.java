@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -37,6 +38,7 @@ public class CertificationDetailRepository implements CertificationDetailContrac
 
     public void saveCertificationInfo() {
         mUserInfoClient.getUserCertificationInfo()
+                .subscribeOn(Schedulers.io())
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                     @Override
                     protected void onSuccess(UserCertificationInfo data) {

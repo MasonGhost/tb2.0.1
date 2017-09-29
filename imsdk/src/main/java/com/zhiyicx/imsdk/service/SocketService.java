@@ -73,6 +73,7 @@ import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
  */
 public class SocketService extends BaseService implements ImService.ImListener {
     private final String TAG = this.getClass().getSimpleName();
+
     /**
      * IM 操作类型
      */
@@ -512,19 +513,22 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 查询会话消息
                  */
                 case TAG_IM_MC:
-                    result = mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVERSATION_FIELD));
+                    result = mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString
+                            (BUNDLE_CONVERSATION_FIELD));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_PLUCK:
-                    result = sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt
+                            (BUNDLE_MSG_ID));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_SYNC:
-                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ORDER, ZBIMClient.SYN_ASC), bundle.getInt(BUNDLE_MSG_ID));
+                    result = sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle
+                            .getInt(BUNDLE_MSG_ORDER, ZBIMClient.SYN_ASC), bundle.getInt(BUNDLE_MSG_ID));
                     break;
                 /**
                  * 获取房间中最新的几条消息
@@ -1376,7 +1380,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             if (mEventContainerCache.get(tmp.getCid()) != null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
-                if (mIMConfig!=null) {
+                if (mIMConfig != null) {
                     tmp.setIm_uid(mIMConfig.getImUid());
                 }
                 tmp.setUsids(String.valueOf(eventContainer.mMessageContainer.msg.uid));
@@ -1395,7 +1399,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param messageContainer
      */
     private void InsertSendMessage2DB(EventContainer eventContainer, MessageContainer messageContainer) {
-        if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null & eventContainer.mMessageContainer.msg != null) {
+        if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null &
+                eventContainer.mMessageContainer.msg != null) {
             messageContainer.msg.mid = eventContainer.mMessageContainer.msg.mid;
             messageContainer.msg.seq = eventContainer.mMessageContainer.msg.seq;
             messageContainer.msg.setSend_status(eventContainer.mMessageContainer.msg.send_status);
@@ -1506,7 +1511,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 && eventContainer.mMessageContainer != null
                 && eventContainer.mMessageContainer.msg != null) {
             if (!MessageDao.getInstance(getApplicationContext()).hasMessage(eventContainer.mMessageContainer.msg.mid)) {
-                Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer.mMessageContainer.msg.cid);
+                Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer
+                        .mMessageContainer.msg.cid);
                 if (conversation == null) {// 获取服务器对话信息
                     mEventContainerCache.put(eventContainer.mMessageContainer.msg.cid, eventContainer);
                     /**
@@ -1565,7 +1571,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 意外的失去了先前建立的连接
              */
             case WebSocket.ConnectionHandler.CLOSE_CONNECTION_LOST:
-                socketReconnect();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        socketReconnect();
+                    }
+                }, DELAY_RECONNECT_TIME);
 
                 break;
             /**
@@ -1649,7 +1660,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private boolean socketReconnect() {
 
-        if (DeviceUtils.netIsConnected(getApplicationContext()) && isNeedReConnected) {
+        if (isNeedReConnected) {
             if (mService.isConnected()) {
                 if (!isDisconnecting) {
                     LogUtils.debugInfo(TAG, "----------socketReconnect---by own---");
@@ -1657,13 +1668,15 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     isDisconnecting = true;
                 }
             } else {
-                LogUtils.debugInfo(TAG, "----------socketReconnect------");
-                changeHeartBeatRateByReconnect();
-                mService.connect();
-                resetTime();
-                if (disconnect_start_time == 0)
-                    disconnect_start_time = System.currentTimeMillis();
-                return true;
+                if (DeviceUtils.netIsConnected(getApplicationContext())) {
+                    LogUtils.debugInfo(TAG, "----------socketReconnect------");
+                    changeHeartBeatRateByReconnect();
+                    mService.connect();
+                    resetTime();
+                    if (disconnect_start_time == 0)
+                        disconnect_start_time = System.currentTimeMillis();
+                    return true;
+                }
             }
         }
         return false;
