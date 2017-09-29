@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -68,6 +69,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
@@ -312,10 +314,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    mIlvComment.setVisibility(View.GONE);
-                    mIlvComment.clearFocus();
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                    mVShadow.setVisibility(View.GONE);
+                    hideCommentView();
 
                 });
 
@@ -791,14 +790,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId(), dynamicBean
+                            .getComments().get(commentPosition).getComment_id());
+                    mDeletCommentPopWindow.hide();
+                })
+                .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
                             commentPosition);
@@ -979,5 +984,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
+    private void hideCommentView() {
+        mIlvComment.setVisibility(View.GONE);
+        mIlvComment.clearFocus();
+        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        mVShadow.setVisibility(View.GONE);
+    }
 
+
+    @Override
+    public void onBackPressed() {
+        if (mIlvComment.getVisibility() == View.GONE) {
+            getActivity().finish();
+        } else {
+            hideCommentView();
+        }
+    }
 }

@@ -163,7 +163,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
 
         try {
-            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            if (holder.getView(R.id.iv_headpic).getVisibility() == View.VISIBLE) {
+                ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            }
 
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean

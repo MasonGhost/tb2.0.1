@@ -125,7 +125,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     public void payCredentialsResult(PayStrBean payStrBean) {
         mPayChargeId = payStrBean.getId() + "";
-        LogUtils.i("--------------------"+ConvertUtils.object2JsonStr(payStrBean.getCharge()));
         TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
     }
 

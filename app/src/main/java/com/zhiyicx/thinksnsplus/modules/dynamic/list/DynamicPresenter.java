@@ -373,7 +373,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
         mRootView.getListDatas().get(mCurrentPostion).setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getFeed_comment_count() +
                 1);
-        mRootView.refreshData(mCurrentPostion);
+        mRootView.refreshData();
 
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
@@ -610,7 +610,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
-                        mRootView.refreshData(integer);
+                        mRootView.refreshData();
                     }
 
                 }, throwable -> throwable.printStackTrace());
@@ -665,7 +665,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
-                        mRootView.refreshData(integer);
+                        mRootView.refreshData();
                     }
 
                 }, throwable -> throwable.printStackTrace());
