@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailContract;
@@ -16,9 +18,12 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class CertificationDetailRepository implements CertificationDetailContract.Repository{
+public class CertificationDetailRepository implements CertificationDetailContract.Repository {
 
     private UserInfoClient mUserInfoClient;
+
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
 
     @Inject
     public CertificationDetailRepository(ServiceManager manager) {
@@ -28,5 +33,15 @@ public class CertificationDetailRepository implements CertificationDetailContrac
     @Override
     public Observable<UserCertificationInfo> getCertificationInfo() {
         return mUserInfoClient.getUserCertificationInfo();
+    }
+
+    public void saveCertificationInfo() {
+        mUserInfoClient.getUserCertificationInfo()
+                .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+                    @Override
+                    protected void onSuccess(UserCertificationInfo data) {
+                        mUserCertificationInfoDao.saveSingleData(data);
+                    }
+                });
     }
 }

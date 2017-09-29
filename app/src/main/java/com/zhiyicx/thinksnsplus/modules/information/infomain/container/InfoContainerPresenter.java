@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -7,13 +9,22 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+
+import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -22,6 +33,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 
 /**
  * @Author Jliuer
@@ -37,6 +51,12 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    CertificationDetailRepository mCertificationDetailRepository;
+
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
 
     @Inject
     public InfoContainerPresenter(InfoMainContract.Repository repository,
@@ -83,14 +103,56 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     @Override
     public boolean checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
-        if (userInfoBean != null && userInfoBean.getVerified() != null) {
-            if (TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
-                return false;
-            } else {
-                return true;
-            }
+        UserCertificationInfo userCertificationInfo = mUserCertificationInfoDao.getInfoByUserId();
+
+        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
+            mRootView.setUserCertificationInfo(userCertificationInfo);
+            return true;
+        } else if (userCertificationInfo != null && userCertificationInfo.getStatus() == 0) {
+            mCertificationDetailRepository.getCertificationInfo().
+                    subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+                        @Override
+                        protected void onSuccess(UserCertificationInfo data) {
+                            mUserCertificationInfoDao.saveSingleData(data);
+                            if (userInfoBean != null) {
+                                if (userInfoBean.getVerified() != null) {
+                                    userInfoBean.getVerified().setStatus((int) data.getStatus());
+                                } else {
+                                    VerifiedBean verifiedBean = new VerifiedBean();
+                                    verifiedBean.setStatus((int) data.getStatus());
+                                    userInfoBean.setVerified(verifiedBean);
+                                }
+                            }
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
+                            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
+                            mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                        }
+                    });
+            mRootView.setUserCertificationInfo(userCertificationInfo);
+            return false;
+        } else {
+            return false;
         }
-        return false;
+
+//        if (userInfoBean != null && userInfoBean.getVerified() != null) {
+//            if (TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
+//                return false;
+//            } else {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     @Override

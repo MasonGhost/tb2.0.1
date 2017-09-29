@@ -24,6 +24,9 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
@@ -51,6 +54,8 @@ import butterknife.OnClick;
 import rx.Observable;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
@@ -76,6 +81,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected static final int DEFAULT_OFFSET_PAGE = 3;
     public static final String RECOMMEND_INFO = "-1";
     public static final int REQUEST_CODE = 0;
+
+    private UserCertificationInfo mUserCertificationInfo;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -127,6 +134,11 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     }
 
     @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+        mUserCertificationInfo = userCertificationInfo;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.information);
     }
@@ -150,6 +162,23 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 startActivity(new Intent(getActivity(), PublishInfoActivity.class));
             }
         } else {
+            if (mUserCertificationInfo != null
+                    && mUserCertificationInfo.getId() != 0
+                    && mUserCertificationInfo.getStatus() != 2) {
+                Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                Bundle bundleData = new Bundle();
+                if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
+                    // 跳转个人认证
+                    bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                } else {
+                    // 跳转企业认证
+                    bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                }
+                bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                getActivity().startActivity(intentToDetail);
+                return;
+            }
             mCertificationAlertPopWindow.show();
         }
     }
@@ -251,6 +280,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     }
 
     private void initPopWindow() {
+
+
         if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))

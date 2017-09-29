@@ -119,6 +119,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     protected void initView(View rootView) {
         mToolbarRight.setEnabled(false);
         initListener();
+
         if (PublishInfoFragment.sInfoPublishBean.getTags() != null) {
             mUserTagBeens.addAll(PublishInfoFragment.sInfoPublishBean.getTags());
         }
