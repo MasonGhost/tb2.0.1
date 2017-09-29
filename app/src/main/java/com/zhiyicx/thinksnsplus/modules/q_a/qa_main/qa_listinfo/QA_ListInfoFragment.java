@@ -176,6 +176,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) return;
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
                 QAListInfoBean listInfoBean = mListDatas.get(position);

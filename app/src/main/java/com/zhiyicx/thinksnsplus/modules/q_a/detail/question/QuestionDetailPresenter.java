@@ -161,7 +161,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.onResponseError(throwable,isLoadMore);
 
                     }
 

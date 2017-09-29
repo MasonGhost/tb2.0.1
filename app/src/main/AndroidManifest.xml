@@ -291,6 +291,7 @@
         <activity
             android:name=".modules.q_a.detail.question.QuestionDetailActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
@@ -518,6 +519,7 @@
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
