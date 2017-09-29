@@ -8,6 +8,7 @@ import android.graphics.Paint;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 
 
 /**
@@ -17,13 +18,8 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
  * @Contact master.jungle68@gmail.com
  */
 public class GlideCircleTransform extends BitmapTransformation {
-
-    private Paint mPaint;
-
     public GlideCircleTransform(Context context) {
         super(context);
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
     }
 
     @Override
@@ -31,7 +27,7 @@ public class GlideCircleTransform extends BitmapTransformation {
         return circleCrop(pool, toTransform);
     }
 
-    private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+    private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
         if (source == null) return null;
 
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -45,11 +41,16 @@ public class GlideCircleTransform extends BitmapTransformation {
         if (result == null) {
             result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         }
-        Canvas mCanvas=new Canvas(result);
+
+
+        Canvas canvas = new Canvas(result);
         float r = size / 2f;
+
         //画图片
-        mPaint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-        mCanvas.drawCircle(r, r, r - 0.1f, mPaint);
+        Paint paint = new Paint();
+        paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+        paint.setAntiAlias(true);
+        canvas.drawCircle(r, r, r - 0.1f, paint);
 
         return result;
     }
