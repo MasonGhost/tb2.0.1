@@ -50,7 +50,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         RichTextEditor.OnContentChangeListener {
 
     public static final String INFO_REFUSE = "info_refuse";
-    public static InfoPublishBean sInfoPublishBean = new InfoPublishBean();
+    public static InfoPublishBean sInfoPublishBean;
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
@@ -88,6 +88,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             sInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+        } else {
+            sInfoPublishBean = new InfoPublishBean();
         }
     }
 
@@ -346,7 +348,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
-            if (mRicheTest==null) {
+            if (mRicheTest == null) {
                 return;
             }
             int[] viewLacotion = new int[2];
@@ -408,6 +410,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .with(getActivity())
                 .item2ClickListener(() -> {
                     mCanclePopupWindow.hide();
+                    sInfoPublishBean = null;
                     getActivity().finish();
                 })
                 .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
