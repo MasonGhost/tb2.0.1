@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -194,7 +195,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
         } else {
             shareContent.setBitmap(bitmap);
         }
-        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

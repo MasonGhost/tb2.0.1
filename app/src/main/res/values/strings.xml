@@ -133,7 +133,9 @@
     <string name="info_title">完善文章信息</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>
-    <string name="info_publishfailed">被驳回</string>
+    <string name="info_publishsuccess">投稿成功，等待审核</string>
+    <string name="info_publishfailed">投稿失败</string>
+    <string name="info_publishrefuse">被驳回</string>
     <string name="info_cover">上传封面</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>

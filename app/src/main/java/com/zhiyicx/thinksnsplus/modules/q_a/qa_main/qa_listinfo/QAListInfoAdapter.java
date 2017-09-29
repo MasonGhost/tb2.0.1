@@ -118,6 +118,10 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             RxView.clicks(contentView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
+                        if (!infoBean.getAnswer().getCould()) {
+                            mSpanTextClickListener.onSpanClick(infoBean.getAnswer().getId(), position);
+                            return;
+                        }
                         Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(BUNDLE_ANSWER, infoBean.getAnswer());

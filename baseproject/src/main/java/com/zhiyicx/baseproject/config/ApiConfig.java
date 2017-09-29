@@ -35,18 +35,18 @@ public class ApiConfig {
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
 
-    public static  String APP_DOMAIN = APP_DOMAIN_FORMAL;
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
-    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
+    public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址 V2
-    public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+    public static final String IMAGE_PATH_V2 = "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
     // 头像地址
     public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 
     // 音乐地址 V2
-    public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s";
+    public static final String MUSIC_PATH = "api/" + API_VERSION_2 + "/files/%s";
 
     /*******************************************  接口 Path  *********************************************/
 
@@ -394,11 +394,11 @@ public class ApiConfig {
     /**
      * 分享相关
      */
-    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
-    public static final String APP_PATH_SHARE_GROUP = APP_DOMAIN + "api/develop";// 分享圈子动态，目前暂时用开发中
+    public static final String APP_PATH_SHARE_USERINFO = "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_DEFAULT = "api/develop";// 开发中的提示
+    public static final String APP_PATH_SHARE_GROUP = "api/develop";// 分享圈子动态，目前暂时用开发中
 
 
     /**

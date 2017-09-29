@@ -23,7 +23,7 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.info_published), getString(R.string.info_publishing), getString(R.string.info_publishfailed));
+        return Arrays.asList(getString(R.string.info_published), getString(R.string.info_publishing), getString(R.string.info_publishrefuse));
     }
 
     @Override

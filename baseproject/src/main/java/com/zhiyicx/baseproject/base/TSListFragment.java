@@ -678,7 +678,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             } else {
                 mEmptyView.setErrorImag(setEmptView());
                 refreshData();
-                if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                if (showEmptyViewWithNoData()) {
                     mEmptyView.setVisibility(View.VISIBLE);
                 }
             }
@@ -702,6 +702,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    protected boolean showEmptyViewWithNoData() {
+        return mHeaderAndFooterWrapper.getHeadersCount() <= 0;
     }
 
     protected Long getMaxId(@NotNull List<T> data) {

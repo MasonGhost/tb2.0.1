@@ -379,7 +379,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
                     .decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId())*/);
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

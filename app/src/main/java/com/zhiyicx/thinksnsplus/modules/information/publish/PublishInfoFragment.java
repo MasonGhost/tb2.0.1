@@ -198,12 +198,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (sInfoPublishBean != null) {
-            if (!TextUtils.isEmpty(sInfoPublishBean.getContent())) {
+        if (sInfoPublishBean != null && !TextUtils.isEmpty(sInfoPublishBean.getContent())
+                && !TextUtils.isEmpty(sInfoPublishBean.getContent()) && mRicheTest != null) {
+            mRicheTest.post(() -> {
                 mRicheTest.clearAllLayout();
                 mPresenter.pareseBody(sInfoPublishBean.getContent());
                 mEtInfoTitle.setText(sInfoPublishBean.getTitle());
-            }
+            });
         }
     }
 

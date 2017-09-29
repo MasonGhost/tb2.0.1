@@ -316,7 +316,7 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
-        String url = String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        String url = String.format(Locale.getDefault(),ApiConfig.APP_DOMAIN+ ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
         if (!canLook) {
             url = "zhiyicx";
         }
@@ -351,7 +351,7 @@ public class ImageUtils {
     }
 
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
-        return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
     public static class V2ImageHeaderedLoader extends BaseGlideUrlLoader<String> {
