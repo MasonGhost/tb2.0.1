@@ -17,8 +17,15 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
  * @Contact master.jungle68@gmail.com
  */
 public class GlideCircleTransform extends BitmapTransformation {
+
+    private Paint mPaint;
+    private Canvas mCanvas;
+
     public GlideCircleTransform(Context context) {
         super(context);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mCanvas = new Canvas();
     }
 
     @Override
@@ -26,7 +33,7 @@ public class GlideCircleTransform extends BitmapTransformation {
         return circleCrop(pool, toTransform);
     }
 
-    private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+    private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
         if (source == null) return null;
 
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -40,16 +47,11 @@ public class GlideCircleTransform extends BitmapTransformation {
         if (result == null) {
             result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         }
-
-
-        Canvas canvas = new Canvas(result);
+        mCanvas.setBitmap(result);
         float r = size / 2f;
-
         //画图片
-        Paint paint = new Paint();
-        paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-        paint.setAntiAlias(true);
-        canvas.drawCircle(r, r, r - 0.1f, paint);
+        mPaint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+        mCanvas.drawCircle(r, r, r - 0.1f, mPaint);
 
         return result;
     }

@@ -269,8 +269,8 @@ public class ImageUtils {
         Glide.with(imageView.getContext())
                 .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .error(R.mipmap.pic_default_portrait1)
+                .placeholder(withBorder ?R.mipmap.pic_default_portrait2:R.mipmap.pic_default_portrait1)
+                .error(withBorder ?R.mipmap.pic_default_portrait2:R.mipmap.pic_default_portrait1)
                 .transform(withBorder ?
                         new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
                                 .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
