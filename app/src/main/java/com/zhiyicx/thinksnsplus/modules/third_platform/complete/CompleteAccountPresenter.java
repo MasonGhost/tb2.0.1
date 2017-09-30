@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -43,11 +44,17 @@ public class CompleteAccountPresenter extends BasePresenter<CompleteAccountContr
 
     @Override
     public void checkName(ThridInfoBean thridInfoBean, String name) {
+        if (checkUsername(name)) {
+            return;
+        }
         check(thridInfoBean, name);
     }
 
     @Override
     public void thridRegister(ThridInfoBean thridInfoBean, String name) {
+        if (checkUsername(name)) {
+            return;
+        }
         register(thridInfoBean, name, true);
     }
 
@@ -74,7 +81,8 @@ public class CompleteAccountPresenter extends BasePresenter<CompleteAccountContr
     }
 
     private void register(final ThridInfoBean thridInfoBean, final String name, boolean isCheck) {
-        Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), name, isCheck)
+        Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), name,
+                isCheck)
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
@@ -103,7 +111,31 @@ public class CompleteAccountPresenter extends BasePresenter<CompleteAccountContr
         addSubscrebe(subscribe);
     }
 
+    /**
+     * 检查用户名是否小于最小长度,不能以数字开头
+     *
+     * @param name
+     * @return
+     */
+    private boolean checkUsername(String name) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
+                .getInteger(R.integer.username_max_length))) {
+            mRootView.showErrorTips(mContext.getString(R.string.username_toast_hint));
+            return true;
+        }
+        if (RegexUtils.isUsernameNoNumberStart(name)) {// 数字开头
+            mRootView.showErrorTips(mContext.getString(R.string.username_toast_not_number_start_hint));
+            return true;
+        }
+        if (!RegexUtils.isUsername(name)) {// 用户名只能包含数字、字母和下划线
+            mRootView.showErrorTips(mContext.getString(R.string.username_toast_not_symbol_hint));
+            return true;
+        }
+        return false;
+    }
+
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 }

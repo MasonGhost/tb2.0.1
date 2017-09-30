@@ -16,12 +16,17 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
 import org.simple.eventbus.EventBus;
@@ -36,6 +41,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
 /**
  * @Author Jliuer
@@ -43,7 +50,10 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_C
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelectorImpl.IPhotoBackListener {
+public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContract.Presenter> implements SelectDynamicTypeContract.View,
+        PhotoSelectorImpl.IPhotoBackListener {
+    public static final int DEFAULT_ANIMATE_DELAY_START = 80;
+    public static final int DEFAULT_ANIMATE_DELAY = 80;
 
     public static final String SEND_OPTION = "send_option";
     public static final String GROUP_ID = "group_id";
@@ -55,6 +65,12 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     IconTextView mCheckIn;
     @BindView(R.id.send_image_dynamic)
     IconTextView mSendImageDynamic;
+    @BindView(R.id.send_words_question)
+    IconTextView mSendWordsQuestion;
+    @BindView(R.id.send_info)
+    IconTextView mSendInfo;
+    @BindView(R.id.open_zhibo)
+    IconTextView mOpenZhibo;
     @BindView(R.id.im_close_dynamic)
     ImageView mImCloseDynamic;
     @BindView(R.id.select_dynamic_parent)
@@ -62,6 +78,9 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     private PhotoSelectorImpl mPhotoSelector;
 
     private int mType = SendDynamicDataBean.NORMAL_DYNAMIC; // 动态还是圈子动态
+
+    private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
+    private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
 
     public static SelectDynamicTypeFragment getInstance(Bundle b) {
         SelectDynamicTypeFragment selectDynamicTypeFragment = new SelectDynamicTypeFragment();
@@ -89,22 +108,57 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
 
     @Override
     protected void initView(View rootView) {
-        getActivity().getWindow().getDecorView().setBackgroundColor(getColor(R.color.tym));
+        initPopWindow();
         initAnimation(mSendWordsDynamic);
-        Observable.timer(300, TimeUnit.MILLISECONDS)
+        long delay = DEFAULT_ANIMATE_DELAY_START;
+        delay += DEFAULT_ANIMATE_DELAY;
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
 
+//        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+//            mOpenZhibo.setVisibility(View.INVISIBLE);
+//
+//            delay += DEFAULT_ANIMATE_DELAY;
+//            Observable.timer(delay, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mOpenZhibo));
+//        } else {
+//            mOpenZhibo.setVisibility(View.GONE);
+//
+//        }
+        mOpenZhibo.setVisibility(View.GONE);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        // 如果已经签到了，则不再展示签到
         if (systemConfigBean != null && systemConfigBean.isCheckin() && mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
             mCheckIn.setVisibility(View.INVISIBLE);
-            Observable.timer(600, TimeUnit.MILLISECONDS)
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> initAnimation(mCheckIn));
         } else {
             mCheckIn.setVisibility(View.GONE);
         }
+        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+            mSendWordsQuestion.setVisibility(View.INVISIBLE);
+            mSendInfo.setVisibility(View.INVISIBLE);
 
+            // 提问
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mSendWordsQuestion));
+            // 投稿
+//            delay += DEFAULT_ANIMATE_DELAY;
+//            Observable.timer(delay, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mSendInfo));
+            mSendInfo.setVisibility(View.GONE);
+        } else {
+            mSendWordsQuestion.setVisibility(View.GONE);
+            mSendInfo.setVisibility(View.GONE);
+        }
 
     }
 
@@ -118,19 +172,24 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     }
 
     private void initAnimation(final View view) {
+        if (view == null) {
+            return;
+        }
         view.post(() -> {
+            if(mSelectDynamicParent==null||view==null){
+                return;
+            }
             AnimatorSet mAnimatorSet = new AnimatorSet();
             int vertical_distance = mSelectDynamicParent.getBottom() - view.getTop();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
             ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
-            mAnimatorSet.setDuration(1200);
+            mAnimatorSet.setDuration(1000);
             mAnimatorSet.setInterpolator(new OvershootInterpolator(1f));
             ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
             mAnimatorSet.play(translationY);
             view.setVisibility(View.VISIBLE);
             mAnimatorSet.start();
         });
-
     }
 
     @Override
@@ -138,7 +197,8 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         return R.layout.fragment_dynamic_type;
     }
 
-    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic})
+    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
+            .id.send_info})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -149,8 +209,7 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                     sendWordsDynamicDataBean.setDynamicChannlId(getArguments().getLong(GROUP_ID));
                 }
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                closeActivity();
                 break;
             case R.id.send_image_dynamic:
                 clickSendPhotoTextDynamic();
@@ -167,11 +226,35 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 break;
 
             case R.id.im_close_dynamic:
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, R.anim.zoom_out);
+                closeActivity();
                 break;
+
+            case R.id.send_words_question:
+                // 提问
+                startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+                closeActivity();
+                break;
+            case R.id.open_zhibo:
+                // 跳转直播
+                break;
+            case R.id.send_info:
+                // 投稿
+                // 发布提示 1、首先需要认证 2、需要付费
+                if (mPresenter.checkCertification()) {
+                    if (mPresenter.isNeedPayTip()) {
+                        mPayAlertPopWindow.show();
+                        mPresenter.savePayTip(false);
+                    } else {
+                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                    }
+                } else {
+                    mCertificationAlertPopWindow.show();
+                }
+                break;
+            default:
         }
     }
+
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
@@ -184,8 +267,7 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         }
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-        getActivity().finish();
-        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+        closeActivity();
     }
 
     @Override
@@ -205,4 +287,68 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     private void clickSendPhotoTextDynamic() {
         mPhotoSelector.getPhotoListFromSelector(MAX_DEFAULT_COUNT, null);
     }
+
+    private void initPopWindow() {
+        if (mCertificationAlertPopWindow == null) {
+            mCertificationAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item2Str(getString(R.string.certification_personage))
+                    .item3Str(getString(R.string.certification_company))
+                    .desStr(getString(R.string.info_publish_hint_certification))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
+                    .item2ClickListener(() -> {// 个人认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 0);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                        closeActivity();
+                    })
+                    .item3ClickListener(() -> {// 企业认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 1);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                        closeActivity();
+                    })
+                    .build();
+        }
+        if (mPayAlertPopWindow == null) {
+            mPayAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item6Str(getString(R.string.info_publish_go_to_next))
+                    .desStr(getString(R.string.info_publish_hint_pay))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mPayAlertPopWindow.hide())
+                    .item6ClickListener(() -> {
+                        mPayAlertPopWindow.hide();
+                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                        closeActivity();
+                    })
+                    .build();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        closeActivity();
+    }
+
+    public void closeActivity() {
+        getActivity().finish();
+        getActivity().overridePendingTransition(0, R.anim.fade_out);
+    }
+
 }

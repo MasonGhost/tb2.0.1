@@ -45,7 +45,9 @@ public class BillRepository implements BillContract.Repository {
 
     public Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data) {
 
-        return data.flatMap(new Func1<List<RechargeSuccessBean>, Observable<List<RechargeSuccessBean>>>() {
+        return data
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<List<RechargeSuccessBean>, Observable<List<RechargeSuccessBean>>>() {
             @Override
             public Observable<List<RechargeSuccessBean>> call(List<RechargeSuccessBean> rechargeListBeen) {
                 final List<Object> user_ids = new ArrayList<>();

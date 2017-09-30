@@ -82,14 +82,14 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
     private void initListener() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -97,7 +97,7 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
         // 点击登录按钮
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限

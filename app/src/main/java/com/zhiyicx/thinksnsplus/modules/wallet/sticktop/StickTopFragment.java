@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -237,6 +238,28 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 .bottomClickListener(() -> mStickTopInstructionsPopupWindow.hide())
                 .build();
         mStickTopInstructionsPopupWindow.show();
+    }
+
+    /**
+     * @param context
+     * @param type      资源类型：动态、资讯等
+     * @param parent_id 资源的ic
+     * @param child_id  评论的 id
+     */
+    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(StickTopFragment.TYPE, type);// 资源类型
+        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);// 资源id
+        if (child_id != null) {
+            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
+        }
+        Intent intent = new Intent(context, StickTopActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void startSticTopActivity(Context context, String type, Long parent_id) {
+        startSticTopActivity(context, type, parent_id, null);
     }
 
 }

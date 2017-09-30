@@ -29,25 +29,24 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
+    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
     //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-//    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-//
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+    public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
-
-    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
+    public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址 V2
-    public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+    public static final String IMAGE_PATH_V2 = "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
     // 头像地址
     public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 
     // 音乐地址 V2
-    public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s";
+    public static final String MUSIC_PATH = "api/" + API_VERSION_2 + "/files/%s";
 
     /*******************************************  接口 Path  *********************************************/
 
@@ -214,7 +213,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
     // 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
 
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
@@ -395,11 +394,11 @@ public class ApiConfig {
     /**
      * 分享相关
      */
-    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
-    public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
-    public static final String APP_PATH_SHARE_GROUP = APP_DOMAIN + "api/develop";// 分享圈子动态，目前暂时用开发中
+    public static final String APP_PATH_SHARE_USERINFO = "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_DEFAULT = "api/develop";// 开发中的提示
+    public static final String APP_PATH_SHARE_GROUP = "api/develop";// 分享圈子动态，目前暂时用开发中
 
 
     /**
@@ -418,7 +417,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}"; // 动态详情
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";//
+    // 取消对圈子动态的收藏
     public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态
     public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态
     public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
@@ -429,7 +429,8 @@ public class ApiConfig {
     public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 创建圈子动态评论
     public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments";// 创建圈子动态评论
     public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";
+    // 删除圈子动态评论
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
     public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}";// 删除圈子动态
@@ -466,6 +467,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_SINGLE_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/{advert_id}/advertising";
     // 获取批量广告位的广告列表
     public static final String APP_PATH_GET_All_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/advertising";
+    // 版本更新
+    public static final String APP_PATH_GET_APP_NEW_VERSION = "api/" + API_VERSION_2 + "/plus-appversion";
 
     /**
      * 通用 CommonClient

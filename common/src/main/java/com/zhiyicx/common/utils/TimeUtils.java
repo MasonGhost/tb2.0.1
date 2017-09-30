@@ -531,10 +531,10 @@ public class TimeUtils {
     public static long utc2LocalLong(String utcTime) {
         SimpleDateFormat utcFormater = new SimpleDateFormat(DEFAULT_PATTERN);
         utcFormater.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date gpsUTCDate = null;
+        Date gpsUTCDate;
         try {
             gpsUTCDate = utcFormater.parse(utcTime);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return System.currentTimeMillis();
         }

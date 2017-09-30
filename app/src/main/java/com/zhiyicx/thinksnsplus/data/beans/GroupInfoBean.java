@@ -27,7 +27,7 @@ import org.greenrobot.greendao.DaoException;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class GroupInfoBean extends BaseListBean {
+public class GroupInfoBean extends BaseListBean implements Serializable {
 
     @Transient
     private static final long serialVersionUID = 1L;

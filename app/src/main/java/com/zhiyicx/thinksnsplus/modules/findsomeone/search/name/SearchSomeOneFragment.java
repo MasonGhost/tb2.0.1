@@ -1,39 +1,28 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.search.name;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchContract;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchListAdapter;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListAdapter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
-import rx.functions.Func1;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
- * @Describe 地区搜索界面
+ * @Describe 用户搜索界面
  * @Author Jungle68
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
@@ -110,6 +99,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
             mFragmentInfoSearchEdittext.setText(getArguments().getString(BUNDLE_LOCATION_STRING));
             mFragmentInfoSearchEdittext.setSelection(getArguments().getString(BUNDLE_LOCATION_STRING).length());
         }
+        mPresenter.getRecommentUser();
     }
 
     @Override

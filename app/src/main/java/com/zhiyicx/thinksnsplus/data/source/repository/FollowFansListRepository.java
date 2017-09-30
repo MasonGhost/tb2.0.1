@@ -47,6 +47,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     public Observable<List<UserInfoBean>> getFollowListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
                 .map(userInfoBeen -> {
                     // 保存用户信息
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
@@ -60,6 +61,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     public Observable<List<UserInfoBean>> getFansListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
                 .map(userInfoBeen -> {
                     // 保存用户信息
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);

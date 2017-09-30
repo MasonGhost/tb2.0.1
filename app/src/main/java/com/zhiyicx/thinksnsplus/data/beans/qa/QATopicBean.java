@@ -25,7 +25,6 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class QATopicBean extends BaseListBean implements Serializable{
-    @Transient
     private static final long serialVersionUID = -2380980242688116330L;
 
     @Id

@@ -105,7 +105,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore,
                                                                   String screen) {
         Observable<DynamicBeanV2> observable;
-        if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
+        if (DYNAMIC_TYPE_MY_COLLECTION.equals(type)) {// 收藏的动态地址和返回大不一样，真滴难受
             observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicBeanV2>>() {
                         @Override
@@ -250,6 +250,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<List<DynamicDigListBean>> getDynamicDigListV2(Long feed_id, Long
             max_id) {
         return mDynamicClient.getDynamicDigListV2(feed_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<DynamicDigListBean>, Observable<List<DynamicDigListBean>>>() {
                     @Override
                     public Observable<List<DynamicDigListBean>> call(List<DynamicDigListBean> dynamicDigListBeanList) {
@@ -283,7 +284,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             return Observable.just(dynamicDigListBeanList);
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
@@ -299,7 +301,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
             final Long feed_mark, Long feed_id, Long after) {
         return mDynamicClient.getDynamicCommentListV2(feed_id, after, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<DynamicCommentBeanV2, Observable<List<DynamicCommentBean>>>() {
                     @Override
                     public Observable<List<DynamicCommentBean>> call(final DynamicCommentBeanV2 listBaseJson) {
@@ -345,7 +347,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 });
 
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
 
@@ -498,7 +502,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
     protected Observable<DynamicDetailBeanV2> dealWithDynamic(Observable<DynamicDetailBeanV2> observable) {
         return observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<DynamicDetailBeanV2, Observable<DynamicDetailBeanV2>>() {
                     @Override
                     public Observable<DynamicDetailBeanV2> call(final DynamicDetailBeanV2 dynamicBean) {
@@ -561,13 +565,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     }
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     protected Observable<List<DynamicDetailBeanV2>> dealWithDynamicListV2
             (Observable<DynamicBeanV2> observable, final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(dynamicBeanV2 -> {
                     List<DynamicDetailBeanV2> topData = dynamicBeanV2.getPinned();
                     if (topData != null && !topData.isEmpty()) {
@@ -656,6 +662,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     return listBaseJson;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 }

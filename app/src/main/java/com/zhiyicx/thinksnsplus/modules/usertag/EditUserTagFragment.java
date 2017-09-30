@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -40,7 +41,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
+public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter
+        .OnItemClickListener {
     public static final String BUNDLE_IS_FROM = "is_from";
     public static final String BUNDLE_CHOOSED_TAGS = "choosed_tags";
 
@@ -252,52 +254,39 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             protected void convert(ViewHolder holder, UserTagBean data
                     , final int position) {
                 holder.setText(R.id.item_info_channel, data.getTagName());
+                RxView.clicks(holder.getView(R.id.fl_container))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            switch (mFrom) {
+                                case INFO_PUBLISH:
+                                    deleteTagSuccess(position);
+                                    break;
+                                case REGISTER:
+                                case USER_EDIT:
+                                    mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
+                                    break;
+                                default:
+                            }
+                        });
             }
-
-//            @Override
-//            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-//                RxView.clicks(viewHolder.itemView)
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                        .compose(bindToLifecycle())
-//                        .subscribe(o -> {
-//                            if (mOnItemClickListener != null) {
-//                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-//                            }
-//                        });
-//
-//                viewHolder.getConvertView().setOnLongClickListener(v -> {
-//                    if (mOnItemClickListener != null) {
-//                        int position = viewHolder.getAdapterPosition();
-//                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-//                    }
-//                    return true;
-//                });
-//            }
         };
-        mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                switch (mFrom) {
-                    case INFO_PUBLISH:
-                        deleteTagSuccess(position);
-                        break;
-                    case REGISTER:
-                    case USER_EDIT:
-                        mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
-                        break;
-                    default:
-                }
-
-
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
-            }
-
-        });
+//        mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                if (position < 0) {
+//                    return;
+//                }
+//
+//
+//
+//            }
+//
+//            @Override
+//            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                return false;
+//            }
+//
+//        });
 
         return mChoosedTagAdapter;
     }
@@ -361,9 +350,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         if (tagCategoryBeanList == null) {
             return;
         }
-        mCategoryTags.clear();
+        this.mCategoryTags.clear();
         this.mCategoryTags.addAll(tagCategoryBeanList);
-        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        this.mTagClassAdapter.notifyAllSectionsDataSetChanged();
     }
 
     @Override

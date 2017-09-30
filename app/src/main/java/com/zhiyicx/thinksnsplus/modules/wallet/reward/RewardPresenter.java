@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
+import android.text.TextUtils;
+
+import com.vladsch.flexmark.ast.Text;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -88,6 +91,9 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.reward_failed));
                     }
                 });

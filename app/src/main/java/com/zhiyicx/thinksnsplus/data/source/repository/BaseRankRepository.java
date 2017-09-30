@@ -1,10 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
+
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.RankClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,9 +25,11 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class BaseRankRepository implements IBaseRankRepository{
+public class BaseRankRepository implements IBaseRankRepository {
 
     protected RankClient mRankClient;
+    @Inject
+    Application mContext;
 
     @Inject
     public BaseRankRepository(ServiceManager manager) {
@@ -44,7 +53,14 @@ public class BaseRankRepository implements IBaseRankRepository{
 
     @Override
     public Observable<List<UserInfoBean>> getRankCheckIn(int size) {
-        return mRankClient.getRankCheckIn((long) TSListFragment.DEFAULT_PAGE_SIZE, size);
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        // 如果已经签到了，则不再展示签到
+        if (systemConfigBean != null && systemConfigBean.isCheckin()) {
+            return mRankClient.getRankCheckIn((long) TSListFragment.DEFAULT_PAGE_SIZE, size);
+        }else {
+            return Observable.just(new ArrayList<>());
+        }
     }
 
     @Override

@@ -2,14 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BlurMaskFilter;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,13 +19,12 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -49,14 +49,11 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFr
  */
 public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
-    private int mContentMaxShowNum;
     private SpanTextClickable.SpanTextClickListener mSpanTextClickListener;
 
 
     public QAListInfoAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
         super(context, layoutId, datas);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_content_max_show_size);
     }
 
     @Override
@@ -72,9 +69,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         holder.setVisible(R.id.item_info_reward, infoBean.getAmount() > 0 ? View.VISIBLE : View.GONE);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
-        TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
-
+        RelativeLayout contentView = holder.getView(R.id.rl_hotcomment_container);
         boolean isExcellent = infoBean.getExcellent() == 1;
+
+        UserAvatarView userAvatarView = (UserAvatarView) contentView.findViewById(R.id.iv_head_icon);
+        TextView contentTextView = (TextView) contentView.findViewById(R.id.item_info_hotcomment);
 
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
@@ -90,11 +89,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             imageView.setVisibility(View.VISIBLE);
             RxView.clicks(imageView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> contentTextView.performClick());
-
+                    .subscribe(aVoid -> contentView.performClick());
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+            imageView.getLayoutParams().width = w;
+            imageView.getLayoutParams().height = h;
             String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
             try {
                 Glide.with(mContext).load(url)
@@ -108,22 +107,21 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         } else {
             imageView.setVisibility(View.GONE);
         }
-
+        contentView.setVisibility(infoBean.getAnswer() != null ? View.VISIBLE : View.GONE);
         if (infoBean.getAnswer() != null) {
-            contentTextView.setTag(infoBean.getAnswer().getId().intValue());
-            contentTextView.setVisibility(View.VISIBLE);
-            try {
-                ImageUtils.loadQAUserHead(position,mSpanTextClickListener, infoBean.getAnswer().getId().intValue(),
-                        infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
-                        infoBean.getAnswer().getAnonymity() == 1
-                                && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
-            } catch (Exception e) {
-                // 加载图片 context 被销毁了
-            }
-
-            RxView.clicks(contentTextView)
+            boolean isAnonymity = infoBean.getAnswer().getAnonymity() == 1;
+            String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
+            ImageUtils.loadCircleUserHeadPic(infoBean.getAnswer().getUser(), userAvatarView, isAnonymity);
+            String prefix = (isAnonymity ? getContext().getString(R.string.qa_question_answer_anonymity_user)
+                    : infoBean.getAnswer().getUser().getName()) + "：";
+            content = prefix + content;
+            RxView.clicks(contentView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
+                        if (!infoBean.getAnswer().getCould()) {
+                            mSpanTextClickListener.onSpanClick(infoBean.getAnswer().getId(), position);
+                            return;
+                        }
                         Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(BUNDLE_ANSWER, infoBean.getAnswer());
@@ -131,9 +129,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
                     });
-        } else {
-            contentTextView.setText("");
-            contentTextView.setVisibility(View.GONE);
+            int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
+            makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(),
+                    infoBean.getAnswer().getCould());
         }
 
     }
@@ -162,12 +160,45 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         return links;
     }
 
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+    }
+
     public void setSpanTextClickListener(SpanTextClickable.SpanTextClickListener spanTextClickListener) {
         mSpanTextClickListener = spanTextClickListener;
     }
 
     protected int getExcellentTag(boolean isExcellent) {
         return 0;
+    }
+
+    private void makeSpan(TextView mTextView, int h, int w, String plainText,
+                          long answer_id, int question_position, int start, boolean canLook) {
+
+        Spanned htmlText = Html.fromHtml(plainText);
+        SpannableString mSpannableString = new SpannableString(htmlText);
+
+        int allTextStart = 0;
+        int allTextEnd = htmlText.length() - 1;
+
+        int lines;
+        float fontSpacing = mTextView.getPaint().getFontSpacing();
+        lines = (int) (h / (fontSpacing));
+
+        TextRoundSpan span = new TextRoundSpan(lines, w + 10);
+        mSpannableString.setSpan(span, allTextStart, allTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (!canLook) {
+            SpanTextClickable clickable = new SpanTextClickable(answer_id, h / 3, question_position);
+            clickable.setSpanTextClickListener(mSpanTextClickListener);
+            SpanTextClickable.dealTextViewClickEvent(mTextView);
+            mSpannableString.setSpan(clickable, start, mSpannableString.length(), Spannable
+                    .SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        mTextView.setText(mSpannableString);
+
     }
 
 }

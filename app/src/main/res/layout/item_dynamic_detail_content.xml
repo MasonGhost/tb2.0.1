@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_large"
         android:orientation="vertical"
-        android:visibility="gone"></LinearLayout>
+        android:visibility="gone"/>
     <!--动态内容-->
     <TextView
         android:id="@+id/tv_dynamic_content"

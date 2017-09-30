@@ -28,6 +28,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -199,7 +200,7 @@ public class JavaTest {
     @Test
     public void doubleBitMoney() {
         int test = 99999999;
-        long money =10 * test;
+        long money = 10 * test;
 
         System.out.println("result::" + money);
     }
@@ -215,7 +216,7 @@ public class JavaTest {
     public void bigDoubleTest() {
         double d = 11111111111111111111d;
         BigDecimal totalAmount = new BigDecimal(d);
-        new BigDecimal(new Double(totalAmount.doubleValue()).toString());
+        new BigDecimal(Double.valueOf(totalAmount.doubleValue()).toString());
         NumberFormat format = NumberFormat.getInstance();
         // 是否以逗号隔开, 默认true以逗号隔开,如[123,456,789.128]
         format.setGroupingUsed(false);
@@ -291,7 +292,7 @@ public class JavaTest {
     @Test
     public void removeSymbolStartWith() {
         String test = ",,2,3";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolStartWith(test, ","));
     }
 
     /**
@@ -300,7 +301,7 @@ public class JavaTest {
     @Test
     public void removeSymbolEndWith() {
         String test = ",,2,3,,";
-        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(test,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
+        LogUtils.d(TAG, "ConvertUtils.removeSymbolStartWith(addBtnAnimation,\",\") = " + ConvertUtils.removeSymbolEndWith(test, ","));
     }
 
     /**
@@ -311,7 +312,7 @@ public class JavaTest {
         String test = "jungle68";
         List<String> datas = new ArrayList<>();
 
-//        datas.add(0, test); 没有数据的时候set异常
+//        datas.add(0, addBtnAnimation); 没有数据的时候set异常
         LogUtils.d(TAG, "datas = " + datas.toString());
         try {
             datas.set(0, test);
@@ -319,7 +320,7 @@ public class JavaTest {
             Assert.assertFalse(false);
         }
         for (int i = 0; i < 5; i++) {
-            datas.add("test   " + i);
+            datas.add("addBtnAnimation   " + i);
         }
         datas.set(0, test);
         Assert.assertTrue(datas.size() == 5);
@@ -334,7 +335,7 @@ public class JavaTest {
         List<String> datas = new ArrayList<>();
         datas.add(0, test);
         for (int i = 0; i < 5; i++) {
-            datas.add("test   " + i);
+            datas.add("addBtnAnimation   " + i);
         }
         datas.add(0, test);
         Assert.assertTrue(datas.size() == 7);
@@ -353,7 +354,8 @@ public class JavaTest {
     @SuppressLint("LogNotUsed")
     @Test
     public void jsonObject2map() {
-//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
+//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d
+// :eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
 //
 //        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
 //                new TypeToken<Map<String, Object>>() {
@@ -392,7 +394,8 @@ public class JavaTest {
     @Test
     public void objecttst() {
         Object object = "{\n" +
-                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
+                "            \"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:mrP5oxdTmdSqDGAQs8ZhtIZdCBY" +
+                "=:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA3MDFcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUxNjAxLCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0=\",\n" +
                 "            \"key\":\"2017/04/28/0701/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\n" +
                 "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
@@ -499,7 +502,11 @@ public class JavaTest {
      */
     @Test
     public void locationParseTest() {
-        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0,\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
+        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\"," +
+                "\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 " +
+                "07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\"," +
+                "\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0," +
+                "\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
         List<LocationContainerBean> lodAta = new Gson().fromJson(data, new TypeToken<List<LocationContainerBean>>() {
         }.getType());
         List<LocationBean> result = new ArrayList<>();
@@ -580,7 +587,8 @@ public class JavaTest {
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
-        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF ||
+                codePoint >= 0xE000 && codePoint <= 0xFFFD);
     }
 
 
@@ -648,7 +656,7 @@ public class JavaTest {
                 "        \"key2\": [ \"value1\", \"value2\" ]\n" +
                 "    }\n" +
                 "}";
-        String response5 ="{\n" +
+        String response5 = "{\n" +
                 "    \"message\": \"请绑定账号\",\n" +
                 "    \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Application.php\",\n" +
                 "    \"line\": 926,\n" +
@@ -666,7 +674,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                ".php\",\n" +
                 "            \"line\": 137,\n" +
                 "            \"function\": \"abort\",\n" +
                 "            \"args\": [\n" +
@@ -675,7 +684,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "\n" +
                 "            \"line\": 44,\n" +
                 "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Traits\\\\{closure}\",\n" +
                 "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
@@ -686,7 +696,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Traits/SocialiteDriverHelper" +
+                ".php\",\n" +
                 "            \"line\": 138,\n" +
                 "            \"function\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\{closure}\",\n" +
                 "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
@@ -696,7 +707,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/Drivers/DriverAbstract.php\"," +
+                "\n" +
                 "            \"line\": 45,\n" +
                 "            \"function\": \"abortIf\",\n" +
                 "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
@@ -707,7 +719,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/API/Controllers/SocialiteController.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/resources/repositorie/sources/plus-socialite/src/API/Controllers" +
+                "/SocialiteController.php\",\n" +
                 "            \"line\": 71,\n" +
                 "            \"function\": \"authUser\",\n" +
                 "            \"class\": \"SlimKit\\\\PlusSocialite\\\\Drivers\\\\DriverAbstract\",\n" +
@@ -810,7 +823,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings" +
+                ".php\",\n" +
                 "            \"line\": 41,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -865,7 +879,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests" +
+                ".php\",\n" +
                 "            \"line\": 57,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1106,7 +1121,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/TransformsRequest.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1161,7 +1177,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/TransformsRequest.php\",\n" +
                 "            \"line\": 30,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1216,7 +1233,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/ValidatePostSize.php\",\n" +
                 "            \"line\": 27,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1271,7 +1289,8 @@ public class JavaTest {
                 "            ]\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php\",\n" +
+                "            \"file\": \"/home/wwwroot/thinksns-plus/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware" +
+                "/CheckForMaintenanceMode.php\",\n" +
                 "            \"line\": 46,\n" +
                 "            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n" +
                 "            \"class\": \"Illuminate\\\\Routing\\\\Pipeline\",\n" +
@@ -1407,5 +1426,30 @@ public class JavaTest {
         jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
         System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
+
+    @Test
+    public void testCollectionSingle() {
+
+        String[] split = new String[10000];
+        for (int i = 0; i < 10000; i++) {
+            split[i] = i+"";
+        }
+
+        AbstractList<String> mContentList = new ArrayList<>();
+
+        long a = System.currentTimeMillis();
+        for (String str : split) {
+            mContentList.add(str);
+        }
+        System.out.println("System.currentTimeMillis() = " + (System.currentTimeMillis() - a));
+
+        mContentList.clear();
+        a = System.currentTimeMillis();
+        Collections.addAll(mContentList, split);
+        System.out.println("System.currentTimeMillis() = " + (System.currentTimeMillis() - a));
+
+
+    }
+
 
 }

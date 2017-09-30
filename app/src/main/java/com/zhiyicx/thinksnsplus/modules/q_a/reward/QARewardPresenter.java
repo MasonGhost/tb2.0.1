@@ -6,6 +6,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -56,8 +57,8 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
 
     @Override
     public void publishQuestion(final QAPublishBean qaPublishBean) {
-        handleWalletBlance((long) qaPublishBean.getAmount())
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(com.zhiyicx.thinksnsplus.R
+        Subscription subscribe = handleWalletBlance((long) qaPublishBean.getAmount())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.publish_doing)))
                 .flatMap(new Func1<Object, Observable<Object>>() {
                     @Override
@@ -70,17 +71,25 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     @Override
                     protected void onSuccess(Object data) {
                         // 解析数据，在跳转到问题详情页时需要用到
-                        try {
-                            mRepository.deleteQuestion(qaPublishBean);
-                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            QAListInfoBean qaListInfoBean = new Gson().fromJson
-                                    (jsonObject.getString("question"), QAListInfoBean.class);
+                        if (data == null) {
+                            QAListInfoBean qaListInfoBean = new QAListInfoBean();
+                            qaListInfoBean.setId(qaPublishBean.getId());
+                            qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                             mRootView.publishQuestionSuccess(qaListInfoBean);
-                            JSONArray array = jsonObject.getJSONArray("message");
-                            mRootView.showSnackMessage(array.getString(0), Prompt.DONE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mRootView.showSnackErrorMessage(e.toString());
+                            mRootView.showSnackMessage("编辑成功", Prompt.DONE);
+                        } else {
+                            try {
+                                mRepository.deleteQuestion(qaPublishBean);
+                                JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                                QAListInfoBean qaListInfoBean = new Gson().fromJson
+                                        (jsonObject.getString("question"), QAListInfoBean.class);
+                                mRootView.publishQuestionSuccess(qaListInfoBean);
+                                JSONArray array = jsonObject.getJSONArray("message");
+                                mRootView.showSnackMessage(array.getString(0), Prompt.DONE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mRootView.showSnackErrorMessage(e.toString());
+                            }
                         }
                     }
 
@@ -93,9 +102,13 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

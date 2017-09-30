@@ -145,6 +145,13 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            handleInfoHasBeDeleted(code);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
             addSubscrebe(subscribe);
@@ -242,7 +249,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             mRootView.getCurrentInfo().setDigList(new ArrayList<>());
         }
         if (isLiked) {
-            mRootView.getCurrentInfo().getDigList().add(digListBean);
+            mRootView.getCurrentInfo().getDigList().add(0,digListBean); // 放到第一个
             mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() + 1);
         } else {
             for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()) {
@@ -397,6 +404,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
         LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
+        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
         Subscription subscribe = Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

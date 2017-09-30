@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.rank.main.list.RankListContract;
 import com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -33,8 +34,11 @@ import static com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivi
 
 public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
 
-    public RankIndexAdapter(Context context, List<RankIndexBean> datas) {
+    RankListContract.Presenter mPresenter;
+
+    public RankIndexAdapter(Context context, List<RankIndexBean> datas, RankListContract.Presenter presenter) {
         super(context, R.layout.item_rank_index, datas);
+        mPresenter=presenter;
     }
 
     @Override
@@ -57,6 +61,9 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
             adapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    if (mPresenter.handleTouristControl()) { // 游客勿入
+                        return;
+                    }
                     PersonalCenterFragment.startToPersonalCenter(mContext, rankIndexBean.getUserInfoList().get(position));
                 }
 

@@ -57,6 +57,9 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         multiItemTypeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (mPresenter.handleTouristControl()) { // 游客勿入
+                    return;
+                }
                 if (mListDatas.get(position) != null && !mListDatas.get(position).getUser_id().equals(0L)){
                     PersonalCenterFragment.startToPersonalCenter(getContext(), mListDatas.get(position));
                 }

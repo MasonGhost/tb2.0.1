@@ -3,29 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
@@ -38,7 +26,6 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -54,15 +41,9 @@ import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
-import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
-import com.zhiyicx.thinksnsplus.widget.flowtag.OnInitSelectedPosition;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
-import com.zzhoujay.markdown.MarkDown;
-import com.zzhoujay.richtext.ImageHolder;
-import com.zzhoujay.richtext.RichText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,25 +129,25 @@ public class InfoDetailHeaderView {
             mTitle.setText(infoMain.getTitle());
             mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
             mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
-            String from = infoMain.getFrom().equals(mContext.getString(R.string.info_publish_original)) ?
+            String from = mContext.getString(R.string.info_publish_original).equals(infoMain.getFrom()) ?
                     infoMain.getAuthor() : infoMain.getFrom();
-            String infoData = String.format(mContext.getString(R.string.info_list_count)
-                    , from, infoMain.getHits(), TimeUtils.getTimeFriendlyNormal(infoMain
-                            .getUpdated_at()));
-            mFrom.setText(infoData);
-            // 引用
-            if (!TextUtils.isEmpty(infoMain.getSubject())) {
-                InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding:0px", "margin:0px");
-                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
-                css.addRule("p", "margin:0px", "padding:10px");
-                mContentSubject.setVisibility(VISIBLE);
-                mContentSubject.addStyleSheet(css);
-                mContentSubject.loadMarkdown(infoMain.getSubject());
-            } else {
-                mContentSubject.setVisibility(GONE);
+            if(!TextUtils.isEmpty(from)) {
+                mFrom.setText(from);
             }
+            // 引用
+//            if (!TextUtils.isEmpty(infoMain.getSubject())) {
+//                InternalStyleSheet css = new Github();
+//                css.addRule(".container", "padding:0px", "margin:0px");
+//                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
+//                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+//                css.addRule("p", "margin:0px", "padding:10px");
+//                mContentSubject.setVisibility(VISIBLE);
+//                mContentSubject.addStyleSheet(css);
+//                mContentSubject.loadMarkdown(infoMain.getSubject());
+//            } else {
+//                mContentSubject.setVisibility(GONE);
+//            }
+            mContentSubject.setVisibility(GONE);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
@@ -303,16 +284,16 @@ public class InfoDetailHeaderView {
         if (infoMain == null) {
             return;
         }
+
+        mDigListView.setDigCount(infoMain.getDigg_count());
+        mDigListView.setPublishTime(infoMain.getCreated_at());
+        mDigListView.setViewerCount(infoMain.getHits());
+        // 设置点赞头像
+        mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
+
         // 点赞信息
         if (infoMain.getDigList() != null
                 && infoMain.getDigList().size() > 0) {
-            mDigListView.setVisibility(VISIBLE);
-            mDigListView.setDigCount(infoMain.getDigg_count());
-            mDigListView.setPublishTime(infoMain.getUpdated_at());
-            mDigListView.setViewerCount(infoMain.getHits());
-            // 设置点赞头像
-            mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
-
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
                 Intent intent = new Intent(mContext, InfoDigListActivity.class);
@@ -321,8 +302,6 @@ public class InfoDetailHeaderView {
                 intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
                 mContext.startActivity(intent);
             });
-        } else {
-            mDigListView.setVisibility(GONE);
         }
     }
 
@@ -400,7 +379,7 @@ public class InfoDetailHeaderView {
                     String from = infoListDataBean.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
                             infoListDataBean.getAuthor() : infoListDataBean.getFrom();
                     String infoData = String.format(Locale.getDefault(), title.getContext().getString(R.string.info_list_count)
-                            , from, infoListDataBean.getHits(), TimeUtils.getTimeFriendlyNormal(infoListDataBean
+                            , from, String.valueOf(infoListDataBean.getHits()), TimeUtils.getTimeFriendlyNormal(infoListDataBean
                                     .getUpdated_at()));
                     holder.setText(R.id.item_info_timeform, infoData);
                     // 是否置顶
@@ -428,5 +407,9 @@ public class InfoDetailHeaderView {
             mFtlRelate.setVisibility(GONE);
             mRvRelateInfo.setVisibility(GONE);
         }
+    }
+
+    public void setReWardViewVisible(int visible) {
+        mReWardView.setVisibility(visible);
     }
 }

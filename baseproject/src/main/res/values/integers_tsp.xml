@@ -6,7 +6,7 @@
     <!--手机号长度-->
     <integer name="phone_number_length">11</integer>
     <!--密码最大长度-->
-    <integer name="password_maxlenght">999999</integer>
+    <integer name="password_maxlenght">16</integer>
     <!--密码最小长度-->
     <integer name="password_min_length">6</integer>
     <!--用户名最大长度 ,数量代表字符-->
@@ -90,5 +90,9 @@
 
     <!--登录联想的最小输入值-->
     <integer name="login_hint_mix_count">1</integer>
+
+    <!--#########################################     资讯相关      ################################-->
+    <!--完善文章信息最大输入值-->
+    <integer name="authorname_min">8</integer>
 
 </resources>

@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -34,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
@@ -97,8 +93,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             showSnackErrorMessage(getString(R.string.qa_publish_select_topic_hint));
             return;
         }
-        saveQustion();
-        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+        saveQuestion();
+        if (mQAPublishBean.isHasAgainEdite() && (mQAPublishBean.getAmount() > 0 || mQAPublishBean.isHasAdoption())) {
             mQAPublishBean.setAmount(0);
             mPresenter.updateQuestion(mQAPublishBean);
             return;
@@ -113,7 +109,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (prompt == Prompt.SUCCESS) {
+        if (prompt == Prompt.DONE) {
             if (mQAListInfoBean != null) {
                 goToQuestionDetail();
                 getActivity().finish();
@@ -124,9 +120,10 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     public void updateSuccess(QAListInfoBean listInfoBean) {
         mQAListInfoBean = listInfoBean;
+        mQAListInfoBean.setId(mQAPublishBean.getId());
     }
 
-    private void saveQustion() {
+    private void saveQuestion() {
         List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
         for (QATopicBean qaTopicBean : mQATopicBeanList) {
             QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
@@ -187,7 +184,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     protected void setLeftClick() {
-        saveQustion();
+        saveQuestion();
         super.setLeftClick();
     }
 

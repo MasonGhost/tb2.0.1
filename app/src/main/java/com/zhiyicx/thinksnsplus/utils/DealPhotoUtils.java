@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -83,6 +84,7 @@ public class DealPhotoUtils {
      * @param bitmap 需要保存的Bitmap图片
      * @return 保存成功时返回图片的路径，失败时返回null
      */
+    @SuppressLint("CloseMethod")
     public static String savePhotoToSD(Bitmap bitmap, Context context) {
         FileOutputStream outStream = null;
         String fileName = getPhotoFileName(context);

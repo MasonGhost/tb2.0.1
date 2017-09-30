@@ -45,7 +45,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.RewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -103,6 +102,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
     private boolean mIsNeedDynamicListRefresh = false;
+    private boolean mIsAllDataReady = false;
 
 
     @Inject
@@ -126,7 +126,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             getDynamicDigList(mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
+        Subscription subscribe = mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
                 .getCurrentDynamic().getId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<DynamicCommentBean>>() {
                     @Override
@@ -164,6 +164,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -244,6 +245,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             }
         });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void allDataReady() {
+        mIsAllDataReady = true;
     }
 
     /**
@@ -368,15 +374,13 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             List<DynamicDigListBean> digUsers = mRootView.getCurrentDynamic().getDigUserInfoList();
             int digUserSize = digUsers.size();
             for (int i = 0; i < digUserSize; i++) {
-                if (digUsers.get(i).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                        .getUser_id()) {
+                if (digUsers.get(i).getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                     digUsers.remove(i);
                     break;
                 }
             }
         } else {// 喜欢
-            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                    AppApplication.getmCurrentLoginAuth().getUser_id());
+            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
             DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
             dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
             dynamicDigListBean.setId(System.currentTimeMillis());
@@ -441,7 +445,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
                     .decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -480,7 +484,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Override
     public boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark) {
-        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() &&
+        if (user_id == AppApplication.getMyUserIdWithdefault() &&
                 mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feed_mark) == null) { //
             // 检查当前动态是否已经被删除了
             return true;
@@ -496,7 +500,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         creatComment.setState(DynamicCommentBean.SEND_ING);
         creatComment.setComment_content(commentContent);
         creatComment.setFeed_mark(mRootView.getCurrentDynamic().getFeed_mark());
-        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+        String comment_mark = AppApplication.getMyUserIdWithdefault() + "" + System
                 .currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
@@ -507,9 +511,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         } else {
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
-        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setUser_id(AppApplication.getMyUserIdWithdefault());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         // 处理评论数
@@ -542,11 +545,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        LogUtils.d(TAG, "dynamic send success dynamicCommentBean = " + dynamicCommentBean
-                .toString());
-        Observable.just(dynamicCommentBean)
+
+        Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(dynamicCommentBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
@@ -565,12 +567,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
                     return dynamicPosition;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData(); // 加上 header
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 
@@ -583,6 +587,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (!mIsAllDataReady) { // 数据加载完毕就更新动态列表
+            return;
+        }
 
         // 清除占位图数据
         if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils
@@ -600,7 +607,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||mAllAdvertListBeanGreenDao.getDynamicDetailAdvert()==null) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicDetailAdvert() == null) {
             return new ArrayList<>();
         }
         return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();
@@ -616,26 +623,15 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
 
-        mCommentRepository.getCurrentLoginUserInfo()
+        Subscription subscribe = handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
-                        }
+                    public Observable<BaseJsonV2<String>> call(Object o) {
                         return mCommentRepository.paykNote(note);
                     }
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                })
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
@@ -656,7 +652,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
                         walletBean.setBalance(walletBean.getBalance() - amount);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
@@ -684,6 +680,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
+                        if (isBalanceCheck(e)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string
                                 .transaction_fail));
                     }
@@ -700,6 +699,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

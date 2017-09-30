@@ -632,7 +632,7 @@ public class RegisterActivityTest {
     /**
      * summary                      验证码必须为 4 位
      * <p>
-     * steps                      1.输入 test; 2.输入 1234
+     * steps                      1.输入 addBtnAnimation; 2.输入 1234
      * <p>
      * expected                   1.false  3.true
      *
@@ -642,7 +642,7 @@ public class RegisterActivityTest {
     public void vertify_code_must_mumber() throws Exception {
         onView(withId(R.id.et_regist_username)).perform(replaceText(USER_NAME));
         onView(withId(R.id.et_regist_phone)).perform(typeText(USER_PHONE));
-        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("test"));
+        onView(withId(R.id.et_regist_vertify_code)).perform(typeText("addBtnAnimation"));
         onView(withId(R.id.et_regist_password)).perform(replaceText("123456"), closeSoftKeyboard());
         onView(withId(R.id.bt_regist_regist)).check(matches(disEnabled()));
         onView(withId(R.id.et_regist_vertify_code)).perform(replaceText("1234"), closeSoftKeyboard());

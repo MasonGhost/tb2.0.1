@@ -15,7 +15,7 @@
         <include layout="@layout/view_choose_item"/>
 
         <View
-            style="@style/style_divider_horizontal"
+            style="@style/style_divider_horizontal_light"
             android:layout_height="@dimen/spacing_normal"/>
 
         <LinearLayout

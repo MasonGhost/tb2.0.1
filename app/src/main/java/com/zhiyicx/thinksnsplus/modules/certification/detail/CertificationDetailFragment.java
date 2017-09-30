@@ -12,12 +12,9 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
-import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -94,7 +91,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     protected void initData() {
         imageBeen = new ArrayList<>();
         mAnimationRectBeanArrayList = new ArrayList<>();
-        if (mInfo != null){
+        if (mInfo != null) {
             setCertificationInfo(mInfo);
         }
         mPresenter.getCertificationInfo();
@@ -121,21 +118,21 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
         mInfo = getArguments().getParcelable(BUNDLE_DETAIL_DATA);
         mLlPersonage.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
         mLlCompany.setVisibility(mType == 1 ? View.VISIBLE : View.GONE);
-        setCenterText(mType == 0 ? getString( R.string.certification_personage) : getString(R.string.certification_company));
+        setCenterText(mType == 0 ? getString(R.string.certification_personage) : getString(R.string.certification_company));
     }
 
     @Override
     public void setCertificationInfo(UserCertificationInfo info) {
         this.mInfo = info;
-        if (info == null || info.getData() == null){
+        if (info == null || info.getData() == null) {
             return;
         }
-        if (info.getStatus() == 0){
+        if (info.getStatus() == 0) {
             mTvStatusHint.setVisibility(View.VISIBLE);
-        } else if (info.getStatus() == 1){
+        } else if (info.getStatus() == 1) {
             mTvStatusHint.setVisibility(View.GONE);
         }
-        if (info.getCertification_name().equals(TYPE_USER)){
+        if (info.getCertification_name().equals(TYPE_USER)) {
             mTvName.setText(info.getData().getName());
             mTvIdCard.setText(info.getData().getNumber());
             mTvIdPhone.setText(info.getData().getPhone());
@@ -149,18 +146,18 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             mIvPicTwo.setVisibility(View.GONE);
         }
         List<Integer> files = info.getData().getFiles();
-        if (files != null){
+        if (files != null) {
             imageBeen.clear();
-            if (files.size() > 0){
+            if (files.size() > 0) {
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), 200, 100 , ImageZipConfig.IMAGE_100_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), 200, 100, ImageZipConfig.IMAGE_100_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicOne);
             }
-            if (files.size() > 1){
+            if (files.size() > 1) {
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), 200, 100 , ImageZipConfig.IMAGE_100_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), 200, 100, ImageZipConfig.IMAGE_100_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicTwo);
@@ -176,7 +173,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
                 .subscribe(aVoid -> {
                     try {
                         toBigPic(0);
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         LogUtils.d("Cathy", e.toString());
                     }
                 });
@@ -186,29 +183,34 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
                 .subscribe(aVoid -> {
                     try {
                         toBigPic(1);
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         LogUtils.d("Cathy", e.toString());
                     }
                 });
     }
 
-    private void toBigPic(int position){
-        ImageBean imageBean = new ImageBean();
-        imageBean.setImgUrl("");// 本地地址，也许有
-        Toll toll = new Toll(); // 收费信息
-        toll.setPaid(true);// 是否已經付費
-        toll.setToll_money(1);// 付费金额
-        toll.setToll_type_string("");// 付费类型
-        toll.setPaid_node(1);// 付费节点
-        imageBean.setToll(toll);
-        imageBean.setImgUrl(ImageUtils.imagePathConvertV2(mInfo.getData().getFiles().get(position),
-                UIUtils.getWindowWidth(getContext()), UIUtils.getWindowWidth(getContext())/2 , ImageZipConfig.IMAGE_100_ZIP));
-        imageBean.setWidth(UIUtils.getWindowWidth(getContext()));// 图片宽高
-        imageBean.setHeight(UIUtils.getWindowWidth(getContext())/2);
-        imageBean.setStorage_id(mInfo.getData().getFiles().get(position));// 图片附件id
-        imageBeen.add(imageBean);
-        AnimationRectBean rect = AnimationRectBean.buildFromImageView(position == 0 ? mIvPicOne : mIvPicTwo);// 动画矩形
-        mAnimationRectBeanArrayList.add(rect);
-        GalleryActivity.startToGallery(getContext(), position, imageBeen, mAnimationRectBeanArrayList);
+    private void toBigPic(int position) {
+
+        List<ImageBean> imageBeanList = new ArrayList<>();
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<>();
+
+        for (int i = 0; i < mInfo.getData().getFiles().size(); i++) {
+            ImageBean imageBean = new ImageBean();
+            Toll toll = new Toll(); // 收费信息
+            toll.setPaid(true);// 是否已經付費
+            toll.setToll_money(0f);// 付费金额
+            toll.setToll_type_string("");// 付费类型
+            toll.setPaid_node(0);// 付费节点
+            imageBean.setToll(toll);
+            imageBean.setStorage_id(mInfo.getData().getFiles().get(i));// 图片附件id
+            imageBeanList.add(imageBean);
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(i == 0 ? mIvPicOne : mIvPicTwo);// 动画矩形
+            animationRectBeanArrayList.add(rect);
+        }
+
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+                animationRectBeanArrayList);
+
     }
 }

@@ -118,7 +118,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         });
 
         RxTextView.textChanges(mFragmentInfoSearchEdittext)
-                .filter(charSequence -> charSequence.length() == 0)
+                .filter(charSequence -> charSequence.length() == 0 && mFragmentInfoSearchContainer.getVisibility() == View.VISIBLE)
                 .subscribe(charSequence -> mTvRecommendHint.setVisibility(View.VISIBLE));
     }
 

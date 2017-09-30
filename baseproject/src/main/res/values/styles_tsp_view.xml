@@ -45,6 +45,10 @@
         <item name="android:textColor">@color/important_for_content</item>
         <item name="android:paddingRight">@dimen/spacing_mid</item>
     </style>
+    <!-- 密码输入框-->
+    <style name="style_passward_edit" parent="style_edit">
+        <item name="android:maxLength">@integer/password_maxlenght</item>
+    </style>
 
     <style name="style_edit_bg_line" parent="style_edit_cursor">
         <item name="android:layout_width">match_parent</item>

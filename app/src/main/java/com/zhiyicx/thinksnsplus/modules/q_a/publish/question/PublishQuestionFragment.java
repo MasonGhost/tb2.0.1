@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -24,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivit
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -161,7 +163,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-
         requestNetData(null, maxId, "all", isLoadMore);
     }
 
@@ -170,6 +171,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
             return;
         }
         mPresenter.requestNetData(subject, maxId, type, isLoadMore);
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        if (data.isEmpty()) {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -214,16 +223,17 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private void initEditWarningPop() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
+        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) || mDraftQuestion == null;
         if (mEditWarningPopupWindow != null) {
             return;
         }
         mEditWarningPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.edit_quit))
-                .item2Str(getString(R.string.save_to_draft_box))
+                .item2Str(getString(canSaveDraft ? R.string.save_to_draft_box : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mPresenter.deleteQuestion(mDraftQuestion);

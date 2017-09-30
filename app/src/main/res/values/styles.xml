@@ -24,7 +24,9 @@
     </style>
 
     <style name="DynamciSelectTheme" parent="@style/GalleryTheme">
-        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@color/home_add_page_bg</item>
+
     </style>
 
     <!--#########################################      动态置顶       ################################-->
@@ -66,6 +68,7 @@
         <item name="android:gravity">center</item>
         <item name="android:drawablePadding">@dimen/margin_10dp</item>
     </style>
+
     <style name="CertificationDetailContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/certification_input_item_height</item>
@@ -74,6 +77,7 @@
         <item name="android:gravity">bottom</item>
         <item name="android:orientation">horizontal</item>
     </style>
+
     <style name="CertificationDetailText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -81,4 +85,5 @@
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/important_for_content</item>
     </style>
+
 </resources>

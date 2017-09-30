@@ -117,8 +117,8 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             @Override
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
+                MusicAlbumListBean albumListBean = mListDatas.get(position);
                 ImageView imag = holder.getView(R.id.music_list_image);
-                holder.setVisible(R.id.music_list_toll_flag,musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
                 Glide.with(getContext())
                         .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))

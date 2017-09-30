@@ -114,6 +114,10 @@ public class CombinationButton extends FrameLayout {
         mCombinedButtonImgRight.setOnClickListener(listener);
     }
 
+    public ImageView getCombinedButtonImgRight() {
+        return mCombinedButtonImgRight;
+    }
+
     public void setRightImage(int res) {
         mCombinedButtonImgRight.setImageResource(res);
     }

@@ -891,6 +891,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         popAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) {
+                    return;
+                }
                 MusicDetaisBean item = mMusicList.get(position);
 
                 if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
@@ -903,6 +906,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         .getSupportMediaController();
                 String id = MediaIDHelper.createMediaID("" + item.getId(),
                         MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                MediaSessionCompat.QueueItem queueItem = AppApplication.getmQueueManager().getCurrentMusic();
                 controllerCompat.getTransportControls()
                         .playFromMediaId(id, null);
             }

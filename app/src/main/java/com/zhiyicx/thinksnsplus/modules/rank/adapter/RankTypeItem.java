@@ -118,7 +118,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         }
         // 关注按钮
         ImageView ivUserFollow = holder.getView(R.id.iv_user_follow);
-        if (userInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())) {
+        if (userInfoBean.getUser_id().equals(AppApplication.getMyUserIdWithdefault())) {
             ivUserFollow.setVisibility(View.GONE);
         } else {
             ivUserFollow.setVisibility(View.VISIBLE);
@@ -126,6 +126,9 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
             RxView.clicks(ivUserFollow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
+                        if (mPresenter.handleTouristControl()) { // 游客勿入
+                            return;
+                        }
                         // 修改关注状态
                         userInfoBean.setFollower(!userInfoBean.getFollower());
                         dealFollowState(holder, userInfoBean);

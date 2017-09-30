@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.create_topic;
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 /**
  * @Author Jliuer
@@ -22,25 +25,27 @@ public class CreateTopicPresenter extends AppBasePresenter<CreateTopicContract.R
 
     @Override
     public void createTopic(String name, String desc) {
-        mRepository.createTopic(name, desc)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("申请中..."))
+        Subscription subscribe = mRepository.createTopic(name, desc)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
-                        mRootView.showSnackSuccessMessage("申请成功");
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.apply_for_success_no_audit));
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage("申请失败");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.apply_for_failed));
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage("申请失败");
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.apply_for_failed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 }

@@ -22,7 +22,7 @@ public class CustomWEBFragment extends TSWebFragment {
     public static final String BUNDLE_PARAMS_WEB_URL = "web_url";
     public static final String BUNDLE_PARAMS_WEB_TITLE = "web_title";
 
-    private String mUrl = ApiConfig.URL_ABOUT_US;
+    private String mUrl = ApiConfig.APP_DOMAIN + ApiConfig.URL_ABOUT_US;
     private String mTitle = "";
 
     public CustomWEBFragment() {

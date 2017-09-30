@@ -539,7 +539,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
                     protected void onSuccess(Void data) {
-                        LogUtils.i("test notification", data);
+                        LogUtils.i("addBtnAnimation notification", data);
                     }
                 });
     }
@@ -659,6 +659,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         mUnreadNotificationTotalNums = 0;
+        checkBottomMessageTip();
 
     }
 

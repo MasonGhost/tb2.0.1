@@ -1,19 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
@@ -80,7 +80,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected boolean isNeedRefreshAnimation() {
-        return false;
+        return true;
     }
 
     @Override
@@ -108,16 +108,16 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         super.onCreate(savedInstanceState);
         QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
         mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
-    }
-
-    @Override
-    protected void initData() {
         DaggerQA_ListInfoComponent
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-        super.initData();
 
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -127,12 +127,20 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                QA_InfoContainerFragment infoContainerFragment=(QA_InfoContainerFragment)getParentFragment();
-                infoContainerFragment.test(dy>0);
-                LogUtils.d("onScrolled::" + (dy > 0 ? "向上" : "向下"));
+                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
+                infoContainerFragment.addBtnAnimation(dy > 0);
             }
         });
 
+    }
+
+    /**
+     * 是否进入页面进行懒加载
+     *
+     * @return
+     */
+    protected boolean isLayzLoad() {
+        return true;
     }
 
     @Override
@@ -154,7 +162,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
             protected int getExcellentTag(boolean isExcellent) {
-                boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[0]) || getQAInfoType().equals(QA_TYPES[1]);
+                boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };
@@ -162,6 +170,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) return;
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
                 QAListInfoBean listInfoBean = mListDatas.get(position);
@@ -228,7 +237,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
+                        .getOnlookQuestion())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();

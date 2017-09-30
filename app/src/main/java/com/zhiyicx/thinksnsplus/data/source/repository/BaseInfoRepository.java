@@ -39,6 +39,7 @@ public class BaseInfoRepository implements IBaseInfoRepository {
         } else if (max_id == 0 && isRecommend != 1) {
             // 只有下拉才获取置顶,推荐这个栏目页不要置顶资讯
             return mInfoMainClient.getInfoTopList(cate_id)
+                    .observeOn(Schedulers.io())
                     .flatMap(new Func1<List<InfoListDataBean>, Observable<List<InfoListDataBean>>>() {
                         @Override
                         public Observable<List<InfoListDataBean>> call(List<InfoListDataBean> infoListDataBeenTopList) {
@@ -55,7 +56,9 @@ public class BaseInfoRepository implements IBaseInfoRepository {
                                         return infoListDataBeenList;
                                     });
                         }
-                    });
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    ;
         } else {
             return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, "", isRecommend);
         }

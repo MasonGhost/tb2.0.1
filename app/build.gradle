@@ -126,7 +126,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 66
+    schemaVersion 73
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -190,7 +190,7 @@ dependencies {
     compile project(':tspay')
     compile project(':contacts')
     compile project(':appupdate')
-
+    compile project(':bigimage')
     // database
     compile dataDependences.greendao
     compile dataDependences.guava

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,16 +83,16 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
 
         if (dynamicCommentBean.getNews() == null || dynamicCommentBean.getComment() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-            holder.setVisible(R.id.tv_content, View.GONE);
+            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " "));
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
             review_flag.setText(holder.itemView.getResources().getString(dynamicCommentBean.getNews() == null ?
                     R.string.review_dynamic_deleted : R.string.review_comment_deleted));
         } else {
             String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
                     dynamicCommentBean.getComment().getComment_content());
-            holder.setVisible(R.id.tv_content, View.VISIBLE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), commentBody));
+                    holder.itemView.getContext().getString(R.string.stick_type_news_commnet_message), TextUtils.isEmpty(commentBody)?" ":commentBody));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);

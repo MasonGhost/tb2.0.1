@@ -99,7 +99,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     Observable<List<QATopicBean>> dealMyFollowTopics(Observable<List<QATopicBean>> observable) {
         return observable
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<QATopicBean>, Observable<List<QATopicBean>>>() {
                     @Override
                     public Observable<List<QATopicBean>> call(List<QATopicBean> topicBeanList) {
@@ -108,7 +108,9 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                         }
                         return Observable.just(topicBeanList);
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
     @Override
@@ -205,16 +207,16 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-
+//        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);// 暂时屏蔽掉回答的草稿
     }
 
     @Override
     public void deleteAnswer(AnswerDraftBean answer) {
-
+        mAnswerDraftBeanGreenDaoImpl.deleteSingleCache(answer);
     }
 
     @Override
     public AnswerDraftBean getDraftAnswer(long answer_mark) {
-        return null;
+        return mAnswerDraftBeanGreenDaoImpl.getSingleDataFromCache(answer_mark);
     }
 }

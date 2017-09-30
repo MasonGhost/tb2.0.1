@@ -46,7 +46,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
 
     @Override
     public void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
-        mRepository.getTopicExperts(maxId, topic_id)
+        Subscription subscribe = mRepository.getTopicExperts(maxId, topic_id)
                 .subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
                     @Override
                     protected void onSuccess(List<ExpertBean> data) {
@@ -64,6 +64,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

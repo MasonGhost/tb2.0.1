@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -17,6 +18,7 @@ import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -154,13 +156,14 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null, false);
+                        mRootView.showMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable, false);
+                        mRootView.onResponseError(throwable,isLoadMore);
+
                     }
 
 
@@ -183,6 +186,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void handleFollowState(String questionId, boolean isFollowed) {
         mRootView.getCurrentQuestion().setWatched(isFollowed);
+        if (isFollowed){
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() + 1);
+        } else {
+            mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() - 1);
+        }
         mRootView.updateFollowState();
         mRepository.handleQuestionFollowState(questionId, isFollowed);
     }
@@ -194,7 +202,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
         if (bitmap == null) {
@@ -234,21 +242,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public void applyForExcellent(Long question_id) {
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getExcellentQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<Object>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<Object>> call(Object o) {
-                        return mRepository.applyForExcellent(question_id);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing)))
-                .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
-                .observeOn(AndroidSchedulers.mainThread())
+                        .string.apply_doing)))
+                .flatMap(o -> mRepository.applyForExcellent(question_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.handleLoading(false, true, data.getMessage().get(0));
+                        mRootView.handleLoading(false, true, mContext.getString(R.string.apply_for_success));
                     }
 
                     @Override
@@ -260,6 +259,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.handleLoading(false, false, throwable.getMessage());
                     }
                 });
@@ -280,19 +282,14 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
-                        .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
-                        return mRepository.payForOnlook(answer_id);
-                    }
-                })
+                        .string.pay_alert_ing)))
+                .flatMap(o -> mRepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
                         mRootView.getListDatas().set(position, data.getData());
                         mRootView.refreshData(position);
-                        mRootView.showSnackMessage("成功", Prompt.DONE);
+                        mRootView.showSnackMessage(mContext.getString(R.string.pay_alert_success), Prompt.DONE);
                     }
 
                     @Override
@@ -304,7 +301,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
+                        LogUtils.d("Cathy", "payForOnlook // " + throwable.toString());
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.pay_alert_failed));
                     }
                 });
         addSubscrebe(subscription);

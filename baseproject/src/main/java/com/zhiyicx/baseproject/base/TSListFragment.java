@@ -47,7 +47,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener, OnLoadMoreListener, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener,
+        OnLoadMoreListener, ITSListView<T, P> {
     public static final int DEFAULT_PAGE_SIZE = 20; // 默认每页的数量
     public static final int DEFAULT_PAGE_SIZE_X = 10; // 有的地方是10条哦
     public static final int DEFAULT_ONE_PAGE_SIZE = 15; // 一个页面显示的最大条数，用来判断是否显示加载更多
@@ -276,7 +277,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     private void getNewDataFromNet() {
-        if (isNeedRefreshAnimation()) {
+        if (isNeedRefreshAnimation()&&getUserVisibleHint()) {
             mRefreshlayout.setRefreshing(true);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
@@ -332,7 +333,36 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected void initData() {
         mRefreshlayout.setRefreshEnabled(isRefreshEnable());
         mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
-        onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
+        if (!isLayzLoad()) {
+            onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        layzLoad();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        layzLoad();
+    }
+
+    private void layzLoad() {
+        if (mPresenter != null && getUserVisibleHint() && isLayzLoad() && mListDatas.isEmpty()) {
+            getNewDataFromNet();
+        }
+    }
+
+    /**
+     * 是否进入页面进行懒加载
+     *
+     * @return
+     */
+    protected boolean isLayzLoad() {
+        return false;
     }
 
     /**
@@ -584,7 +614,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param isLoadMore 加载状态
      */
     @Override
-    public void onCacheResponseSuccess( List<T> data, boolean isLoadMore) {
+    public void onCacheResponseSuccess(List<T> data, boolean isLoadMore) {
         hideRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             getNewDataFromNet();
@@ -612,6 +642,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             mAdapter.notifyDataSetChanged();
             if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
                 mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+                showMessageNotSticky(getString(R.string.err_net_not_work));
             }
         } else { // 加载更多
             showMessageNotSticky(getString(R.string.err_net_not_work));
@@ -626,6 +659,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param isLoadMore 是否是加载更多
      */
     private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
+
         if (!isLoadMore) { // 刷新
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setLoadMoreEnabled(true);
@@ -645,7 +679,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             } else {
                 mEmptyView.setErrorImag(setEmptView());
                 refreshData();
-                if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+                if (showEmptyViewWithNoData()) {
                     mEmptyView.setVisibility(View.VISIBLE);
                 }
             }
@@ -669,6 +703,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    protected boolean showEmptyViewWithNoData() {
+        return mHeaderAndFooterWrapper.getHeadersCount() <= 0;
     }
 
     protected Long getMaxId(@NotNull List<T> data) {

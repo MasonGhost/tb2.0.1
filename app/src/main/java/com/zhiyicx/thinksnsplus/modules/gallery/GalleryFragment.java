@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -31,8 +30,11 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -45,6 +47,7 @@ public class GalleryFragment extends TSFragment {
     public static final String BUNDLE_IMAGS = "imags";
     public static final String BUNDLE_IMAGS_POSITON = "imags_positon";
     private static final int MAX_OFF_SIZE = 8;
+
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
@@ -117,12 +120,15 @@ public class GalleryFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if (position + 1 < mVpPhotos.getChildCount()) { // 提前加载前后图片
-                    handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
-                }
-                if (position - 1 >= 0) {
-                    handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
-                }
+                Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(aLong -> {
+                    if (position + 1 < allImages.size()) { // 提前加载前后图片
+                        handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
+                    }
+                    if (position - 1 >= 0) {
+                        handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
+                    }
+                });
+
             }
 
             /**
@@ -224,12 +230,9 @@ public class GalleryFragment extends TSFragment {
         // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
-        bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mVpPhotos.setBackground(backgroundColor);
-                //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
-            }
+        bgAnim.addUpdateListener(animation -> {
+            mVpPhotos.setBackground(backgroundColor);
+            //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         });
         bgAnim.addListener(new AnimatorListenerAdapter() {
             @Override

@@ -97,7 +97,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public void sendTextMessage(String text, int cid) {
         Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
-        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getmCurrentLoginAuth().getUser_id() : 0);// 更新
+        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);// 更新
         if (!ZBIMClient.getInstance().isLogin()) { // IM 没有连接成功
             message.setSend_status(MessageStatus.SEND_FAIL);
         }
@@ -126,13 +126,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + userInfoBean.getUser_id();
-        final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+        final String uids = AppApplication.getMyUserIdWithdefault() + "," + userInfoBean.getUser_id();
+        final String pair = AppApplication.getMyUserIdWithdefault() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
         mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
                 .subscribe(new BaseSubscribeForV2<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
-                        data.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
+                        data.setIm_uid((int) AppApplication.getMyUserIdWithdefault());
                         data.setUsids(uids);
                         data.setPair(pair);
                         mRepository.insertOrUpdateConversation(data);
@@ -196,7 +196,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         ChatItemBean chatItemBean = new ChatItemBean();
         chatItemBean.setLastMessage(message);
         if (message.getUid() == 0) {// 如果没有 uid, 则表明是当前用户发的消息
-            message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getmCurrentLoginAuth().getUser_id() : 0);
+            message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -32,8 +33,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
 import org.simple.eventbus.Subscriber;
@@ -82,7 +82,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private CenterAlertPopWindow mAnonymityAlertPopWindow;
 
     private QAPublishBean mQAPublishBean;
-    private DataImageView test;
+    private SubsamplingScaleImageView test;
 
     public static PublishContentFragment newInstance(Bundle bundle) {
         PublishContentFragment publishContentFragment = new PublishContentFragment();
@@ -202,9 +202,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
         if (draft != null) {
             String body = draft.getBody();
-            if (!TextUtils.isEmpty(body)) {
-                mRicheTest.clearAllLayout();
-                mPresenter.pareseBody(body);
+            if (!TextUtils.isEmpty(body) && mRicheTest != null) {
+                mRicheTest.post(() -> {
+                    mRicheTest.clearAllLayout();
+                    mPresenter.pareseBody(body);
+                });
+
             }
         }
     }
@@ -221,6 +224,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         if (photoList.isEmpty()) {
             return;
         }
+        mToolbarRight.setClickable(false);
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
         LogUtils.d("photo degree", "before // " + DrawableProvider.getBitmapDegree(path));
@@ -243,7 +247,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     public void uploadPicSuccess(int id) {
+        if (mPbImageUpload == null) {
+            return;
+        }
         mPbImageUpload.setVisibility(View.GONE);
+        mToolbarRight.setClickable(true);
         test.setId(id);
         mPicTag++;
     }
@@ -251,6 +259,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     public void uploadPicFailed() {
         mPbImageUpload.setVisibility(View.GONE);
+        mToolbarRight.setClickable(true);
     }
 
     @Override
@@ -338,6 +347,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
+            if (mRicheTest == null) {
+                return;
+            }
             int[] viewLacotion = new int[2];
             mRlPublishTool.getLocationOnScreen(viewLacotion);
             if (viewLacotion[1] > mRlPublishTool.getHeight()) {
@@ -403,6 +415,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
+        if (mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
+            mAnonymityPopWindow.setSwitchButton(true);
+        }
         mAnonymityPopWindow.showParentViewTop();
         mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }

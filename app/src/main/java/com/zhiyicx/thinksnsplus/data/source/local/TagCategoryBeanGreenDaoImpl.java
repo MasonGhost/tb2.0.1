@@ -2,10 +2,16 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +23,8 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 public class TagCategoryBeanGreenDaoImpl extends CommonCacheImpl<TagCategoryBean> {
+    @Inject
+    UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
 
     @Inject
     public TagCategoryBeanGreenDaoImpl(Application context) {
@@ -50,7 +58,18 @@ public class TagCategoryBeanGreenDaoImpl extends CommonCacheImpl<TagCategoryBean
     @Override
     public List<TagCategoryBean> getMultiDataFromCache() {
         TagCategoryBeanDao tagCategoryBeanDao = getRDaoSession().getTagCategoryBeanDao();
-        return tagCategoryBeanDao.loadAll();
+
+        List<TagCategoryBean> data = tagCategoryBeanDao.queryBuilder()
+                .orderDesc(TagCategoryBeanDao.Properties.Weight)
+                .list();
+        for (TagCategoryBean tagCategoryBean : data) {
+            tagCategoryBean.getTags();
+            if (tagCategoryBean.getTags() != null) {
+                Collections.sort(tagCategoryBean.getTags(), (userTagBean, t1) -> t1.getWeight() - userTagBean.getWeight());
+            }
+        }
+        return data;
+
     }
 
     @Override

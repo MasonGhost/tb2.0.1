@@ -87,6 +87,9 @@
             android:name=".modules.settings.bind.AccountBindActivity"
             android:screenOrientation="portrait"/>
         <activity
+                android:name=".modules.settings.init_password.InitPasswordActivity"
+                android:screenOrientation="portrait"/>
+        <activity
             android:name=".modules.password.findpassword.FindPasswordActivity"
             android:screenOrientation="portrait">
         </activity>
@@ -263,10 +266,11 @@
             android:name=".modules.q_a.qa_main.qa_container.QA_InfoContainerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <!--硬件加速用于mx3 自定义输入控件绘制卡顿-->
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
@@ -287,6 +291,7 @@
         <activity
             android:name=".modules.q_a.detail.question.QuestionDetailActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
@@ -514,6 +519,7 @@
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
@@ -544,6 +550,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.q_a.publish.create_topic.CreateTopicActivity">
         </activity>
+
     </application>
 
 </manifest>

@@ -42,7 +42,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
         dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicCommentBean.setComment_content("test comment");
+        dynamicCommentBean.setComment_content("addBtnAnimation comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
@@ -64,7 +64,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
         dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicCommentBean.setComment_content("test comment");
+        dynamicCommentBean.setComment_content("addBtnAnimation comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
@@ -85,7 +85,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
         dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicCommentBean.setComment_content("test comment");
+        dynamicCommentBean.setComment_content("addBtnAnimation comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(feed_mark);
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
@@ -107,7 +107,7 @@ public class DynamicCommentBeanGreenDaoImplTest {
         dynamicCommentBean.setUser_id(6);
         dynamicCommentBean.setReply_to_user_id(10);
         dynamicCommentBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicCommentBean.setComment_content("test comment");
+        dynamicCommentBean.setComment_content("addBtnAnimation comment");
         dynamicCommentBean.setComment_id(System.currentTimeMillis());
         dynamicCommentBean.setFeed_mark(System.currentTimeMillis());
         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);

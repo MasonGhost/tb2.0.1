@@ -144,7 +144,7 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-                holder.setVisible(R.id.music_list_toll_flag, musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
+                holder.setVisible(R.id.music_list_toll_flag, View.GONE );
                 Glide.with(getContext())
                         .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))

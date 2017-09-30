@@ -221,13 +221,13 @@ public class CommentedBean extends BaseListBean implements Serializable {
 
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
-                    target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                    target_image = (long) jsonArray.getJSONObject(0).getDouble("id");
 
                     break;
                 case APP_LIKE_GROUP_POST:
                     JSONObject jsonObject2 = new JSONObject(gson.toJson(commentable));
                     JSONArray jsonArray2 = jsonObject2.getJSONArray("images");
-                    target_image = (long) jsonArray2.getJSONObject(0).getDouble("file_id");
+                    target_image = (long) jsonArray2.getJSONObject(0).getDouble("id");
 
                     break;
                 case APP_LIKE_MUSIC:

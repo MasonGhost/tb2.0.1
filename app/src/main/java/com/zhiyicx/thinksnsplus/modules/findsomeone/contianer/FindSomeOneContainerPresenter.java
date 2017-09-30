@@ -24,7 +24,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindSomeOneContainerPresenter extends BasePresenter<FindSomeOneContainerContract.Repository, FindSomeOneContainerContract.View>
+public class FindSomeOneContainerPresenter extends AppBasePresenter<FindSomeOneContainerContract.Repository, FindSomeOneContainerContract.View>
         implements FindSomeOneContainerContract.Presenter {
 
     @Inject
@@ -38,13 +38,16 @@ public class FindSomeOneContainerPresenter extends BasePresenter<FindSomeOneCont
 
     @Override
     public void updateUseLocation(LatLonPoint latLonPoint) {
-        Subscription subscribe = mUserInfoRepository.updateUserLocation(latLonPoint.getLongitude(), latLonPoint.getLatitude())
-                .subscribe(new BaseSubscribeForV2<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
+        if (isLogin()) {
+            Subscription subscribe = mUserInfoRepository
+                    .updateUserLocation(latLonPoint.getLongitude(), latLonPoint.getLatitude())
+                    .subscribe(new BaseSubscribeForV2<Object>() {
+                        @Override
+                        protected void onSuccess(Object data) {
 
-                    }
-                });
-        addSubscrebe(subscribe);
+                        }
+                    });
+            addSubscrebe(subscribe);
+        }
     }
 }

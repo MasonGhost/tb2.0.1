@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,15 +62,18 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.dyanmic_top_flag));
             review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
         } else {
-            long nowTime = System.currentTimeMillis();
-            long expires_at = TimeUtils.utc2LocalLong(dynamicCommentBean.getExpires_at());
-            if (nowTime >= expires_at) {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
-            } else {
-                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
-                review_flag.setText(holder.itemView.getResources().getString(R.string.review_approved));
-            }
+
+            review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.general_for_hint));
+            review_flag.setText(holder.itemView.getResources().getString(R.string.review_done));
+
+//            long nowTime = System.currentTimeMillis();
+//            long expires_at = TimeUtils.utc2LocalLong(dynamicCommentBean.getExpires_at());
+//            if (nowTime >= expires_at) {
+//                review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
+//                review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
+//            } else {
+//
+//            }
         }
 
         if (dynamicCommentBean.getFeed() != null && dynamicCommentBean.getFeed().getImages() != null
@@ -88,15 +92,16 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
 
         if (dynamicCommentBean.getFeed() == null || dynamicCommentBean.getComment() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-            holder.setVisible(R.id.tv_content, View.GONE);
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
             review_flag.setText(holder.itemView.getResources().getString(dynamicCommentBean.getFeed() == null ?
                     R.string.review_dynamic_deleted : R.string.review_comment_deleted));
+            holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), " "));
         } else {
             holder.setVisible(R.id.fl_detial, View.GONE);
-            holder.setVisible(R.id.tv_content, View.VISIBLE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), dynamicCommentBean.getFeed().getFeed_content()));
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean.getFeed().getFeed_content())
+                            ? " " : dynamicCommentBean.getFeed().getFeed_content()));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);

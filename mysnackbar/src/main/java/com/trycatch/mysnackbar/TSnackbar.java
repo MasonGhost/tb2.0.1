@@ -242,6 +242,8 @@ public final class TSnackbar {
     private TSnackbar(ViewGroup parent, @OverSnackAppearDirection int appearDirection) {
         this.appearDirection = appearDirection;
         mParent = parent;
+        mParent.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // 关闭硬件加速，使用自定义的阴影
+
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         if (appearDirection == APPEAR_FROM_BOTTOM_TO_TOP) {
@@ -1002,6 +1004,11 @@ public final class TSnackbar {
                     ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
             ViewCompat.setImportantForAccessibility(this,
                     ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
+//            if (this.isHardwareAccelerated()) {
+//                findViewById(R.id.v_custom_shadow).setVisibility(GONE);
+//            }else {
+//                findViewById(R.id.v_custom_shadow).setVisibility(VISIBLE);
+//            }
         }
 
         @Override

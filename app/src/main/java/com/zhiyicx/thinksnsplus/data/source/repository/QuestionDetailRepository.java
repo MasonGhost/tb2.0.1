@@ -56,7 +56,9 @@ public class QuestionDetailRepository extends BaseQARepository implements Questi
 
     @Override
     public Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id) {
-        return mQAClient.applyForExcellent(String.valueOf(question_id));
+        return mQAClient.applyForExcellent(String.valueOf(question_id))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }

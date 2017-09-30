@@ -163,7 +163,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
 
         try {
-            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            if (holder.getView(R.id.iv_headpic).getVisibility() == View.VISIBLE) {
+                ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            }
 
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
@@ -335,6 +337,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
+                LogUtils.i("dynamic item image" + ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
+                        propPart, AppApplication.getTOKEN()));
+
             } else {
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())

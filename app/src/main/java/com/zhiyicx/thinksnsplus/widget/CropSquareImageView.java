@@ -10,7 +10,7 @@ import android.widget.ImageView;
  * @data 2015.11.22 00.23
  * @Description 强制宽高相等，功能有待扩展
  */
-public class CropSquareImageView extends ImageView {
+public class CropSquareImageView extends android.support.v7.widget.AppCompatImageView {
 
     public CropSquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);

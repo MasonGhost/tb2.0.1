@@ -55,7 +55,8 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     @Override
     public void clearTable() {
-
+        UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
+        userInfoBeanDao.deleteAll();
     }
 
     @Override
@@ -88,6 +89,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     /**
      * 获取本地关注列表
+     *
      * @param maxId
      * @return
      */
@@ -105,6 +107,7 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     /**
      * 获取本地粉丝列表
+     *
      * @param maxId
      * @return
      */

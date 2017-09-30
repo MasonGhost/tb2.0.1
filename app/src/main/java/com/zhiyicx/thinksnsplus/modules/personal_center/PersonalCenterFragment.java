@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,9 +34,11 @@ import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -65,6 +69,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -153,6 +159,48 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PersonalCenterRepository.MyDynamicTypeEnum mDynamicType = PersonalCenterRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
     // paid-付费动态 pinned - 置顶动态
 
+    /**
+     * 跳转到当前的个人中心页面
+     */
+    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        if (userInfoBean == null || userInfoBean.getUser_id() == null || context == null) {
+            return;
+        }
+        if (userInfoBean.getHas_deleted()) {
+            try {
+                if (context instanceof Activity) {
+                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string
+                                    .user_had_deleted),
+                            TSnackbar.LENGTH_SHORT)
+                            .setPromptThemBackground(Prompt.WARNING)
+                            .show();
+                } else {
+                    ToastUtils.showToast(context, R.string.user_had_deleted);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
+        if (!TextUtils.isEmpty(tsHelperUrl)) {
+            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
+        } else {
+            Intent intent = new Intent(context, PersonalCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+    }
+
+    public static PersonalCenterFragment initFragment(Bundle bundle) {
+        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
+        personalCenterFragment.setArguments(bundle);
+        return personalCenterFragment;
+    }
 
     @Override
     protected int getstatusbarAndToolbarHeight() {
@@ -266,10 +314,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    mIlvComment.setVisibility(View.GONE);
-                    mIlvComment.clearFocus();
-                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                    mVShadow.setVisibility(View.GONE);
+                    hideCommentView();
 
                 });
 
@@ -278,7 +323,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        if(!isLoadMore){
+        if (!isLoadMore) {
             refreshStart();
         }
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
@@ -476,7 +521,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position - 1;// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = position;
         if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
@@ -495,6 +540,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         initImageCenterPopWindow(position, position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }
@@ -666,25 +712,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mLlFollowContainer.setEnabled(true);
     }
 
-    /**
-     * 跳转到当前的个人中心页面
-     */
-    public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
-        if (userInfoBean == null || userInfoBean.getUser_id() == null) {
-            return;
-        }
-        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (!TextUtils.isEmpty(tsHelperUrl)) {
-            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
-        } else {
-            Intent intent = new Intent(context, PersonalCenterActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        }
-
-    }
 
     /**
      * 设置底部 view 的可见性;如果进入了当前登录用户的主页，需要隐藏底部状态栏
@@ -696,11 +723,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mLlBottomContainer.setVisibility((authBean != null && authBean.getUser_id() == currentUserID) ? View.GONE : View.VISIBLE);
     }
 
-    public static PersonalCenterFragment initFragment(Bundle bundle) {
-        PersonalCenterFragment personalCenterFragment = new PersonalCenterFragment();
-        personalCenterFragment.setArguments(bundle);
-        return personalCenterFragment;
-    }
 
     private void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
@@ -768,14 +790,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId(), dynamicBean
+                            .getComments().get(commentPosition).getComment_id());
+                    mDeletCommentPopWindow.hide();
+                })
+                .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
                             commentPosition);
@@ -797,10 +825,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean feedIdIsNull = feed_id == 0;
         boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic)))
-                .item3Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
-                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item3Str(BuildConfig.USE_TOLL && feedIsMy ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -811,7 +840,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     mDeletDynamicPopWindow.hide();
                 })
                 .item3ClickListener(() -> {
+                    StickTopFragment.startSticTopActivity(getContext(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mDeletDynamicPopWindow.hide();
+                })
+                .item4ClickListener(() -> {
                     updateDynamicCounts(-1);
                     mPresenter.deleteDynamic(dynamicBean, position);
                     mDeletDynamicPopWindow.hide();
@@ -898,7 +930,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             data.add(emptyData);
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if(!isLoadMore){
+        if (!isLoadMore) {
             refreshEnd();
         }
     }
@@ -952,5 +984,20 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
+    private void hideCommentView() {
+        mIlvComment.setVisibility(View.GONE);
+        mIlvComment.clearFocus();
+        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        mVShadow.setVisibility(View.GONE);
+    }
 
+
+    @Override
+    public void onBackPressed() {
+        if (mIlvComment.getVisibility() == View.GONE) {
+            getActivity().finish();
+        } else {
+            hideCommentView();
+        }
+    }
 }
