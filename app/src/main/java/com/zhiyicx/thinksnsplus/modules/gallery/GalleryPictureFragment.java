@@ -32,7 +32,6 @@ import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
-import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
@@ -152,10 +151,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .galleryPresenterModule(new GalleryPresenterModule(this))
                 .build().inject(this);
-        loadImage_();
+        checkAndLoadImage();
     }
 
-    private void loadImage_() {
+    private void checkAndLoadImage() {
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -185,7 +184,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     public void reLoadImage() {
-        loadImage_();
+        checkAndLoadImage();
     }
 
     @Override
@@ -448,7 +447,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 isFromMemoryCache, boolean isFirstResource) {
                             // 只有获取load的图片才会走这儿，缩略图不会
                             LogUtils.i(TAG + "加载原图成功");
-                            mTvOriginPhoto.setVisibility(View.GONE);
+                            if (mTvOriginPhoto!=null){
+                                mTvOriginPhoto.setVisibility(View.GONE);
+                            }
                             return false;
                         }
                     })
@@ -495,8 +496,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 //                    }
 //                }
                 , AppApplication.getTOKEN()))
-                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
-                .override(w, h)
+                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
