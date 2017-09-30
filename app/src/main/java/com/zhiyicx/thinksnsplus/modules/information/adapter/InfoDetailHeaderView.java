@@ -408,4 +408,8 @@ public class InfoDetailHeaderView {
             mRvRelateInfo.setVisibility(GONE);
         }
     }
+
+    public void setReWardViewVisible(int visible) {
+        mReWardView.setVisibility(visible);
+    }
 }

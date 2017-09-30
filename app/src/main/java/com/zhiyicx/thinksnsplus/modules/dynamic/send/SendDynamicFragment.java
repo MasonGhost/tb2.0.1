@@ -70,8 +70,10 @@ import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
  */
 public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements
         SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
+
     private static final int ITEM_COLUM = 4;// recyclerView的每行item个数
     private static final int MAX_PHOTOS = 9;// 一共可选的图片数量
+
     @BindView(R.id.rv_photo_list)
     RecyclerView mRvPhotoList;
     @BindView(R.id.et_dynamic_title)
@@ -103,23 +105,25 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.v_horizontal_line)
     View mTitleUnderLine;
 
-    private List<ImageBean> selectedPhotos;
+    private List<ImageBean> selectedPhotos;// 已经选择的图片
     private CommonAdapter<ImageBean> mCommonAdapter;
+
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
     private PhotoSelectorImpl mPhotoSelector;
+
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
-    private boolean isToll;
-    private boolean hasTollPic;
-    private ArrayList<Float> mSelectDays;
 
-    private int mPayType;
+    private boolean isToll;// 是否开启收费
 
-    private double mTollMoney;
-    private String mRechargeMoneyStr;
+    private boolean hasTollPic;// 是否有图片设置了收费
 
-    private ActionPopupWindow mInstructionsPopupWindow;
+    private ArrayList<Float> mSelectMoney;// 文字收费选择
+
+    private double mTollMoney;// 文字收费金额
+
+    private ActionPopupWindow mInstructionsPopupWindow;// 各类提示信息弹窗
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -199,11 +203,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initData() {
-        mSelectDays = new ArrayList<>();
-        mSelectDays.add(1f);
-        mSelectDays.add(5f);
-        mSelectDays.add(10f);
-        initSelectDays(mSelectDays);
+        mSelectMoney = new ArrayList<>();
+        mSelectMoney.add(1f);
+        mSelectMoney.add(5f);
+        mSelectMoney.add(10f);
+        initSelectMoney(mSelectMoney);
     }
 
     @Override
@@ -216,7 +220,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         return isToll && !hasTollPic;
     }
 
-    private void initSelectDays(List<Float> mSelectDays) {
+    private void initSelectMoney(List<Float> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
                 mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
@@ -229,8 +233,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
-            mRechargeMoneyStr = charSequence.toString();
-            if (TextUtils.isEmpty(mRechargeMoneyStr.replaceAll(" ", ""))) {
+            if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
                 return;
             }
             mRbDaysGroup.clearCheck();
@@ -245,13 +248,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mTollMoney = mSelectDays.get(0);
+                            mTollMoney = mSelectMoney.get(0);
                             break;
                         case R.id.rb_two:
-                            mTollMoney = mSelectDays.get(1);
+                            mTollMoney = mSelectMoney.get(1);
                             break;
                         case R.id.rb_three:
-                            mTollMoney = mSelectDays.get(2);
+                            mTollMoney = mSelectMoney.get(2);
                             break;
                     }
                 });
@@ -338,7 +341,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        Glide.with(getActivity()).load("");
+//        Glide.with(getActivity()).load("");
     }
 
     @Override

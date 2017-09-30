@@ -189,7 +189,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mInfoMation.setId(ids.intValue());
         }
-        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
+
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
         initHeaderView();
@@ -199,6 +199,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
         setDigg(mPresenter.isDiged());
+
+        // 投稿中的资讯隐藏底部操作以及打赏
+        mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
+        mInfoDetailHeader.setReWardViewVisible(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -231,6 +235,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected boolean setUseCenterLoading() {
         return true;
     }
+
     @Override
     public Long getNewsId() {
         return (long) mInfoMation.getId();
