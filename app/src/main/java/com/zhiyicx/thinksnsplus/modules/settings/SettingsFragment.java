@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.settings;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,13 +18,11 @@ import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.appupdate.CustomVersionDialogActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.UpdateInfoBean;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
@@ -38,10 +34,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import okhttp3.OkHttpClient;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -239,7 +231,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         RxView.clicks(mBtAboutUs)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, getString(R.string.about_us)));
+                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.APP_DOMAIN + URL_ABOUT_US, getString(R.string.about_us)));
         // 退出登录
         RxView.clicks(mBtLoginOut)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

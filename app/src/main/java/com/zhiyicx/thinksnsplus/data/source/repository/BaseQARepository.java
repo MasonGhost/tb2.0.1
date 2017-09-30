@@ -207,7 +207,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);
+//        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);// 暂时屏蔽掉回答的草稿
     }
 
     @Override

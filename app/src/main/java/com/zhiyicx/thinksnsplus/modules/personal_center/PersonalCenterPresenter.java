@@ -254,7 +254,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -482,7 +482,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

@@ -131,11 +131,6 @@ public class DynamicListCommentView extends LinearLayout {
                 data.addAll(dynamicBean.getComments());
             }
         }
-        try {
-            Collections.sort(data, (dynamicCommentBean, t1) -> t1.getCreated_at().compareTo(dynamicCommentBean.getCreated_at()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mDynamicNoPullRecycleView.setTopFlagPosition(DynamicNoPullRecycleView.TopFlagPosition.WORDS_RIGHT);
         mDynamicNoPullRecycleView.setData(data);
         if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {

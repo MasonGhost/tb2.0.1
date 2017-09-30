@@ -213,7 +213,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * 前往ts助手开发
      */
     private void toTSHelper() {
-        CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.APP_PATH_SHARE_DEFAULT);
+        CustomWEBActivity.startToWEBActivity(getContext(),ApiConfig.APP_DOMAIN+ ApiConfig.APP_PATH_SHARE_DEFAULT);
     }
 
     /**

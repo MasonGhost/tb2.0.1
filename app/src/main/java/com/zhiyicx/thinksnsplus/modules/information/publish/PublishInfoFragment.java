@@ -146,8 +146,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         String content = getContentString();
         infoPublishBean.setContent(content);
         infoPublishBean.setAmout(100);
-        long cover = RegexUtils.getImageId(content);
-        infoPublishBean.setCover(RegexUtils.getImageId(content));
+        long cover;
+        if (infoPublishBean.isRefuse()) {
+            cover = infoPublishBean.getCover();
+        } else {
+            cover = RegexUtils.getImageId(content);
+        }
+        infoPublishBean.setCover((int) cover);
         infoPublishBean.setImage(cover < 0 ? null : cover);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
 
@@ -198,12 +203,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (sInfoPublishBean != null) {
-            if (!TextUtils.isEmpty(sInfoPublishBean.getContent())) {
+        if (sInfoPublishBean != null && !TextUtils.isEmpty(sInfoPublishBean.getContent())
+                && !TextUtils.isEmpty(sInfoPublishBean.getContent()) && mRicheTest != null) {
+            mRicheTest.post(() -> {
                 mRicheTest.clearAllLayout();
                 mPresenter.pareseBody(sInfoPublishBean.getContent());
                 mEtInfoTitle.setText(sInfoPublishBean.getTitle());
-            }
+            });
         }
     }
 

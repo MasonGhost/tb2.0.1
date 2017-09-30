@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -201,7 +202,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
         if (bitmap == null) {

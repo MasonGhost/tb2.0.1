@@ -44,7 +44,7 @@ public class MusicDataConvert implements MusicProviderSource {
     }
 
     private MediaMetadataCompat buildMusic(MusicDetaisBean needData) {
-        String musicUrl = String.format(ApiConfig.MUSIC_PATH,
+        String musicUrl = String.format(ApiConfig.APP_DOMAIN+ApiConfig.MUSIC_PATH,
                 needData.getStorage().getId());
 
         String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(), 50, 50, 100));
