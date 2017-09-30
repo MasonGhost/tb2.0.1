@@ -99,7 +99,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         infoPublishBean.setCategoryId(realData.getCategory().getId());
                         infoPublishBean.setContent(realData.getContent());
                         infoPublishBean.setCategoryName(realData.getCategory().getName());
-                        infoPublishBean.setCover(realData.getImage().getId());
+                        infoPublishBean.setCover(realData.getImage() == null ? -1 : realData.getImage().getId());
                         infoPublishBean.setRefuse(true);
                         infoPublishBean.setTags(realData.getTags());
                         Intent intent = new Intent(getActivity(), PublishInfoActivity.class);
