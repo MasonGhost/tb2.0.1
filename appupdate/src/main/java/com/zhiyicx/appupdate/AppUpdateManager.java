@@ -29,7 +29,7 @@ public class AppUpdateManager {
     }
 
     private AppUpdateManager(Context context, String requstUrl) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         builder = new VersionParams.Builder()
 //                .setHttpHeaders(headers)
 //                .setRequestMethod(requestMethod)

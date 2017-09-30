@@ -828,7 +828,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic)))
-                .item3Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item3Str(BuildConfig.USE_TOLL && feedIsMy ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item4Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

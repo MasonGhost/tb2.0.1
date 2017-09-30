@@ -45,7 +45,7 @@ public class WampCraConnection extends WampConnection implements WampCra {
                 try {
                     sig = authSignature((String)challenge, authSecret);
                 } catch (SignatureException e) {
-                    Log.e("WampCraConnection:authenicate",e.toString());
+                    e.printStackTrace();
                 }
                 
                 call(Wamp.URI_WAMP_PROCEDURE + "auth", WampCraPermissions.class, new CallHandler(){
