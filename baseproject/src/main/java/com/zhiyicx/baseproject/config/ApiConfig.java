@@ -213,7 +213,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
     // 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
 
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
