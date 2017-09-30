@@ -209,6 +209,8 @@ public interface QAClient {
 
     /**
      * 申请精选问答
+     * @param question_id 问答 id
+     * @return
      */
     @POST(ApiConfig.APP_PATH_APPLY_FOR_EXCELLENT)
     Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
