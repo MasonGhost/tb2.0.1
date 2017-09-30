@@ -24,7 +24,6 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
@@ -136,6 +135,16 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
         mUserCertificationInfo = userCertificationInfo;
+        if (userCertificationInfo.getStatus() == 1) {
+            if (mPresenter.isNeedPayTip()) {
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
+        } else {
+            mCertificationAlertPopWindow.show();
+        }
     }
 
     @Override
@@ -154,33 +163,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         if (mPresenter.handleTouristControl()) {
             return;
         }
-        if (mPresenter.checkCertification()) {
-            if (mPresenter.isNeedPayTip()) {
-                mPayAlertPopWindow.show();
-                mPresenter.savePayTip(false);
-            } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-            }
-        } else {
-            if (mUserCertificationInfo != null
-                    && mUserCertificationInfo.getId() != 0
-                    && mUserCertificationInfo.getStatus() != 2) {
-                Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
-                Bundle bundleData = new Bundle();
-                if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
-                    // 跳转个人认证
-                    bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
-                } else {
-                    // 跳转企业认证
-                    bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
-                }
-                bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
-                intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
-                getActivity().startActivity(intentToDetail);
-                return;
-            }
-            mCertificationAlertPopWindow.show();
-        }
+        mPresenter.checkCertification();
     }
 
     @Override
@@ -281,7 +264,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     private void initPopWindow() {
 
-
         if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
@@ -296,19 +278,42 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
                     .item2ClickListener(() -> {// 个人认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 0);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 0);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 1);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 1);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .build();
         }

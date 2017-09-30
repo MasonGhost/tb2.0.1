@@ -107,7 +107,6 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         bundle.putParcelable(INFO_REFUSE, infoPublishBean);
                         intent.putExtras(bundle);
                         startActivity(intent);
-
                         return;
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()

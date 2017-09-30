@@ -121,7 +121,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         }
 
         // 是否有围观
-        updateOutLook(qaListInfoBean.getLook() == 1, amount);
+        updateOutLook(qaListInfoBean.getLook() == 1, qaListInfoBean.getWatchers_count() > 0 ? qaListInfoBean.getWatchers_count() * amount : amount);
         initListener();
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);

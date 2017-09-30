@@ -447,7 +447,7 @@ public class ExpandableTextView extends AppCompatTextView {
      * By:
      * Steven Meliopoulos
      */
-    private class TouchableSpan extends ClickableSpan {
+    public class TouchableSpan extends ClickableSpan {
         private boolean mIsPressed;
 
         public void setPressed(boolean isSelected) {
@@ -543,5 +543,21 @@ public class ExpandableTextView extends AppCompatTextView {
 
     public int getTextLineCount() {
         return mTextLineCount;
+    }
+
+    public void setStateShrink() {
+        mCurrState = STATE_SHRINK;
+    }
+
+    public void setStateExpand() {
+        mCurrState = STATE_EXPAND;
+    }
+
+    public TouchableSpan getTouchableSpan() {
+        return mTouchableSpan;
+    }
+
+    public int getCurrState() {
+        return mCurrState;
     }
 }

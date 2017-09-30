@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -101,16 +102,16 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     }
 
     @Override
-    public boolean checkCertification() {
+    public void checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         UserCertificationInfo userCertificationInfo = mUserCertificationInfoDao.getInfoByUserId();
 
         if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
             mRootView.setUserCertificationInfo(userCertificationInfo);
-            return true;
-        } else if (userCertificationInfo != null && userCertificationInfo.getStatus() == 0) {
-            mCertificationDetailRepository.getCertificationInfo().
-                    subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+        } else{
+            mCertificationDetailRepository.getCertificationInfo()
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("信息加载中..."))
+                    .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                         @Override
                         protected void onSuccess(UserCertificationInfo data) {
                             mUserCertificationInfoDao.saveSingleData(data);
@@ -127,6 +128,13 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
                             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
                             mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
+                            mRootView.setUserCertificationInfo(userCertificationInfo);
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                            super.onCompleted();
+                            mRootView.dismissSnackBar();
                         }
 
                         @Override
@@ -139,20 +147,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             super.onException(throwable);
                         }
                     });
-            mRootView.setUserCertificationInfo(userCertificationInfo);
-            return false;
-        } else {
-            return false;
         }
-
-//        if (userInfoBean != null && userInfoBean.getVerified() != null) {
-//            if (TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
-//                return false;
-//            } else {
-//                return true;
-//            }
-//        }
-//        return false;
     }
 
     @Override

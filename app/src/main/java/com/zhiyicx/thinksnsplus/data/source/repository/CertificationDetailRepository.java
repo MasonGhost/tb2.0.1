@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -33,12 +34,15 @@ public class CertificationDetailRepository implements CertificationDetailContrac
 
     @Override
     public Observable<UserCertificationInfo> getCertificationInfo() {
-        return mUserInfoClient.getUserCertificationInfo();
+        return mUserInfoClient.getUserCertificationInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void saveCertificationInfo() {
         mUserInfoClient.getUserCertificationInfo()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                     @Override
                     protected void onSuccess(UserCertificationInfo data) {

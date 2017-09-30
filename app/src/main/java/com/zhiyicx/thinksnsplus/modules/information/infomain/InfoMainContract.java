@@ -35,7 +35,7 @@ public interface InfoMainContract {
 
     interface InfoContainerPresenter extends IBaseTouristPresenter {
         void getInfoType();
-        boolean checkCertification();
+        void checkCertification();
         boolean isNeedPayTip();
         void savePayTip(boolean isNeed);
     }
