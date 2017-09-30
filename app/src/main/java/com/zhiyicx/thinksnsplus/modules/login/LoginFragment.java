@@ -131,7 +131,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private void initListener() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -148,7 +148,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -170,19 +170,19 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         RxView.clicks(mIvClear)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mEtCompleteInput.setText(""));
 
         RxView.clicks(mTvLoginByQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     thridLogin(SHARE_MEDIA.QQ);
 
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
 
                     thridLogin(SHARE_MEDIA.SINA);
@@ -190,7 +190,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         RxView.clicks(mTvLoginByWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     thridLogin(SHARE_MEDIA.WEIXIN);
                 });

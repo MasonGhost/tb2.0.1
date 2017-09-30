@@ -28,6 +28,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -215,7 +216,7 @@ public class JavaTest {
     public void bigDoubleTest() {
         double d = 11111111111111111111d;
         BigDecimal totalAmount = new BigDecimal(d);
-        new BigDecimal(new Double(totalAmount.doubleValue()).toString());
+        new BigDecimal(Double.valueOf(totalAmount.doubleValue()).toString());
         NumberFormat format = NumberFormat.getInstance();
         // 是否以逗号隔开, 默认true以逗号隔开,如[123,456,789.128]
         format.setGroupingUsed(false);
@@ -1425,5 +1426,30 @@ public class JavaTest {
         jpushMessageBean = new Gson().fromJson(response1, JpushMessageBean.class);
         System.out.println("jpushMessageBean = " + jpushMessageBean);
     }
+
+    @Test
+    public void testCollectionSingle() {
+
+        String[] split = new String[10000];
+        for (int i = 0; i < 10000; i++) {
+            split[i] = i+"";
+        }
+
+        AbstractList<String> mContentList = new ArrayList<>();
+
+        long a = System.currentTimeMillis();
+        for (String str : split) {
+            mContentList.add(str);
+        }
+        System.out.println("System.currentTimeMillis() = " + (System.currentTimeMillis() - a));
+
+        mContentList.clear();
+        a = System.currentTimeMillis();
+        Collections.addAll(mContentList, split);
+        System.out.println("System.currentTimeMillis() = " + (System.currentTimeMillis() - a));
+
+
+    }
+
 
 }

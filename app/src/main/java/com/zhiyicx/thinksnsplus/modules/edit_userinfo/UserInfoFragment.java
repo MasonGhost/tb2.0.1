@@ -388,7 +388,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .show();
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
-                        .compose(this.<Long>bindToLifecycle())
+                        .compose(this.bindToLifecycle())
                         .subscribe(aLong -> getActivity().finish());
                 break;
             default:

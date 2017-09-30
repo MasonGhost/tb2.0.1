@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @Author Jliuer
@@ -146,7 +147,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dynamicDetailBeanV2.setUpdated_at(advert.getTime());// 广告时间
         DynamicDetailBeanV2.ImagesBean imageBean = new DynamicDetailBeanV2.ImagesBean();
         imageBean.setImgUrl(advert.getImage());// 广告图片
-        dynamicDetailBeanV2.setImages(Arrays.asList(imageBean));
+        dynamicDetailBeanV2.setImages(Collections.singletonList(imageBean));
         return dynamicDetailBeanV2;
     }
 

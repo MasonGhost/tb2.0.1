@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.service.backgroundtask;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 
@@ -24,6 +25,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
 public class BackgroundTaskManager {
     public static final int DEFAULT_SERVICE_START_TIME_WAITING = 10; // 默认Service 启动耗时时间
 
+    @SuppressLint("StaticFieldLeak")
     private static volatile BackgroundTaskManager sBackgroundTaskManager; // context 必须使用 application 否者会造成内存泄漏
     private Context mContext;
     private boolean mIsServiceStart;// Service 是否开启

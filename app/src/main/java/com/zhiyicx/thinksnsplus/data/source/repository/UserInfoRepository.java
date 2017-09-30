@@ -54,7 +54,6 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 /**
@@ -430,7 +429,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 userinfo.setUser_id(0L);
                                                 commentedBean.setReplyUserInfo(userinfo);
                                             } else {
-                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user()
+                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get(commentedBean.getReply_user()
                                                         .intValue()));
                                             }
                                         }

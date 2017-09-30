@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class BannerImageLoaderUtil extends com.youth.banner.loader.ImageLoader {
 
+    private static final long serialVersionUID = 4346287432534848693L;
+
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
         AppApplication.AppComponentHolder.getAppComponent()

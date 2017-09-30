@@ -21,14 +21,15 @@
                     android:text="@string/login_account"/>
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/et_complete_input"
-                    style="@style/style_edit"
-                    android:hint="@string/login_account_hint"
-                    android:completionThreshold="@integer/login_hint_mix_count"
-                    android:visibility="visible"
-                    android:singleLine="true"
-                    android:layout_weight="1"
-                    android:imeOptions="actionNext"/>
+                android:id="@+id/et_complete_input"
+                style="@style/style_edit"
+                android:hint="@string/login_account_hint"
+                android:completionThreshold="@integer/login_hint_mix_count"
+                android:visibility="visible"
+                android:singleLine="true"
+                android:layout_weight="1"
+                android:imeOptions="actionNext"
+                android:layout_width="0dp"/>
 
             <ImageView
                     android:id="@+id/iv_clear"

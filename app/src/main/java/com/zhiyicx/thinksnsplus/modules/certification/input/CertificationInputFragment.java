@@ -121,57 +121,57 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     private void initListener() {
         // 个人认证
         RxTextView.textChanges(mTvName.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setName(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvIdCard.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setNumber(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvPhone.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setPhone(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         // 企业认证
         RxTextView.textChanges(mTvCompanyName.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setOrg_name(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvCompanyAddress.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setOrg_address(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvCompanyPrincipal.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setName(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvCompanyPrincipalIdCard.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setNumber(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mTvCompanyPrincipalPhone.getEditInput())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setPhone(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
 
         RxTextView.textChanges(mTvDescription.getEtContent())
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setDesc(String.valueOf(charSequence));
                     setConfirmEnable();

@@ -72,6 +72,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
+        array.recycle();
         if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
@@ -91,6 +92,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
+        array.recycle();
         if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
@@ -438,7 +440,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                         imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
                         imageView.setMaxScale(scale);
                     }
-
 
 
                     @Override

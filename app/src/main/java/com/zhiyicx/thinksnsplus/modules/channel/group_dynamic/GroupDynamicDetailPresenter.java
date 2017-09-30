@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -321,8 +320,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 }
             }
         } else {// 喜欢
-            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                    AppApplication.getmCurrentLoginAuth().getUser_id());
+            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
             DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
             dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
             dynamicDigListBean.setId(System.currentTimeMillis());
@@ -445,7 +443,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(creatComment);
 //         处理评论数
@@ -537,7 +535,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
     @Override
     public void payNote(final int imagePosition, int note, boolean isImage) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
             balance = walletBean.getBalance();

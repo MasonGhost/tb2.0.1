@@ -45,7 +45,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.RewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -513,8 +512,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getMyUserIdWithdefault());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                AppApplication.getMyUserIdWithdefault()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
         // 处理评论数

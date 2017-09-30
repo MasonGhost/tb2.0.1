@@ -251,20 +251,17 @@ public class PictureTollFragment extends TSFragment {
                 });
 
         RxRadioGroup.checkedChanges(mRbDaysGroupTollWays)
-                .compose(this.<Integer>bindToLifecycle())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer checkedId) {
-                        switch (checkedId) {
-                            case R.id.rb_ways_one:
-                                mPayType = LOOK_TOLL;
-                                break;
-                            case R.id.rb_ways_two:
-                                mPayType = DOWNLOAD_TOLL;
-                                break;
-                        }
-                        setConfirmEnable();
+                .compose(this.bindToLifecycle())
+                .subscribe(checkedId -> {
+                    switch (checkedId) {
+                        case R.id.rb_ways_one:
+                            mPayType = LOOK_TOLL;
+                            break;
+                        case R.id.rb_ways_two:
+                            mPayType = DOWNLOAD_TOLL;
+                            break;
                     }
+                    setConfirmEnable();
                 });
     }
 
@@ -303,12 +300,7 @@ public class PictureTollFragment extends TSFragment {
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mMoneyInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mMoneyInstructionsPopupWindow.hide())
                 .build();
         mMoneyInstructionsPopupWindow.show();
     }

@@ -26,12 +26,11 @@ public class TSImageRetryIntercepter implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        LogUtils.d("TSImageRetryIntercepter::"+retryNum);
-        System.out.println("retryNum=" + retryNum);
+        LogUtils.d("retryNum=" + retryNum);
         Response response = chain.proceed(request);
         while (!response.isSuccessful() && retryNum < maxRetry) {
             retryNum++;
-            System.out.println("retryNum=" + retryNum);
+            LogUtils.d("retryNum=" + retryNum);
             response = chain.proceed(request);
         }
         return response;

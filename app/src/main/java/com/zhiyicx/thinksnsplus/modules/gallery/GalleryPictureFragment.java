@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
@@ -57,6 +58,8 @@ import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -77,8 +80,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
-public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener, GalleryConstract.View {
-
+public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher
+        .OnPhotoTapListener, GalleryConstract.View {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -149,10 +152,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .galleryPresenterModule(new GalleryPresenterModule(this))
                 .build().inject(this);
-        checkAndLoadImage();
+        loadImage_();
     }
 
-    private void checkAndLoadImage() {
+    private void loadImage_() {
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -182,7 +185,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     public void reLoadImage() {
-        checkAndLoadImage();
+        loadImage_();
     }
 
     @Override
@@ -332,7 +335,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         public GlideUrl requestGlideUrl() {
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook;
-                            if (toll == null) {// 收费的图片是要加 token 的
+                            if (toll == null) {
                                 canLook = true;
                             } else {
                                 canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
@@ -357,7 +360,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
-
                             // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
                             if (mTvOriginPhoto != null) {
                                 if (!animationIn) {
@@ -367,7 +369,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
-
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook;
                             if (toll == null) {
@@ -398,7 +399,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     .placeholder(R.drawable.shape_default_image)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
-                                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
+                                                isFirstResource) {
                                             LogUtils.i(TAG + "加载高清图失败:" + e.toString());
                                             if (mPbProgress != null) {
                                                 mPbProgress.setVisibility(View.GONE);
@@ -416,7 +418,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         }
 
                                         @Override
-                                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
+                                                                       boolean isFromMemoryCache, boolean isFirstResource) {
                                             return false;
                                         }
                                     })
@@ -441,12 +444,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+                                isFromMemoryCache, boolean isFirstResource) {
                             // 只有获取load的图片才会走这儿，缩略图不会
                             LogUtils.i(TAG + "加载原图成功");
-                            if (mTvOriginPhoto != null) {
-                                mTvOriginPhoto.setVisibility(View.GONE);
-                            }
+                            mTvOriginPhoto.setVisibility(View.GONE);
                             return false;
                         }
                     })
@@ -474,24 +476,27 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
         Glide.with(context)
-                .using(new ProgressModelLoader(new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
-                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
-                            int totalReadBytes = msg.arg1;
-                            int lengthBytes = msg.arg2;
-                            int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
-                            mTvOriginPhoto.setText(progressResult + "%");
-                            LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
-                                    msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
-                            if (progressResult == 100) {
-                                mTvOriginPhoto.setText(R.string.completed);
-                            }
-                        }
-                    }
-                }, AppApplication.getTOKEN()))
-                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
+                .using(new ProgressModelLoader( new MyImageLoadHandler(this)
+//                        new Handler() {
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
+//                        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
+//                            int totalReadBytes = msg.arg1;
+//                            int lengthBytes = msg.arg2;
+//                            int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
+//                            mTvOriginPhoto.setText(progressResult + "%");
+//                            LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
+//                                    msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
+//                            if (progressResult == 100) {
+//                                mTvOriginPhoto.setText(R.string.completed);
+//                            }
+//                        }
+//                    }
+//                }
+                , AppApplication.getTOKEN()))
+                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
+                .override(w, h)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -507,7 +512,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
                         return false;
                     }
                 })
@@ -747,4 +753,43 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mPayPopWindow.show();
 
     }
+
+    /**
+     * Instances of static inner classes do not hold an implicit
+     * reference to their outer class.
+     */
+    private static class MyImageLoadHandler extends Handler {
+
+        private final WeakReference<GalleryPictureFragment> mFragment;
+
+        public MyImageLoadHandler(GalleryPictureFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            GalleryPictureFragment fragment = mFragment.get();
+            if (fragment != null) {
+                fragment.onMessageHandle(msg);
+            }
+        }
+
+
+    }
+
+    private void onMessageHandle(Message msg) {
+        // 这部分的图片，都是通过 OKHttp 从网络获取的，如果改图片从 glide缓 存中读取，不会经过这儿
+        if (msg.what == ProgressListener.SEND_LOAD_PROGRESS && mTvOriginPhoto != null) {
+            int totalReadBytes = msg.arg1;
+            int lengthBytes = msg.arg2;
+            int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
+            mTvOriginPhoto.setText(String.format(Locale.getDefault(),"%d%%", progressResult));
+            LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
+                    msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
+            if (progressResult == 100) {
+                mTvOriginPhoto.setText(R.string.completed);
+            }
+        }
+    }
+
 }
