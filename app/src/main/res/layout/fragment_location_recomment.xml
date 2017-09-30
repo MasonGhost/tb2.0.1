@@ -21,8 +21,6 @@
             android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginTop="@dimen/spacing_mid_small_8dp"
-            android:layout_toLeftOf="@id/tv_toolbar_right_two"
-            android:layout_toRightOf="@id/tv_toolbar_left"
             android:layout_weight="1"
             android:background="@drawable/info_search_bg"
             android:drawableLeft="@mipmap/search_icon_search"

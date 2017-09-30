@@ -113,6 +113,8 @@ public class CommentCore implements ICommentBean {
     }
 
     public static class SendCallBack implements BackgroundTaskHandler.OnNetResponseCallBack, Serializable {
+        private static final long serialVersionUID = -5469697109868235190L;
+
         @Override
         public void onSuccess(Object data) {
             CommonMetadataBean commonMetadataBean = mCommonMetadataProvider.getCommentByCommentMark(mCommentBean.getLong(CommonMetadata.METADATA_KEY_COMMENT_MARK));

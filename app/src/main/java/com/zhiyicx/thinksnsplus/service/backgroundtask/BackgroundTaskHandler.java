@@ -276,8 +276,8 @@ public class BackgroundTaskHandler {
     private void handleTask(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         switch (backgroundRequestTaskBean.getMethodType()) {
-            /**
-             * 通用 POST 接口处理
+            /*
+              通用 POST 接口处理
              */
             case POST:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
@@ -295,8 +295,8 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethodV2(backgroundRequestTaskBean);
                 break;
-            /**
-             * 通用 GET 接口处理
+            /*
+              通用 GET 接口处理
              */
             case GET:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
@@ -308,8 +308,8 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 PatchMethod(backgroundRequestTaskBean);
                 break;
-            /**
-             * 通用 DELETE 接口处理
+            /*
+              通用 DELETE 接口处理
              */
             case DELETE:
                 if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
@@ -321,8 +321,8 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethodV2(backgroundRequestTaskBean);
                 break;
-            /**
-             * 获取 IM 信息，必须保证 header 中已经加入了权限 token
+            /*
+              获取 IM 信息，必须保证 header 中已经加入了权限 token
              */
             case GET_IM_INFO:
 
@@ -331,8 +331,8 @@ public class BackgroundTaskHandler {
 
                 getIMInfo(backgroundRequestTaskBean);
                 break;
-            /**
-             * 获取用户信息
+            /*
+              获取用户信息
              */
             case GET_USER_INFO:
 
@@ -341,15 +341,15 @@ public class BackgroundTaskHandler {
                 getUserInfo(backgroundRequestTaskBean);
                 break;
 
-            /**
-             * 发送动态 V2 api
+            /*
+              发送动态 V2 api
              */
             case SEND_DYNAMIC_V2:
                 sendDynamicV2(backgroundRequestTaskBean);
                 break;
 
-            /**
-             * 发送圈子动态 V2 api
+            /*
+              发送圈子动态 V2 api
              */
             case SEND_GROUP_DYNAMIC_COMMENT:
                 sendGroupComment(backgroundRequestTaskBean);
@@ -359,8 +359,8 @@ public class BackgroundTaskHandler {
                 sendGroupDynamic(backgroundRequestTaskBean);
                 break;
 
-            /**
-             * 设置动态评论收费 V2 api
+            /*
+              设置动态评论收费 V2 api
              */
             case TOLL_DYNAMIC_COMMENT_V2:
                 setTollDynamicComment(backgroundRequestTaskBean);
@@ -1126,9 +1126,9 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         try {
-                            /**
-                             * for detail
-                             * @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
+                            /*
+                              for detail
+                              @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
                              */
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             try {

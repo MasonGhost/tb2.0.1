@@ -35,7 +35,8 @@
                 android:hint="@string/login_account_hint"
                 android:imeOptions="actionNext"
                 android:singleLine="true"
-                android:visibility="visible"/>
+                android:visibility="visible"
+                android:layout_width="0dp"/>
 
             <ImageView
                 android:id="@+id/iv_clear"

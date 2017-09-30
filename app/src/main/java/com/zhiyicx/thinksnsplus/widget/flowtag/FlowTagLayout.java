@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -263,7 +264,7 @@ public class FlowTagLayout extends ViewGroup {
                         childView.setSelected(true);
 
                         if (mOnTagSelectListener != null) {
-                            mOnTagSelectListener.onItemSelect(FlowTagLayout.this, Arrays.asList(j));
+                            mOnTagSelectListener.onItemSelect(FlowTagLayout.this, Collections.singletonList(j));
                         }
                     } else if (mTagCheckMode == FLOW_TAG_CHECKED_MULTI) {
                         if (mCheckedTagArray.get(j)) {

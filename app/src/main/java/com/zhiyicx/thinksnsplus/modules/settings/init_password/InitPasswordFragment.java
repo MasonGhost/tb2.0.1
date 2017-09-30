@@ -108,7 +108,7 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
     private void initListener() {
         // 密码观察
         RxTextView.textChanges(mEtPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -133,7 +133,7 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
                     }
                 });    // 密码观察
         RxTextView.textChanges(mEtSurePassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsSurePassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -160,7 +160,7 @@ public class InitPasswordFragment extends TSFragment<InitPasswordContract.Presen
         // 点击下一步
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                    // 设置密码，成功后进入绑定页面
                     mPresenter.initPassword(String.valueOf(mEtPassword.getText()), String.valueOf(mEtSurePassword.getText()));

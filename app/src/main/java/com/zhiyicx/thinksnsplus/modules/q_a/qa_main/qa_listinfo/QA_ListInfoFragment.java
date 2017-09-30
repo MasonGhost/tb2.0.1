@@ -134,12 +134,6 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        System.out.println("getUserVisibleHint() = " + getUserVisibleHint() + mQAInfoType);
-    }
-
     /**
      * 是否进入页面进行懒加载
      *

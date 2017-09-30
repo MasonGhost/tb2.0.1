@@ -13,6 +13,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.io.Serializable;
+
 /**
  * @author Catherine
  * @describe 圈子的管理者 多个
@@ -20,7 +22,7 @@ import org.greenrobot.greendao.annotation.NotNull;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class GroupManagerBean extends BaseListBean {
+public class GroupManagerBean extends BaseListBean implements Serializable {
 
     @Transient
     private static final long serialVersionUID = 1L;

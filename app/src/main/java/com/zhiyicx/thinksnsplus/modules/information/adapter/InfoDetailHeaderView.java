@@ -379,7 +379,7 @@ public class InfoDetailHeaderView {
                     String from = infoListDataBean.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
                             infoListDataBean.getAuthor() : infoListDataBean.getFrom();
                     String infoData = String.format(Locale.getDefault(), title.getContext().getString(R.string.info_list_count)
-                            , from, infoListDataBean.getHits(), TimeUtils.getTimeFriendlyNormal(infoListDataBean
+                            , from, String.valueOf(infoListDataBean.getHits()), TimeUtils.getTimeFriendlyNormal(infoListDataBean
                                     .getUpdated_at()));
                     holder.setText(R.id.item_info_timeform, infoData);
                     // 是否置顶

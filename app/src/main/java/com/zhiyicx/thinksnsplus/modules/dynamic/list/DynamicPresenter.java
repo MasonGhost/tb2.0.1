@@ -45,7 +45,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -255,7 +254,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth()
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth()
                 .getUser_id());
 
         msendingStatus.clear();

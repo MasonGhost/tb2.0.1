@@ -119,7 +119,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         this.mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         //持有wifi锁，避免后台wifi休眠
-        this.mWifiLock = ((WifiManager) context.getSystemService(Context.WIFI_SERVICE))
+        this.mWifiLock = ((WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
         this.mState = PlaybackStateCompat.STATE_NONE;
     }

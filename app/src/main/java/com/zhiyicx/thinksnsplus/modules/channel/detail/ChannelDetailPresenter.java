@@ -240,7 +240,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth().getUser_id());
         return datas;
     }
 

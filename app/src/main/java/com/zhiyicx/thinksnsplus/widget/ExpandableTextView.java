@@ -299,7 +299,7 @@ public class ExpandableTextView extends AppCompatTextView {
                 SpannableStringBuilder ssbShrink = new SpannableStringBuilder(fixText)
                         .append(mEllipsisHint);
                 if (mShowToExpandHint) {
-                    ssbShrink.append(getContentOfString(mGapToExpandHint) + getContentOfString(mToExpandHint));
+                    ssbShrink.append(getContentOfString(mGapToExpandHint)).append(getContentOfString(mToExpandHint));
                     ssbShrink.setSpan(mTouchableSpan, ssbShrink.length() - getLengthOfString(mToExpandHint), ssbShrink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 return ssbShrink;

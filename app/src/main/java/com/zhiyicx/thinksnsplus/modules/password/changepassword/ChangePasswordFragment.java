@@ -78,33 +78,24 @@ public class ChangePasswordFragment extends TSFragment<ChangePasswordContract.Pr
     protected void initView(View rootView) {
         // 旧密码观察
         RxTextView.textChanges(mEtOldPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isOldPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    isOldPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 新密码观察
         RxTextView.textChanges(mEtNewPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    isNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 确认新密码观察
         RxTextView.textChanges(mEtSureNewPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isSureNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    isSureNewPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
     }
 

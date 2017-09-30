@@ -139,14 +139,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private void initListener() {
         // 用户名观察
         RxTextView.textChanges(mEtRegistUsername)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isNameEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 电话号码观察
         RxTextView.textChanges(mEtRegistPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVertifyCodeEnalbe) {
                         mBtRegistSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
@@ -166,14 +166,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 });
         // 验证码观察
         RxTextView.textChanges(mEtRegistVertifyCode)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 密码观察
         RxTextView.textChanges(mEtRegistPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isPassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -203,7 +203,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         // 点击发送验证码
         RxView.clicks(mBtRegistSendVertifyCode)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
@@ -214,7 +214,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         // 点击注册按钮
         RxView.clicks(mBtRegistRegist)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
                 .subscribe(permission -> {
                     if (permission.granted) {// 获取到了权限
