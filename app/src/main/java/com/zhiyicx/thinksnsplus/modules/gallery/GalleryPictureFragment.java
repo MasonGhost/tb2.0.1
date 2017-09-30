@@ -78,6 +78,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener, GalleryConstract.View {
+
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -148,10 +149,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .galleryPresenterModule(new GalleryPresenterModule(this))
                 .build().inject(this);
-        loadImage_();
+        checkAndLoadImage();
     }
 
-    private void loadImage_() {
+    private void checkAndLoadImage() {
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -181,7 +182,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     public void reLoadImage() {
-        loadImage_();
+        checkAndLoadImage();
     }
 
     @Override
@@ -331,7 +332,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         public GlideUrl requestGlideUrl() {
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook;
-                            if (toll == null) {
+                            if (toll == null) {// 收费的图片是要加 token 的
                                 canLook = true;
                             } else {
                                 canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
@@ -356,6 +357,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
+
                             // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
                             if (mTvOriginPhoto != null) {
                                 if (!animationIn) {
@@ -365,6 +367,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
+
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook;
                             if (toll == null) {
@@ -376,7 +379,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
-
                                 if (mPbProgress != null) {
                                     mPbProgress.setVisibility(View.GONE);
                                 }
@@ -427,6 +429,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 @Override
                                 public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                                     LogUtils.i(TAG + "加载高清图成功");
+
                                     if (mIvPager != null) {
                                         mIvPager.setImageDrawable(resource);
                                     }
@@ -441,7 +444,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             // 只有获取load的图片才会走这儿，缩略图不会
                             LogUtils.i(TAG + "加载原图成功");
-                            mTvOriginPhoto.setVisibility(View.GONE);
+                            if (mTvOriginPhoto != null) {
+                                mTvOriginPhoto.setVisibility(View.GONE);
+                            }
                             return false;
                         }
                     })
@@ -459,10 +464,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
         if (imageBean.getWidth() * imageBean.getHeight() == 0) {
-            // 搞什么飞机，之前的本地规划画布没用了，
-            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
-            imageBean.setWidth(screenW);
-            imageBean.setHeight(screenH);
+//            imageBean.setWidth(screenW);
+//            imageBean.setHeight(screenH);
         }
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
@@ -488,8 +491,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         }
                     }
                 }, AppApplication.getTOKEN()))
-                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
-                .override(w, h)
+                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -518,14 +520,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                               mPhotoViewAttacherOrigin.update();
                               mIvOriginPager.setVisibility(View.VISIBLE);
                               // 直接隐藏掉图片会有闪烁的效果，通过判断图片渲染成功后，隐藏，平滑过渡
-                              Runnable runnable = new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      while (mIvOriginPager.getDrawable() != null) {
-                                          mIvPager.setVisibility(View.GONE);
-                                          mTvOriginPhoto.setVisibility(View.GONE);
-                                          break;
-                                      }
+                              Runnable runnable = () -> {
+                                  while (mIvOriginPager.getDrawable() != null) {
+                                      mIvPager.setVisibility(View.GONE);
+                                      mTvOriginPhoto.setVisibility(View.GONE);
+                                      break;
                                   }
                               };
                               runnable.run();
