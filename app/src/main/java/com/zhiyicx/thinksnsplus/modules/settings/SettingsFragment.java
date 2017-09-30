@@ -169,6 +169,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
 
         } else {
             mRbDaysGroup.setVisibility(View.GONE);
+            mTvChooseTip.setVisibility(View.GONE);
         }
 
     }
