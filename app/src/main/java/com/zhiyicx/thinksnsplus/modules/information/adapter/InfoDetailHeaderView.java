@@ -131,9 +131,9 @@ public class InfoDetailHeaderView {
             mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
             String from = mContext.getString(R.string.info_publish_original).equals(infoMain.getFrom()) ?
                     infoMain.getAuthor() : infoMain.getFrom();
-            String infoData = String.format(mContext.getString(R.string.info_detail_count)
-                    , from, infoMain.getHits());
-            mFrom.setText(infoData);
+            if(!TextUtils.isEmpty(from)) {
+                mFrom.setText(from);
+            }
             // 引用
 //            if (!TextUtils.isEmpty(infoMain.getSubject())) {
 //                InternalStyleSheet css = new Github();
