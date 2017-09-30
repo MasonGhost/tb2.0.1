@@ -380,7 +380,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
                                 }
-
                                 if (mPbProgress != null) {
                                     mPbProgress.setVisibility(View.GONE);
                                 }
@@ -433,6 +432,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 @Override
                                 public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                                     LogUtils.i(TAG + "加载高清图成功");
+
                                     if (mIvPager != null) {
                                         mIvPager.setImageDrawable(resource);
                                     }
@@ -466,10 +466,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
         if (imageBean.getWidth() * imageBean.getHeight() == 0) {
-            // 搞什么飞机，之前的本地规划画布没用了，
-            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
-            imageBean.setWidth(screenW);
-            imageBean.setHeight(screenH);
+//            imageBean.setWidth(screenW);
+//            imageBean.setHeight(screenH);
         }
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
@@ -528,14 +526,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                               mPhotoViewAttacherOrigin.update();
                               mIvOriginPager.setVisibility(View.VISIBLE);
                               // 直接隐藏掉图片会有闪烁的效果，通过判断图片渲染成功后，隐藏，平滑过渡
-                              Runnable runnable = new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      while (mIvOriginPager.getDrawable() != null) {
-                                          mIvPager.setVisibility(View.GONE);
-                                          mTvOriginPhoto.setVisibility(View.GONE);
-                                          break;
-                                      }
+                              Runnable runnable = () -> {
+                                  while (mIvOriginPager.getDrawable() != null) {
+                                      mIvPager.setVisibility(View.GONE);
+                                      mTvOriginPhoto.setVisibility(View.GONE);
+                                      break;
                                   }
                               };
                               runnable.run();
