@@ -120,6 +120,25 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
                             mRootView.showSnackErrorMessage(message);
+                            SHARE_MEDIA share_media;
+                            switch (provider) {
+                                case ApiConfig.PROVIDER_QQ:
+                                    share_media = SHARE_MEDIA.QQ;
+                                    break;
+                                case ApiConfig.PROVIDER_WEIBO:
+                                    share_media = SHARE_MEDIA.SINA;
+
+                                    break;
+                                case ApiConfig.PROVIDER_WECHAT:
+                                    share_media = SHARE_MEDIA.WEIXIN;
+
+                                    break;
+                                default:
+                                    share_media = SHARE_MEDIA.QQ;
+
+                            }
+                            mAuthRepository.clearThridAuth(share_media);
+
                         }
 
                         @Override

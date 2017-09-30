@@ -3,12 +3,14 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -202,6 +204,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(getActivity()))
+                .dynamicPresenterModule(new DynamicPresenterModule(this))
+                .build().inject(this);
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
@@ -210,12 +223,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected void initData() {
-        DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .shareModule(new ShareModule(getActivity()))
-                .dynamicPresenterModule(new DynamicPresenterModule(this))
-                .build().inject(this);
         mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
         initAdvert();
         super.initData();
@@ -952,5 +959,23 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     public interface OnCommentClickListener {
         void onButtonMenuShow(boolean isShow);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releasePop(mDeletCommentPopWindow);
+        releasePop(mOtherDynamicPopWindow);
+        releasePop(mMyDynamicPopWindow);
+        releasePop(mReSendCommentPopWindow);
+        releasePop(mReSendDynamicPopWindow);
+        releasePop(mPayImagePopWindow);
+    }
+
+    public void releasePop(PopupWindow popupWindow) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
     }
 }
