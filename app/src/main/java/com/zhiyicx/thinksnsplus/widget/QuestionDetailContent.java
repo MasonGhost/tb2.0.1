@@ -96,11 +96,10 @@ public class QuestionDetailContent extends FrameLayout {
      * @param questionDetail bean
      */
     public void setQuestionDetail(QAListInfoBean questionDetail) {
+        mTvQuestionContent.setStateShrink();
         String content = questionDetail.getBody();
         String preContent = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, questionDetail.getBody()); // 预览的文字
         List<ImageBean> list = new ArrayList<>();
-
-
         Pattern pattern = Pattern.compile(IMAGE_FORMAT);
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
@@ -122,9 +121,11 @@ public class QuestionDetailContent extends FrameLayout {
             animationRectBeanArrayList.add(rect);
         }
 
-        // 不管有没有图哦，反正图文混排先隐藏了
-        mMdvQuestionContent.setVisibility(GONE);
-        mLlContentPreview.setVisibility(VISIBLE);
+        if (mTvQuestionContent.getCurrState() != ExpandableTextView.STATE_EXPAND) {
+            mMdvQuestionContent.setVisibility(GONE);
+            mLlContentPreview.setVisibility(VISIBLE);
+        }
+
         dealContent(content, list);
         if (list.size() > 0) {
             // 如果有图片 那么显示封面
@@ -160,12 +161,12 @@ public class QuestionDetailContent extends FrameLayout {
 
                 }
             });
-            
-            if (mTvQuestionContent.getCurrState() == ExpandableTextView.STATE_EXPAND) {
-                // 展开后 隐藏内容，显示图文混排内容
-                mLlContentPreview.setVisibility(GONE);
-                mMdvQuestionContent.setVisibility(VISIBLE);
-            }
+
+//            if (mTvQuestionContent.getCurrState() == ExpandableTextView.STATE_EXPAND) {
+//                // 展开后 隐藏内容，显示图文混排内容
+//                mLlContentPreview.setVisibility(GONE);
+//                mMdvQuestionContent.setVisibility(VISIBLE);
+//            }
         } else {
             mItemInfoImage.setVisibility(GONE);
             mTvQuestionContent.setText(content);
