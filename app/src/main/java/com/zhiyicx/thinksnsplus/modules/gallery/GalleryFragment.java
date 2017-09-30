@@ -30,8 +30,11 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -117,12 +120,15 @@ public class GalleryFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if (position + 1 < mVpPhotos.getChildCount()) { // 提前加载前后图片
-                    handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
-                }
-                if (position - 1 >= 0) {
-                    handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
-                }
+                Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(aLong -> {
+                    if (position + 1 < allImages.size()) { // 提前加载前后图片
+                        handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
+                    }
+                    if (position - 1 >= 0) {
+                        handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
+                    }
+                });
+
             }
 
             /**
