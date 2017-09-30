@@ -137,16 +137,10 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
      * 获取最新的动态列表
      */
     public List<DynamicCommentBean> getLocalComments(Long feedMark) {
-//        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
-        dynamicCommentBeen.addAll(getLocalCommentsByTop(feedMark));
-        dynamicCommentBeen.addAll(getMySendingComment(feedMark));
-        dynamicCommentBeen.addAll(getLocalCommentsByNotTop(feedMark));
-//        dynamicCommentBeen.addAll(dynamicCommentBeanDao.queryBuilder()
-//                .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-//                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
-//                .list());
-
+        dynamicCommentBeen.addAll(getLocalCommentsByTop(feedMark));// 置顶
+        dynamicCommentBeen.addAll(getMySendingComment(feedMark));// 没成功
+        dynamicCommentBeen.addAll(getLocalCommentsByNotTop(feedMark));// 本地常规
         return dynamicCommentBeen;
     }
 
@@ -156,7 +150,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
                 .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark),
                         DynamicCommentBeanDao.Properties.Pinned.eq(1),
                         DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-                .orderAsc(DynamicCommentBeanDao.Properties.Comment_id)
+                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list();
     }
 
@@ -166,7 +160,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
                 .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark),
                         DynamicCommentBeanDao.Properties.Pinned.notEq(1),
                         DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-                .orderAsc(DynamicCommentBeanDao.Properties.Comment_id)
+                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list();
         return normalData;
     }
@@ -182,7 +176,9 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
         }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         return dynamicCommentBeanDao.queryBuilder()
-                .where(DynamicCommentBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()), DynamicCommentBeanDao.Properties.Comment_id.isNull(), DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark))
+                .where(DynamicCommentBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()),
+                        DynamicCommentBeanDao.Properties.Comment_id.isNull(),
+                        DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark))
                 .orderDesc(DynamicCommentBeanDao.Properties._id)
                 .list();
     }
