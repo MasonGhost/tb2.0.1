@@ -123,7 +123,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private long mReplyToUserId;// 被评论者的 id
 
     private DynamicBannerHeader mDynamicBannerHeader;
-    private DynamicDetailBeanV2 mCurrentPayDynamic;
     private List<RealAdvertListBean> mListAdvert;
     private List<RealAdvertListBean> mHeaderAdvert;
 
@@ -424,11 +423,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public DynamicDetailBeanV2 getCurrentPayDynamic() {
-        return mCurrentPayDynamic;
-    }
-
-    @Override
     public void closeInputView() {
         if (mIlvComment.getVisibility() == View.VISIBLE) {
             mIlvComment.setVisibility(View.GONE);
@@ -701,12 +695,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     intent.putExtras(bundle);
                     startActivity(intent);
 
-//                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-//                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean
-//                            .getComments().get(commentPosition).getComment_id());
-//                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean.getId());
-//
-//                    startActivity(intent);
                     showBottomView(true);
                 })
                 .item2ClickListener(() -> {

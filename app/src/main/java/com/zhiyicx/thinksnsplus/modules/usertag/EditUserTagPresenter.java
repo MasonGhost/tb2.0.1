@@ -81,8 +81,6 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
                             userTag.setMine_has(true);
                         }
                         mUserTagBeanGreenDao.saveMultiData(userTags);
-
-
                     }
                     mRootView.updateMineTagsFromNet(userTags);
                     if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {// 资讯投稿的标签

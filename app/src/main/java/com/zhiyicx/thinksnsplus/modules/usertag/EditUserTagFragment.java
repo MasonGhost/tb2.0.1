@@ -350,9 +350,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         if (tagCategoryBeanList == null) {
             return;
         }
-        mCategoryTags.clear();
+        this.mCategoryTags.clear();
         this.mCategoryTags.addAll(tagCategoryBeanList);
-        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        this.mTagClassAdapter.notifyAllSectionsDataSetChanged();
     }
 
     @Override
