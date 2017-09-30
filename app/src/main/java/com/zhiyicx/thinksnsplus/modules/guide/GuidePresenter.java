@@ -48,9 +48,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     RealAdvertListBeanGreenDaoImpl mRealAdvertListBeanGreenDao;
 
     @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
-
-    @Inject
     public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {
         super(repository, rootView);
     }
@@ -64,7 +61,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     public void checkLogin() {
         // 系统扩展配置信息处理
         mSystemRepository.getBootstrappersInfoFromServer();
-        mCertificationDetailRepository.saveCertificationInfo();
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();

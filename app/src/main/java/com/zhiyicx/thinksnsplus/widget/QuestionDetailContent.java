@@ -18,13 +18,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.TouchableSpan;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -122,25 +122,6 @@ public class QuestionDetailContent extends FrameLayout {
             animationRectBeanArrayList.add(rect);
         }
 
-//        while (RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content) != -1) {
-//            // 取出id
-//            int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
-//            // 替换图片地址
-//            String url = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-//
-//            String format = String.format(MarkdownConfig.IMAGE_RESULT, url);
-//            String old = "@" + String.format(MarkdownConfig.IMAGE_RESULT, id + "");
-//            content = content.replace(old, format);
-//
-//            // 处理图片列表
-//            ImageBean imageBean = new ImageBean();
-//            imageBean.setStorage_id(id);
-//            imageBean.setImgUrl(url);
-//            list.add(imageBean);
-//            AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
-//            animationRectBeanArrayList.add(rect);
-//        }
-
         // 不管有没有图哦，反正图文混排先隐藏了
         mMdvQuestionContent.setVisibility(GONE);
         mLlContentPreview.setVisibility(VISIBLE);
@@ -179,6 +160,12 @@ public class QuestionDetailContent extends FrameLayout {
 
                 }
             });
+            
+            if (mTvQuestionContent.getCurrState() == ExpandableTextView.STATE_EXPAND) {
+                // 展开后 隐藏内容，显示图文混排内容
+                mLlContentPreview.setVisibility(GONE);
+                mMdvQuestionContent.setVisibility(VISIBLE);
+            }
         } else {
             mItemInfoImage.setVisibility(GONE);
             mTvQuestionContent.setText(content);
