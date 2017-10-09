@@ -55,7 +55,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_TOPIC;
 
 /**
  * @author Catherine

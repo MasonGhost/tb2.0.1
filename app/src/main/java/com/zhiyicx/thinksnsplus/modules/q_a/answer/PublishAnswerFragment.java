@@ -130,9 +130,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
-
-        initEditWarningPop();
+        super.onBackPressed();
         // 暂时屏蔽回答草稿箱功能
+//        initEditWarningPop();
 //        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
 //            super.onBackPressed();
 //        } else {
@@ -147,7 +147,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                       String body, String title) {
+                                      String body, String title) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
@@ -159,7 +159,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
         context.startActivity(intent);
     }
 
-    public static void startQActivity(Context context, PublishType type,AnswerDraftBean realData) {
+    public static void startQActivity(Context context, PublishType type, AnswerDraftBean realData) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();

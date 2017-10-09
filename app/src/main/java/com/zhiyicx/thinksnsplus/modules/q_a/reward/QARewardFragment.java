@@ -412,7 +412,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mRewardMoney != (int) mRewardMoney) {
-                        initInstructionsPop(R.string.min_withdraw_money);
+                        initInstructionsPop(R.string.sticktop_reward_instructions_detail);
                         return;
                     }
                     // 发布
@@ -569,7 +569,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.withdrawal_instructions))
+                .item1Str(getString(R.string.instructions))
                 .desStr(getString(resDesStr))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

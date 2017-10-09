@@ -531,10 +531,16 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
                         Bundle bundle = new Bundle();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mRootView.getListDatas().get(dynamicPosition);
-                        if (dynamicDetailBeanV2.getComments().get(0).getComment_mark()
-                                == null) {
-                            dynamicDetailBeanV2.getComments().remove(0);
+
+                        try {
+                            if (dynamicDetailBeanV2.getComments().get(0).getComment_mark()
+                                    == null) {
+                                dynamicDetailBeanV2.getComments().remove(0);
+                            }
+                        } catch (Exception e) {
+                            LogUtils.d("该动态没有评论");
                         }
+
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
                         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);

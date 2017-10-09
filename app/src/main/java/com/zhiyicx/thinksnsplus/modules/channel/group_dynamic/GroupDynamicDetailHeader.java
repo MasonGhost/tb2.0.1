@@ -131,6 +131,7 @@ public class GroupDynamicDetailHeader {
                     .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
+            mPhotoContainer.removeAllViews();
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
             }
@@ -172,6 +173,10 @@ public class GroupDynamicDetailHeader {
         for (int i = 0; i < photoList.size(); i++) {
             showContentImage(mContext, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
         }
+        FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
+        sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                .getDrawable(), R.mipmap.icon_256);
+        setImageClickListener(photoList, dynamicBean);
     }
 
     /**

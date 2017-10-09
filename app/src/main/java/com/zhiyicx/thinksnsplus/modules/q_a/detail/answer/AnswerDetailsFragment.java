@@ -168,7 +168,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
         onNetResponseSuccess(answerInfoBean.getCommentList(), isLoadMore);
-//        closeLoadingView();
+        closeLoadingView();
     }
 
     @Override
