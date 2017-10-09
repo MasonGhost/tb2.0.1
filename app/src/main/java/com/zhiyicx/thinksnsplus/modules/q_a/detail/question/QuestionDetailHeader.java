@@ -121,7 +121,11 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         }
 
         // 是否有围观
-        updateOutLook(qaListInfoBean.getLook() == 1, qaListInfoBean.getWatchers_count() > 0 ? qaListInfoBean.getWatchers_count() * amount : amount);
+        double outLookAmount = amount;
+        if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
+            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
+        }
+        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount > 0 ? outLookAmount : amount);
         initListener();
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);

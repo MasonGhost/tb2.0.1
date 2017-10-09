@@ -90,6 +90,7 @@ public class InfoDetailHeaderView {
     private Bitmap sharBitmap;
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
+    private boolean isReviewIng;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
@@ -131,7 +132,7 @@ public class InfoDetailHeaderView {
             mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
             String from = mContext.getString(R.string.info_publish_original).equals(infoMain.getFrom()) ?
                     infoMain.getAuthor() : infoMain.getFrom();
-            if(!TextUtils.isEmpty(from)) {
+            if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);
             }
             // 引用
@@ -237,7 +238,6 @@ public class InfoDetailHeaderView {
             dealImageList(imgPath, id);
         }
 
-//这么丑的写法被我无情废弃了，关键还是错误的过滤... by tym
 //        String tag = "@![image](";
 //        while (markDownContent.contains(tag)) {
 //            int start = markDownContent.indexOf(tag) + tag.length();
@@ -335,9 +335,12 @@ public class InfoDetailHeaderView {
     public void setRelateInfo(InfoListDataBean infoMain) {
         List<InfoListDataBean> infoListDataBeen = infoMain.getRelateInfoList();
         if (infoListDataBeen != null && infoListDataBeen.size() > 0) {
-            mInfoRelateList.setVisibility(VISIBLE);
-            mFtlRelate.setVisibility(VISIBLE);
-            mRvRelateInfo.setVisibility(VISIBLE);
+            if (!isReviewIng) {
+                mInfoRelateList.setVisibility(VISIBLE);
+                mFtlRelate.setVisibility(VISIBLE);
+                mRvRelateInfo.setVisibility(VISIBLE);
+            }
+
             // 标签
             List<UserTagBean> tagBeanList = infoMain.getTags();
             if (tagBeanList != null && tagBeanList.size() > 0) {
@@ -412,4 +415,23 @@ public class InfoDetailHeaderView {
     public void setReWardViewVisible(int visible) {
         mReWardView.setVisibility(visible);
     }
+
+    public void setAdvertViewVisible(int visible) {
+        if (visible == View.GONE) {
+            mDynamicDetailAdvertHeader.hideAdvert();
+        } else if (visible == View.VISIBLE) {
+            mDynamicDetailAdvertHeader.showAdvert();
+        }
+    }
+
+    public void setInfoReviewIng(int visible) {
+        isReviewIng = true;
+        setReWardViewVisible(visible);
+        setAdvertViewVisible(visible);
+        mInfoRelateList.setVisibility(GONE);
+        mFtlRelate.setVisibility(GONE);
+        mRvRelateInfo.setVisibility(GONE);
+    }
+
+
 }

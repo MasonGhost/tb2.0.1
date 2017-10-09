@@ -202,7 +202,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         // 投稿中的资讯隐藏底部操作以及打赏
         mDdDynamicTool.setVisibility(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
-        mInfoDetailHeader.setReWardViewVisible(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
+        mInfoDetailHeader.setInfoReviewIng(mInfoMation.getAudit_status() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override

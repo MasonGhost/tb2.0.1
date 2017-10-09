@@ -362,9 +362,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
                             if (mTvOriginPhoto != null) {
                                 if (!animationIn) {
-                                    mTvOriginPhoto.setScaleY(0.0f);
-                                    mTvOriginPhoto.setScaleX(0.0f);
-                                    mTvOriginPhoto.setAlpha(0.0f);
+//                                    mTvOriginPhoto.setScaleY(0.0f);
+//                                    mTvOriginPhoto.setScaleX(0.0f);
+//                                    mTvOriginPhoto.setAlpha(0.0f);
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }

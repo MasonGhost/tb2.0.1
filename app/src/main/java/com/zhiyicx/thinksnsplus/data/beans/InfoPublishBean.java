@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class InfoPublishBean implements Parcelable {
 
-    public static final String DEFALUT_SUBJECT = ">**[摘要]**";
+    public static final String DEFALUT_SUBJECT = ">**[摘要]** ";
 
     /**
      * {@linnk https://github.com/slimkit/plus-component-news/blob/master/docs/contribute.md}
