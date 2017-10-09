@@ -8,6 +8,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
@@ -121,7 +123,7 @@ public class AnswerDetailHeaderView {
         mContent.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+                super.onPageFinished(view, url);// 这个方法不知道什么时候才调用
                 if (mAnswerHeaderEventListener != null) {
                     mAnswerHeaderEventListener.loadFinish();
                 }

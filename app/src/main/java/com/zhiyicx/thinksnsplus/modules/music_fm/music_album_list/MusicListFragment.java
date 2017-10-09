@@ -129,7 +129,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                         .override(width, width)
                         .error(R.drawable.shape_default_image)
                         .into(imag);
-                
+
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());
 
