@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.View;
@@ -100,7 +101,8 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(),
+                            galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -110,7 +112,8 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要进入的fragment
                     GalleryPictureContainerFragment currentFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = currentFragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(),
+                            galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
@@ -211,12 +214,11 @@ public class GalleryFragment extends TSFragment {
 
 
     /////////////////////////////////处理转场缩放动画/////////////////////////////////////
-    private ColorDrawable backgroundColor;
+    private ColorDrawable backgroundColor = new ColorDrawable(Color.BLACK);
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void showBackgroundImmediately() {
         if (mRootView.getBackground() == null) {
-            backgroundColor = new ColorDrawable(Color.BLACK);
             mVpPhotos.setBackground(backgroundColor);
             // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
@@ -225,8 +227,6 @@ public class GalleryFragment extends TSFragment {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public ObjectAnimator showBackgroundAnimate() {
-        backgroundColor = new ColorDrawable(Color.BLACK);
-        // mViewPager.setBackground(backgroundColor);
         // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
@@ -248,17 +248,7 @@ public class GalleryFragment extends TSFragment {
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
-            backgroundColor = new ColorDrawable(Color.BLACK);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (getActivity() != null) {// 防止空指针
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(-1, -1);
-                    }
-                }
-            });
             fragment.animationExit(bgAnim);
         } else {
             // ((GalleryActivity) getActivity()).superBackpress();

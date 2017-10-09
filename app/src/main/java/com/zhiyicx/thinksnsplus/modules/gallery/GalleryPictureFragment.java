@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
@@ -40,6 +43,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.widget.photoview.Compat;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -546,7 +550,26 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
+        backgroundAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (getActivity() != null) {// 防止空指针
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            }
 
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (mIvOriginPager.getVisibility() == View.VISIBLE) {
+                    mIvOriginPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                }else {
+                    mIvPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                }
+
+            }
+        });
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原

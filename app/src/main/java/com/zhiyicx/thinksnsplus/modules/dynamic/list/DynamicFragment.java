@@ -353,7 +353,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
-        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -361,6 +360,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toAdvert(dynamicBean.getDeleted_at(), dynamicBean.getFeed_content());
             return;
         }
+        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
+
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));

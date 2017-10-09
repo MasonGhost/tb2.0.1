@@ -612,7 +612,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     break;
                                 default:
                                     if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                                        System.out.println("mNotificaitonRedDotIsShow = " + tspNotificationBean.getId());
                                         mNotificaitonRedDotIsShow = true;
                                         mNoti.add(tspNotificationBean);
                                     }
@@ -799,10 +798,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         }
         mMessageRedDotIsShow = isShowMessgeTip;
         Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
-        System.out.println("------1----------- = " + mNotificaitonRedDotIsShow);
         if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
-            System.out.println("------2----------- = " + mNotificaitonRedDotIsShow);
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
         }
         mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;

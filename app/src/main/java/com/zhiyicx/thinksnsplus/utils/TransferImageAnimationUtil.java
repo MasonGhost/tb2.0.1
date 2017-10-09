@@ -49,7 +49,7 @@ public class TransferImageAnimationUtil {
             return;
         }
 
-        float startScale;
+        float startScale = 0;
         if ((float) finalBounds.width() / finalBounds.height()
                 > (float) startBounds.width() / startBounds.height()) {
             // 如果大图的宽度对于高度比小图的宽度对于高度更宽，以高度比来放缩，这样能够避免动画结束，小图边缘出现空白
@@ -58,7 +58,6 @@ public class TransferImageAnimationUtil {
             startScale = (float) startBounds.width() / finalBounds.width();
         }
 
-        final float startScaleFinal = startScale;
 
         int deltaTop = startBounds.top - finalBounds.top;
         int deltaLeft = startBounds.left - finalBounds.left;
@@ -68,21 +67,19 @@ public class TransferImageAnimationUtil {
         // 位移+缩小
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             imageView.animate().translationX(deltaLeft).translationY(deltaTop)
-                    .scaleY(startScaleFinal)
-                    .scaleX(startScaleFinal).setDuration(ANIMATION_DURATION)
+                    .scaleY(startScale)
+                    .scaleX(startScale).setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                imageView.animate().alpha(0.0f).setDuration(200).withEndAction(
+                                imageView.animate().alpha(0f).setDuration(10).withEndAction(
                                         new Runnable() {
                                             @Override
                                             public void run() {
 
                                             }
                                         });
-                            }
                         }
                     });
         }
