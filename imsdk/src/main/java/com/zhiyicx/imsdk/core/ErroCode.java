@@ -30,3 +30,4 @@ public class ErroCode {
     public static final int CHATROOM_BANNED_WORDS = 3004;//对话成员被禁言
     public static final int CHATROOM_NOT_JOIN_ROOM = 3003;//未加入房间
 }
+

@@ -34,4 +34,5 @@ public class RegisterTest {
         Assert.assertTrue(backgroundRequestTaskBean.getMax_retry_count() == 1);
     }
 
+
 }

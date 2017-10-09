@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -108,9 +109,10 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 
         if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
             mRootView.setUserCertificationInfo(userCertificationInfo);
-        } else{
+        } else {
             mCertificationDetailRepository.getCertificationInfo()
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("信息加载中..."))
+                    .doAfterTerminate(() -> mRootView.dismissSnackBar())
                     .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                         @Override
                         protected void onSuccess(UserCertificationInfo data) {
@@ -130,21 +132,17 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
                             mRootView.setUserCertificationInfo(data);
                         }
-
-                        @Override
-                        public void onCompleted() {
-                            super.onCompleted();
-                            mRootView.dismissSnackBar();
-                        }
-
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            mRootView.showSnackSuccessMessage(message);
                         }
 
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
+
                         }
                     });
         }

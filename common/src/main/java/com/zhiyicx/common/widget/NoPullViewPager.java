@@ -37,3 +37,4 @@ public class NoPullViewPager extends ViewPager {
     }
 
 }
+

@@ -14,3 +14,4 @@ public enum Share {
     WEIXIN_CIRCLE,
     SINA,
 }
+

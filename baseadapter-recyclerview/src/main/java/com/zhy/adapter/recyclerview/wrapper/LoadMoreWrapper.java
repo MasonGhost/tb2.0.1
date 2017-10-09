@@ -160,3 +160,4 @@ public class LoadMoreWrapper<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         return this;
     }
 }
+

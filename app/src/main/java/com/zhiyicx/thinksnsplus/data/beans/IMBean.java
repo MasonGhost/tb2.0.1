@@ -74,3 +74,4 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
                 '}';
     }
 }
+
