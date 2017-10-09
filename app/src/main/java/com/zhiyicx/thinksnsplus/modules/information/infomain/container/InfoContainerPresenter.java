@@ -128,7 +128,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
                             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
                             mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
-                            mRootView.setUserCertificationInfo(userCertificationInfo);
+                            mRootView.setUserCertificationInfo(data);
                         }
 
                         @Override

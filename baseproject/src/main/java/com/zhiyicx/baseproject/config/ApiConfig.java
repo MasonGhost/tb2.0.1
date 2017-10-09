@@ -35,7 +35,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
 
-    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
+    public static String APP_DOMAIN = APP_DOMAIN_DEV;
 
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址

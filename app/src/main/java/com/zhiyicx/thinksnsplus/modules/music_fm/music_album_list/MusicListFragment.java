@@ -119,6 +119,9 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                     position) {
                 MusicAlbumListBean albumListBean = mListDatas.get(position);
                 ImageView imag = holder.getView(R.id.music_list_image);
+                holder.setVisible(R.id.music_list_toll_flag, musicListBean.getPaid_node() == null
+                        || !(albumListBean.getPaid_node() != null && !albumListBean.getPaid_node().isPaid()) ? View.GONE : View.VISIBLE);
+
                 Glide.with(getContext())
                         .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))
@@ -126,6 +129,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                         .override(width, width)
                         .error(R.drawable.shape_default_image)
                         .into(imag);
+                
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
                 holder.setText(R.id.music_list_title, musicListBean.getTitle());
 

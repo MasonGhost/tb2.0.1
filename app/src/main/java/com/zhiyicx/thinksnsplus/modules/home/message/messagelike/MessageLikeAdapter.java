@@ -228,7 +228,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(digedBean.getLikeable()), AnswerInfoBean.class);
                 bundle.putSerializable(BUNDLE_ANSWER, answerInfoBean);
                 bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
-                intent.putExtras(bundle);
+                intent.putExtra(BUNDLE_TOPIC_BEAN, bundle);
                 break;
             default:
                 return;
