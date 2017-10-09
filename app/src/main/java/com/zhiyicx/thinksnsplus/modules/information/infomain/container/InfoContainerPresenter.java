@@ -111,7 +111,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
             mRootView.setUserCertificationInfo(userCertificationInfo);
         } else {
             mCertificationDetailRepository.getCertificationInfo()
-                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("信息加载中..."))
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.loading)))
                     .doAfterTerminate(() -> mRootView.dismissSnackBar())
                     .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                         @Override
@@ -130,7 +130,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
                             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
                             mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
-                            mRootView.setUserCertificationInfo(userCertificationInfo);
+                            mRootView.setUserCertificationInfo(data);
                         }
                         @Override
                         protected void onFailure(String message, int code) {

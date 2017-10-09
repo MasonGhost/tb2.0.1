@@ -120,6 +120,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
     List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
     List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
+    List<TSPNotificationBean> mNoti = new ArrayList<>();
 
     private boolean mMessageContainerRedDotIsShow;
     private boolean mMessageRedDotIsShow;
@@ -142,7 +143,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         creatTsHelperConversation();
     }
 
-    /**mNotificaitonRedDotIsShow
+    /**
+     * mNotificaitonRedDotIsShow
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
@@ -274,10 +276,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .map(s -> {
                     int size = mRootView.getListDatas().size();
                     for (int i = 0; i < size; i++) {
-                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
+                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
+                                .getCid());
                         mRootView.getListDatas().get(i).getConversation().setLast_message(message);
                         mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                        mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
+                        mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
+                                .getListDatas().get(i).getConversation().getCid()));
                     }
 
                     return mRootView.getListDatas();
@@ -304,7 +308,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     @Override
                     public void onCompleted() {
                         String[] uidsTmp = messageItemBean.getConversation().getUsids().split(",");
-                        long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                        long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1]
+                                : uidsTmp[0]));
                         SystemRepository.updateTsHelperDeletStatus(mContext, toChatUser_id, true);
                         MessageDao.getInstance(mContext).delEverMessageByCid(messageItemBean.getConversation().getCid());
                     }
@@ -321,7 +326,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 });
 
         // 删除对话信息
-        ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
+        ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType
+                ());
         mRootView.getListDatas().remove(position);
         checkBottomMessageTip();
         addSubscrebe(subscribe);
@@ -402,7 +408,18 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE)
     private void updateNotificaitonReddot(boolean isHide) {
-        mNotificaitonRedDotIsShow=false;
+        String notificationIds = "";
+        notificationIds = getNotificationIds(mNoti, notificationIds);
+        if (!TextUtils.isEmpty(notificationIds)) {
+            mRepository.makeNotificationReaded(notificationIds)
+                    .subscribe(new BaseSubscribeForV2<Object>() {
+                        @Override
+                        protected void onSuccess(Object data) {
+                            LogUtils.d("makeNotificationReaded::" + "onSuccess");
+                        }
+                    });
+        }
+        mNotificaitonRedDotIsShow = false;
         checkBottomMessageTip();
     }
 
@@ -498,7 +515,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             return;
         }
         switch (jpushMessageBean.getType()) {
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im",
+                // "uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
                 handleIMPush(jpushMessageBean);
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED_CONTENT:
@@ -524,7 +542,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             Message message = new Message();
             message.setCid(jsonObject.getInt("cid"));
             message.setSeq(jsonObject.getInt("seq"));
-            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());// 获取推送的信息
+            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());//
+            // 获取推送的信息
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -555,7 +574,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
             last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
-        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM : mUnreadNotificationTotalNums, 0)
+        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM :
+                mUnreadNotificationTotalNums, 0)
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
                     protected void onSuccess(List<TSPNotificationBean> data) {
@@ -591,8 +611,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
-                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())){
+                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
+                                        System.out.println("mNotificaitonRedDotIsShow = " + tspNotificationBean.getId());
                                         mNotificaitonRedDotIsShow = true;
+                                        mNoti.add(tspNotificationBean);
                                     }
 
                             }
@@ -607,9 +629,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         /**
                          * 设置时间
                          */
-                        mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
-                        mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
-                        mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
+                        mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                                .utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
+                        mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                                .utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
+                        mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                                .utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
 
                         /**
                          * 设置提示内容
@@ -656,11 +681,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
                         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                        checkBottomMessageTip();
                     }
                 });
         mUnreadNotificationTotalNums = 0;
-        checkBottomMessageTip();
-
     }
 
 
@@ -775,8 +799,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         }
         mMessageRedDotIsShow = isShowMessgeTip;
         Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
+        System.out.println("------1----------- = " + mNotificaitonRedDotIsShow);
         if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
+            System.out.println("------2----------- = " + mNotificaitonRedDotIsShow);
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
         }
         mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;

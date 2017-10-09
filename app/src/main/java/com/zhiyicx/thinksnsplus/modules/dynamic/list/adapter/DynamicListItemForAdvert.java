@@ -114,7 +114,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
             url = imageBean.getImgUrl();
         }
         view.setLayoutParams(new LinearLayout.LayoutParams(with, with));
-        Glide.with(mContext)
+        Glide.with(view.getContext())
                 .load(url)
                 .asBitmap()
                 .override(with, with)
