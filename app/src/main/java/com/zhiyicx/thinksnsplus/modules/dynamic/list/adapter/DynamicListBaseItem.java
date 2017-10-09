@@ -329,7 +329,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
                         imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-                Glide.with(mContext)
+                Glide.with(view.getContext())
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
                                 propPart, AppApplication.getTOKEN()))
                         .override(w, h)
@@ -341,7 +341,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         propPart, AppApplication.getTOKEN()));
 
             } else {
-                Glide.with(mContext)
+                Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)

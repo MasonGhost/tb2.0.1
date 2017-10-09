@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -15,6 +16,7 @@ import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
+import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -62,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -635,7 +638,12 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+                        if (ApiConfig.APP_DOMAIN.equals(ApiConfig.APP_DOMAIN_DEV)) {
+                            imConfig.setWeb_socket_authority(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+                        } else {
+                            imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+                        }
+
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }
