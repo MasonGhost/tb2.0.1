@@ -133,12 +133,14 @@
     <string name="info_title">完善文章信息</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>
-    <string name="info_publishfailed">被驳回</string>
+    <string name="info_publishsuccess">投稿成功，等待审核</string>
+    <string name="info_publishfailed">投稿失败</string>
+    <string name="info_publishrefuse">被驳回</string>
     <string name="info_cover">上传封面</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
     <!--资讯的列表的信息汇总，来自-浏览数-时间-->
-    <string name="info_list_count">%1$s  ·  %2$s 浏览  ·  %3$s</string>
+    <string name="info_list_count">%1$s\t·\t%2$s浏览\t·\t%3$s</string>
     <string name="info_publish_original">原创</string>
     <string name="info_top">顶</string>
     <string name="info_publish_hint">提示</string>
@@ -280,6 +282,7 @@
     <!--置顶评论-->
     <string name="review">审核通知</string>
     <string name="review_ing">待审核</string>
+    <string name="review_done">已审核</string>
     <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该内容已被删除</string>
@@ -372,6 +375,7 @@
     <string name="transaction_time">交易时间</string>
     <string name="transaction_success">交易成功</string>
     <string name="bill_doing">操作中</string>
+    <string name="bill_doing_fialed">操作失败</string>
     <string name="transaction_fail">交易失败</string>
     <string name="transaction_doing">交易中&#8230;</string>
 
@@ -395,7 +399,7 @@
     <string name="save">保存</string>
     <string name="next">下一步</string>
     <string name="user_tag_choose_tag">选择标签</string>
-    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已选择%2$d个标签</string>
     <string name="user_tag_choosed_tag_format_tip">最多只能选择%d个标签</string>
     <string name="tips">温馨提示</string>
     <string name="tags_tips">标签为全局标签，选择合适的标签，系统可推荐你感兴趣的内容，方便找到相同身份或爱好的人，很重要哦！</string>
@@ -456,9 +460,10 @@
     <string name="qa_update_question">更新问题</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
-    <string name="qa_publish_title_hint">请输入正确的问题并以问号结尾</string>
+    <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
     <string name="qa_publish_title_toast">输入问题请以“？”结束</string>
-    <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
+    <string name="qa_publish_content_hint">详细描述你的问题，有助于收到准确的回答</string>
+    <string name="qa_answer_content_hint">请输入你的回答</string>
     <string name="qa_publish_anonymous">匿名提问</string>
     <string name="qa_publish_enable_anonymous">启用匿名</string>
     <string name="qa_topic">话题</string>
@@ -466,6 +471,10 @@
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
     <string name="create_topic">申请创建话题</string>
+    <string name="input_topic_tip">请输入话题名称</string>
+    <string name="input_topic_des_tip">请输入话题相关描述信息</string>
+
+
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
@@ -500,6 +509,7 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
+    <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
     <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
     <string name="qa_topic_open_all">展开全部</string>
@@ -666,6 +676,29 @@
     <string name="top_dynamic">置顶动态</string>
     <string name="default_delete_user_name">未知用户</string>
     <string name="user_had_deleted">用户被删除</string>
+
+    <!--申请支付等公用-->
+    <string name="apply_for_success">申请成功，请等待审核</string>
+    <string name="apply_for_success_no_audit">申请成功</string>
+    <string name="apply_for_failed">申请失败</string>
+    <string name="pay_alert_ing">支付中&#8230;</string>
+    <string name="pay_alert_success">支付成功</string>
+    <string name="pay_alert_failed">支付失败</string>
+    <!--发布公用-->
+    <string name="publish_success">发布成功</string>
+    <string name="publish_failed">发布失败</string>
+    <string name="update_ing">更新中&#8230;</string>
+    <string name="update_success">更新成功</string>
+    <string name="update_failed">更新失败</string>
+    <string name="upload_pic_failed">图片上传失败</string>
+    <string name="upload_parse_pic_failed">图片解析错误</string>
+    <string name="change_success">修改成功</string>
+    <string name="unknown">未知</string>
+    <string name="domain_formal">正式服</string>
+    <string name="domain_test">测试服</string>
+    <string name="domain_dev">开发服</string>
+    <string name="domain_swith">服务器切换</string>
+    <string name="no_new_version">当前已经是最新版</string>
     <string name="find_live">直播</string>
     <string name="mine_live">我的直播</string>
 </resources>

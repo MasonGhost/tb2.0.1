@@ -161,7 +161,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         if (headerView == null) {
             throw new NullPointerException("header view not be null");
         }
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 //滑动的距离
@@ -172,8 +172,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                         mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
                 // 滑动距离为多少时，toolbar完全不透明
                 int needDistanceY = userNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
-                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " +
-                        "" + needDistanceY + " mDistanceY " + mDistanceY);
+//                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " +
+//                        "" + needDistanceY + " mDistanceY " + mDistanceY);
                 // toolbar文字移动到toolbar中间，这期间的最大滑动距离
                 int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen
                         .toolbar_height);

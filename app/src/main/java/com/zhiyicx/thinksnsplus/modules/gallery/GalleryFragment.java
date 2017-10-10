@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.View;
@@ -31,8 +31,11 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @author LiuChao
@@ -45,6 +48,7 @@ public class GalleryFragment extends TSFragment {
     public static final String BUNDLE_IMAGS = "imags";
     public static final String BUNDLE_IMAGS_POSITON = "imags_positon";
     private static final int MAX_OFF_SIZE = 8;
+
     @BindView(R.id.vp_photos)
     ViewPager mVpPhotos;
     @BindView(R.id.mi_indicator)
@@ -97,7 +101,8 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要退出的fragment
                     GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = fragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Oldstate::" + viewPageState + " position::" + mVpPhotos.getCurrentItem(),
+                            galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(false);
                     }
@@ -107,7 +112,8 @@ public class GalleryFragment extends TSFragment {
                     // 获取到的是当前要进入的fragment
                     GalleryPictureContainerFragment currentFragment = fragmentMap.get(mVpPhotos.getCurrentItem());
                     GalleryPictureFragment galleryPicturFragment = currentFragment.getChildFragment();
-                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(), galleryPicturFragment == null ? " null" : " not null");
+                    LogUtils.d("galleryPicturFragment Newstate::" + viewPageState + "  position::" + mVpPhotos.getCurrentItem(),
+                            galleryPicturFragment == null ? " null" : " not null");
                     if (galleryPicturFragment != null) {
                         galleryPicturFragment.showOrHideOriginBtn(true);
                     }
@@ -117,12 +123,15 @@ public class GalleryFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if (position + 1 < mVpPhotos.getChildCount()) { // 提前加载前后图片
-                    handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
-                }
-                if (position - 1 >= 0) {
-                    handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
-                }
+                Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(aLong -> {
+                    if (position + 1 < allImages.size()) { // 提前加载前后图片
+                        handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
+                    }
+                    if (position - 1 >= 0) {
+                        handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
+                    }
+                });
+
             }
 
             /**
@@ -205,12 +214,11 @@ public class GalleryFragment extends TSFragment {
 
 
     /////////////////////////////////处理转场缩放动画/////////////////////////////////////
-    private ColorDrawable backgroundColor;
+    private ColorDrawable backgroundColor = new ColorDrawable(Color.BLACK);
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void showBackgroundImmediately() {
         if (mRootView.getBackground() == null) {
-            backgroundColor = new ColorDrawable(Color.BLACK);
             mVpPhotos.setBackground(backgroundColor);
             // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
@@ -219,17 +227,12 @@ public class GalleryFragment extends TSFragment {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public ObjectAnimator showBackgroundAnimate() {
-        backgroundColor = new ColorDrawable(Color.BLACK);
-        // mViewPager.setBackground(backgroundColor);
         // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
-        bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mVpPhotos.setBackground(backgroundColor);
-                //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
-            }
+        bgAnim.addUpdateListener(animation -> {
+            mVpPhotos.setBackground(backgroundColor);
+            //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         });
         bgAnim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -245,17 +248,7 @@ public class GalleryFragment extends TSFragment {
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
-            backgroundColor = new ColorDrawable(Color.BLACK);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (getActivity() != null) {// 防止空指针
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(-1, -1);
-                    }
-                }
-            });
             fragment.animationExit(bgAnim);
         } else {
             // ((GalleryActivity) getActivity()).superBackpress();

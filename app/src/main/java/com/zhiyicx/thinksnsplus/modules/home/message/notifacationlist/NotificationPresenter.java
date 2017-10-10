@@ -91,6 +91,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 //            notificationIds.append(",");
 //            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
 //        });
+        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
 
         if (TextUtils.isEmpty(notificationIds.toString())) {
             return;
@@ -103,6 +104,5 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                     }
                 });
         addSubscrebe(subscribe);
-        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
     }
 }

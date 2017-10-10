@@ -712,22 +712,22 @@ public class FileUtils {
         return filePath.substring(lastPoi + 1);
     }
 
-    public static void saveBitmapToFile(Context context, Bitmap bitmap,String name) {
+    public static String saveBitmapToFile(Context context, Bitmap bitmap, String name) {
         String fileDir = getCacheFile(context, false).getAbsolutePath();
         File file = new File(fileDir, name);  //将图片保存到刚创建好的目录下
         try {
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
-        } catch (FileNotFoundException e) {
+            return file.getAbsolutePath();
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
     }
 
-    public static Bitmap readImgFromFile(Context context,String name) {
-        return BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/"+name);
+    public static Bitmap readImgFromFile(Context context, String name) {
+        return BitmapFactory.decodeFile(getCacheFile(context, false).getAbsolutePath() + "/" + name);
     }
 
     /**

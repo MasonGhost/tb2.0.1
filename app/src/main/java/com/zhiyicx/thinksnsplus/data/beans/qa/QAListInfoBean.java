@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
 import com.zhiyicx.thinksnsplus.data.beans.QAListInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AnswerInfoBeanConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AnswerInfoListBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoListBeanConvert;
@@ -34,7 +35,6 @@ import java.util.List;
  */
 @Entity
 public class QAListInfoBean extends BaseListBean implements Serializable {
-    @Transient
     private static final long serialVersionUID = -4337619110087134442L;
     /**
      * id : 1
@@ -75,11 +75,12 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     private String created_at;
     private String updated_at;
     private boolean watched;
+    private boolean has_adoption;
     @Convert(converter = AnswerInfoBeanConvert.class, columnType = String.class)
     private AnswerInfoBean answer;
-    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
+    @Convert(converter = AnswerInfoListBeanConvert.class, columnType = String.class)
     private List<AnswerInfoBean> invitation_answers; // 问题邀请用户回答的答案列表，具体数据结构参考「回答」文档。
-    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
+    @Convert(converter = AnswerInfoListBeanConvert.class, columnType = String.class)
     private List<AnswerInfoBean> adoption_answers; // 问题采纳的答案列表，具体数据结构参考「回答」文档。
     @Convert(converter = TopicConvert.class, columnType = String.class)
     private List<QATopicBean> topics; // 问题话题列表，参考「话题」文档。
@@ -290,64 +291,68 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.my_answer = my_answer;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 9040246)
+    public static class TopicConvert extends BaseConvert<List<QATopicBean>> {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.subject);
+        dest.writeString(this.body);
+        dest.writeInt(this.anonymity);
+        dest.writeDouble(this.amount);
+        dest.writeInt(this.automaticity);
+        dest.writeInt(this.look);
+        dest.writeInt(this.excellent);
+        dest.writeInt(this.status);
+        dest.writeInt(this.comments_count);
+        dest.writeInt(this.answers_count);
+        dest.writeInt(this.watchers_count);
+        dest.writeInt(this.likes_count);
+        dest.writeInt(this.views_count);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeByte(this.has_adoption ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.answer, flags);
+        dest.writeTypedList(this.invitation_answers);
+        dest.writeTypedList(this.adoption_answers);
+        dest.writeTypedList(this.topics);
+        dest.writeTypedList(this.invitations);
+        dest.writeParcelable(this.user, flags);
+        dest.writeTypedList(this.answerInfoBeanList);
+        dest.writeParcelable(this.my_answer, flags);
+    }
+
+    public AnswerInfoBean getAnswer() {
+        return this.answer;
+    }
+
+    public void setAnswer(AnswerInfoBean answer) {
+        this.answer = answer;
+    }
+
     public List<AnswerInfoBean> getInvitation_answers() {
-        if (invitation_answers == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            AnswerInfoBeanDao targetDao = daoSession.getAnswerInfoBeanDao();
-            List<AnswerInfoBean> invitation_answersNew = targetDao._queryQAListInfoBean_Invitation_answers(id);
-            synchronized (this) {
-                if (invitation_answers == null) {
-                    invitation_answers = invitation_answersNew;
-                }
-            }
-        }
-        return invitation_answers;
+        return this.invitation_answers;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 1217704223)
-    public synchronized void resetInvitation_answers() {
-        invitation_answers = null;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1912618879)
     public List<AnswerInfoBean> getAdoption_answers() {
-        if (adoption_answers == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            AnswerInfoBeanDao targetDao = daoSession.getAnswerInfoBeanDao();
-            List<AnswerInfoBean> adoption_answersNew = targetDao._queryQAListInfoBean_Adoption_answers(id);
-            synchronized (this) {
-                if (adoption_answers == null) {
-                    adoption_answers = adoption_answersNew;
-                }
-            }
-        }
-        return adoption_answers;
+        return this.adoption_answers;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 2109537705)
-    public synchronized void resetAdoption_answers() {
-        adoption_answers = null;
+    public boolean getHas_adoption() {
+        return this.has_adoption;
+    }
+
+    public void setHas_adoption(boolean has_adoption) {
+        this.has_adoption = has_adoption;
     }
 
     /**
@@ -372,9 +377,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         return answerInfoBeanList;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 562190035)
     public synchronized void resetAnswerInfoBeanList() {
         answerInfoBeanList = null;
@@ -416,102 +419,14 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 483821523)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getQAListInfoBeanDao() : null;
     }
 
-    public AnswerInfoBean getAnswer() {
-        return this.answer;
-    }
-
-    public void setAnswer(AnswerInfoBean answer) {
-        this.answer = answer;
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1951279767)
-    private transient QAListInfoBeanDao myDao;
-
-    @Generated(hash = 1991260694)
-    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, AnswerInfoBean answer, List<QATopicBean> topics, List<UserInfoBean> invitations, UserInfoBean user, AnswerInfoBean my_answer) {
-        this.id = id;
-        this.user_id = user_id;
-        this.subject = subject;
-        this.body = body;
-        this.anonymity = anonymity;
-        this.amount = amount;
-        this.automaticity = automaticity;
-        this.look = look;
-        this.excellent = excellent;
-        this.status = status;
-        this.comments_count = comments_count;
-        this.answers_count = answers_count;
-        this.watchers_count = watchers_count;
-        this.likes_count = likes_count;
-        this.views_count = views_count;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.watched = watched;
-        this.answer = answer;
-        this.topics = topics;
-        this.invitations = invitations;
-        this.user = user;
-        this.my_answer = my_answer;
-    }
-
-    @Generated(hash = 1163254106)
     public QAListInfoBean() {
-    }
-
-    public static class TopicConvert extends BaseConvert<List<QATopicBean>> {
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.subject);
-        dest.writeString(this.body);
-        dest.writeInt(this.anonymity);
-        dest.writeDouble(this.amount);
-        dest.writeInt(this.automaticity);
-        dest.writeInt(this.look);
-        dest.writeInt(this.excellent);
-        dest.writeInt(this.status);
-        dest.writeInt(this.comments_count);
-        dest.writeInt(this.answers_count);
-        dest.writeInt(this.watchers_count);
-        dest.writeInt(this.likes_count);
-        dest.writeInt(this.views_count);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.answer, flags);
-        dest.writeTypedList(this.invitation_answers);
-        dest.writeTypedList(this.adoption_answers);
-        dest.writeTypedList(this.topics);
-        dest.writeTypedList(this.invitations);
-        dest.writeParcelable(this.user, flags);
-        dest.writeTypedList(this.answerInfoBeanList);
     }
 
     protected QAListInfoBean(Parcel in) {
@@ -534,6 +449,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.watched = in.readByte() != 0;
+        this.has_adoption = in.readByte() != 0;
         this.answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
         this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
         this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
@@ -541,6 +457,38 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.my_answer = in.readParcelable(AnswerInfoBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 61342597)
+    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, boolean has_adoption, AnswerInfoBean answer, List<AnswerInfoBean> invitation_answers, List<AnswerInfoBean> adoption_answers, List<QATopicBean> topics,
+            List<UserInfoBean> invitations, UserInfoBean user, AnswerInfoBean my_answer) {
+        this.id = id;
+        this.user_id = user_id;
+        this.subject = subject;
+        this.body = body;
+        this.anonymity = anonymity;
+        this.amount = amount;
+        this.automaticity = automaticity;
+        this.look = look;
+        this.excellent = excellent;
+        this.status = status;
+        this.comments_count = comments_count;
+        this.answers_count = answers_count;
+        this.watchers_count = watchers_count;
+        this.likes_count = likes_count;
+        this.views_count = views_count;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.watched = watched;
+        this.has_adoption = has_adoption;
+        this.answer = answer;
+        this.invitation_answers = invitation_answers;
+        this.adoption_answers = adoption_answers;
+        this.topics = topics;
+        this.invitations = invitations;
+        this.user = user;
+        this.my_answer = my_answer;
     }
 
     public static final Creator<QAListInfoBean> CREATOR = new Creator<QAListInfoBean>() {
@@ -554,4 +502,11 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
             return new QAListInfoBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1951279767)
+    private transient QAListInfoBeanDao myDao;
+
 }

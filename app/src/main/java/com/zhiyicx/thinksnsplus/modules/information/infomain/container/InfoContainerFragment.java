@@ -24,6 +24,8 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
@@ -51,6 +53,8 @@ import butterknife.OnClick;
 import rx.Observable;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
@@ -76,6 +80,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected static final int DEFAULT_OFFSET_PAGE = 3;
     public static final String RECOMMEND_INFO = "-1";
     public static final int REQUEST_CODE = 0;
+
+    private UserCertificationInfo mUserCertificationInfo;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -127,6 +133,21 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     }
 
     @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+        mUserCertificationInfo = userCertificationInfo;
+        if (userCertificationInfo.getStatus() == 1) {
+            if (mPresenter.isNeedPayTip()) {
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
+        } else {
+            mCertificationAlertPopWindow.show();
+        }
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.information);
     }
@@ -139,16 +160,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     protected void setRightClick() {
         // 发布提示 1、首先需要认证 2、需要付费
-        if (mPresenter.checkCertification()){
-            if (mPresenter.isNeedPayTip()){
-                mPayAlertPopWindow.show();
-                mPresenter.savePayTip(false);
-            } else {
-                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-            }
-        } else {
-            mCertificationAlertPopWindow.show();
+        if (mPresenter.handleTouristControl()) {
+            return;
         }
+        mPresenter.checkCertification();
     }
 
     @Override
@@ -208,7 +223,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
         mInfoTypeBean.getMy_cates().add(0, new InfoTypeCatesBean(-1L, getString(R.string
-                .info_recommend),true));
+                .info_recommend), true));
         for (InfoTypeCatesBean myCatesBean : infoType.getMy_cates()) {
             if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
                     && !mTitle.contains(myCatesBean.getName())) {
@@ -247,8 +262,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 });
     }
 
-    private void initPopWindow(){
-        if (mCertificationAlertPopWindow == null){
+    private void initPopWindow() {
+
+        if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item2Str(getString(R.string.certification_personage))
@@ -262,23 +278,46 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
                     .item2ClickListener(() -> {// 个人认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 0);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 0);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 1);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 1);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .build();
         }
-        if (mPayAlertPopWindow == null){
+        if (mPayAlertPopWindow == null) {
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))

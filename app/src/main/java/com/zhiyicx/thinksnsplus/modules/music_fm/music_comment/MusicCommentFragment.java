@@ -300,6 +300,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Void aVoid) {
+                        if (mIlvComment==null) {
+                            return Observable.just(false);
+                        }
                         Rect rect = new Rect();
                         //获取root在窗体的可视区域
                         mIlvComment.getWindowVisibleDisplayFrame(rect);
@@ -312,6 +315,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
+                    if(mVShadow==null){
+                        return;
+                    }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
                     if (aBoolean) {
                         mVShadow.setVisibility(View.VISIBLE);

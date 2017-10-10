@@ -5,23 +5,19 @@ import android.os.Parcel;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.QAListInfoBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.RewardsListBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * @author Catherine
@@ -30,8 +26,7 @@ import org.greenrobot.greendao.DaoException;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class AnswerInfoBean extends BaseListBean implements Serializable{
-    @Transient
+public class AnswerInfoBean extends BaseListBean implements Serializable {
     private static final long serialVersionUID = -6138662175756334333L;
 
     @Id
@@ -49,68 +44,24 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     private int views_count; // 回答浏览量统计
     private String created_at;
     private String updated_at;
-    @Convert(converter = UserInfoBeanConvert.class,columnType = String.class)
+    @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean user;
     private boolean liked;
     private boolean collected;
     @Transient
-    private  List<AnswerCommentListBean> commentList;
+    private List<AnswerCommentListBean> commentList;
     private boolean rewarded;
-    @Convert(converter = AnswerDigListBeanConvert.class,columnType = String.class)
+    @Convert(converter = AnswerDigListBeanConvert.class, columnType = String.class)
     private List<AnswerDigListBean> likes;
-    @Convert(converter = RewardsListBeanConvert.class,columnType = String.class)
+    @Convert(converter = RewardsListBeanConvert.class, columnType = String.class)
     private List<RewardsListBean> rewarders;
-    @ToOne(joinProperty = "question_id")
+    @Convert(converter = QAListInfoBeanConvert.class, columnType = String.class)
     private QAListInfoBean question;
-    private boolean could; // 是否开启了围观
+    private boolean could = true; // 是否开启了围观,true > 可以直接看到
     private int onlookers_count; // 围观人数
 
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 1250738736)
-    private transient AnswerInfoBeanDao myDao;
-
-    @Generated(hash = 1092424070)
-    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
-            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
-            boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
-            List<RewardsListBean> rewarders, boolean could, int onlookers_count) {
-        this.id = id;
-        this.question_id = question_id;
-        this.user_id = user_id;
-        this.body = body;
-        this.anonymity = anonymity;
-        this.adoption = adoption;
-        this.invited = invited;
-        this.comments_count = comments_count;
-        this.rewards_amount = rewards_amount;
-        this.rewarder_count = rewarder_count;
-        this.likes_count = likes_count;
-        this.views_count = views_count;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.user = user;
-        this.liked = liked;
-        this.collected = collected;
-        this.rewarded = rewarded;
-        this.likes = likes;
-        this.rewarders = rewarders;
-        this.could = could;
-        this.onlookers_count = onlookers_count;
+    public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>> {
     }
-
-    @Generated(hash = 1616850933)
-    public AnswerInfoBean() {
-    }
-
-    @Generated(hash = 527827701)
-    private transient Long question__resolvedKey;
-
-    public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>>{}
 
     @Override
     public Long getMaxId() {
@@ -125,6 +76,16 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     @Keep
     public void setCommentList(List<AnswerCommentListBean> commentList) {
         this.commentList = commentList;
+    }
+
+    @Keep
+    public QAListInfoBean getQuestion() {
+        return question;
+    }
+
+    @Keep
+    public void setQuestion(QAListInfoBean question) {
+        this.question = question;
     }
 
     @Override
@@ -317,71 +278,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.user = user;
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1451724453)
-    public QAListInfoBean getQuestion() {
-        Long __key = this.question_id;
-        if (question__resolvedKey == null || !question__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            QAListInfoBeanDao targetDao = daoSession.getQAListInfoBeanDao();
-            QAListInfoBean questionNew = targetDao.load(__key);
-            synchronized (this) {
-                question = questionNew;
-                question__resolvedKey = __key;
-            }
-        }
-        return question;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 333227727)
-    public void setQuestion(QAListInfoBean question) {
-        synchronized (this) {
-            this.question = question;
-            question_id = question == null ? null : question.getId();
-            question__resolvedKey = question_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
     public boolean getCould() {
         return this.could;
     }
@@ -432,13 +328,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.onlookers_count = onlookers_count;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 705869050)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAnswerInfoBeanDao() : null;
-    }
-
     protected AnswerInfoBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -465,6 +354,42 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.question = in.readParcelable(QAListInfoBean.class.getClassLoader());
         this.could = in.readByte() != 0;
         this.onlookers_count = in.readInt();
+    }
+
+    @Generated(hash = 1858838836)
+    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
+            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
+            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
+            boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
+            List<RewardsListBean> rewarders, QAListInfoBean question, boolean could,
+            int onlookers_count) {
+        this.id = id;
+        this.question_id = question_id;
+        this.user_id = user_id;
+        this.body = body;
+        this.anonymity = anonymity;
+        this.adoption = adoption;
+        this.invited = invited;
+        this.comments_count = comments_count;
+        this.rewards_amount = rewards_amount;
+        this.rewarder_count = rewarder_count;
+        this.likes_count = likes_count;
+        this.views_count = views_count;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.user = user;
+        this.liked = liked;
+        this.collected = collected;
+        this.rewarded = rewarded;
+        this.likes = likes;
+        this.rewarders = rewarders;
+        this.question = question;
+        this.could = could;
+        this.onlookers_count = onlookers_count;
+    }
+
+    @Generated(hash = 1616850933)
+    public AnswerInfoBean() {
     }
 
     public static final Creator<AnswerInfoBean> CREATOR = new Creator<AnswerInfoBean>() {

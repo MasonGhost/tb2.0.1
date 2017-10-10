@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
 
     @Override
     public long saveSingleData(InfoListDataBean singleData) {
-        return 0;
+        return mInfoListDataBeanDao.insertOrReplace(singleData);
     }
 
     @Override
@@ -44,22 +44,22 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
 
     @Override
     public InfoListDataBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return getRDaoSession().getInfoListDataBeanDao().load(primaryKey);
     }
 
     @Override
     public List<InfoListDataBean> getMultiDataFromCache() {
-        return null;
+        return getRDaoSession().getInfoListDataBeanDao().loadAll();
     }
 
     @Override
     public void clearTable() {
-
+        getWDaoSession().getInfoListDataBeanDao().deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        getWDaoSession().getInfoListDataBeanDao().deleteByKey(primaryKey);
     }
 
     @Override
@@ -98,14 +98,15 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
 
     /**
      * 根据分类id来获取列表
+     *
      * @param cate_id 分类id
      * @return list
      */
-    public List<InfoListDataBean> getInfoByType(Long cate_id){
+    public List<InfoListDataBean> getInfoByType(Long cate_id) {
         try {
             return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Info_type.eq(cate_id)).build().list();
-        } catch (Exception e){
-            return new ArrayList<InfoListDataBean>();
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
 }

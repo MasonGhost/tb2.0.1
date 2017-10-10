@@ -22,6 +22,7 @@ public interface SearchSomeOneContract {
 
         void searchUser(String name);
 
+        void getRecommentUser();
     }
 
     interface Repository {

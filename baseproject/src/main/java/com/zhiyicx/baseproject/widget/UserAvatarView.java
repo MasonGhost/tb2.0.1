@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
  * @Describe
@@ -46,7 +48,8 @@ public class UserAvatarView extends FrameLayout {
         if (attrs != null) {
             TypedArray array = getContext().obtainStyledAttributes(attrs,
                     R.styleable.userAvatarView);
-            mAvatarSize = array.getDimensionPixelOffset(R.styleable.userAvatarView_ts_avatare_size, getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list));
+            mAvatarSize = array.getDimensionPixelOffset(R.styleable.userAvatarView_ts_avatare_size, getContext().getResources()
+                    .getDimensionPixelOffset(R.dimen.headpic_for_list));
             mVerifyRatio = array.getFloat(R.styleable.userAvatarView_ts_ratio, DEFAULT_RATIO);
             array.recycle();
         } else {

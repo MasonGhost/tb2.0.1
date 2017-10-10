@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
-    private static final int DEFAULT_OFFSET_PAGE = 5;
+    private static final int DEFAULT_OFFSET_PAGE = 4;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -103,12 +103,9 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected void initData() {
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         supportFlymeSutsusbar();
+        mVpFragment.setCurrentItem(0);
+
     }
 
     @Override
@@ -169,15 +166,13 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
         };
     }
 
-    public void test(boolean up) {
+    public void addBtnAnimation(boolean up) {
         QA_Fragment qaFragment = (QA_Fragment) getParentFragment();
         if (up){
             qaFragment.animateOut();
         }else{
             qaFragment.animateIn();
         }
-        LogUtils.d("test::" + getFragmentManager().getFragments().get(0).getClass().getSimpleName());
-
     }
 
 }

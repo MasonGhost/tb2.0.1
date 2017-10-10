@@ -19,6 +19,6 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="@dimen/spacing_bigger_large"
         android:visibility="gone"
-        ></net.lucode.hackware.magicindicator.MagicIndicator>
+        />
 
 </FrameLayout>

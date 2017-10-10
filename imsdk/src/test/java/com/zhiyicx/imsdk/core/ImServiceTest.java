@@ -69,4 +69,5 @@ public class ImServiceTest {
         mImService.setParams(web_socket_authority, token, serial, comprs);
         Assert.assertEquals(params, mImService.getParams());
     }
+
 }

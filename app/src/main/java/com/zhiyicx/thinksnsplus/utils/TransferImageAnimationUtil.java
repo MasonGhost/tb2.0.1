@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 public class TransferImageAnimationUtil {
     // 动画持续时间
-    public static final int ANIMATION_DURATION = 300;
+    public static final int ANIMATION_DURATION = 350;
 
     /**
      * 退出时的控件缩放处理
@@ -49,7 +49,7 @@ public class TransferImageAnimationUtil {
             return;
         }
 
-        float startScale;
+        float startScale = 0;
         if ((float) finalBounds.width() / finalBounds.height()
                 > (float) startBounds.width() / startBounds.height()) {
             // 如果大图的宽度对于高度比小图的宽度对于高度更宽，以高度比来放缩，这样能够避免动画结束，小图边缘出现空白
@@ -57,8 +57,8 @@ public class TransferImageAnimationUtil {
         } else {
             startScale = (float) startBounds.width() / finalBounds.width();
         }
-
-        final float startScaleFinal = startScale;
+        float startWScale = (float) startBounds.width() / finalBounds.width();
+        float startHScale = (float) startBounds.height() / finalBounds.height();
 
         int deltaTop = startBounds.top - finalBounds.top;
         int deltaLeft = startBounds.left - finalBounds.left;
@@ -68,25 +68,16 @@ public class TransferImageAnimationUtil {
         // 位移+缩小
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             imageView.animate().translationX(deltaLeft).translationY(deltaTop)
-                    .scaleY(startScaleFinal)
-                    .scaleX(startScaleFinal).setDuration(ANIMATION_DURATION)
+                    .scaleY(startHScale)
+                    .scaleX(startWScale)
+                    .alpha(.1f).setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                imageView.animate().alpha(0.0f).setDuration(200).withEndAction(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                            }
-                                        });
-                            }
                         }
                     });
         }
-
         AnimatorSet animationSet = new AnimatorSet();
         animationSet.setDuration(ANIMATION_DURATION);
         animationSet.setInterpolator(new AccelerateDecelerateInterpolator());

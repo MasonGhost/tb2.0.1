@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -47,6 +48,13 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mRvList.addItemDecoration(new LinearDecoration(0, getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0, 0));
+
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
@@ -78,7 +86,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
         QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
             protected int getExcellentTag(boolean isExcellent) {
-                boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]);
+                boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[1]) || getCurrentType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
         };

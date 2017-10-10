@@ -55,7 +55,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_TOPIC;
 
 /**
  * @author Catherine
@@ -130,7 +129,14 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     protected int getBodyLayoutId() {
         return R.layout.fragment_topic_detail;
     }
-
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.white;
+    }
     @Override
     protected void setRightClick() {
         // 点击弹起分享框
@@ -252,7 +258,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
         setCenterText(mQaTopicBean.getName());
         mTvTopicName.setText(mQaTopicBean.getName());
         updateFollowState();
-        mTvTopicDescription.setText(mQaTopicBean.getDescription());
+        mTvTopicDescription.setText(String.format(getString(R.string.qa_topic_description), mQaTopicBean.getDescription()));
         mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
         mViewDiver.setVisibility(mQaTopicBean.getExperts_count() == 0 ? View.GONE : View.VISIBLE);
@@ -346,8 +352,6 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
                 });
     }
 
-    @Override
-    protected boolean showToolBarDivider() {
-        return true;
-    }
+
+
 }

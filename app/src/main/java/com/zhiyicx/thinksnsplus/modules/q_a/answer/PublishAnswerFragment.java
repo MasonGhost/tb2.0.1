@@ -3,27 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * @Author Jliuer
@@ -36,6 +28,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
+    public static final String BUNDLE_SOURCE_MARK = "source_mark";
     public static final String BUNDLE_SOURCE_TITLE = "source_title"; // 发布回答的提示语是问题的标题
 
     private PublishType mType;
@@ -77,9 +70,11 @@ public class PublishAnswerFragment extends PublishContentFragment {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
         }
-        if (!TextUtils.isEmpty(mTitle)){
-            mRicheTest.setHint(mTitle);
-        }
+//        if (!TextUtils.isEmpty(mTitle)){
+//            mRicheTest.setHint(mTitle);
+//        }
+        // 所有都显示一样的提示语
+        mRicheTest.setHint(getString(R.string.qa_answer_content_hint));
     }
 
     @Override
@@ -121,17 +116,28 @@ public class PublishAnswerFragment extends PublishContentFragment {
     }
 
     @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
     protected void setLeftClick() {
         super.onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
-        if (!mToolbarRight.isEnabled() || mType != PublishType.UPDATE_ANSWER) {
-            super.onBackPressed();
-        } else {
-            initEditWarningPop();
-        }
+        super.onBackPressed();
+        // 暂时屏蔽回答草稿箱功能
+//        initEditWarningPop();
+//        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
+//            super.onBackPressed();
+//        } else {
+//            initEditWarningPop();
+//        }
     }
 
     /**
@@ -151,7 +157,19 @@ public class PublishAnswerFragment extends PublishContentFragment {
         bundle.putString(BUNDLE_SOURCE_TITLE, title);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
 
+    public static void startQActivity(Context context, PublishType type, AnswerDraftBean realData) {
+
+        Intent intent = new Intent(context, PublishAnswerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
+        bundle.putLong(BUNDLE_SOURCE_ID, realData.getId());
+        bundle.putLong(BUNDLE_SOURCE_MARK, realData.getMark());
+        bundle.putString(BUNDLE_SOURCE_BODY, realData.getBody());
+        bundle.putString(BUNDLE_SOURCE_TITLE, "");
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     /**

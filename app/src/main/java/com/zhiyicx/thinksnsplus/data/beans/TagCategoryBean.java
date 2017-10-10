@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -38,6 +39,8 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
     @Id
     private Long id;
     private String name;
+    private int weight;
+
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "tag_category_id")})
     private List<UserTagBean> tags;
 
@@ -57,13 +60,15 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "TagCategoryBean{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", tags=" + tags +
-                '}';
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public TagCategoryBean() {
     }
 
     @Override
@@ -75,7 +80,50 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
         dest.writeString(this.name);
+        dest.writeInt(this.weight);
         dest.writeTypedList(this.tags);
+    }
+
+    protected TagCategoryBean(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.weight = in.readInt();
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+    }
+
+    @Generated(hash = 445643113)
+    public TagCategoryBean(Long id, String name, int weight) {
+        this.id = id;
+        this.name = name;
+        this.weight = weight;
+    }
+
+    public static final Creator<TagCategoryBean> CREATOR = new Creator<TagCategoryBean>() {
+        @Override
+        public TagCategoryBean createFromParcel(Parcel source) {
+            return new TagCategoryBean(source);
+        }
+
+        @Override
+        public TagCategoryBean[] newArray(int size) {
+            return new TagCategoryBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1695353269)
+    private transient TagCategoryBeanDao myDao;
+
+    @Override
+    public String toString() {
+        return "TagCategoryBean{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", weight=" + weight +
+                ", tags=" + tags +
+                '}';
     }
 
     /**
@@ -148,37 +196,4 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTagCategoryBeanDao() : null;
     }
-
-    public TagCategoryBean() {
-    }
-
-    protected TagCategoryBean(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.name = in.readString();
-        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
-    }
-
-    @Generated(hash = 1988810611)
-    public TagCategoryBean(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public static final Creator<TagCategoryBean> CREATOR = new Creator<TagCategoryBean>() {
-        @Override
-        public TagCategoryBean createFromParcel(Parcel source) {
-            return new TagCategoryBean(source);
-        }
-
-        @Override
-        public TagCategoryBean[] newArray(int size) {
-            return new TagCategoryBean[size];
-        }
-    };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1695353269)
-    private transient TagCategoryBeanDao myDao;
 }

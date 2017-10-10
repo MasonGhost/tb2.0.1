@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
@@ -21,9 +22,8 @@ import java.io.Serializable;
  * @Description 
  */
 @Entity
-public class AnswerDigListBean extends BaseListBean implements Serializable {
+public class AnswerDigListBean extends BaseListBean implements Serializable ,Parcelable{
 
-    @Transient
     private static final long serialVersionUID = 5985608387262498425L;
 
     @Id

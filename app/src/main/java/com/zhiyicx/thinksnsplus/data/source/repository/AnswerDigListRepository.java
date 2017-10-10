@@ -43,7 +43,7 @@ public class AnswerDigListRepository extends BaseQARepository implements AnswerD
     public Observable<List<AnswerDigListBean>> getAnswerDigListV2(Long answer_id, Long max_id) {
         return mQAClient.getAnswerDigList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<AnswerDigListBean>, Observable<List<AnswerDigListBean>>>() {
                     @Override
                     public Observable<List<AnswerDigListBean>> call(List<AnswerDigListBean> answerDigListBeen) {
@@ -73,6 +73,8 @@ public class AnswerDigListRepository extends BaseQARepository implements AnswerD
                             return Observable.just(answerDigListBeen);
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 }

@@ -163,7 +163,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
 
         try {
-            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            if (holder.getView(R.id.iv_headpic).getVisibility() == View.VISIBLE) {
+                ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            }
 
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
@@ -205,23 +207,23 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
                             .position(contentLenght, content.length())
-                            .dataPosition(position)
+                            .dataPosition(holder.getAdapterPosition())
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .disPlayText(true)
                             .build();
                 } else {
+                    int test_position=holder.getAdapterPosition();
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
                             .position(contentLenght, content.length())
-                            .dataPosition(position)
+                            .dataPosition(test_position)
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
-                            .dataPosition(position)
                             .amount(dynamicBean.getPaid_node().getAmount())
                             .disPlayText(false)
                             .build();
@@ -327,7 +329,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
                         imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-                Glide.with(mContext)
+                Glide.with(view.getContext())
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
                                 propPart, AppApplication.getTOKEN()))
                         .override(w, h)
@@ -335,8 +337,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
+                LogUtils.i("dynamic item image" + ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
+                        propPart, AppApplication.getTOKEN()));
+
             } else {
-                Glide.with(mContext)
+                Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)

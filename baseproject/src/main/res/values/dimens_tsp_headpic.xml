@@ -16,6 +16,8 @@
     表头像、聊详情页头像、修改资料-更换头像
     -->
     <dimen name="headpic_for_list">38dp</dimen>
+
+    <dimen name="headpic_for_question_list">20dp</dimen>
     <!--
    使用场景：动态详情页-顶部标题栏/最新点赞人/详情页评论
     列表头像

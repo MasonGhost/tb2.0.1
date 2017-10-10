@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -70,10 +71,16 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         // 被驳回和投稿中只显示内容
         holder.setVisible(R.id.ll_info, mIsShowContent ? View.GONE : View.VISIBLE);
         holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
-        holder.setText(R.id.tv_info_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent()));
+        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
+        try {
+            content = content.replaceAll(realData.getSubject(), "");
+        } catch (Exception e) {
+            LogUtils.d("没有摘要");
+        }
+        holder.setText(R.id.tv_info_content, content);
         // 投稿来源，浏览数，时间
-        String from = realData.getFrom().equals(title.getContext().getString(R.string
-                .info_publish_original)) ?
+        String from = title.getContext().getString(R.string
+                .info_publish_original).equals(realData.getFrom()) ?
                 realData.getAuthor() : realData.getFrom();
         String infoData = String.format(title.getContext().getString(R.string.info_list_count)
                 , from, ConvertUtils.numberConvert(realData.getHits()), TimeUtils.getTimeFriendlyNormal(realData

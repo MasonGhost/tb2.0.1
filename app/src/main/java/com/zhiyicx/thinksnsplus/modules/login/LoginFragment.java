@@ -131,7 +131,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private void initListener() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -148,7 +148,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -157,7 +157,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
+                        .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
                         mAccountBean.setId(new Date().getTime());
@@ -169,19 +170,19 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         RxView.clicks(mIvClear)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mEtCompleteInput.setText(""));
 
         RxView.clicks(mTvLoginByQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     thridLogin(SHARE_MEDIA.QQ);
 
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
 
                     thridLogin(SHARE_MEDIA.SINA);
@@ -189,7 +190,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         RxView.clicks(mTvLoginByWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     thridLogin(SHARE_MEDIA.WEIXIN);
                 });
@@ -309,6 +310,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      * 设置登录按钮是否可点击
      */
     private void setConfirmEnable() {
+        showErrorTips(null);
         if (mIsPhoneEdited && mIsPasswordEdited) {
             mBtLoginLogin.setEnabled(true);
         } else {
@@ -337,8 +339,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private void initAccount() {
         List<String> list = new ArrayList<>();
-        Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
-//        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
+
+        mEtCompleteInput.setDropDownBackgroundResource(R.color.white);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null) {
             mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
@@ -451,8 +453,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void registerByThrid(String provider, String access_token) {
         Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_THIRD_INFO, new ThridInfoBean(provider, access_token, mThridName));
         intent.putExtras(bundle);
         startActivity(intent);
     }

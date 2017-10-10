@@ -72,18 +72,6 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     protected boolean showToolbar() {
         return false;
     }

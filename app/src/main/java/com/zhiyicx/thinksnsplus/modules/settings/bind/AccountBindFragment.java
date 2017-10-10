@@ -212,7 +212,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     private void initListener() {
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVerifyCodeEnable) {
                         mBtSendVerifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
@@ -222,7 +222,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 });
         // 邮箱输入观察
         RxTextView.textChanges(mEtEmail)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVerifyCodeEnable) {
                         mBtSendVerifyCode.setEnabled(RegexUtils.isEmail(charSequence));
@@ -232,14 +232,14 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 });
         // 验证码观察
         RxTextView.textChanges(mEtVerifyCode)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 密码观察
         RxTextView.textChanges(mEtPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isPassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -264,7 +264,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                     }
                 });    // 密码观察
         RxTextView.textChanges(mEtSurePassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isSurePassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -291,7 +291,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         // 点击发送验证码
         RxView.clicks(mBtSendVerifyCode)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentType == DEAL_TYPE_PHONE) {
                         mPresenter.getVertifyCode(mEtPhone.getText().toString().trim(), mIsBind);
@@ -302,7 +302,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         // 点击绑定/解除按钮
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mIsBind) {// 解绑
                         mPresenter.unBindPhoneOrEmail(mEtPassword.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);

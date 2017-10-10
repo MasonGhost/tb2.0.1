@@ -79,6 +79,10 @@ public class DynamicDetailAdvertHeader {
         mLLAdvert.setVisibility(View.GONE);
     }
 
+    public void showAdvert() {
+        mLLAdvert.setVisibility(View.VISIBLE);
+    }
+
     public void setHeight(int height) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, height);

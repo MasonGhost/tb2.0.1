@@ -240,7 +240,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth().getUser_id());
         return datas;
     }
 
@@ -390,7 +390,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, dynamicBean.getId()
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

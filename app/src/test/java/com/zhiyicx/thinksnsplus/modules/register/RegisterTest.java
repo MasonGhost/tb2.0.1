@@ -31,8 +31,8 @@ public class RegisterTest {
     public void finalTest() {
         final BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMax_retry_count(1);
-        System.out.println("backgroundRequestTaskBean = " + backgroundRequestTaskBean.getMax_retry_count());
         Assert.assertTrue(backgroundRequestTaskBean.getMax_retry_count() == 1);
     }
+
 
 }

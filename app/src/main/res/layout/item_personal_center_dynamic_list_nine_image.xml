@@ -289,5 +289,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_small"
         android:layout_below="@id/dcv_comment"
-        android:background="@color/bgColor"></View>
+        android:background="@color/bgColor"/>
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local.db;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -17,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
  */
 
 public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
+    @SuppressLint("StaticFieldLeak")
     private static final UpDBHelper sUpDBHelper = new UpDBHelper(AppApplication.getContext(), DBConfig.DB_NAME);
 
     public CommonCacheImpl(Application context) {

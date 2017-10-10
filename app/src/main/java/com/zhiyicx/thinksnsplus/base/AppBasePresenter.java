@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -23,7 +25,7 @@ import rx.functions.Func1;
  */
 
 public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePresenter<R, V> implements IBaseTouristPresenter {
-
+    private static final String DEFAULT_WALLET_EXCEPTION_MESSAGE = "balance_check";
     @Inject
     protected AuthRepository mAuthRepository;
     @Inject
@@ -56,7 +58,7 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
         }
     }
 
-    public Observable<Object> handleWalletBlance(long amount) {
+    protected Observable<Object> handleWalletBlance(long amount) {
         return mCommentRepository.getCurrentLoginUserInfo()
                 .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
                     @Override
@@ -66,14 +68,20 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
                             mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
                             if (userInfoBean.getWallet().getBalance() < amount) {
                                 mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
+                                return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                             }
                         }
                         return Observable.just(userInfoBean);
                     }
-                }, throwable -> {
-//                    mRootView.showSnackErrorMessage(mContext.getString(com.zhiyicx.thinksnsplus.R.string.transaction_fail));
-                    return null;
-                }, () -> null);
+                });
+    }
+
+    protected boolean isBalanceCheck(Throwable throwable) {
+        if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_WALLET_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
+            mRootView.dismissSnackBar();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -119,7 +119,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         this.mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         //持有wifi锁，避免后台wifi休眠
-        this.mWifiLock = ((WifiManager) context.getSystemService(Context.WIFI_SERVICE))
+        this.mWifiLock = ((WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
         this.mState = PlaybackStateCompat.STATE_NONE;
     }
@@ -187,6 +187,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
         if (mediaHasChanged) {
             mCurrentPosition = 0;
             mCurrentMediaId = mediaId;
+        } else {
+            LogUtils.d("mediaHasChanged:::没有切歌");
+            return;
         }
 
         // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&
@@ -226,7 +229,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 } else {
                     Map<String, String> header = new HashMap<>();
                     header.put("Authorization", " Bearer " + AppApplication.getmCurrentLoginAuth().getToken());
-                    Uri uri=Uri.parse(source);
+                    Uri uri = Uri.parse(source);
                     mMediaPlayer.setDataSource(mContext, uri, header);
                 }
 

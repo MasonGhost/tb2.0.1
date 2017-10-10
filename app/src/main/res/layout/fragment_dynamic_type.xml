@@ -7,9 +7,9 @@
     android:orientation="vertical">
 
     <View
-        android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
     <LinearLayout
         android:id="@+id/select_dynamic_parent"
@@ -17,126 +17,139 @@
         android:layout_height="0dp"
         android:layout_weight="5"
         android:gravity="bottom|center"
-        android:paddingBottom="@dimen/spacing_huge_60"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_huge">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/send_dynamic_send_container"
-                android:weightSum="3"
-                android:gravity="bottom">
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_dynamic_send_container"
+            android:gravity="bottom">
             <!--动态文字-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/send_words_dynamic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_words"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/send_words_dynamic"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/send_words_dynamic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_words"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/send_words_dynamic"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
             <!--动态图片-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/send_image_dynamic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_potoablum"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/send_image_dynamic"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/send_image_dynamic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_potoablum"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/send_image_dynamic"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
 
             <!--直播-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/open_zhibo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_zhibo"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/open_zhibo"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/open_zhibo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_zhibo"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/open_zhibo"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
 
         </LinearLayout>
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/send_dynamic_send_container"
-                android:weightSum="3"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:gravity="bottom">
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_dynamic_send_container"
+            android:gravity="bottom">
             <!--签到-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/check_in"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_attendance"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/check_in"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/check_in"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_attendance"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/check_in"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
 
             <!--提问-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/send_words_question"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_question"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/send_question"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/send_words_question"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_question"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/send_question"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
 
             <!--投稿-->
             <com.zhiyicx.thinksnsplus.widget.IconTextView
-                    android:id="@+id/send_info"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    zhiyi:itv_direction="TOP"
-                    zhiyi:itv_gap="@dimen/spacing_normal"
-                    zhiyi:itv_icon="@mipmap/ico_contribute"
-                    zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
-                    zhiyi:itv_text="@string/send_info"
-                    zhiyi:itv_textColor="@color/dyanmic_send"
-                    zhiyi:itv_textSize="@dimen/size_content_assist"/>
+                android:id="@+id/send_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_contribute"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/send_info"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
         </LinearLayout>
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/im_close_dynamic"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/send_dynamic_close_button_img"
+        android:layout_height="@dimen/button_send_dynamic_close_container"
         android:layout_gravity="bottom"
-        android:scaleType="centerInside"
-        android:src="@mipmap/ico_close"/>
+        android:background="@color/white">
 
+        <View
+            style="@style/style_divider_horizontal_light"
+            />
+
+        <ImageView
+            android:id="@+id/im_close_dynamic"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="@dimen/spacing_big_large"
+            android:paddingEnd="@dimen/spacing_big_large"
+            android:paddingLeft="@dimen/spacing_big_large"
+            android:paddingRight="@dimen/spacing_big_large"
+            android:layout_height="@dimen/send_dynamic_close_button_img"
+            android:layout_marginTop="@dimen/divider_line"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ico_close"/>
+
+    </FrameLayout>
 </LinearLayout>

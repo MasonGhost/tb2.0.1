@@ -8,4 +8,5 @@
         android:height="@dimen/edittext_line"
         >
     </size>
+
 </shape>

@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = RegisterPresenterModule.class)
-public interface RegisterComponent extends InjectComponent<RegisterActivity>{
+public interface RegisterComponent extends InjectComponent<RegisterActivity> {
 }

@@ -6,6 +6,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -27,6 +28,7 @@ import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_UPDATE_TOLL;
 
 /**
  * @Author Jliuer
@@ -34,7 +36,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryConstract.View> implements GalleryConstract.Presenter {
+public class GalleryPresenter extends AppBasePresenter<ICommentRepository, GalleryConstract.View> implements GalleryConstract.Presenter {
 
     @Inject
     CommentRepository mCommentRepository;
@@ -66,30 +68,19 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
         DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
 
-        mCommentRepository.getCurrentLoginUserInfo()
+        handleWalletBlance((long)amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
-                        }
+                    public Observable<BaseJsonV2<String>> call(Object o) {
                         return mCommentRepository.paykNote(note);
                     }
-                }, throwable -> {
-                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    return null;
-                }, () -> null)
+                })
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                            return Observable.just(stringBaseJsonV2);
+                        return Observable.just(stringBaseJsonV2);
 
                     }
                 })
@@ -107,6 +98,7 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicDetailBeanV2);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                         Bundle bundle = new Bundle();
+                        bundle.putBoolean(DYNAMIC_UPDATE_TOLL, true);
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
                         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
@@ -121,6 +113,9 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 

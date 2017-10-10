@@ -7,4 +7,5 @@
         android:width="1000dp"
         android:height="@dimen/edittext_line"
         ></size>
+
 </shape>

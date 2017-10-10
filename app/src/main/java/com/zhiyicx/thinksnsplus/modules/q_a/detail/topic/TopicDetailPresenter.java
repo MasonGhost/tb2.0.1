@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -91,7 +92,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         shareContent.setTitle(mRootView.getCurrentTopicBean().getName());
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
         shareContent.setContent(mRootView.getCurrentTopicBean().getDescription());
 
         if (bitmap == null) {

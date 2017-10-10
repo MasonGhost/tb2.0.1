@@ -16,3 +16,4 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class, modules = GuidePresenterModule.class)
 public interface GuideComponent extends InjectComponent<GuideActivity> {
 }
+

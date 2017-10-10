@@ -26,7 +26,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler.NET_CALLBACK;
 
@@ -48,6 +50,7 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
                                                                       long max_id) {
         return mMusicClient.getMusicCommentList(music_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
                     @Override
                     public Observable<List<MusicCommentListBean>> call(List<MusicCommentListBean> commentedBeens) {
@@ -87,7 +90,8 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
                             });
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
 
     }
 
@@ -95,6 +99,7 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
     public Observable<List<MusicCommentListBean>> getAblumCommentList(String special_id, Long max_id) {
         return mMusicClient.getAblumCommentList(special_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
 
                     @Override
@@ -137,7 +142,8 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
                             });
                         }
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

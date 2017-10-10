@@ -25,5 +25,6 @@
     <!--消息红点颜色-->
     <color name="message_badge_bg">#e34f4b</color>
 
+    <color name="home_add_page_bg">#F5ffffff</color>
 
 </resources>

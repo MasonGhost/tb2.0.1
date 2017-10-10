@@ -69,9 +69,9 @@ public class BackgroundRequestTaskBean {
             this.user_id = 0L;
         }
         try {
-            this.user_id = Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id());
+            this.user_id = AppApplication.getMyUserIdWithdefault();
         } catch (Exception e) {
-            this.user_id = Long.valueOf(AppApplication.getMyUserIdWithdefault());
+            this.user_id = AppApplication.getMyUserIdWithdefault();
         }
     }
 

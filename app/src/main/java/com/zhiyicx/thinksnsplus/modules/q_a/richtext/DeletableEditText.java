@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext;
+package com.zhiyicx.thinksnsplus.modules.q_a.richtext;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;

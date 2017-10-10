@@ -34,7 +34,7 @@ public class TSPayClient {
     /**
      * 微信 APP 支付
      */
-    public static final String CHANNEL_WXPAY = "wx";
+    public static final String CHANNEL_WXPAY = "wechat";
     /**
      * 手机网页发起微信支付
      */

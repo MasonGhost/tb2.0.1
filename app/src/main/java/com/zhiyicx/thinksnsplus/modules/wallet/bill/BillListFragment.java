@@ -42,7 +42,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
 
     private ActionPopupWindow mActionPopupWindow;
 
-    private int[] mBillTypes = new int[]{0, 1, 2};
+    private int[] mBillTypes = new int[]{0, 1, 2};// 0 支出，1 收入
     private int mBillType;
 
     public static BillListFragment newInstance() {
@@ -186,7 +186,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 .item2ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.withdraw_out));
                     mPresenter.selectBillByAction(0);
-                    mBillType = mBillTypes[2];
+                    mBillType = mBillTypes[0];
                     mActionPopupWindow.hide();
                 })
                 .item3ClickListener(() -> {

@@ -30,3 +30,4 @@ public class GaussianBlurTrasnform extends BitmapTransformation {
         return getClass().getName();
     }
 }
+

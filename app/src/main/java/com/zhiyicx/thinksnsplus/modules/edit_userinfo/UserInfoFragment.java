@@ -161,6 +161,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Void aVoid) {
+                        if (mDvViewGroup==null) {
+                            return Observable.just(false);
+                        }
                         Rect rect = new Rect();
                         //获取root在窗体的可视区域
                         mDvViewGroup.getWindowVisibleDisplayFrame(rect);
@@ -176,6 +179,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
+                    if (mEtUserIntroduce==null) {
+                        return;
+                    }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
                     LogUtils.i(TAG + "---RxView   " + aBoolean);
                     if (aBoolean) {
@@ -382,7 +388,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .show();
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
-                        .compose(this.<Long>bindToLifecycle())
+                        .compose(this.bindToLifecycle())
                         .subscribe(aLong -> getActivity().finish());
                 break;
             default:

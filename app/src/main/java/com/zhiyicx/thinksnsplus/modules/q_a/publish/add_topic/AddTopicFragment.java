@@ -94,7 +94,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             return;
         }
         saveQuestion();
-        if (mQAPublishBean.isHasAgainEdite() && mQAPublishBean.getAmount() > 0) {
+        if (mQAPublishBean.isHasAgainEdite() && (mQAPublishBean.getAmount() > 0 || mQAPublishBean.isHasAdoption())) {
             mQAPublishBean.setAmount(0);
             mPresenter.updateQuestion(mQAPublishBean);
             return;
@@ -109,7 +109,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (prompt == Prompt.SUCCESS) {
+        if (prompt == Prompt.DONE) {
             if (mQAListInfoBean != null) {
                 goToQuestionDetail();
                 getActivity().finish();

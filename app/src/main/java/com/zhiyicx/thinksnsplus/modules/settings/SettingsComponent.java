@@ -16,3 +16,4 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class, modules = SettingsPresenterModule.class)
 public interface SettingsComponent extends InjectComponent<SettingsActivity> {
 }
+

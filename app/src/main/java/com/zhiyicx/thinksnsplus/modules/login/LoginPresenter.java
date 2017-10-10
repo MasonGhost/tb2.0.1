@@ -63,6 +63,9 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 //            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
 //            return;
 //        }
+        if (checkPasswordLength(password)) {
+            return;
+        }
         mRootView.setLogining();
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
@@ -147,7 +150,19 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 });
 
     }
-
+    /**
+     * 检查密码是否是最小长度
+     *
+     * @param password
+     * @return
+     */
+    private boolean checkPasswordLength(String password) {
+        if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {
+            mRootView.showErrorTips(mContext.getString(R.string.password_toast_hint));
+            return true;
+        }
+        return false;
+    }
     private void handleIMLogin() {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }

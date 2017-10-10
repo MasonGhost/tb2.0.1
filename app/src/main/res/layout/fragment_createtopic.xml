@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
-            app:hintContent="@string/dynamic_title_hint"
+            app:hintContent="@string/input_topic_tip"
             app:limitSize="@integer/dynamic_title_max_size"
             app:showLimitSize="@integer/dynamic_title_input_size"/>
 
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
-            app:hintContent="@string/hint_feed_back"
+            app:hintContent="@string/input_topic_des_tip"
             app:limitSize="@integer/feed_back_content_max_size"
             app:showLimitSize="@integer/feed_back_content_input_size"
             app:showLines="@integer/dynamic_content_show_lines"/>

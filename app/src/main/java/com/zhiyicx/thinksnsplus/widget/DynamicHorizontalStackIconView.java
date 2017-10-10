@@ -96,7 +96,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     DynamicDigListBean userInfoBean = dynamicDigListBeanList.get(i);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_small_4dp), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(R.mipmap.pic_default_portrait2)
                                     .errorPic(R.mipmap.pic_default_portrait2)
                                     .imagerView(mImageViews[i])

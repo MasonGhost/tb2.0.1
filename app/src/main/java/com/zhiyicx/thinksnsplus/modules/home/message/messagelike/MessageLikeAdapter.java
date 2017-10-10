@@ -81,7 +81,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
     protected void convert(final ViewHolder holder, final DigedBean digedBean, final int position) {
         ((TextView) holder.getView(R.id.tv_review)).setCompoundDrawables(null, null, mLikeDrawable, null);
         ImageUtils.loadCircleUserHeadPic(digedBean.getDigUserInfo(), holder.getView(R.id.iv_headpic));
-        if (digedBean.getSource_cover() != null) {
+        if (digedBean.getSource_cover() != null&&digedBean.getSource_cover()>0) {
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
@@ -228,7 +228,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 AnswerInfoBean answerInfoBean = new Gson().fromJson(new Gson().toJson(digedBean.getLikeable()), AnswerInfoBean.class);
                 bundle.putSerializable(BUNDLE_ANSWER, answerInfoBean);
                 bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
-                intent.putExtras(bundle);
+                intent.putExtra(BUNDLE_TOPIC_BEAN, bundle);
                 break;
             default:
                 return;

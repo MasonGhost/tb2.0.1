@@ -146,7 +146,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_QUESTION_LIST)
     public void handleSendComment(QuestionCommentBean questionCommentBean) {
         LogUtils.d(TAG, "questionCommentBean = " + questionCommentBean.toString());
-        Observable.just(questionCommentBean)
+        Subscription subscribe = Observable.just(questionCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(questionCommentBean1 -> {
@@ -172,6 +172,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 }

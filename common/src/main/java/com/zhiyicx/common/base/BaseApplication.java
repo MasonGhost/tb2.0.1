@@ -26,6 +26,8 @@ import skin.support.app.SkinCardViewInflater;
 import skin.support.design.app.SkinMaterialViewInflater;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
+import static com.zhiyicx.common.BuildConfig.USE_CANARY;
+
 /**
  * @Describe Applicaiton 基类
  * @Author Jungle68
@@ -101,7 +103,7 @@ public abstract class BaseApplication extends ZhiboApplication {
      * 安装 leakCanary 检测内存泄露
      */
     protected void installLeakCanary() {
-        this.mRefWatcher = BuildConfig.USE_CANARY ? LeakCanary.install(this) : RefWatcher.DISABLED;
+        this.mRefWatcher = USE_CANARY ? LeakCanary.install(this) : RefWatcher.DISABLED;
     }
 
     /**

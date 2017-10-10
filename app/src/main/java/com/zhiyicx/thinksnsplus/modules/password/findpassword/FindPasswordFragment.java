@@ -110,7 +110,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         mVertifyAnimationDrawable = (Animatable) mIvVertifyLoading.getDrawable();
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVertifyCodeEnalbe) {
                         mBtSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
@@ -119,7 +119,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
                     setConfirmEnable();
                 });
         RxTextView.textChanges(mEtEmial)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVertifyCodeEnalbe) {
                         mBtSendVertifyCode.setEnabled(RegexUtils.isEmail(charSequence));
@@ -129,14 +129,14 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
                 });
         // 验证码观察
         RxTextView.textChanges(mEtVertifyCode)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                 });
         // 密码观察
         RxTextView.textChanges(mEtPassword)
-                .compose(this.<CharSequence>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     isPassEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -166,7 +166,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         // 点击发送验证码
         RxView.clicks(mBtSendVertifyCode)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentType == FIND_BY_PHONE){
                         mPresenter.getVertifyCode(mEtPhone.getText().toString().trim());
@@ -177,7 +177,7 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         // 点击注册按钮
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentType == FIND_BY_PHONE){
                         mPresenter.findPassword(mEtPhone.getText().toString().trim()

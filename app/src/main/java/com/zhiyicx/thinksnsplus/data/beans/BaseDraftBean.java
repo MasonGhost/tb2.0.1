@@ -14,6 +14,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 public class BaseDraftBean extends BaseListBean{
 
 
+    public BaseDraftBean() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -24,11 +27,19 @@ public class BaseDraftBean extends BaseListBean{
         super.writeToParcel(dest, flags);
     }
 
-    public BaseDraftBean() {
-    }
-
     protected BaseDraftBean(Parcel in) {
         super(in);
     }
 
+    public static final Creator<BaseDraftBean> CREATOR = new Creator<BaseDraftBean>() {
+        @Override
+        public BaseDraftBean createFromParcel(Parcel source) {
+            return new BaseDraftBean(source);
+        }
+
+        @Override
+        public BaseDraftBean[] newArray(int size) {
+            return new BaseDraftBean[size];
+        }
+    };
 }

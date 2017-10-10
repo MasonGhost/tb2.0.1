@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,22 +72,38 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public void onNetResponseSuccess(@NotNull List<BaseListBean> data, boolean isLoadMore) {
         try {// 添加广告
-            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
-            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long max_id = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Info(advert, max_id));
+            if (!data.isEmpty()) {
+                RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+                DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+                long max_id = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Info(advert, max_id));
+            }
         } catch (Exception e) {
         }
         super.onNetResponseSuccess(data, isLoadMore);
+        if (mInfoBannerHeader == null)
+            return;
+        if (!isLoadMore && data.isEmpty()) {
+            mInfoBannerHeader.getInfoBannerHeader().setVisibility(View.GONE);
+        } else {
+            mInfoBannerHeader.getInfoBannerHeader().setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected boolean showEmptyViewWithNoData() {
+        return true;
     }
 
     @Override
     public void onCacheResponseSuccess(List<BaseListBean> data, boolean isLoadMore) {
         try {// 添加广告
-            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
-            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long max_id = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Info(advert, max_id));
+            if (!data.isEmpty()) {
+                RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+                DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+                long max_id = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Info(advert, max_id));
+            }
         } catch (Exception e) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);

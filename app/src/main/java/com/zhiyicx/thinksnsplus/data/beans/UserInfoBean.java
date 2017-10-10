@@ -337,6 +337,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
+    public UserInfoBean(String name) {
+        this.name = name;
+    }
+
 
     /**
      * {

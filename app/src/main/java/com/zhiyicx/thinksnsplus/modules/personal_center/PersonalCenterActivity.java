@@ -19,4 +19,9 @@ public class PersonalCenterActivity extends TSActivity<PersonalCenterPresenter, 
     protected PersonalCenterFragment getFragment() {
         return PersonalCenterFragment.initFragment(getIntent().getExtras());
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

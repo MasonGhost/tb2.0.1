@@ -55,6 +55,11 @@ public interface IBaseView<VP> {
     void showSnackLoadingMessage(String message);
 
     /**
+     * 隐藏 SnackBar
+     */
+    void dismissSnackBar();
+
+    /**
      * 显示登录提示框
      */
     void showLoginPop();
@@ -69,6 +74,6 @@ public interface IBaseView<VP> {
     /**
      * 去充值
      */
-    void  goRecharge(Class<?> cls);
+    void goRecharge(Class<?> cls);
 
 }

@@ -1,16 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -20,24 +21,22 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
@@ -51,6 +50,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         RichTextEditor.OnContentChangeListener {
 
     public static final String INFO_REFUSE = "info_refuse";
+    public static InfoPublishBean sInfoPublishBean;
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
@@ -71,11 +71,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    private DataImageView test;
+    private SubsamplingScaleImageView test;
     private int mPicTag;
 
     private ActionPopupWindow mInstructionsPopupWindow;
-    private InfoPublishBean mInfoPublishBean;
+//    private InfoPublishBean mInfoPublishBean;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -87,7 +87,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+            sInfoPublishBean = getArguments().getParcelable(INFO_REFUSE);
+        } else {
+            sInfoPublishBean = new InfoPublishBean();
         }
     }
 
@@ -135,17 +137,22 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     protected void setRightClick() {
         super.setRightClick();
         InfoPublishBean infoPublishBean;
-        if (mInfoPublishBean == null) {
+        if (sInfoPublishBean == null) {
             infoPublishBean = new InfoPublishBean();
         } else {
-            infoPublishBean = mInfoPublishBean;
+            infoPublishBean = sInfoPublishBean;
         }
 
         String content = getContentString();
         infoPublishBean.setContent(content);
         infoPublishBean.setAmout(100);
-        long cover = RegexUtils.getImageId(content);
-        infoPublishBean.setCover(RegexUtils.getImageId(content));
+        long cover;
+        if (infoPublishBean.isRefuse()) {
+            cover = infoPublishBean.getCover();
+        } else {
+            cover = RegexUtils.getImageId(content);
+        }
+        infoPublishBean.setCover((int) cover);
         infoPublishBean.setImage(cover < 0 ? null : cover);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
 
@@ -177,10 +184,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected void initView(View rootView) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         mToolbarRight.setEnabled(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
-        RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)mImPic.getLayoutParams();
+        RelativeLayout.LayoutParams layout = (RelativeLayout.LayoutParams) mImPic.getLayoutParams();
         layout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         mImPic.setLayoutParams(layout);
         mImSetting.setVisibility(View.GONE);
@@ -193,12 +203,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (mInfoPublishBean != null) {
-            if (!TextUtils.isEmpty(mInfoPublishBean.getContent())) {
+        if (sInfoPublishBean != null && !TextUtils.isEmpty(sInfoPublishBean.getContent())
+                && !TextUtils.isEmpty(sInfoPublishBean.getContent()) && mRicheTest != null) {
+            mRicheTest.post(() -> {
                 mRicheTest.clearAllLayout();
-                mPresenter.pareseBody(mInfoPublishBean.getContent());
-                mEtInfoTitle.setText(mInfoPublishBean.getTitle());
-            }
+                mPresenter.pareseBody(sInfoPublishBean.getContent());
+                mEtInfoTitle.setText(sInfoPublishBean.getTitle());
+            });
         }
     }
 
@@ -239,6 +250,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void onPareseBodyEnd(boolean hasContent) {
         mToolbarRight.setEnabled(hasContent);
+        mRicheTest.setHasContent(hasContent);
     }
 
     @Override
@@ -325,6 +337,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.im_arrowc:
+                mRicheTest.hideKeyBoard();
                 break;
             case R.id.im_pic:
                 initPhotoPopupWindow();
@@ -341,6 +354,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
+            if (mRicheTest == null) {
+                return;
+            }
             int[] viewLacotion = new int[2];
             mRlPublishTool.getLocationOnScreen(viewLacotion);
             if (viewLacotion[1] > mRlPublishTool.getHeight()) {
@@ -354,11 +370,6 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 }
             }
         });
-
-        RxView.clicks(mImArrowc)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mRicheTest.hideKeyBoard());
 
         mPbImageUpload.setOnTouchListener((v, event) -> true);
 
@@ -405,6 +416,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .with(getActivity())
                 .item2ClickListener(() -> {
                     mCanclePopupWindow.hide();
+                    sInfoPublishBean = null;
                     getActivity().finish();
                 })
                 .bottomClickListener(() -> mCanclePopupWindow.hide()).build();

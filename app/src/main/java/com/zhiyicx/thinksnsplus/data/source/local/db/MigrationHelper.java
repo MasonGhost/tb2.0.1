@@ -81,15 +81,14 @@ public class MigrationHelper {
             // 执行sql语句，创建临时表
             db.execSQL(createTableStringBuilder.toString());
             // 生成将旧表数据迁移到临时表的sql语句
-            StringBuilder insertTableStringBuilder = new StringBuilder();
+            String insertTableStringBuilder = "INSERT INTO " + tempTableName + " (" +
+                    TextUtils.join(",", properties) +
+                    ") SELECT " +
+                    TextUtils.join(",", properties) +
+                    " FROM " + tableName + ";";
 
-            insertTableStringBuilder.append("INSERT INTO ").append(tempTableName).append(" (");
-            insertTableStringBuilder.append(TextUtils.join(",", properties));
-            insertTableStringBuilder.append(") SELECT ");
-            insertTableStringBuilder.append(TextUtils.join(",", properties));
-            insertTableStringBuilder.append(" FROM ").append(tableName).append(";");
             // 迁移旧表数据
-            db.execSQL(insertTableStringBuilder.toString());
+            db.execSQL(insertTableStringBuilder);
         }
     }
 
@@ -117,16 +116,14 @@ public class MigrationHelper {
             insertTableStringBuilder.append(TextUtils.join(",", properties));
             insertTableStringBuilder.append(" FROM ").append(tempTableName).append(";");
 
-            StringBuilder dropTableStringBuilder = new StringBuilder();
             // 删除临时表
-            dropTableStringBuilder.append("DROP TABLE ").append(tempTableName);
             try {
                 db.execSQL(insertTableStringBuilder.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            db.execSQL(dropTableStringBuilder.toString());
+            db.execSQL("DROP TABLE " + tempTableName);
         }
     }
 

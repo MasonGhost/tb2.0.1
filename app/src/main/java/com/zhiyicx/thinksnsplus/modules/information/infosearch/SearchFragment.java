@@ -125,12 +125,6 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     }
 
     @Override
-    public void onDismiss() {
-        super.onDismiss();
-        mFragmentInfoSearchContainer.setPadding(0, 0, 0, 0);
-    }
-
-    @Override
     public void setPresenter(SearchContract.Presenter presenter) {
         mPresenter = presenter;
     }

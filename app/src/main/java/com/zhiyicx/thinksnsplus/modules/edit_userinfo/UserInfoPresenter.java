@@ -8,7 +8,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -16,8 +15,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
@@ -28,10 +25,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -177,7 +172,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         AuthBean authBean = mIAuthRepository.getAuthBean();
         UserInfoBean mUserInfoBean = null;
         if (authBean != null) {
-            mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+            mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
         }
         if (mUserInfoBean == null) {
             mUserInfoBean = new UserInfoBean();
@@ -192,7 +187,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      */
     private void upDateUserInfo(HashMap<String, Object> changeUserInfo) {
         AuthBean authBean = mIAuthRepository.getAuthBean();
-        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
+        UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean
                 .getUser_id());
         if (changeUserInfo.containsKey(UserInfoFragment.USER_NAME)) {
             mUserInfoBean.setName((String) changeUserInfo.get(UserInfoFragment.USER_NAME));

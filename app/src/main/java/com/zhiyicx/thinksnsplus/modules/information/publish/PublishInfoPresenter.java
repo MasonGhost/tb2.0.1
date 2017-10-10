@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -13,7 +14,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -82,7 +82,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackMessage("投稿成功，等待审核", Prompt.DONE);
+                        mRootView.showSnackMessage(mContext.getString(R.string.info_publishsuccess), Prompt.DONE);
                     }
 
                     @Override
@@ -94,7 +94,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.info_publishfailed));
                     }
                 });
     }

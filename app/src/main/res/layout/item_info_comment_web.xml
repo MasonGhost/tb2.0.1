@@ -1,198 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="vertical"
-        android:background="@color/white">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
 
     <!--资讯头部的信息-->
     <!--title-->
     <TextView
-            android:id="@+id/tv_info_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:textColor="@color/themeColor"
-            android:textSize="@dimen/size_primary_title"
-            tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
+        android:id="@+id/tv_info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/size_primary_title"
+        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
     <!--栏目以及来源-->
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_from_channel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_marginLeft="@dimen/spacing_normal">
+            android:background="@drawable/shape_info_list_channel"
+            android:padding="@dimen/spacing_tiny"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/size_advert_launche"
+            tools:text="时政"/>
 
         <TextView
-                android:id="@+id/tv_from_channel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/themeColor"
-                tools:text="时政"
-                android:background="@drawable/shape_info_list_channel"
-                android:textSize="@dimen/size_advert_launche"
-                android:padding="@dimen/spacing_tiny"/>
-
-        <TextView
-                android:textColor="@color/general_for_hint"
-                android:id="@+id/item_info_timeform"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_icon_assist"
-                android:layout_marginLeft="@dimen/spacing_small_3dp"
-                android:layout_marginStart="@dimen/spacing_small_3dp"
-                tools:text="三小时前   来自火星"/>
+            android:id="@+id/item_info_timeform"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small_3dp"
+            android:layout_marginStart="@dimen/spacing_small_3dp"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="三小时前   来自火星"/>
     </LinearLayout>
 
     <br.tiagohm.markdownview.MarkdownView
-            android:id="@+id/info_content_subject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_mid_small"
-            android:layout_marginRight="@dimen/spacing_mid_small"/>
+        android:id="@+id/info_content_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid_small"
+        android:layout_marginRight="@dimen/spacing_mid_small"
+        android:layout_marginTop="@dimen/spacing_mid"/>
 
 
     <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <br.tiagohm.markdownview.MarkdownView
-                android:id="@+id/info_detail_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_mid"
-                android:layout_marginBottom="@dimen/spacing_mid"
-                android:layout_marginLeft="@dimen/spacing_mid_small"
-                android:layout_marginRight="@dimen/spacing_mid_small"
-                android:visibility="visible"
-                tools:ignore="WebViewLayout"/>
+            android:id="@+id/info_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:visibility="visible"
+            tools:ignore="WebViewLayout"/>
 
         <!--用来占位的-->
         <ImageView
-                android:id="@+id/iv_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/default_pic_personal"
-                android:visibility="gone"/>
+            android:id="@+id/iv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/default_pic_personal"
+            android:visibility="gone"/>
     </FrameLayout>
 
 
+    <include
+        layout="@layout/item_dynamic_detail_dig"/>
 
     <include
-            layout="@layout/item_dynamic_detail_dig"
-            android:visibility="gone"/>
+        layout="@layout/include_reward"/>
 
     <include
-            layout="@layout/include_reward"/>
-
-    <include
-            layout="@layout/advert_details"
-            />
+        layout="@layout/advert_details"
+        />
 
     <!--相关资讯以及标签-->
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_small_3dp"
-            android:background="@color/general_for_bg_light"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small_3dp"
+        android:background="@color/general_for_bg_light"/>
 
     <FrameLayout
-            android:id="@+id/info_relate_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:background="@color/white">
+        android:id="@+id/info_relate_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white">
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:orientation="vertical">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:orientation="vertical">
 
             <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/spacing_mid"
-                    android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_mid"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"
-                    android:text="@string/info_relate"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_mid"
+                android:text="@string/info_relate"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
 
             <View
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_line_bottom_themcolor"/>
         </LinearLayout>
 
         <View
-                style="@style/style_divider_horizontal_light"
-                android:layout_gravity="bottom"/>
+            style="@style/style_divider_horizontal_light"
+            android:layout_gravity="bottom"/>
     </FrameLayout>
 
     <com.zhy.view.flowlayout.TagFlowLayout
-            android:id="@+id/fl_tags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_normal"
-            android:layout_gravity="center_vertical"
-            android:background="@color/white"
-            app:max_select="0"
-            />
+        android:id="@+id/fl_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_normal"
+        android:background="@color/white"
+        app:max_select="0"
+        />
 
     <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_relate_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        android:id="@+id/rv_relate_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_small_3dp"
-            android:background="@color/general_for_bg_light"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small_3dp"
+        android:background="@color/general_for_bg_light"/>
 
     <!--评论数-->
     <FrameLayout
-            android:id="@+id/info_detail_comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:background="@color/white">
+        android:id="@+id/info_detail_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white">
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:orientation="vertical">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/tv_comment_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/spacing_mid"
-                    android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_mid"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"/>
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_mid"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
 
             <View
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_line_bottom_themcolor"/>
         </LinearLayout>
 
         <View
-                style="@style/style_divider_horizontal_light"
-                android:layout_gravity="bottom"/>
+            style="@style/style_divider_horizontal_light"
+            android:layout_gravity="bottom"/>
     </FrameLayout>
 </LinearLayout>

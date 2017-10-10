@@ -13,8 +13,8 @@ public class TimeOutTask implements Runnable {
 
     private MessageContainer mMessageContainer;
     private long begin_time;
-    public static final long OUT_TIME = 5 * 1000;// 超时时间
-    public static final long SLEEP_TIME = 1 * 1000;// 超线程沉睡时间
+    public static final long OUT_TIME = 5_000;// 超时时间
+    public static final long SLEEP_TIME = 1_000;// 超线程沉睡时间
     private boolean isEnd;
     private TimeOutListener mListener;
 

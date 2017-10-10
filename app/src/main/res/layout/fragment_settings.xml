@@ -5,7 +5,6 @@
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bgColor"
     android:orientation="vertical">
 
     <ScrollView
@@ -79,7 +78,8 @@
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
-
+            <include
+                layout="@layout/view_choose_item"/>
         </LinearLayout>
     </ScrollView>
 </com.wcy.overscroll.OverScrollLayout>

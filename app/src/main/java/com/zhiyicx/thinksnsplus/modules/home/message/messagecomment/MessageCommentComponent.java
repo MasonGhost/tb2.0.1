@@ -16,3 +16,4 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class, modules = MessageCommentPresenterModule.class)
 public interface MessageCommentComponent extends InjectComponent<MessageCommentActivity>{
 }
+

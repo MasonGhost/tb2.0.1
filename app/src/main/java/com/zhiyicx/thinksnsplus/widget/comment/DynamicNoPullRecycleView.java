@@ -60,7 +60,7 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
         if (mTopFlagPosition == TopFlagPosition.VIEW_RIGHT) {
             contentTextView.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     dynamicCommentBean.getPinned() ?
-                            getResources().getDrawable(R.mipmap.label_zhiding) : null, null);
+                            ContextCompat.getDrawable(getContext(), R.mipmap.label_zhiding) : null, null);
         }
 
         holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, v -> {
@@ -85,12 +85,12 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
     protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
         String content = handleName(dynamicCommentBean);
-        if (!dynamicCommentBean.getPinned() ) {// 不是置顶的评论则不用处理
+        if (!dynamicCommentBean.getPinned()) {// 不是置顶的评论则不用处理
             return content;
         } else if (mTopFlagPosition == TopFlagPosition.WORDS_RIGHT) {
             int lenght = content.length();
-            Drawable top_drawable = getResources().getDrawable(R.mipmap.label_zhiding);
-            top_drawable.setBounds(0, 0,(int)(contentTextView.getTextSize()*2),contentTextView.getLineHeight());
+            Drawable top_drawable = ContextCompat.getDrawable(getContext(), R.mipmap.label_zhiding);
+            top_drawable.setBounds(0, 0, (int) (contentTextView.getTextSize() * 2), contentTextView.getLineHeight());
 
             ImageSpan imgSpan = new CenterImageSpan(top_drawable);
             SpannableString spannableString = SpannableString.valueOf(content + "T");

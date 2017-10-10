@@ -219,7 +219,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         });
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
                     if (checkedId != -1) {
                         setCustomMoneyDefault();

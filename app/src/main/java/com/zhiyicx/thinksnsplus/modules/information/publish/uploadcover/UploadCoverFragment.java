@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -18,12 +19,14 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -94,7 +97,13 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
+        int iamge_id = RegexUtils.getImageId(mInfoPublishBean.getContent());
+        if (mInfoPublishBean.isRefuse()) {
+            mInfoPublishBean.setImage((long) iamge_id < 0 ? null : (long) iamge_id);
+        } else {
+            mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
+        }
+
     }
 
     @Override
@@ -182,6 +191,18 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
+            mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+        }
+        if (mInfoPublishBean.isRefuse() && mInfoPublishBean.getImage() != null) {
+            int w = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_width);
+            int h = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_height);
+            mTvInfoCover.setVisibility(View.GONE);
+            mIvInfoCoverIamge.setVisibility(View.VISIBLE);
+
+            Glide.with(getActivity())
+                    .load(ImageUtils.imagePathConvertV2(mInfoPublishBean.getImage().intValue(), w, h, ImageZipConfig.IMAGE_70_ZIP))
+                    .centerCrop()
+                    .into(mIvInfoCoverIamge);
         }
     }
 
@@ -242,18 +263,17 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                         .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean
                         .getAmout())))
                 .buildLinksStr(getString(R.string.buy_pay_member))
-                .buildTitleStr(getString(R.string.buy_pay))
+                .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
                         .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
+                    mInfoPublishBean.setContent(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n" + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
-                .buildCenterPopWindowItem2ClickListener(() -> {
-                    mPayInfoPopWindow.hide();
-                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayInfoPopWindow.hide())
                 .buildCenterPopWindowLinkClickListener(new PayPopWindow
                         .CenterPopWindowLinkClickListener() {
                     @Override

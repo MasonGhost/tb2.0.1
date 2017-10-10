@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import com.zhiyicx.common.utils.ToastUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -143,9 +144,7 @@ public class PictureAndTextEditorView extends AppCompatEditText {
         if (content.length() > 0 && content.contains(mBitmapTag)) {
             String[] split = content.split(mBitmapTag);
             mContentList.clear();
-            for (String str : split) {
-                mContentList.add(str);
-            }
+            Collections.addAll(mContentList, split);
         } else {
             mContentList.add(content);
         }

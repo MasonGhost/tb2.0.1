@@ -12,8 +12,8 @@ ext {
     applicationId = "com.zhiyicx.thinksnsplus"
     minSdkVersion = 16
     targetSdkVersion = 25
-    versionCode = 88
-    versionName = "0.8.8.8"
+    versionCode = 100
+    versionName = "1.0.0-beta"
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
 
@@ -86,6 +86,8 @@ ext {
             // image
             glide                        : "com.github.bumptech.glide:glide:3.7.0",
             nineoldandroids              : "com.nineoldandroids:library:2.4.0",
+            glideOkhttpIntegration       : "com.github.bumptech.glide:okhttp3-integration:1.4.0@aar",
+            glideOkhttp                  : "com.squareup.okhttp3:okhttp:3.2.0",
             // eventbus
             androideventbus              : "org.simple:androideventbus:1.0.5.1",
             // butterknife
@@ -104,10 +106,10 @@ ext {
             recyclerviewAnimator         : 'jp.wasabeef:recyclerview-animators:2.2.6',
             jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',
             jiguangJcore                 : 'cn.jiguang.sdk:jcore:1.1.1',
-            umeng                        : 'com.umeng.analytics:analytics:latest.integration',
+            umeng                        : 'com.umeng.analytics:analytics:latest.integration',//
             amapLocation                 : 'com.amap.api:location:latest.integration',
-            a3Dmap                       : 'com.amap.api:3dmap:latest.integration',
-            amapSearch                   : 'com.amap.api:search:latest.integration',
+            a3Dmap                       : 'com.amap.api:3dmap:latest.integration', //
+            amapSearch                   : 'com.amap.api:search:latest.integration', //
 
             pingPayCore                  : "com.pingxx:pingpp-core:${payVersion}",//使用 ping++ 支付时必须添加
             pingWxPay                    : "com.pingxx:pingpp-wxpay:${payVersion}",//ping++ 使用微信支付时添加

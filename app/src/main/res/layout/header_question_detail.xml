@@ -83,8 +83,6 @@
             android:id="@+id/tv_topic_change_follow"
             android:layout_width="@dimen/channel_subscrib_btn_width"
             android:layout_height="@dimen/channel_subscrib_btn_height"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:background="@drawable/shape_channel_list_subscrib_button"
             android:button="@null"

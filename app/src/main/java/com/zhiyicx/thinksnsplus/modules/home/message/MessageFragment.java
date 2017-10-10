@@ -304,6 +304,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
+        if (messageItemBean == null) {
+            return;
+        }
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
                 .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();

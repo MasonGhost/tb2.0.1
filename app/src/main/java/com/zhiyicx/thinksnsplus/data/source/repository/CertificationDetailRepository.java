@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailContract;
@@ -8,6 +10,8 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -16,9 +20,12 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class CertificationDetailRepository implements CertificationDetailContract.Repository{
+public class CertificationDetailRepository implements CertificationDetailContract.Repository {
 
     private UserInfoClient mUserInfoClient;
+
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
 
     @Inject
     public CertificationDetailRepository(ServiceManager manager) {
@@ -27,6 +34,20 @@ public class CertificationDetailRepository implements CertificationDetailContrac
 
     @Override
     public Observable<UserCertificationInfo> getCertificationInfo() {
-        return mUserInfoClient.getUserCertificationInfo();
+        return mUserInfoClient.getUserCertificationInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void saveCertificationInfo() {
+        mUserInfoClient.getUserCertificationInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+                    @Override
+                    protected void onSuccess(UserCertificationInfo data) {
+                        mUserCertificationInfoDao.saveSingleData(data);
+                    }
+                });
     }
 }

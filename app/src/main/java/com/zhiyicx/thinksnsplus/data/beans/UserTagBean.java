@@ -38,6 +38,7 @@ public class UserTagBean extends BaseListBean implements Serializable,Parcelable
     private String tagName;
     private long tag_category_id;
     private boolean mine_has; // 用于本地标签当前用户上否有这个标签
+    private int weight;
 
     public String getTagName() {
         return tagName;
@@ -71,27 +72,15 @@ public class UserTagBean extends BaseListBean implements Serializable,Parcelable
         this.mine_has = mine_has;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
     public UserTagBean() {
-    }
-
-    @Generated(hash = 490526204)
-    public UserTagBean(Long id, String tagName, long tag_category_id,
-            boolean mine_has) {
-        this.id = id;
-        this.tagName = tagName;
-        this.tag_category_id = tag_category_id;
-        this.mine_has = mine_has;
-    }
-
-    @Override
-    public String toString() {
-        return "UserTagBean{" +
-                "id=" + id +
-                ", tagName='" + tagName + '\'' +
-                ", tag_category_id=" + tag_category_id +
-                ", mine_has=" + mine_has +
-                '}';
     }
 
     @Override
@@ -130,6 +119,7 @@ public class UserTagBean extends BaseListBean implements Serializable,Parcelable
         dest.writeString(this.tagName);
         dest.writeLong(this.tag_category_id);
         dest.writeByte(this.mine_has ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.weight);
     }
 
     protected UserTagBean(Parcel in) {
@@ -138,6 +128,17 @@ public class UserTagBean extends BaseListBean implements Serializable,Parcelable
         this.tagName = in.readString();
         this.tag_category_id = in.readLong();
         this.mine_has = in.readByte() != 0;
+        this.weight = in.readInt();
+    }
+
+    @Generated(hash = 912960929)
+    public UserTagBean(Long id, String tagName, long tag_category_id,
+            boolean mine_has, int weight) {
+        this.id = id;
+        this.tagName = tagName;
+        this.tag_category_id = tag_category_id;
+        this.mine_has = mine_has;
+        this.weight = weight;
     }
 
     public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
@@ -151,4 +152,15 @@ public class UserTagBean extends BaseListBean implements Serializable,Parcelable
             return new UserTagBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserTagBean{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                ", tag_category_id=" + tag_category_id +
+                ", mine_has=" + mine_has +
+                ", weight=" + weight +
+                '}';
+    }
 }

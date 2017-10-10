@@ -103,10 +103,10 @@ public class WindowUtils {
         mLayoutParams.format = PixelFormat.TRANSPARENT;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
-        mLayoutParams.width = ConvertUtils.dp2px(context, 44) * 3 / 4;
-        mLayoutParams.height = ConvertUtils.dp2px(context, 44) * 3 / 4;
+        mLayoutParams.width = ConvertUtils.dp2px(context, 24);
+        mLayoutParams.height = ConvertUtils.dp2px(context, 24);
         mLayoutParams.x = ConvertUtils.dp2px(context, 15);
-        mLayoutParams.y = ConvertUtils.dp2px(context, 44) / 8;
+        mLayoutParams.y = ConvertUtils.dp2px(context, 44) / 4;
 
         mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(context, R.anim
                 .music_window_rotate);

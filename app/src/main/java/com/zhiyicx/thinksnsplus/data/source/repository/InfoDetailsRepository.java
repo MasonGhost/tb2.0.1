@@ -29,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -58,6 +59,7 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     @Override
     public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
         return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<InfoCommentBean, Observable<InfoCommentBean>>() {
                     @Override
                     public Observable<InfoCommentBean> call(InfoCommentBean infoCommentBean) {
@@ -93,12 +95,14 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                     return infoCommentBean;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
         return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<InfoDigListBean>, Observable<List<InfoDigListBean>>>() {
                     @Override
                     public Observable<List<InfoDigListBean>> call(List<InfoDigListBean> infoDigListBeen) {
@@ -124,7 +128,8 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                     return infoDigListBeen;
                                 });
                     }
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

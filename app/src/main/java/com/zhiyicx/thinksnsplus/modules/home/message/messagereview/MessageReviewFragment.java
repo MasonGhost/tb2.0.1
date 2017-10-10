@@ -120,10 +120,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .item1Color(mTopType.equals(mTopTypes[0]) ? getColor(R.color.themeColor) : 0)
                 .item2Str(getString(R.string.stick_type_news_commnet))
                 .item2Color(mTopType.equals(mTopTypes[1]) ? getColor(R.color.themeColor) : 0)
-                .item3Str(getString(R.string.stick_type_group_commnet))
-                .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
-                .item4Str(getString(R.string.stick_type_group_join))
-                .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
+//                .item3Str(getString(R.string.stick_type_group_commnet))
+//                .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
+//                .item4Str(getString(R.string.stick_type_group_join))
+//                .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
                 .item1ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.stick_type_dynamic_commnet));
                     mTopType = mTopTypes[0];
@@ -142,7 +142,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                     mPresenter.requestNetData(0L, false);
                     mActionPopupWindow.hide();
                 })
-                .item3ClickListener(() -> {
+                .item4ClickListener(() -> {
                     mToolbarCenter.setText(getString(R.string.stick_type_group_join));
                     mTopType = mTopTypes[3];
                     mPresenter.requestNetData(0L, false);

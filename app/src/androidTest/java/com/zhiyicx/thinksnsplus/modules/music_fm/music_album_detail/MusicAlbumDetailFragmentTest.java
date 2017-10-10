@@ -45,7 +45,7 @@ public class MusicAlbumDetailFragmentTest {
                     messageItemBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
                     messageItemBean.setCollect_count(5);
                     messageItemBean.setStorage(new MusicAlbumListBean().getStorage());
-                    messageItemBean.setTitle("test");
+                    messageItemBean.setTitle("addBtnAnimation");
                     messageItemBean.setId(100);
                     messageItemBean.setMaxId(System.currentTimeMillis());
                     bundle.putParcelable(MusicListFragment.BUNDLE_MUSIC_ABLUM, messageItemBean);

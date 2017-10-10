@@ -116,7 +116,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (AppApplication.getmCurrentLoginAuth() != null) {
                     datas = mDynamicDetailBeanV2Dao.queryBuilder()
-                            .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(), DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
+                            .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(), DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getMyUserIdWithdefault()))
                             .whereOr(DynamicDetailBeanV2Dao.Properties.Hot_creat_time.isNull(), DynamicDetailBeanV2Dao.Properties.Hot_creat_time.eq(0), DynamicDetailBeanV2Dao.Properties.IsFollowed.eq(false))
                             .list();
                     mDynamicDetailBeanV2Dao.deleteInTx(datas);

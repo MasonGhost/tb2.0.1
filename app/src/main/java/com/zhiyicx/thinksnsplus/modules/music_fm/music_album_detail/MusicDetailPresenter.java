@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -187,14 +188,14 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
-        shareContent.setTitle(mRootView.getCurrentAblum().getTitle());
-        shareContent.setContent(mRootView.getCurrentAblum().getIntro());
+        shareContent.setTitle(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getTitle());
+        shareContent.setContent(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getIntro());
         if (bitmap == null) {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         } else {
             shareContent.setBitmap(bitmap);
         }
-        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

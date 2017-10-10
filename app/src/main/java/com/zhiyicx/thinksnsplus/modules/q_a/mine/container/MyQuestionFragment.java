@@ -126,11 +126,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
                 clipPagerTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
                 clipPagerTitleView.setClipColor(Color.WHITE);
                 clipPagerTitleView.setOnClickListener(v -> mVpFragment.setCurrentItem(index));
-                try {
-                    clipPagerTitleView.getLayoutParams().width = (int) (2 * context.getResources().getDimension(R.dimen.qa_top_select_height));
-                } catch (Exception e){
-                    LogUtils.d("Cathy", e.toString());
-                }
+                clipPagerTitleView.setPadding(UIUtil.dip2px(context, 18.0D), 0, UIUtil.dip2px(context, 18.0D), 0);
                 return clipPagerTitleView;
             }
 
@@ -145,6 +141,11 @@ public class MyQuestionFragment extends TSViewPagerFragment {
                 indicator.setYOffset(borderWidth);
                 indicator.setColors(ContextCompat.getColor(getContext(), R.color.themeColor));
                 return indicator;
+            }
+
+            @Override
+            public float getTitleWeight(Context context, int index) {
+                return super.getTitleWeight(context, index);
             }
         };
     }
