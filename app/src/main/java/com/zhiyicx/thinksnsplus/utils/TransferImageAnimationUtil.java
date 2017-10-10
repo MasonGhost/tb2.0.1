@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
 public class TransferImageAnimationUtil {
     // 动画持续时间
-    public static final int ANIMATION_DURATION = 300;
+    public static final int ANIMATION_DURATION = 350;
 
     /**
      * 退出时的控件缩放处理
@@ -57,7 +57,8 @@ public class TransferImageAnimationUtil {
         } else {
             startScale = (float) startBounds.width() / finalBounds.width();
         }
-
+        float startWScale = (float) startBounds.width() / finalBounds.width();
+        float startHScale = (float) startBounds.height() / finalBounds.height();
 
         int deltaTop = startBounds.top - finalBounds.top;
         int deltaLeft = startBounds.left - finalBounds.left;
@@ -67,23 +68,16 @@ public class TransferImageAnimationUtil {
         // 位移+缩小
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             imageView.animate().translationX(deltaLeft).translationY(deltaTop)
-                    .scaleY(startScale)
-                    .scaleX(startScale).setDuration(ANIMATION_DURATION)
+                    .scaleY(startHScale)
+                    .scaleX(startWScale)
+                    .alpha(.1f).setDuration(ANIMATION_DURATION)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                                imageView.animate().alpha(0f).setDuration(10).withEndAction(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                            }
-                                        });
                         }
                     });
         }
-
         AnimatorSet animationSet = new AnimatorSet();
         animationSet.setDuration(ANIMATION_DURATION);
         animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
