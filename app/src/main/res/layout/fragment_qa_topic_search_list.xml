@@ -1,9 +1,10 @@
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_search_history"
@@ -86,12 +87,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing_normal"
-                android:paddingLeft="@dimen/spacing_huge"
-                android:layout_gravity="center_horizontal"
-                android:paddingRight="@dimen/spacing_huge"
+                android:layout_gravity="center"
                 android:paddingTop="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_large"
-                android:text="to_publish_qa"
+                tools:text="to_publish_qa"
                 android:background="@drawable/selector_button_corner_solid_small"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_sub_title"

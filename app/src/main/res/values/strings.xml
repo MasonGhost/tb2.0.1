@@ -80,7 +80,7 @@
     <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
-    <string name="is_sure_clean_cache">确定清理缓存？</string>
+    <string name="is_sure_clean_cache">缓存大小:%s，确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="check_version">版本更新</string>
     <string name="download_new_version">立即更新</string>
@@ -470,7 +470,7 @@
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
-    <string name="create_topic">申请创建话题</string>
+    <string name="create_topic">建议创建话题</string>
     <string name="input_topic_tip">请输入话题名称</string>
     <string name="input_topic_des_tip">请输入话题相关描述信息</string>
 
@@ -601,8 +601,8 @@
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
     <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
-    <string name="not_find_qa_topic_to_publish">未找到相关话题</string>
-    <string name="request_to_publish_topic">申请创建话题</string>
+    <string name="not_find_qa_topic_to_publish">没找到相关话题~</string>
+    <string name="request_to_publish_topic">向官方建议创建新话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
     <string name="bind_success">账号绑定成功</string>
