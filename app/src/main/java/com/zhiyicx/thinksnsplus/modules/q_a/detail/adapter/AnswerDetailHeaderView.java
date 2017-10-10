@@ -301,7 +301,7 @@ public class AnswerDetailHeaderView {
         }
 
         mDigListView.setDigCount(answerInfoBean.getLikes_count());
-        mDigListView.setPublishTime(answerInfoBean.getUpdated_at());
+        mDigListView.setPublishTime(answerInfoBean.getCreated_at());
         mDigListView.setViewerCount(answerInfoBean.getViews_count());
         mDigListView.setDigUserHeadIconAnswer(answerInfoBean.getLikes());
 

@@ -405,6 +405,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
         initImageCenterPopWindow(position, position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }
