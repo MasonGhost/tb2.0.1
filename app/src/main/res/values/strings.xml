@@ -295,9 +295,9 @@
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>
     <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
     <string name="stick_type_dynamic_commnet">动态评论置顶</string>
-    <string name="stick_type_dynamic_commnet_message">对你的动态“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_dynamic_commnet_message">对你的动态进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
-    <string name="stick_type_news_commnet_message">对你的文章“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_news_commnet_message">对你的文章进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_group_commnet">圈子帖子置顶</string>
     <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
     <string name="stick_type_group_join">圈子加入申请</string>
@@ -658,7 +658,7 @@
     <string name="comment_format_reply">%1$s回复%2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的帖子</string>
+    <string name="comment_format_group_feed">%s评论了你的圈子</string>
     <string name="comment_format_music">%s评论了你的音乐</string>
     <string name="comment_format_music_specials">%s评论了你的专辑</string>
     <string name="comment_format_news">%s评论了你的文章</string>
