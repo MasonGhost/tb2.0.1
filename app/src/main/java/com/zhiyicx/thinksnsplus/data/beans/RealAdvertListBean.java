@@ -4,12 +4,9 @@ import android.os.Parcel;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 import com.zhiyicx.baseproject.config.AdvertConfig;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AdvertFormatConvert;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicListAdvertConvert;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.ImageAdvertConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;

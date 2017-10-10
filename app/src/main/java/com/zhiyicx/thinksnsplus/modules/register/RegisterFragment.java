@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
@@ -23,7 +24,8 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -35,7 +37,6 @@ import butterknife.OnClick;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
-import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM;
 
 /**
  * @Describe
@@ -124,11 +125,28 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         if (getArguments() != null) {
             mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
         }
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     protected void initView(View rootView) {
+        boolean isAccountAllType = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings() != null
+                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_ALL);
+        boolean isOnlyMobile = mSystemConfigBean.getRegisterSettings() != null
+                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY);
+        boolean isOnlyEmail = mSystemConfigBean.getRegisterSettings() != null
+                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY);
+
+        mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
+        if (isOnlyMobile) {
+            mCurrentRegisterType = REGISTER_PHONE;
+        } else {
+            mCurrentRegisterType = REGISTER_EMAIL;
+        }
+        resetUI();
         setRegisterType();
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
@@ -287,7 +305,13 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void goHome() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
-        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
+        boolean needCompleteUserInfo = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings().isCompleteData();
+        if (needCompleteUserInfo) {
+            EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
+        } else {
+            startActivity(new Intent(getActivity(), HomeActivity.class));
+        }
         getActivity().finish();
     }
 

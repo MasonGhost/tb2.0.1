@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.umeng.socialize.UMAuthListener;
@@ -9,7 +10,9 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.third_platform.bind.BindOldAccountActivity;
 import com.zhiyicx.thinksnsplus.modules.third_platform.complete.CompleteAccountActivity;
@@ -32,10 +35,18 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
     private ChooseBindPopupWindow mPopupWindow;
 
+    private SystemConfigBean mSystemConfigBean;
+
     public ChooseBindFragment instance(Bundle bundle) {
         ChooseBindFragment fragment = new ChooseBindFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -45,7 +56,12 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
     @Override
     protected void initData() {
+        boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings().getRegisterMode() == null
+                || mSystemConfigBean.getRegisterSettings().getRegisterMode().equals(SystemConfig.REGITER_MODE_THIRDPART)
+                || mSystemConfigBean.getRegisterSettings().getRegisterMode().equals(SystemConfig.REGITER_MODE_ALL);
 
+        mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
     }
 
     @Override
@@ -131,7 +147,7 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

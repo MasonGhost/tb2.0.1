@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local.data_convert;
 
-import com.zhiyicx.thinksnsplus.data.beans.ImageAdvert;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 
 /**
  * @Author Jliuer

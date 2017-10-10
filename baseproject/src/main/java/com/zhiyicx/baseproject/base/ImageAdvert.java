@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.data.beans;
+package com.zhiyicx.baseproject.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;

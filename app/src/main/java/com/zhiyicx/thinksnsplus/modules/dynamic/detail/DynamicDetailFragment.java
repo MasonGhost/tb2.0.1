@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -173,6 +175,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         initToolbar();
         //initToolbarTopBlankHeight();
         initBottomToolUI();
@@ -233,6 +236,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mDynamicDetailHeader.setReWardViewVisible(mSystemConfigBean.getSite().getReward().hasOpen() ? VISIBLE : GONE);
     }
 
     @Override
@@ -604,7 +608,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC,getCurrentDynamic().getId(), comment_id);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), comment_id);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {

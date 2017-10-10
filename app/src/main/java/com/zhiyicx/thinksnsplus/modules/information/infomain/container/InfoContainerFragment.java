@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.UIUtils;
@@ -45,6 +46,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.Li
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -117,6 +119,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
     private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
 
+    private String[] mPublishInfoConfig;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_infocontainer;
@@ -135,8 +139,11 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
         mUserCertificationInfo = userCertificationInfo;
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
         if (userCertificationInfo.getStatus() == 1) {
-            if (mPresenter.isNeedPayTip()) {
+            if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
+                    && Arrays.toString(mPublishInfoConfig).contains(SystemConfig.PUBLISH_INFO_NEED_PAY))) {
                 mPayAlertPopWindow.show();
                 mPresenter.savePayTip(false);
             } else {

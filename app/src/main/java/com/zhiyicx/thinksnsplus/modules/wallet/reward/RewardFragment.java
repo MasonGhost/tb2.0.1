@@ -22,6 +22,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,6 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
-
     public static RewardFragment newInstance(Bundle bundle) {
         RewardFragment rechargeFragment = new RewardFragment();
         rechargeFragment.setArguments(bundle);
@@ -99,6 +99,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         if (getArguments() == null) {
             throw new IllegalArgumentException("reward type not be null");
         }
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         mRewardType = (RewardType) getArguments().getSerializable(BUNDLE_REWARD_TYPE);
         mSourceId = getArguments().getLong(BUNDLE_SOURCE_ID);
     }
@@ -146,11 +147,23 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     private void initRechargeLables() {
-
+        String[] amount = new String[]{};
         mRechargeLables = new ArrayList<>();
-        mRechargeLables.add(100f);
-        mRechargeLables.add(500f);
-        mRechargeLables.add(1000f);
+        try {
+            amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (amount.length > 0) {// 配置的打赏金额
+            mRechargeLables.add(Float.parseFloat(amount[0]));
+            mRechargeLables.add(Float.parseFloat(amount[1]));
+            mRechargeLables.add(Float.parseFloat(amount[2]));
+        } else {
+            mRechargeLables.add(100f);
+            mRechargeLables.add(500f);
+            mRechargeLables.add(1000f);
+        }
+
 
         if (mRechargeLables == null) {
             return;
