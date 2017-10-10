@@ -80,7 +80,7 @@
     <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
-    <string name="is_sure_clean_cache">确定清理缓存？</string>
+    <string name="is_sure_clean_cache">缓存大小:%s，确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="check_version">版本更新</string>
     <string name="download_new_version">立即更新</string>
@@ -295,9 +295,9 @@
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>
     <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
     <string name="stick_type_dynamic_commnet">动态评论置顶</string>
-    <string name="stick_type_dynamic_commnet_message">对你的动态“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_dynamic_commnet_message">对你的动态进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
-    <string name="stick_type_news_commnet_message">对你的文章“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_news_commnet_message">对你的文章进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_group_commnet">圈子帖子置顶</string>
     <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
     <string name="stick_type_group_join">圈子加入申请</string>
@@ -471,7 +471,7 @@
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
-    <string name="create_topic">申请创建话题</string>
+    <string name="create_topic">建议创建话题</string>
     <string name="input_topic_tip">请输入话题名称</string>
     <string name="input_topic_des_tip">请输入话题相关描述信息</string>
 
@@ -602,8 +602,8 @@
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
     <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
-    <string name="not_find_qa_topic_to_publish">未找到相关话题</string>
-    <string name="request_to_publish_topic">申请创建话题</string>
+    <string name="not_find_qa_topic_to_publish">没找到相关话题~</string>
+    <string name="request_to_publish_topic">向官方建议创建新话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
     <string name="bind_success">账号绑定成功</string>
@@ -659,7 +659,7 @@
     <string name="comment_format_reply">%1$s回复%2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的帖子</string>
+    <string name="comment_format_group_feed">%s评论了你的圈子</string>
     <string name="comment_format_music">%s评论了你的音乐</string>
     <string name="comment_format_music_specials">%s评论了你的专辑</string>
     <string name="comment_format_news">%s评论了你的文章</string>

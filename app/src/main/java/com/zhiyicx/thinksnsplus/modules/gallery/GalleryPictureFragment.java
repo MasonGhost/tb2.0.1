@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
@@ -40,6 +43,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.widget.photoview.Compat;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -400,7 +404,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         @Override
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
                                                 isFirstResource) {
-                                            LogUtils.i(TAG + "加载高清图失败:" + e.toString());
+                                            LogUtils.i(TAG + "加载高清图失败:" + e);
                                             if (mPbProgress != null) {
                                                 mPbProgress.setVisibility(View.GONE);
                                             }
@@ -447,7 +451,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 isFromMemoryCache, boolean isFirstResource) {
                             // 只有获取load的图片才会走这儿，缩略图不会
                             LogUtils.i(TAG + "加载原图成功");
-                            if (mTvOriginPhoto!=null){
+                            if (mTvOriginPhoto != null) {
                                 mTvOriginPhoto.setVisibility(View.GONE);
                             }
                             return false;
@@ -477,7 +481,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
         Glide.with(context)
-                .using(new ProgressModelLoader( new MyImageLoadHandler(this)
+                .using(new ProgressModelLoader(new MyImageLoadHandler(this)
 //                        new Handler() {
 //                    @Override
 //                    public void handleMessage(Message msg) {
@@ -495,7 +499,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 //                        }
 //                    }
 //                }
-                , AppApplication.getTOKEN()))
+                        , AppApplication.getTOKEN()))
                 .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
@@ -546,7 +550,27 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      * @param backgroundAnimator
      */
     public void animationExit(ObjectAnimator backgroundAnimator) {
+        backgroundAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (getActivity() != null) {// 防止空指针
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(-1, -1);
+                }
+            }
 
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (mIvOriginPager.getVisibility() == View.VISIBLE) {
+                    mIvOriginPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                } else {
+                    mIvPager.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                }
+
+            }
+        });
         // 高清图片可见，那就高清图片退出动画
         if (mIvPager.getVisibility() == View.VISIBLE) {
             // 图片处于放大状态，先让它复原
@@ -783,7 +807,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             int totalReadBytes = msg.arg1;
             int lengthBytes = msg.arg2;
             int progressResult = (int) (((float) totalReadBytes / (float) lengthBytes) * 100);
-            mTvOriginPhoto.setText(String.format(Locale.getDefault(),"%d%%", progressResult));
+            mTvOriginPhoto.setText(String.format(Locale.getDefault(), "%d%%", progressResult));
             LogUtils.i("progress-result:-->" + progressResult + " msg.arg1-->" + msg.arg1 + "  msg.arg2-->" +
                     msg.arg2 + " 比例-->" + progressResult + "%/" + "100%");
             if (progressResult == 100) {

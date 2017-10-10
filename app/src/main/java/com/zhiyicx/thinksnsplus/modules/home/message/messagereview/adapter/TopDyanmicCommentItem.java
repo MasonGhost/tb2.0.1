@@ -100,8 +100,8 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
         } else {
             holder.setVisible(R.id.fl_detial, View.GONE);
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
-                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean.getFeed().getFeed_content())
-                            ? " " : dynamicCommentBean.getFeed().getFeed_content()));
+                    holder.itemView.getContext().getString(R.string.stick_type_dynamic_commnet_message), TextUtils.isEmpty(dynamicCommentBean.getComment().getComment_content())
+                            ? " " : dynamicCommentBean.getComment().getComment_content()));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
