@@ -434,6 +434,28 @@ public class ConvertUtils {
     }
 
     /**
+     * 字节数转合适内存大小，单位B K M G
+     * <p>保留3位小数</p>
+     *
+     * @param byteNum 字节数
+     * @return 合适内存大小
+     */
+    @SuppressLint("DefaultLocale")
+    public static String byte2FitMemorySizeUnit(long byteNum) {
+        if (byteNum < 0) {
+            return "shouldn't be less than zero!";
+        } else if (byteNum < ConstantConfig.KB) {
+            return String.format("%.1fB", byteNum + 0.05);
+        } else if (byteNum < ConstantConfig.MB) {
+            return String.format("%.1fK", byteNum / ConstantConfig.KB + 0.05);
+        } else if (byteNum < ConstantConfig.GB) {
+            return String.format("%.1fM", byteNum / ConstantConfig.MB + 0.05);
+        } else {
+            return String.format("%.1fG", byteNum / ConstantConfig.GB + 0.05);
+        }
+    }
+
+    /**
      * 以 unit 为单位的时间长度转毫秒时间戳
      *
      * @param timeSpan 毫秒时间戳

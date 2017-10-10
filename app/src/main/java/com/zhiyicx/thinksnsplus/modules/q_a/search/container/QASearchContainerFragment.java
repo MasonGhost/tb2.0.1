@@ -52,6 +52,7 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
     }
 
     @Override
+
     protected boolean usePermisson() {
         return true;
     }
@@ -65,6 +66,8 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                 , R.id.fragment_container);
 
         initListener();
+
+        mFragmentInfoSearchEdittext.setHint(getString(R.string.info_search));
     }
 
     @Override
