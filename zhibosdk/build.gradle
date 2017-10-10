@@ -32,30 +32,42 @@ repositories {
     }
 }
 dependencies {
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdksoupportDependencies = rootProject.ext.sdksoupportDependencies
+
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.google.dagger:dagger:2.0.2'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.0.2'
-    provided 'javax.annotation:jsr250-api:1.0'
-    compile 'com.android.support:support-annotations:22.0.0'
-    compile 'org.simple:androideventbus:1.0.5.1'
+
+    compile sdksoupportDependencies.annotations
+
+    // Retrofit + rx + gson
+    compile dataDependences.retrofit
+    compile dataDependences.retrofitConverterGson
+    compile dataDependences.retorfitConverterScalar
+    compile dataDependences.retrofitAdapterRxJava
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
+    compile dataDependences.gson
+
+    compile dataDependences.androideventbus
+    compile dataDependences.glideOkhttp
+    compile dataDependences.dagger
+    annotationProcessor dataDependences.daggerCompiler
+    provided dataDependences.javaxAnnotation
+    compile project(':imsdk')
+
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile project(':imsdk')
 }
 buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven {
+            url "https://jitpack.io"
+        }
     }
-
 
 
 }

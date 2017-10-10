@@ -68,7 +68,6 @@ dependencies {
     androidTestCompile testDependences.dexmaker
     androidTestCompile testDependences.dexmakerMockito
 
-    annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     // 刷新:三方库compat版本过高，使用主工程的版本

@@ -33,9 +33,18 @@ android {
         abortOnError false
     }
 }
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:25.0.1'
+        force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+}
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://jitpack.io"
+        }
     }
 
 }
@@ -51,6 +60,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'javax.inject'
     })
     testCompile 'junit:junit:4.12'
     compile dataDependences.nineoldandroids
@@ -66,6 +76,11 @@ dependencies {
 
     compile dataDependences.glide
     compile dataDependences.easypermissions
+    compile dataDependences.dagger
+    annotationProcessor dataDependences.daggerCompiler
+    provided dataDependences.javaxAnnotation
+
+
     compile project(':onekeyshare')
     compile project(':camerafilters')
     compile project(':carousel')
@@ -73,19 +88,19 @@ dependencies {
     compile project(':croplib')
     compile project(':votesdk')
 
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile "com.qiniu.pili:pili-android-qos:0.8.+"
     compile 'com.qiniu:happy-dns:0.2.+'
 
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.google.dagger:dagger:2.0.2'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.0.2'
-    provided 'javax.annotation:jsr250-api:1.0'
-    compile 'org.simple:androideventbus:1.0.5.1'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    // Retrofit + rx + gson
+    compile dataDependences.retrofit
+    compile dataDependences.retrofitConverterGson
+    compile dataDependences.retorfitConverterScalar
+    compile dataDependences.retrofitAdapterRxJava
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
+    compile dataDependences.gson
+
+    compile dataDependences.androideventbus
+    compile dataDependences.glideOkhttp
 
 }

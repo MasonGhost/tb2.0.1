@@ -29,6 +29,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jess on 16/4/23.
  */
+@ActivityScope
 public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView> {
     private SearchResult mUserInfo;
     private Subscription mfollowSubscription;
@@ -36,7 +37,6 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     private SharePolicy mSharePolicy;
 
     @Inject
-    @ActivityScope
     public UserHomePresenter(UserHomeModel model, UserHomeView rootView, @Named("userHome") SharePolicy policy) {
         super(model, rootView);
         this.mSharePolicy = policy;

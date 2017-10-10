@@ -29,12 +29,12 @@ import javax.inject.Inject;
 /**
  * Created by zhiyicx on 2016/3/16.
  */
+@ActivityScope
 public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
 
     public final String TAG = this.getClass().getSimpleName();
 
     @Inject
-    @ActivityScope
     public HomePresenter(HomeModel model, HomeView rootView) {
         super(model, rootView);
         KnifeUtil.bindTarget(this, rootView);

@@ -38,6 +38,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhiyicx on 2016/4/5.
  */
+@ActivityScope
 public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView> {
     private ArrayList<SearchResult> mSearchResults;
     private RecommendListAdapter mAdapter;
@@ -47,7 +48,6 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
     private UserInfo mPresenterInfo;
 
     @Inject
-    @ActivityScope
     public EndStreamPresenter(EndStreamModel model, EndStreamView rootView, SharePolicy sharePolicy) {
         super(model, rootView);
         this.mSharePolicy = sharePolicy;

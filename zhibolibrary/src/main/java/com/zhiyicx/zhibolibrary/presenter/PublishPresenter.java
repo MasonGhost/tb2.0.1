@@ -71,6 +71,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhiyicx on 2016/3/23.
  */
+@ActivityScope
 public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
     public static final float COVER_WIDTH = 350f;
     public static final float COVER_HEIGHT = 350f;
@@ -156,7 +157,6 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
 
 
     @Inject
-    @ActivityScope
     public PublishPresenter(PublishModel model, PublishView rootView
             , SharePolicy sharePolicy) {
         super(model, rootView);

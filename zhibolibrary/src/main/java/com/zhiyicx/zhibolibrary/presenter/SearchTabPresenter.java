@@ -44,6 +44,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhiyicx on 2016/4/6.
  */
+@ActivityScope
 public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabView> {
     private int mPage;
     private ArrayList<SearchResult> mListDatas;
@@ -63,7 +64,6 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
 
 
     @Inject
-    @ActivityScope
     public SearchTabPresenter(SearchTabModel model, SearchTabView rootView) {
         super(model, rootView);
     }

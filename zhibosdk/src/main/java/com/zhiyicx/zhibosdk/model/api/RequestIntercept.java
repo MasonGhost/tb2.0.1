@@ -5,6 +5,7 @@ import com.zhiyicx.zhibosdk.utils.LogUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -22,18 +23,36 @@ public class RequestIntercept implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
+        Request.Builder builder = request.newBuilder();
+
+        HttpUrl newBaseUrl = HttpUrl.parse(ZBApi.API_GET_DOMAIN);
+
+        //从request中获取原有的HttpUrl实例oldHttpUrl
+        HttpUrl oldHttpUrl = request.url();
+        //重建新的HttpUrl，修改需要修改的url部分
+        HttpUrl newFullUrl = oldHttpUrl
+                .newBuilder()
+                .scheme(newBaseUrl.scheme())
+                .host(newBaseUrl.host())
+                .port(newBaseUrl.port())
+                .build();
+
+        //重建这个request，通过builder.url(newFullUrl).build()；
+        //然后返回一个response至此结束修改
+        Response originalResponse = chain.proceed(builder.url(newFullUrl).build());
+
+
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
             request.body().writeTo(requestbuffer);
-        }
-        else {
+        } else {
             LogUtils.errroInfo("request.body() == null");
         }
-        Response originalResponse;
+
         Buffer buffer;
         Charset charset;
         try {
-            originalResponse = chain.proceed(request);
+//            originalResponse = chain.proceed(request);
             //打赢响应时间
             //读取服务器返回的结果
             ResponseBody responseBody = originalResponse.body();
@@ -50,6 +69,8 @@ public class RequestIntercept implements Interceptor {
             throw new IOException(e);
         }
         return originalResponse;
+
+
     }
 
     public String JSONTokener(String in) {

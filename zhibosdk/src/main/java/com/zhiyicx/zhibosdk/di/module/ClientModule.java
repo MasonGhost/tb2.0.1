@@ -19,7 +19,6 @@ import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import retrofit2.BaseUrl;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -32,7 +31,7 @@ public class ClientModule {
     private static final int TOME_OUT = 10;
     public static final int HTTP_RESPONSE_DISK_CACHE_MAX_SIZE = 12 * 1024 * 1024;//缓存文件最大值为10Mb
     private final Application application;
-    private int tryGetApiTimes =0;
+    private int tryGetApiTimes = 0;
 
     public ClientModule(Application application) {
         this.application = application;
@@ -72,12 +71,7 @@ public class ClientModule {
      */
     private Retrofit configureRetrofit(Retrofit.Builder builder, OkHttpClient client) {
         return builder
-                .baseUrl(new BaseUrl() {
-                    @Override
-                    public HttpUrl url() {
-                        return HttpUrl.parse(ZBApi.USENOW_DOMAIN);
-                    }
-                })//域名
+                .baseUrl(HttpUrl.parse(ZBApi.USENOW_DOMAIN))//域名
                 .client(client)//设置okhttp
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//使用rxjava
                 .addConverterFactory(GsonConverterFactory.create())//使用Gson

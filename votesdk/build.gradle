@@ -44,10 +44,16 @@ repositories {
 }
 
 dependencies {
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdksoupportDependencies = rootProject.ext.sdksoupportDependencies
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    
+    compile sdksoupportDependencies.appcompatV7
+    compile dataDependences.gson
+
+
     compile project(':zhibosdk')
 }
 

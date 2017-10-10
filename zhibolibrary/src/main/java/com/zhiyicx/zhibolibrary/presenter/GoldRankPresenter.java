@@ -30,13 +30,13 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jungle on 16/5/24.
  */
+@ActivityScope
 public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankModel, GoldRankView> {
     private MoreLinearAdapter mAdapter;
     private Subscription mSubscription;
     private Subscription mUsdiSubscription;
     private BaseJson<SearchResult[]> mApiList;//礼物排行榜数据
     @Inject
-    @ActivityScope
     public GoldRankPresenter(GoldRankModel model, GoldRankView rootView) {
         super(model, rootView);
     }

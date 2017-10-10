@@ -43,6 +43,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhiyicx on 2016/3/30.
  */
+@ActivityScope
 public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView> {
     private int mPage;
     private ArrayList<SearchResult> mListDatas;
@@ -60,7 +61,6 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
     private String mIconUrl;
 
     @Inject
-    @ActivityScope
     public SubscribeLiveItemPresenter(LiveItemModel model, LiveItemView rootView) {
         super(model, rootView);
         if (mRootView.getOrder().equals("video")) {

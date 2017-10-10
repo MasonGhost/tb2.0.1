@@ -59,6 +59,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jess on 16/5/11.
  */
+@ActivityScope
 public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener, OnIMMessageTimeOutListener {
     private Subscription mSubscription;
     private Subscription mVoteSenderSubscirption;
@@ -77,7 +78,6 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
 
 
     @Inject
-    @ActivityScope
     public PublishCorePresenter(PublishCoreModel model, PublishCoreView rootView
             , SharePolicy sharePolicy) {
         super(model, rootView);

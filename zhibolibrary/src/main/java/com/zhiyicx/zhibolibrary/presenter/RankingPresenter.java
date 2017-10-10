@@ -32,6 +32,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jess on 16/4/24.
  */
+@ActivityScope
 public class RankingPresenter extends ListBasePresenter<SearchResult, RankingModel, RankingView> {
     private MoreLinearAdapter mAdapter;
     private Subscription mSubscription;
@@ -39,7 +40,6 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
     private BaseJson<SearchResult[]> mApiList;
 
     @Inject
-    @ActivityScope
     public RankingPresenter(RankingModel model, RankingView rootView) {
         super(model, rootView);
     }

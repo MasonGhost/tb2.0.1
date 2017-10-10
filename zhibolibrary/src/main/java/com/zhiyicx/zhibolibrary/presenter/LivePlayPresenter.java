@@ -62,6 +62,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhiyicx on 2016/4/1.
  */
+@ActivityScope
 public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView> {
 
     private SearchResult mData;
@@ -79,7 +80,6 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
     private SearchResult[] mRecommendDatas;//推荐直播数据
 
     @Inject
-    @ActivityScope
     public LivePlayPresenter(LivePlayModel model, LivePlayView rootView) {
         super(model, rootView);
 
