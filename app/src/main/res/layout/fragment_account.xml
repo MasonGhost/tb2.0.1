@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
@@ -33,6 +32,7 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:paddingBottom="@dimen/spacing_large"
+            android:layout_marginBottom="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_mid"
             android:text="@string/account_balance"
             android:textColor="@color/important_for_content"
@@ -43,7 +43,6 @@
             android:id="@+id/bill_user_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
-            android:layout_marginTop="20dp"
             android:background="@color/white"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing_mid"
@@ -82,7 +81,6 @@
         </LinearLayout>
 
         <View
-            android:visibility="gone"
             style="@style/style_divider_horizontal"/>
 
         <LinearLayout

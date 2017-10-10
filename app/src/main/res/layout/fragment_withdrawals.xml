@@ -10,7 +10,7 @@
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:divider="@drawable/light_linear_driver"
         android:orientation="vertical"
@@ -108,6 +108,15 @@
                 android:text="@string/determine"
                 tools:text="@string/determine"/>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/button_login_margin_top"
+            android:enabled="false"
+            android:gravity="bottom|center_horizontal"
+            android:text="@string/withdrawal_time"
+            tools:text="@string/determine"/>
     </LinearLayout>
 
 </com.wcy.overscroll.OverScrollLayout>
