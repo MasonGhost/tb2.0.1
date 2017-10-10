@@ -69,11 +69,6 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     }
 
     @Override
-    protected boolean isNeedRefreshAnimation() {
-        return false;
-    }
-
-    @Override
     protected boolean setUseSatusbar() {
         return false;
     }

@@ -638,10 +638,14 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        if (ApiConfig.APP_DOMAIN.equals(ApiConfig.APP_DOMAIN_DEV)) {
+
+                        if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:") || mSystemRepository
+                                .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
                             imConfig.setWeb_socket_authority(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+
                         } else {
                             imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+
                         }
 
                         mAuthRepository.saveIMConfig(imConfig);

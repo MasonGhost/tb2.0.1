@@ -152,7 +152,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvSubscribBtn.setVisibility(View.GONE);// 隐藏订阅按钮
         initListener();
-        setOverScroll(false, null);
+//        setOverScroll(false, null);
     }
 
     @Override

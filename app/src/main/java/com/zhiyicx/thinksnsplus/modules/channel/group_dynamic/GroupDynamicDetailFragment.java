@@ -172,7 +172,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         initBottomToolListener();
         initHeaderView();
         initListener();
-        setOverScroll(false, false);
+//        setOverScroll(false, false);
     }
 
     private void initToolbar() {

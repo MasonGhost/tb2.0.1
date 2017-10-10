@@ -179,7 +179,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolListener();
         initHeaderView();
         initListener();
-        setOverScroll(false, false);
+//        setOverScroll(false, false);
     }
 
     private void initToolbar() {
