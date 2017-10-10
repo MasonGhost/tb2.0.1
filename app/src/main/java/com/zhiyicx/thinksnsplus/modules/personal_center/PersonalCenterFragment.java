@@ -282,7 +282,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvMore.setVisibility(View.GONE);
-        setOverScroll(false, null);
+//        setOverScroll(false, null);
     }
 
     private void initListener() {
