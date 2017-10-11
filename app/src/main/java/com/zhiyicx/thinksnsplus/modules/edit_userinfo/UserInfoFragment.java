@@ -109,6 +109,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     OverScrollLayout mDvViewGroup;
     @BindView(R.id.fl_tags)
     TagFlowLayout mFlTags;
+    @BindView(R.id.tv_tag_hint)
+    TextView mTvTagHint;
     @BindView(R.id.ll_tag_container)
     LinearLayout mLlTagContainer;
 
@@ -428,6 +430,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         mUserTagBeens.clear();
         mUserTagBeens.addAll(datas);
+        mTvTagHint.setVisibility(datas.size() == 0 ? View.VISIBLE : View.GONE);
         mUserInfoTagsAdapter.notifyDataChanged();
     }
 

@@ -416,9 +416,7 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
         members = null;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1885503356)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

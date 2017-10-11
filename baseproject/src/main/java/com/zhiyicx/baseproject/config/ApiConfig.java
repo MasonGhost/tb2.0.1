@@ -36,7 +36,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.200/";// 乔老师本地服务器
 
-    public static String APP_DOMAIN = APP_DOMAIN_FOR_TEARCHER_QIAO;
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
