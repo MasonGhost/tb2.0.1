@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!--绑定手机号-->
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--绑定手机号-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_bind_phone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
@@ -15,8 +21,8 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-    <!--绑定邮箱-->
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        <!--绑定邮箱-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_bind_email"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
@@ -25,8 +31,8 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-    <!--绑定QQ-->
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        <!--绑定QQ-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_bind_qq"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
@@ -35,8 +41,8 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-    <!--绑定微信-->
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        <!--绑定微信-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_bind_wechat"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
@@ -45,8 +51,8 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-    <!--绑定微博-->
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        <!--绑定微博-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_bind_weibo"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
@@ -55,4 +61,6 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
-</LinearLayout>
+    </LinearLayout>
+
+</com.wcy.overscroll.OverScrollLayout>
