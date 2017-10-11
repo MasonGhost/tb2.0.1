@@ -295,9 +295,7 @@ public abstract class TSWebFragment extends TSFragment {
                     }
                 });
         mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
-//        if(mOverScrollLayout !=null){// 是否需要下拉
-        mOverScrollLayout.setTopOverScrollEnable(false);
-//        }
+//        mOverScrollLayout.setTopOverScrollEnable(false);
     }
 
 

@@ -55,87 +55,99 @@
         style="@style/style_divider_horizontal"
         />
 
-    <LinearLayout
-
-        android:id="@+id/ll_location"
+    <com.wcy.overscroll.OverScrollLayout
+        android:id="@+id/overscroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:background="@color/white"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingBottom="@dimen/spacing_mid"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_mid"
-            android:paddingTop="@dimen/spacing_mid"
-            android:text="@string/current_location"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_content_assist"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_current_location"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:hint="@string/unlocation"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/important_for_content"
-            android:textColorHint="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_content_assist"
-            />
+            <LinearLayout
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+                android:id="@+id/ll_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_location"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:visibility="invisible"
-                android:paddingLeft="@dimen/spacing_mid"
-                android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/find_ico_location2"
-                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/spacing_mid"
+                    android:paddingLeft="@dimen/spacing_normal"
+                    android:paddingRight="@dimen/spacing_mid"
+                    android:paddingTop="@dimen/spacing_mid"
+                    android:text="@string/current_location"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"
+                    />
 
-            <ImageView
-                android:id="@+id/iv_animation"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="@dimen/spacing_mid"
-                android:paddingRight="@dimen/spacing_mid"
-                android:src="@drawable/frame_loading_grey"
-                />
+                <TextView
+                    android:id="@+id/tv_current_location"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:hint="@string/unlocation"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/important_for_content"
+                    android:textColorHint="@color/normal_for_disable_button_text"
+                    android:textSize="@dimen/size_content_assist"
+                    />
 
-        </FrameLayout>
-    </LinearLayout>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_normal"
-        android:text="@string/hot_location"
-        android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_comment"/>
+                    <ImageView
+                        android:id="@+id/iv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/spacing_mid"
+                        android:paddingRight="@dimen/spacing_mid"
+                        android:src="@mipmap/find_ico_location2"
+                        android:visibility="invisible"
+                        />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_hot_city"
-        android:paddingLeft="@dimen/spacing_small"
-        android:paddingRight="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_mid"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"/>
+                    <ImageView
+                        android:id="@+id/iv_animation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/spacing_mid"
+                        android:paddingRight="@dimen/spacing_mid"
+                        android:src="@drawable/frame_loading_grey"
+                        />
 
+                </FrameLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:text="@string/hot_location"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_hot_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_small"
+                android:paddingRight="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_mid"/>
+        </LinearLayout>
+    </com.wcy.overscroll.OverScrollLayout>
 </LinearLayout>

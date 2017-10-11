@@ -4,14 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:divider="@drawable/light_linear_driver"
         android:orientation="vertical"
         android:showDividers="middle">
@@ -19,6 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing_mid"
@@ -52,7 +51,9 @@
             android:id="@+id/bt_withdraw_style"
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
+            android:background="@color/white"
             app:leftText="@string/withdraw_ways"
+
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
@@ -60,7 +61,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
             android:gravity="center"
+
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid">
@@ -113,10 +116,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/button_login_margin_top"
-            android:enabled="false"
             android:gravity="bottom|center_horizontal"
-            android:text="@string/withdrawal_time"
-            tools:text="@string/determine"/>
+            android:text="@string/withdrawal_time"/>
     </LinearLayout>
 
 </com.wcy.overscroll.OverScrollLayout>
