@@ -18,6 +18,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.greenrobot.greendao.DaoException;
 
 /**
@@ -172,12 +173,12 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
         return (int) (id ^ (id >>> 32));
     }
 
-    public static class GroupCoverBean implements Serializable, Parcelable{
+    public static class GroupCoverBean implements Serializable, Parcelable {
 
         @Transient
         private static final long serialVersionUID = 1L;
         private int raw;
-        private String size;
+        private String size = "";
         @SerializedName("id")
         private long file_id;
 
@@ -266,7 +267,9 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
         }
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1414571368)
     public synchronized void resetManagers() {
         managers = null;
@@ -332,8 +335,8 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
 
     @Generated(hash = 1324884142)
     public GroupInfoBean(long id, String title, int is_audit, int posts_count, int members_count,
-            String created_at, String intro, int is_member, GroupCoverBean avatar,
-            GroupCoverBean cover) {
+                         String created_at, String intro, int is_member, GroupCoverBean avatar,
+                         GroupCoverBean cover) {
         this.id = id;
         this.title = title;
         this.is_audit = is_audit;
@@ -350,11 +353,15 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
     public GroupInfoBean() {
     }
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 2020276714)
     private transient GroupInfoBeanDao myDao;
 
@@ -401,7 +408,9 @@ public class GroupInfoBean extends BaseListBean implements Serializable {
         return members;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1358688666)
     public synchronized void resetMembers() {
         members = null;

@@ -59,18 +59,24 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
 //        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 设置封面
         GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
+        if (groupCoverBean == null) {
+            groupCoverBean = new GroupInfoBean.GroupCoverBean();
+        }
         String[] size = groupCoverBean.getSize().split("x");
         int width = 0;
         int height = 0;
-        if (size.length > 0){
-            width = Integer.parseInt(size[0]);
-            height = Integer.parseInt(size[1]);
+        if (size.length > 0) {
+            try {
+                width = Integer.parseInt(size[0]);
+                height = Integer.parseInt(size[1]);
+            } catch (NumberFormatException ignored) {
+            }
         }
         // 计算图片压缩比
         int imageViewWidth = getContext().getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
-        if (width == 0){
+        if (width == 0) {
             width = (int) (imageViewWidth * 100.0f);
-            height = (int) (imageViewWidth * 100.0f);;
+            height = (int) (imageViewWidth * 100.0f);
         }
         int port = (int) (imageViewWidth * 100.0f / width);
         if (port > 100) {
@@ -114,10 +120,10 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-                        if (mPresenter instanceof ChannelListContract.Presenter){
-                            ((ChannelListContract.Presenter)mPresenter).handleGroupJoin(position, groupInfoBean);
-                        } else if (mPresenter instanceof MyGroupContract.Presenter){
-                            ((MyGroupContract.Presenter)mPresenter).handleGroupJoin(position, groupInfoBean);
+                        if (mPresenter instanceof ChannelListContract.Presenter) {
+                            ((ChannelListContract.Presenter) mPresenter).handleGroupJoin(position, groupInfoBean);
+                        } else if (mPresenter instanceof MyGroupContract.Presenter) {
+                            ((MyGroupContract.Presenter) mPresenter).handleGroupJoin(position, groupInfoBean);
                         }
                     } else {
                         tv_channel_subscrib.setChecked(false);

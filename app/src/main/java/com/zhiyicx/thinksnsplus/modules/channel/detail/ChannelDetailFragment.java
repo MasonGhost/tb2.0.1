@@ -217,10 +217,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         setAdapter(adapter, new GroupDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForNineImage(getContext()));
-        if (getGroupId() >= 0) {
-            GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
-            adapter.addItemViewDelegate(emptyItem);
-        }
+        GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
