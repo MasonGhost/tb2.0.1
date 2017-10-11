@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Surface;
 
@@ -22,15 +23,19 @@ import com.jess.camerafilters.base.OnGlSurfaceShotListener;
 import com.jess.camerafilters.entity.FilterInfo;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 import com.soundcloud.android.crop.Crop;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.PublishModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
+
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
+import com.zhiyicx.zhibolibrary.ui.activity.PublishLiveActivity;
 import com.zhiyicx.zhibolibrary.ui.view.PublishView;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
 import com.zhiyicx.zhibolibrary.util.DeviceUtils;
@@ -72,7 +77,7 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/3/23.
  */
 @ActivityScope
-public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
+public class PublishPresenter extends BasePresenter<PublishModel, PublishView> implements OnShareCallbackListener {
     public static final float COVER_WIDTH = 350f;
     public static final float COVER_HEIGHT = 350f;
     private UserInfo myInfo;
@@ -83,7 +88,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
     public boolean isStreaming;
     public final String TAG = this.getClass().getSimpleName();
 
-    private SharePolicy mSharePolicy;
+    private UmengSharePolicyImpl mSharePolicy;
     private boolean isBackGround;
     public boolean isException;
     private boolean isHolder = false;
@@ -130,8 +135,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
                         map = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                         //map = DrawableProvider.rotateBitmapByDegree(bitmap, 90);
 
-                    }
-                    else {
+                    } else {
                         matrix.postRotate(-90);
                         map = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                         // map = DrawableProvider.rotateBitmapByDegree(bitmap, 270);
@@ -157,10 +161,10 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
 
 
     @Inject
-    public PublishPresenter(PublishModel model, PublishView rootView
-            , SharePolicy sharePolicy) {
+    public PublishPresenter(PublishModel model, PublishView rootView) {
         super(model, rootView);
-        this.mSharePolicy = sharePolicy;
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+        mSharePolicy.setOnShareCallbackListener(this);
         initSensitiveWordFilter();
         myInfo = ZhiboApplication.getUserInfo();
         setShareData();
@@ -171,7 +175,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
      * 设置分享数据
      */
     private void setShareData() {
-        mSharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(myInfo));
+        mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(myInfo));
     }
 
     public int setCameraDisplayOrientation(Activity activity,
@@ -201,8 +205,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;  // compensate the mirror
-        }
-        else {  // back-facing
+        } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
@@ -218,7 +221,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
         }
 
         if (ZhiboApplication.filter == null)
-            ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+            ZhiboApplication.initFilterWord();
     }
 
     /**
@@ -331,7 +334,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
 
 
         //检查权限
-        if (ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager
+                .PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -345,8 +350,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
         if (criteria != null) {
             myListener = new MyListener();
             mLocationManager.requestLocationUpdates(bsetpro, 0, 0, myListener);
-        }
-        else {
+        } else {
             mRootView.showMessage("请开启GPS定位");
         }
     }
@@ -393,37 +397,47 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
 
     /**
      * 分享朋友圈
+     *
+     * @param publishLiveActivity
      */
-    public void shareMoment() {
-        mSharePolicy.shareMoment();
+    public void shareMoment(PublishLiveActivity publishLiveActivity) {
+        mSharePolicy.shareMoment(publishLiveActivity, this);
     }
 
     /**
      * 分享微信
+     *
+     * @param publishLiveActivity
      */
-    public void shareWechat() {
-        mSharePolicy.shareWechat();
+    public void shareWechat(PublishLiveActivity publishLiveActivity) {
+        mSharePolicy.shareWechat(publishLiveActivity, this);
     }
 
     /**
      * 分享微博
+     *
+     * @param publishLiveActivity
      */
-    public void shareWeibo() {
-        mSharePolicy.shareWeibo();
+    public void shareWeibo(PublishLiveActivity publishLiveActivity) {
+        mSharePolicy.shareWeibo(publishLiveActivity, this);
     }
 
     /**
      * 分享qq
+     *
+     * @param publishLiveActivity
      */
-    public void shareQQ() {
-        mSharePolicy.shareQQ();
+    public void shareQQ(PublishLiveActivity publishLiveActivity) {
+        mSharePolicy.shareQQ(publishLiveActivity, this);
     }
 
     /**
      * 分享qq空间
+     *
+     * @param publishLiveActivity
      */
-    public void shareZone() {
-        mSharePolicy.shareZone();
+    public void shareZone(PublishLiveActivity publishLiveActivity) {
+        mSharePolicy.shareZone(publishLiveActivity, this);
     }
 
 
@@ -465,15 +479,12 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
                     DrawableProvider.rotateBitmapByDegree(bitmap, degree), COVER_WIDTH, COVER_HEIGHT);
             if (mModel.compressBitmap(mCropfile, resizeBmp)) {
                 mRootView.setCoverPhoto(new BitmapDrawable(resizeBmp));//设置剪切后的图片到封面展示
-            }
-            else {
+            } else {
                 mRootView.showMessage(UiUtils.getString("str_select_failure"));
             }
-        }
-        else if (resultCode == Crop.RESULT_ERROR) {
+        } else if (resultCode == Crop.RESULT_ERROR) {
             UiUtils.makeText(Crop.getError(result).getMessage());
-        }
-        else if (resultCode == Activity.RESULT_CANCELED) {
+        } else if (resultCode == Activity.RESULT_CANCELED) {
             mRootView.clearCameraFragmentImg();//清除cameraFragment里面的截帧图片
         }
     }
@@ -486,9 +497,10 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
         if (!TextUtils.isEmpty(mRootView.getTitel())) {
             title = mRootView.getTitel();
             if (ZhiboApplication.filter != null)
-                title = ZhiboApplication.filter.replaceSensitiveWord(title, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf.filter_word_replace);
+                title = ZhiboApplication.filter.replaceSensitiveWord(title, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf
+                        .filter_word_replace);
             else {
-                ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+                ZhiboApplication.initFilterWord();
                 mRootView.showMessage(UiUtils.getString("str_network_error_action"));
                 return;
             }
@@ -713,6 +725,27 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> {
 
     public boolean isBackGround() {
         return this.isBackGround;
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_cancel));
+
     }
 }
 

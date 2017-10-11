@@ -1,8 +1,6 @@
 package com.zhiyicx.zhibolibrary.di.module;
 
 
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
-import com.zhiyicx.zhibolibrary.app.policy.impl.SharePolicyImpl;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.UserHomeModel;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
@@ -37,13 +35,5 @@ public class UserHomeModule {
     UserHomeModel provideUserHomeModel(ServiceManager manager) {
         return new UserHomeModelImpl(manager);
     }
-
-    @ActivityScope
-    @Named("userHome")
-    @Provides
-    SharePolicy provideSharePolicy() {
-        return new SharePolicyImpl(UiUtils.getContext());
-    }
-
 
 }

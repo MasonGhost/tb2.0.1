@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 
 import org.simple.eventbus.EventBus;
 
@@ -122,6 +123,7 @@ public class AppApplication extends TSApplication {
         // 通讯录
         Contacts.initialize(this);
 
+        ZhiboApplication.init(this);
     }
 
     /**

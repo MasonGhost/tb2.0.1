@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.component.DaggerLivePlayComponent;
@@ -480,7 +481,6 @@ public class LivePlayActivity extends ZBLBaseActivity implements LivePlayView, P
         @Override
         public void onShareClick(View v) {
 
-
             mPresenter.showshare(presenterUser, LivePlayActivity.this);
         }
     };
@@ -605,5 +605,11 @@ public class LivePlayActivity extends ZBLBaseActivity implements LivePlayView, P
         else if (view.getId() == R.id.bt_live_play_close) {
             killMyself();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
     }
 }

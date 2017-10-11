@@ -2,10 +2,16 @@ package com.zhiyicx.zhibolibrary.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.EndStreamModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
@@ -14,15 +20,14 @@ import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
+import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
 import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.DefaultAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.RecommendListAdapter;
 import com.zhiyicx.zhibolibrary.ui.view.EndStreamView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
-import com.zhiyicx.zhibosdk.model.api.ZBApi;
 import com.zhiyicx.zhibosdk.model.entity.ZBEndStreamJson;
 
 import java.util.ArrayList;
@@ -39,7 +44,7 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/4/5.
  */
 @ActivityScope
-public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView> {
+public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView> implements OnShareCallbackListener {
     private ArrayList<SearchResult> mSearchResults;
     private RecommendListAdapter mAdapter;
     private Subscription mQuerySubscribe;
@@ -48,9 +53,9 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
     private UserInfo mPresenterInfo;
 
     @Inject
-    public EndStreamPresenter(EndStreamModel model, EndStreamView rootView, SharePolicy sharePolicy) {
+    public EndStreamPresenter(EndStreamModel model, EndStreamView rootView) {
         super(model, rootView);
-        this.mSharePolicy = sharePolicy;
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
     }
 
 
@@ -82,45 +87,50 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
             mRootView.setStar(income.zan_count + "");
             mRootView.setGold(income.gold + "");
         }
-        mSharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(mPresenterInfo));
+        mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(mPresenterInfo));
     }
 
 
     /**
      * 分享朋友圈
+     * @param endStreamingActivity
      */
-    public void shareMoment() {
-        mSharePolicy.shareMoment();
+    public void shareMoment(EndStreamingActivity endStreamingActivity) {
+        mSharePolicy.shareMoment(endStreamingActivity,this);
     }
 
 
     /**
      * 分享微信
+     * @param endStreamingActivity
      */
-    public void shareWechat() {
-        mSharePolicy.shareWechat();
+    public void shareWechat(EndStreamingActivity endStreamingActivity) {
+        mSharePolicy.shareWechat(endStreamingActivity,this);
     }
 
     /**
      * 分享微博
+     * @param endStreamingActivity
      */
-    public void shareWeibo() {
-        mSharePolicy.shareWeibo();
+    public void shareWeibo(EndStreamingActivity endStreamingActivity) {
+        mSharePolicy.shareWeibo(endStreamingActivity,this);
 
     }
 
     /**
      * 分享qq
+     * @param endStreamingActivity
      */
-    public void shareQQ() {
-        mSharePolicy.shareQQ();
+    public void shareQQ(EndStreamingActivity endStreamingActivity) {
+        mSharePolicy.shareQQ(endStreamingActivity,this);
     }
 
     /**
      * 分享qq空间
+     * @param endStreamingActivity
      */
-    public void shareZone() {
-        mSharePolicy.shareZone();
+    public void shareZone(EndStreamingActivity endStreamingActivity) {
+        mSharePolicy.shareZone(endStreamingActivity,this);
     }
 
     private void requestSearchResult(Bundle bundle) {
@@ -267,5 +277,26 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
     public void onDestroy() {
         super.onDestroy();
         unSubscribe(mQuerySubscribe);//解除订阅
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_cancel));
+
     }
 }

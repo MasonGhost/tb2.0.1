@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
-import com.zhiyicx.zhibolibrary.app.policy.impl.SharePolicyImpl;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.LivePlayModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
@@ -20,7 +23,6 @@ import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
 import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
@@ -63,7 +65,7 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/4/1.
  */
 @ActivityScope
-public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView> {
+public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView> implements OnShareCallbackListener {
 
     private SearchResult mData;
     private String mIconUrl;
@@ -149,10 +151,11 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
     /**
      * 分享
      */
-    public void showshare(UserInfo presenterUser, Context context) {
-        SharePolicy sharePolicy = new SharePolicyImpl(context);
-        sharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(presenterUser));
-        sharePolicy.showShare();
+    public void showshare(UserInfo presenterUser, Activity context) {
+        UmengSharePolicyImpl sharePolicy = new UmengSharePolicyImpl(context);
+        sharePolicy.setOnShareCallbackListener(this);
+        sharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
+        sharePolicy.showShare(context);
     }
 
 
@@ -522,6 +525,27 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         super.onDestroy();
         unSubscribe(mfollowSubscription);
         unSubscribe(mUserinfoSubscription);
+
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_cancel));
 
     }
 }

@@ -14,6 +14,7 @@ import com.azoft.carousellayoutmanager.CarouselLayoutManager;
 import com.azoft.carousellayoutmanager.CarouselZoomPostLayoutListener;
 import com.azoft.carousellayoutmanager.CenterScrollListener;
 import com.azoft.carousellayoutmanager.ItemTransformation;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.component.DaggerEndStreamComponent;
@@ -280,19 +281,19 @@ public class EndStreamingActivity extends ZBLBaseActivity implements EndStreamVi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.ib_end_stream_weixin) {
-            mPresenter.shareWechat();
+            mPresenter.shareWechat(EndStreamingActivity.this);
         }
         else if (view.getId() == R.id.ib_end_stream_friend) {
-            mPresenter.shareMoment();
+            mPresenter.shareMoment(EndStreamingActivity.this);
         }
         else if (view.getId() == R.id.ib_end_stream_qq) {
-            mPresenter.shareQQ();
+            mPresenter.shareQQ(EndStreamingActivity.this);
         }
         else if (view.getId() == R.id.ib_end_stream_sina) {
-            mPresenter.shareWeibo();
+            mPresenter.shareWeibo(EndStreamingActivity.this);
         }
         else if (view.getId() == R.id.ib_end_stream_zone) {
-            mPresenter.shareZone();
+            mPresenter.shareZone(EndStreamingActivity.this);
         }
         else if (view.getId() == R.id.bt_end_stream_my_room) {
             if (isAudience) {//关注主播
@@ -314,5 +315,11 @@ public class EndStreamingActivity extends ZBLBaseActivity implements EndStreamVi
         else if (view.getId() == R.id.bt_end_stream_go_home) {
             killMyself();//退出动画
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
     }
 }

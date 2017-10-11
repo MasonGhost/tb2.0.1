@@ -1,9 +1,15 @@
 package com.zhiyicx.zhibolibrary.presenter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.UserHomeModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
@@ -11,7 +17,6 @@ import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
 import com.zhiyicx.zhibolibrary.ui.view.UserHomeView;
@@ -30,16 +35,17 @@ import rx.schedulers.Schedulers;
  * Created by jess on 16/4/23.
  */
 @ActivityScope
-public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView> {
+public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView> implements OnShareCallbackListener {
     private SearchResult mUserInfo;
     private Subscription mfollowSubscription;
     private Subscription mQuerySubscribe;
-    private SharePolicy mSharePolicy;
+    private UmengSharePolicyImpl mSharePolicy;
 
     @Inject
-    public UserHomePresenter(UserHomeModel model, UserHomeView rootView, @Named("userHome") SharePolicy policy) {
+    public UserHomePresenter(UserHomeModel model, UserHomeView rootView) {
         super(model, rootView);
-        this.mSharePolicy = policy;
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
+        mSharePolicy.setOnShareCallbackListener(this);
     }
 
     public void follow(String action) {
@@ -145,8 +151,29 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     /**
      * 分享
      */
-    public void showshare(UserInfo presenterUser, Context context) {
-        mSharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(presenterUser));
-        mSharePolicy.showShare();
+    public void showshare(UserInfo presenterUser, Activity context) {
+        mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
+        mSharePolicy.showShare(context);
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_cancel));
+
     }
 }

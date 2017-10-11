@@ -3,24 +3,28 @@ package com.zhiyicx.zhibolibrary.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.PublishCoreModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
+
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.model.entity.UserMessage;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
@@ -60,7 +64,8 @@ import rx.schedulers.Schedulers;
  * Created by jess on 16/5/11.
  */
 @ActivityScope
-public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener, OnIMMessageTimeOutListener {
+public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener,
+        OnIMMessageTimeOutListener, OnShareCallbackListener {
     private Subscription mSubscription;
     private Subscription mVoteSenderSubscirption;
     private Subscription mGiftRank;
@@ -69,7 +74,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private Subscription mUserinfoSubscription;
     private Subscription mOrderSubscription;
     private Subscription mRecomListSubscription;
-    private SharePolicy mSharePolicy;
+    private UmengSharePolicyImpl mSharePolicy;
     private String mTokenGift = "";
     private String mTokenZan = "";
     private BaseJson<SearchResult[]> mApiList;//礼物排行榜数据
@@ -79,9 +84,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
 
     @Inject
     public PublishCorePresenter(PublishCoreModel model, PublishCoreView rootView
-            , SharePolicy sharePolicy) {
+    ) {
         super(model, rootView);
-        this.mSharePolicy = sharePolicy;
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+        mSharePolicy.setOnShareCallbackListener(this);
         setIMListioner();
         initSensitiveWordFilter();
     }
@@ -94,8 +100,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             ZBStreamingClient.getInstance().setOnImListener(this);
             ZBStreamingClient.getInstance().setOnImStatusListener(this);
             ZBStreamingClient.getInstance().setOnIMMessageTimeOutListener(this);
-        }
-        else {
+        } else {
             ZBPlayClient.getInstance().setOnImListener(this);
             ZBPlayClient.getInstance().setOnImStatusListener(this);
             ZBPlayClient.getInstance().setOnIMMessageTimeOutListener(this);
@@ -112,7 +117,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
         }
 
         if (ZhiboApplication.filter == null)
-            ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+            ZhiboApplication.initFilterWord();
     }
 
     /**
@@ -143,8 +148,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                                 e.printStackTrace();
                                 mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
                             }
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -227,7 +231,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             if (usid.length() > 0)
                 usid = usid.substring(0, usid.length() - 1);
             if (usid.length() > 0) {
-                mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn(Schedulers.io())
+                mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn
+                        (Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
                     @Override
                     public void call(BaseJson<UserInfo[]> baseJson) {
@@ -250,8 +255,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             }
 
 
-        }
-        else {
+        } else {
             mRootView.showMessage(apiList.message);
         }
     }
@@ -287,8 +291,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                         if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             if (apiList.data.length > 0)
                                 mRootView.updatePresenterInfo(apiList.data[0]);
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -348,9 +351,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     public void sendTextmsg(String text) {
         if (ZhiboApplication.filter != null)
-            text = ZhiboApplication.filter.replaceSensitiveWord(text, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf.filter_word_replace);
+            text = ZhiboApplication.filter.replaceSensitiveWord(text, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf
+                    .filter_word_replace);
         else {
-            ((ZhiboApplication) ZhiboApplication.getContext()).initFilterWord();
+            ZhiboApplication.initFilterWord();
             mRootView.showMessage(UiUtils.getString("str_network_error_action"));
             return;
         }
@@ -419,8 +423,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                     public void call(BaseJson<UserInfo[]> users) {
                         if (users.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.saveAndAddChat(users, message);
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(users.message);
                         }
                     }
@@ -473,8 +476,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void disableSendMsg(long gag) {
         if (gag == 0) {//永久
             mRootView.disableSendMsgEver();
-        }
-        else if (gag > 0) {//时段
+        } else if (gag > 0) {//时段
             mRootView.disableSendMsgSomeTime(gag);
 
         }
@@ -505,36 +507,35 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void lauchEnd(SearchResult[] datas, final String uid, final int viewcount) throws Exception {
 
         mRecommendDatas = datas;
-            /**
-             * 通过usid获取用户信息
-             */
-            String usid = "";
-            for (SearchResult searchResult : datas) {
-                usid += searchResult.user.usid + ",";
-            }
-            if (usid.length() > 0)
-                usid = usid.substring(0, usid.length() - 1);
-            if (usid.length() > 0) {
-                mUserinfoSubscription = mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                            @Override
-                            public void call(BaseJson<UserInfo[]> baseJson) {
-                                for (int i = 0; i < baseJson.data.length; i++) {
-                                    mRecommendDatas[i].user = baseJson.data[i];
-                                }
-                                doEnd(mRecommendDatas, uid, viewcount);
+        /**
+         * 通过usid获取用户信息
+         */
+        String usid = "";
+        for (SearchResult searchResult : datas) {
+            usid += searchResult.user.usid + ",";
+        }
+        if (usid.length() > 0)
+            usid = usid.substring(0, usid.length() - 1);
+        if (usid.length() > 0) {
+            mUserinfoSubscription = mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                        @Override
+                        public void call(BaseJson<UserInfo[]> baseJson) {
+                            for (int i = 0; i < baseJson.data.length; i++) {
+                                mRecommendDatas[i].user = baseJson.data[i];
                             }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                throwable.printStackTrace();
-                                doEnd(new SearchResult[]{}, uid, viewcount);
-                            }
-                        });
-            }
-            else
-                doEnd(mRecommendDatas, uid, viewcount);
+                            doEnd(mRecommendDatas, uid, viewcount);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            doEnd(new SearchResult[]{}, uid, viewcount);
+                        }
+                    });
+        } else
+            doEnd(mRecommendDatas, uid, viewcount);
     }
 
     private void doEnd(SearchResult[] datas, String uid, int viewcount) {
@@ -554,8 +555,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * 分享
      */
     public void showshare(UserInfo presenterUser, Context context) {
-        mSharePolicy.setShareContent(ShareContent.getShareContentByUserInfo(presenterUser));
-        mSharePolicy.showShare();
+        mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
+        mSharePolicy.showShare(((Fragment)mRootView).getActivity());
     }
 
     /**
@@ -774,5 +775,26 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
 
     public boolean isJoinedChatRoom() {
         return isJoinedChatRoom;
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showMessage(UiUtils.getString(R.string.share_cancel));
+
     }
 }

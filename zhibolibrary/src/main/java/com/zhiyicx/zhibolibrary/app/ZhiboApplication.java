@@ -3,12 +3,12 @@ package com.zhiyicx.zhibolibrary.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.zhibolibrary.di.component.ClientComponent;
 import com.zhiyicx.zhibolibrary.di.component.DaggerClientComponent;
 import com.zhiyicx.zhibolibrary.di.module.ClientModule;
 import com.zhiyicx.zhibolibrary.di.module.ServiceModule;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
@@ -28,9 +28,9 @@ import java.util.Set;
  * +eventbus
  * +butterknife组成
  */
-public class ZhiboApplication extends Application {
-    public static final String INTNET_ACTION_USERHOMEACTIVITY ="com.zhiyicx.zhibo.UserHomeActivity";
-    public static final String INTENT_ACTION_GOLDEEXCHANGEACTIVITY="com.zhiyicx.zhibo.GoldExchangeActivity";
+public class ZhiboApplication {
+    public static final String INTNET_ACTION_USERHOMEACTIVITY = "com.zhiyicx.zhibo.UserHomeActivity";
+    public static final String INTENT_ACTION_GOLDEEXCHANGEACTIVITY = "com.zhiyicx.zhibo.GoldExchangeActivity";
     private static ShareContent mShareContent;
 
     public static ShareContent getShareContent() {
@@ -41,8 +41,7 @@ public class ZhiboApplication extends Application {
         mShareContent = shareContent;
     }
 
-
-    static private ZhiboApplication mApplication;
+    static private Application mContext;
     static public ClientComponent mZhiboClientComponent;
     public static String auth_accesskey;
     public static String auth_secretkey;
@@ -51,24 +50,31 @@ public class ZhiboApplication extends Application {
 
     public static UserInfo getUserInfo() {
         if (userInfo == null)
-            userInfo = DataHelper.getDeviceData(DataHelper.USER_INFO, ZhiboApplication.mApplication);
+            userInfo = DataHelper.getDeviceData(DataHelper.USER_INFO, mContext);
         return userInfo;
     }
 
     public static void setUserInfo(UserInfo userInfo) {
         ZhiboApplication.userInfo = userInfo;
-        DataHelper.saveDeviceData(DataHelper.USER_INFO, userInfo, ZhiboApplication.mApplication);
+        DataHelper.saveDeviceData(DataHelper.USER_INFO, userInfo, mContext);
     }
 
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mApplication = this;
+    //
+//    @Override
+//    public void onCreate() {
+//        super.onCreate();
+//        mApplication = this;
+//        /**
+//         * 推流初始化
+//         */
+//        ZBSmartLiveSDK.init(this, ZBLApi.ZHIBO_BASE_URL,ZBLApi.ZHIBO_BASE_VERSION);
+//    }
+    public static void init(Application application) {
+        mContext = application;
         /**
          * 推流初始化
          */
-        ZBSmartLiveSDK.init(this, ZBLApi.ZHIBO_BASE_URL,ZBLApi.ZHIBO_BASE_VERSION);
+        ZBSmartLiveSDK.init(application, ZBLApi.ZHIBO_BASE_URL, ZBLApi.ZHIBO_BASE_VERSION);
     }
 
 
@@ -93,16 +99,16 @@ public class ZhiboApplication extends Application {
      *
      * @return
      */
-    public static Context getContext() {
-        return mApplication;
+    public static Application getContext() {
+        return mContext;
     }
 
     /**
      * 初始化敏感词
      */
-    public void initFilterWord() {
+    public static void initFilterWord() {
 
-        ZBInitConfigManager.getFilterWords(getApplicationContext(), new OnFilterWordsConfigCallback() {
+        ZBInitConfigManager.getFilterWords(mContext, new OnFilterWordsConfigCallback() {
             @Override
             public void onSuccess(Set<String> data) {
                 filter = new SensitivewordFilter(data);

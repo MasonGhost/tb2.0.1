@@ -8,12 +8,14 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.component.DaggerHomeComponent;
 import com.zhiyicx.zhibolibrary.di.module.HomeModule;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
-import com.zhiyicx.zhibolibrary.model.entity.ShareContent;
+
 import com.zhiyicx.zhibolibrary.presenter.HomePresenter;
 import com.zhiyicx.zhibolibrary.ui.adapter.AdapterViewPager;
 import com.zhiyicx.zhibolibrary.ui.common.ZBLBaseActivity;
@@ -30,7 +32,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import cn.sharesdk.framework.ShareSDK;
 
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_CONTENT;
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_TITLE;
@@ -158,7 +159,7 @@ public class HomeActivity extends ZBLBaseActivity implements HomeView, ViewPager
      */
     private void initFilterWord() {
         if (ZhiboApplication.filter == null) {
-            ((ZhiboApplication) getApplication()).initFilterWord();
+            ZhiboApplication.initFilterWord();
         }
     }
 
@@ -171,9 +172,9 @@ public class HomeActivity extends ZBLBaseActivity implements HomeView, ViewPager
          */
         ShareContent shareContent = new ShareContent();
         ZhiboApplication.setShareContent(shareContent);
-        shareContent.title = SHARE_TITLE;
-        shareContent.content = SHARE_CONTENT;
-        shareContent.url = ZBInitConfigManager.getZBCloundDomain() + SHARE_URL;
+        shareContent.setTitle( SHARE_TITLE);
+        shareContent.setContent( SHARE_CONTENT);
+        shareContent.setUrl(ZBInitConfigManager.getZBCloundDomain() + SHARE_URL);
     }
 
     private void initDialog() {
@@ -201,22 +202,18 @@ public class HomeActivity extends ZBLBaseActivity implements HomeView, ViewPager
         if (v.getId() == R.id.bt_home_live) {//直播列表页面
             mFragmentList.get(0).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(0, false);
-        }
-        else if (v.getId() == R.id.bt_home_replay) {
+        } else if (v.getId() == R.id.bt_home_replay) {
             //回放页面
             mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(1, false);
-        }
-        else if (v.getId() == R.id.bt_home_add) {
+        } else if (v.getId() == R.id.bt_home_add) {
 //初始化直播间
             mPresenter.initStream();
-        }
-        else if (v.getId() == R.id.bt_home_message) {
+        } else if (v.getId() == R.id.bt_home_message) {
 //消息页面
             mFragmentList.get(2).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(2, false);
-        }
-        else if (v.getId() == R.id.bt_home_my) {
+        } else if (v.getId() == R.id.bt_home_my) {
 //我的页面
             mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(1, false);
@@ -274,7 +271,6 @@ public class HomeActivity extends ZBLBaseActivity implements HomeView, ViewPager
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
-        ShareSDK.stopSDK(this);
     }
 
     @Override
@@ -314,5 +310,11 @@ public class HomeActivity extends ZBLBaseActivity implements HomeView, ViewPager
         ZBLBaseActivity.killAll();
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
     }
 }

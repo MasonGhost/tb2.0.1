@@ -81,12 +81,13 @@ dependencies {
     provided dataDependences.javaxAnnotation
 
 
-    compile project(':onekeyshare')
+//    compile project(':onekeyshare')
     compile project(':camerafilters')
     compile project(':carousel')
     compile project(':pickerview')
     compile project(':croplib')
     compile project(':votesdk')
+    compile project(':baseproject')
 
     compile "com.qiniu.pili:pili-android-qos:0.8.+"
     compile 'com.qiniu:happy-dns:0.2.+'

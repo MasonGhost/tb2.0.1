@@ -184,7 +184,7 @@ dependencies {
     compile dataDependences.butterknife
     annotationProcessor dataDependences.butterknifeApt
     // Project
-    compile project(":baseproject")
+    compile project(":zhibolibrary")
     compile project(":media-cache")
     compile project(':banner')
     compile project(':tspay')

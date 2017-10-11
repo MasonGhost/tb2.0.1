@@ -1,8 +1,6 @@
 package com.zhiyicx.zhibolibrary.di.module;
 
 
-import com.zhiyicx.zhibolibrary.app.policy.SharePolicy;
-import com.zhiyicx.zhibolibrary.app.policy.impl.SharePolicyImpl;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.PublishCoreModel;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
@@ -35,12 +33,5 @@ public class PublishCoreModule {
     PublishCoreModel providePublishCoreModel(ServiceManager manager) {
         return new PublishCoreModelImpl(manager);
     }
-
-    @ActivityScope
-    @Provides
-    SharePolicy provideSharePolicy() {
-        return new SharePolicyImpl(UiUtils.getContext());
-    }
-
 
 }

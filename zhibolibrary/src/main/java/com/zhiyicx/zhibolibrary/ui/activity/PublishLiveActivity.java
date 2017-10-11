@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.jess.camerafilters.base.FilterManager;
 import com.soundcloud.android.crop.Crop;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.component.DaggerPublishComponent;
@@ -524,6 +525,9 @@ public class PublishLiveActivity extends ZBLBaseActivity implements PublishView,
         else if (requestCode == Crop.REQUEST_CROP) {//剪切成功后处理数据
             mPresenter.handleCrop(resultCode, data);
         }
+
+            UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
+
     }
 
     /**
@@ -645,19 +649,19 @@ public class PublishLiveActivity extends ZBLBaseActivity implements PublishView,
             openCameraFragment();//打开用于采集照片的fragment
         }
         else if (view.getId() == R.id.ib_publish_core_weixin) {
-            mPresenter.shareWechat();
+            mPresenter.shareWechat(PublishLiveActivity.this);
         }
         else if (view.getId() == R.id.ib_publish_core_friend) {
-            mPresenter.shareMoment();
+            mPresenter.shareMoment(PublishLiveActivity.this);
         }
         else if (view.getId() == R.id.ib_publish_core_qq) {
-            mPresenter.shareQQ();
+            mPresenter.shareQQ(PublishLiveActivity.this);
         }
         else if (view.getId() == R.id.ib_publish_core_sina) {
-            mPresenter.shareWeibo();
+            mPresenter.shareWeibo(PublishLiveActivity.this);
         }
         else if (view.getId() == R.id.ib_publish_core_zone) {
-            mPresenter.shareZone();
+            mPresenter.shareZone(PublishLiveActivity.this);
         }
         else if (view.getId() == R.id.bt_publish_start) {
             //检测是否是wifi
@@ -671,6 +675,7 @@ public class PublishLiveActivity extends ZBLBaseActivity implements PublishView,
             showWarnDialog();
         }
     }
+
 }
 
 
