@@ -134,24 +134,28 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     protected void initView(View rootView) {
         boolean isAccountAllType = mSystemConfigBean.getRegisterSettings() == null
                 || mSystemConfigBean.getRegisterSettings() != null
-                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_ALL);
+                && SystemConfig.REGITER_ACCOUNTTYPE_ALL.equals(mSystemConfigBean.getRegisterSettings().getMethod());
         boolean isOnlyMobile = mSystemConfigBean.getRegisterSettings() != null
-                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY);
+                && SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
         boolean isOnlyEmail = mSystemConfigBean.getRegisterSettings() != null
-                && mSystemConfigBean.getRegisterSettings().getAccountType().endsWith(SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY);
+                && SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
 
-        mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
         if (isOnlyMobile) {
             mCurrentRegisterType = REGISTER_PHONE;
         } else {
             mCurrentRegisterType = REGISTER_EMAIL;
         }
-        resetUI();
+        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.email_address) : getString(R.string.phone_hint));
+        setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.register_by_phone) : getString(R.string.register_by_email));
+
         setRegisterType();
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
         // 游客判断
 //        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
+        mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
     }
 
     private void initListener() {

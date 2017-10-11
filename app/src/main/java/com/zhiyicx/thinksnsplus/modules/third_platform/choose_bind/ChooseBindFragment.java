@@ -35,8 +35,6 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
     private ChooseBindPopupWindow mPopupWindow;
 
-    private SystemConfigBean mSystemConfigBean;
-
     public ChooseBindFragment instance(Bundle bundle) {
         ChooseBindFragment fragment = new ChooseBindFragment();
         fragment.setArguments(bundle);
@@ -57,9 +55,9 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
     @Override
     protected void initData() {
         boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
-                || mSystemConfigBean.getRegisterSettings().getRegisterMode() == null
-                || mSystemConfigBean.getRegisterSettings().getRegisterMode().equals(SystemConfig.REGITER_MODE_THIRDPART)
-                || mSystemConfigBean.getRegisterSettings().getRegisterMode().equals(SystemConfig.REGITER_MODE_ALL);
+                || mSystemConfigBean.getRegisterSettings().getType() == null
+                || SystemConfig.REGITER_MODE_THIRDPART.equals(mSystemConfigBean.getRegisterSettings().getType())
+                || SystemConfig.REGITER_MODE_ALL.equals(mSystemConfigBean.getRegisterSettings().getType());
 
         mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
     }

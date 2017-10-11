@@ -111,7 +111,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
-        boolean openRegister = mSystemConfigBean.getRegisterSettings() == null || mSystemConfigBean.getRegisterSettings().hasOpen();
+        boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings() != null && mSystemConfigBean.getRegisterSettings().hasOpen();
         mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
