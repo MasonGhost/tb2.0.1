@@ -92,7 +92,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        long group_id = mRootView.getGroupId();
+        long group_id = mRootView.getGroupId();// 是不是收藏的
         if (group_id < 0) {
             Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
                     .map(listBaseJson -> {

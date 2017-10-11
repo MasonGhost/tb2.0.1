@@ -66,8 +66,11 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         int width = 0;
         int height = 0;
         if (size.length > 0) {
-            width = Integer.parseInt(size[0]);
-            height = Integer.parseInt(size[1]);
+            try {
+                width = Integer.parseInt(size[0]);
+                height = Integer.parseInt(size[1]);
+            } catch (NumberFormatException ignored) {
+            }
         }
         // 计算图片压缩比
         int imageViewWidth = getContext().getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高

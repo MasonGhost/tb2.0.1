@@ -19,8 +19,6 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
-import com.wcy.overscroll.OverScrollCheckListener;
-import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.EmptyView;
@@ -277,7 +275,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     private void getNewDataFromNet() {
-        if (isNeedRefreshAnimation()&&getUserVisibleHint()) {
+        if (isNeedRefreshAnimation() && getUserVisibleHint()) {
             mRefreshlayout.setRefreshing(true);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;

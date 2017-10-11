@@ -70,6 +70,9 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
                                 mRootView.goRecharge(WalletActivity.class);
                                 return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                             }
+                        }else{
+                            mRootView.goRecharge(WalletActivity.class);
+                            return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
                         return Observable.just(userInfoBean);
                     }
