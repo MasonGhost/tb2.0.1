@@ -159,6 +159,8 @@ public class EventBusTagConfig {
     public static final String EVENT_PUBLISH_ANSWER = "event_publish_answer";
     // 发布问题
     public static final String EVENT_PUBLISH_QUESTION = "event_publish_question";
+    // 围观答案
+    public static final String EVENT_ONLOOK_ANSWER = "event_onlook_answer";
 
     /**
      * 签到

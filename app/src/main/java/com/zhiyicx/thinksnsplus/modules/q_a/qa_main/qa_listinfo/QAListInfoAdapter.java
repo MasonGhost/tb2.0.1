@@ -24,6 +24,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
@@ -109,11 +110,17 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         }
         contentView.setVisibility(infoBean.getAnswer() != null ? View.VISIBLE : View.GONE);
         if (infoBean.getAnswer() != null) {
+            boolean canLook = infoBean.getAnswer().getCould();
             boolean isAnonymity = infoBean.getAnswer().getAnonymity() == 1;
             String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
             ImageUtils.loadCircleUserHeadPic(infoBean.getAnswer().getUser(), userAvatarView, isAnonymity);
             String prefix = (isAnonymity ? getContext().getString(R.string.qa_question_answer_anonymity_user)
                     : infoBean.getAnswer().getUser().getName()) + "：";
+            contentTextView.setMaxLines(3);
+            if (!canLook) {
+                contentTextView.setMaxLines(1);
+                content = mContext.getString(R.string.words_holder);
+            }
             content = prefix + content;
             RxView.clicks(contentView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -130,8 +137,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                         mContext.startActivity(intent);
                     });
             int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
-            makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(),
-                    infoBean.getAnswer().getCould());
+            LogUtils.d(content);
+            makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
         }
 
     }

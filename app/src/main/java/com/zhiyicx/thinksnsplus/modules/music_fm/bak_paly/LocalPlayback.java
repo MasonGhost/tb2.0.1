@@ -189,7 +189,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             mCurrentMediaId = mediaId;
         } else {
             LogUtils.d("mediaHasChanged:::没有切歌");
-            return;
+//            return;
         }
 
         // 防止未准备好的时候 重新播放该歌曲 mState == PlaybackStateCompat.STATE_PAUSED &&

@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -12,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -50,6 +53,11 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -122,6 +130,20 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_ONLOOK_ANSWER)
+    public void updateQusetion(AnswerInfoBean answerInfoBean) {
+        Observable.from(mRootView.getListDatas())
+                .forEach(listInfoBean -> {
+                    int position = -1;
+                    if (listInfoBean.getId().intValue() == answerInfoBean.getQuestion().getId().intValue()
+                            && listInfoBean.getAnswer().getId().intValue() == answerInfoBean.getId().intValue()) {
+                        position = mRootView.getListDatas().indexOf(listInfoBean);
+                        listInfoBean.setAnswer(answerInfoBean);
+                        mRootView.refreshData(position);
+                    }
+                });
     }
 
     @Override

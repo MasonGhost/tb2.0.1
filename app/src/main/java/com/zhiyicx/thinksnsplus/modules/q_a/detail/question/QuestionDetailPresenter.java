@@ -67,7 +67,6 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
-
     private SystemConfigBean mSystemConfigBean;
 
     @Inject
@@ -162,7 +161,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable,isLoadMore);
+                        mRootView.onResponseError(throwable, isLoadMore);
 
                     }
 
@@ -186,7 +185,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void handleFollowState(String questionId, boolean isFollowed) {
         mRootView.getCurrentQuestion().setWatched(isFollowed);
-        if (isFollowed){
+        if (isFollowed) {
             mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() + 1);
         } else {
             mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() - 1);
@@ -202,7 +201,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         shareContent.setTitle(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getSubject()));
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + APP_PATH_SHARE_DEFAULT);
         shareContent.setContent(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mRootView.getCurrentQuestion().getBody()));
 
         if (bitmap == null) {
@@ -289,6 +288,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
                         mRootView.getListDatas().set(position, data.getData());
                         mRootView.refreshData(position);
+                        EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_ONLOOK_ANSWER);
                         mRootView.showSnackMessage(mContext.getString(R.string.pay_alert_success), Prompt.DONE);
                     }
 
