@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.google.common.eventbus.EventBus;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
@@ -91,6 +92,9 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
                         LogUtils.i("onInterceptTouchEvent ::" + "不触发刷新");
                         return false;
                     }
+                }else{
+                    LogUtils.d(Math.abs(dY) / Math.abs(dX));
+                    LogUtils.d(dY);
                 }
 
                 break;
