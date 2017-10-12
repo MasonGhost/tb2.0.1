@@ -411,6 +411,9 @@
     <string name="reward_list">打赏列表</string>
     <string name="reward_show">%1$s人打赏,共%2$s元</string>
     <string name="reward_list_tip">%s打赏了文章</string>
+    <string name="reward_list_tip_dynamic">%s打赏了动态</string>
+    <string name="reward_list_tip_user">%s打赏了该用户</string>
+    <string name="reward_list_tip_answer">%s打赏了回答</string>
     <string name="choose_reward_money">选择打赏金额</string>
     <string name="reward_success">打赏成功</string>
     <string name="reward_failed">打赏失败</string>

@@ -175,16 +175,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
 
-            try { // 置顶标识 ,防止没有置顶布局错误
-                TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
+            // 置顶标识 ,防止没有置顶布局错误
+            TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
+            if (topFlagView != null) {
                 topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ?
                         View.VISIBLE : View.GONE);
                 topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
                         DynamicDetailBeanV2.TOP_REVIEW ?
                         R.string.review_ing : R.string.dynamic_top_flag));
-
-            } catch (Exception e) {
-
             }
 
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
@@ -214,7 +212,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(true)
                             .build();
                 } else {
-                    int test_position=holder.getAdapterPosition();
+                    int test_position = holder.getAdapterPosition();
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))

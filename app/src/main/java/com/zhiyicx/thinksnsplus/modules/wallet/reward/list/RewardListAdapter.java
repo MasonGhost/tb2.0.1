@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -31,9 +32,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class RewardListAdapter extends CommonAdapter<RewardsListBean> {
+    RewardType mRewardType;
 
-    public RewardListAdapter(Context context, int layoutId, List<RewardsListBean> datas) {
+    public RewardListAdapter(Context context, int layoutId, List<RewardsListBean> datas, RewardType rewardType) {
         super(context, layoutId, datas);
+        mRewardType = rewardType;
     }
 
     @Override
@@ -50,7 +53,31 @@ public class RewardListAdapter extends CommonAdapter<RewardsListBean> {
             return;
         }
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(rewardsListBean.getCreated_at()));
-        String result = getContext().getResources().getString(R.string.reward_list_tip, "<" + userInfoBean.getName() + ">");
+        /**
+         *     INFO(10001), // 咨询 // requst code must lower 16 bit ,so id must be < 65000
+         DYNAMIC(10002),// 动态
+         USER(10003), // 用户
+         QA_ANSWER(10004); // 问答回答
+         */
+        String result;
+        switch (mRewardType) {
+            case INFO:
+                result = getContext().getResources().getString(R.string.reward_list_tip, "<" + userInfoBean.getName() + ">");
+                break;
+            case DYNAMIC:
+                result = getContext().getResources().getString(R.string.reward_list_tip_dynamic, "<" + userInfoBean.getName() + ">");
+                break;
+            case USER:
+                result = getContext().getResources().getString(R.string.reward_list_tip_user, "<" + userInfoBean.getName() + ">");
+                break;
+            case QA_ANSWER:
+                result = getContext().getResources().getString(R.string.reward_list_tip_answer, "<" + userInfoBean.getName() + ">");
+                break;
+            default:
+                result = getContext().getResources().getString(R.string.reward_list_tip, "<" + userInfoBean.getName() + ">");
+
+        }
+
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.important_for_content))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -58,7 +85,7 @@ public class RewardListAdapter extends CommonAdapter<RewardsListBean> {
         TextView digCount = holder.getView(R.id.tv_content);
         digCount.setText(charSequence);
         // 头像加载
-        ImageUtils.loadCircleUserHeadPic(userInfoBean,  holder.getView(R.id.iv_headpic));
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, holder.getView(R.id.iv_headpic));
         // 添加点击事件
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
