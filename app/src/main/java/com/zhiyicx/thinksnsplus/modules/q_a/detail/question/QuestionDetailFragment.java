@@ -155,6 +155,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void refreshData(int index) {
+        super.refreshData(index);
+        try {
+            mQuestionDetailHeader.updateOutLook(getCurrentQuestion().getLook() == 1, getCurrentQuestion().getInvitation_answers().get(0).getOnlookers_count() * mPresenter.getSystemConfig().getOnlookQuestion());
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
         onToWatchClick(null, position, canNotRead);
     }

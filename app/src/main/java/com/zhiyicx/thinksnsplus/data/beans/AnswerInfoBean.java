@@ -403,4 +403,23 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
             return new AnswerInfoBean[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AnswerInfoBean that = (AnswerInfoBean) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return question_id != null ? question_id.equals(that.question_id) : that.question_id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (question_id != null ? question_id.hashCode() : 0);
+        return result;
+    }
 }
