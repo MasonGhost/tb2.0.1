@@ -88,22 +88,23 @@ public class DynamicDetailHeader {
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
                 .ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
-        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
-                (R.dimen.spacing_normal) * 2;
+//        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
+//                (R.dimen.spacing_normal) * 2;
+        picWidth = screenWidth;
         mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
-                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
         );
     }
 

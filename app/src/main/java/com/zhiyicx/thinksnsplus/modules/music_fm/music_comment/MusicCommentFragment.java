@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -110,7 +111,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected void initView(View rootView) {
-//        AndroidBug5497Workaround.assistActivity(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
@@ -300,7 +303,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Void aVoid) {
-                        if (mIlvComment==null) {
+                        if (mIlvComment == null) {
                             return Observable.just(false);
                         }
                         Rect rect = new Rect();
@@ -315,7 +318,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
-                    if(mVShadow==null){
+                    if (mVShadow == null) {
                         return;
                     }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
