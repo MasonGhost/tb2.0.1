@@ -118,19 +118,20 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     @Override
     protected void initData() {
         super.initData();
-        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
-                infoContainerFragment.addBtnAnimation(dy > 0);
-            }
-        });
+        // 控制 + 号按钮的隐藏显示
+//        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
+//                infoContainerFragment.addBtnAnimation(dy > 0);
+//            }
+//        });
 
     }
 

@@ -111,7 +111,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
             mRootView.setUserCertificationInfo(userCertificationInfo);
         } else {
             mCertificationDetailRepository.getCertificationInfo()
-                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.loading)))
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.loading_state)))
                     .doAfterTerminate(() -> mRootView.dismissSnackBar())
                     .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
                         @Override
