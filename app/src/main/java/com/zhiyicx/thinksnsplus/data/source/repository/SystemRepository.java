@@ -58,6 +58,7 @@ import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY
 
 public class SystemRepository implements ISystemRepository {
 
+    public static final int DEFAULT_TS_HELPER_TIP_MSG_ID = -1000;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
@@ -326,7 +327,7 @@ public class SystemRepository implements ISystemRepository {
                             mChatRepository.insertOrUpdateConversation(data);
                             // 写入 ts helper 默认提示语句
                             Message message = new Message();
-                            message.setId((int) System.currentTimeMillis());
+                            message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
                             message.setType(MessageType.MESSAGE_TYPE_TEXT);
                             message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
                             message.setSend_status(MessageStatus.SEND_SUCCESS);
@@ -391,6 +392,7 @@ public class SystemRepository implements ISystemRepository {
                     tsHleper : myUserInfo);
         }
     }
+
     @Override
     public Observable<List<AppVersionBean>> getAppNewVersion() {
 

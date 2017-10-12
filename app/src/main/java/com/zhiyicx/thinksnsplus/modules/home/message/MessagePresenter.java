@@ -73,6 +73,7 @@ import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KE
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.DEFAULT_TS_HELPER_TIP_MSG_ID;
 
 /**
  * @Describe
@@ -167,7 +168,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     // 写入 ts helper 默认提示语句
                     long currentTime = System.currentTimeMillis();
                     Message message = new Message();
-                    message.setId((int) currentTime);
+                    message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
                     message.setType(MessageType.MESSAGE_TYPE_TEXT);
                     message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
                     message.setSend_status(MessageStatus.SEND_SUCCESS);
