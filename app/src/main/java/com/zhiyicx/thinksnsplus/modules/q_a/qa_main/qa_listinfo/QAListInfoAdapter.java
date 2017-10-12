@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -111,11 +113,13 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         contentView.setVisibility(infoBean.getAnswer() != null ? View.VISIBLE : View.GONE);
         if (infoBean.getAnswer() != null) {
             boolean canLook = infoBean.getAnswer().getCould();
+            boolean isSelf = infoBean.getAnswer().getUser_id() == AppApplication.getMyUserIdWithdefault();
             boolean isAnonymity = infoBean.getAnswer().getAnonymity() == 1;
             String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
-            ImageUtils.loadCircleUserHeadPic(infoBean.getAnswer().getUser(), userAvatarView, isAnonymity);
-            String prefix = (isAnonymity ? getContext().getString(R.string.qa_question_answer_anonymity_user)
-                    : infoBean.getAnswer().getUser().getName()) + "：";
+            ImageUtils.loadCircleUserHeadPic(infoBean.getAnswer().getUser(), userAvatarView, isAnonymity && !isSelf);
+            String prefix = (isAnonymity && !isSelf ? getContext().getString(R.string.qa_question_answer_anonymity_user)
+                    : infoBean.getAnswer().getUser().getName()) + (isSelf && isAnonymity
+                    ? mContext.getString(R.string.qa_question_answer_anonymity_current_user) : "") + "：";
             contentTextView.setMaxLines(3);
             if (!canLook) {
                 contentTextView.setMaxLines(1);
@@ -125,7 +129,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             RxView.clicks(contentView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        if (!infoBean.getAnswer().getCould()) {
+                        if (!infoBean.getAnswer().getCould() && mSpanTextClickListener != null) {
                             mSpanTextClickListener.onSpanClick(infoBean.getAnswer().getId(), position);
                             return;
                         }
@@ -138,7 +142,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                     });
             int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
             LogUtils.d(content);
+
             makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
+            ConvertUtils.stringLinkConvert(contentTextView, setLinks(contentView.getContext()));
         }
 
     }
@@ -194,6 +200,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         lines = (int) (h / (fontSpacing));
 
         TextRoundSpan span = new TextRoundSpan(lines, w + 10);
+        ForegroundColorSpan colorSpan=new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color
+                .normal_for_assist_text));
         mSpannableString.setSpan(span, allTextStart, allTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (!canLook) {
@@ -206,6 +214,18 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         mTextView.setText(mSpannableString);
 
+    }
+
+    private List<Link> setLinks(Context context) {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink = new Link(context.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(context, R.color
+                .normal_for_assist_text))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+        return links;
     }
 
 }
