@@ -182,7 +182,17 @@ public class PlaybackManager implements Playback.Callback {
             WindowUtils.hidePopupWindow();
             updatePlaybackState(error);// 如果不止一首歌，那么久播放下一个
         } else {
-            onCompletion();
+
+            EventBus.getDefault().post(orderType,
+                    EVENT_SEND_MUSIC_COMPLETE);
+            if (mQueueManager.skipQueuePosition(1)) {
+                handlePlayRequest();
+                mQueueManager.updateMetadata();
+            } else {
+                handleStopRequest(null);
+            }
+
+//            onCompletion();
         }
 
     }

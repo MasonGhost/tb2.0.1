@@ -412,7 +412,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mRewardMoney != (int) mRewardMoney) {
-                        initInstructionsPop(R.string.sticktop_reward_instructions_detail);
+                        initInstructionsPop(R.string.limit_monye_death);
                         return;
                     }
                     // 发布
