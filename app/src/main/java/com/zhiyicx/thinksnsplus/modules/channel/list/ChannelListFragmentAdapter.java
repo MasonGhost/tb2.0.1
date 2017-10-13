@@ -137,6 +137,13 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
                         toChannelDetailPage(getContext(), groupInfoBean);
                     }
                 });
+        RxView.clicks(holder.getView(R.id.iv_channel_cover))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                        toChannelDetailPage(getContext(), groupInfoBean);
+                    }
+                });
     }
 
     private void toChannelDetailPage(Context context, GroupInfoBean groupInfoBean) {

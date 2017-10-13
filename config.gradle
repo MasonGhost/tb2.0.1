@@ -12,8 +12,8 @@ ext {
     applicationId = "com.zhiyicx.thinksnsplus"
     minSdkVersion = 16
     targetSdkVersion = 25
-    versionCode = 101
-    versionName = "1.0.1"
+    versionCode = 103
+    versionName = "1.0.2-beta"
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
 
@@ -106,7 +106,7 @@ ext {
             recyclerviewAnimator         : 'jp.wasabeef:recyclerview-animators:2.2.6',
             jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',
             jiguangJcore                 : 'cn.jiguang.sdk:jcore:1.1.1',
-            umeng                        : 'com.umeng.analytics:analytics:latest.integration',//
+            umeng                        : 'com.umeng.analytics:analytics:6.1.2',//
             amapLocation                 : 'com.amap.api:location:3.6.0',
             a3Dmap                       : 'com.amap.api:3dmap:5.4.0', //
             amapSearch                   : 'com.amap.api:search:5.3.1', //
