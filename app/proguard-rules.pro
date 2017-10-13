@@ -69,7 +69,7 @@ public static final int *;
 
 ################IM###############
 -keep class com.zhiyicx.imsdk.** { *; } #实体类不参与混淆
--keep interface com.zhiyicx.imsdk.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.imsdk.** { *; }
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;
 }
@@ -80,8 +80,11 @@ public static final int *;
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
+-keep class com.zhiyicx.appupdate.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.appupdate.** { *; }
 
-
+-keep class com.davemorrissey.labs.subscaleview.** { *; } #实体类不参与混淆
+-keep interface com.davemorrissey.labs.subscaleview.** { *; }
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
