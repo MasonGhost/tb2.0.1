@@ -38,12 +38,9 @@ public class MusicCommentHeader {
         this.mContext = context;
         mMusicCommentHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_music_comment, null);
-        mMusicCommentHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mHeadlerClickEvent != null) {
-                    mHeadlerClickEvent.headClick();
-                }
+        mMusicCommentHeader.setOnClickListener(v -> {
+            if (mHeadlerClickEvent != null) {
+                mHeadlerClickEvent.headClick();
             }
         });
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();

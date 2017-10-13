@@ -26,12 +26,16 @@ import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetail
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +80,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
-        if (commentedBean.getTarget_image() != null&&commentedBean.getTarget_image()>0) {
+        if (commentedBean.getTarget_image() != null && commentedBean.getTarget_image() > 0) {
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
@@ -226,12 +230,42 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             case ApiConfig.APP_LIKE_MUSIC:
                 intent = new Intent(mContext, MusicCommentActivity.class);
                 bundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_MUSIC);
+                MusicCommentHeader.HeaderInfo musicHeaderInfo = new MusicCommentHeader.HeaderInfo();
+                try {
+                    JSONObject jsonAlbum = new JSONObject(new Gson().toJson(commentedBean.getCommentable()));
+                    musicHeaderInfo.setCommentCount(jsonAlbum.getInt("comment_count"));
+                    musicHeaderInfo.setId(jsonAlbum.getInt("id"));
+                    musicHeaderInfo.setTitle(jsonAlbum.getString("title"));
+                    musicHeaderInfo.setLitenerCount(jsonAlbum.getInt("taste_count") + "");
+                    musicHeaderInfo.setImageUrl(ImageUtils.imagePathConvertV2(jsonAlbum.getInt("storage")
+                            , 40
+                            , 40
+                            , ImageZipConfig.IMAGE_100_ZIP));
+                    bundle.putSerializable(CURRENT_COMMENT, musicHeaderInfo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 intent.putExtra(CURRENT_COMMENT, bundle);
                 break;
 
             case ApiConfig.APP_LIKE_MUSIC_SPECIALS:
                 intent = new Intent(mContext, MusicCommentActivity.class);
                 bundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_ABLUM);
+                MusicCommentHeader.HeaderInfo albumHeaderInfo = new MusicCommentHeader.HeaderInfo();
+                try {
+                    JSONObject jsonAlbum = new JSONObject(new Gson().toJson(commentedBean.getCommentable()));
+                    albumHeaderInfo.setCommentCount(jsonAlbum.getInt("comment_count"));
+                    albumHeaderInfo.setId(jsonAlbum.getInt("id"));
+                    albumHeaderInfo.setTitle(jsonAlbum.getString("title"));
+                    albumHeaderInfo.setLitenerCount(jsonAlbum.getInt("taste_count") + "");
+                    albumHeaderInfo.setImageUrl(ImageUtils.imagePathConvertV2(jsonAlbum.getInt("storage")
+                            , 40
+                            , 40
+                            , ImageZipConfig.IMAGE_100_ZIP));
+                    bundle.putSerializable(CURRENT_COMMENT, albumHeaderInfo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 intent.putExtra(CURRENT_COMMENT, bundle);
                 break;
             case ApiConfig.APP_LIKE_NEWS:

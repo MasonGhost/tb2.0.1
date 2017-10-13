@@ -87,8 +87,6 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
@@ -510,7 +508,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void initLyricsAnimation() {
         LayoutTransition transition = new LayoutTransition();
-        transition.setDuration(500);
+        transition.setDuration(200);
         transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator
                 (getActivity(), R.animator.view_visible_alpha));
         transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator
