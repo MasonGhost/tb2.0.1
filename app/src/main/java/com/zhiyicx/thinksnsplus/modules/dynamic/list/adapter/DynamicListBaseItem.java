@@ -176,13 +176,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             TextView contentView = holder.getView(R.id.tv_content);
 
             // 置顶标识 ,防止没有置顶布局错误
-            TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
-            if (topFlagView != null) {
+            try {
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
                 topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ?
                         View.VISIBLE : View.GONE);
                 topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
                         DynamicDetailBeanV2.TOP_REVIEW ?
                         R.string.review_ing : R.string.dynamic_top_flag));
+            } catch (Exception e) {
             }
 
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
@@ -276,8 +277,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         });
             }
 
-            holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
             if (showCommentList) {
+                holder.setVisible(R.id.dcv_comment, View.VISIBLE);
+
                 // 设置评论内容
                 DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
                 if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
@@ -290,6 +292,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
                 comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+            } else {
+                holder.setVisible(R.id.dcv_comment, View.GONE);
 
             }
 
