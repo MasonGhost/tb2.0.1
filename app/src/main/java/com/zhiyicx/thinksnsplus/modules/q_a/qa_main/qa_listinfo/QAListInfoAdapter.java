@@ -120,9 +120,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             String prefix = (isAnonymity && !isSelf ? getContext().getString(R.string.qa_question_answer_anonymity_user)
                     : infoBean.getAnswer().getUser().getName()) + (isSelf && isAnonymity
                     ? mContext.getString(R.string.qa_question_answer_anonymity_current_user) : "") + "：";
-            contentTextView.setMaxLines(3);
+            contentTextView.setSingleLine(false);
             if (!canLook) {
-                contentTextView.setMaxLines(1);
+                contentTextView.setSingleLine();
                 content = mContext.getString(R.string.words_holder);
             }
             content = prefix + content;
@@ -142,7 +142,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                     });
             int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
             LogUtils.d(content);
-
+            contentTextView.setOnClickListener(v -> contentView.performClick());
             makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
             ConvertUtils.stringLinkConvert(contentTextView, setLinks(contentView.getContext()));
         }
@@ -200,8 +200,6 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         lines = (int) (h / (fontSpacing));
 
         TextRoundSpan span = new TextRoundSpan(lines, w + 10);
-        ForegroundColorSpan colorSpan=new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color
-                .normal_for_assist_text));
         mSpannableString.setSpan(span, allTextStart, allTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (!canLook) {

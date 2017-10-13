@@ -11,4 +11,5 @@ public class MarkdownConfig {
     public static final String IMAGE_TITLE = "image";
     public static final String IMAGE_RESULT = "![image](%s)";
     public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
+    public static final String NETSITE_FORMAT = "^(?:https?://)?[\\w]{1,}(?:\\.?[\\w]{1,})+[\\w-_/?&=#%:]*$";
 }
