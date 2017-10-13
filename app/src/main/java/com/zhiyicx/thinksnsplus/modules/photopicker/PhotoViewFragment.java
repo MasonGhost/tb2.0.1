@@ -87,8 +87,11 @@ public class PhotoViewFragment extends TSFragment {
 
     private ArrayList<ImageBean> tolls = new ArrayList<>();
 
+    // 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择
     private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
     private ArrayList<String> unCheckImagePath = new ArrayList<>();
+
+    private ArrayList<String> checkImagePath = new ArrayList<>();
 
     private ImageBean mImageBean;
 
@@ -151,7 +154,7 @@ public class PhotoViewFragment extends TSFragment {
 
                 hasAnim = currentItem == position;
                 // 是否包含了已经选中的图片
-                mRbSelectPhoto.setChecked(!unCheckImagePath.contains(allPaths.get(position)));
+                mRbSelectPhoto.setChecked(checkImagePath.contains(allPaths.get(position)));
 
             }
 
@@ -181,24 +184,30 @@ public class PhotoViewFragment extends TSFragment {
             if (isChecked) {
                 // 当前选择该图片，如果还没有添加过，就进行添加
                 if (!seletedPaths.contains(path)) {
+
+                    checkImagePath.add(path);
+
                     seletedPaths.add(path);
                     tolls.add(mImageBean);
                     unCheckImagePath.remove(path);
                     unCheckImage.remove(mImageBean);
                 } else {
+                    checkImagePath.remove(path);
                     unCheckImage.remove(mImageBean);
                     unCheckImagePath.remove(path);
                     //tolls.remove(mImageBean);
                 }
             } else {
-                // 当前取消选择改图片，直接移除
+                // 当前取消选择改图片，直接移除 old version
+                // 当前取消选择改图片，不能直接移除，要点击完成才能去
 //                seletedPaths.remove(path);
+//                tolls.remove(mImageBean);
                 if (!unCheckImagePath.contains(path)){
                     unCheckImage.add(mImageBean);
                     unCheckImagePath.add(path);
                 }
+                checkImagePath.remove(path);
 
-                //tolls.remove(mImageBean);
             }
             // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
             mBtComplete.setEnabled(seletedPaths.size() > 0);

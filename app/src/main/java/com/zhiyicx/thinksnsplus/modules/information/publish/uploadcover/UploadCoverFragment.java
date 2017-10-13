@@ -269,7 +269,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
                         .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mInfoPublishBean.setContent(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n" + mInfoPublishBean.getContent());
+                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
