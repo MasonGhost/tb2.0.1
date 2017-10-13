@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
@@ -120,9 +121,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             String prefix = (isAnonymity && !isSelf ? getContext().getString(R.string.qa_question_answer_anonymity_user)
                     : infoBean.getAnswer().getUser().getName()) + (isSelf && isAnonymity
                     ? mContext.getString(R.string.qa_question_answer_anonymity_current_user) : "") + "：";
-            contentTextView.setSingleLine(false);
             if (!canLook) {
-                contentTextView.setSingleLine();
                 content = mContext.getString(R.string.words_holder);
             }
             content = prefix + content;
@@ -201,7 +200,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         TextRoundSpan span = new TextRoundSpan(lines, w + 10);
         mSpannableString.setSpan(span, allTextStart, allTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+        mTextView.setSingleLine(!canLook);
+        mTextView.setMaxLines(canLook ? 3 : 1);
+        mTextView.setEllipsize(TextUtils.TruncateAt.END);
         if (!canLook) {
             SpanTextClickable clickable = new SpanTextClickable(answer_id, h / 3, question_position);
             clickable.setSpanTextClickListener(mSpanTextClickListener);

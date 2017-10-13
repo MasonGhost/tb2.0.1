@@ -202,7 +202,7 @@ public class PhotoViewFragment extends TSFragment {
                 // 当前取消选择改图片，不能直接移除，要点击完成才能去
 //                seletedPaths.remove(path);
 //                tolls.remove(mImageBean);
-                if (!unCheckImagePath.contains(path)){
+                if (!unCheckImagePath.contains(path)) {
                     unCheckImage.add(mImageBean);
                     unCheckImagePath.add(path);
                 }
@@ -254,6 +254,7 @@ public class PhotoViewFragment extends TSFragment {
 
         if (bundle != null) {
             seletedPaths = bundle.getStringArrayList(ARG_SELCTED_PATH);
+            checkImagePath.addAll(seletedPaths);
             seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
             allPaths = bundle.getStringArrayList(ARG_ALL_PATH);
             currentItem = bundle.getInt(ARG_CURRENT_ITEM);

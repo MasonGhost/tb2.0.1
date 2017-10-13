@@ -137,6 +137,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .disPlayText(false)
                     .build();
         }
+        contentView.setSingleLine(canNotLook);
         contentView.setVisibility(View.VISIBLE);
 
 
