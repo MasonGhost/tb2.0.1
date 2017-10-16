@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -54,6 +56,7 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
     SingleMusicListPresenter mSingleMusicListPresenter;
 
     private MusicAlbumDetailsBean mAlbumDetailsBean;
+    private MusicDetailFragment.MediaBrowserCompatProvider mCompatProvider;
 
     public static MySingleMusicListFragment getInstance() {
         MySingleMusicListFragment mySingleMusicListFragment = new MySingleMusicListFragment();
@@ -74,6 +77,20 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
     protected boolean showToolbar() {
         return false;
     }
+
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        mCompatProvider = (MusicDetailFragment.MediaBrowserCompatProvider) activity;
+//    }
+//
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        if (mCompatProvider.getMediaBrowser().isConnected()) {
+//            onConnected();
+//        }
+//    }
 
     @Override
     protected void initView(View rootView) {
@@ -175,6 +192,24 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
             }
         });
         return adapter;
+    }
+
+    public void onConnected() {
+        if (isDetached()) {
+            return;
+        }
+        MediaControllerCompat controller = getActivity()
+                .getSupportMediaController();
+        if (controller != null) {
+            if (mAlbumDetailsBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
+                controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+                LogUtils.d("sendCustomAction:::onConnected");
+            }
+
+        }
+
     }
 
 }
