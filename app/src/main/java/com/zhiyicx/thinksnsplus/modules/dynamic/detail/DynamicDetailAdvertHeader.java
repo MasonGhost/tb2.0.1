@@ -76,11 +76,11 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void hideAdvert() {
-        mLLAdvert.setVisibility(View.GONE);
+        mRootView.setVisibility(View.GONE);
     }
 
     public void showAdvert() {
-        mLLAdvert.setVisibility(View.VISIBLE);
+        mRootView.setVisibility(View.VISIBLE);
     }
 
     public void setHeight(int height) {

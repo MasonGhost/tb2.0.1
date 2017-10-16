@@ -409,11 +409,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    /**
-     * 初始化他人动态操作选择弹框
-     *
-     * @param infoMation curent infoMation
-     */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
         boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
@@ -487,10 +482,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             InfoCommentListBean infoCommentListBean = mListDatas.get(position);
             if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getComment_content())) {
                 if (infoCommentListBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {// 自己的评论
-//                if (mListDatas.get(position).getId() != -1) {
-                    initDeleteCommentPopupWindow(infoCommentListBean);
-                    mDeletCommentPopWindow.show();
-//                } else {
+                    if (mListDatas.get(position).getId() != -1) {
+                        initDeleteCommentPopupWindow(infoCommentListBean);
+                        mDeletCommentPopWindow.show();
+                    }
+//                else {
 //
 //                    return;
 //                }

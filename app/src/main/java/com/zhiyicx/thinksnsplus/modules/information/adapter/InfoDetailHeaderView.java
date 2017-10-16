@@ -120,9 +120,7 @@ public class InfoDetailHeaderView {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
-        if (adverts != null) {
-            initAdvert(context, adverts);
-        }
+        initAdvert(context, adverts);
     }
 
     public void setDetail(InfoListDataBean infoMain) {
@@ -209,7 +207,7 @@ public class InfoDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -417,7 +415,7 @@ public class InfoDetailHeaderView {
     }
 
     public void setAdvertViewVisible(int visible) {
-        if (visible == View.GONE) {
+        if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mDynamicDetailAdvertHeader.hideAdvert();
         } else if (visible == View.VISIBLE) {
             mDynamicDetailAdvertHeader.showAdvert();
@@ -428,9 +426,9 @@ public class InfoDetailHeaderView {
         isReviewIng = true;
         setReWardViewVisible(visible);
         setAdvertViewVisible(visible);
-        mInfoRelateList.setVisibility(GONE);
-        mFtlRelate.setVisibility(GONE);
-        mRvRelateInfo.setVisibility(GONE);
+        mInfoRelateList.setVisibility(visible);
+        mFtlRelate.setVisibility(visible);
+        mRvRelateInfo.setVisibility(visible);
     }
 
 
