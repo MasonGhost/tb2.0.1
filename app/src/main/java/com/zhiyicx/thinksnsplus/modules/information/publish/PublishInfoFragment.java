@@ -136,30 +136,21 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        InfoPublishBean infoPublishBean;
-        if (sInfoPublishBean == null) {
-            infoPublishBean = new InfoPublishBean();
-        } else {
-            infoPublishBean = sInfoPublishBean;
-        }
 
         String content = getContentString();
-        infoPublishBean.setContent(content);
-        infoPublishBean.setAmout(100);
+        sInfoPublishBean.setContent(content);
+        sInfoPublishBean.setAmout(100);
         long cover;
-        if (infoPublishBean.isRefuse()) {
-            cover = infoPublishBean.getCover();
+        if (sInfoPublishBean.isRefuse()) {
+            cover = sInfoPublishBean.getCover();
         } else {
             cover = RegexUtils.getImageId(content);
         }
-        infoPublishBean.setCover((int) cover);
-        infoPublishBean.setImage(cover < 0 ? null : cover);
-        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+        sInfoPublishBean.setCover((int) cover);
+        sInfoPublishBean.setImage(cover < 0 ? null : cover);
+        sInfoPublishBean.setTitle(mEtInfoTitle.getInputContent());
 
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 
