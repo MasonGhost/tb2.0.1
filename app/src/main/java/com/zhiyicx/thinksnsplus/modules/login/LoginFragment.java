@@ -391,7 +391,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onStart(SHARE_MEDIA platform) {
             showSnackLoadingMessage(getString(R.string.loading_state));
-
         }
 
         /**
@@ -402,7 +401,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            showSnackSuccessMessage(getString(R.string.loading_state));
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -433,6 +431,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
             showErrorTips(getString(R.string.login_fail));
             showSnackWarningMessage(getString(R.string.login_fail));
+
         }
 
         /**

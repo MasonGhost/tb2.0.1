@@ -345,6 +345,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.onCacheResponseSuccess(data, isLoadMore);
     }
 
+    @Override
+    protected boolean showEmptyViewWithNoData() {
+        return true;
+    }
+
     /**
      * scan imags
      *

@@ -82,12 +82,12 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         closeLoadingView();
         if (mListDatas.isEmpty()) {
             // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
-            if (data==null||data.isEmpty()) {
-                ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
-                if (channelListViewPagerFragment != null) {
-                    channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
-                }
-            }
+//            if (data==null||data.isEmpty()) {
+//                ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
+//                if (channelListViewPagerFragment != null) {
+//                    channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
+//                }
+//            }
         }
     }
 
