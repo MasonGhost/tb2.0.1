@@ -30,6 +30,8 @@
     <TextView
         android:id="@+id/tv_dynamic_content"
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
         android:paddingBottom="@dimen/spacing_normal_large"
