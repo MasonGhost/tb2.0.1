@@ -165,10 +165,68 @@
 
     ```
 
-### APP图标替换
+### 资源替换
+
+#### 1. APP图标替换，位于 `app/src/main/res` ,` icon.png`
+
+| 位置（icon.png） | 大小 | 图标 |
+|:-----:|:-----:|:-----:|
+| mipmap-hdpi | 72x72   | [![icon_hdpi]][icon]|
+| mipmap-xhdpi | 96x96  | [![icon_xhdpi]][icon]|
+| mipmap-xxhdpi | 144x144 | [![icon_xxhdpi]][icon] |
+| mipmap-xxxhdpi | 192x192 | [![icon_xxxhdpi]][icon] |
+
+#### 2. 引导图替换, 位于 `baseproject/src/main/res/` ,`guide.png`
+
+| 位置（guide.png） | 大小 | 图标 |
+|:-----:|:-----:|:-----:|
+| mipmap-hdpi | 800x480   ||
+| mipmap-xhdpi | 1280x720  | |
+| mipmap-xxhdpi | 1920x1080 | [![guide]][icon] |
+| mipmap-xxxhdpi | 2560x1440 |  |
+
+#### 3. 缺省信息图片替换, 位于 `baseproject/src/main/res/` ,`guide.png`，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
+| 名字 | 说明 | 图标 |
+|:-----:|:-----:|:-----:|
+| pic_default_portrait1.png | 默认头像，不带边框  |[![pic_default_portrait1]][默认头像]|
+| pic_default_portrait2.png | 默认头像，带白色边框  |[![pic_default_portrait2]][默认头像]|
+| img_default_delete.png | 默认删除缺省图  |[![img_default_delete]][默认删除缺省图]|
+| img_default_internet.png | 默认网络差缺省图  |[![img_default_internet]][默认网络差缺省图]|
+| img_default_nobody.png | 默认没有用户缺省图  |[![img_default_nobody]][默认没有用户缺省图]|
+| img_default_nothing.png | 默认什么也没有缺省图  |[![img_default_nothing]][默认什么也没有缺省图]|
+| img_default_search.png | 默认没有搜索到缺省图  |[![img_default_search]][默认没有搜索到缺省图]|
+
+#### 4. 主页底部导航栏替换，位于 `app/main/src/res/`,，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
+
+ 名字 |大小| 说明 | 图标 |
+|:-----:|:-----:|:-----:|:-----:|
+| common_ico_bottom_add.png | 120x98| 加号  |[![common_ico_bottom_add]][加号]|
+| common_ico_bottom_discover_high.png | 48x48 | 发现高亮  |[![common_ico_bottom_discover_high]][发现高亮]|
+| common_ico_bottom_discover_normal.png | 48x48 | 发现常规  |[![common_ico_bottom_discover_normal]][发现常规]|
+| common_ico_bottom_home_high.png | 48x48 | 主页高亮  |[![common_ico_bottom_home_high]][主页高亮]|
+| common_ico_bottom_home_normal.png | 48x48 | 主页常规  |[![common_ico_bottom_home_normal]][主页常规]|
+| common_ico_bottom_me_high.png | 48x48 | 我的高亮  |[![common_ico_bottom_me_high]][我的高亮]|
+| common_ico_bottom_me_normal.png | 48x48 | 我的常规  |[![common_ico_bottom_me_normal]][我的常规]|
+| common_ico_bottom_me_remind.png | 48x48 | 我的带小红点  |[![common_ico_bottom_me_remind]][我的带小红点]|
+| common_ico_bottom_message_high.png | 48x48 | 消息高亮  |[![common_ico_bottom_message_high]][消息高亮]|
+| common_ico_bottom_message_normal.png | 48x48 | 消息常规  |[![common_ico_bottom_message_normal]][消息常规]|
+| common_ico_bottom_message_remind.png | 48x48 | 消息带小红点  |[![common_ico_bottom_message_remind]][消息带小红点]|
 
 
 
+#### 5. App 名字修改，位于 `app/src/main/res/values/strings.xml`,修改 `app_name` 即可。
+
+```
+<resources>
+    <string name="app_name">ThinkSNS+</string>
+    <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
+    ...
+
+```
+
+#### 6. 修改主体颜色、文字大小、间距等。
+
+具体信息可以查看 [视觉文档](../design/DESIGN.md)
 
 
 
@@ -176,3 +234,26 @@
 [config_capture]:../image/config_capture.png "包名配置"
 [signature_show]:../image/signature_show.jpeg "包名配置"
 [share_packge_change]:../image/share_packge_change.jpeg "包名配置"
+[icon_hdpi]:../image/icon_hdpi.png "hdpi"
+[icon_xhdpi]:../image/icon_xhdpi.png "xhdpi"
+[icon_xxhdpi]:../image/icon_xxhdpi.png "xxhdpi"
+[icon_xxxhdpi]:../image/icon_xxxhdpi.png "xxxhdpi"
+[guide]:../image/guide.png "guide"
+[pic_default_portrait1]:../image/pic_default_portrait1.png "默认头像，不带边框"
+[pic_default_portrait2]:../image/pic_default_portrait2.png "默认头像，带白色边框"
+[img_default_delete]:../image/img_default_delete.png "默认删除缺省图"
+[img_default_internet]:../image/img_default_internet.png "默认网络差缺省图"
+[img_default_nobody]:../image/img_default_nobody.png "默认没有用户缺省图"
+[img_default_nothing]:../image/img_default_nothing.png "默认什么也没有缺省图"
+[img_default_search]:../image/img_default_search.png "默认没有搜索到缺省图"
+[common_ico_bottom_add]:../image/common_ico_bottom_add.png "加号"
+[common_ico_bottom_discover_high]:../image/common_ico_bottom_discover_high.png "发现高亮"
+[common_ico_bottom_discover_normal]:../image/common_ico_bottom_discover_normal.png "发现常规"
+[common_ico_bottom_home_high]:../image/common_ico_bottom_home_high.png "主页高亮"
+[common_ico_bottom_home_normal]:../image/common_ico_bottom_home_normal.png "主页常规"
+[common_ico_bottom_me_high]:../image/common_ico_bottom_me_high.png "我的高亮"
+[common_ico_bottom_me_normal]:../image/common_ico_bottom_me_normal.png "我的常规"
+[common_ico_bottom_me_remind]:../image/common_ico_bottom_me_remind.png "我的带小红点"
+[common_ico_bottom_message_high]:../image/common_ico_bottom_message_high.png "消息高亮"
+[common_ico_bottom_message_normal]:../image/common_ico_bottom_message_normal.png "消息常规"
+[common_ico_bottom_message_remind]:../image/common_ico_bottom_message_remind.png "消息带小红点"
