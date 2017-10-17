@@ -132,6 +132,7 @@
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
+    <string name="info_title_necessary">请填写正确的标题或者内容</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>
     <string name="info_publishsuccess">投稿成功，等待审核</string>

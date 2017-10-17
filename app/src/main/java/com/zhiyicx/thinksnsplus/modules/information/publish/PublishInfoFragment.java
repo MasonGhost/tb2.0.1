@@ -149,9 +149,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         sInfoPublishBean.setCover((int) cover);
         sInfoPublishBean.setImage(cover < 0 ? null : cover);
         sInfoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+        if (!TextUtils.isEmpty(sInfoPublishBean.getContent()) && !TextUtils.isEmpty(sInfoPublishBean.getTitle())) {
+            Intent intent = new Intent(getActivity(), AddInfoActivity.class);
+            startActivity(intent);
+        } else {
+            showSnackErrorMessage(getString(R.string.info_title_necessary));
+        }
 
-        Intent intent = new Intent(getActivity(), AddInfoActivity.class);
-        startActivity(intent);
     }
 
     @NonNull
