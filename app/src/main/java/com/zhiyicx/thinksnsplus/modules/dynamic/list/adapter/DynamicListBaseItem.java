@@ -236,7 +236,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
-            if (showToolMenu) {
+            if (showToolMenu && dynamicBean.getUser_id() > 0) {// user_id = -1 广告
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
                 dynamicListMenuView.setImageNormalResourceIds(getToolImages());
