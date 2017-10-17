@@ -52,7 +52,7 @@ public class TestTextView extends AppCompatTextView {
         cy = cx = minSize / 2;
         r = cx * 2 / 3;
         size = Math.min(size, minSize);
-        Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_256), size, size, true);
+        Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ico_edit_pen), size, size, true);
         mHeaderImage = new CircleImageDrawable(newBmp);
         mHeaderImage.setBounds(0, 0, size, size);
     }

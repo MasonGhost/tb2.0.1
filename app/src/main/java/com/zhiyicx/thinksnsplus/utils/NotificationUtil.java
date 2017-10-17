@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
@@ -63,7 +63,7 @@ public class NotificationUtil {
         intent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
-        builder.setSmallIcon(R.mipmap.icon_256);// 设置图标
+        builder.setSmallIcon(R.mipmap.icon);// 设置图标
         builder.setContentTitle(context.getString(R.string.app_name));// 设置通知的标题
         builder.setContentText(jpushMessageBean.getMessage());// 设置通知的内容
         builder.setWhen(jpushMessageBean.getCreat_time());// 设置通知来到的时间
@@ -83,7 +83,7 @@ public class NotificationUtil {
      */
     public void postDownloadNotification() {
         final Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(R.mipmap.icon_256)
+        builder.setSmallIcon(R.mipmap.icon)
                 .setTicker("showProgressBar").setContentInfo("contentInfo")
                 .setOngoing(true).setContentTitle("ContentTitle")
                 .setContentText("ContentText");
@@ -138,10 +138,10 @@ public class NotificationUtil {
                         "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         Notification.Builder builder2 = new Notification.Builder(
                 context);
-        builder2.setSmallIcon(R.mipmap.icon_256);// 小图标
+        builder2.setSmallIcon(R.mipmap.icon);// 小图标
         // 大图标
         builder2.setLargeIcon(BitmapFactory.decodeResource(
-                context.getResources(), R.mipmap.icon_256));  //R.mipmap.close
+                context.getResources(), R.mipmap.icon));  //R.mipmap.close
         builder2.setTicker("showBigView_Text")
                 .setContentInfo("contentInfo");
         builder2.setStyle(textStyle);
@@ -156,14 +156,14 @@ public class NotificationUtil {
     public void postBigPictureNotification() {
         Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle();
         bigPictureStyle.bigPicture(BitmapFactory.decodeResource(context.getResources(),
-                R.mipmap.icon_256));  //R.drawable.back
+                R.mipmap.icon));  //R.drawable.back
 
         Notification.Builder builder = new Notification.Builder(
                 context);
-        builder.setSmallIcon(R.mipmap.icon_256);// 小图标
+        builder.setSmallIcon(R.mipmap.icon);// 小图标
         // 大图标
         builder.setLargeIcon(BitmapFactory.decodeResource(
-                context.getResources(), R.mipmap.icon_256));
+                context.getResources(), R.mipmap.icon));
         builder.setTicker("showBigView_Picture")
                 .setContentInfo("contentInfo");
         builder.setStyle(bigPictureStyle);
@@ -185,10 +185,10 @@ public class NotificationUtil {
 
         Notification.Builder builder5 = new Notification.Builder(
                 context);
-        builder5.setSmallIcon(R.mipmap.icon_256);// 小图标
+        builder5.setSmallIcon(R.mipmap.icon);// 小图标
         // 大图标
         builder5.setLargeIcon(BitmapFactory.decodeResource(
-                context.getResources(), R.mipmap.icon_256));
+                context.getResources(), R.mipmap.icon));
         builder5.setTicker("showBigView_InboxStyle")
                 .setContentInfo("contentInfo");
         builder5.setStyle(inboxStyle);
@@ -209,7 +209,7 @@ public class NotificationUtil {
     public void postCustomNotification() {
 //        RemoteViews contentViews = new RemoteViews(context.getPackageName(),
 //                R.layout.mynotification);
-//        contentViews.setImageViewResource(R.id.imageNotifi, R.mipmap.icon_256);
+//        contentViews.setImageViewResource(R.id.imageNotifi, R.mipmap.icon);
 //        contentViews.setTextViewText(R.id.titleTV, "自定义通知标题");
 //        contentViews.setTextViewText(R.id.textTV, "自定义通知内容");
 //
@@ -220,7 +220,7 @@ public class NotificationUtil {
 //                new Intent(context, ScrollingActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 //
 //        Notification.Builder builder = new Notification.Builder(context);
-//        builder.setSmallIcon(R.mipmap.icon_256);
+//        builder.setSmallIcon(R.mipmap.icon);
 //        builder.setContentTitle("custom notification");
 //        builder.setContentText("custom addBtnAnimation");
 //        builder.setTicker("custom ticker");

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -128,7 +127,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         shareContent.setContent(mRootView.getCurrentMusic().getLyric());
         shareContent.setUrl(ImageUtils.imagePathConvertV2(mRootView.getCurrentMusic().getStorage().getId(),0,0, ImageZipConfig.IMAGE_50_ZIP));
         if (bitmap==null){
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon)));
         }else{
             shareContent.setBitmap(bitmap);
         }

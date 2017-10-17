@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -69,7 +67,6 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
@@ -86,9 +83,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -441,7 +435,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         try {
             ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
                     .findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon);
         } catch (Exception e) {
         }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -872,7 +866,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (mPersonalCenterHeaderViewItem.getHeadView() == null) {
             return null;
         }
-        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mPersonalCenterHeaderViewItem.getHeadView().getDrawable(), R.mipmap.icon_256);
+        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mPersonalCenterHeaderViewItem.getHeadView().getDrawable(), R.mipmap.icon);
     }
 
     /**

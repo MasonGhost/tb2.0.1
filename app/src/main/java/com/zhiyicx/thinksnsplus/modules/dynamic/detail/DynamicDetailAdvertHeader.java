@@ -13,7 +13,6 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class DynamicDetailAdvertHeader {
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
         for (int i = 0; i < adverts.size(); i++) {
             FilterImageView imageView = new FilterImageView(mContext);
-            imageView.setImageResource(R.mipmap.icon_256);
+            imageView.setImageResource(R.mipmap.icon);
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;

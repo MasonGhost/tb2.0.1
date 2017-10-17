@@ -10,7 +10,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -110,7 +109,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         return;
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                            , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                            , imageView.getDrawable(), R.mipmap.icon), "info_share");
                     title.setTextColor(getResources()
                             .getColor(R.color.normal_for_assist_text));
                     Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);

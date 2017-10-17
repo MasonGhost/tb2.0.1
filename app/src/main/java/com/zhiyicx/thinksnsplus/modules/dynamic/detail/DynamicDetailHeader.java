@@ -29,14 +29,12 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -139,7 +137,7 @@ public class DynamicDetailHeader {
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
             sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
-                    .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
@@ -147,7 +145,7 @@ public class DynamicDetailHeader {
             }
             FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                    .getDrawable(), R.mipmap.icon_256);
+                    .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
         }
     }
@@ -185,7 +183,7 @@ public class DynamicDetailHeader {
         }
         FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
         sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                .getDrawable(), R.mipmap.icon_256);
+                .getDrawable(), R.mipmap.icon);
         setImageClickListener(photoList, dynamicBean);
     }
 

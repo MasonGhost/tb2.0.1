@@ -191,7 +191,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
         shareContent.setTitle(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getTitle());
         shareContent.setContent(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getIntro());
         if (bitmap == null) {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         } else {
             shareContent.setBitmap(bitmap);
         }

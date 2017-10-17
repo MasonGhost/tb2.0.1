@@ -128,7 +128,7 @@ public class GroupDynamicDetailHeader {
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
             sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
-                    .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             mPhotoContainer.removeAllViews();
@@ -137,7 +137,7 @@ public class GroupDynamicDetailHeader {
             }
             FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                    .getDrawable(), R.mipmap.icon_256);
+                    .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
         }
     }
@@ -175,7 +175,7 @@ public class GroupDynamicDetailHeader {
         }
         FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
         sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                .getDrawable(), R.mipmap.icon_256);
+                .getDrawable(), R.mipmap.icon);
         setImageClickListener(photoList, dynamicBean);
     }
 
