@@ -115,7 +115,6 @@ hotfix/pay_fail ( 修复分支 )
 >- [mvp 说明](document/common/MVP.md)
 >- [6.0 权限适配](document/common/PERMISSION.md)
 >- [日志说明](document/common/LOG.md)
->- [日志说明](document/common/LOG.md)
 >- [常用工具类集合](document/common/UTILS.md)
 >- [基础自定义控件](document/common/WIDGET.md)
 
@@ -140,3 +139,5 @@ hotfix/pay_fail ( 修复分支 )
 [appupdate](appupdate/README.md)  版本更新
 
 [contacts](contacts/README.md)  联系人
+
+[mysnackbar](mysnackbar/README.md)  类似QQ提示信息控件
