@@ -16,7 +16,12 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @Describe 版本更新后台处理
+ * @Author Jungle68
+ * @Date 2017/10/17
+ * @Contact master.jungle68@gmail.com
+ */
 public class UpdateService extends AVersionService {
     public UpdateService() {
     }
