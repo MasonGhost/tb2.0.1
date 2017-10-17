@@ -1,5 +1,9 @@
-2017年10月17日10:33:40
-# thinksns-plus-android
+2017年10月17日10:58:48
+# ThinkSNS Plus Android  Dev Doc
+
+## 简介
+本文档旨在帮助开发者快速理解并基于 `ThinkSNS Plus Android ` 端的开发，为二次开发提高效率。
+
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
 
@@ -94,8 +98,12 @@ android {
 }
 
 ```
-
 > **注意:** 使用时请参考 `app/proguard-rules.pro`
+
+## 打包签名说明
+
+- [创建签名文件说明](document/tools/AndroidCreateSignatureFileTutorial.md)
+- [打包说明](document/tools/AndroidPackageTutorial.md)
 
 ## 文档位置说明
 
@@ -211,3 +219,6 @@ hotfix/pay_fail ( 修复分支 )
 [contacts](contacts/README.md)  联系人
 
 [mysnackbar](mysnackbar/README.md)  类似QQ提示信息控件
+
+
+
