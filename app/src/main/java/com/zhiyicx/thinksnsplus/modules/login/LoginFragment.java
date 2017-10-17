@@ -184,7 +184,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 好像不同线程会有影响，消失不了
                     showSnackLoadingMessage(getString(R.string.loading_state));
                     thridLogin(SHARE_MEDIA.SINA);
 

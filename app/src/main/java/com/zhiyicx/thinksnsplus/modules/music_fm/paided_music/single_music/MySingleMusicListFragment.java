@@ -2,20 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.utils.WindowUtils;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -78,19 +73,34 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
         return false;
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        mCompatProvider = (MusicDetailFragment.MediaBrowserCompatProvider) activity;
-//    }
-//
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        if (mCompatProvider.getMediaBrowser().isConnected()) {
-//            onConnected();
-//        }
-//    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCompatProvider = (MusicDetailFragment.MediaBrowserCompatProvider) activity;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mCompatProvider.getMediaBrowser().isConnected()) {
+            onConnected();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && getActivity() != null) {
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            if (controller != null && mAlbumDetailsBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
+                controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+                LogUtils.d("sendCustomAction:::onConnected");
+            }
+        }
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -116,14 +126,11 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
 
-        if (controller != null) {
-            if (mAlbumDetailsBean != null) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
-                controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
-                LogUtils.d("sendCustomAction:::onConnected");
-            }
-
+        if (controller != null && mAlbumDetailsBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+            LogUtils.d("sendCustomAction:::onConnected");
         }
 
     }
