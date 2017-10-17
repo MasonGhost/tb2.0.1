@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -286,7 +287,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
-                        List<AnswerInfoBean> invitationAanswers =new ArrayList<>();
+                        List<AnswerInfoBean> invitationAanswers = new ArrayList<>();
                         invitationAanswers.add(data.getData());
                         mRootView.getCurrentQuestion().setInvitation_answers(invitationAanswers);
                         mRootView.getListDatas().set(position, data.getData());
@@ -374,7 +375,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_DELETE)
     public void deleteAnswer(AnswerInfoBean answerInfoBean) {
         if (mRootView.getListDatas().remove(answerInfoBean)) {
+            if (answerInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
+                mRootView.getCurrentQuestion().setMy_answer(null);
+            }
             mRootView.refreshData();
+            mRootView.getCurrentQuestion().setAnswers_count(mRootView.getCurrentQuestion().getAnswers_count() - 1);
+            mRootView.updateAnswerCount();
         }
     }
 

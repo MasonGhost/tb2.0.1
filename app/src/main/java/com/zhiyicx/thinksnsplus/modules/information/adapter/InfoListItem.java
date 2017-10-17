@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,11 +73,9 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.setVisible(R.id.ll_info, mIsShowContent ? View.GONE : View.VISIBLE);
         holder.setVisible(R.id.tv_info_content, mIsShowContent ? View.VISIBLE : View.GONE);
         String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getContent());
-        try {
-            content = content.replaceAll(realData.getSubject(), "");
-        } catch (Exception e) {
-            LogUtils.d("没有摘要");
-        }
+//        if (TextUtils.isEmpty(content)&&!TextUtils.isEmpty(realData.getSubject())){
+//            content = content.replaceAll(realData.getSubject(), "");// 内容中没有摘要了 10.16 16:20
+//        }
         holder.setText(R.id.tv_info_content, content);
         // 投稿来源，浏览数，时间
         String from = title.getContext().getString(R.string

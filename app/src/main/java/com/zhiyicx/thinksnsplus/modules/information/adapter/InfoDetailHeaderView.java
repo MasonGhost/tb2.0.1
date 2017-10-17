@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -120,9 +121,7 @@ public class InfoDetailHeaderView {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
-        if (adverts != null) {
-            initAdvert(context, adverts);
-        }
+        initAdvert(context, adverts);
     }
 
     public void setDetail(InfoListDataBean infoMain) {
@@ -136,19 +135,20 @@ public class InfoDetailHeaderView {
                 mFrom.setText(from);
             }
             // 引用
-//            if (!TextUtils.isEmpty(infoMain.getSubject())) {
-//                InternalStyleSheet css = new Github();
-//                css.addRule(".container", "padding:0px", "margin:0px");
-//                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-//                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
-//                css.addRule("p", "margin:0px", "padding:10px");
-//                mContentSubject.setVisibility(VISIBLE);
-//                mContentSubject.addStyleSheet(css);
-//                mContentSubject.loadMarkdown(infoMain.getSubject());
-//            } else {
-//                mContentSubject.setVisibility(GONE);
-//            }
-            mContentSubject.setVisibility(GONE);
+            if (!TextUtils.isEmpty(infoMain.getSubject())) {
+                infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
+                InternalStyleSheet css = new Github();
+                css.addRule(".container", "padding:0px", "margin:0px");
+                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
+                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+                css.addRule("p", "margin:0px", "padding:10px");
+                mContentSubject.setVisibility(VISIBLE);
+                mContentSubject.addStyleSheet(css);
+                mContentSubject.loadMarkdown(infoMain.getSubject());
+            } else {
+                mContentSubject.setVisibility(GONE);
+            }
+//            mContentSubject.setVisibility(GONE);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
@@ -209,7 +209,7 @@ public class InfoDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -417,7 +417,7 @@ public class InfoDetailHeaderView {
     }
 
     public void setAdvertViewVisible(int visible) {
-        if (visible == View.GONE) {
+        if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mDynamicDetailAdvertHeader.hideAdvert();
         } else if (visible == View.VISIBLE) {
             mDynamicDetailAdvertHeader.showAdvert();
@@ -428,9 +428,9 @@ public class InfoDetailHeaderView {
         isReviewIng = true;
         setReWardViewVisible(visible);
         setAdvertViewVisible(visible);
-        mInfoRelateList.setVisibility(GONE);
-        mFtlRelate.setVisibility(GONE);
-        mRvRelateInfo.setVisibility(GONE);
+        mInfoRelateList.setVisibility(visible);
+        mFtlRelate.setVisibility(visible);
+        mRvRelateInfo.setVisibility(visible);
     }
 
 

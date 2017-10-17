@@ -177,14 +177,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    showSnackLoadingMessage(getString(R.string.loading_state));
                     thridLogin(SHARE_MEDIA.QQ);
-
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-
+                    showSnackLoadingMessage(getString(R.string.loading_state));
                     thridLogin(SHARE_MEDIA.SINA);
 
                 });
@@ -192,6 +192,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    showSnackLoadingMessage(getString(R.string.loading_state));
                     thridLogin(SHARE_MEDIA.WEIXIN);
                 });
     }
@@ -199,7 +200,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     public void thridLogin(SHARE_MEDIA type) {
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
-
     }
 
 
@@ -390,7 +390,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onStart(SHARE_MEDIA platform) {
-            showSnackLoadingMessage(getString(R.string.loading_state));
 
         }
 
@@ -402,7 +401,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            showSnackSuccessMessage(getString(R.string.loading_state));
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -432,7 +430,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
             showErrorTips(getString(R.string.login_fail));
-            showSnackWarningMessage(getString(R.string.login_fail));
+            showSnackErrorMessage(getString(R.string.login_fail));
         }
 
         /**

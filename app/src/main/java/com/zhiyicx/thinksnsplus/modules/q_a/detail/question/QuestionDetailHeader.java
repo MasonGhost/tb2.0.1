@@ -125,7 +125,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
         }
-        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount > 0 ? outLookAmount : amount);
+        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount);
         initListener();
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);
@@ -206,7 +206,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      * 更新围观信息
      */
     public void updateOutLook(boolean onlook, double amount) {
-        mTvQuestionOnlookAmount.setVisibility(onlook ? View.VISIBLE : View.GONE);
+        mTvQuestionOnlookAmount.setVisibility(onlook && amount > 0 ? View.VISIBLE : View.GONE);
         mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrencyFen2Yuan(amount)));
     }
 

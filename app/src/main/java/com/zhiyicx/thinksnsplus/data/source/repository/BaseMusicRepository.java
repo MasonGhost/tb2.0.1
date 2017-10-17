@@ -232,7 +232,7 @@ public class BaseMusicRepository implements IMusicRepository {
 
     @Override
     public Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id) {
-        return mMusicClient.getMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+        return mMusicClient.getMusicList(max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
     }
 
     public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {

@@ -390,7 +390,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
         mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() - 1);
-        if (mRootView.getListDatas().size() == 1) {// 占位
+        if (mRootView.getListDatas().size() == 0) {// 占位
             InfoCommentListBean emptyData = new InfoCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }

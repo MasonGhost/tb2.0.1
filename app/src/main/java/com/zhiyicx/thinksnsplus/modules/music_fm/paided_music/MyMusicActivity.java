@@ -11,9 +11,10 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
-public class MyMusicActivity extends TSActivity {
+public class MyMusicActivity extends TSActivity implements MusicDetailFragment.MediaBrowserCompatProvider{
 
     private MediaBrowserCompat mMediaBrowserCompat;
 
@@ -73,5 +74,10 @@ public class MyMusicActivity extends TSActivity {
     @Override
     protected void componentInject() {
 
+    }
+
+    @Override
+    public MediaBrowserCompat getMediaBrowser() {
+        return mMediaBrowserCompat;
     }
 }

@@ -620,7 +620,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         cancelPop(mOrderTypeSelectPop);
         cancelPop(mDeleteQuestionPopWindow);
         cancelPop(mMorePop);

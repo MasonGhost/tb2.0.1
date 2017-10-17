@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -191,7 +192,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-            mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+//            if (!TextUtils.isEmpty(mInfoPublishBean.getSubject())){
+//                mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+//            }
         }
         if (mInfoPublishBean.isRefuse() && mInfoPublishBean.getImage() != null) {
             int w = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_width);
@@ -269,7 +272,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
                         .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
+//                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })

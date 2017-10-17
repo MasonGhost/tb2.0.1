@@ -115,7 +115,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
+                        mRootView.onResponseError(null,false);
                     }
 
                     @Override
