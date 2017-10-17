@@ -24,6 +24,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
@@ -71,11 +72,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    private SubsamplingScaleImageView test;
-    private int mPicTag;
+    private SubsamplingScaleImageView mSubsamplingScaleImageView;
+
+    private int mPicTag;// 记录上传成功的张数
 
     private ActionPopupWindow mInstructionsPopupWindow;
-//    private InfoPublishBean mInfoPublishBean;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -227,8 +228,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        test = mRicheTest.insertImage(path, mRicheTest.getWidth());
-
+        mSubsamplingScaleImageView = mRicheTest.insertImage(path, mRicheTest.getWidth());
+        mPicTag++;
+        LogUtils.d("uploadPicSuccess::"+mPicTag);
     }
 
     @Override
@@ -251,8 +253,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicSuccess(int id) {
         mPbImageUpload.setVisibility(View.GONE);
-        test.setId(id);
-        mPicTag++;
+        mSubsamplingScaleImageView.setId(id);
     }
 
     @Override
@@ -287,6 +288,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (mPicTag > 0) {
             mPicTag--;
         }
+        LogUtils.d("onImageDelete::"+mPicTag);
     }
 
     @Override
