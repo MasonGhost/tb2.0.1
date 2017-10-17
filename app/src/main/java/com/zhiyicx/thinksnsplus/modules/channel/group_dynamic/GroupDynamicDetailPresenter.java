@@ -389,14 +389,13 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.upDateFollowFansState(userInfoBean);
     }
 
-
     @Override
     public void deleteCommentV2(long comment_id, int commentPosition) {
         mIsNeedDynamicListRefresh = true;
         mRootView.getCurrentDynamic().setComments_count(mRootView.getCurrentDynamic()
                 .getComments_count() - 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
-        mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getCommentslist()
+        mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getListDatas()
                 .get(commentPosition));
         mRootView.getListDatas().remove(commentPosition);
         if (mRootView.getListDatas().isEmpty()) {
