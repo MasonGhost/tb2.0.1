@@ -62,7 +62,7 @@ hotfix/pay_fail ( 修复分支 )
 
 - 整体结构   [MVP+Dagger2](https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger/)
 
-- 技术说明 ：  [retrofit](https://github.com/square/retrofit) + [dagger2](https://google.github.io/dagger/) + [rx](http://reactivex.io/)
+- 技术说明 ：  [retrofit](https://github.com/square/retrofit) + [dagger2](https://google.github.io/dagger/) + [rx](http://reactivex.io/) + [greenDao](https://github.com/greenrobot/greenDAO)
 
 
 ###   why choose this?
@@ -136,3 +136,7 @@ hotfix/pay_fail ( 修复分支 )
 [PhotoPicker](document/baseproject/PHOTOPICKER.md) 图片选择器
 
 [pickerview](pickerview/README.md)  时间选择器，滑轮选择器
+
+[appupdate](appupdate/README.md)  版本更新
+
+[contacts](contacts/README.md)  联系人
