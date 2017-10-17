@@ -31,4 +31,8 @@ public interface IBaseTouristPresenter extends IBasePresenter {
     boolean handleTouristControl();
 
     SystemConfigBean getSystemConfigBean();
+
+    String getGoldName();
+
+    String getGoldUnit();
 }

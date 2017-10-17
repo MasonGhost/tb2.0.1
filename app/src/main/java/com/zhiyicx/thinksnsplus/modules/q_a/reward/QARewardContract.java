@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -24,7 +25,7 @@ public interface QARewardContract {
         void publishQuestionSuccess(QAListInfoBean qaListInfoBean);
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBaseTouristPresenter{
         void publishQuestion(QAPublishBean qaPublishBean);
         void resetReward(Long question_id, double amount);
 

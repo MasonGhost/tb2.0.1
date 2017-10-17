@@ -59,6 +59,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
+
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     /**
      * reward type
      */
@@ -127,6 +131,8 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override

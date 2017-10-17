@@ -319,7 +319,7 @@
 
     <!--钱包-->
     <string name="default_mongy">0.00</string>
-    <string name="account_balance">账户余额(元)</string>
+    <string name="account_balance">账户余额(%s)</string>
     <string name="recharge">充值</string>
     <string name="withdraw">提现</string>
     <string name="withdraw_doing">提现中&#8230;</string>

@@ -726,7 +726,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money())))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money()),
+                        mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

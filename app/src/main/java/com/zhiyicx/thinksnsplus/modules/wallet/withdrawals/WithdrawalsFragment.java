@@ -51,6 +51,9 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     @BindView(R.id.tv_withdraw_dec)
     TextView mTvWithdrawDec;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
 
     private ActionPopupWindow mActionPopupWindow;
@@ -101,6 +104,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean
                     .getCase_min_amount())));
         }
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override

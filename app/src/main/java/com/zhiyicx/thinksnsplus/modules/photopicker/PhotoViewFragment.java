@@ -29,6 +29,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;

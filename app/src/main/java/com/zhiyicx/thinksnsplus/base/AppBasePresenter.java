@@ -93,4 +93,14 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
     public SystemConfigBean getSystemConfigBean() {
         return mSystemRepository.getAppConfigInfoFromLocal();
     }
+
+    @Override
+    public String getGoldName() {
+        return getSystemConfigBean().getSite().getGold_name().getName();
+    }
+
+    @Override
+    public String getGoldUnit() {
+        return getSystemConfigBean().getSite().getGold_name().getUnit();
+    }
 }

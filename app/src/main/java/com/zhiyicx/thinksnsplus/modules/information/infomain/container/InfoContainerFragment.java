@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -119,7 +120,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
     private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
 
-    private String[] mPublishInfoConfig;
+    private SystemConfigBean.NewsConfig mPublishInfoConfig;
 
     @Override
     protected int getBodyLayoutId() {
@@ -143,7 +144,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
         if (userCertificationInfo.getStatus() == 1) {
             if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
-                    && Arrays.toString(mPublishInfoConfig).contains(SystemConfig.PUBLISH_INFO_NEED_PAY))) {
+                    && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
                 mPresenter.savePayTip(false);
             } else {

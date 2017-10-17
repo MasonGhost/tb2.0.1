@@ -36,7 +36,7 @@ public class SystemConfigBean implements Serializable {
     @SerializedName("wallet:recharge-type")
     private String[] mWalletTtype;
     @SerializedName("news:contribute")
-    private String[] mNewsContribute;
+    private NewsConfig mNewsContribute;
     @SerializedName("plus-appversion")
     private Appversion mAppversion;
     @SerializedName("question:apply_amount")
@@ -62,11 +62,11 @@ public class SystemConfigBean implements Serializable {
 
     private SiteBean site;
 
-    public String[] getNewsContribute() {
+    public NewsConfig getNewsContribute() {
         return mNewsContribute;
     }
 
-    public void setNewsContribute(String[] newsContribute) {
+    public void setNewsContribute(NewsConfig newsContribute) {
         mNewsContribute = newsContribute;
     }
 
@@ -531,8 +531,16 @@ public class SystemConfigBean implements Serializable {
             /**
              * status : true
              */
-
+            private String name;
             private boolean status;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
 
             public boolean isStatus() {
                 return status;
@@ -634,7 +642,30 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
-    public static class Appversion implements Serializable{
+    public static class NewsConfig implements Serializable {
+
+        private static final long serialVersionUID = 7843543063937840120L;
+        private boolean verified;
+        private boolean pay;
+
+        public boolean hasVerified() {
+            return verified;
+        }
+
+        public void setVerified(boolean verified) {
+            this.verified = verified;
+        }
+
+        public boolean hasPay() {
+            return pay;
+        }
+
+        public void setPay(boolean pay) {
+            this.pay = pay;
+        }
+    }
+
+    public static class Appversion implements Serializable {
         private static final long serialVersionUID = 8919908013556136434L;
         private boolean open;
 
@@ -647,7 +678,7 @@ public class SystemConfigBean implements Serializable {
         }
     }
 
-    public static class Feed implements Serializable{
+    public static class Feed implements Serializable {
 
         private static final long serialVersionUID = 2393545893640479534L;
         private boolean reward;
