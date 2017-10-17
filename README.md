@@ -102,8 +102,8 @@ android {
 
 ## 打包签名说明
 
-- [创建签名文件说明](document/tools/AndroidCreateSignatureFileTutorial.md)
-- [打包说明](document/tools/AndroidPackageTutorial.md)
+- [创建签名文件说明](document/tutorial/AndroidCreateSignatureFileTutorial.md)
+- [打包说明](document/tutorial/AndroidPackageTutorial.md)
 
 ## 文档位置说明
 

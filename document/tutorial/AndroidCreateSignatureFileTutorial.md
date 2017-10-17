@@ -9,7 +9,7 @@
 [![project-import2]][项目导入2]
 
 > **注意：**
-> 1. 第一次导入项目会下载依赖包，请保持网络通畅.
+> 1. 第一次导入项目时间会比较久，会下载依赖包，请保持网络通畅.
 > 2. 建议：在导入项目之前，可手动将项目的 `gradle` 版本修改为当前已有的版本，这样可以快速导入。（修改内容为：`gradel/gradle-wrapper.propertie` 和 `project` 的 `build.gradle`）
 
 2. 打开`Android Studio` 点击顶部 `build —> Module(app) -> Generate Signed APK -> Create new` ，在`New Key Store`填上相关的信息点击`OK`就完成了
