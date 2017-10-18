@@ -4,9 +4,9 @@
 ### 一、通过开发工具生成（推荐）
 1. 将项目导入`AndroidStudio`，如果当前没有按装，请前往[官方](https://developer.android.google.cn/studio/index.html)下载安装并配置好工作环境，`Android` 项目的运行依赖于1`Java JDK`，如果电脑没有配置`JDK`,请前往[官方](http://www.oracle.com/technetwork/java/javase/downloads/index.html)下载并配置,`Android Studio 2.2`以后的版本是于`JDK`绑定的不需要单独下载。
 
-[![project-import1]][项目导入1]
+![project-import1]
 
-[![project-import2]][项目导入2]
+![project-import2]
 
 > **注意：**
 > 1. 第一次导入项目时间会比较久，会下载依赖包，请保持网络通畅.
@@ -14,12 +14,11 @@
 
 2. 打开`Android Studio` 点击顶部 `build —> Module(app) -> Generate Signed APK -> Create new` ，在`New Key Store`填上相关的信息点击`OK`就完成了
 
+![creat_signer1]
 
-[![creat_signer1]][创建签名]
+![creat_signer2]
 
-[![creat_signer2]][创建签名2]
-
-[![creat_signer3]][创建签名3]
+![creat_signer3]
 
 ### 二、通过命令行生成
 下面以创建一个android_release.keystore为例，结尾有附图参考：您需要在电脑上下载`Android SDK`、`JDK`包，要使用到`JDK`中的`keytool`工具。
@@ -41,7 +40,7 @@ keytool -genkey –alias android_release -keyalg RSA -validity 20000 -keystore a
  * 输入<android_release.keystore>的主密码      （如果和 keystore 密码相同，按回车）： 这时会生成android_release.keystore文件，就是我们需要的签名文件;
 （-validity 20000 表示证书的有效天数为20000天）
 
-[![creat_signer4]][命令创建签名]
+![creat_signer4]
 
 
 ### 三、查看 `MD5` 和 `SH1`
@@ -54,7 +53,7 @@ keytool –list –v –keystore C:/thinksns-plus-android/android_release
 
 > ***注意：*** `C:/thinksns-plus-android/android_release `为当前文件的绝对路径
 
-[![creat_signer5]][查看MD5和SH1]
+![creat_signer5]
 
 
 
