@@ -7,11 +7,11 @@
     > 1. 必须提供自己的包名名称。
     > 2. 包名规则：采用反写域名命名规则，即 `com.xx.xxx.xxxx` 形式，全部使用小写字母。一级包名为com，二级包名为xx（一般为公司或个人域名），三级包名根据应用进行命名，四级包名为功能模块名。如：`com.tencent.qq.activitys` ，这样具备较高可读性，一看就知道是腾讯公司QQ软件中存放activity的包。
 
-    [![config_capture]][包名配置]
+    ![config_capture]
 
 2. 签名文件分为调试版和正式发布版，生成自己的签名文件后替换图中所示文件（**注：** 必须提供自己的签名文件和对应的别名以及密码）[查看创建签名文档](AndroidCreateSignatureFileTutorial.md)。
 
-    [![signature_show]][包名配置]
+    ![signature_show]
 
 3. 配置编译时签名，`app/build.gradle`中
     ```
@@ -138,7 +138,7 @@
 
      **注意：** 分享和支付回掉需要根据您的包名来判断存放位置，例如：您的包名是 `com.guduk.www`,那么您需要在 `app/main/java/` 创建自己的包名路径，并将 `包wxapi` 下的代码和`WBShareActivity`移动过去。
 
-    [![share_packge_change]][包名配置]
+    ![share_packge_change]
 
 ### 服务器地址
 1. 服务器地址与接口地址都位置 `baseproject/src/main/java/config/Apiconfig.class` 中。修改 `APP_DOMAIN_FORMAL` 即可。
@@ -173,10 +173,10 @@
 
 | 位置（icon.png） | 大小 | 图标 |
 |:-----:|:-----:|:-----:|
-| mipmap-hdpi | 72x72   | [![icon_hdpi]][icon]|
-| mipmap-xhdpi | 96x96  | [![icon_xhdpi]][icon]|
-| mipmap-xxhdpi | 144x144 | [![icon_xxhdpi]][icon] |
-| mipmap-xxxhdpi | 192x192 | [![icon_xxxhdpi]][icon] |
+| mipmap-hdpi | 72x72   | ![icon_hdpi]|
+| mipmap-xhdpi | 96x96  | ![icon_xhdpi]|
+| mipmap-xxhdpi | 144x144 | ![icon_xxhdpi] |
+| mipmap-xxxhdpi | 192x192 | ![icon_xxxhdpi] |
 
 #### 2. 引导图替换, 位于 `baseproject/src/main/res/` ,`guide.png`
 
@@ -184,35 +184,35 @@
 |:-----:|:-----:|:-----:|
 | mipmap-hdpi | 800x480   ||
 | mipmap-xhdpi | 1280x720  | |
-| mipmap-xxhdpi | 1920x1080 | [![guide]][icon] |
+| mipmap-xxhdpi | 1920x1080 | ![guide]|
 | mipmap-xxxhdpi | 2560x1440 |  |
 
 #### 3. 缺省信息图片替换, 位于 `baseproject/src/main/res/` ,`guide.png`，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
 | 名字 | 说明 | 图标 |
 |:-----:|:-----:|:-----:|
-| pic_default_portrait1.png | 默认头像，不带边框  |[![pic_default_portrait1]][默认头像]|
-| pic_default_portrait2.png | 默认头像，带白色边框  |[![pic_default_portrait2]][默认头像]|
-| img_default_delete.png | 默认删除缺省图  |[![img_default_delete]][默认删除缺省图]|
-| img_default_internet.png | 默认网络差缺省图  |[![img_default_internet]][默认网络差缺省图]|
-| img_default_nobody.png | 默认没有用户缺省图  |[![img_default_nobody]][默认没有用户缺省图]|
-| img_default_nothing.png | 默认什么也没有缺省图  |[![img_default_nothing]][默认什么也没有缺省图]|
-| img_default_search.png | 默认没有搜索到缺省图  |[![img_default_search]][默认没有搜索到缺省图]|
+| pic_default_portrait1.png | 默认头像，不带边框  |![pic_default_portrait1]|
+| pic_default_portrait2.png | 默认头像，带白色边框  |![pic_default_portrait2]|
+| img_default_delete.png | 默认删除缺省图  |![img_default_delete]|
+| img_default_internet.png | 默认网络差缺省图  |![img_default_internet]|
+| img_default_nobody.png | 默认没有用户缺省图  |![img_default_nobody]|
+| img_default_nothing.png | 默认什么也没有缺省图  |![img_default_nothing]|
+| img_default_search.png | 默认没有搜索到缺省图  |![img_default_search]|
 
 #### 4. 主页底部导航栏替换，位于 `app/main/src/res/`,，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
 
  |名字 |大小| 说明 | 图标 |
 |:-----:|:-----:|:-----:|:-----:|
-| common_ico_bottom_add.png | 120x98| 加号  |[![common_ico_bottom_add]][加号]|
-| common_ico_bottom_discover_high.png | 48x48 | 发现高亮  |[![common_ico_bottom_discover_high]][发现高亮]|
-| common_ico_bottom_discover_normal.png | 48x48 | 发现常规  |[![common_ico_bottom_discover_normal]][发现常规]|
-| common_ico_bottom_home_high.png | 48x48 | 主页高亮  |[![common_ico_bottom_home_high]][主页高亮]|
-| common_ico_bottom_home_normal.png | 48x48 | 主页常规  |[![common_ico_bottom_home_normal]][主页常规]|
-| common_ico_bottom_me_high.png | 48x48 | 我的高亮  |[![common_ico_bottom_me_high]][我的高亮]|
-| common_ico_bottom_me_normal.png | 48x48 | 我的常规  |[![common_ico_bottom_me_normal]][我的常规]|
-| common_ico_bottom_me_remind.png | 48x48 | 我的带小红点  |[![common_ico_bottom_me_remind]][我的带小红点]|
-| common_ico_bottom_message_high.png | 48x48 | 消息高亮  |[![common_ico_bottom_message_high]][消息高亮]|
-| common_ico_bottom_message_normal.png | 48x48 | 消息常规  |[![common_ico_bottom_message_normal]][消息常规]|
-| common_ico_bottom_message_remind.png | 48x48 | 消息带小红点  |[![common_ico_bottom_message_remind]][消息带小红点]|
+| common_ico_bottom_add.png | 120x98| 加号  |![common_ico_bottom_add]|
+| common_ico_bottom_discover_high.png | 48x48 | 发现高亮  |![common_ico_bottom_discover_high]|
+| common_ico_bottom_discover_normal.png | 48x48 | 发现常规  |![common_ico_bottom_discover_normal]|
+| common_ico_bottom_home_high.png | 48x48 | 主页高亮  |![common_ico_bottom_home_high]|
+| common_ico_bottom_home_normal.png | 48x48 | 主页常规  |![common_ico_bottom_home_normal]|
+| common_ico_bottom_me_high.png | 48x48 | 我的高亮  |![common_ico_bottom_me_high]|
+| common_ico_bottom_me_normal.png | 48x48 | 我的常规  |![common_ico_bottom_me_normal]|
+| common_ico_bottom_me_remind.png | 48x48 | 我的带小红点  |![common_ico_bottom_me_remind]|
+| common_ico_bottom_message_high.png | 48x48 | 消息高亮  |![common_ico_bottom_message_high]|
+| common_ico_bottom_message_normal.png | 48x48 | 消息常规  |![common_ico_bottom_message_normal]|
+| common_ico_bottom_message_remind.png | 48x48 | 消息带小红点  |![common_ico_bottom_message_remind]|
 
 
 
