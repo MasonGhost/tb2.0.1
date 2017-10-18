@@ -1,202 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white">
+                                     xmlns:tools="http://schemas.android.com/tools"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="match_parent"
+                                     android:background="@color/white"
+                                     android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
             <TextView
-                    android:id="@+id/tv_status_hint"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/certification_result_hint"
-                    android:background="@color/certification_result_hint_bg"
-                    android:textColor="@color/white"
-                    android:text="@string/certification_ing_hint"
-                    android:gravity="center"
-                    android:textSize="@dimen/size_icon_assist"/>
+                android:id="@+id/tv_status_hint"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/certification_result_hint"
+                android:background="@color/certification_result_hint_bg"
+                android:gravity="center"
+                android:text="@string/certification_ing_hint"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_icon_assist"/>
 
             <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <!--个人-->
                 <LinearLayout
-                        android:id="@+id/ll_personage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                    android:id="@+id/ll_personage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_name"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_name"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_name"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_name"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
 
                     </LinearLayout>
+
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_id_card"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_id_card"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_id_card"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_id_card"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
 
                     </LinearLayout>
+
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_phone"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_phone"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_id_phone"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_id_phone"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
 
                     </LinearLayout>
                 </LinearLayout>
                 <!--公司-->
                 <LinearLayout
-                        android:id="@+id/ll_company"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                    android:id="@+id/ll_company"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                     <!--机构名称-->
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_company_name"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_company_name"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_company_name"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_company_name"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
                     </LinearLayout>
                     <!--机构地址-->
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_company_address"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_company_address"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_company_address"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_company_address"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
                     </LinearLayout>
                     <!--负责人-->
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_company_principal_name"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_company_principal_name"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_company_principal"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_company_principal"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
                     </LinearLayout>
                     <!--负责人身份证号码-->
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_principal_id_card"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_principal_id_card"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_company_principal_id_card"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_company_principal_id_card"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
                     </LinearLayout>
                     <!--负责人电话-->
                     <LinearLayout
-                            style="@style/CertificationDetailContainer">
+                        style="@style/CertificationDetailContainer">
+
                         <TextView
-                                style="@style/CertificationDetailText"
-                                android:layout_width="@dimen/certification_detail_width"
-                                android:textColor="@color/normal_for_assist_text"
-                                android:text="@string/certification_basic_info_company_principal_phone"/>
+                            style="@style/CertificationDetailText"
+                            android:layout_width="@dimen/certification_detail_width"
+                            android:text="@string/certification_basic_info_company_principal_phone"
+                            android:textColor="@color/normal_for_assist_text"/>
+
                         <TextView
-                                android:id="@+id/tv_company_principal_phone"
-                                style="@style/CertificationDetailText"
-                                android:layout_gravity="bottom"
-                                tools:text="xxxxx"/>
+                            android:id="@+id/tv_company_principal_phone"
+                            style="@style/CertificationDetailText"
+                            android:layout_gravity="bottom"
+                            tools:text="xxxxx"/>
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
 
             <!--公共信息-->
             <LinearLayout
-                    style="@style/CertificationDetailContainer">
+                style="@style/CertificationDetailContainer"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_bigger_large_35">
+
                 <TextView
-                        style="@style/CertificationDetailText"
-                        android:layout_width="@dimen/certification_detail_width"
-                        android:textColor="@color/normal_for_assist_text"
-                        android:text="@string/certification_basic_info_description"/>
+                    style="@style/CertificationDetailText"
+                    android:layout_width="@dimen/certification_detail_width"
+                    android:text="@string/certification_basic_info_description"
+                    android:textColor="@color/normal_for_assist_text"/>
+
                 <TextView
-                        android:id="@+id/tv_description"
-                        style="@style/CertificationDetailText"
-                        android:layout_gravity="bottom"
-                        tools:text="xxxxx"/>
+                    android:id="@+id/tv_description"
+                    style="@style/CertificationDetailText"
+                    android:layout_gravity="bottom"
+                    android:maxLines="30"
+                    tools:text="赶紧领导时间管理风景嘎会计法爱干净杀几个路口的就是国际饭店上过课垃圾分类达康书记咖喱咖啡技术管理开发就是了客观费精力开始根据反馈麓山国际过节费快速公交番窠倒臼"/>
 
             </LinearLayout>
+
             <LinearLayout
-                    style="@style/CertificationDetailContainer"
-                    android:layout_height="wrap_content"
-                    android:gravity="top">
+                style="@style/CertificationDetailContainer"
+                android:layout_height="wrap_content"
+                android:gravity="top">
+
                 <TextView
-                        style="@style/CertificationDetailText"
-                        android:layout_height="@dimen/certification_input_item_height"
-                        android:layout_width="@dimen/certification_detail_width"
-                        android:textColor="@color/normal_for_assist_text"
-                        android:gravity="bottom"
-                        android:text="@string/certification_basic_info_data"/>
+                    style="@style/CertificationDetailText"
+                    android:layout_width="@dimen/certification_detail_width"
+                    android:layout_height="@dimen/certification_input_item_height"
+                    android:gravity="bottom"
+                    android:text="@string/certification_basic_info_data"
+                    android:textColor="@color/normal_for_assist_text"/>
 
                 <ImageView
-                        android:id="@+id/iv_pic_one"
-                        android:layout_width="@dimen/certification_detail_img_width"
-                        android:layout_height="@dimen/certification_detail_img_height"
-                        android:scaleType="centerCrop"
-                        android:layout_marginTop="@dimen/spacing_bigger_large"/>
+                    android:id="@+id/iv_pic_one"
+                    android:layout_width="@dimen/certification_detail_img_width"
+                    android:layout_height="@dimen/certification_detail_img_height"
+                    android:layout_marginTop="@dimen/spacing_bigger_large"
+                    android:scaleType="centerCrop"/>
 
                 <ImageView
-                        android:id="@+id/iv_pic_two"
-                        android:layout_width="@dimen/certification_detail_img_width"
-                        android:layout_height="@dimen/certification_detail_img_height"
-                        android:layout_marginLeft="@dimen/spacing_small"
-                        android:scaleType="centerCrop"
-                        android:layout_marginTop="@dimen/spacing_bigger_large"/>
+                    android:id="@+id/iv_pic_two"
+                    android:layout_width="@dimen/certification_detail_img_width"
+                    android:layout_height="@dimen/certification_detail_img_height"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_bigger_large"
+                    android:scaleType="centerCrop"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
