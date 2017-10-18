@@ -104,12 +104,17 @@ public class InputLimitView extends FrameLayout {
                     mBtSend.setEnabled(true);
                 }
                 if (s.length() >= mShowLimitSize) {
-                    mLimitTipStr = "<" + s.length() + ">" + "/" + mLimitMaxSize;
-                    CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
-                            .innerColor(ContextCompat.getColor(context, R.color.important_for_note))
-                            .outerColor(ContextCompat.getColor(context, R.color.general_for_hint))
-                            .format();
-                    mTvLimitTip.setText(chars);
+//                    mLimitTipStr = "<" + s.length() + ">" + "/" + mLimitMaxSize;
+//                    CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
+//                            .innerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+//                            .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+//                            .format();
+                    mLimitTipStr = s.length()  + "/" + mLimitMaxSize;
+//                    CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
+//                            .innerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+//                            .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+//                            .format();
+                    mTvLimitTip.setText(mLimitTipStr);
                     mTvLimitTip.setVisibility(VISIBLE);
                 } else {
                     mTvLimitTip.setVisibility(GONE);

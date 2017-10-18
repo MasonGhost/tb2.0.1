@@ -128,8 +128,8 @@ public class UserInfoInroduceInputView extends FrameLayout {
                 }
                 if (praseContentLength >= mshowLimitSize) {
                     CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
-                            .innerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.important_for_note))
-                            .outerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.general_for_hint))
+                            .innerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.normal_for_assist_text))
+                            .outerColor(ContextCompat.getColor(context, com.zhiyicx.baseproject.R.color.normal_for_assist_text))
                             .format();
                     mTvLimitTip.setText(chars);
                     mTvLimitTip.setVisibility(VISIBLE);

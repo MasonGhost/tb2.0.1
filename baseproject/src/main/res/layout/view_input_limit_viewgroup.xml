@@ -53,7 +53,7 @@
             android:layout_toRightOf="@id/et_content"
             android:gravity="center"
             android:paddingBottom="@dimen/spacing_small"
-            android:textColor="@color/important_for_note"
+            android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_note_assist"
             tools:text="210/255"/>
     </RelativeLayout>
