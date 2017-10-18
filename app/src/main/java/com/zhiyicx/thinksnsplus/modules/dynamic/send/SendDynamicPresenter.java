@@ -57,12 +57,12 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             dynamicBean.setImages(new ArrayList<>());
         }
 
-        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
-                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
-                    mContext.getString(R.string.group_dynamic_send_must_has_title));
-            return;
-        }
+//        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
+//                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
+//            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
+//                    mContext.getString(R.string.group_dynamic_send_must_has_title));
+//            return;
+//        }
 
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
         groupSendDynamicDataBean.setGroup_post_mark(dynamicBean.getFeed_mark());

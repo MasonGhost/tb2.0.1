@@ -117,6 +117,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private boolean isToll;// 是否开启收费
 
+    private boolean isFromGroup;
+
     private boolean hasTollPic;// 是否有图片设置了收费
 
     private ArrayList<Float> mSelectMoney;// 文字收费选择
@@ -415,7 +417,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void setRightClick() {
         com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
-        if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
+        if (isFromGroup) {// 圈子
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
             mPresenter.sendDynamicV2(packageDynamicData());
@@ -751,8 +753,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 selectedPhotos.addAll(originPhotos);
             }
             if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
-                mEtDynamicTitle.setVisibility(View.VISIBLE);
-                mTitleUnderLine.setVisibility(View.VISIBLE);
+                isFromGroup = true;
+//                mEtDynamicTitle.setVisibility(View.VISIBLE);
+//                mTitleUnderLine.setVisibility(View.VISIBLE);
                 mTvToll.setVisibility(View.GONE);
             }
         }

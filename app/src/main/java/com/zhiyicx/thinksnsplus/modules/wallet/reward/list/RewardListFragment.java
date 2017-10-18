@@ -56,7 +56,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     @Override
     protected CommonAdapter<RewardsListBean> getAdapter() {
-        return new RewardListAdapter(getContext(), R.layout.item_reward_user, mListDatas,mRewardType);
+        return new RewardListAdapter(getContext(), R.layout.item_reward_user, mListDatas, mRewardType);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
     @Override
     protected Long getMaxId(@NotNull List<RewardsListBean> data) {
         if (mListDatas.size() > 0) {
-            return mListDatas.get(mListDatas.size() - 1).getAmount();
+            return (long) mListDatas.size();
         }
         return DEFAULT_PAGE_MAX_ID;
     }
