@@ -169,17 +169,39 @@ public class JavaTest {
         String reg = "(@!\\[.*]\\((\\d+)\\))";
 
         try {
-            String sss = "@!\\[.*]\\((\\d+)\\)";
-            Matcher matcher2 = Pattern.compile(sss).matcher("@![image](2604)");
+            String sss = "@!\\[.*?]\\((\\d+)\\)";
+            String res = "@![image](2604)@![image](2609)";
+            Matcher matcher2 = Pattern.compile(sss).matcher(res);
+//            String test=res.substring(0,matcher2.start());
+
+
+            int lastIndex = 0;
             if (matcher2.find()) {
+                System.out.println("result:test:" + matcher2.start());
+                System.out.println("result:test:" + matcher2.end());
+                System.out.println("result:result:" + res.substring(matcher2.start(), matcher2.end()));
+                System.out.println("result:count:" + matcher2.groupCount());
                 System.out.println("result:count:" + matcher2.group(1));
+
+
+//                if (matcher2.start() > lastIndex) {
+//                    String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
+//                    splitTextList.add(result1);
+//                }
+//                String result2 = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+//                splitTextList.add(result2);
+//
+//                lastIndex = matcher1.end();
             }
+//            if (matcher2.find()) {
+//
+//            }
 
         } catch (Exception e) {
             System.out.println("result::" + e.toString());
         }
 
-        String test = "xxx@![image](123)ssss@![image](123)";
+        String test = "xxx@![image](123)ssss@![image](125)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
             System.out.println("result::" + matcher.group(0));
@@ -1432,7 +1454,7 @@ public class JavaTest {
 
         String[] split = new String[10000];
         for (int i = 0; i < 10000; i++) {
-            split[i] = i+"";
+            split[i] = i + "";
         }
 
         AbstractList<String> mContentList = new ArrayList<>();

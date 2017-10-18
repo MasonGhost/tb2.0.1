@@ -353,10 +353,12 @@
 
     <!--钱包 之 充值-->
     <string name="recharge_credentials_ing">获取充值凭证&#8230;</string>
+    <string name="recharge_disallow">当前未支持任何充值方式</string>
     <string name="recharge_credentials_succes">获取充值凭证成功</string>
 
     <!--钱包 之 提现-->
     <string name="withdraw_money">提现金额</string>
+    <string name="withdraw_disallow">当前未支持任何提现方式</string>
     <string name="withdraw_money_done">%1$s 账户提现</string>
     <string name="min_withdraw_money">未满足可提现最低金额</string>
     <string name="min_withdraw_money_limit">最低提现金额：%.2f元</string>

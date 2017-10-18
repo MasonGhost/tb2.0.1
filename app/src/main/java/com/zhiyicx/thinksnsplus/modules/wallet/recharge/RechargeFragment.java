@@ -33,6 +33,7 @@ import com.zhiyicx.tspay.TSPayClient;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -150,9 +151,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
-                if (result.contains("success")){
+                if (result.contains("success")) {
                     showSnackSuccessMessage(getString(id));
-                }else{
+                } else {
                     showSnackErrorMessage(getString(id));
                 }
                 if (result.equals("success")) {
@@ -255,13 +256,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRechargeMoney = mRechargeLables.get(0)/PayConfig.MONEY_UNIT;
+                            mRechargeMoney = mRechargeLables.get(0) / PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_two:
-                            mRechargeMoney = mRechargeLables.get(1)/PayConfig.MONEY_UNIT;
+                            mRechargeMoney = mRechargeLables.get(1) / PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_three:
-                            mRechargeMoney = mRechargeLables.get(2)/PayConfig.MONEY_UNIT;
+                            mRechargeMoney = mRechargeLables.get(2) / PayConfig.MONEY_UNIT;
                             break;
                     }
                     if (checkedId != -1) {
@@ -286,14 +287,18 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
      * 充值方式选择弹框
      */
     private void initPayStylePop() {
+        List<String> recharge_types = new ArrayList<>();
+        if (mWalletConfigBean.getRecharge_type() != null) {
+            recharge_types.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+        }
         if (mPayStylePopupWindow != null) {
             mPayStylePopupWindow.show();
             return;
         }
-        List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
         mPayStylePopupWindow = ActionPopupWindow.builder()
                 .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
                 .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item4Str(recharge_types.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
