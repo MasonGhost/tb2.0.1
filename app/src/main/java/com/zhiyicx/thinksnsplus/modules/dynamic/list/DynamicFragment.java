@@ -53,7 +53,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
@@ -81,9 +80,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
 /**
  * @Describe 动态列表
@@ -557,7 +553,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
-                            .getDrawable(), R.mipmap.icon_256);
+                            .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
                 }
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)

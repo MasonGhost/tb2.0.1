@@ -141,7 +141,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
     protected void setRightClick() {
         // 点击弹起分享框
         Bitmap shareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mIvTopicCover
-                .getDrawable(), R.mipmap.icon_256);
+                .getDrawable(), R.mipmap.icon);
         mPresenter.shareTopic(shareBitmap);
     }
 

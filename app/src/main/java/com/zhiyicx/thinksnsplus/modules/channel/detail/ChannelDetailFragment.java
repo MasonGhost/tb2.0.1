@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -411,7 +410,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
-                            .getDrawable(), R.mipmap.icon_256);
+                            .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

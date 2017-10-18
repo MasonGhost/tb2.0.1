@@ -979,7 +979,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
                 mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),
-                        mCurrentImageView.getDrawable(), R.mipmap.icon_256));
+                        mCurrentImageView.getDrawable(), R.mipmap.icon));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(!mCurrentMusic.isHas_like(),

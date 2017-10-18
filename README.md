@@ -1,9 +1,15 @@
-2017年5月11日10:04:01
-# thinksns-plus-android
+2017年10月17日10:58:48
+# ThinkSNS Plus Android  Dev Doc
+
+## 简介
+本文档旨在帮助开发者快速理解并基于 `ThinkSNS Plus Android ` 端的开发，为二次开发提高效率。
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
 
 整个项目代码风格都遵守[智艺创想移动端开发代码风格指南](https://github.com/zhiyicx/mobile-devices-code-style-guide)
+## 二次开发配置与资源替换
+请查看[二次开发资源配置替换文档](document/tutorial/SecondaryDevelopmentTutorial.md)
+
 ## 工程基础配置说明
 
 该工程使用 java 语言编写.支持 Android 4.0 (api 15) 以上系统.
@@ -26,6 +32,80 @@ Gradle 版本
 ### Git 忽略文件说明
 
 本工程忽略文件配置位于主工程下 `.gitignore`文件，可手动修改配置内容
+
+### 代码混淆说明
+开启代码混淆和混淆规则 `app` 的 `builde.gradle` 的文件下，`buildTypes` 节点添加 `release` 节点，` minifyEnabled` 属性表示是否开启混淆，`proguardFiles` 表示混淆依赖的文件，具体开启方法如下：
+```
+apply plugin: 'com.android.application'
+
+android {
+   ...
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    ...
+}
+
+
+```
+混淆配置说明
+```
+ # 指定代码的压缩级别
+-optimizationpasses 5
+ # 是否使用大小写混合
+-dontusemixedcaseclassnames
+ # 是否混淆第三方jar
+-dontskipnonpubliclibraryclasses
+ # 混淆时是否做预校验
+-dontpreverify
+ # 混淆时是否记录日志
+-verbose
+ # 混淆时所采用的算法
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+ # 保持哪些类不被混淆
+-keep public class * extends android.content.ContentProvider
+ # 保持哪些类不被混淆
+-keep public class * extends android.app.backup.BackupAgentHelper
+ # 保持哪些类不被混淆
+-keep public class * extends android.preference.Preference
+ # 保持哪些类不被混淆
+-keep public class com.android.vending.licensing.ILicensingService
+ # 保持 native 方法不被混淆
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+ # 保持自定义控件类不被混淆
+-keepclasseswithmembers class * {
+    public (android.content.Context, android.util.AttributeSet);
+}
+ # 保持自定义控件类不被混淆
+-keepclasseswithmembers class * {
+    public (android.content.Context, android.util.AttributeSet, int);
+}
+ # 保持自定义控件类不被混淆
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+ # 保持枚举 enum 类不被混淆
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+ # 保持 Parcelable 不被混淆
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+```
+> **注意:** 使用时请参考 `app/proguard-rules.pro`
+
+## 项目安装、打包、签名说明
+- [项目安装](document/tutorial/AndroidInstallDocTutorial.md)
+- [创建签名文件说明](document/tutorial/AndroidCreateSignatureFileTutorial.md)
+- [打包说明](document/tutorial/AndroidPackageTutorial.md)
 
 ## 文档位置说明
 
@@ -141,3 +221,6 @@ hotfix/pay_fail ( 修复分支 )
 [contacts](contacts/README.md)  联系人
 
 [mysnackbar](mysnackbar/README.md)  类似QQ提示信息控件
+
+
+

@@ -437,7 +437,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));

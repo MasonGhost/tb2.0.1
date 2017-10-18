@@ -392,7 +392,7 @@ public class InfoDetailHeaderView {
                             AppApplication.sOverRead.add(infoListDataBean.getId());
                         }
                         FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                                , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                                , imageView.getDrawable(), R.mipmap.icon), "info_share");
                         title.setTextColor(mContext.getResources()
                                 .getColor(R.color.normal_for_assist_text));
                         // 跳转到新的咨询页
