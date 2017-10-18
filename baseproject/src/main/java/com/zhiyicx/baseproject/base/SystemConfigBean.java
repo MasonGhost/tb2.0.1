@@ -32,19 +32,19 @@ public class SystemConfigBean implements Serializable {
     @SerializedName("im:helper")
     private ArrayList<ImHelperBean> im_helper;
     @SerializedName("ad")
-    private ArrayList<Advert> mAdverts;
+    private ArrayList<Advert> mAdverts; // 广告
     @SerializedName("wallet:recharge-type")
-    private String[] mWalletTtype;
+    private String[] mWalletTtype; // 允许的充值方式
     @SerializedName("news:contribute")
-    private NewsConfig mNewsContribute;
+    private NewsConfig mNewsContribute; // 允许的投稿方式
     @SerializedName("plus-appversion")
     private Appversion mAppversion;
     @SerializedName("question:apply_amount")
-    private int excellentQuestion;
+    private int excellentQuestion; // 问题加精的金额
     @SerializedName("question:onlookers_amount")
-    private int onlookQuestion;
+    private int onlookQuestion;// 答案围观的金额
     @SerializedName("news:pay_conyribute")
-    private int newsPayContribute;
+    private int newsPayContribute;// 资讯投稿的金额
     @SerializedName("feed")
     private Feed mFeed;
     private boolean checkin;
@@ -386,16 +386,15 @@ public class SystemConfigBean implements Serializable {
          * user_invite_template : 我发现了一个全平台社交系统ThinkSNS+，快来加入吧：http://t.cn/RpFfbbi
          * gold_name : {"name":"金币","unit":"枚"}
          */
-
+        private String reserved_nickname; // 保留的用户名
+        private String client_email; // 保留的邮箱
+        private String user_invite_template; // 邀请注册的短信模板
         private boolean status;
         private String off_reason;
         private AppBean app;
         private H5Bean h5;
-        private String reserved_nickname;
-        private String client_email;
         private GoldBean gold;
         private RewardBean reward;
-        private String user_invite_template;
         private GoldNameBean gold_name;
 
         public boolean isStatus() {
@@ -564,16 +563,16 @@ public class SystemConfigBean implements Serializable {
              * status : true
              */
 
-            private boolean open;
+            private boolean status;
 
             private String amounts;
 
-            public boolean hasOpen() {
-                return open;
+            public boolean hasStatus() {
+                return status;
             }
 
-            public void setOpen(boolean open) {
-                this.open = open;
+            public void setStatus(boolean status) {
+                this.status = status;
             }
 
             public String getAmounts() {
@@ -587,7 +586,7 @@ public class SystemConfigBean implements Serializable {
             @Override
             public String toString() {
                 return "RewardBean{" +
-                        "open=" + open +
+                        "status=" + status +
                         ", amounts='" + amounts + '\'' +
                         '}';
             }

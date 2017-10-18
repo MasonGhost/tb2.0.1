@@ -74,7 +74,6 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @BindView(R.id.ll_register_by_email)
     LinearLayout mLlRegisterByEmail;
 
-
     private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
     private boolean isPhoneEdited;
@@ -227,6 +226,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    if (mPresenter.getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())) {
+                        showMessage("不能使用站点预留邮箱");
+                        return;
+                    }
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
                     } else {
@@ -239,6 +242,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
                 .subscribe(permission -> {
+                    if (mPresenter.getSystemConfigBean().getSite().getReserved_nickname().contains(mEtRegistPhone.getText().toString().trim())) {
+                        showMessage("不能使用站点预留昵称");
+                        return;
+                    }
                     if (permission.granted) {// 获取到了权限
                         // 手机号注册
                         if (mCurrentRegisterType == REGISTER_PHONE) {
