@@ -180,7 +180,7 @@
     <string name="dynamic_list_top_comment">申请评论置顶</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
-    <string name="reply">回复%s:</string>
+    <string name="reply">回复 %s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>
@@ -663,7 +663,7 @@
     <string name="digg_format_questions">%s赞了你的问题</string>
     <string name="digg_format_questions_answer">%s赞了你的回答</string>
 
-    <string name="comment_format_reply">%1$s回复%2$s</string>
+    <string name="comment_format_reply">%1$s 回复 %2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
     <string name="comment_format_group_feed">%s评论了你的圈子</string>
