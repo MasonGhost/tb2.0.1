@@ -2,9 +2,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <com.wcy.overscroll.OverScrollLayout
         android:id="@+id/overscroll"
@@ -43,9 +43,9 @@
                 android:maxLines="1"
                 android:paddingBottom="@dimen/spacing_large"
                 android:paddingLeft="@dimen/spacing_mid"
-                tools:text="@string/default_mongy"
                 android:textColor="@color/white"
                 android:textSize="@dimen/withdrawal_detail_textsize"
+                tools:text="@string/default_mongy"
                 />
             <!--充值-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -74,6 +74,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom|center"
+        android:drawableLeft="@mipmap/ico_wallet_rules"
+        android:drawablePadding="@dimen/spacing_small"
         android:padding="@dimen/spacing_large"
         android:text="@string/recharge_and_withdraw_rule"
         />
