@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
 import com.zhiyicx.tspay.TSPayClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -209,17 +210,21 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     private void initWithDrawalsStylePop() {
+        List<String> cash_types=new ArrayList<>();
+        if (mWalletConfigBean.getCash()!=null){
+            cash_types.addAll(Arrays.asList(mWalletConfigBean.getCash()));
+        }
         if (mActionPopupWindow != null) {
             mActionPopupWindow.show();
             return;
         }
 
-        List<String> cash_types = Arrays.asList(mWalletConfigBean.getCash());
         mActionPopupWindow = ActionPopupWindow.builder()
                 .item2Str(cash_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.alipay)) : "")
                 .item3Str(cash_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R
                         .string.wxpay)) : "")
+                .item4Str(cash_types.size() == 0 ? getString(R.string.withdraw_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

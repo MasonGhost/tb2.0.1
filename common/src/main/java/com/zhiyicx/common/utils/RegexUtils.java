@@ -337,7 +337,7 @@ public class RegexUtils {
      */
     public static int getImageId(String input) {
         try {
-            String reg = "@!\\[.*]\\((\\d+)\\)";
+            String reg = "@!\\[.*?]\\((\\d+)\\)";
             Matcher matcher2 = Pattern.compile(reg).matcher(input);
             if (matcher2.find()){
                 return Integer.parseInt(matcher2.group(1));

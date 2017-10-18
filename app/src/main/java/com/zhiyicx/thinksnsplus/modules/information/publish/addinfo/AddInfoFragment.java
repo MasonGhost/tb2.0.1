@@ -61,7 +61,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     private UserInfoTagsAdapter mUserInfoTagsAdapter;
     private List<UserTagBean> mUserTagBeens = new ArrayList<>();
-//    private InfoPublishBean mInfoPublishBean;
 
     public static AddInfoFragment newInstance(Bundle bundle) {
         AddInfoFragment fragment = new AddInfoFragment();
@@ -72,13 +71,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (getArguments() != null) {
-//            mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-//        }
-//        if (mInfoPublishBean == null) {
-//            mInfoPublishBean = new InfoPublishBean();
-//        }
     }
 
     @Override
