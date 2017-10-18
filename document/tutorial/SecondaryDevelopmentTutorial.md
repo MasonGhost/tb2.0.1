@@ -40,7 +40,9 @@
 
 ### 第三方账号配置
 
- 项目使用中的三方账号包括：友盟、新浪微博、微信、QQ、极光推送、高德地图、支付宝支付。请在相应平台申请后修改配置文件。
+ 项目使用中的三方账号包括：友盟、新浪微博、微信、QQ、极光推送、高德地图、支付宝支付。请在相应平台申请后修改配置文件,三方申请注册需要的资料请查看[移动端打包上线需要得资料说明](AppPackageInfoTutorial.md)。
+
+
 
 1. 友盟（Umeng）配置 ，修改友盟 `UMENG_APPKEY`，位于 `baseproject/build.gradle`
     ```
@@ -198,7 +200,7 @@
 
 #### 4. 主页底部导航栏替换，位于 `app/main/src/res/`,，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
 
- 名字 |大小| 说明 | 图标 |
+ |名字 |大小| 说明 | 图标 |
 |:-----:|:-----:|:-----:|:-----:|
 | common_ico_bottom_add.png | 120x98| 加号  |[![common_ico_bottom_add]][加号]|
 | common_ico_bottom_discover_high.png | 48x48 | 发现高亮  |[![common_ico_bottom_discover_high]][发现高亮]|
