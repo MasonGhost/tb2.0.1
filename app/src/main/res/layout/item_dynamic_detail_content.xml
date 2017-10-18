@@ -5,13 +5,15 @@
               android:layout_height="wrap_content"
               android:background="@color/white"
               android:orientation="vertical"
-              android:paddingTop="@dimen/spacing_normal_large">
+              >
     <!--动态标题-->
     <TextView
+
         android:id="@+id/tv_dynamic_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:paddingTop="@dimen/spacing_normal_large"
         android:paddingBottom="@dimen/spacing_normal_large"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"

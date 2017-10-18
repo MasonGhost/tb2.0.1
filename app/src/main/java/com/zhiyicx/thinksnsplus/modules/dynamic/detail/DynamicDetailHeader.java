@@ -120,6 +120,7 @@ public class DynamicDetailHeader {
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
         } else {
+            mTitle.setVisibility(View.VISIBLE);
             mTitle.setText(titleText);
         }
         String contentText = dynamicBean.getFeed_content();
