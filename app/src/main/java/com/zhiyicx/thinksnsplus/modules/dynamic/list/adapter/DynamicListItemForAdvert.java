@@ -3,14 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -84,14 +83,13 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
     /**
      * 设置 imageview 点击事件，以及显示
-     *
-     * @param view        the target
+     *  @param view        the target
      * @param dynamicBean item data
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, FilterImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */

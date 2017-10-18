@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -8,6 +9,8 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -61,7 +64,7 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final GroupDynamicListBean dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, FilterImageView view, final GroupDynamicListBean dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -70,17 +73,22 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
         GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(0);
-        with = currentWith;
-        height = (with * imageBean.getHeight() / imageBean.getWidth());
-        height = height > mImageMaxHeight ? mImageMaxHeight : height;
-        proportion = ((with / imageBean.getWidth()) * 100);
-        if (with * height == 0) {// 就怕是 0
-            with = height = 100;
-        }
-        view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             Boolean canLook = true;
+            with = currentWith;
+            height = (with * imageBean.getHeight() / imageBean.getWidth());
+            height = height > mImageMaxHeight ? mImageMaxHeight : height;
+            proportion = ((with / imageBean.getWidth()) * 100);
+            if (with * height == 0) {// 就怕是 0
+                with = height = DEFALT_IMAGE_HEIGHT;
+            }
+            if (height < DEFALT_IMAGE_HEIGHT) {
+                height = DEFALT_IMAGE_HEIGHT;
+            }
+            view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
+            view.showLongImageTag(isLongImage(imageBean.getHeight(),imageBean.getWidth())); // 是否是长图
+
             Glide.with(mContext)
                     .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), with, height, proportion, AppApplication.getTOKEN()))
                     .override(with, height)
@@ -89,6 +97,24 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
                     .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .into(view);
         } else {
+            BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
+            with = currentWith;
+
+            if (option.outWidth == 0) {
+                height = with;
+                proportion=100;
+            } else {
+                height = with * option.outHeight / option.outWidth;
+                height = height > mImageMaxHeight ? mImageMaxHeight : height;
+                proportion = ((with / option.outWidth) * 100);
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+            }
+            if (height < DEFALT_IMAGE_HEIGHT) {
+                height = DEFALT_IMAGE_HEIGHT;
+            }
+            view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
+
             Glide.with(mContext)
                     .load(imageBean.getImgUrl())
                     .override(with, height)

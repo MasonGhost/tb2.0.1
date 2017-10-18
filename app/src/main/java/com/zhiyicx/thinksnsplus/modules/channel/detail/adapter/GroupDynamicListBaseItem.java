@@ -1,17 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -47,7 +51,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicListBean> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
+    protected static final int DEFALT_IMAGE_HEIGHT = 300;
     private final int mWidthPixels; // 屏幕宽度
+    private final int mHightPixels;
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
@@ -122,6 +128,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
         mContentMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_content_max_show_size);
         mWidthPixels = DeviceUtils.getScreenWidth(context);
+        mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
@@ -271,7 +278,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(final ViewHolder holder, ImageView view, final
+    protected void initImageView(final ViewHolder holder, FilterImageView view, final
     GroupDynamicListBean dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
         int w, h;
@@ -280,6 +287,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = true;
+                view.showLongImageTag(isLongImage(imageBean.getHeight(),imageBean.getWidth())); // 是否是长图
                 Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), w, h,
                                 propPart, AppApplication.getTOKEN()))
@@ -289,6 +297,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
             } else {
+                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+                view.showLongImageTag(isLongImage(option.outHeight,option.outWidth)); // 是否是长图
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())
                         .override(w, h)
@@ -312,7 +322,17 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
     }
 
+    /**
+     * 是否是长图
+     * @param imageHeight 需要判断的图片的高
+     * @param imageWith 需要判断的图片的宽
+     * @return
+     */
+    public boolean isLongImage(int imageHeight,int imageWith) {
+        float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
 
+        return a > 3 || a < .3f;
+    }
     /**
      * 计算压缩比例
      *

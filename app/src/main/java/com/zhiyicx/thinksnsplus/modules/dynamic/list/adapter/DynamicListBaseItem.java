@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,8 +12,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -24,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -50,7 +54,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
-    private final int mWidthPixels; // 屏幕宽度
+    protected static final int DEFALT_IMAGE_HEIGHT = 300;
+    protected final int mWidthPixels; // 屏幕宽度
+    protected final int mHightPixels; // 屏幕高度
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
@@ -124,6 +130,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mContentMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_content_max_show_size);
         mWidthPixels = DeviceUtils.getScreenWidth(context);
+        mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
@@ -322,13 +329,17 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(final ViewHolder holder, ImageView view, final
+    protected void initImageView(final ViewHolder holder, FilterImageView view, final
     DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        int propPart = getProportion(view, dynamicBean, part);
+        int propPart = getProportion(view, dynamicBean, positon, part);
         int w, h;
         w = h = getCurrenItemWith(part);
+
+
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
+            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
+
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
                         imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
@@ -344,6 +355,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         propPart, AppApplication.getTOKEN()));
 
             } else {
+                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+
                 Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
                         .override(w, h)
@@ -357,6 +371,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         if (dynamicBean.getImages() != null) {
             dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
+
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
@@ -373,17 +388,17 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      *
      * @param view
      * @param dynamicBean
-     * @param part        比例，总大小的份数
-     * @return
+     * @param positon
+     * @param part        比例，总大小的份数  @return
      */
-    protected int getProportion(ImageView view, DynamicDetailBeanV2 dynamicBean, int part) {
+    protected int getProportion(ImageView view, DynamicDetailBeanV2 dynamicBean, int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
         int with;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
+        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
         if (imageBean.getSize() == null || imageBean.getSize().isEmpty()) {
             return 70;
         }
@@ -413,6 +428,18 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return CURREN_CLOUMS;
     }
 
+    /**
+     * 是否是长图
+     *
+     * @param imageHeight 需要判断的图片的高
+     * @param imageWith   需要判断的图片的宽
+     * @return
+     */
+    public boolean isLongImage(int imageHeight, int imageWith) {
+        float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
+
+        return a > 3 || a < .3f;
+    }
 
     /**
      * image interface
