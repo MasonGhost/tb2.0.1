@@ -19,6 +19,10 @@ public abstract class TSActivity<P extends BasePresenter, F extends Fragment> ex
 
     protected F mContanierFragment;
 
+    public F getContanierFragment() {
+        return mContanierFragment;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_ts;

@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -162,12 +164,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         if (userInfoBean.getHas_deleted()) {
             try {
-                if (context instanceof Activity) {
-                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string
-                                    .user_had_deleted),
-                            TSnackbar.LENGTH_SHORT)
-                            .setPromptThemBackground(Prompt.WARNING)
-                            .show();
+                if (context instanceof TSActivity) {
+                    if ((((TSActivity) context).getContanierFragment() instanceof TSFragment)) {
+                        ((TSFragment) ((TSActivity) context).getContanierFragment()).showSnackWarningMessage(context.getString(R.string
+                                .user_had_deleted));
+                    }
                 } else {
                     ToastUtils.showToast(context, R.string.user_had_deleted);
                 }
