@@ -30,6 +30,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -567,5 +568,9 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             EditText text = (EditText) allLayout.getChildAt(0);
             text.setHint(mHint);
         }
+    }
+
+    public LinearLayout getAllLayout() {
+        return allLayout;
     }
 }
