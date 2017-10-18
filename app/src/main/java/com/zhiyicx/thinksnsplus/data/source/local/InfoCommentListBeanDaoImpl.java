@@ -46,12 +46,12 @@ public class InfoCommentListBeanDaoImpl extends CommonCacheImpl<InfoCommentListB
 
     @Override
     public InfoCommentListBean getSingleDataFromCache(Long primaryKey) {
-        return mInfoCommentListBeanDao.load(primaryKey);
+        return getRDaoSession().getInfoCommentListBeanDao().load(primaryKey);
     }
 
     @Override
     public List<InfoCommentListBean> getMultiDataFromCache() {
-        return mInfoCommentListBeanDao.loadAll();
+        return getRDaoSession().getInfoCommentListBeanDao().loadAll();
     }
 
     @Override
@@ -83,11 +83,12 @@ public class InfoCommentListBeanDaoImpl extends CommonCacheImpl<InfoCommentListB
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        return mInfoCommentListBeanDao.queryBuilder()
+        return getRDaoSession().getInfoCommentListBeanDao().queryBuilder()
                 .where(InfoCommentListBeanDao.Properties.User_id.eq
                                 (AppApplication.getmCurrentLoginAuth().getUser_id()),
                         InfoCommentListBeanDao.Properties.Id.eq(-1), InfoCommentListBeanDao
-                                .Properties.Info_id.eq(info_id))
+                                .Properties.Info_id.eq(info_id),
+                        InfoCommentListBeanDao.Properties.State.eq(InfoCommentListBean.SEND_ING))
                 .orderDesc(InfoCommentListBeanDao.Properties.Id)
                 .list();
     }
@@ -98,8 +99,9 @@ public class InfoCommentListBeanDaoImpl extends CommonCacheImpl<InfoCommentListB
      * @return
      */
     public InfoCommentListBean getCommentByCommentMark(Long commentMark) {
-        List<InfoCommentListBean> result = mInfoCommentListBeanDao.queryBuilder()
+        List<InfoCommentListBean> result = getRDaoSession().getInfoCommentListBeanDao().queryBuilder()
                 .where(InfoCommentListBeanDao.Properties.Comment_mark.eq(commentMark))
+                .build()
                 .list();
         if (!result.isEmpty()) {
             return result.get(0);

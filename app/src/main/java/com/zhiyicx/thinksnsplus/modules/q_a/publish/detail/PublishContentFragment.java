@@ -203,7 +203,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         if (draft != null) {
             String body = draft.getBody();
             if (!TextUtils.isEmpty(body) && mRicheTest != null) {
-                mRicheTest.post(() -> {
+                mRicheTest.getAllLayout().post(() -> {
                     mRicheTest.clearAllLayout();
                     mPresenter.pareseBody(body);
                 });

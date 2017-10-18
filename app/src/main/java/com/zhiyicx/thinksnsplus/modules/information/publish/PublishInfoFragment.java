@@ -201,7 +201,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (sInfoPublishBean != null && !TextUtils.isEmpty(sInfoPublishBean.getContent())
                 && !TextUtils.isEmpty(sInfoPublishBean.getContent()) && mRicheTest != null) {
-            mRicheTest.post(() -> {
+            mRicheTest.getAllLayout().post(() -> {
                 mRicheTest.clearAllLayout();
                 mPresenter.pareseBody(sInfoPublishBean.getContent());
                 mEtInfoTitle.setText(sInfoPublishBean.getTitle());

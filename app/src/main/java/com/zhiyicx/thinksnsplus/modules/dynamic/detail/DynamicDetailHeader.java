@@ -248,7 +248,6 @@ public class DynamicDetailHeader {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
 
-        // 如果有本地图片，优先显示本地图片
         int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
@@ -260,7 +259,8 @@ public class DynamicDetailHeader {
             if (part > 100) {
                 part = 100;
             }
-            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
+                    && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             if (!canLook) {
                 layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             }
