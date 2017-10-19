@@ -67,8 +67,9 @@ public class MusicCommentHeader {
     }
 
     public void setHeadInfo(HeaderInfo headInfo) {
-        if (headInfo == null)
+        if (headInfo == null) {
             return;
+        }
         show();
         mTitle.setText(headInfo.getTitle());
         mListenCount.setText(headInfo.getLitenerCount());

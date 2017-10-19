@@ -85,6 +85,9 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
     public void requestNetData(final String music_id, Long maxId, final boolean isLoadMore) {
         Subscription subscription;
         if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+            if (!isLoadMore) {
+                getMusicDetails(music_id);
+            }
             subscription = mMusicCommentRepositroty.getMusicCommentList(music_id, maxId)
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<List<MusicCommentListBean>>() {
@@ -111,6 +114,9 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                         }
                     });
         } else {
+            if (!isLoadMore) {
+                getMusicAblum(music_id);
+            }
             subscription = mMusicCommentRepositroty.getAblumCommentList(music_id, maxId)
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<List<MusicCommentListBean>>() {
@@ -319,8 +325,8 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
     @Override
     public void getMusicDetails(String music_id) {
-        mRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicDetaisBean>() {
+        Subscription subscribe = mRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<MusicDetaisBean>() {
                     @Override
                     protected void onSuccess(MusicDetaisBean data) {
                         MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
@@ -328,8 +334,8 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                         headerInfo.setId(data.getId().intValue());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
                         headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getSinger().getCover().getId()
-                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                                 , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
@@ -345,12 +351,13 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void getMusicAblum(String id) {
-        mRepository.getMusicAblum(id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
+        Subscription subscribe = mRepository.getMusicAblum(id).compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
                         MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
@@ -358,8 +365,8 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                         headerInfo.setId(data.getId().intValue());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
                         headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getStorage().getId()
-                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                                 , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
@@ -375,6 +382,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -391,7 +399,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 //                .set$$Comment_(data,new TCommonMetadataProvider(null))
 //                .handleComment();
 
-        mRepository.deleteComment((int)mRootView.getCommentId(), data.getId().intValue());
+        mRepository.deleteComment((int) mRootView.getCommentId(), data.getId().intValue());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
             MusicCommentListBean emptyData = new MusicCommentListBean();
@@ -404,9 +412,10 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
     public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         List<MusicCommentListBean> localComment;
         if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
-            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS,mRootView.getCommentId());
+            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS, mRootView
+                    .getCommentId());
         } else {
-            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_MUSIC,mRootView.getCommentId());
+            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_MUSIC, mRootView.getCommentId());
         }
 
         if (!localComment.isEmpty()) {
