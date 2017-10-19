@@ -513,6 +513,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mOtherDynamicPopWindow.show();
                     }
                     break;
+                default:
             }
         });
     }
@@ -623,7 +624,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+///                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -649,7 +650,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_share_dynamic))
+///                .item1Str(getString(R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.dynamic_list_top_dynamic))
                 .item4Str(getString(R.string.dynamic_list_delete_dynamic))
@@ -690,7 +691,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initImageCenterPopWindow(final int imagePosition, float amout,
                                           final int note, int strRes, final boolean isImage) {
-//        if (mPayImagePopWindow != null) {
+///       if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
 //        }

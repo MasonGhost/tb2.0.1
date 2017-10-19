@@ -111,20 +111,28 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     SystemRepository mSystemRepository;
 
+    /**
+     * 评论的
+     */
+    private MessageItemBean mItemBeanComment;
+    /**
+     * 点赞的
+     */
+    private MessageItemBean mItemBeanDigg;
+    /**
+     * 评论置顶的
+     */
+    private MessageItemBean mItemBeanReview;
+    /**
+     * 未读消息总数
+     */
+    private int mUnreadNotificationTotalNums;
 
-    private MessageItemBean mItemBeanComment; // 评论的
-    private MessageItemBean mItemBeanDigg;    // 点赞的
-    private MessageItemBean mItemBeanReview;    // 评论置顶的
+    private List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
+    private List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
+    private List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
+    private List<TSPNotificationBean> mNoti = new ArrayList<>();
 
-    private int mUnreadNotificationTotalNums; // 未读消息总数
-
-    List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
-    List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
-    List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
-    List<TSPNotificationBean> mNoti = new ArrayList<>();
-
-    private boolean mMessageContainerRedDotIsShow;
-    private boolean mMessageRedDotIsShow;
     private boolean mNotificaitonRedDotIsShow;
 
     @Inject
@@ -139,8 +147,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (AppApplication.getmCurrentLoginAuth() == null)
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
+        }
         creatTsHelperConversation();
     }
 
@@ -662,7 +671,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 diggTip);
 
                         String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
-//                        if (!TextUtils.isEmpty(reviewTip)) {
+///                        if (!TextUtils.isEmpty(reviewTip)) {
 //                            reviewTip += mContext.getString(R.string.recieved_review);
 //                        } else {
 //                            reviewTip = mContext.getString(R.string.has_no_body)
@@ -797,14 +806,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
             }
         }
-        mMessageRedDotIsShow = isShowMessgeTip;
+        boolean messageRedDotIsShow = isShowMessgeTip;
         Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
         if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
-            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
+            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(messageRedDotIsShow, 0);
             ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
         }
-        mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;
-        EventBus.getDefault().post(mMessageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+        boolean messageContainerRedDotIsShow = messageRedDotIsShow || mNotificaitonRedDotIsShow;
+        EventBus.getDefault().post(messageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
 
     }
 
