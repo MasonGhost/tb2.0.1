@@ -100,7 +100,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑手机号
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
                             intent.setClass(getActivity(), InitPasswordActivity.class);
                         }
                         Bundle bundle = new Bundle();
@@ -118,7 +118,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑邮箱
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
                             intent.setClass(getActivity(), InitPasswordActivity.class);
                         }
                         Bundle bundle = new Bundle();
@@ -166,21 +166,26 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
             } else {
                 mPresenter.bindOrUnbindThirdAccount(provider, null, false);
             }
-        } else { // 绑定
-            switch (provider) {
-                case ApiConfig.PROVIDER_QQ:
-                    thridLogin(SHARE_MEDIA.QQ);
-                    break;
-                case ApiConfig.PROVIDER_WEIBO:
-                    thridLogin(SHARE_MEDIA.SINA);
-                    break;
-                case ApiConfig.PROVIDER_WECHAT:
-                    thridLogin(SHARE_MEDIA.WEIXIN);
-                    break;
-                default:
-                    thridLogin(SHARE_MEDIA.QQ);
-            }
+        } else {
+            if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                showSnackErrorMessage(getString(R.string.you_must_bind_phone2));
+            } else {
+                // 绑定
+                switch (provider) {
+                    case ApiConfig.PROVIDER_QQ:
+                        thridLogin(SHARE_MEDIA.QQ);
+                        break;
+                    case ApiConfig.PROVIDER_WEIBO:
+                        thridLogin(SHARE_MEDIA.SINA);
+                        break;
+                    case ApiConfig.PROVIDER_WECHAT:
+                        thridLogin(SHARE_MEDIA.WEIXIN);
+                        break;
+                    default:
+                        thridLogin(SHARE_MEDIA.QQ);
+                }
 
+            }
         }
     }
 
@@ -326,6 +331,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
             mBtBindEmail.setEnabled(true);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
