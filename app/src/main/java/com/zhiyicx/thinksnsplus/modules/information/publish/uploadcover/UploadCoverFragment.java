@@ -59,7 +59,10 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     private InfoPublishBean mInfoPublishBean;
     private PayPopWindow mPayInfoPopWindow;
     private PhotoSelectorImpl mPhotoSelector;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    /**
+     * 图片选择弹框
+     */
+    private ActionPopupWindow mPhotoPopupWindow;
     private ActionPopupWindow mCoverInstructionsPopupWindow;
 
     public static UploadCoverFragment newInstance(Bundle bundle) {
@@ -90,7 +93,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected String setRightTitle() {
-        return "重置封面";
+        return getString(R.string.reset_cover);
     }
 
     @Override
@@ -98,9 +101,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        int iamge_id = RegexUtils.getImageId(mInfoPublishBean.getContent());
+        int imageId = RegexUtils.getImageId(mInfoPublishBean.getContent());
         if (mInfoPublishBean.isRefuse()) {
-            mInfoPublishBean.setImage((long) iamge_id < 0 ? null : (long) iamge_id);
+            mInfoPublishBean.setImage((long) imageId < 0 ? null : (long) imageId);
         } else {
             mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
         }
@@ -147,7 +150,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicSuccess(int id) {
         if (showUplaoding()) {
-            showSnackSuccessMessage("封面上传成功");
+            showSnackSuccessMessage(getString(R.string.cover_upload_success));
         }
         mInfoPublishBean.setImage((long) id);
         mBtSure.setEnabled(true);
@@ -192,8 +195,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-//            if (!TextUtils.isEmpty(mInfoPublishBean.getSubject())){
-//                mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+///            if (!TextUtils.isEmpty(mInfoPublishBean.getSubject())){
+//               mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
 //            }
         }
         if (mInfoPublishBean.isRefuse() && mInfoPublishBean.getImage() != null) {
@@ -215,13 +218,14 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     private void initListener() {
+        //两秒钟之内只取一个点击事件，防抖操作
         RxView.clicks(mFlInfoCoverContainer)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> initPhotoPopupWindow());
-
+        //两秒钟之内只取一个点击事件，防抖操作
         RxView.clicks(mBtSure)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 不要封面也可以发布了
@@ -272,7 +276,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
                         .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-//                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
+///                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
