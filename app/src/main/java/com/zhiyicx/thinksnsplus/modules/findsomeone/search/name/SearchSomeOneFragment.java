@@ -22,14 +22,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * @Describe 用户搜索界面
- * @Author Jungle68
- * @Date 2017/1/9
- * @Contact master.jungle68@gmail.com
+ * @describe 用户搜索界面
+ * @author Jungle68
+ * @date 2017/1/9
+ * @contact master.jungle68@gmail.com
  */
 public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.Presenter, UserInfoBean> implements SearchSomeOneContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
-    public static final String BUNDLE_DATA = "DATA";
     public static final String BUNDLE_LOCATION_STRING = "location_string";
 
 
@@ -116,6 +115,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
             case R.id.fragment_search_cancle:
                 getActivity().finish();
                 break;
+            default:
         }
     }
 
@@ -125,6 +125,11 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
         adapter.setOnItemClickListener(this);
         return adapter;
 
+    }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_search;
     }
 
     @Override
