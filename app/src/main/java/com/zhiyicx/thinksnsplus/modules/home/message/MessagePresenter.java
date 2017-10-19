@@ -288,10 +288,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     for (int i = 0; i < size; i++) {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
                                 .getCid());
-                        mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                        mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                        mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
-                                .getListDatas().get(i).getConversation().getCid()));
+                        if (message != null) {
+                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
+                                    .getListDatas().get(i).getConversation().getCid()));
+                        }
                     }
 
                     return mRootView.getListDatas();
@@ -349,6 +351,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribeForV2<MessageItemBean>() {
                     @Override
                     protected void onSuccess(MessageItemBean data) {
+                        int size = mRootView.getListDatas().size();
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
+                                return;
+                            }
+                        }
                         if (mRootView.getListDatas().size() == 0) {
                             mRootView.getListDatas().add(data);
                         } else {

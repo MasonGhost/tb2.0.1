@@ -90,8 +90,9 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     public void onMessageReceived(final Message message) {
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
-            mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
+        // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {
+            Subscription subscribe = mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
                     .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                         @Override
                         protected void onSuccess(UserInfoBean data) {
@@ -110,6 +111,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
                         protected void onException(Throwable throwable) {
                         }
                     });
+            addSubscrebe(subscribe);
         }
     }
 
