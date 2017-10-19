@@ -186,6 +186,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
 
     public void thridLogin(SHARE_MEDIA type) {
+        showSnackLoadingMessage(getString(R.string.loading_state));
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
 
@@ -201,7 +202,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onStart(SHARE_MEDIA platform) {
-            showSnackLoadingMessage(getString(R.string.loading_state));
 
         }
 
