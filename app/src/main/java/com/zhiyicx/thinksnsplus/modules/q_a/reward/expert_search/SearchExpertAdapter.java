@@ -82,6 +82,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
                 mPresenter.handleFollowUser(userInfoBean);
                 subscrib.setText(userInfoBean.getFollower() ? getContext().getString(R.string.qa_topic_followed) :
                         getContext().getString(R.string.qa_topic_follow));
+                subscrib.setPadding(userInfoBean.getFollower() ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
             });
         } else {
             subscrib.setVisibility(View.GONE);

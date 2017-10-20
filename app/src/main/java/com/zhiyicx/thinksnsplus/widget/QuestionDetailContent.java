@@ -30,6 +30,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -219,7 +220,7 @@ public class QuestionDetailContent extends FrameLayout {
 
             @Override
             public void onLinkTap(String s, String s1) {
-
+                CustomWEBActivity.startToWEBActivity(mContext, s1, s);
             }
 
             @Override

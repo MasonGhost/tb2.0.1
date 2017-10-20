@@ -5,6 +5,7 @@ import android.app.Application;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
@@ -158,6 +159,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        WindowUtils.hidePopupWindow();
         if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
             AppApplication.getPlaybackManager().handleStopRequest(null);
         }

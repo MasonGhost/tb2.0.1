@@ -64,15 +64,14 @@
         android:layout_height="@dimen/channel_subscrib_btn_height"
         android:layout_alignBottom="@+id/iv_headpic"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/spacing_normal"
         android:background="@drawable/shape_channel_list_subscrib_button"
         android:button="@null"
+        android:text="@string/followed"
         android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
         android:drawablePadding="@dimen/spacing_small_3dp"
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/selector_channel_list_subscrib_button_divider"
-        android:textSize="@dimen/size_content_comment"
-        tools:text="关注"/>
+        android:textSize="@dimen/size_content_comment"/>
 
 </RelativeLayout>

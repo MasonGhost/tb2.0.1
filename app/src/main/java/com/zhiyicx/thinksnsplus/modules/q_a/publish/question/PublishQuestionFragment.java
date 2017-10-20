@@ -236,7 +236,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    mPresenter.deleteQuestion(mDraftQuestion);
+//                    mPresenter.deleteQuestion(mDraftQuestion);
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
