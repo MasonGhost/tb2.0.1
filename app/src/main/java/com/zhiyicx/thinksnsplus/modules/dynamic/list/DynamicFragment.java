@@ -105,20 +105,31 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+    /**
+     * 仅用于构造
+     */
     @Inject
-    DynamicPresenter mDynamicPresenter;  // 仅用于构造
+    DynamicPresenter mDynamicPresenter;
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
-    // 每条动态都有三个点点了
+    /**
+     * 每条动态都有三个点点了
+     */
     private ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
-    //    private PayPopWindow mPayWordsPopWindow;
-    private int mCurrentPostion;// 当前评论的动态位置
-    private long mReplyToUserId;// 被评论者的 id
+    ///    private PayPopWindow mPayWordsPopWindow;
+    /**
+     * 当前评论的动态位置
+     */
+    private int mCurrentPostion;
+    /**
+     * 被评论者的 id
+     */
+    private long mReplyToUserId;
 
     private DynamicBannerHeader mDynamicBannerHeader;
     private List<RealAdvertListBean> mListAdvert;
