@@ -72,5 +72,6 @@
     <!--money-->
     <color name="money">#f76c69</color>
     <color name="money_gold">#ff9400</color>
+    <color name="money_gold_light">#fca308</color>
 
 </resources>

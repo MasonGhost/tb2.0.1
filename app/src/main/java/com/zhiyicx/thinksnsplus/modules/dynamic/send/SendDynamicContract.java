@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -46,7 +47,7 @@ public interface SendDynamicContract {
 
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         void sendGroupDynamic(GroupDynamicListBean dynamicBean);
         void sendDynamicV2(DynamicDetailBeanV2 dynamicBean);
     }

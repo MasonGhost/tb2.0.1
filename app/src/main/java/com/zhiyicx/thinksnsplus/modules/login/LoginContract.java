@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import android.content.Context;
-
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 
 import java.util.List;
 
@@ -45,6 +43,7 @@ public interface LoginContract {
          * @param access_token
          */
         void registerByThrid(String provider, String access_token);
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

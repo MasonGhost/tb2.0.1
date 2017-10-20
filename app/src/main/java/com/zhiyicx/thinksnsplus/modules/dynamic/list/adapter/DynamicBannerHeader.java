@@ -56,8 +56,9 @@ public class DynamicBannerHeader {
     }
 
     public void setHeadInfo(DynamicBannerHeaderInfo headInfo) {
-        if (headInfo == null || mBanner == null)
+        if (headInfo == null || mBanner == null) {
             return;
+        }
         mHeaderInfo = headInfo;
         mBanner.setDelayTime(headInfo.getDelay());
         mBanner.setImageLoader(new BannerImageLoaderUtil());

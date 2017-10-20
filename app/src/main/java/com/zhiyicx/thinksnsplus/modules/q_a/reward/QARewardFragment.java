@@ -104,6 +104,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.rl_invite_container)
     RelativeLayout mRlInviteContainer;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     // 悬赏相关
     private List<Float> mRewardLabels; // reward labels
     private double mRewardMoney; // money choosed for reward
@@ -184,6 +187,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 mRlInviteContainer.setVisibility(View.GONE);
             }
         }
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override

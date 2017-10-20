@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.ImageAdvert;
+
 import java.io.Serializable;
 
 public class AdvertFormat implements Serializable, Parcelable {

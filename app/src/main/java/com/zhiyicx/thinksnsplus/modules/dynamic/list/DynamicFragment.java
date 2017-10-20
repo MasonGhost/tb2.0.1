@@ -170,8 +170,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onStop() {
         super.onStop();
-        if (mDynamicBannerHeader != null)
+        if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.stopBanner();
+        }
     }
 
     @Override
@@ -243,6 +244,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             if (advert.getType().equals("html")) {
                 showStickyHtmlMessage((String) advert.getData());
             }
+        }
+
+        if (advertUrls.isEmpty()) {
+            return;
         }
 
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
@@ -871,7 +876,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

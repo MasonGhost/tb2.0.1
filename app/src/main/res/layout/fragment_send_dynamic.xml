@@ -110,6 +110,7 @@
                     tools:hint="输入金额"/>
 
                 <TextView
+                    android:id="@+id/tv_custom_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/yuan"

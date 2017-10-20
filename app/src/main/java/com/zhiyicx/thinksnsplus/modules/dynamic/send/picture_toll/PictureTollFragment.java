@@ -20,10 +20,17 @@ import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -43,6 +50,8 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.OLD
  * @Description
  */
 public class PictureTollFragment extends TSFragment {
+
+    public static final String MONEY_NAME = "MONEY_NAME";
     @BindView(R.id.tv_choose_tip_toll_ways)
     TextView mTvChooseTipTollWays;
     @BindView(R.id.rb_ways_one)
@@ -68,6 +77,12 @@ public class PictureTollFragment extends TSFragment {
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
+    @Inject
+    SystemRepository mSystemRepository;
+
     private ArrayList<Float> mSelectDays;
 
     private int mPayType;
@@ -82,15 +97,19 @@ public class PictureTollFragment extends TSFragment {
 
     private ActionPopupWindow mMoneyInstructionsPopupWindow;
 
+    private String mMoneyName;
+
     public static PictureTollFragment newInstance(Bundle bundle) {
         PictureTollFragment fragment = new PictureTollFragment();
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
     @Override
     protected boolean showToolBarDivider() {
         return true;
+
     }
 
     @Override
@@ -137,6 +156,14 @@ public class PictureTollFragment extends TSFragment {
         mSelectDays.add(5f);
         mSelectDays.add(10f);
         initSelectDays(mSelectDays);
+        DaggerPictureTollComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .build()
+                .inject(this);
+
+        mMoneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
+        mCustomMoney.setText(mMoneyName);
     }
 
     private void initSelectDays(List<Float> mSelectDays) {
@@ -294,7 +321,7 @@ public class PictureTollFragment extends TSFragment {
         }
         mMoneyInstructionsPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.transaction_description))
-                .desStr(getString(R.string.limit_monye))
+                .desStr(String.format(Locale.getDefault(),getString(R.string.limit_monye),mMoneyName))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
