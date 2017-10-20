@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 
@@ -16,7 +17,7 @@ public interface SelectDynamicTypeContract {
 
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBaseTouristPresenter{
         boolean checkCertification();
         boolean isNeedPayTip();
         void savePayTip(boolean isNeed);

@@ -67,6 +67,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     LoadingButton mBtRegistRegist;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
+    @BindView(R.id.tv_app_rule)
+    TextView mAppRule;
     @BindView(R.id.tv_look_around)
     TextView mTvLookAround;
     @BindView(R.id.ll_register_by_phone)

@@ -127,7 +127,7 @@ public class ReWardView extends FrameLayout {
      *
      * @param rewardsCountBean the total rewad data
      */
-    public void updateRewardsCount(RewardsCountBean rewardsCountBean) {
+    public void updateRewardsCount(RewardsCountBean rewardsCountBean,String moneyName) {
 
         if (rewardsCountBean == null) {
             return;
@@ -142,7 +142,7 @@ public class ReWardView extends FrameLayout {
             e.printStackTrace();
         }
 
-        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">");
+        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -202,10 +202,10 @@ public class ReWardView extends FrameLayout {
      * @param listData         user list for this rewad source
      * @param rewardsCountBean the total rewad data
      */
-    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean, RewardType rewardType) {
+    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean, RewardType rewardType,String moneyName) {
         updateSourceId(sourceId);
         updateRewardsUser(listData);
-        updateRewardsCount(rewardsCountBean);
+        updateRewardsCount(rewardsCountBean,moneyName);
         updateRewardType(rewardType);
     }
 

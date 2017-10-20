@@ -24,6 +24,15 @@ public class RewardsCountBean extends CacheBean implements Parcelable,Serializab
 
     private int count;
     private String amount;
+    private String moneyName;
+
+    public String getMoneyName() {
+        return moneyName;
+    }
+
+    public void setMoneyName(String moneyName) {
+        this.moneyName = moneyName;
+    }
 
     public int getCount() {
         return count;
@@ -50,9 +59,16 @@ public class RewardsCountBean extends CacheBean implements Parcelable,Serializab
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.count);
         dest.writeString(this.amount);
+        dest.writeString(this.moneyName);
     }
 
     public RewardsCountBean() {
+    }
+
+    public RewardsCountBean(int count, String amount,String moneyName) {
+        this.count = count;
+        this.amount = amount;
+        this.moneyName = moneyName;
     }
 
     public RewardsCountBean(int count, String amount) {
@@ -63,6 +79,7 @@ public class RewardsCountBean extends CacheBean implements Parcelable,Serializab
     protected RewardsCountBean(Parcel in) {
         this.count = in.readInt();
         this.amount = in.readString();
+        this.moneyName = in.readString();
     }
 
     public static final Parcelable.Creator<RewardsCountBean> CREATOR = new Parcelable.Creator<RewardsCountBean>() {

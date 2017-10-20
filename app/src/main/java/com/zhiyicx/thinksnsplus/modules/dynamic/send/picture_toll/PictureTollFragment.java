@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -96,6 +97,8 @@ public class PictureTollFragment extends TSFragment {
 
     private ActionPopupWindow mMoneyInstructionsPopupWindow;
 
+    private String mMoneyName;
+
     public static PictureTollFragment newInstance(Bundle bundle) {
         PictureTollFragment fragment = new PictureTollFragment();
         fragment.setArguments(bundle);
@@ -159,8 +162,8 @@ public class PictureTollFragment extends TSFragment {
                 .build()
                 .inject(this);
 
-        String moneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
-        mCustomMoney.setText(moneyName);
+        mMoneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
+        mCustomMoney.setText(mMoneyName);
     }
 
     private void initSelectDays(List<Float> mSelectDays) {
@@ -318,7 +321,7 @@ public class PictureTollFragment extends TSFragment {
         }
         mMoneyInstructionsPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.transaction_description))
-                .desStr(getString(R.string.limit_monye))
+                .desStr(String.format(Locale.getDefault(),getString(R.string.limit_monye),mMoneyName))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

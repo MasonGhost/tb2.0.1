@@ -102,7 +102,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
             mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean
-                    .getCase_min_amount())));
+                    .getCase_min_amount()),mPresenter.getGoldName()));
         }
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);

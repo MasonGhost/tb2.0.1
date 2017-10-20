@@ -145,7 +145,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());
     }
 
     @Override

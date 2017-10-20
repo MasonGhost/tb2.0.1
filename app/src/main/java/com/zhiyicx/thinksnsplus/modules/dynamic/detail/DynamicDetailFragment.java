@@ -453,8 +453,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void updateReward() {
-
-        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
+        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
+                RewardType.DYNAMIC, mPresenter.getGoldName());
     }
 
 

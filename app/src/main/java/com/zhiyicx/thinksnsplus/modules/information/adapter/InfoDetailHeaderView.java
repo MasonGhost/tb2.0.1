@@ -326,8 +326,8 @@ public class InfoDetailHeaderView {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType,String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType,moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
         });
     }
