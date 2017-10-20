@@ -162,7 +162,12 @@ public class PictureTollFragment extends TSFragment {
                 .build()
                 .inject(this);
 
-        mMoneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
+        try {
+            mMoneyName = mSystemRepository.getAppConfigInfoFromLocal().getSite().getGold_name().getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+            mMoneyName = getString(R.string.defualt_golde_name);
+        }
         mCustomMoney.setText(mMoneyName);
     }
 
