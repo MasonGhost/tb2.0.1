@@ -201,7 +201,7 @@
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
-    <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
+    <string name="dynamic_send_toll_select_money">%1$.2f</string>
     <string name="dynamic_send_toll_select_money_">%1$.2f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
     <string name="group_dynamic_send_must_has_title">请输入标题</string>
@@ -269,7 +269,7 @@
     <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
     <string name="dynamic_list_top_success">申请置顶成功</string>
     <string name="comment_top_success">申请评论置顶成功</string>
-    <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
@@ -289,12 +289,12 @@
     <string name="review_dynamic_deleted">该内容已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
     <string name="review_comment_deleted">该评论已被删除</string>
-    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
+    <string name="review_description">支付%1$.2f申请置顶评论“%2$s”</string>
     <string name="review_refuse">拒绝置顶</string>
     <string name="stick_dynamic_comment">置顶评论收费</string>
     <string name="dynamic_comment_top_success">置顶评论成功</string>
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>
-    <string name="stick_comment_desc">您只需¥%1$.2f%2$s就可以置顶评论，\n</string>
+    <string name="stick_comment_desc">您只需%1$.2f%2$s就可以置顶评论，\n</string>
     <string name="stick_type_dynamic_commnet">动态评论置顶</string>
     <string name="stick_type_dynamic_commnet_message">对你的动态“%1$s”进行了评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
@@ -495,11 +495,11 @@
     <string name="qa_topic_follow">关注</string>
     <string name="qa_topic_followed">已关注</string>
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
-    <string name="qa_show_question_followed">%1$d 关注  ·  ¥%2$.2f 悬赏</string>
+    <string name="qa_show_question_followed">%1$d 关注  ·  %2$.2f 悬赏</string>
     <string name="qa_show_question_followed_">%1$d 关注</string>
     <string name="qa_show_topic_followed_content">%1$d 关注  ·  %2$d 回答</string>
-    <string name="qa_show_topic_followed_reward">  ·  ¥%1$.2f 悬赏</string>
-    <string name="qa_show_topic_followed_reward_">¥%1$.2f 悬赏</string>
+    <string name="qa_show_topic_followed_reward">  ·  %1$.2f 悬赏</string>
+    <string name="qa_show_topic_followed_reward_">%1$.2f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
