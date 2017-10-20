@@ -23,7 +23,7 @@
     列表头像
     注：最新点赞人头像描边3px #ffffff,重叠区域宽度20px
     -->
-    <dimen name="headpic_for_assist">26dp</dimen>
+    <dimen name="headpic_for_assist">28dp</dimen>
     <!--
        使用场景：消息-> 通知，评论的点赞的等
     -->
