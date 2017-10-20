@@ -162,7 +162,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                         .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
-                        mAccountBean.setId(new Date().getTime());
+                        mAccountBean.setId(System.currentTimeMillis());
                         mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
                         mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
                     } else {// 拒绝权限，但是可以再次请求
@@ -419,6 +419,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             }
             mThridName = data.get("screen_name");
             mAccessToken = data.get("accessToken");
+            dismissSnackBar();
             mPresenter.checkBindOrLogin(providerQq, mAccessToken);
         }
 
