@@ -47,6 +47,8 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     EditText mEtLoginPhone;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
+    @BindView(R.id.tv_app_rule)
+    TextView mAppRule;
     @BindView(R.id.bt_login_login)
     LoadingButton mBtLoginLogin;
     @BindView(R.id.iv_check)

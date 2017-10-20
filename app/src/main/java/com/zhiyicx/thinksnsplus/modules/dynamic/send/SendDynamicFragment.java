@@ -105,6 +105,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.v_horizontal_line)
     View mTitleUnderLine;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     private List<ImageBean> selectedPhotos;// 已经选择的图片
     private CommonAdapter<ImageBean> mCommonAdapter;
 
@@ -210,6 +213,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mSelectMoney.add(5f);
         mSelectMoney.add(10f);
         initSelectMoney(mSelectMoney);
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override

@@ -61,6 +61,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @BindView(R.id.rb_days_group)
     RadioGroup mRbDaysGroup;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+    @BindView(R.id.tv_total_money)
+    TextView mTotalMoney;
+
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private int mInputMoney;
@@ -89,6 +94,9 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         mBlance = mPresenter.getBalance();
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mBlance));
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
+        mTotalMoney.setText(moneyName);
     }
 
     @Override

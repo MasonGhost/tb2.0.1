@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
@@ -25,7 +26,7 @@ public interface WithDrawalsConstract {
         double getMoney();
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBaseTouristPresenter{
         void withdraw(double value,String type,String account);
     }
 

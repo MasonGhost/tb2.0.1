@@ -72,6 +72,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
 
+    protected SystemConfigBean mSystemConfigBean;
+
     @Nullable
     @Override
 

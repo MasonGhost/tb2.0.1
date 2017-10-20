@@ -156,7 +156,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen,
-                mRewardsCountBean, RewardType.QA_ANSWER);
+                mRewardsCountBean, RewardType.QA_ANSWER,mPresenter.getGoldName());
     }
 
     @Override

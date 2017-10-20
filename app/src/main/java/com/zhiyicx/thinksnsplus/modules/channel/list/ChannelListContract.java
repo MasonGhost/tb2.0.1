@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 
 import java.util.List;

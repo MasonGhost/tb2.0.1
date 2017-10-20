@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -13,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.zhiyicx.common.utils.DeviceUtils;
+import com.google.gson.Gson;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -48,7 +47,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
         this.mParentView = builder.mParentView;
         this.mAlpha = builder.mAlpha;
         this.mCancel = builder.mCancel;
-        this.isOutsideTouch=builder.isOutsideTouch;
+        this.isOutsideTouch = builder.isOutsideTouch;
         this.mWidth = builder.mWidth;
         this.mHeight = builder.mHeight;
         this.mItem1Str = builder.mItem1Str;
@@ -73,10 +72,10 @@ public class ChooseBindPopupWindow extends PopupWindow {
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_choose_bind, null);
         TextView chooseToCompleteAccount = (TextView) mContentView.findViewById(R.id.choose_to_complete_account);
         TextView chooseToBindAccount = (TextView) mContentView.findViewById(R.id.choose_to_bind_account);
-        if (!TextUtils.isEmpty(mItem1Str)){
+        if (!TextUtils.isEmpty(mItem1Str)) {
             chooseToCompleteAccount.setText(mItem1Str);
         }
-        if (!TextUtils.isEmpty(mItem2Str)){
+        if (!TextUtils.isEmpty(mItem2Str)) {
             chooseToBindAccount.setText(mItem2Str);
         }
         chooseToCompleteAccount.setOnClickListener(v -> {
@@ -190,6 +189,10 @@ public class ChooseBindPopupWindow extends PopupWindow {
 
     public interface OnItemChooseListener {
         void onItemChose(int position);
+    }
+
+    public void canNotRegiterByThirdPlatform(boolean openThirdRegister) {
+        mContentView.findViewById(R.id.choose_to_complete_account).setVisibility(openThirdRegister ? View.VISIBLE : View.GONE);
     }
 
 }

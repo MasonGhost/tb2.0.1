@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 
 /**
  * @Author Jliuer

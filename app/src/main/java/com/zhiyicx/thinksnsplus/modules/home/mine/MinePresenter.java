@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
@@ -36,7 +37,7 @@ import javax.inject.Inject;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class MinePresenter extends BasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
+public class MinePresenter extends AppBasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject

@@ -234,8 +234,9 @@ public class DynamicDetailHeader {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
+                             RewardType rewardType,String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType,moneyName);
     }
 
     private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
@@ -344,8 +345,18 @@ public class DynamicDetailHeader {
         mOnImageClickLisenter = onImageClickLisenter;
     }
 
+    public void setReWardViewVisible(int visible) {
+        mReWardView.setVisibility(visible);
+    }
+
+    public ReWardView getReWardView() {
+        return mReWardView;
+    }
+
     public interface OnImageClickLisenter {
         void onImageClick(int iamgePosition, double amount, int note);
     }
+
+
 
 }

@@ -9,7 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 

@@ -71,6 +71,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
     private ActionPopupWindow mRechargeInstructionsPopupWindow;// recharge instruction pop
 
@@ -121,6 +124,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     protected void initData() {
         initRechargeLables();
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override

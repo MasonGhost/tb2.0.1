@@ -460,7 +460,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())
+                            ,mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
@@ -500,7 +501,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())
+                            ,mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))

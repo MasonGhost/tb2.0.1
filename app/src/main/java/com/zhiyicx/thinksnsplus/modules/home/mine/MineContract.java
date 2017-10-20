@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -36,7 +37,7 @@ public interface MineContract {
 
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         /**
          * 从数据库获取当前用户的信息
          */

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.umeng.socialize.UMAuthListener;
@@ -9,7 +10,9 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.third_platform.bind.BindOldAccountActivity;
 import com.zhiyicx.thinksnsplus.modules.third_platform.complete.CompleteAccountActivity;
@@ -39,13 +42,24 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void initView(View rootView) {
         rootView.postDelayed(this::initPopWindow, 500);
     }
 
     @Override
     protected void initData() {
+        boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings().getType() == null
+                || SystemConfig.REGITER_MODE_THIRDPART.equals(mSystemConfigBean.getRegisterSettings().getType())
+                || SystemConfig.REGITER_MODE_ALL.equals(mSystemConfigBean.getRegisterSettings().getType());
 
+        mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
     }
 
     @Override
@@ -131,7 +145,7 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.UIUtils;
@@ -45,7 +47,9 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.Li
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -117,6 +121,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
     private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
 
+    private SystemConfigBean.NewsConfig mPublishInfoConfig;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_infocontainer;
@@ -135,8 +141,11 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
         mUserCertificationInfo = userCertificationInfo;
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
         if (userCertificationInfo.getStatus() == 1) {
-            if (mPresenter.isNeedPayTip()) {
+            if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
+                    && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
                 mPresenter.savePayTip(false);
             } else {
@@ -321,7 +330,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(getString(R.string.info_publish_hint_pay))
+                    .desStr(String.format(Locale.getDefault(),getString(R.string.info_publish_hint_pay),mPresenter.getGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)

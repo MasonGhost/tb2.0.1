@@ -2,17 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.AdvertConfig;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RealAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -94,6 +92,9 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                                     }
                                 }
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
+                                if (realAdvertListBeen.isEmpty()) {
+                                    mRealAdvertListBeanGreenDao.clearTable();
+                                }
                                 return Observable.just(allAdverListBeen);
                             }
                         });
@@ -108,6 +109,9 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                     protected void onSuccess(List<AllAdverListBean> data) {
                         // 出入数据库
                         mAllAdvertLIstBeanGreendo.saveMultiData(data);
+                        if (data.isEmpty()) {
+                            mAllAdvertLIstBeanGreendo.clearTable();
+                        }
                     }
                 });
     }

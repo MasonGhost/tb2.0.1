@@ -20,10 +20,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.ImageAdvert;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -35,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ISystemRepository;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,6 +98,12 @@ public class SystemRepository implements ISystemRepository {
                 });
     }
 
+    public Observable<SystemConfigBean> getBootstrappersInfo() {
+        return mCommonClient.getBootstrappersInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     /**
      * 去获取本地启动信息
@@ -114,7 +119,7 @@ public class SystemRepository implements ISystemRepository {
         }
         if (systemConfigBean.getAdverts() == null)
             return systemConfigBean;
-        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
+        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {// 预先加载广告图片
             if (advert.getData() instanceof LinkedHashMap) {
                 LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
                 ImageAdvert imageAdvert = new ImageAdvert();
@@ -132,6 +137,15 @@ public class SystemRepository implements ISystemRepository {
                 }
                 advert.setImageAdvert(imageAdvert);
             }
+        }
+        return systemConfigBean;
+    }
+
+    public SystemConfigBean getAppConfigInfoFromLocal() {
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        if (systemConfigBean == null) { // 读取本地默认配置
+            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
         return systemConfigBean;
     }
@@ -229,7 +243,7 @@ public class SystemRepository implements ISystemRepository {
      * @param systemConfigBean
      * @return
      */
-    private boolean saveComponentStatus(SystemConfigBean systemConfigBean, Context context) {
+    public boolean saveComponentStatus(SystemConfigBean systemConfigBean, Context context) {
         if (systemConfigBean == null || systemConfigBean.getIm_helper() == null) {
             return false;
         }

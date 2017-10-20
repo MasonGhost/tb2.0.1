@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
@@ -23,7 +24,8 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -35,7 +37,6 @@ import butterknife.OnClick;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
-import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM;
 
 /**
  * @Describe
@@ -66,13 +67,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     LoadingButton mBtRegistRegist;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
+    @BindView(R.id.tv_app_rule)
+    TextView mAppRule;
     @BindView(R.id.tv_look_around)
     TextView mTvLookAround;
     @BindView(R.id.ll_register_by_phone)
     LinearLayout mLlRegisterByPhone;
     @BindView(R.id.ll_register_by_email)
     LinearLayout mLlRegisterByEmail;
-
 
     private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
@@ -124,16 +126,37 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         if (getArguments() != null) {
             mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
         }
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     protected void initView(View rootView) {
+        boolean isAccountAllType = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings() != null
+                && SystemConfig.REGITER_ACCOUNTTYPE_ALL.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+        boolean isOnlyMobile = mSystemConfigBean.getRegisterSettings() != null
+                && SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+        boolean isOnlyEmail = mSystemConfigBean.getRegisterSettings() != null
+                && SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+
+        if (isOnlyMobile) {
+            mCurrentRegisterType = REGISTER_PHONE;
+        } else {
+            mCurrentRegisterType = REGISTER_EMAIL;
+        }
+        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.email_address) : getString(R.string.phone_hint));
+        setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.register_by_phone) : getString(R.string.register_by_email));
+
         setRegisterType();
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
         // 游客判断
 //        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
+        mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
     }
 
     private void initListener() {
@@ -205,6 +228,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    if (mPresenter.getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())) {
+                        showMessage("不能使用站点预留邮箱");
+                        return;
+                    }
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
                     } else {
@@ -217,6 +244,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
                 .subscribe(permission -> {
+                    if (mPresenter.getSystemConfigBean().getSite().getReserved_nickname().contains(mEtRegistPhone.getText().toString().trim())) {
+                        showMessage("不能使用站点预留昵称");
+                        return;
+                    }
                     if (permission.granted) {// 获取到了权限
                         // 手机号注册
                         if (mCurrentRegisterType == REGISTER_PHONE) {
@@ -287,7 +318,13 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void goHome() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
-        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
+        boolean needCompleteUserInfo = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings().isCompleteData();
+        if (needCompleteUserInfo) {
+            EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
+        } else {
+            startActivity(new Intent(getActivity(), HomeActivity.class));
+        }
         getActivity().finish();
     }
 

@@ -5,11 +5,13 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import javax.inject.Inject;
@@ -34,6 +36,8 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    protected SystemRepository mSystemRepository;
 
     public AppBasePresenter(R repository, V rootView) {
         super(repository, rootView);
@@ -86,5 +90,20 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
         } else {
             return false;
         }
+    }
+
+    @Override
+    public SystemConfigBean getSystemConfigBean() {
+        return mSystemRepository.getAppConfigInfoFromLocal();
+    }
+
+    @Override
+    public String getGoldName() {
+        return getSystemConfigBean().getSite().getGold_name().getName();
+    }
+
+    @Override
+    public String getGoldUnit() {
+        return getSystemConfigBean().getSite().getGold_name().getUnit();
     }
 }

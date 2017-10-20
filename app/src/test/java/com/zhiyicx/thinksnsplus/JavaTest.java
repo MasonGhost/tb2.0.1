@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,13 +12,11 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
-import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.junit.Assert;
@@ -40,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -103,6 +99,14 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testArrays() {
+        String[] test=new String[2];
+        test[0]="aa";
+        test[1]="bb";
+       System.out.print(java.util.Arrays.toString(test).contains("aa"));
     }
 
     @Test

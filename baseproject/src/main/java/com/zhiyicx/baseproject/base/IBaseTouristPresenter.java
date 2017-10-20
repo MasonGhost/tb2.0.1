@@ -29,4 +29,10 @@ public interface IBaseTouristPresenter extends IBasePresenter {
      * @return
      */
     boolean handleTouristControl();
+
+    SystemConfigBean getSystemConfigBean();
+
+    String getGoldName();
+
+    String getGoldUnit();
 }

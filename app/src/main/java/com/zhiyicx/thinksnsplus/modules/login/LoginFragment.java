@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -14,13 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -108,11 +105,15 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         if (getArguments() != null) {
             mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
         }
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initView(View rootView) {
+        boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings() != null && mSystemConfigBean.getRegisterSettings().hasOpen();
+        mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
         // 游客判断
@@ -161,7 +162,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                         .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
-                        mAccountBean.setId(new Date().getTime());
+                        mAccountBean.setId(System.currentTimeMillis());
                         mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
                         mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
                     } else {// 拒绝权限，但是可以再次请求
@@ -418,6 +419,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             }
             mThridName = data.get("screen_name");
             mAccessToken = data.get("accessToken");
+            dismissSnackBar();
             mPresenter.checkBindOrLogin(providerQq, mAccessToken);
         }
 

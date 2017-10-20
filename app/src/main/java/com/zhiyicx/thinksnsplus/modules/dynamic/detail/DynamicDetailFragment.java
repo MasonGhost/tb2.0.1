@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -173,6 +175,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         initToolbar();
         //initToolbarTopBlankHeight();
         initBottomToolUI();
@@ -233,6 +236,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mDynamicDetailHeader.setReWardViewVisible(mSystemConfigBean.getSite().getReward().hasStatus()
+                && mSystemConfigBean.getFeed().hasReward() ? VISIBLE : GONE);
     }
 
     @Override
@@ -448,8 +453,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void updateReward() {
-
-        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
+        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
+                RewardType.DYNAMIC, mPresenter.getGoldName());
     }
 
 
@@ -605,7 +610,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC,getCurrentDynamic().getId(), comment_id);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), comment_id);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -705,7 +710,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

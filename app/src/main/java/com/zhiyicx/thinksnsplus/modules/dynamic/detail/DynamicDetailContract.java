@@ -5,20 +5,15 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao
