@@ -189,7 +189,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (isFinish) {
             return;
         }
-//        mGuideBanner.stopAutoPlay();
+///        mGuideBanner.stopAutoPlay();
         CustomWEBActivity.startToWEBActivity(getActivity(), mBootAdverts.get(position)
                         .getAdvertFormat().getImage().getLink(),
                 mBootAdverts.get(position).getTitle(), ADVERT);

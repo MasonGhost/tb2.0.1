@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.content.Intent;
+
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
@@ -53,6 +55,8 @@ public interface HomeContract {
          * @return
          */
         CheckInBean getCheckInData();
+
+
     }
 
     /**

@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
@@ -203,7 +204,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 获取对话列表
      */
     private void getCoversationList() {
-        mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
+        Subscription subscribe = mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
                     @Override
@@ -222,6 +223,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     /**
@@ -281,7 +283,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void refreshConversationReadMessage() {
         Subscription represhSu = Observable.just("")
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(s -> {
                     int size = mRootView.getListDatas().size();
                     for (int i = 0; i < size; i++) {
@@ -297,6 +299,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     return mRootView.getListDatas();
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                     mRootView.refreshData();
                     checkBottomMessageTip();
@@ -346,7 +349,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void getSingleConversation(int cid) {
-        mRepository.getSingleConversation(cid)
+        Subscription subscribe = mRepository.getSingleConversation(cid)
                 .subscribe(new BaseSubscribeForV2<MessageItemBean>() {
                     @Override
                     protected void onSuccess(MessageItemBean data) {
@@ -364,16 +367,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mRootView.refreshData();
                     }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -452,7 +447,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         int size = mRootView.getListDatas().size();
-        boolean isHasConversion = false; // 对话是否存在
+        // 对话是否存在
+        boolean isHasConversion = false;
         for (int i = 0; i < size; i++) {
             if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
                 mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
@@ -465,7 +461,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 break;
             }
         }
-        if (!isHasConversion) { // 不存在本地对话，直接服务器获取
+        // 不存在本地对话，直接服务器获取
+        if (!isHasConversion) {
             getSingleConversation(message.getCid());
         }
     }
@@ -587,119 +584,123 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void handleFlushMessage() {
-        Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
-        if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
-            last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
+        Long lastRequestTime = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
+        if (lastRequestTime != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
+            lastRequestTime++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
-        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM :
+        Subscription subscribe = mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ?
+                DEFAULT_MAX_REQUEST_UNREAD_NUM :
                 mUnreadNotificationTotalNums, 0)
-                .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
+                .observeOn(Schedulers.io())
+                .map(data -> {
+                    if (data.isEmpty()) {
+
+                        return false;
+                    }
+                    mCommentsNoti.clear();
+                    mDiggNoti.clear();
+                    mReviewNoti.clear();
+                    for (TSPNotificationBean tspNotificationBean : data) {
+                        switch (tspNotificationBean.getData().getChannel()) {
+                            // 所有评论
+                            case NOTIFICATION_KEY_FEED_COMMENTS:
+                            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+                            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+                            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+                            case NOTIFICATION_KEY_NEWS_COMMENT:
+                            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+                            case NOTIFICATION_KEY_QUESTION_COMMENT:
+                            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+                            case NOTIFICATION_KEY_ANSWER_COMMENT:
+                            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
+                                mCommentsNoti.add(tspNotificationBean);
+                                break;
+                            // 所有点赞
+                            case NOTIFICATION_KEY_FEED_DIGGS:
+                                mDiggNoti.add(tspNotificationBean);
+                                break;
+                            // 所有审核
+                            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                            case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
+                                mReviewNoti.add(tspNotificationBean);
+                                break;
+                            default:
+                                if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
+                                    mNotificaitonRedDotIsShow = true;
+                                    mNoti.add(tspNotificationBean);
+                                }
+
+                        }
+                    }
+                    /**
+                     * 设置未读数
+                     */
+                    mItemBeanComment.setUnReadMessageNums(getUnreadNums(mCommentsNoti));
+                    mItemBeanDigg.setUnReadMessageNums(getUnreadNums(mDiggNoti));
+                    mItemBeanReview.setUnReadMessageNums(getUnreadNums(mReviewNoti));
+
+                    /**
+                     * 设置时间
+                     */
+                    mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                            .utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
+                    mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                            .utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
+                    mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
+                            .utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
+
+                    /**
+                     * 设置提示内容
+                     * mContext.getString(R.string.has_no_body)
+                     + mContext.getString(R.string.comment_me)
+                     */
+                    String commentTip = getItemTipStr(mCommentsNoti, MAX_USER_NUMS_COMMENT);
+                    if (!TextUtils.isEmpty(commentTip)) {
+                        commentTip += mContext.getString(R.string.comment_me);
+                    } else {
+                        commentTip = mContext.getString(R.string.has_no_body)
+                                + mContext.getString(R.string.comment_me);
+                    }
+                    mItemBeanComment.getConversation().getLast_message().setTxt(
+                            commentTip);
+
+                    String diggTip = getItemTipStr(mDiggNoti, MAX_USER_NUMS_DIGG);
+                    if (!TextUtils.isEmpty(diggTip)) {
+                        diggTip += mContext.getString(R.string.like_me);
+                    } else {
+                        diggTip = mContext.getString(R.string.has_no_body)
+                                + mContext.getString(R.string.like_me);
+                    }
+                    mItemBeanDigg.getConversation().getLast_message().setTxt(
+                            diggTip);
+
+                    String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
+                    if (getUnreadNums(mReviewNoti) > 0) {
+                        reviewTip = mContext.getString(R.string.new_apply_data);
+                    } else {
+                        reviewTip = mContext.getString(R.string.no_apply_data);
+                        mItemBeanReview.getConversation().setLast_message_time(0);
+
+                    }
+                    mItemBeanReview.getConversation().getLast_message().setTxt(
+                            reviewTip);
+
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(List<TSPNotificationBean> data) {
-                        if (data.isEmpty()) {
-                            return;
+                    protected void onSuccess(Boolean result) {
+                        if (result) {
+                            mRootView.updateLikeItemData(mItemBeanDigg);
+                            // 更新我的消息提示
+                            EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                            checkBottomMessageTip();
                         }
-                        mCommentsNoti.clear();
-                        mDiggNoti.clear();
-                        mReviewNoti.clear();
-                        for (TSPNotificationBean tspNotificationBean : data) {
-                            switch (tspNotificationBean.getData().getChannel()) {
-                                // 所有评论
-                                case NOTIFICATION_KEY_FEED_COMMENTS:
-                                case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_NEWS_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_QUESTION_COMMENT:
-                                case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_ANSWER_COMMENT:
-                                case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
-                                    mCommentsNoti.add(tspNotificationBean);
-                                    break;
-                                // 所有点赞
-                                case NOTIFICATION_KEY_FEED_DIGGS:
-                                    mDiggNoti.add(tspNotificationBean);
-                                    break;
-                                // 所有审核
-                                case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
-                                    mReviewNoti.add(tspNotificationBean);
-                                    break;
-                                default:
-                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                                        mNotificaitonRedDotIsShow = true;
-                                        mNoti.add(tspNotificationBean);
-                                    }
-
-                            }
-                        }
-                        /**
-                         * 设置未读数
-                         */
-                        mItemBeanComment.setUnReadMessageNums(getUnreadNums(mCommentsNoti));
-                        mItemBeanDigg.setUnReadMessageNums(getUnreadNums(mDiggNoti));
-                        mItemBeanReview.setUnReadMessageNums(getUnreadNums(mReviewNoti));
-
-                        /**
-                         * 设置时间
-                         */
-                        mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
-                        mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
-                        mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
-
-                        /**
-                         * 设置提示内容
-                         * mContext.getString(R.string.has_no_body)
-                         + mContext.getString(R.string.comment_me)
-                         */
-                        String commentTip = getItemTipStr(mCommentsNoti, MAX_USER_NUMS_COMMENT);
-                        if (!TextUtils.isEmpty(commentTip)) {
-                            commentTip += mContext.getString(R.string.comment_me);
-                        } else {
-                            commentTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.comment_me);
-                        }
-                        mItemBeanComment.getConversation().getLast_message().setTxt(
-                                commentTip);
-
-                        String diggTip = getItemTipStr(mDiggNoti, MAX_USER_NUMS_DIGG);
-                        if (!TextUtils.isEmpty(diggTip)) {
-                            diggTip += mContext.getString(R.string.like_me);
-                        } else {
-                            diggTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.like_me);
-                        }
-                        mItemBeanDigg.getConversation().getLast_message().setTxt(
-                                diggTip);
-
-                        String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
-///                        if (!TextUtils.isEmpty(reviewTip)) {
-//                            reviewTip += mContext.getString(R.string.recieved_review);
-//                        } else {
-//                            reviewTip = mContext.getString(R.string.has_no_body)
-//                                    + mContext.getString(R.string.recieved_review);
-//                        }
-                        if (getUnreadNums(mReviewNoti) > 0) {
-                            reviewTip = mContext.getString(R.string.new_apply_data);
-                        } else {
-                            reviewTip = mContext.getString(R.string.no_apply_data);
-                            mItemBeanReview.getConversation().setLast_message_time(0);
-
-                        }
-                        mItemBeanReview.getConversation().getLast_message().setTxt(
-                                reviewTip);
-
-                        mRootView.updateLikeItemData(mItemBeanDigg);
-                        // 更新我的消息提示
-                        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
-                        checkBottomMessageTip();
                     }
                 });
+        addSubscrebe(subscribe);
         mUnreadNotificationTotalNums = 0;
     }
 

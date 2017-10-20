@@ -349,7 +349,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
-    public void updateData(long tag) {
+    public void updateData(Long tag) {
         requestNetData(tag, false);
     }
 
