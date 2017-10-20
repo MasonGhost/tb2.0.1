@@ -33,6 +33,8 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     @Inject
     ChannelListPresenter mChannelListPresenter;
 
+    private int isFirst;// 记录请求次数，判断是不是第一次进入界面
+
     private int pageType = 0;// 上一个Fragment传递过来的页面类型
 
     @Override
@@ -46,7 +48,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         return true;
     }
 
-    public boolean handleTouristControl(){
+    public boolean handleTouristControl() {
         return mPresenter.handleTouristControl();
     }
 
@@ -61,8 +63,9 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     private void initAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
+        }
 
         ChannelAdvertHeader advertHeader = new ChannelAdvertHeader(getActivity(), mPresenter.getAdvert());
         mHeaderAndFooterWrapper.addHeaderView(advertHeader.getRootView());
@@ -77,18 +80,19 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
-    public void onNetResponseSuccess( List<GroupInfoBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(List<GroupInfoBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
         closeLoadingView();
-        if (mListDatas.isEmpty()) {
+        if (mListDatas.isEmpty() && isFirst == 0) {
             // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
-//            if (data==null||data.isEmpty()) {
-//                ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
-//                if (channelListViewPagerFragment != null) {
-//                    channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
-//                }
-//            }
+            if (data == null || data.isEmpty()) {
+                ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
+                if (channelListViewPagerFragment != null) {
+                    channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
+                }
+            }
         }
+        isFirst = 1;
     }
 
     @Override
@@ -192,7 +196,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         // 如果是自己关注的列表 则去掉该项
         boolean hasItem = false;
         for (int i = 0; i < mListDatas.size(); i++) {
-            if (mListDatas.get(i).getId() == groupInfoBean.getId()){
+            if (mListDatas.get(i).getId() == groupInfoBean.getId()) {
                 if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
                         && groupInfoBean.getIs_member() == 0) {
                     // 如果是自己关注的列表 则去掉该项
