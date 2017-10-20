@@ -14,7 +14,7 @@ public interface IBaseTouristPresenter extends IBasePresenter {
      * 是否是游客
      * @return
      */
-    boolean istourist();
+    boolean isTourist();
 
     /**
      * 判断是否登录

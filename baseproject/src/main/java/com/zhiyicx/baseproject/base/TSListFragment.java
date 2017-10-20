@@ -572,7 +572,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void onRefresh() {
-        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.istourist() && !mListDatas.isEmpty()) { // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
+        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) { // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
             hideLoading();
             showLoginPop();
             return;
@@ -621,7 +621,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             handleReceiveData(data, isLoadMore, true);
             // 如果需要刷新数据，就进行刷新，因为数据库一般都会比服务器先加载完数据，
             // 这样就能实现，数据库先加载到界面，随后刷新服务器数据的效果
-            if ((!mPresenter.istourist() || mListDatas.isEmpty()) && isNeedRefreshDataWhenComeIn()) {
+            if ((!mPresenter.isTourist() || mListDatas.isEmpty()) && isNeedRefreshDataWhenComeIn()) {
                 getNewDataFromNet();// 如果不是游客 >> 进入界面刷新， 如果是游客 >> 数据为空刷新
             }
         }

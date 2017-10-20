@@ -61,7 +61,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         Observable<List<GroupInfoBean>> observable = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
-                if (istourist()) {
+                if (isTourist()) {
                     mRootView.gotoAllChannel();
                     // 如果没有登陆，那么直接显示没有数据
                     mRootView.onNetResponseSuccess(null, isLoadMore);

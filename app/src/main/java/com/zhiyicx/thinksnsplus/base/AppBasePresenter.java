@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -26,7 +27,7 @@ import rx.functions.Func1;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePresenter<R, V> implements IBaseTouristPresenter {
+public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePresenter<RP, V> implements IBaseTouristPresenter {
     private static final String DEFAULT_WALLET_EXCEPTION_MESSAGE = "balance_check";
     @Inject
     protected AuthRepository mAuthRepository;
@@ -39,11 +40,12 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
     @Inject
     protected SystemRepository mSystemRepository;
 
-    public AppBasePresenter(R repository, V rootView) {
+    public AppBasePresenter(RP repository, V rootView) {
         super(repository, rootView);
     }
 
-    public boolean istourist() {
+    @Override
+    public boolean isTourist() {
         return mAuthRepository.isTourist();
     }
 
@@ -74,7 +76,7 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
                                 mRootView.goRecharge(WalletActivity.class);
                                 return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                             }
-                        }else{
+                        } else {
                             mRootView.goRecharge(WalletActivity.class);
                             return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
@@ -99,11 +101,21 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
 
     @Override
     public String getGoldName() {
-        return getSystemConfigBean().getSite().getGold_name().getName();
+        try {
+            return getSystemConfigBean().getSite().getGold_name().getName();
+
+        } catch (Exception e) {
+            return mContext.getResources().getString(R.string.defualt_golde_name);
+        }
     }
 
     @Override
     public String getGoldUnit() {
-        return getSystemConfigBean().getSite().getGold_name().getUnit();
+        try {
+            return getSystemConfigBean().getSite().getGold_name().getName();
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 }

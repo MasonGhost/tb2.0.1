@@ -46,7 +46,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public boolean istourist() {
+    public boolean isTourist() {
         return false;
     }
 

@@ -17,7 +17,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -34,7 +33,6 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -117,8 +115,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
         // 游客判断
-        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
-        if (mIsToourist || !mPresenter.istourist()) {
+        mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
+        if (mIsToourist || !mPresenter.isTourist()) {
             setLeftTextColor(R.color.themeColor);
         }
         mRxPermissions.setLogging(true); //是否需要日志

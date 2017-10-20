@@ -155,7 +155,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
         // 游客判断
-//        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
+//        mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
         mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
     }
 

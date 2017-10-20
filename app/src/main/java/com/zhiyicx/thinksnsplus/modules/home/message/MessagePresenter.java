@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
@@ -166,13 +167,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 continue;
             }
             final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr));
+            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
         }
         if (datas.isEmpty()) {
             getCoversationList();
         } else {
             Observable.zip(datas, (FuncN<Object>) args -> {
-                for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
+                // 为 ts 助手添加提示语
+                for (int i = 0; i < args.length; i++) {
                     Conversation data = ((Conversation) args[i]);
                     // 写入 ts helper 默认提示语句
                     long currentTime = System.currentTimeMillis();
@@ -201,7 +203,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     /**
-     * 获取对话列表
+     * 获取我的对话列表
      */
     private void getCoversationList() {
         Subscription subscribe = mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
@@ -350,21 +352,29 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Override
     public void getSingleConversation(int cid) {
         Subscription subscribe = mRepository.getSingleConversation(cid)
-                .subscribe(new BaseSubscribeForV2<MessageItemBean>() {
+                .observeOn(Schedulers.io())
+                .map(data -> {
+                    int size = mRootView.getListDatas().size();
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
+                            return false;
+                        }
+                    }
+                    if (mRootView.getListDatas().size() == 0) {
+                        mRootView.getListDatas().add(data);
+                    } else {
+                        // 置顶新消息
+                        mRootView.getListDatas().add(0, data);
+                    }
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(MessageItemBean data) {
-                        int size = mRootView.getListDatas().size();
-                        for (int i = 0; i < size; i++) {
-                            if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
-                                return;
-                            }
+                    protected void onSuccess(Boolean data) {
+                        if (data) {
+                            mRootView.refreshData();
                         }
-                        if (mRootView.getListDatas().size() == 0) {
-                            mRootView.getListDatas().add(data);
-                        } else {
-                            mRootView.getListDatas().add(0, data);// 置顶新消息
-                        }
-                        mRootView.refreshData();
                     }
 
                 });
@@ -372,46 +382,59 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     @Override
-    public void readMessageByKey(String key) {
-        String notificationIds = "";
-        switch (key) {
-            // 所有评论
-            case NOTIFICATION_KEY_FEED_COMMENTS:
-            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
-            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
-            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
-            case NOTIFICATION_KEY_NEWS_COMMENT:
-            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
-            case NOTIFICATION_KEY_QUESTION_COMMENT:
-            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
-            case NOTIFICATION_KEY_ANSWER_COMMENT:
-            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
-                notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
-                break;
-            // 所有点赞
-            case NOTIFICATION_KEY_FEED_DIGGS:
-                notificationIds = getNotificationIds(mDiggNoti, notificationIds);
-                break;
-            // 所有审核
-            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                notificationIds = getNotificationIds(mReviewNoti, notificationIds);
-                break;
-            default:
-        }
-
-        mRepository.makeNotificationReaded(notificationIds)
-                .subscribe(new BaseSubscribeForV2<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
+    public void readMessageByKey(String keyStr) {
+        Observable.just(keyStr)
+                .observeOn(Schedulers.io())
+                .subscribe(key -> {
+                    String notificationIds = "";
+                    switch (key) {
+                        // 所有评论
+                        case NOTIFICATION_KEY_FEED_COMMENTS:
+                        case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+                        case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+                        case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+                        case NOTIFICATION_KEY_NEWS_COMMENT:
+                        case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+                        case NOTIFICATION_KEY_QUESTION_COMMENT:
+                        case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+                        case NOTIFICATION_KEY_ANSWER_COMMENT:
+                        case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
+                            notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
+                            break;
+                        // 所有点赞
+                        case NOTIFICATION_KEY_FEED_DIGGS:
+                            notificationIds = getNotificationIds(mDiggNoti, notificationIds);
+                            break;
+                        // 所有审核
+                        case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                        case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                            notificationIds = getNotificationIds(mReviewNoti, notificationIds);
+                            break;
+                        default:
                     }
-                });
+
+                    mRepository.makeNotificationReaded(notificationIds)
+                            .subscribe(new BaseSubscribeForV2<Object>() {
+                                @Override
+                                protected void onSuccess(Object data) {
+                                    LogUtils.d("makeNotificationReaded::" + "onSuccess");
+                                }
+                            });
+                }, Throwable::printStackTrace);
+
     }
 
+    /**
+     * 检查未读通知的 Id
+     *
+     * @param datas
+     * @param notificationIds
+     * @return
+     */
     private String getNotificationIds(List<TSPNotificationBean> datas, String notificationIds) {
         for (TSPNotificationBean tspNotificationBean : datas) {
-            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) { //代表未读
+            //代表未读
+            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
                 notificationIds += tspNotificationBean.getId() + ",";
             }
         }
@@ -442,29 +465,40 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     /**
      * 收到聊天消息
      *
-     * @param message 聊天类容
+     * @param messageData 聊天类容
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
-    private void onMessageReceived(Message message) {
-        int size = mRootView.getListDatas().size();
-        // 对话是否存在
-        boolean isHasConversion = false;
-        for (int i = 0; i < size; i++) {
-            if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
-                mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
-                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i)); // 加到第一个
-                mRootView.getListDatas().remove(i + 1);
-                mRootView.refreshData(); // 加上 header 的位置
-                isHasConversion = true;
-                break;
-            }
-        }
-        // 不存在本地对话，直接服务器获取
-        if (!isHasConversion) {
-            getSingleConversation(message.getCid());
-        }
+    private void onMessageReceived(Message messageData) {
+        Subscription subscribe = Observable.just(messageData)
+                .map(message -> {
+                    int size = mRootView.getListDatas().size();
+                    // 对话是否存在
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
+                            mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                            // 加到第一个
+                            mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
+                            // 加上 header 的位置
+                            mRootView.getListDatas().remove(i + 1);
+                            return 0;
+                        }
+                    }
+                    // 不存在本地对话，直接服务器获取
+                    return message.cid;
+                })
+                .subscribe(cid -> {
+                    if (cid == 0) {
+                        mRootView.refreshData();
+                    } else {
+                        getSingleConversation(cid);
+                    }
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
+
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -795,33 +829,43 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 检测底部小红点是否需要显示
      */
     private void checkBottomMessageTip() {
-        // 是否显示底部红点
-        boolean isShowMessgeTip;
-        if (mItemBeanDigg != null && mItemBeanComment != null
-                && mItemBeanDigg.getUnReadMessageNums() == 0
-                && mItemBeanComment.getUnReadMessageNums() == 0) {
-            isShowMessgeTip = false;
-        } else {
-            isShowMessgeTip = true;
-        }
-        if (!isShowMessgeTip) {
-            for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-                if (messageItemBean.getUnReadMessageNums() > 0) {
-                    isShowMessgeTip = true;
-                    break;
-                } else {
-                    isShowMessgeTip = false;
-                }
-            }
-        }
-        boolean messageRedDotIsShow = isShowMessgeTip;
-        Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
-        if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
-            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(messageRedDotIsShow, 0);
-            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
-        }
-        boolean messageContainerRedDotIsShow = messageRedDotIsShow || mNotificaitonRedDotIsShow;
-        EventBus.getDefault().post(messageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+        Subscription subscribe = Observable.just(true)
+                .observeOn(Schedulers.io())
+                .map(aBoolean -> {
+                    // 是否显示底部红点
+                    boolean isShowMessgeTip;
+                    if (mItemBeanDigg != null && mItemBeanComment != null
+                            && mItemBeanDigg.getUnReadMessageNums() == 0
+                            && mItemBeanComment.getUnReadMessageNums() == 0) {
+                        isShowMessgeTip = false;
+                    } else {
+                        isShowMessgeTip = true;
+                    }
+                    if (!isShowMessgeTip) {
+                        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
+                            if (messageItemBean.getUnReadMessageNums() > 0) {
+                                isShowMessgeTip = true;
+                                break;
+                            } else {
+                                isShowMessgeTip = false;
+                            }
+                        }
+                    }
+                    return isShowMessgeTip;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isShowMessgeTip -> {
+                    Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
+                    if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
+                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(isShowMessgeTip, 0);
+                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
+                    }
+                    boolean messageContainerRedDotIsShow = isShowMessgeTip || mNotificaitonRedDotIsShow;
+                    EventBus.getDefault().post(messageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
 
     }
 

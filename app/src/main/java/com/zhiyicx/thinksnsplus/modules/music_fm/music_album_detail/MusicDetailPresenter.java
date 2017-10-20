@@ -208,7 +208,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Override
     public void onSuccess(Share share) {
-        if (!istourist()) {
+        if (!isTourist()) {
             mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
         }
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));

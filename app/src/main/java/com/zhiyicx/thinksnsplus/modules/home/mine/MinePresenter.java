@@ -80,7 +80,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
                 WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
                 if (walletBean != null) {
                     int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-//                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
+///                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
                     userInfoBean.setWallet(walletBean);
                 }
                 mRootView.setUserInfo(userInfoBean);

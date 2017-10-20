@@ -112,14 +112,22 @@ public class SystemRepository implements ISystemRepository {
      */
     @Override
     public SystemConfigBean getBootstrappersInfoFromLocal() {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
-        if (systemConfigBean.getAdverts() == null)
+        if (systemConfigBean.getAdverts() == null) {
             return systemConfigBean;
-        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {// 预先加载广告图片
+        }
+        // 预先加载广告图片
+        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
             if (advert.getData() instanceof LinkedHashMap) {
                 LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
                 ImageAdvert imageAdvert = new ImageAdvert();
@@ -142,8 +150,12 @@ public class SystemRepository implements ISystemRepository {
     }
 
     public SystemConfigBean getAppConfigInfoFromLocal() {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -173,8 +185,13 @@ public class SystemRepository implements ISystemRepository {
      */
     public static String checkHelperUrl(Context context, long user_id) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = null;
+        try {
+
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -198,9 +215,14 @@ public class SystemRepository implements ISystemRepository {
      */
     public static void resetTSHelper(Context context) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         } else {
             if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
@@ -220,9 +242,14 @@ public class SystemRepository implements ISystemRepository {
      * @param user_id user_id
      */
     public static void updateTsHelperDeletStatus(Context context, long user_id, boolean isDelete) {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
         if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
@@ -247,8 +274,13 @@ public class SystemRepository implements ISystemRepository {
         if (systemConfigBean == null || systemConfigBean.getIm_helper() == null) {
             return false;
         }
-        SystemConfigBean localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean localSystemConfigBean = null;
+        try {
+            localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception igonre) {
+        }
+
         if (localSystemConfigBean == null) { // 读取本地默认配置
             localSystemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }

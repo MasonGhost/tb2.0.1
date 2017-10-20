@@ -339,7 +339,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     }
 
     @Override
-    public boolean istourist() {
+    public boolean isTourist() {
         return mAuthRepository.isTourist();
     }
 
