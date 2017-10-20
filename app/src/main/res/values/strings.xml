@@ -281,7 +281,7 @@
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
 
     <!--置顶评论-->
-    <string name="review">审核通知</string>
+    <string name="review">审核</string>
     <string name="review_ing">待审核</string>
     <string name="review_done">已审核</string>
     <string name="review_death">已过期</string>
