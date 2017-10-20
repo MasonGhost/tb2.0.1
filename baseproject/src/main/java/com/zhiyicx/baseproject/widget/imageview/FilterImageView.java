@@ -100,6 +100,7 @@ public class FilterImageView extends ImageView {
         postInvalidate();
     }
 
+
     public void showLongImageTag(boolean isShow) {
         this.mIshowLongTag = isShow;
         if (isShow) {
