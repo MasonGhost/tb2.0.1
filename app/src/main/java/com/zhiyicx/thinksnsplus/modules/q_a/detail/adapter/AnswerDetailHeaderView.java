@@ -173,7 +173,7 @@ public class AnswerDetailHeaderView {
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-
+                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
                     }
 
                     @Override
