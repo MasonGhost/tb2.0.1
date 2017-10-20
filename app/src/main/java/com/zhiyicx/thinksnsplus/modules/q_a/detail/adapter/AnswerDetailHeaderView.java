@@ -130,9 +130,7 @@ public class AnswerDetailHeaderView {
             }
         });
 
-        if (adverts != null) {
-            initAdvert(context, adverts);
-        }
+        initAdvert(context, adverts);
     }
 
     public void setDetail(AnswerInfoBean answerInfoBean) {
@@ -233,7 +231,8 @@ public class AnswerDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mAnswerDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
+        boolean noAdvert=!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || (adverts != null && adverts.isEmpty());
+        if (noAdvert) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -339,8 +338,8 @@ public class AnswerDetailHeaderView {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType,String moneyName) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType,moneyName);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
 
         });

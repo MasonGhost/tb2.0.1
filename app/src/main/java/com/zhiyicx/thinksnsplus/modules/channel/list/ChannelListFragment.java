@@ -79,6 +79,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         return 0;
     }
 
+
     @Override
     public void onNetResponseSuccess(List<GroupInfoBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);

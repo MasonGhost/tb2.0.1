@@ -16,6 +16,10 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivi
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
@@ -115,6 +119,11 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
             mType = getArguments().getString(BUNDLE_TOPIC_TYPE);
         }
         return mType;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<QAListInfoBean> data) {
+        return (long) mListDatas.size();
     }
 
     @Override
