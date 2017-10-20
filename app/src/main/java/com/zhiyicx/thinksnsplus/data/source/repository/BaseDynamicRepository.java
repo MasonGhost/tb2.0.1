@@ -217,15 +217,18 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     mDynamicDetailBeanV2GreenDao.deleteDynamicByType(type); // 清除旧数据
                     List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
                     List<DynamicDetailBeanV2> result = new ArrayList<>();
-
-                    for (DynamicDetailBeanV2 dynamicBeanTmp : datas) {
+                    int size=datas.size();
+                    for (int i = 0; i < size; i++) {
                         // 处理关注和热门数据
-                        if (dynamicBeanTmp.getFeed_mark() != null && dynamicBeanTmp.getFeed_mark() != 0) {
-                            dealLocalTypeDataV2(dynamicBeanTmp);
-                            dynamicCommentBeen.addAll(dynamicBeanTmp.getComments());
-                            result.add(dynamicBeanTmp);
+                        if (datas.get(i).getFeed_mark() != null && datas.get(i).getFeed_mark() != 0) {
+                            dealLocalTypeDataV2(datas.get(i));
+                            if(datas.get(i).getComments()!=null) {
+                                dynamicCommentBeen.addAll(datas.get(i).getComments());
+                            }
+                            result.add(datas.get(i));
                         }
                     }
+
                     mDynamicDetailBeanV2GreenDao.insertOrReplace(result);
                     mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
                 }, throwable -> throwable.printStackTrace());

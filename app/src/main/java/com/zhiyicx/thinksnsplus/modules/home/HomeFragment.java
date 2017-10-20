@@ -116,6 +116,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
 
     private CheckInBean mCheckInBean; // 签到信息
+    private ArrayList<Fragment> mFragmentList= new ArrayList<>();
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -189,7 +190,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onResume() {
         super.onResume();
-        if (mPresenter.isLogin() && mVpHome.getChildCount() < PAGE_NUMS) { // 游客登录后的处理
+        // 游客登录后的处理
+        if (mPresenter.isLogin() && mFragmentList.size() < PAGE_NUMS) {
             initViewPager();
             mVpHome.setCurrentItem(mCurrenPage, false);
         }
@@ -317,7 +319,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
-        List<Fragment> mFragmentList = new ArrayList<>();
+        mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
@@ -326,7 +328,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
-        mHomePager.bindData(mFragmentList);//将 List 设置给 adapter
+        //将 List 设置给 adapter
+        mHomePager.bindData(mFragmentList);
         mVpHome.setAdapter(mHomePager);
     }
 

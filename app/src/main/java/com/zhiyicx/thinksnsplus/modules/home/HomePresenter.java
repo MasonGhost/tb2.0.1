@@ -50,7 +50,8 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
+class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
+        ImStatusListener, ImTimeoutListener {
     @Inject
     AuthRepository mAuthRepository;
 
@@ -188,6 +189,9 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onError(Exception error) {
+        if (error == null) {
+            error = new Exception("null data");
+        }
         EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONERROR);
     }
 
@@ -281,6 +285,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
                     protected void onSuccess(CheckInBean data) {
                         mRootView.showCheckInPop(data);
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showSnackErrorMessage(message);

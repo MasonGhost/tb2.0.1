@@ -90,7 +90,8 @@ public class MessageRepository implements MessageContract.Repository {
                                         String[] uidsPair = tmp.getUsids().split(",");
                                         int pair1 = Integer.parseInt(uidsPair[0]);
                                         int pair2 = Integer.parseInt(uidsPair[1]);
-                                        tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+                                        tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   //
+                                        // type=0时此项为两个uid：min_uid&max_uid
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -99,7 +100,8 @@ public class MessageRepository implements MessageContract.Repository {
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
                                 UserInfoBean userInfoBean = new UserInfoBean();
-                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ?
+                                        uidsTmp[1] : uidsTmp[0]));
                                 userInfoBean.setUser_id(toChatUser_id);
                                 integers.add(toChatUser_id);
                                 messageItemBean.setUserInfo(userInfoBean);
@@ -135,7 +137,8 @@ public class MessageRepository implements MessageContract.Repository {
                     if (!listBaseJson.isEmpty()) {
                         int size = listBaseJson.size();
                         for (int i = 0; i < size; i++) {
-                            if (listBaseJson.get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.get(i).getConversation().getLast_message().getTxt())) {
+                            if (listBaseJson.get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.get(i)
+                                    .getConversation().getLast_message().getTxt())) {
                                 listBaseJson.remove(i);
                             }
                         }
@@ -176,7 +179,8 @@ public class MessageRepository implements MessageContract.Repository {
                                          String[] uidsPair = tmp.getUsids().split(",");
                                          int pair1 = Integer.parseInt(uidsPair[0]);
                                          int pair2 = Integer.parseInt(uidsPair[1]);
-                                         tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
+                                         tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   //
+                                         // type=0时此项为两个uid：min_uid&max_uid
                                      } catch (Exception e) {
                                          e.printStackTrace();
                                      }
@@ -186,11 +190,13 @@ public class MessageRepository implements MessageContract.Repository {
                                  String[] uidsTmp = tmp.getUsids().split(",");
                                  UserInfoBean userInfoBean = new UserInfoBean();
                                  for (int i = 0; i < uidsTmp.length; i++) {
-                                     long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                                     long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "")
+                                             ? uidsTmp[1] : uidsTmp[0]));
                                      integers.add(toChatUser_id);
                                  }
                                  try {
-                                     userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long) integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
+                                     userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long)
+                                             integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
 
                                  } catch (Exception e) {
                                      e.printStackTrace();
@@ -208,7 +214,8 @@ public class MessageRepository implements MessageContract.Repository {
                                              for (UserInfoBean tmpdata : userInfoBeanBaseJson) {
                                                  userInfoBeanSparseArray.put(tmpdata.getUser_id().intValue(), tmpdata);
                                              }
-                                             messageItemBean.setUserInfo(userInfoBeanSparseArray.get(messageItemBean.getUserInfo().getUser_id().intValue()));
+                                             messageItemBean.setUserInfo(userInfoBeanSparseArray.get(messageItemBean.getUserInfo().getUser_id()
+                                                     .intValue()));
                                              // 存储用户信息
                                              mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
 
@@ -248,8 +255,7 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<Object> makeNotificationReaded(String notificationId) {
         return mUserInfoClient.makeNotificationReaded(notificationId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
 

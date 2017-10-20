@@ -6,7 +6,6 @@ package com.zhiyicx.baseproject.config;
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
-
 public class ApiConfig {
     /**
      * 添加平台名称，用于接口

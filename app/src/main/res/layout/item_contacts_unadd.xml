@@ -36,6 +36,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
+            android:textStyle="bold"
             android:text="张三 "
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>

@@ -22,7 +22,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -72,7 +75,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Override
     public void getLaunchAdverts() {
-        mRepository.getLaunchAdverts()
+        Subscription subscribe = mRepository.getLaunchAdverts()
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
                     @Override
                     public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
@@ -87,7 +91,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                             public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
-                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils.getScreenWidth(mContext),
+                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils
+                                                        .getScreenWidth(mContext),
                                                 DeviceUtils.getScreenHeight(mContext));
                                     }
                                 }
@@ -114,6 +119,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                         }
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

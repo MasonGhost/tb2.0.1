@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author LiuChao
  * @describe
@@ -130,7 +132,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
      */
     @Override
     public void updateUserInfo() {
-        mUserInfoRepository.getCurrentLoginUserInfo()
+        Subscription subscribe = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
@@ -138,6 +140,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
                         mRootView.setUserInfo(data);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -147,7 +150,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
 
     @Override
     public void getCertificationInfo() {
-        mCertificationDetailRepository.getCertificationInfo()
+        Subscription subscribe = mCertificationDetailRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
 
@@ -157,6 +160,7 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
                         mRootView.updateCertification(data);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
