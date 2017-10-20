@@ -231,6 +231,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         path = DealPhotoUtils.amendRotatePhoto(path, getContext());
         LogUtils.d("photo degree", "after // path : " + path + " degree //" + DrawableProvider.getBitmapDegree(path));
         mPresenter.uploadPic(path, "", true, 0, 0);
+        mPicTag++;
         test = mRicheTest.insertImage(path, mRicheTest.getWidth());
     }
 
@@ -253,7 +254,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         mPbImageUpload.setVisibility(View.GONE);
         mToolbarRight.setClickable(true);
         test.setId(id);
-        mPicTag++;
     }
 
     @Override
