@@ -12,8 +12,8 @@ ext {
     applicationId = "com.zhiyicx.thinksnsplus"
     minSdkVersion = 16
     targetSdkVersion = 25
-    versionCode = 111
-    versionName = "1.1.1-beta"
+    versionCode = 112
+    versionName = "1.1.2-beta"
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
 
