@@ -103,11 +103,11 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
     protected List<Link> setLiknks(final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getCommentUser() != null) {// 我也不知道这个怎么会是 null
+        // 我也不知道这个怎么会是 null
+        if (dynamicCommentBean.getCommentUser() != null) {
             Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
                     .setTextColor(ContextCompat.getColor(getContext(), R.color
                             .important_for_content))
-
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                             .general_for_hint))
                     .setHighlightAlpha(.8f)
@@ -115,7 +115,7 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
                     .setOnLongClickListener(clickedText -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean
-                                    .getReplyUser());
+                                    .getCommentUser());
                         }
                     })
                     .setOnClickListener(clickedText -> {

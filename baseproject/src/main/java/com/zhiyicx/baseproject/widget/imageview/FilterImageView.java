@@ -22,7 +22,6 @@ import com.zhiyicx.common.utils.SkinUtils;
  * @Date 2017/2/29
  * @Contact master.jungle68@gmail.com
  */
-
 public class FilterImageView extends ImageView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
