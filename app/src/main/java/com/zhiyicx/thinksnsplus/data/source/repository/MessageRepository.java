@@ -14,6 +14,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
@@ -230,6 +231,10 @@ public class MessageRepository implements MessageContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Observable<Void> ckeckUnreadNotification() {
         return mUserInfoClient.ckeckUnreadNotification()
@@ -237,6 +242,25 @@ public class MessageRepository implements MessageContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Observable<UnReadNotificaitonBean> getUnreadNotificationData() {
+        return mUserInfoClient.getUnreadNotificationData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param notification
+     * @param type
+     * @param limit
+     * @param offset
+     * @return
+     */
     @Override
     public Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset) {
         return mUserInfoClient.getNotificationList(notification, type, limit, offset)
@@ -244,6 +268,11 @@ public class MessageRepository implements MessageContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     *
+     * @param notificationId
+     * @return
+     */
     @Override
     public Observable<TSPNotificationBean> getNotificationDetail(String notificationId) {
         return mUserInfoClient.getNotificationDetail(notificationId)
@@ -252,6 +281,11 @@ public class MessageRepository implements MessageContract.Repository {
 
     }
 
+    /**
+     *
+     * @param notificationId
+     * @return
+     */
     @Override
     public Observable<Object> makeNotificationReaded(String notificationId) {
         return mUserInfoClient.makeNotificationReaded(notificationId)

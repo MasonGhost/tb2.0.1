@@ -106,6 +106,8 @@ public class ApiConfig {
     public static final String NOTIFICATION_TYPE_READ = "read";
     public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
 
+    // 获取用户未读信息
+    public static final String APP_PATH_GET_UNREAD_NOTIFICATION = "api/" + API_VERSION_2 + "/user/unread-count";
     /**
      * 聊天相关
      */

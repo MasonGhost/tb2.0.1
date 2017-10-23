@@ -27,8 +27,6 @@ import butterknife.BindView;
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
         BaseListBean> implements MessageReviewContract.View {
 
-    public static final String REVIEW_LIST = "review_list";
-
     private String[] mTopTypes;
     private String mTopType;
 

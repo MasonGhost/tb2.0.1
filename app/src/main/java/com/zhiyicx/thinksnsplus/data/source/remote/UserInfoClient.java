@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -152,6 +153,16 @@ public interface UserInfoClient {
      */
     @HEAD(ApiConfig.APP_PATH_GET_CKECK_UNREAD_NOTIFICATION)
     Observable<Void> ckeckUnreadNotification();
+
+
+    /**
+     * 获取用户未读消息
+     *
+     * @return
+     * @see {https://slimkit.github.io/plus-docs/v2/core/users/unread#用户未读消息}
+     */
+    @GET(ApiConfig.APP_PATH_GET_UNREAD_NOTIFICATION)
+    Observable<UnReadNotificaitonBean> getUnreadNotificationData();
 
     /**
      * 通知列表
