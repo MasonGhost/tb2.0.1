@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -35,7 +36,7 @@ public class MyFollowQuestionAdapter extends CommonAdapter<BaseListBean>{
         holder.setText(R.id.tv_count, String.format(mContext.getString(R.string.qa_show_topic_followed),
                 qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_count), setLinks(qaListInfoBean), false);
-        holder.setText(R.id.tv_time, qaListInfoBean.getCreated_at());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(qaListInfoBean.getCreated_at()));
     }
 
     private List<Link> setLinks(QAListInfoBean qaListInfoBean) {
