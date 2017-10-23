@@ -165,5 +165,6 @@ public interface MessageContract {
         void handleFlushMessage();
 
 
+        void checkUnreadNotification();
     }
 }

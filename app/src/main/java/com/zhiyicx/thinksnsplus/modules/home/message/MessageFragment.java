@@ -97,6 +97,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();
+        // 通知的未读数检查
+        mPresenter.checkUnreadNotification();
+        // 除了通知的未读数用户信息获取
         mPresenter.handleFlushMessage();
     }
 

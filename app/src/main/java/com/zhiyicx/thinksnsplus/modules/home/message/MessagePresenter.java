@@ -408,6 +408,38 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         return notificationIds;
     }
 
+    /**
+     * 检测未读消息数
+     */
+    @Override
+    public void checkUnreadNotification() {
+        mRepository.ckeckUnreadNotification()
+                .subscribe(new BaseSubscribeForV2<Void>() {
+                    @Override
+                    protected void onSuccess(Void data) {
+                        LogUtils.i("addBtnAnimation notification", data);
+                    }
+                });
+    }
+
+    /**
+     * 未读数获取到
+     *
+     * @param unreadNumStr unread  notificaiton nums
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT)
+    private void onCheckUnreadNotifyRecieved(String unreadNumStr) {
+        int unreadNum = 0;
+        try {
+            unreadNum = Integer.parseInt(unreadNumStr);
+
+        } catch (Exception igonred) {
+        }
+        mNotificaitonRedDotIsShow = unreadNum > 0;
+        checkBottomMessageTip();
+    }
+
+
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE)
     private void updateNotificaitonReddot(boolean isHide) {
         mNotificaitonRedDotIsShow = false;
@@ -599,7 +631,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     mItemBeanDigg.getConversation().getLast_message().setTxt(
                             diggTip);
 
-                    String reviewTip ;
+                    String reviewTip;
                     if (getUnreadNums(mReviewNoti) > 0) {
                         reviewTip = mContext.getString(R.string.new_apply_data);
                     } else {
