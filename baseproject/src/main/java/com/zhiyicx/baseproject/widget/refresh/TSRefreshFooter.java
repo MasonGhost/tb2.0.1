@@ -1,6 +1,5 @@
 package com.zhiyicx.baseproject.widget.refresh;
 
-
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.ColorInt;
@@ -14,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.scwang.smartrefresh.layout.api.RefreshFooter;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshKernel;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
@@ -23,26 +21,25 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.UIUtils;
 
 /**
- * @Describe 聊天刷新头部
+ * @Describe
  * @Author Jungle68
- * @Date 2017/1/
+ * @Date 2017/10/24
  * @Contact master.jungle68@gmail.com
  */
-
-public class ChatRefreshHeaderView extends FrameLayout implements RefreshHeader {
+public class TSRefreshFooter extends FrameLayout implements RefreshFooter {
 
     private TextView mTvtip;
 
 
-    public ChatRefreshHeaderView(Context context) {
+    public TSRefreshFooter(Context context) {
         this(context, null);
     }
 
-    public ChatRefreshHeaderView(Context context, AttributeSet attrs) {
+    public TSRefreshFooter(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ChatRefreshHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TSRefreshFooter(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -52,8 +49,9 @@ public class ChatRefreshHeaderView extends FrameLayout implements RefreshHeader 
         UIUtils.getCompoundDrawables(getContext(), R.drawable.frame_loading_grey);
         mTvtip.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.drawable.frame_loading_grey), null, null, null);
         mTvtip.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.spacing_small));
-        mTvtip.setTextColor(ContextCompat.getColor(getContext(), R.color.general_for_loading_more));
-        mTvtip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        mTvtip.setText(getResources().getString(R.string.loading));
+        mTvtip.setTextColor(ContextCompat.getColor(getContext(),R.color.general_for_loading_more));
+        mTvtip.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
         mTvtip.setGravity(Gravity.CENTER);
         addView(mTvtip);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTvtip.getLayoutParams();
@@ -62,6 +60,20 @@ public class ChatRefreshHeaderView extends FrameLayout implements RefreshHeader 
         layoutParams.gravity = Gravity.CENTER;
     }
 
+    @Override
+    public void onPullingUp(float percent, int offset, int footerHeight, int extendHeight) {
+
+    }
+
+    @Override
+    public void onPullReleasing(float percent, int offset, int footerHeight, int extendHeight) {
+
+    }
+
+    @Override
+    public boolean setLoadmoreFinished(boolean finished) {
+        return false;
+    }
 
     @NonNull
     @Override
@@ -119,16 +131,6 @@ public class ChatRefreshHeaderView extends FrameLayout implements RefreshHeader 
 
     @Override
     public void onStateChanged(RefreshLayout refreshLayout, RefreshState oldState, RefreshState newState) {
-
-    }
-
-    @Override
-    public void onPullingDown(float percent, int offset, int headerHeight, int extendHeight) {
-
-    }
-
-    @Override
-    public void onReleasing(float percent, int offset, int headerHeight, int extendHeight) {
 
     }
 }

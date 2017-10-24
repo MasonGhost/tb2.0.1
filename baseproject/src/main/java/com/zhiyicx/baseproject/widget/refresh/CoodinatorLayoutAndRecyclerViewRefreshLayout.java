@@ -5,8 +5,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
-import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.google.common.eventbus.EventBus;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
@@ -16,7 +15,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
  * @contact email:450127106@qq.com
  */
 
-public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLayout
+public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SmartRefreshLayout
         implements ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnScrollChangedListener {
     private static final String TAG = "CoodinatorLayoutAndRecy";
     private float downX, downY;
@@ -100,6 +99,7 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
                 break;
             case MotionEvent.ACTION_UP:
                 break;
+            default:
 
         }
         return super.onInterceptTouchEvent(ev);

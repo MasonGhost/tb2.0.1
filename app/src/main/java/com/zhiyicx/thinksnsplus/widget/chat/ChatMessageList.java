@@ -16,8 +16,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
-import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
@@ -43,7 +44,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     private static final String TAG = ChatMessageList.class.getSimpleName();
     private static final float RECYCLEVIEW_ITEMDECORATION_SPACING = 15F;
 
-    protected SwipeToLoadLayout mRefreshLayout;
+    protected SmartRefreshLayout mRefreshLayout;
     protected OnRefreshListener mOnRefreshListener;
     protected MessageListItemClickListener mMessageListItemClickListener;
 
@@ -114,7 +115,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
             otherBuddleBg = ContextCompat.getDrawable(mContext, R.drawable.shape_message_bubble_other);
         }
         LayoutInflater.from(context).inflate(R.layout.view_chat_message_list, this);
-        mRefreshLayout = (SwipeToLoadLayout) findViewById(R.id.refreshlayout);
+        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshlayout);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
         mLinearLayoutManager = new LinearLayoutManager(context);
@@ -123,8 +124,8 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mRefreshLayout.setRefreshEnabled(true);
-        mRefreshLayout.setLoadMoreEnabled(false);
+        mRefreshLayout.setEnableRefresh(true);
+        mRefreshLayout.setEnableLoadmore(false);
         mRefreshLayout.setOnRefreshListener(this);
         // 因为增加了过度拉动动画，故取消此监听
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
@@ -135,15 +136,21 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
                     case MotionEvent.ACTION_MOVE:
                         if (!mIsHandledDrag) {
                             mIsHandledDrag = true;
-                            if (handleSoftInput(v)) return false;
+                            if (handleSoftInput(v)) {
+                                return false;
+                            }
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         mIsHandledDrag = false;
-                        if (handleSoftInput(v)) return false;
+                        if (handleSoftInput(v)) {
+                            return false;
+                        }
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        if (handleSoftInput(v)) return false;
+                        if (handleSoftInput(v)) {
+                            return false;
+                        }
                         break;
                     default:
                 }
@@ -159,7 +166,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
             @Override
             public boolean canScrollUp() {
-                if (mRefreshLayout.isRefreshEnabled()) {
+                if (mRefreshLayout.isEnableRefresh()) {
                     return true;
                 } else {
                     // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
@@ -173,7 +180,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
             @Override
             public boolean canScrollDown() {
                 // 如果能够上拉加载，就不能够overScroll Down
-                if (mRefreshLayout.isLoadMoreEnabled()) {
+                if (mRefreshLayout.isEnableLoadmore()) {
                     return true;
                 } else {
                     // 如果不能够上拉加载，并且到了底部 就可以scrollUp
@@ -316,7 +323,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         return mRecyclerView;
     }
 
-    public SwipeToLoadLayout getRefreshLayout() {
+    public SmartRefreshLayout getRefreshLayout() {
         return mRefreshLayout;
     }
 
@@ -337,9 +344,9 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     }
 
     @Override
-    public void onRefresh() {
+    public void onRefresh(RefreshLayout refreshlayout) {
         if (mOnRefreshListener != null) {
-            mOnRefreshListener.onRefresh();
+            mOnRefreshListener.onRefresh(refreshlayout);
         }
     }
 

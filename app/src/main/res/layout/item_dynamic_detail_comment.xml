@@ -26,7 +26,6 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLength="@integer/username_max_length"
         android:maxLines="1"
-        android:textStyle="bold"
         android:paddingBottom="@dimen/spacing_mid"
         android:includeFontPadding="false"
         android:textColor="@color/important_for_content"
