@@ -155,6 +155,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
 
 //        initCityPickerView();
+        // 这个是和其他反的
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
@@ -172,7 +173,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
                         int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
                         int dispayHeight = UIUtils.getWindowHeight(getContext());
-                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
+///                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
                         return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                     }
                 })

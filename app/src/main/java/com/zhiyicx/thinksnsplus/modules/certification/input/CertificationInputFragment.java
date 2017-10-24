@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.certification.input;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
 import com.zhiyicx.baseproject.widget.edittext.SEditText;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -93,6 +95,10 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
 
     @Override
     protected void initView(View rootView) {
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         mType = getArguments().getInt(BUNDLE_TYPE);
         if (mType == 0) {
             mLlCompanyPersonage.setVisibility(VISIBLE);
@@ -106,6 +112,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
 
         mTvDescription.getEtContent().setGravity(Gravity.RIGHT);
         mTvDescription.getEtContent(). setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+
     }
 
     @Override

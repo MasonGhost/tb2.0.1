@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -131,7 +133,10 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
             }
             return true;
         });
-
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
     }
 
     private void jumpToEditUserTag() {
@@ -146,7 +151,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     private void initListener() {
         // 栏目
         RxView.clicks(mBtAddCategory)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     Intent intent = new Intent(getActivity(), AddInfoCategoryActivity.class);
@@ -154,7 +159,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 });
         // 标签
         RxView.clicks(mLlTagContainer)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     jumpToEditUserTag();
