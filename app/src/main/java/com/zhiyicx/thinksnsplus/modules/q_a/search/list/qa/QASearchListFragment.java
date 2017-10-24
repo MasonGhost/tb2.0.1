@@ -283,9 +283,9 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
 
         if (mRefreshlayout.isRefreshing()) {
-            onRefresh();
+            onRefresh(mRefreshlayout);
         } else {
-            mRefreshlayout.setRefreshing(true);
+            mRefreshlayout.autoRefresh();
         }
 
     }

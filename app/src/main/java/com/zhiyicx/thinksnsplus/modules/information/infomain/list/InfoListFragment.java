@@ -81,8 +81,9 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         } catch (Exception e) {
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if (mInfoBannerHeader == null)
+        if (mInfoBannerHeader == null) {
             return;
+        }
         if (!isLoadMore && data.isEmpty()) {
             mInfoBannerHeader.getInfoBannerHeader().setVisibility(View.GONE);
         } else {
@@ -192,7 +193,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override

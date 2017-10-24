@@ -19,6 +19,9 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.EmptyView;
@@ -45,8 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements OnRefreshListener,
-        OnLoadMoreListener, ITSListView<T, P> {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements  ITSListView<T, P>, com.scwang.smartrefresh.layout.listener.OnRefreshListener, OnLoadmoreListener {
     public static final int DEFAULT_PAGE_SIZE = 20; // 默认每页的数量
     public static final int DEFAULT_PAGE_SIZE_X = 10; // 有的地方是10条哦
     public static final int DEFAULT_ONE_PAGE_SIZE = 15; // 一个页面显示的最大条数，用来判断是否显示加载更多
@@ -66,7 +68,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected HeaderAndFooterWrapper mHeaderAndFooterWrapper;
     private View mFooterView;
 
-    protected SwipeToLoadLayout mRefreshlayout;
+    protected SmartRefreshLayout mRefreshlayout;
 
     protected RecyclerView mRvList;
 
@@ -98,8 +100,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.setRefreshing(false);
-        mRefreshlayout.setLoadingMore(false);
+        mRefreshlayout.finishLoadmore(false);
+        mRefreshlayout.finishRefresh(false);
     }
 
     @Override
@@ -115,7 +117,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initView(View rootView) {
-        mRefreshlayout = (SwipeToLoadLayout) rootView.findViewById(R.id.refreshlayout);
+        mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
         mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
         RxView.clicks(mFlTopTipContainer)
@@ -140,7 +142,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     }
                 });
         mRefreshlayout.setOnRefreshListener(this);
-        mRefreshlayout.setOnLoadMoreListener(this);
+        mRefreshlayout.setOnLoadmoreListener(this);
         if (setListBackColor() != -1) {
             mRvList.setBackgroundColor(ContextCompat.getColor(getContext(), setListBackColor()));
         }
@@ -154,7 +156,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
-
+        mRefreshlayout.setEnableAutoLoadmore(false);
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -276,7 +278,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void getNewDataFromNet() {
         if (isNeedRefreshAnimation() && getUserVisibleHint()) {
-            mRefreshlayout.setRefreshing(true);
+            mRefreshlayout.autoRefresh(100);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
             mPage = DEFAULT_PAGE;
@@ -329,8 +331,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        mRefreshlayout.setRefreshEnabled(isRefreshEnable());
-        mRefreshlayout.setLoadMoreEnabled(isLoadingMoreEnable());
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
+        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
         if (!isLayzLoad()) {
             onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
         }
@@ -571,8 +573,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 下拉刷新
      */
     @Override
-    public void onRefresh() {
-        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) { // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
+    public void onRefresh(RefreshLayout refreshlayout) {
+        // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
+        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) {
             hideLoading();
             showLoginPop();
             return;
@@ -581,12 +584,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
-
     /**
      * 上拉加载
      */
     @Override
-    public void onLoadMore() {
+    public void onLoadmore(RefreshLayout refreshlayout) {
         if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) { // 游客加载跟多处理
             hideLoading();
             return;
@@ -594,7 +596,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mPage++;
         requestNetData(mMaxId, true);
     }
-
     /**
      * @param data       内容信息
      * @param isLoadMore 加载状态
@@ -660,7 +661,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
         if (!isLoadMore) { // 刷新
             if (isLoadingMoreEnable()) {
-                mRefreshlayout.setLoadMoreEnabled(true);
+                mRefreshlayout.setEnableLoadmore(true);
             }
             mListDatas.clear();
             mTvNoMoredataText.setVisibility(View.GONE);
@@ -696,7 +697,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
-            mRefreshlayout.setLoadMoreEnabled(false);
+            mRefreshlayout.setEnableLoadmore(false);
             if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {// mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
@@ -722,9 +723,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void hideRefreshState(boolean isLoadMore) {
         if (isLoadMore) {
-            mRefreshlayout.setLoadingMore(false);
+            mRefreshlayout.finishLoadmore();
         } else {
-            mRefreshlayout.setRefreshing(false);
+            mRefreshlayout.finishRefresh();
         }
     }
 
@@ -738,4 +739,5 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected int getPagesize() {
         return DEFAULT_PAGE_SIZE;
     }
+
 }

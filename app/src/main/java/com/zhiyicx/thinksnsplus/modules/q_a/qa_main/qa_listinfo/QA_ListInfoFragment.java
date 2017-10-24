@@ -70,7 +70,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override

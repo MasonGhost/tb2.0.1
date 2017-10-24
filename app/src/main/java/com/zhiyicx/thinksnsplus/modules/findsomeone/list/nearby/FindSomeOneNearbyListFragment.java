@@ -72,12 +72,12 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
 
     @Override
     public void showLoading() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.finishRefresh();
     }
 
     @Override

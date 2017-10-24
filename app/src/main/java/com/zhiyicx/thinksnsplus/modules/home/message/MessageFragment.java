@@ -358,7 +358,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void hideLoading() {
-        mRefreshlayout.setRefreshing(false);
+        mRefreshlayout.finishRefresh();
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 

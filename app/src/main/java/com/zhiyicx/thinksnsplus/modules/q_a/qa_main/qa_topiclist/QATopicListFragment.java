@@ -60,7 +60,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
 
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override
