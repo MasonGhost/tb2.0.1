@@ -20,6 +20,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -35,9 +36,10 @@ public class TouchableMovementMethod extends LinkMovementMethod {
 
     /**
      * Manages the touches to find the link that was clicked and highlight it
-     * @param textView view the user clicked
+     *
+     * @param textView  view the user clicked
      * @param spannable spannable string inside the clicked view
-     * @param event motion event that occurred
+     * @param event     motion event that occurred
      * @return
      */
     @Override
@@ -53,10 +55,11 @@ public class TouchableMovementMethod extends LinkMovementMethod {
                     @Override
                     public void run() {
                         if (touched && mPressedSpan != null) {
-                            if (textView.isHapticFeedbackEnabled())
+                            if (textView.isHapticFeedbackEnabled()) {
                                 textView.setHapticFeedbackEnabled(true);
+                            }
+                            Log.d("longclick",spannable.subSequence(spannable.getSpanStart(mPressedSpan),spannable.getSpanEnd(mPressedSpan)).toString());
                             textView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-
                             mPressedSpan.onLongClick(textView);
                             mPressedSpan.setTouched(false);
                             mPressedSpan = null;
@@ -79,7 +82,7 @@ public class TouchableMovementMethod extends LinkMovementMethod {
 
                 Selection.removeSelection(spannable);
             }
-        } else if(event.getAction() == MotionEvent.ACTION_UP) {
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
             if (mPressedSpan != null) {
                 mPressedSpan.onClick(textView);
                 mPressedSpan.setTouched(false);
@@ -105,9 +108,10 @@ public class TouchableMovementMethod extends LinkMovementMethod {
 
     /**
      * Find the span that was clicked
-     * @param widget view the user clicked
+     *
+     * @param widget    view the user clicked
      * @param spannable spannable string inside the clicked view
-     * @param event motion event that occurred
+     * @param event     motion event that occurred
      * @return the touchable span that was pressed
      */
     private TouchableBaseSpan getPressedSpan(TextView widget, Spannable spannable, MotionEvent event) {
@@ -132,8 +136,9 @@ public class TouchableMovementMethod extends LinkMovementMethod {
         if (off != end && off != end - 1) {
             TouchableBaseSpan[] link = spannable.getSpans(off, off, TouchableBaseSpan.class);
 
-            if (link.length > 0)
+            if (link.length > 0) {
                 return link[0];
+            }
         }
 
         return null;
@@ -144,11 +149,13 @@ public class TouchableMovementMethod extends LinkMovementMethod {
 
     /**
      * Don't need to create a new instance for every text view. We can re-use them
+     *
      * @return Instance of the movement method
      */
     public static MovementMethod getInstance() {
-        if (sInstance == null)
+        if (sInstance == null) {
             sInstance = new TouchableMovementMethod();
+        }
 
         return sInstance;
     }

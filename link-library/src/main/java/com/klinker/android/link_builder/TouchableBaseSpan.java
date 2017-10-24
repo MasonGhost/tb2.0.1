@@ -21,6 +21,7 @@ import android.view.View;
 public abstract class TouchableBaseSpan extends ClickableSpan {
 
     public boolean touched = false;
+    public int position;
 
     /**
      * This TouchableSpan has been clicked.

@@ -498,7 +498,7 @@
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"

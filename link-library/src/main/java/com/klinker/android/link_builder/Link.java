@@ -16,10 +16,13 @@ package com.klinker.android.link_builder;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 
 import java.util.regex.Pattern;
 
 public class Link {
+
+    public static final String DEFAULT_NET_SITE = "网页链接";
 
     public static final int DEFAULT_COLOR = Color.parseColor("#33B5E5");
     private static final float DEFAULT_ALPHA = .20f;
@@ -35,15 +38,19 @@ public class Link {
     private boolean bold = false;
     private Typeface typeface;
 
+    private LinkMetadata mLinkMetadata;
+
     private OnClickListener clickListener;
     private OnLongClickListener longClickListener;
 
     /**
      * Copy Constructor.
+     *
      * @param link what you want to base the new link off of.
      */
     public Link(Link link) {
         this.text = link.getText();
+
         this.prependedText = link.getPrependedText();
         this.appendedText = link.getAppendedText();
         this.pattern = link.getPattern();
@@ -55,10 +62,13 @@ public class Link {
         this.underlined = link.isUnderlined();
         this.bold = link.isBold();
         this.typeface = link.getTypeface();
+        this.mLinkMetadata = link.getLinkMetadata();
+
     }
 
     /**
      * Construct a new Link rule to match the text.
+     *
      * @param text Text you want to highlight.
      */
     public Link(String text) {
@@ -68,6 +78,7 @@ public class Link {
 
     /**
      * Construct a new Link rule to match the pattern.
+     *
      * @param pattern pattern of the different texts you want to highlight.
      */
     public Link(Pattern pattern) {
@@ -75,8 +86,18 @@ public class Link {
         this.text = null;
     }
 
+    public LinkMetadata getLinkMetadata() {
+        return mLinkMetadata;
+    }
+
+    public Link setLinkMetadata(LinkMetadata linkMetadata) {
+        mLinkMetadata = linkMetadata;
+        return this;
+    }
+
     /**
      * Specify the text you want to match.
+     *
      * @param text to match.
      * @return the current link object.
      */
@@ -88,6 +109,7 @@ public class Link {
 
     /**
      * This text will be added *before* any matches.
+     *
      * @param text to place before the link's text.
      * @return the current link object.
      */
@@ -98,6 +120,7 @@ public class Link {
 
     /**
      * This text will be added *after* any matches.
+     *
      * @param text to place after the link's text.
      * @return the current link object.
      */
@@ -108,6 +131,7 @@ public class Link {
 
     /**
      * Specify the pattern you want to match.
+     *
      * @param pattern to match.
      * @return the current link object.
      */
@@ -119,6 +143,7 @@ public class Link {
 
     /**
      * Specify what happens with a short click.
+     *
      * @param clickListener action for the short click.
      * @return the current link object.
      */
@@ -129,6 +154,7 @@ public class Link {
 
     /**
      * Specify what happens with a long click.
+     *
      * @param longClickListener action for the long click.
      * @return the current link object.
      */
@@ -139,6 +165,7 @@ public class Link {
 
     /**
      * Specify the text color for the linked text.
+     *
      * @param color as an integer (not resource).
      * @return the current link object.
      */
@@ -149,6 +176,7 @@ public class Link {
 
     /**
      * Specify the text color for the linked text when the link is pressed.
+     *
      * @param colorOfHighlightedLink as an integer (not resource).
      * @return the current link object.
      */
@@ -159,6 +187,7 @@ public class Link {
 
     /**
      * Specify whether you want it underlined or not.
+     *
      * @param underlined
      * @return the current link object.
      */
@@ -169,6 +198,7 @@ public class Link {
 
     /**
      * Specify whether you want it bold or not.
+     *
      * @param bold
      * @return the current link object.
      */
@@ -179,6 +209,7 @@ public class Link {
 
     /**
      * Specify the alpha of the links background when the user clicks it.
+     *
      * @param alpha
      * @return the current link object.
      */
@@ -244,13 +275,13 @@ public class Link {
      * Interface to manage the single clicks.
      */
     public interface OnClickListener {
-        void onClick(String clickedText);
+        void onClick(String clickedText, LinkMetadata linkMetadata);
     }
 
     /**
      * Interface to manage the long clicks.
      */
     public interface OnLongClickListener {
-        void onLongClick(String clickedText);
+        void onLongClick(String clickedText, LinkMetadata linkMetadata);
     }
 }

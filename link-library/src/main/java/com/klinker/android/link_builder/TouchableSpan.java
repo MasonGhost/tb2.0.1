@@ -17,11 +17,15 @@ package com.klinker.android.link_builder;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.os.Handler;
 import android.text.TextPaint;
-import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TouchableSpan extends TouchableBaseSpan {
 
@@ -31,6 +35,7 @@ public class TouchableSpan extends TouchableBaseSpan {
 
     /**
      * Construct new TouchableSpan using the link
+     *
      * @param link
      */
     public TouchableSpan(Context context, Link link) {
@@ -56,8 +61,9 @@ public class TouchableSpan extends TouchableBaseSpan {
 
     /**
      * Finds the default color for links based on the current theme.
+     *
      * @param context activity
-     * @param index index of attribute to retrieve based on current theme
+     * @param index   index of attribute to retrieve based on current theme
      * @return color as an integer
      */
     private int getDefaultColor(Context context, int index) {
@@ -70,31 +76,53 @@ public class TouchableSpan extends TouchableBaseSpan {
 
     /**
      * This TouchableSpan has been clicked.
+     *
      * @param widget TextView containing the touchable span
      */
+    @Override
     public void onClick(View widget) {
         // handle the click
         if (link.getClickListener() != null) {
-            link.getClickListener().onClick(link.getText());
+            List<String> splitTextList = new ArrayList<>();
+            String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
+            Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
+            Matcher matcher1 = pattern.matcher(targetStr);
+            while (matcher1.find()) {
+                String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+                splitTextList.add(result);
+            }
+            link.getClickListener().onClick(splitTextList.get(position), link.getLinkMetadata());
         }
         super.onClick(widget);
     }
 
     /**
      * This TouchableSpan has been long clicked.
+     *
      * @param widget TextView containing the touchable span
      */
+    @Override
     public void onLongClick(View widget) {
         // handle the long click
         if (link.getLongClickListener() != null) {
-            link.getLongClickListener().onLongClick(link.getText());
+            List<String> splitTextList = new ArrayList<>();
+            String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
+            Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
+            Matcher matcher1 = pattern.matcher(targetStr);
+            while (matcher1.find()) {
+                String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+                splitTextList.add(result);
+            }
+            link.getLongClickListener().onLongClick(splitTextList.get(position), link.getLinkMetadata());
+            Log.d("onLongClick:", position + "");
         }
         super.onLongClick(widget);
     }
 
     /**
      * Set the alpha for the color based on the alpha factor
-     * @param color original color
+     *
+     * @param color  original color
      * @param factor how much we want to scale the alpha to
      * @return new color with scaled alpha
      */
@@ -108,6 +136,7 @@ public class TouchableSpan extends TouchableBaseSpan {
 
     /**
      * Draw the links background and set whether or not we want it to be underlined or bold
+     *
      * @param ds the link
      */
     @Override
@@ -118,8 +147,9 @@ public class TouchableSpan extends TouchableBaseSpan {
         ds.setFakeBoldText(link.isBold());
         ds.setColor(touched ? textColorOfHighlightedLink : textColor);
         ds.bgColor = touched ? adjustAlpha(textColor, link.getHighlightAlpha()) : Color.TRANSPARENT;
-        if(link.getTypeface() != null)
+        if (link.getTypeface() != null) {
             ds.setTypeface(link.getTypeface());
+        }
     }
 
     protected static TypedArray obtainStyledAttrsFromThemeAttr(Context context, int themeAttr, int[] styleAttrs) {

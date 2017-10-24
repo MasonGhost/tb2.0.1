@@ -1,8 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,9 +17,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -27,7 +38,6 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -35,7 +45,12 @@ import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -195,6 +210,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(content)) {
+
+                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+
+
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
@@ -234,9 +253,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(false)
                             .build();
                 }
+                Observable.timer(100, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(aLong -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false));
 
                 contentView.setVisibility(View.VISIBLE);
             }
+
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 
@@ -344,12 +367,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
                         imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(view.getContext())
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), 0, 0,
                                 propPart, AppApplication.getTOKEN()))
-                        .override(w, h)
-                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+//                        .override(w, h)
+//                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                        .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                        .error(R.drawable.shape_default_image)
                         .into(view);
                 LogUtils.i("dynamic item image" + ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
                         propPart, AppApplication.getTOKEN()));
@@ -501,6 +525,36 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
     protected int getVisibleFour() {
         return View.VISIBLE;
+    }
+
+    protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFeed_content())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+        return links;
     }
 }
 

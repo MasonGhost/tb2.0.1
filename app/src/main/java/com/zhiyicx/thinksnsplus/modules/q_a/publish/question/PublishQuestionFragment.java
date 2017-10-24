@@ -57,6 +57,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
     private QAPublishBean mDraftQuestion;
+    private QAPublishBean mDraftQuestionCopy;
 
     public static PublishQuestionFragment newInstance(Bundle args) {
         PublishQuestionFragment fragment = new PublishQuestionFragment();
@@ -152,6 +153,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.initView(rootView);
         if (mDraftQuestion != null) {
             mEtQustion.setText(mDraftQuestion.getSubject());
+            mDraftQuestionCopy = mDraftQuestion;
+            mDraftQuestionCopy.setMark(mDraftQuestion.getMark() + 1);
+            mPresenter.saveQuestion(mDraftQuestionCopy);
         }
         initListener();
     }
@@ -236,7 +240,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-//                    mPresenter.deleteQuestion(mDraftQuestion);
+                    if (mDraftQuestion != null) {
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
+                        mPresenter.saveQuestion(mDraftQuestionCopy);
+                    }
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })

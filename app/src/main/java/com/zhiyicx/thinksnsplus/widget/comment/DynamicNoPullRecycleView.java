@@ -112,13 +112,13 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
                             .general_for_hint))
                     .setHighlightAlpha(.8f)
                     .setUnderlined(false)
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean
                                     .getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         // single clicked
                         if (mOnUserNameClickListener != null) {
                             mOnUserNameClickListener.onUserNameClick(dynamicCommentBean
@@ -137,13 +137,13 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
                             .general_for_hint))
                     .setHighlightAlpha(.5f)
                     .setUnderlined(false)
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean
                                     .getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         // single clicked
                         if (mOnUserNameClickListener != null) {
                             mOnUserNameClickListener.onUserNameClick(dynamicCommentBean

@@ -136,7 +136,7 @@ public class LinkBuilder {
     /**
      * Execute the rules to create the linked text.
      */
-    public CharSequence build() {
+    public SpannableString build() {
         // we extract individual links from the patterns
         turnPatternsToLinks();
 
@@ -190,7 +190,7 @@ public class LinkBuilder {
         // get the current text
         Pattern pattern = Pattern.compile(Pattern.quote(link.getText()));
         Matcher matcher = pattern.matcher(text);
-
+        int link_position = 0;
         // find one or more links inside the text
         while (matcher.find()) {
 
@@ -202,7 +202,11 @@ public class LinkBuilder {
                 int end = start + link.getText().length();
 
                 // add link to the spannable text
-                applyLink(link, new Range(start, end), s);
+                TouchableSpan span = applyLink(link, new Range(start, end), s);
+                if (span != null && link.getLinkMetadata() != null && link.getLinkMetadata().getSZObj(LinkMetadata.METADATA_KEY_TYPE) == LinkMetadata.SpanType.NET_SITE) {
+                    span.position = link_position;
+                }
+                link_position++;
             }
 
             // if we are only looking for the first occurrence of this pattern,
@@ -210,6 +214,7 @@ public class LinkBuilder {
             if (findOnlyFirstMatch) {
                 break;
             }
+
         }
     }
 
@@ -233,11 +238,12 @@ public class LinkBuilder {
      * @param range the start and end point of the link within the text.
      * @param text  the spannable text to add the link to.
      */
-    private void applyLink(Link link, Range range, Spannable text) {
+    private TouchableSpan applyLink(Link link, Range range, Spannable text) {
         TouchableSpan[] existingSpans = text.getSpans(range.start, range.end, TouchableSpan.class);
         if (existingSpans.length == 0) {
             TouchableSpan span = new TouchableSpan(context, link);
             text.setSpan(span, range.start, range.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return span;
         } else {
             boolean newSpanConsumesAllOld = true;
             for (TouchableSpan span : existingSpans) {
@@ -254,7 +260,9 @@ public class LinkBuilder {
             if (newSpanConsumesAllOld) {
                 TouchableSpan span = new TouchableSpan(context, link);
                 text.setSpan(span, range.start, range.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return span;
             }
+            return null;
         }
     }
 
@@ -308,7 +316,7 @@ public class LinkBuilder {
     private void addLinksFromPattern(Link linkWithPattern) {
         Pattern pattern = linkWithPattern.getPattern();
         Matcher m = pattern.matcher(text);
-
+        int position = 0;
         while (m.find()) {
             links.add(new Link(linkWithPattern).setText(text.subSequence(m.start(), m.end()).toString()));
 
@@ -317,19 +325,28 @@ public class LinkBuilder {
             if (findOnlyFirstMatch) {
                 break;
             }
+            position++;
         }
     }
 
     /**
      * Manages the start and end points of the linked text.
      */
-    private static class Range {
+    public static class Range {
         public int start;
         public int end;
 
         public Range(int start, int end) {
             this.start = start;
             this.end = end;
+        }
+
+        @Override
+        public String toString() {
+            return "Range{" +
+                    "start=" + start +
+                    ", end=" + end +
+                    '}';
         }
     }
 }

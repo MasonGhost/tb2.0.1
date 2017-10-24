@@ -15,7 +15,7 @@ android {
             buildConfigField "boolean", "USE_DOMAIN_SWITCH", "true"  // 域名切换开关
             buildConfigField "boolean", "USE_LOG", "true"            // 日志开关
             buildConfigField "boolean", "USE_CANARY", "true"         // Learcanary 内存检查开关
-            buildConfigField "boolean", "USE_ADVERT", "true"         // 广告开关
+            buildConfigField "boolean", "USE_ADVERT", "false"         // 广告开关
             buildConfigField "boolean", "USE_TOLL", "true"           // 置顶功能开关
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -106,7 +106,7 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
-    compile dataDependences.clickSpanLink // click span
+//    compile dataDependences.clickSpanLink // click span
 
     compile dataDependences.gson
     // Development
