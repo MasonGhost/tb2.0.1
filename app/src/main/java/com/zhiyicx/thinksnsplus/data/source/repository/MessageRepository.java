@@ -292,5 +292,13 @@ public class MessageRepository implements MessageContract.Repository {
                 .subscribeOn(Schedulers.io());
     }
 
-
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Observable<Object> makeNotificationAllReaded() {
+        return mUserInfoClient.makeNotificationAllReaded()
+                .subscribeOn(Schedulers.io());
+    }
 }

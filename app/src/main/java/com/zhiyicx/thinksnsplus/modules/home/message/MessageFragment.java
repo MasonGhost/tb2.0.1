@@ -205,7 +205,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     toReviewList();
-                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
                     mPresenter.updateReviewItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateReviewItemData());
                 });

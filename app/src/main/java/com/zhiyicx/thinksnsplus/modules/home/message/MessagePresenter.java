@@ -126,8 +126,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     private MessageItemBean mItemBeanReview;
 
-    private List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
-
     private boolean mNotificaitonRedDotIsShow;
 
     @Inject
@@ -365,49 +363,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         addSubscrebe(subscribe);
     }
 
-    @Override
-    public void readMessageByKey(String keyStr) {
-        Observable.just(keyStr)
-                .observeOn(Schedulers.io())
-                .subscribe(key -> {
-                    String notificationIds = "";
-                    switch (key) {
-                        // 所有审核
-                        case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                        case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                            notificationIds = getNotificationIds(mReviewNoti, notificationIds);
-                            break;
-                        default:
-                    }
-
-                    mRepository.makeNotificationReaded(notificationIds)
-                            .subscribe(new BaseSubscribeForV2<Object>() {
-                                @Override
-                                protected void onSuccess(Object data) {
-                                    LogUtils.d("makeNotificationReaded::" + "onSuccess");
-                                }
-                            });
-                }, Throwable::printStackTrace);
-
-    }
-
-    /**
-     * 检查未读通知的 Id
-     *
-     * @param datas
-     * @param notificationIds
-     * @return
-     */
-    private String getNotificationIds(List<TSPNotificationBean> datas, String notificationIds) {
-        for (TSPNotificationBean tspNotificationBean : datas) {
-            //代表未读
-            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                notificationIds += tspNotificationBean.getId() + ",";
-            }
-        }
-        return notificationIds;
-    }
-
     /**
      * 检测未读消息数
      */
@@ -583,14 +538,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         Subscription subscribe = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
-                    mReviewNoti.clear();
 
                     /**
                      * 设置未读数
                      */
                     mItemBeanComment.setUnReadMessageNums(data.getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getUnread_likes_count());
-                    mItemBeanReview.setUnReadMessageNums(getUnreadNums(mReviewNoti));
+                    int pinnedNums = 0;
+                    if (data.getPinneds() != null && (data.getPinneds().getFeeds() + data.getPinneds().getNews()) > 0) {
+                        pinnedNums=data.getPinneds().getFeeds() + data.getPinneds().getNews();
+                        mItemBeanReview.setUnReadMessageNums(pinnedNums);
+                    } else {
+                        mItemBeanReview.setUnReadMessageNums(0);
+
+                    }
 
                     /**
                      * 设置时间
@@ -603,8 +564,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             .currentTimeMillis() :
                             TimeUtils
                                     .utc2LocalLong(data.getLikes().get(0).getTime()));
-                    mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                            .utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
+
+                    mItemBeanReview.getConversation().setLast_message_time(pinnedNums>0 ? System.currentTimeMillis() : System.currentTimeMillis());
 
                     /**
                      * 设置提示内容
@@ -632,7 +593,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             diggTip);
 
                     String reviewTip;
-                    if (getUnreadNums(mReviewNoti) > 0) {
+                    if (data.getPinneds() != null && (data.getPinneds().getFeeds() + data.getPinneds().getNews()) > 0) {
                         reviewTip = mContext.getString(R.string.new_apply_data);
                     } else {
                         reviewTip = mContext.getString(R.string.no_apply_data);
@@ -657,22 +618,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         addSubscrebe(subscribe);
-    }
-
-    /**
-     * 没有阅读时间说明没有阅读
-     *
-     * @param datas
-     * @return
-     */
-    private int getUnreadNums(List<TSPNotificationBean> datas) {
-        int nums = 0;
-        for (TSPNotificationBean tspNotificationBean : datas) {
-            if (tspNotificationBean.getRead_at() == null) {
-                nums++;
-            }
-        }
-        return nums;
     }
 
     /**

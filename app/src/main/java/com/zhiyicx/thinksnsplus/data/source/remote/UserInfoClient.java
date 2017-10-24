@@ -196,6 +196,14 @@ public interface UserInfoClient {
     Observable<Object> makeNotificationReaded(@Query("notification") String notificationId);
 
     /**
+     * 标记所有通知阅读
+     *
+     * @return
+     */
+    @PUT(ApiConfig.APP_PATH_MAKE_NOTIFICAITON_ALL_READED)
+    Observable<Object> makeNotificationAllReaded();
+
+    /**
      * 更新用户头像
      *
      * @param multipartBody

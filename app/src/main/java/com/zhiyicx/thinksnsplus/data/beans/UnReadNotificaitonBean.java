@@ -16,6 +16,8 @@ public class UnReadNotificaitonBean {
     private String updated_at;
     private List<UnreadCountBean> comments;
     private List<UnreadCountBean> likes;
+    private UnhandlePinnedBean pinneds;
+
 
     public Long getUser_id() {
         return user_id;
@@ -73,6 +75,14 @@ public class UnReadNotificaitonBean {
         this.likes = likes;
     }
 
+    public UnhandlePinnedBean getPinneds() {
+        return pinneds;
+    }
+
+    public void setPinneds(UnhandlePinnedBean pinneds) {
+        this.pinneds = pinneds;
+    }
+
     @Override
     public String toString() {
         return "UnReadNotificaitonBean{" +
@@ -83,6 +93,7 @@ public class UnReadNotificaitonBean {
                 ", updated_at='" + updated_at + '\'' +
                 ", comments=" + comments +
                 ", likes=" + likes +
+                ", pinneds=" + pinneds +
                 '}';
     }
 }

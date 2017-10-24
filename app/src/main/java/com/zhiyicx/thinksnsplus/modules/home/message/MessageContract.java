@@ -123,6 +123,13 @@ public interface MessageContract {
          * @return
          */
         Observable<Object> makeNotificationReaded(String notificationId);
+
+        /**
+         * 标记所有通知阅读
+         *
+         * @return
+         */
+        Observable<Object> makeNotificationAllReaded();
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -131,6 +138,7 @@ public interface MessageContract {
         MessageItemBean updateLikeItemData();
 
         MessageItemBean updateReviewItemData();
+
         /**
          * 刷新是否显示底部红点
          * 刷新当条item 的未读数
@@ -151,13 +159,6 @@ public interface MessageContract {
          * @return
          */
         void getSingleConversation(int cid);
-
-        /**
-         * 通过 key 标记消息已读
-         *
-         * @param key
-         */
-        void readMessageByKey(String key);
 
         /**
          * 检查当前消息记录
