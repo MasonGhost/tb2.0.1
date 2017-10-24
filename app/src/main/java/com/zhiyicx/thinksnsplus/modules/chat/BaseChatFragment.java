@@ -4,8 +4,9 @@ import android.graphics.Rect;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -143,7 +144,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
 
     @Override
     public void hideLoading() {
-        mMessageList.getRefreshLayout().setRefreshing(false);
+        mMessageList.getRefreshLayout().finishRefresh();
     }
 
     /**
@@ -228,7 +229,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
     }
 
     @Override
-    public void onRefresh() {
+    public void onRefresh(RefreshLayout relativeLayout) {
         if (mMessageItemBean.getConversation() == null) {
             hideLoading();
         }

@@ -30,31 +30,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
-                    android:id="@+id/refreshlayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
-                        android:id="@id/swipe_refresh_header"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@id/swipe_target"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:overScrollMode="never">
-                    </android.support.v7.widget.RecyclerView>
-
-
-                    <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
-                        android:id="@id/swipe_load_more_footer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-                </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
+                <include
+                    layout="@layout/include_coodinator_refresh"
+                    />
             </com.wcy.overscroll.OverScrollLayout>
         </LinearLayout>
 
