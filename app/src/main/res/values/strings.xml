@@ -69,9 +69,9 @@
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
     <string name="all">全部</string>
-    <string name="edit_userinfo_success">信息修改成功</string>
-    <string name="edit_userinfo_failure">信息修改失败</string>
-    <string name="edit_userinfo_ing">信息修改中&#8230;</string>
+    <string name="edit_userinfo_success">修改成功</string>
+    <string name="edit_userinfo_failure">修改失败</string>
+    <string name="edit_userinfo_ing">修改中&#8230;</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
     <string name="update_head_ing">头像上传中&#8230;</string>

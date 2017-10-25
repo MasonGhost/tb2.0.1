@@ -3,9 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview.OptionsPickerView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
@@ -40,10 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryActivity;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -164,7 +158,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .flatMap(new Func1<Void, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Void aVoid) {
-                        if (mDvViewGroup==null) {
+                        if (mDvViewGroup == null) {
                             return Observable.just(false);
                         }
                         Rect rect = new Rect();
@@ -182,7 +176,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
-                    if (mEtUserIntroduce==null) {
+                    if (mEtUserIntroduce == null) {
                         return;
                     }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
@@ -316,7 +310,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void setRightClick() {
-        if(TextUtils.isEmpty(mEtUserIntroduce.getInputContent())){
+        if (TextUtils.isEmpty(mEtUserIntroduce.getInputContent())) {
             showSnackErrorMessage(getString(R.string.please_input_intro));
             return;
         }
@@ -336,19 +330,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     /**
      * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
+     * @param message
      */
     @Override
-    public void setUpLoadHeadIconState(int upLoadState) {
+    public void setUpLoadHeadIconState(int upLoadState, String message) {
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
-                        getString(R.string.update_head_failure), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.update_head_failure) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.ERROR)
                         .show();
                 break;
             case 0:
-                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
+                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, TextUtils.isEmpty(message) ? getString(R.string.update_head_ing) : message,
+                        TSnackbar
+                        .LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .addIconProgressLoading(0, true, false);
                 mTSnackbarUploadIcon.show();
@@ -356,7 +353,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case 1:
             case 2:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
-                        getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.update_head_success) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 break;
@@ -379,20 +376,26 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .show();
                 break;
             case 0:
-                mTSnackbarUserInfo = TSnackbar.make(mSnackRootView, R.string.edit_userinfo_ing, TSnackbar.LENGTH_INDEFINITE)
+                mTSnackbarUserInfo = TSnackbar.make(mSnackRootView, TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_ing) : message,
+                        TSnackbar
+                                .LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .addIconProgressLoading(0, true, false);
                 mTSnackbarUserInfo.show();
                 break;
             case 1:
                 TSnackbar.getTSnackBar(mTSnackbarUserInfo, mSnackRootView,
-                        getString(R.string.edit_userinfo_success), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_success) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
                         .compose(this.bindToLifecycle())
-                        .subscribe(aLong -> getActivity().finish());
+                        .subscribe(aLong -> {
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                        });
                 break;
             default:
         }
