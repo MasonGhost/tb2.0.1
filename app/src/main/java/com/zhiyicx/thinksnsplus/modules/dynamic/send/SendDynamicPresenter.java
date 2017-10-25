@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -97,6 +98,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.R
             dynamicBean.setImages(new ArrayList<>());
         }
         // 发送动态 V2 所需要的数据
+        dynamicBean.setAmount((long)PayConfig.gameCurrency2RealCurrency(dynamicBean.getAmount(),getRatio()));
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 

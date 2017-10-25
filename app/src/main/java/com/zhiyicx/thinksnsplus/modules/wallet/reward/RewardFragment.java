@@ -215,7 +215,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                         initStickTopInstructionsPop();
                     } else {
                         setSureBtEnable(false);
-                        mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                        mPresenter.reward(PayConfig.gameCurrency2RealCurrency(mRewardMoney,mPresenter.getRatio()), mRewardType, mSourceId);
                     }
                 });// 传入的是真实货币分单位
 

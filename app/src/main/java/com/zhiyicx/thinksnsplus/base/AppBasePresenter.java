@@ -116,6 +116,10 @@ public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePres
         } catch (Exception e) {
             return "";
         }
+    }
 
+    @Override
+    public int getRatio() {
+        return getSystemConfigBean().getWallet_ratio();
     }
 }

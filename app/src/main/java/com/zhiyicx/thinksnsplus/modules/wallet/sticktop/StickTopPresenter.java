@@ -79,7 +79,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
             return;
         }
 
-        double amount = PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas());
+        double amount = PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(),getRatio());
 
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
@@ -157,7 +157,9 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         if (parent_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, child_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas()), mRootView.getTopDyas())
+        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, child_id,
+                PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(),getRatio()),
+                mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )

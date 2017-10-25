@@ -434,7 +434,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
-                            mPresenter.resetReward(mQuestionId, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+                            mPresenter.resetReward(mQuestionId, PayConfig.gameCurrency2RealCurrency(mRewardMoney,mPresenter.getRatio()));
                         }
                     } catch (Exception e) {
                         mBtPublish.setEnabled(true);
@@ -452,7 +452,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (mQAPublishBean == null) {
             return null;
         }
-        mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+        mQAPublishBean.setAmount(PayConfig.gameCurrency2RealCurrency(mRewardMoney,mPresenter.getRatio()));
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
         return mQAPublishBean;
@@ -543,7 +543,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.gameCurrency2RealCurrency(mRewardMoney,mPresenter.getRatio()));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
