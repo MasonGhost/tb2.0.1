@@ -345,7 +345,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case 0:
                 mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, TextUtils.isEmpty(message) ? getString(R.string.update_head_ing) : message,
                         TSnackbar
-                        .LENGTH_INDEFINITE)
+                                .LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .addIconProgressLoading(0, true, false);
                 mTSnackbarUploadIcon.show();
@@ -451,7 +451,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
             LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
             if (locationBean != null) {
-                setCity(LocationBean.getlocation(locationBean));
+                String loacaiton = LocationBean.getlocation(locationBean);
+                setCity(loacaiton);
             }
 
         }
@@ -567,7 +568,13 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         } catch (Exception e) {
 
         }
-
+        try {
+            String[] locatons = city.split(" ");
+            if (locatons.length > 2) {
+                city = locatons[locatons.length - 2] + " " + locatons[locatons.length - 1];
+            }
+        } catch (Exception ignored) {
+        }
         mTvCity.setText(city);//更新位置
     }
 
