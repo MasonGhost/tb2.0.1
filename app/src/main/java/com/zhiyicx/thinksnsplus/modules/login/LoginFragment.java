@@ -394,6 +394,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            showSnackLoadingMessage(getString(R.string.loading_state));
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
