@@ -146,7 +146,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        if (mRewardsCountBean != null) {
+        if (mRewardsCountBean != null&&!TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
             mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter.getRatio()));
         }
         mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());

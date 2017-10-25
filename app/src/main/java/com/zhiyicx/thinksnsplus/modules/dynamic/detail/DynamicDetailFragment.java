@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -453,7 +454,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void updateReward() {
-        if (mDynamicBean.getReward() != null) {
+        if (mDynamicBean.getReward() != null&& !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
             mDynamicBean.getReward().setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mDynamicBean.getReward().getAmount()), mPresenter.getRatio()));
         }
         mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),

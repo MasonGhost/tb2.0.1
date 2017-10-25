@@ -93,6 +93,11 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
                 boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[1]) || getCurrentType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
+
+            @Override
+            protected int getRatio() {
+                return mPresenter.getRatio();
+            }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override

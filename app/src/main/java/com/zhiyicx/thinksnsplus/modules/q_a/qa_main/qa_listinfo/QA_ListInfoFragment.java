@@ -166,6 +166,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
+
+            @Override
+            protected int getRatio() {
+                return mPresenter.getRatio();
+            }
         };
         adapter.setSpanTextClickListener(this);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

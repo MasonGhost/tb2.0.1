@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,8 +19,12 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -129,7 +135,7 @@ public class DynamicDetailHeader {
         } else {
 //            dealTollWords(dynamicBean, contentText);// 处理文字收费
             mContent.setVisibility(View.VISIBLE);
-            mContent.setText(contentText);
+            dealLinkWords(dynamicBean, contentText);
         }
 
         final Context context = mTitle.getContext();
@@ -149,6 +155,12 @@ public class DynamicDetailHeader {
                     .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
         }
+    }
+
+    private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        mContent.setText(content);
+        ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText().toString()), false);
     }
 
     private void dealTollWords(DynamicDetailBeanV2 dynamicBean, String contentText) {
@@ -351,6 +363,36 @@ public class DynamicDetailHeader {
 
     public ReWardView getReWardView() {
         return mReWardView;
+    }
+
+    protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFeed_content())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+        return links;
     }
 
     public interface OnImageClickLisenter {

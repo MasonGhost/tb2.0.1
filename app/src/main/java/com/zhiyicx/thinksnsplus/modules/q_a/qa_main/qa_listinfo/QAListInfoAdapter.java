@@ -162,7 +162,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private List<Link> setLinks() {
         List<Link> links = new ArrayList<>();
-        Link rewardMoneyLink = new Link(Pattern.compile("¥\\d+\\.\\d+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link(Pattern.compile("\\d+\\.\\d+")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
