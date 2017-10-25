@@ -64,6 +64,7 @@
         </activity>
         <activity
             android:name=".modules.register.RegisterActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -113,6 +114,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.third_platform.complete.CompleteAccountActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.chat.ChatActivity"
