@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,12 +63,14 @@ public class CheckInPopWindow extends PopupWindow {
     private CheckInBean mCheckInBean;
 
     private double mWalletRatio = 100;
+    private String mGoldName;
 
-    public CheckInPopWindow(View parentView, CheckInBean checkInBean, double mWalletRatio, OnCheckInClickListener l) {
+    public CheckInPopWindow(View parentView, CheckInBean checkInBean,String goldName, double mWalletRatio, OnCheckInClickListener l) {
         this.mParentView = parentView;
         this.mOnCheckInClickListener = l;
         this.mWalletRatio = mWalletRatio;
         this.mCheckInBean = checkInBean;
+        this.mGoldName=goldName;
         initLayout();
         initData();
     }
@@ -84,8 +87,10 @@ public class CheckInPopWindow extends PopupWindow {
         setOutsideTouchable(true);
         setFocusable(true);
         setBackgroundDrawable(mBackgroundDrawable);
-        if (mAnimationStyle != -1)//如果设置了对话则使用对话
+        //如果设置了对话则使用对话
+        if (mAnimationStyle != -1) {
             setAnimationStyle(mAnimationStyle);
+        }
         setContentView(mContentView);
 
         mContentView.findViewById(R.id.iv_cancle).setOnClickListener(view -> dismiss());
@@ -126,7 +131,7 @@ public class CheckInPopWindow extends PopupWindow {
             }
         };
         mRvUserCheckInList.setAdapter(mCommonAdapter);
-        setData(mCheckInBean, mWalletRatio);
+        setData(mCheckInBean, mWalletRatio,mGoldName);
     }
 
     /**
@@ -135,7 +140,7 @@ public class CheckInPopWindow extends PopupWindow {
      * @param checkInBean
      * @param walletRatio
      */
-    public void setData(CheckInBean checkInBean, double walletRatio) {
+    public void setData(CheckInBean checkInBean, double walletRatio,String goldName) {
         mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getLast_checkin_count()));
         mTvTotoalGold.setText("+" + PayConfig.realCurrency2GameCurrency(checkInBean.getAttach_balance(), (int) walletRatio));
         mListData.clear();
@@ -148,6 +153,9 @@ public class CheckInPopWindow extends PopupWindow {
             mTvCheckIn.setEnabled(true);
             mTvCheckIn.setText(mTvCheckIn.getResources().getString(R.string.check_in));
 
+        }
+        if (!TextUtils.isEmpty(goldName)) {
+            mTvCheckInGetGold.setText(mTvCheckInGetGold.getResources().getString(R.string.check_in_today_get_gold_format,goldName));
         }
     }
 
