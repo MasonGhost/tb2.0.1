@@ -44,19 +44,19 @@ public class PayConfig {
     }
 
     /**
-     * @param d     真实货币 元单位
+     * @param d 真实货币 元单位
      * @return 真实货币 分单位
      */
     public static double realCurrencyYuan2Fen(double d) {
-        return d*MONEY_UNIT;
+        return d * MONEY_UNIT;
     }
 
     /**
-     * @param d     真实货币 分单位
+     * @param d 真实货币 分单位
      * @return 真实货币 元单位
      */
     public static double realCurrencyFen2Yuan(double d) {
-        return d/MONEY_UNIT;
+        return d / MONEY_UNIT;
     }
 
 }
