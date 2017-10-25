@@ -141,7 +141,7 @@ public class ReWardView extends FrameLayout {
             e.printStackTrace();
         }
 
-        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">", moneyName);
+        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, amout) + ">", moneyName);
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))

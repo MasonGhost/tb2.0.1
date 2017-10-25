@@ -69,7 +69,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
         holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
-                , PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())));
+                , PayConfig.realCurrency2GameCurrency(infoBean.getAmount(),getRatio())));
         holder.setVisible(R.id.item_info_reward, infoBean.getAmount() > 0 ? View.VISIBLE : View.GONE);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
@@ -182,6 +182,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
     }
 
     protected int getExcellentTag(boolean isExcellent) {
+        return 0;
+    }
+    protected int getRatio() {
         return 0;
     }
 

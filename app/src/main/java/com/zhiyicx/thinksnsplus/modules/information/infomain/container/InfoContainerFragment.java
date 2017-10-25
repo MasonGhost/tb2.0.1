@@ -144,7 +144,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mUserCertificationInfo = userCertificationInfo;
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
-        if (userCertificationInfo.getStatus() == 1) {
+        if (userCertificationInfo.getStatus() == 1 || !mPublishInfoConfig.hasVerified()) {
             if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
                     && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();

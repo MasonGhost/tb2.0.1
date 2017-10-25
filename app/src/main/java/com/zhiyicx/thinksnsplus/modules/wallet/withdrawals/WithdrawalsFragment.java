@@ -102,8 +102,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     protected void initData() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
-            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrencyFen2Yuan(mWalletConfigBean
-                    .getCase_min_amount()),mPresenter.getGoldName()));
+            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), PayConfig.realCurrency2GameCurrency(mWalletConfigBean
+                    .getCase_min_amount(), mPresenter.getRatio()), mPresenter.getGoldName()));
         }
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
@@ -215,8 +215,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     private void initWithDrawalsStylePop() {
-        List<String> cash_types=new ArrayList<>();
-        if (mWalletConfigBean.getCash()!=null){
+        List<String> cash_types = new ArrayList<>();
+        if (mWalletConfigBean.getCash() != null) {
             cash_types.addAll(Arrays.asList(mWalletConfigBean.getCash()));
         }
         if (mActionPopupWindow != null) {

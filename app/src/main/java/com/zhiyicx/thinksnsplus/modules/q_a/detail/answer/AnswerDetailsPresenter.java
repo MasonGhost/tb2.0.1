@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -258,7 +259,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
-                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount(),getGoldName()),
+                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrency2GameCurrency(data.getRewards_amount(),getRatio()),getGoldName()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data, isLoadMore);
                     }

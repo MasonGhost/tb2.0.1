@@ -198,7 +198,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
                         int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrencyFen2Yuan(data.getWallet().getBalance()) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),getRatio()) : 0);
                     }
 
                     @Override
@@ -220,7 +220,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                 return 0;
             }
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
+            return PayConfig.realCurrency2GameCurrency(walletBean.getBalance(),getRatio());
         }
         return 0;
     }
