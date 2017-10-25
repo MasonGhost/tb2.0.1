@@ -3,12 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +32,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
@@ -70,8 +78,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetai
  * @contact email:648129313@qq.com
  */
 
-public class InfoDetailHeaderView {
-
+public class InfoDetailHeaderView extends BaseWebLoad{
     private MarkdownView mContent;
     private MarkdownView mContentSubject;
     private TextView mTitle;
@@ -148,7 +155,6 @@ public class InfoDetailHeaderView {
             } else {
                 mContentSubject.setVisibility(GONE);
             }
-//            mContentSubject.setVisibility(GONE);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
@@ -156,6 +162,7 @@ public class InfoDetailHeaderView {
                 css.addRule(".container", "padding-right:0", ";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
+                mContent.setWebChromeClient(mWebChromeClient);
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {

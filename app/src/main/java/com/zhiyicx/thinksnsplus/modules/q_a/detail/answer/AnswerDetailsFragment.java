@@ -23,6 +23,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -65,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANS
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -168,7 +169,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
         onNetResponseSuccess(answerInfoBean.getCommentList(), isLoadMore);
-        closeLoadingView();
     }
 
     @Override
@@ -283,6 +283,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 //        mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), mPresenter.getAdvert());
         mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), null);
         mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
+        mAnswerDetailHeaderView.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mAnswerDetailHeaderView.getAnswerDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -290,11 +291,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    @Override
-    public void loadFinish() {
-        closeLoadingView();
     }
 
     @Override
@@ -476,6 +472,11 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
+    }
+
+    @Override
+    public void onLoadFinish() {
+        closeLoadingView();
     }
 
     class ItemOnCommentListener implements AnswerDetailCommentItem.OnCommentItemListener {

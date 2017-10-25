@@ -27,6 +27,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -35,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -67,7 +69,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class AnswerDetailHeaderView {
+public class AnswerDetailHeaderView extends BaseWebLoad{
+
 
     private UserAvatarView mUserAvatarView;
     private TextView mName;
@@ -120,15 +123,7 @@ public class AnswerDetailHeaderView {
         mCommentHintView = (FrameLayout) mAnswerDetailHeader.findViewById(R.id.answer_detail_comment);
         mCommentCountView = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_comment_count);
         mIvDetail = (ImageView) mAnswerDetailHeader.findViewById(R.id.iv_detail);
-        mContent.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);// 这个方法不知道什么时候才调用
-                if (mAnswerHeaderEventListener != null) {
-                    mAnswerHeaderEventListener.loadFinish();
-                }
-            }
-        });
+
 
         initAdvert(context, adverts);
     }
@@ -142,6 +137,7 @@ public class AnswerDetailHeaderView {
                 css.addRule(".container", "padding-right:0", ";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
+                mContent.setWebChromeClient(mWebChromeClient);
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -350,8 +346,6 @@ public class AnswerDetailHeaderView {
     }
 
     public interface AnswerHeaderEventListener {
-        void loadFinish();
-
         void userFollowClick(boolean isChecked);
 
         void clickUserInfo(UserInfoBean user);

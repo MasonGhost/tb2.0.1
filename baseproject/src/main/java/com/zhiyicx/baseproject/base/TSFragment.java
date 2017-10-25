@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.base;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -295,7 +296,29 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
-            mCenterLoadingView.setVisibility(View.GONE);
+            mCenterLoadingView.animate().alpha(0.3f).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (mCenterLoadingView != null) {
+                        mCenterLoadingView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
     }
 
