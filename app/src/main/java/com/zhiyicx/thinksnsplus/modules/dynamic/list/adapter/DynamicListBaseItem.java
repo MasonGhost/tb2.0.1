@@ -367,7 +367,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
                         imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(view.getContext())
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), 0, 0,
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
                                 propPart, AppApplication.getTOKEN()))
 //                        .override(w, h)
 //                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
