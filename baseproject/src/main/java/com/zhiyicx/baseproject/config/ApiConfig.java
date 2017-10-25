@@ -18,9 +18,7 @@ public class ApiConfig {
      */
     public static final int DEFAULT_MAX_RETRY_COUNT = 5;
 
-    public static final String API_VERSION = "v1";
     public static final String API_VERSION_2 = "v2";
-
     /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
@@ -29,7 +27,6 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
-    //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
     public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
