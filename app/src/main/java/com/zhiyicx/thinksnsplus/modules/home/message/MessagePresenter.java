@@ -545,8 +545,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     mItemBeanComment.setUnReadMessageNums(data.getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getUnread_likes_count());
                     int pinnedNums = 0;
-                    if (data.getPinneds() != null && (data.getPinneds().getFeeds() + data.getPinneds().getNews()) > 0) {
-                        pinnedNums=data.getPinneds().getFeeds() + data.getPinneds().getNews();
+                    if (data.getPinneds() != null && (data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount()) > 0) {
+                        pinnedNums = data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount();
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {
                         mItemBeanReview.setUnReadMessageNums(0);
@@ -565,7 +565,19 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             TimeUtils
                                     .utc2LocalLong(data.getLikes().get(0).getTime()));
 
-                    mItemBeanReview.getConversation().setLast_message_time(pinnedNums>0 ? System.currentTimeMillis() : System.currentTimeMillis());
+                    String feedTime = data.getPinneds().getFeeds().getTime();
+
+                    String newTime = data.getPinneds().getNews().getTime();
+                    long reviewTime = 0;
+                    if (feedTime != null) {
+                        reviewTime = TimeUtils
+                                .utc2LocalLong(feedTime);
+                    }
+                    if (newTime != null && TimeUtils.utc2LocalLong(newTime) > reviewTime) {
+                        reviewTime = TimeUtils.utc2LocalLong(newTime);
+                    }
+
+                    mItemBeanReview.getConversation().setLast_message_time(reviewTime);
 
                     /**
                      * 设置提示内容
@@ -593,7 +605,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             diggTip);
 
                     String reviewTip;
-                    if (data.getPinneds() != null && (data.getPinneds().getFeeds() + data.getPinneds().getNews()) > 0) {
+                    if (data.getPinneds() != null && pinnedNums > 0) {
                         reviewTip = mContext.getString(R.string.new_apply_data);
                     } else {
                         reviewTip = mContext.getString(R.string.no_apply_data);
