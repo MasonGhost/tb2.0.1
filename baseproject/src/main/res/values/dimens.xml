@@ -28,7 +28,8 @@
     <!--频道详情悬浮按钮宽高  40dp+8dp空白-->
     <dimen name="channel_detail_float_btn_height">48dp</dimen>
     <!--刷新控件header的高度-->
-    <dimen name="refresh_header_height">40dp</dimen>
+    <dimen name="refresh_header_height">45dp</dimen>
+    <dimen name="refresh_header_with">55dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
     <dimen name="edit_lefttext_width">50dp</dimen>
     <dimen name="edit_lefttext_width_change_password">75dp</dimen>

@@ -78,8 +78,9 @@ public class UserInfoInroduceInputView extends FrameLayout {
             mShowLines = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLines, 0);// 如果为0就不要设置maxLine了
             mContentGrvatiy = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_content_gravity, Gravity.LEFT);// 如果为0就不要设置maxLine了
             mEtContent.setGravity(mContentGrvatiy);
-            if (array.getDimensionPixelSize(R.styleable.inputLimitView_content_size, 0) != 0)
+            if (array.getDimensionPixelSize(R.styleable.inputLimitView_content_size, 0) != 0) {
                 mEtContent.setTextSize(SP, ConvertUtils.px2dp(getContext(), array.getDimension(R.styleable.inputLimitView_content_size, 0)));
+            }
 
             array.recycle();
         } else {
