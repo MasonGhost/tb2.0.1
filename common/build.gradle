@@ -106,7 +106,7 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
-    compile dataDependences.clickSpanLink // click span
+//    compile dataDependences.clickSpanLink // click span
 
     compile dataDependences.gson
     // Development
@@ -127,6 +127,7 @@ dependencies {
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
     compile project(':mysnackbar')
+    compile project(':link-library')
     // 指示器
     compile dataDependences.magicIndicator
 

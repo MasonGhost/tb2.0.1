@@ -15,7 +15,7 @@
     <!--android:orientation="vertical">-->
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/refreshLayout"
+        android:id="@+id/refreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/fl_top_tip_container"

@@ -290,14 +290,11 @@ public class SystemConfigBean implements Serializable {
          */
 
         private boolean showTerms;
-        private boolean open;
-        private String registerMode;
         private String method;// 注册类型
         private String type;// 注册方式
-        private String fixed;
+        private String rules;
         private boolean completeData;
-        private String accountType;
-        private String content;
+        private String content;// 用户协议
 
         public String getMethod() {
             return method;
@@ -315,22 +312,6 @@ public class SystemConfigBean implements Serializable {
             this.type = type;
         }
 
-        public String getFixed() {
-            return fixed;
-        }
-
-        public void setFixed(String fixed) {
-            this.fixed = fixed;
-        }
-
-        public boolean hasOpen() {
-            return open;
-        }
-
-        public void setOpen(boolean open) {
-            this.open = open;
-        }
-
         public boolean isShowTerms() {
             return showTerms;
         }
@@ -339,13 +320,6 @@ public class SystemConfigBean implements Serializable {
             this.showTerms = showTerms;
         }
 
-        public String getRegisterMode() {
-            return registerMode;
-        }
-
-        public void setRegisterMode(String registerMode) {
-            this.registerMode = registerMode;
-        }
 
         public boolean isCompleteData() {
             return completeData;
@@ -353,14 +327,6 @@ public class SystemConfigBean implements Serializable {
 
         public void setCompleteData(boolean completeData) {
             this.completeData = completeData;
-        }
-
-        public String getAccountType() {
-            return accountType;
-        }
-
-        public void setAccountType(String accountType) {
-            this.accountType = accountType;
         }
 
         public String getContent() {

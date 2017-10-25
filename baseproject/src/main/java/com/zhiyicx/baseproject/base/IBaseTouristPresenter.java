@@ -35,4 +35,6 @@ public interface IBaseTouristPresenter extends IBasePresenter {
     String getGoldName();
 
     String getGoldUnit();
+
+    int getRatio();
 }

@@ -19,6 +19,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -110,7 +111,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected void initView(View rootView) {
         boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
-                || mSystemConfigBean.getRegisterSettings() != null && mSystemConfigBean.getRegisterSettings().hasOpen();
+                || mSystemConfigBean.getRegisterSettings() != null && !mSystemConfigBean.getRegisterSettings().getType().equals(SystemConfig.REGITER_MODE_THIRDPART);
         mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
