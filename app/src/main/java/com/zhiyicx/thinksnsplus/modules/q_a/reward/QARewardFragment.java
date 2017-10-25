@@ -149,6 +149,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         }
         if (!mQuestionId.equals(0L)) {
             mBtPublish.setText(getString(R.string.determine));
+            mToolbarCenter.setText(getString(R.string.qa_reward_public));
             mRlInviteContainer.setVisibility(View.GONE);
         }
         mTvChooseTip.setText(R.string.qa_publish_reward_set_money);

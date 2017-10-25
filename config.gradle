@@ -101,7 +101,7 @@ ext {
             //robolectric与dagger中间接依赖的冲突，故锁定版本
             guava                        : "com.google.guava:guava:${guavaVwesion}",
             refresh                      : "com.github.Aspsine:SwipeToLoadLayout:${refreshVersion}",
-            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
+//            clickSpanLink                : "com.klinkerapps:link_builder:${clickSpanLinkVersion}",
             swipeLayout                  : "com.daimajia.swipelayout:library:1.2.0@aar",
             recyclerviewAnimator         : 'jp.wasabeef:recyclerview-animators:2.2.6',
             jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',

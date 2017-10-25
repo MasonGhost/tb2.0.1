@@ -123,12 +123,12 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                     .setBold(true)
                     // optional, defaults to true
                     .setUnderlined(false)
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserInfoLongClickListener != null) {
                             mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d("-----dy------setOnClickListener----------------");
                         // single clicked
                         if (mOnUserInfoClickListener != null) {

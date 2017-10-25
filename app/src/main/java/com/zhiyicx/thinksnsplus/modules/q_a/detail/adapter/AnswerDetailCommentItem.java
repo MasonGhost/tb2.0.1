@@ -111,12 +111,12 @@ public class AnswerDetailCommentItem implements ItemViewDelegate<AnswerCommentLi
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserInfoLongClickListener != null) {
                             mOnUserInfoLongClickListener.onUserInfoLongClick(answerCommentListBean.getToUserInfoBean());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         // single clicked
                         if (mOnUserInfoClickListener != null) {
                             mOnUserInfoClickListener.onUserInfoClick(answerCommentListBean.getToUserInfoBean());

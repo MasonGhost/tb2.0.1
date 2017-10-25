@@ -269,8 +269,8 @@ public class ImageUtils {
         Glide.with(imageView.getContext())
                 .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                .placeholder(withBorder ?R.mipmap.pic_default_portrait2:R.mipmap.pic_default_portrait1)
-                .error(withBorder ?R.mipmap.pic_default_portrait2:R.mipmap.pic_default_portrait1)
+                .placeholder(withBorder ? R.mipmap.pic_default_portrait2 : R.mipmap.pic_default_portrait1)
+                .error(withBorder ? R.mipmap.pic_default_portrait2 : R.mipmap.pic_default_portrait1)
                 .transform(withBorder ?
                         new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
                                 .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
@@ -316,10 +316,10 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
-        String url = String.format(Locale.getDefault(),ApiConfig.APP_DOMAIN+ ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
-        if (!canLook) {
-            url = "zhiyicx";
-        }
+        String url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+//        if (!canLook) {
+//            url = "zhiyicx";
+//        }
         return imagePathConvertV2(url, token);
     }
 
@@ -331,6 +331,7 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
+        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());

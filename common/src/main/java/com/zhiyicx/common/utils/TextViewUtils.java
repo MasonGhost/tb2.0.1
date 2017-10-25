@@ -173,7 +173,7 @@ public class TextViewUtils {
     }
 
     private SpannableString getSpannableString(CharSequence temp) {
-        SpannableString spanableInfo = new SpannableString(temp);
+        SpannableString spanableInfo = SpannableString.valueOf(temp);
         if (mEndPos > temp.length()) {
             mEndPos = temp.length();
         }

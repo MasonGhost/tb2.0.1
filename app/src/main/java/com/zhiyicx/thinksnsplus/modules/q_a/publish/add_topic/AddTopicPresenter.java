@@ -50,23 +50,24 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
-            @Override
-            protected void onSuccess(List<QATopicBean> data) {
-                mRootView.onNetResponseSuccess(data, isLoadMore);
-            }
+        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow)
+                .subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+                    @Override
+                    protected void onSuccess(List<QATopicBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.onResponseError(throwable, isLoadMore);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
         addSubscrebe(subscribe);
     }
 

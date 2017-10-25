@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -103,10 +104,24 @@ public class JavaTest {
 
     @Test
     public void testArrays() {
-        String[] test=new String[2];
-        test[0]="aa";
-        test[1]="bb";
-       System.out.print(java.util.Arrays.toString(test).contains("aa"));
+        String[] test = new String[2];
+        test[0] = "aa";
+        test[1] = "bb";
+        System.out.print(java.util.Arrays.toString(test).contains("aa"));
+    }
+
+    @Test
+    public void testInt() {
+        String test = "sshttp://www.baidu.com  ddd sshttp://www.tym.com  ddd";
+        System.out.println(test.matches(MarkdownConfig.NETSITE_FORMAT_));
+//        Matcher matcher=
+        System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(test);
+        int lastIndex = 0;
+        while (matcher.find()) {
+            System.out.println(test.substring(matcher.start(), matcher.end()));
+        }
     }
 
     @Test
