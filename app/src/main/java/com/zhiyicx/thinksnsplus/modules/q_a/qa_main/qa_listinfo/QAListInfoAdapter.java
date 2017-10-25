@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -69,7 +71,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
         holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
-                , PayConfig.realCurrency2GameCurrency(infoBean.getAmount(),getRatio())));
+                , PayConfig.realCurrency2GameCurrency(infoBean.getAmount(), getRatio())));
         holder.setVisible(R.id.item_info_reward, infoBean.getAmount() > 0 ? View.VISIBLE : View.GONE);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
@@ -142,15 +144,17 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
             LogUtils.d(content);
             contentTextView.setOnClickListener(v -> contentView.performClick());
+            content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
             makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
-            ConvertUtils.stringLinkConvert(contentTextView, setLinks(contentView.getContext()));
+            ConvertUtils.stringLinkConvert(contentTextView, setLinks(infoBean.getAnswer().getBody(), content));
         }
 
     }
 
     private List<Link> setLinks(QAListInfoBean infoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(Pattern.compile("\\b\\d+\\b")).setTextColor(ContextCompat.getColor(getContext(), R.color
+        String reg = "\\b\\d+\\b";
+        Link followCountLink = new Link(Pattern.compile(reg)).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -162,7 +166,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private List<Link> setLinks() {
         List<Link> links = new ArrayList<>();
-        Link rewardMoneyLink = new Link(Pattern.compile("\\d+\\.\\d+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+        String reg = "\\d+\\.\\d+";
+        Link rewardMoneyLink = new Link(Pattern.compile(reg)).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -184,6 +189,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
     protected int getExcellentTag(boolean isExcellent) {
         return 0;
     }
+
     protected int getRatio() {
         return 0;
     }
@@ -218,15 +224,42 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     }
 
-    private List<Link> setLinks(Context context) {
+    private List<Link> setLinks(String realContentText, String replacedContentText) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(context.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(context, R.color
+        Link followCountLink = new Link(mContext.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(mContext, R.color
                 .normal_for_assist_text))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                         .general_for_hint))
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(followCountLink);
+
+        if (replacedContentText.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, realContentText)
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+
         return links;
     }
 
