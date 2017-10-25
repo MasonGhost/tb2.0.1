@@ -93,9 +93,9 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             Glide.with(mContext)
                     .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
                     .override(with, height)
-                    .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .placeholder(R.drawable.shape_default_image )
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());

@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.thinksnsplus.R;
@@ -81,8 +82,10 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             if (height < DEFALT_IMAGE_HEIGHT) {
                 height = DEFALT_IMAGE_HEIGHT;
             }
+            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
-            url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), with, height, proportion);
+            url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, imageBean.getFile(),
+                    canLook ? with : 0, canLook ? height : 0, proportion);
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
 
         } else {
@@ -92,7 +95,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             with = currentWith;
             if (option.outWidth == 0) {
                 height = with;
-                proportion=100;
+                proportion = 100;
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -122,12 +125,9 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
         view.setBackgroundColor(mContext.getResources().getColor(R.color.themeColor));
