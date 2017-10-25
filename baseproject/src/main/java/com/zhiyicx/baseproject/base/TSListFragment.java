@@ -114,7 +114,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initView(View rootView) {
-        mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshLayout);
+        mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
         mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
         RxView.clicks(mFlTopTipContainer)
