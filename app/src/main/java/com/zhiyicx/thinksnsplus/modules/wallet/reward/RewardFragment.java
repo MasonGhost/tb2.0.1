@@ -161,9 +161,9 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             e.printStackTrace();
         }
         if (amount.length > 0) {// 配置的打赏金额
-            mRechargeLables.add(Float.parseFloat(amount[0]));
-            mRechargeLables.add(Float.parseFloat(amount[1]));
-            mRechargeLables.add(Float.parseFloat(amount[2]));
+            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[0]), mPresenter.getRatio()));
+            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[1]), mPresenter.getRatio()));
+            mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[2]), mPresenter.getRatio()));
         } else {
             mRechargeLables.add(100f);
             mRechargeLables.add(500f);
@@ -180,13 +180,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
+                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2)));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
+                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1)));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
+                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0)));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -215,7 +215,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                         initStickTopInstructionsPop();
                     } else {
                         setSureBtEnable(false);
-                        mPresenter.reward(PayConfig.gameCurrency2RealCurrency(mRewardMoney,mPresenter.getRatio()), mRewardType, mSourceId);
+                        mPresenter.reward(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()), mRewardType, mSourceId);
                     }
                 });// 传入的是真实货币分单位
 
@@ -245,13 +245,15 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRewardMoney = mRechargeLables.get(0) / PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(0);
                             break;
                         case R.id.rb_two:
-                            mRewardMoney = mRechargeLables.get(1) / PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(1);
                             break;
                         case R.id.rb_three:
-                            mRewardMoney = mRechargeLables.get(2) / PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(2);
+                            break;
+                        default:
                             break;
                     }
                     if (checkedId != -1) {
