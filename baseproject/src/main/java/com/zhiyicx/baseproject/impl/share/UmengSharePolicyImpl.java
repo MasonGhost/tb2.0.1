@@ -360,28 +360,28 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                         RxView.clicks(holder.getConvertView())
                                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                                 .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                switch (position) {
-                                    case 0:
-                                        shareQQ((Activity) mContext, mOnShareCallbackListener);
-                                        break;
-                                    case 1:
-                                        shareZone((Activity) mContext, mOnShareCallbackListener);
-                                        break;
-                                    case 2:
-                                        shareWechat((Activity) mContext, mOnShareCallbackListener);
-                                        break;
-                                    case 3:
-                                        shareMoment((Activity) mContext, mOnShareCallbackListener);
-                                        break;
-                                    case 4:
-                                        shareWeibo((Activity) mContext, mOnShareCallbackListener);
-                                        break;
-                                    default:
-                                }
-                            }
-                        });
+                                    @Override
+                                    public void call(Void aVoid) {
+                                        switch (position) {
+                                            case 0:
+                                                shareQQ((Activity) mContext, mOnShareCallbackListener);
+                                                break;
+                                            case 1:
+                                                shareZone((Activity) mContext, mOnShareCallbackListener);
+                                                break;
+                                            case 2:
+                                                shareWechat((Activity) mContext, mOnShareCallbackListener);
+                                                break;
+                                            case 3:
+                                                shareMoment((Activity) mContext, mOnShareCallbackListener);
+                                                break;
+                                            case 4:
+                                                shareWeibo((Activity) mContext, mOnShareCallbackListener);
+                                                break;
+                                            default:
+                                        }
+                                    }
+                                });
 
                     }
                 })

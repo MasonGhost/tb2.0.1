@@ -14,7 +14,7 @@ android {
         manifestPlaceholders = [
                 TECENT_APPID: 1105978541, // 腾讯 QQ id
                 UMENG_APPKEY: "58d0998e9f06fd05680011f6", // 友盟三方key配置
-                AMAP_APPKEY : "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
+                AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
         ]
         multiDexEnabled true
 
@@ -24,7 +24,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
+        debug{
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -54,7 +54,6 @@ buildscript {
 }
 
 dependencies {
-
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
 

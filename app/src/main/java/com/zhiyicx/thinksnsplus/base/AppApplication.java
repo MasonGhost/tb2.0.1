@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.appupdate.AppUpdateManager;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -117,8 +118,6 @@ public class AppApplication extends TSApplication {
         registerActivityCallBacks();
         // ping++
         Pingpp.enableDebugLog(BuildConfig.USE_LOG);
-        // 友盟
-        MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
         // 通讯录
         Contacts.initialize(this);
 

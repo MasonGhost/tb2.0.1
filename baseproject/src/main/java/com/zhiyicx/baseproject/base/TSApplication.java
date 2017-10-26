@@ -2,8 +2,11 @@ package com.zhiyicx.baseproject.base;
 
 import android.text.TextUtils;
 
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -24,6 +27,9 @@ public abstract class TSApplication extends BaseApplication {
         // 处理app崩溃异常
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
+        // 友盟
+        UMShareAPI.get(this);
+        MobclickAgent.setDebugMode(BuildConfig.USE_LOG);
     }
 
     /**
@@ -33,7 +39,7 @@ public abstract class TSApplication extends BaseApplication {
      */
     @Override
     public String getBaseUrl() {
-        if (com.zhiyicx.common.BuildConfig.USE_DOMAIN_SWITCH) {
+        if (BuildConfig.USE_DOMAIN_SWITCH) {
             String domain = SharePreferenceUtils.getString(getContext(), SharePreferenceUtils.SP_DOMAIN);
             if (!TextUtils.isEmpty(domain)) {
                 ApiConfig.APP_DOMAIN = domain;
