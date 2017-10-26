@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -100,13 +101,16 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 });
         addSubscrebe(subscription);
 
-        mRepository.getInfoType().subscribe(data -> {
-            for (InfoTypeCatesBean myCates : data.getMy_cates()) {
-                myCates.setIsMyCate(true);
-            }
-            mInfoTypeBeanGreenDao.updateSingleData(data);
-            mRootView.setInfoType(data);
-        });
+        mRepository.getInfoType()
+                .subscribe(data -> {
+                    for (InfoTypeCatesBean myCates : data.getMy_cates()) {
+                        myCates.setIsMyCate(true);
+                    }
+                    mInfoTypeBeanGreenDao.updateSingleData(data);
+                    mRootView.setInfoType(data);
+                }, throwable -> {
+
+                });
     }
 
     @Override
@@ -117,50 +121,50 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 //        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
 //            mRootView.setUserCertificationInfo(userCertificationInfo);
 //        } else {
-            Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
-                    (systemConfigBean, userCertificationInfo1) -> {
-                        Map data = new HashMap();
-                        data.put("systemConfigBean", systemConfigBean);
-                        data.put("userCertificationInfo", userCertificationInfo1);
-                        return data;
-                    })
-                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("信息加载中..."))
-                    .doAfterTerminate(() -> mRootView.dismissSnackBar())
-                    .subscribe(new BaseSubscribeForV2<Map>() {
-                        @Override
-                        protected void onSuccess(Map zipData) {
-                            UserCertificationInfo data = (UserCertificationInfo) zipData.get("userCertificationInfo");
-                            SystemConfigBean systemConfigBean = (SystemConfigBean) zipData.get("systemConfigBean");
-                            mSystemRepository.saveComponentStatus(systemConfigBean, mContext);
-                            mUserCertificationInfoDao.saveSingleData(data);
-                            if (userInfoBean != null) {
-                                if (userInfoBean.getVerified() != null) {
-                                    userInfoBean.getVerified().setStatus((int) data.getStatus());
-                                } else {
-                                    VerifiedBean verifiedBean = new VerifiedBean();
-                                    verifiedBean.setStatus((int) data.getStatus());
-                                    userInfoBean.setVerified(verifiedBean);
-                                }
+        Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
+                (systemConfigBean, userCertificationInfo1) -> {
+                    Map data = new HashMap();
+                    data.put("systemConfigBean", systemConfigBean);
+                    data.put("userCertificationInfo", userCertificationInfo1);
+                    return data;
+                })
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage("信息加载中..."))
+                .doAfterTerminate(() -> mRootView.dismissSnackBar())
+                .subscribe(new BaseSubscribeForV2<Map>() {
+                    @Override
+                    protected void onSuccess(Map zipData) {
+                        UserCertificationInfo data = (UserCertificationInfo) zipData.get("userCertificationInfo");
+                        SystemConfigBean systemConfigBean = (SystemConfigBean) zipData.get("systemConfigBean");
+                        mSystemRepository.saveComponentStatus(systemConfigBean, mContext);
+                        mUserCertificationInfoDao.saveSingleData(data);
+                        if (userInfoBean != null) {
+                            if (userInfoBean.getVerified() != null) {
+                                userInfoBean.getVerified().setStatus((int) data.getStatus());
+                            } else {
+                                VerifiedBean verifiedBean = new VerifiedBean();
+                                verifiedBean.setStatus((int) data.getStatus());
+                                userInfoBean.setVerified(verifiedBean);
                             }
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
-                            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
-                            mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
-                            mRootView.setUserCertificationInfo(data);
                         }
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS, data);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
+                        mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
+                        mRootView.setUserCertificationInfo(data);
+                    }
 
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                            mRootView.showSnackSuccessMessage(message);
-                        }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackSuccessMessage(message);
+                    }
 
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
-                        }
-                    });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
 //        }
     }
 

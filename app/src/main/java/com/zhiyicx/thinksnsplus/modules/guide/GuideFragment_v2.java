@@ -125,8 +125,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     private void repleaseAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mTimer == null)
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mTimer == null) {
             return;
+        }
         mGuideBanner.setOnPageChangeListener(null);
         mGuideBanner.stopAutoPlay();
         mTimer.replease();
@@ -143,8 +144,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void onPageSelected(int position) {
-        if (mGuideBanner == null)
+        if (mGuideBanner == null) {
             return;
+        }
         mPosition = mGuideBanner.getCurrentItem();
         if (mPosition == mGuideBanner.getItemCount() - 1) {
             mGuideBanner.stopAutoPlay();
@@ -189,7 +191,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (isFinish) {
             return;
         }
-///        mGuideBanner.stopAutoPlay();
         CustomWEBActivity.startToWEBActivity(getActivity(), mBootAdverts.get(position)
                         .getAdvertFormat().getImage().getLink(),
                 mBootAdverts.get(position).getTitle(), ADVERT);

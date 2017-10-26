@@ -118,6 +118,11 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                             mAllAdvertLIstBeanGreendo.clearTable();
                         }
                     }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
                 });
         addSubscrebe(subscribe);
     }
