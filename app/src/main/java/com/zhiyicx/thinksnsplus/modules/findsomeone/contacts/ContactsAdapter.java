@@ -10,28 +10,23 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
-import com.vladsch.flexmark.ast.Text;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridAdapter;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -182,8 +177,8 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
                                     .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(holder.mIvFollow.getContext(), R.color
                                     .white))
                             : new GlideCircleTransform(holder.mIvFollow.getContext().getApplicationContext()))
-                    .error(R.mipmap.pic_default_portrait1)
-                    .placeholder(R.mipmap.pic_default_portrait1)
+                    .error(R.mipmap.pic_default_secret)
+                    .placeholder(R.mipmap.pic_default_secret)
                     .into(holder.mUserAvatarView.getIvAvatar());
             //        // 跳过
             RxView.clicks(holder.mTvInvite)

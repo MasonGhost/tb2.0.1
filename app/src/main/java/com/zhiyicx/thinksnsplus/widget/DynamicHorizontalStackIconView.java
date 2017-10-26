@@ -93,14 +93,17 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
             for (int i = 0; i < mImageViews.length; i++) {
                 // 需要显示的图片控件
                 if (i < dynamicDigListBeanList.size()) {
-                    DynamicDigListBean userInfoBean = dynamicDigListBeanList.get(i);
+                    DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
+                    int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
+
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_small_4dp), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(R.mipmap.pic_default_portrait2)
-                                    .errorPic(R.mipmap.pic_default_portrait2)
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelOffset(R
+                                            .dimen.spacing_small_4dp), ContextCompat.getColor(mContext, R.color.white)))
+                                    .placeholder(defaultAvatar)
+                                    .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
-                                    .url(ImageUtils.getUserAvatar(userInfoBean.getDiggUserInfo()))
+                                    .url(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
                                     .build()
                             );
                     mImageViews[i].setVisibility(VISIBLE);
@@ -123,14 +126,17 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
             for (int i = 0; i < mImageViews.length; i++) {
                 // 需要显示的图片控件
                 if (i < infoDigListBeanList.size()) {
-                    InfoDigListBean userInfoBean = infoDigListBeanList.get(i);
+                    InfoDigListBean dynamicDigListBean = infoDigListBeanList.get(i);
+                    int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
+
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(R.mipmap.pic_default_portrait2)
-                                    .errorPic(R.mipmap.pic_default_portrait2)
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
+                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                    .placeholder(defaultAvatar)
+                                    .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
-                                    .url(ImageUtils.getUserAvatar(userInfoBean.getDiggUserInfo()))
+                                    .url(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
                                     .build()
                             );
                     mImageViews[i].setVisibility(VISIBLE);
@@ -153,14 +159,17 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
             for (int i = 0; i < mImageViews.length; i++) {
                 // 需要显示的图片控件
                 if (i < answerDigListBeanList.size()) {
-                    AnswerDigListBean userInfoBean = answerDigListBeanList.get(i);
+                    AnswerDigListBean dynamicDigListBean = answerDigListBeanList.get(i);
+                    int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
+
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(R.mipmap.pic_default_portrait2)
-                                    .errorPic(R.mipmap.pic_default_portrait2)
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
+                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                    .placeholder(defaultAvatar)
+                                    .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
-                                    .url(ImageUtils.getUserAvatar(userInfoBean.getDiggUserInfo()))
+                                    .url(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
                                     .build()
                             );
                     mImageViews[i].setVisibility(VISIBLE);

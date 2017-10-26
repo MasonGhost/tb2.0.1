@@ -7,6 +7,6 @@
     android:layout_width="@dimen/spacing_large"
     android:layout_height="@dimen/spacing_large"
     android:gravity="center"
-    tools:src="@mipmap/pic_default_portrait1"
+    tools:src="@mipmap/pic_default_secret"
     app:pressShape="circle"
     />
