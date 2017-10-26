@@ -247,8 +247,8 @@ public class DynamicDetailHeader {
      * @param rewardType       reward type
      */
     public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
-                             RewardType rewardType,String moneyName) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType,moneyName);
+                             RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
     }
 
     private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
@@ -265,28 +265,28 @@ public class DynamicDetailHeader {
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        imageView.setLayoutParams(layoutParams);
+//        imageView.setLayoutParams(layoutParams);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             int part = (picWidth / imageBean.getWidth()) * 100;
             if (part > 100) {
                 part = 100;
             }
-            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
+            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
                     && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             if (!canLook) {
                 layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             }
-            imageView.setLayoutParams(layoutParams);
+//            imageView.setLayoutParams(layoutParams);
             DrawableRequestBuilder requestBuilder =
                     Glide.with(mContext)
-                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth,
-                                    height, part, AppApplication.getTOKEN()))
+                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                                    canLook ? height : 0, part, AppApplication.getTOKEN()))
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked);
+                            .error(R.drawable.shape_default_image);
             if (!canLook) {// 切换展位图防止闪屏
-                requestBuilder.placeholder(R.mipmap.pic_locked);
+                requestBuilder.placeholder(R.drawable.shape_default_image);
             }
             requestBuilder.into(imageView);
         } else {
@@ -398,7 +398,6 @@ public class DynamicDetailHeader {
     public interface OnImageClickLisenter {
         void onImageClick(int iamgePosition, double amount, int note);
     }
-
 
 
 }
