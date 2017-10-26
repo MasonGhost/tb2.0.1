@@ -63,7 +63,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String filePath) {
-        mRootView.setUpLoadHeadIconState(0);
+        mRootView.setUpLoadHeadIconState(0, "");
         Subscription subscription = mIUploadRepository.uploadAvatar(filePath)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -72,17 +72,17 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         currentLoginUserInfo.setAvatar(filePath);
                         mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
                         ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
-                        mRootView.setUpLoadHeadIconState(1);
+                        mRootView.setUpLoadHeadIconState(1, "");
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadHeadIconState(-1);
+                        mRootView.setUpLoadHeadIconState(-1,message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadHeadIconState(-1);
+                        mRootView.setUpLoadHeadIconState(-1, "");
                         LogUtils.e(throwable, "result");
                     }
                 });
@@ -109,7 +109,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(2);
+                            mRootView.setUpLoadHeadIconState(2, "");
                         }
                         EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
@@ -119,9 +119,9 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     protected void onFailure(String message, int code) {
                         // 修改失败，好尴尬
                         if (!isHeadIcon) {
-                            mRootView.setChangeUserInfoState(-1, "");
+                            mRootView.setChangeUserInfoState(-1, message);
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1);
+                            mRootView.setUpLoadHeadIconState(-1, message);
                         }
 
                     }
@@ -131,7 +131,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(-1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1);
+                            mRootView.setUpLoadHeadIconState(-1, "");
                         }
                     }
                 });

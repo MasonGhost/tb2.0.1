@@ -76,27 +76,10 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Override
     public void readNotification() {
-        StringBuilder notificationIds = new StringBuilder();
-        //代表未读
-        for (TSPNotificationBean tspNotificationBean:mRootView.getListDatas()){
-            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                notificationIds.append(tspNotificationBean.getId());
-                notificationIds.append(",");
-                tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
-            }
-        }
-        // stream() 部分机型并不支持 Java 8 的循环(魅族 M5 NOTE)
-//        mRootView.getListDatas().stream().filter(tspNotificationBean -> TextUtils.isEmpty(tspNotificationBean.getRead_at())).forEach(tspNotificationBean -> { //代表未读
-//            notificationIds.append(tspNotificationBean.getId());
-//            notificationIds.append(",");
-//            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
-//        });
+
         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
 
-        if (TextUtils.isEmpty(notificationIds.toString())) {
-            return;
-        }
-        Subscription subscribe = mMessageRepository.makeNotificationReaded(notificationIds.toString())
+        Subscription subscribe = mMessageRepository.makeNotificationAllReaded()
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

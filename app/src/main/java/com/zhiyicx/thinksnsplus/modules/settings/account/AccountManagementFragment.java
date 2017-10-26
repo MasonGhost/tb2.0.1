@@ -332,10 +332,5 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
-    }
 
 }

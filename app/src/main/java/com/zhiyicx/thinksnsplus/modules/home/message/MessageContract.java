@@ -2,14 +2,17 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
 import java.util.List;
 
+import retrofit2.http.GET;
 import rx.Observable;
 
 /**
@@ -85,6 +88,15 @@ public interface MessageContract {
          */
         Observable<Void> ckeckUnreadNotification();
 
+
+        /**
+         * 获取用户未读消息
+         *
+         * @return
+         * @see {https://slimkit.github.io/plus-docs/v2/core/users/unread#用户未读消息}
+         */
+        Observable<UnReadNotificaitonBean> getUnreadNotificationData();
+
         /**
          * 获取通知列表
          *
@@ -111,6 +123,13 @@ public interface MessageContract {
          * @return
          */
         Observable<Object> makeNotificationReaded(String notificationId);
+
+        /**
+         * 标记所有通知阅读
+         *
+         * @return
+         */
+        Observable<Object> makeNotificationAllReaded();
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -119,12 +138,6 @@ public interface MessageContract {
         MessageItemBean updateLikeItemData();
 
         MessageItemBean updateReviewItemData();
-
-        List<TSPNotificationBean> getReviewListData();
-
-        List<TSPNotificationBean> getCommentsNoti();
-
-        List<TSPNotificationBean> getDiggNoti();
 
         /**
          * 刷新是否显示底部红点
@@ -148,25 +161,11 @@ public interface MessageContract {
         void getSingleConversation(int cid);
 
         /**
-         * 通过 key 标记消息已读
-         *
-         * @param key
-         */
-        void readMessageByKey(String key);
-
-        /**
          * 检查当前消息记录
          */
         void handleFlushMessage();
 
-        /**
-         * ts 助手配置
-         */
-        String checkTShelper(long user_id);
 
-        /**
-         * 检查消息未读数
-         */
         void checkUnreadNotification();
     }
 }

@@ -1493,4 +1493,13 @@ public class JavaTest {
     }
 
 
+    @Test
+    public void testTimestrEques() {
+        String s1 = "2003-12-12   11:30:24";
+        String s2 = "2004-04-01   13:31:40";
+        int res = s1.compareTo(s2);
+        System.out.println("res = " + res);
+        Assert.assertTrue(res < 0);
+    }
+
 }

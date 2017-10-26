@@ -35,8 +35,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter,
         CommentedBean> implements MessageCommentContract.View, InputLimitView
         .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
-    public static final String BUNDLE_COMMENTS_LIST_DATA="comment_list_data";
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_toolbar_center)
@@ -59,14 +57,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(getArguments()!=null){
-
-        }
-    }
-
-    @Override
     protected boolean showToolbar() {
         return false;
     }
@@ -85,16 +75,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input_and_toolbar;
     }
-//
-//    @Override
-//    protected boolean isRefreshEnable() {
-//        return false;
-//    }
-//
-//    @Override
-//    protected boolean isLoadingMoreEnable() {
-//        return false;
-//    }
 
     @Override
     protected String setCenterTitle() {

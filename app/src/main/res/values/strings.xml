@@ -70,9 +70,9 @@
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
     <string name="all">全部</string>
-    <string name="edit_userinfo_success">信息修改成功</string>
-    <string name="edit_userinfo_failure">信息修改失败</string>
-    <string name="edit_userinfo_ing">信息修改中&#8230;</string>
+    <string name="edit_userinfo_success">修改成功</string>
+    <string name="edit_userinfo_failure">修改失败</string>
+    <string name="edit_userinfo_ing">修改中&#8230;</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
     <string name="update_head_ing">头像上传中&#8230;</string>
@@ -678,8 +678,8 @@
     <string name="comment_format_news">%s评论了你的文章</string>
     <string name="comment_format_questions">%s评论了你的问题</string>
     <string name="comment_format_questions_answer">%s评论了你的回答</string>
-    <string name="new_apply_data">新的申请请及时查看</string>
-    <string name="no_apply_data">暂无未查看的申请</string>
+    <string name="new_apply_data">未审核的信息请及时处理</string>
+    <string name="no_apply_data">暂无未审核的申请</string>
     <string-array name="personal_dynamic_typpe">
         <item>全部动态</item>
         <item>付费动态</item>

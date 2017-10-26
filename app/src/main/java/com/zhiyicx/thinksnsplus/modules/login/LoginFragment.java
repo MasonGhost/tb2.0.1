@@ -202,13 +202,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
-    }
-
     @Override
     protected void initData() {
         mAccountList = new ArrayList<>();
@@ -401,6 +394,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            showSnackLoadingMessage(getString(R.string.loading_state));
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:

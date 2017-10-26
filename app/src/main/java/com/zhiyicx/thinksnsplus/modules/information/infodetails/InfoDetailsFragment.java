@@ -23,6 +23,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -66,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener, BaseWebLoad.OnWebLoadListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
@@ -154,7 +155,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
-        closeLoadingView();
+//        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
@@ -297,6 +298,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initHeaderView() {
         mInfoDetailHeader = new InfoDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mInfoDetailHeader.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -451,33 +453,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
-        @Override
-        public void onWebImageLongClick(String mLongClickUrl) {
-
-        }
-
-        @Override
-        public void onWebImageClick(String url, List<String> mImageList) {
-
-        }
-
-        @Override
-        public void onLoadFinish() {
-            if (isFirstIn) {
-                closeLoadingView();
-            }
-            isFirstIn = false;
-        }
-
-        @Override
-        public void onLoadStart() {
-            if (isFirstIn) {
-                showLoadingView();
-            }
-
-        }
+    @Override
+    public void onLoadFinish() {
+        closeLoadingView();
     }
+
 
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override

@@ -25,11 +25,11 @@
         android:id="@+id/ll_dynamic_photos_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:orientation="vertical"
         android:visibility="gone"/>
     <!--动态内容-->
     <TextView
+        android:layout_marginTop="@dimen/spacing_large"
         android:id="@+id/tv_dynamic_content"
         android:layout_width="match_parent"
         android:paddingLeft="@dimen/spacing_normal"

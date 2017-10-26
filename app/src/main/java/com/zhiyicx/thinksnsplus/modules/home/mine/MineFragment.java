@@ -138,7 +138,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        reLoadUserInfo(isVisibleToUser);
+    }
+
+    private void reLoadUserInfo(boolean isVisibleToUser) {
         if (isVisibleToUser && mPresenter != null) {
+            mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
         }
     }
@@ -146,7 +151,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.getUserInfoFromDB();
+        reLoadUserInfo(true);
     }
 
     @Override
@@ -218,7 +223,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                PersonalCenterFragment.startToPersonalCenter(getContext(),mUserInfoBean);
+                PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
             case R.id.bt_my_info:
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));
@@ -334,7 +339,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
             } else if (data.getStatus() == 0) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
-            } else if (data.getStatus() == 2){
+            } else if (data.getStatus() == 2) {
                 mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {

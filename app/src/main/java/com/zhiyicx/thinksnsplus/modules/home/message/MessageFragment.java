@@ -23,19 +23,16 @@ import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
-import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewFragment.REVIEW_LIST;
 
 /**
  * @Describe 消息页面
@@ -100,6 +97,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();
+        // 通知的未读数检查
+        mPresenter.checkUnreadNotification();
+        // 除了通知的未读数用户信息获取
         mPresenter.handleFlushMessage();
     }
 
@@ -186,7 +186,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     toCommentList();
-                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS);
                     mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateCommnetItemData());
 
@@ -197,7 +196,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     toLikeList();
-                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS);
                     mPresenter.updateLikeItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateLikeItemData());
                 });
@@ -207,7 +205,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     toReviewList();
-                    mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
                     mPresenter.updateReviewItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateReviewItemData());
                 });
@@ -279,7 +276,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toCommentList() {
         Intent to = new Intent(getActivity(), MessageCommentActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getCommentsNoti()));
         to.putExtras(bundle);
         startActivity(to);
     }
@@ -290,13 +286,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toLikeList() {
         Intent to = new Intent(getActivity(), MessageLikeActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getDiggNoti()));
+        to.putExtras(bundle);
         startActivity(to);
     }
 
     private void toReviewList() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(REVIEW_LIST, new ArrayList<>(mPresenter.getReviewListData()));
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
         to.putExtras(bundle);
         startActivity(to);
