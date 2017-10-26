@@ -165,7 +165,6 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
     public void updateCertification(Bundle bundle) {
-        // 发布成功
         if (bundle != null) {
             UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
             mRootView.updateCertification(info);

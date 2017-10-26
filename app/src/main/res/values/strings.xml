@@ -7,6 +7,7 @@
     <string name="message">消息</string>
     <string name="mine">我</string>
     <string name="app_rule">点击下一步即代表同意《ThinkSNS+用户使用协议》</string>
+    <string name="app_rule_register">点击注册即代表同意《ThinkSNS+用户使用协议》</string>
     <!--首页-->
     <string name="hot">热门</string>
     <string name="the_last">最新</string>

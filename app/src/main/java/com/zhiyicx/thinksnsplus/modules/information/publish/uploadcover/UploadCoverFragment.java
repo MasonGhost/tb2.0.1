@@ -271,14 +271,14 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean
-                        .getAmout()), mPresenter.getGoldName()))
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mInfoPublishBean
+                        .getAmout(),mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
-                        .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
+                        .realCurrency2GameCurrency(mInfoPublishBean.getAmout(),mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
 ///                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);

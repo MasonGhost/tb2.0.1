@@ -12,7 +12,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.third_platform.bind.BindOldAccountActivity;
 import com.zhiyicx.thinksnsplus.modules.third_platform.complete.CompleteAccountActivity;
@@ -54,12 +53,7 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
     @Override
     protected void initData() {
-        boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
-                || mSystemConfigBean.getRegisterSettings().getType() == null
-                || SystemConfig.REGITER_MODE_THIRDPART.equals(mSystemConfigBean.getRegisterSettings().getType())
-                || SystemConfig.REGITER_MODE_ALL.equals(mSystemConfigBean.getRegisterSettings().getType());
 
-        mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
     }
 
     @Override
@@ -84,6 +78,12 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
                     .alpha(0.8f)
                     .itemListener(this)
                     .build();
+
+            boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
+                    || mSystemConfigBean.getRegisterSettings().getType() == null
+                    || SystemConfig.REGITER_MODE_THIRDPART.equals(mSystemConfigBean.getRegisterSettings().getType())
+                    || SystemConfig.REGITER_MODE_ALL.equals(mSystemConfigBean.getRegisterSettings().getType());
+            mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
         }
         mPopupWindow.show();
     }

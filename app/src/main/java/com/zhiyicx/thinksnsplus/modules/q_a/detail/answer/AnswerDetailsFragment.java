@@ -432,12 +432,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
         boolean isInvited = answerInfoBean.getInvited() == 1;// 是否该回答是被邀请的人的回答。
 
-
-//        .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.qa_question_answer_adopt : R.string.empty)
-//                : questionIsMine ? R.string.qa_question_answer_adopting : R.string.empty))
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(answerIsMine && !isMineAdopted && !isInvited ? getString(R.string.info_delete) : "")
-                .item2Str(getString(R.string.empty))
+                .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.empty : R.string.empty)
+                        : questionIsMine ? R.string.qa_question_answer_adopting : R.string.empty))
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
                 .item4Str(getString(answerIsMine && !isMineAdopted && !isInvited ? R.string.edit : R.string.empty))

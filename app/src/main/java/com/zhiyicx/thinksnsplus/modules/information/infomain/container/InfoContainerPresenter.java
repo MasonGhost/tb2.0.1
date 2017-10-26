@@ -114,9 +114,9 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         UserCertificationInfo userCertificationInfo = mUserCertificationInfoDao.getInfoByUserId();
 
-        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
-            mRootView.setUserCertificationInfo(userCertificationInfo);
-        } else {
+//        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
+//            mRootView.setUserCertificationInfo(userCertificationInfo);
+//        } else {
             Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
                     (systemConfigBean, userCertificationInfo1) -> {
                         Map data = new HashMap();
@@ -161,7 +161,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                             mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
                         }
                     });
-        }
+//        }
     }
 
     @Override

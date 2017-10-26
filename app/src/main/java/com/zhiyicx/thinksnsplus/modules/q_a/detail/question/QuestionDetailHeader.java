@@ -95,7 +95,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         mIvAddAnswer = (ImageView) mQuestionHeaderView.findViewById(R.id.iv_add_answer);
     }
 
-    public void setDetail(QAListInfoBean qaListInfoBean, double amount) {
+    public void setDetail(QAListInfoBean qaListInfoBean, double amount,int ratio) {
         if (qaListInfoBean == null) {
             return;
         }
@@ -114,7 +114,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -125,14 +125,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
         }
-        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount);
+        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount,ratio);
         initListener();
         // 是否关注了这个话题
-        updateFollowState(qaListInfoBean);
+        updateFollowState(qaListInfoBean,ratio);
         // 答案条数
         updateAnswerView(qaListInfoBean);
         // 悬赏信息
-        updateRewardType(qaListInfoBean);
+        updateRewardType(qaListInfoBean,ratio);
         // 是否已经回答了这个问题
         updateIsAddedAnswerState(qaListInfoBean);
     }
@@ -154,11 +154,11 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      *
      * @param qaListInfoBean bean
      */
-    public void updateRewardType(QAListInfoBean qaListInfoBean) {
+    public void updateRewardType(QAListInfoBean qaListInfoBean,int ratio) {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -180,11 +180,11 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      *
      * @param qaListInfoBean bean
      */
-    public void updateFollowState(QAListInfoBean qaListInfoBean) {
+    public void updateFollowState(QAListInfoBean qaListInfoBean,int ratio) {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -205,9 +205,9 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     /**
      * 更新围观信息
      */
-    public void updateOutLook(boolean onlook, double amount) {
+    public void updateOutLook(boolean onlook, double amount,int ratio) {
         mTvQuestionOnlookAmount.setVisibility(onlook && amount > 0 ? View.VISIBLE : View.GONE);
-        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrencyFen2Yuan(amount)));
+        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrency2GameCurrency(amount,ratio)));
     }
 
     /**

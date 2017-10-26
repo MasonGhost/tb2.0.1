@@ -83,7 +83,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             if (with * height == 0) {// 就怕是 0
                 with = height = DEFALT_IMAGE_HEIGHT;
             }
-            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
             if (height < DEFALT_IMAGE_HEIGHT) {
                 height = DEFALT_IMAGE_HEIGHT;
@@ -91,11 +91,12 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? with : 0, canLook ? height : 0
+                            , proportion, AppApplication.getTOKEN()))
                     .override(with, height)
-                    .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
@@ -104,7 +105,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
             if (option.outWidth == 0) {
                 height = with;
-                proportion=100;
+                proportion = 100;
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;

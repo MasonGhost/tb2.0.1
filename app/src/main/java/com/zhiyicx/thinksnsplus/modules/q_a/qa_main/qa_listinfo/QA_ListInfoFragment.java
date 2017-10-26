@@ -166,6 +166,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
             }
+
+            @Override
+            protected int getRatio() {
+                return mPresenter.getRatio();
+            }
         };
         adapter.setSpanTextClickListener(this);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -233,14 +238,14 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
-                        PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())
+                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio())
                         ,mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
-                        .getOnlookQuestion())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
+                        .getOnlookQuestion(),mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();
