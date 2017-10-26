@@ -113,7 +113,6 @@ dependencies {
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
     releaseCompile developmentDependencies.leakCanaryRelease
-    testCompile developmentDependencies.leakCanaryTest
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {

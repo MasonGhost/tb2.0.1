@@ -42,7 +42,7 @@ ext {
     runnerVersion = '0.5'
 
     //Development
-    leakCanaryVersion = '1.5'
+    leakCanaryVersion = '1.5.4'
 
     //conflict package
     guavaVwesion = '19.0'
@@ -171,6 +171,5 @@ ext {
     developmentDependencies = [
             leakCanaryDebug  : "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
             leakCanaryRelease: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
-            leakCanaryTest   : "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
     ]
 }

@@ -199,8 +199,7 @@ public class ZipHelper {
                 string.append(new String(data, 0, bytesRead, "UTF-8"));
             }
             return string.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }  finally {
             okhttp3.internal.Util.closeQuietly(gis);
             okhttp3.internal.Util.closeQuietly(is);

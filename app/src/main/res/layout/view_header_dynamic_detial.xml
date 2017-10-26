@@ -11,8 +11,9 @@
     <com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView
         android:id="@+id/detail_dig_view"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_normal_large">
+        android:paddingTop="@dimen/spacing_normal_large">
     </com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView>
 
     <include
