@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -65,6 +66,12 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode,resultCode,data,this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
     }
 }

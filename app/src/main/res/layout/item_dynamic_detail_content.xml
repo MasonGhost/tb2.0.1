@@ -36,7 +36,6 @@
         android:paddingRight="@dimen/spacing_normal"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
-        android:paddingBottom="@dimen/spacing_normal_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"
         tools:text="北京时间3月1日，名记马克-斯坦推特爆料，刚刚与费城76人完成买断的安德鲁-博古特，正式确认将与克利夫兰骑士签约。

@@ -174,8 +174,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onStart() {
         super.onStart();
-        if (mDynamicBannerHeader != null)
+        if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
+        }
     }
 
     @Override

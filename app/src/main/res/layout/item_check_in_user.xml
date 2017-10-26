@@ -13,7 +13,7 @@
         android:layout_height="@dimen/spacing_large"
         android:gravity="center"
         app:pressShape="circle"
-        tools:src="@mipmap/pic_default_portrait1"
+        tools:src="@mipmap/pic_default_secret"
         />
     <TextView
         android:id="@+id/tv_rank"

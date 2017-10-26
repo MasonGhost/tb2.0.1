@@ -21,9 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            buildConfigField "boolean", "USE_DOMAIN_SWITCH", "true"  // 域名切换开关
             buildConfigField "boolean", "USE_LOG", "true"
             buildConfigField "boolean", "USE_CANARY", "true"
-            buildConfigField "boolean", "USE_ADVERT", "false"
+            buildConfigField "boolean", "USE_ADVERT", "true"
             buildConfigField "boolean", "USE_TOLL", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -112,7 +113,6 @@ dependencies {
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
     releaseCompile developmentDependencies.leakCanaryRelease
-    testCompile developmentDependencies.leakCanaryTest
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {

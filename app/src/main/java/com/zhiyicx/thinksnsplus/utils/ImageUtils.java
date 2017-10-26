@@ -2,19 +2,12 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.data.DataFetcher;
@@ -25,27 +18,19 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.SpanTextClickable;
 
 import java.io.InputStream;
 import java.util.Locale;
@@ -90,7 +75,9 @@ public class ImageUtils {
      * @param imageView    展示的控件
      */
     public static void loadUserCover(UserInfoBean userInfoBean, ImageView imageView) {
-        if (checkImageContext(imageView)) return;
+        if (checkImageContext(imageView)) {
+            return;
+        }
 
         long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
 
@@ -266,11 +253,12 @@ public class ImageUtils {
             }
             laste_request_time = System.currentTimeMillis();
         }
+        int defaultAvatar = getDefaultAvatar(userInfoBean);
         Glide.with(imageView.getContext())
                 .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                .placeholder(withBorder ? R.mipmap.pic_default_portrait2 : R.mipmap.pic_default_portrait1)
-                .error(withBorder ? R.mipmap.pic_default_portrait2 : R.mipmap.pic_default_portrait1)
+                .placeholder(withBorder ? defaultAvatar : defaultAvatar)
+                .error(withBorder ? defaultAvatar : defaultAvatar)
                 .transform(withBorder ?
                         new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
                                 .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
@@ -308,6 +296,34 @@ public class ImageUtils {
     }
 
     /**
+     * 获取用户默认头像
+     *
+     * @param userInfoBean user's  info
+     * @return
+     */
+    public static int getDefaultAvatar(UserInfoBean userInfoBean) {
+        int defaultAvatar;
+        switch (userInfoBean.getSex()) {
+
+            case UserInfoBean.FEMALE:
+                defaultAvatar = R.mipmap.pic_default_woman;
+                break;
+            case UserInfoBean.MALE:
+                defaultAvatar = R.mipmap.pic_default_man;
+
+                break;
+            case UserInfoBean.SECRET:
+                defaultAvatar = R.mipmap.pic_default_secret;
+
+                break;
+            default:
+                defaultAvatar = R.mipmap.pic_default_secret;
+
+        }
+        return defaultAvatar;
+    }
+
+    /**
      * 图片地址转换 V2 api
      *
      * @param canLook 是否可查看
@@ -317,9 +333,6 @@ public class ImageUtils {
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
         String url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
-//        if (!canLook) {
-//            url = "zhiyicx";
-//        }
         return imagePathConvertV2(url, token);
     }
 
@@ -355,86 +368,5 @@ public class ImageUtils {
         return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
-    public static class V2ImageHeaderedLoader extends BaseGlideUrlLoader<String> {
-        final Headers HEADERS;
-
-        public V2ImageHeaderedLoader(Context context, String token) {
-            super(context);
-            HEADERS = new LazyHeaders.Builder()
-                    .addHeader("Authorization", token)
-                    .build();
-        }
-
-        @Override
-        protected String getUrl(String model, int width, int height) {
-            LogUtils.e("getUrl::" + model);
-            return model;
-        }
-
-        @Override
-        public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
-            return super.getResourceFetcher(model, width, height);
-        }
-
-        @Override
-        protected Headers getHeaders(String model, int width, int height) {
-            return HEADERS;
-        }
-
-        public static class StreamFactory implements ModelLoaderFactory<String, InputStream> {
-            String token;
-
-            public StreamFactory(String token) {
-                this.token = token;
-            }
-
-            @Override
-            public StreamModelLoader<String> build(Context context, GenericLoaderFactory factories) {
-                return new V2ImageHeaderedLoader(context, token);
-            }
-
-            @Override
-            public void teardown() { /* nothing to free */ }
-        }
-    }
-
-    private static class QAHolder {
-        CircleImageDrawable headImage;
-        int tag;
-        String content;
-
-        public QAHolder(int tag, CircleImageDrawable headImage, String content) {
-            this.headImage = headImage;
-            this.tag = tag;
-            this.content = content;
-        }
-
-        public QAHolder() {
-        }
-
-        public CircleImageDrawable getHeadImage() {
-            return headImage;
-        }
-
-        public void setHeadImage(CircleImageDrawable headImage) {
-            this.headImage = headImage;
-        }
-
-        public int getTag() {
-            return tag;
-        }
-
-        public void setTag(int tag) {
-            this.tag = tag;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-    }
 
 }
