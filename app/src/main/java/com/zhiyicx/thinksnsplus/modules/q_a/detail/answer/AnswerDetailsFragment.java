@@ -157,7 +157,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen,
-                mRewardsCountBean, RewardType.QA_ANSWER,mPresenter.getGoldName());
+                mRewardsCountBean, RewardType.QA_ANSWER, mPresenter.getGoldName());
     }
 
     @Override
@@ -521,4 +521,28 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         }
 
     }
+
+    @Override
+    public void onPause() {
+        mAnswerDetailHeaderView.getContentWebView().onPause();
+        mAnswerDetailHeaderView.getContentWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mAnswerDetailHeaderView.getContentWebView().onResume();
+        mAnswerDetailHeaderView.getContentWebView().resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAnswerDetailHeaderView.destroyedWeb();
+    }
+
+
 }

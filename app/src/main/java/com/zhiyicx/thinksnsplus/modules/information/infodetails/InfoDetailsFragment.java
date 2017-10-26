@@ -502,4 +502,29 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         }
 
     }
+
+    @Override
+    public void onPause() {
+        mInfoDetailHeader.getContentWebView().onPause();
+        mInfoDetailHeader.getContentWebView().pauseTimers();
+        mInfoDetailHeader.getContentSubWebView().onPause();
+        mInfoDetailHeader.getContentSubWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mInfoDetailHeader.getContentWebView().onResume();
+        mInfoDetailHeader.getContentWebView().resumeTimers();
+        mInfoDetailHeader.getContentSubWebView().onResume();
+        mInfoDetailHeader.getContentSubWebView().resumeTimers();
+        super.onResume();
+
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mInfoDetailHeader.destroyedWeb();
+    }
 }

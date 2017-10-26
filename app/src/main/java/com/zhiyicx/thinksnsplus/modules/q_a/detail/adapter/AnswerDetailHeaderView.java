@@ -345,9 +345,17 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
         mAnswerHeaderEventListener = answerHeaderEventListener;
     }
 
+    public MarkdownView getContentWebView() {
+        return mContent;
+    }
+
     public interface AnswerHeaderEventListener {
         void userFollowClick(boolean isChecked);
 
         void clickUserInfo(UserInfoBean user);
+    }
+    public void destroyedWeb(){
+        destryWeb(mContent);
+
     }
 }

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -163,6 +164,7 @@ public class InfoDetailHeaderView extends BaseWebLoad{
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setWebChromeClient(mWebChromeClient);
+
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -440,5 +442,16 @@ public class InfoDetailHeaderView extends BaseWebLoad{
         mRvRelateInfo.setVisibility(visible);
     }
 
+    public void destroyedWeb(){
+        destryWeb(mContent);
+        destryWeb(mContentSubject);
 
+    }
+
+    public MarkdownView getContentWebView() {
+        return mContent;
+    }
+    public MarkdownView getContentSubWebView() {
+        return mContentSubject;
+    }
 }
