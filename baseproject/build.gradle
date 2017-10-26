@@ -14,8 +14,9 @@ android {
         manifestPlaceholders = [
                 TECENT_APPID: 1105978541, // 腾讯 QQ id
                 UMENG_APPKEY: "58d0998e9f06fd05680011f6", // 友盟三方key配置
-                AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
+                AMAP_APPKEY : "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
         ]
+        multiDexEnabled true
 
     }
     buildTypes {
@@ -23,7 +24,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug{
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -53,9 +54,12 @@ buildscript {
 }
 
 dependencies {
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -71,10 +75,7 @@ dependencies {
     annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
-    // 刷新:三方库compat版本过高，使用主工程的版本
-//    compile(dataDependences.refresh) {
-//        exclude group: 'com.android.support', module: 'support-compat'
-//    }
+
     compile dataDependences.swipeLayout
     compile(dataDependences.recyclerviewAnimator) {
         exclude group: 'com.android.support', module: 'appcompat-v7'

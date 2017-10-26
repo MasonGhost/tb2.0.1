@@ -218,6 +218,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                     e.printStackTrace();
                                 }
                                 break;
+                            default:
                         }
                     }
                 });
