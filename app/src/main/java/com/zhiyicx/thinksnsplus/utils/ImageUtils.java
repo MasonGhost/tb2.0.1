@@ -10,14 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.Headers;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
@@ -32,7 +26,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
-import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -153,7 +146,9 @@ public class ImageUtils {
      * @param withBorder   是否需要边框
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
-        if (checkImageContext(imageView)) return;
+        if (checkImageContext(imageView)) {
+            return;
+        }
 
         loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
         if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
@@ -187,7 +182,9 @@ public class ImageUtils {
      * @param anonymity    是否匿名展示
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder, boolean anonymity) {
-        if (checkImageContext(imageView)) return;
+        if (checkImageContext(imageView)) {
+            return;
+        }
 
         FilterImageView imageView1 = imageView.getIvAvatar();
         imageView1.setIsText(anonymity);
@@ -303,6 +300,9 @@ public class ImageUtils {
      */
     public static int getDefaultAvatar(UserInfoBean userInfoBean) {
         int defaultAvatar;
+        if (userInfoBean == null) {
+            return R.mipmap.pic_default_secret;
+        }
         switch (userInfoBean.getSex()) {
 
             case UserInfoBean.FEMALE:
@@ -314,7 +314,6 @@ public class ImageUtils {
                 break;
             case UserInfoBean.SECRET:
                 defaultAvatar = R.mipmap.pic_default_secret;
-
                 break;
             default:
                 defaultAvatar = R.mipmap.pic_default_secret;
