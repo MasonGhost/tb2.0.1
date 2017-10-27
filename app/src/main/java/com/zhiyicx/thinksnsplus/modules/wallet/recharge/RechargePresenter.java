@@ -40,11 +40,11 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Override
     public void getPayStr(String channel, double amount) {
-        if (mRootView.getMoney() != (int) mRootView.getMoney()) {
+        if (mRootView.getMoney() != (int) mRootView.getMoney() && mRootView.useInputMonye()) {
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mSystemRepository.getPayStr(channel,(long) amount).doOnSubscribe(() -> {
+        mSystemRepository.getPayStr(channel, (long) amount).doOnSubscribe(() -> {
             mRootView.configSureBtn(false);
             mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
         }).subscribe(new BaseSubscribeForV2<PayStrBean>() {

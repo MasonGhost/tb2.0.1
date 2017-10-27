@@ -184,6 +184,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                 }, throwable -> throwable.printStackTrace());
     }
 
+    @Override
     public Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(Long answer_id) {
         return mQAClient.payForOnlook(answer_id)
                 .subscribeOn(Schedulers.io())
@@ -207,7 +208,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-//        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);// 暂时屏蔽掉回答的草稿
+        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);
     }
 
     @Override

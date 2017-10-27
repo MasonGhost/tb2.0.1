@@ -110,7 +110,6 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     @Override
     protected String setRightTitle() {
-//        mToolbarRight.setTextColor(getColor(R.color.themeColor));
         return getString(R.string.dynamic_send_toll_reset);
     }
 
@@ -210,7 +209,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mRewardMoney != (int) mRewardMoney) {
+                    if (!mEtInput.getText().toString().isEmpty() && mRewardMoney != (int) mRewardMoney) {
                         DeviceUtils.hideSoftKeyboard(getContext(), mBtTop);
                         initStickTopInstructionsPop();
                     } else {

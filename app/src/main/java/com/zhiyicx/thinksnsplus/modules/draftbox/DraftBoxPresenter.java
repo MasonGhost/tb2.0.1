@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
@@ -53,6 +54,9 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
         if (draftBean instanceof QAPublishBean) {
             QAPublishBean deleteData = (QAPublishBean) draftBean;
             mQAPublishBeanGreenDaoImpl.deleteSingleCache(deleteData);
+        } else if (draftBean instanceof AnswerDraftBean) {
+            AnswerDraftBean deleteData1 = (AnswerDraftBean) draftBean;
+            mAnswerDraftBeanGreenDaoImpl.deleteSingleCache(deleteData1);
         }
     }
 
