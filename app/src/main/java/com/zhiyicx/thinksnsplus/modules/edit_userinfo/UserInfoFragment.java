@@ -150,7 +150,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
 //        initCityPickerView();
         // 这个是和其他反的
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
 

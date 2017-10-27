@@ -129,11 +129,14 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
-        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
-            super.onBackPressed();
-        } else {
-            initEditWarningPop();
-        }
+
+        super.onBackPressed();
+
+//        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
+//            super.onBackPressed();
+//        } else {
+//            initEditWarningPop();
+//        }
     }
 
     /**

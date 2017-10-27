@@ -96,7 +96,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     @Override
     protected void initView(View rootView) {
         // 适配手机无法显示输入焦点
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
         mType = getArguments().getInt(BUNDLE_TYPE);
