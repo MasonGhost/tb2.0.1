@@ -249,6 +249,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    mPresenter.deleteQuestion(mDraftQuestionCopy);
                     saveQuestion();
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
