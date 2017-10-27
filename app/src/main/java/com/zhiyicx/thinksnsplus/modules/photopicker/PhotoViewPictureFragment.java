@@ -88,6 +88,9 @@ public class PhotoViewPictureFragment extends TSFragment {
                 .into(new ImageViewTarget<GlideDrawable>(ivAnimation) {
                     @Override
                     protected void setResource(GlideDrawable glideDrawable) {
+                        if(ivAnimation==null){
+                            return;
+                        }
                         LogUtils.i(TAG + "setResource");
                         ivAnimation.setImageDrawable(glideDrawable);
                         mPhotoViewAttacher.update();

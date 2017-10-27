@@ -493,8 +493,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             return;
         }
         switch (jpushMessageBean.getType()) {
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im",
-                // "uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+            // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im",
+            // "uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM:
                 handleIMPush(jpushMessageBean);
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED_CONTENT:
@@ -502,6 +503,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             default:
                 // 服务器同步未读评论和点赞消息
                 handleFlushMessage();
+                checkUnreadNotification();
                 break;
 
 
@@ -542,8 +544,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     /**
                      * 设置未读数
                      */
-                    mItemBeanComment.setUnReadMessageNums(data.getUnread_comments_count());
-                    mItemBeanDigg.setUnReadMessageNums(data.getUnread_likes_count());
+                    mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
+                    mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
                     int pinnedNums = 0;
                     if (data.getPinneds() != null && (data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount()) > 0) {
                         pinnedNums = data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount();
@@ -556,12 +558,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     /**
                      * 设置时间
                      */
-                    mItemBeanComment.getConversation().setLast_message_time(data.getComments() == null || data.getComments().isEmpty() ? System
-                            .currentTimeMillis() :
+                    mItemBeanComment.getConversation().setLast_message_time(data.getComments() == null || data.getComments().isEmpty() ? 0 :
                             TimeUtils
                                     .utc2LocalLong(data.getComments().get(0).getTime()));
-                    mItemBeanDigg.getConversation().setLast_message_time(data.getLikes() == null || data.getLikes().isEmpty() ? System
-                            .currentTimeMillis() :
+                    mItemBeanDigg.getConversation().setLast_message_time(data.getLikes() == null || data.getLikes().isEmpty() ? 0 :
                             TimeUtils
                                     .utc2LocalLong(data.getLikes().get(0).getTime()));
 

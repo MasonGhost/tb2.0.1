@@ -36,14 +36,14 @@ import java.util.Locale;
  */
 
 public class ImageUtils {
-    public static final String SHAREPREFERENCE_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
-    public static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
+    private static final String SHAREPREFERENCE_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
+    private static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
 
-    public static final String SHAREPREFERENCE_USER_COVER_SIGNATURE = "sharepreference_user_cover_signature";
-    public static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE = "sharepreference_user_cover_signature";
-    public static final long DEFAULT_USER_CACHE_TIME = 3 * 24 * 60_1000;
-    public static final long DEFAULT_SHAREPREFERENCES_OFFSET_TIME = 10_1000;
-    public static long laste_request_time;
+    private static final String SHAREPREFERENCE_USER_COVER_SIGNATURE = "sharepreference_user_cover_signature";
+    private static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE = "sharepreference_user_cover_signature";
+    private static final long DEFAULT_USER_CACHE_TIME = 3 * 24 * 60_1000;
+    private static final long DEFAULT_SHAREPREFERENCES_OFFSET_TIME = 10_1000;
+    private static long laste_request_time;
 
     private static long mHeadPicSigture;
     private static long mCoverSigture;
@@ -343,7 +343,7 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
-        LogUtils.d("imagePathConvertV2:" + url);
+///        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
