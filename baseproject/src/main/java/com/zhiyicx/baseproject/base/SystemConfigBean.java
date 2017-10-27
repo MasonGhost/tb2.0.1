@@ -296,6 +296,14 @@ public class SystemConfigBean implements Serializable {
         private boolean completeData;
         private String content;// 用户协议
 
+        public String getRules() {
+            return rules;
+        }
+
+        public void setRules(String rules) {
+            this.rules = rules;
+        }
+
         public String getMethod() {
             return method;
         }

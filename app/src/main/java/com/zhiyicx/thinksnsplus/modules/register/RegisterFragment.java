@@ -26,6 +26,7 @@ import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
+import com.zhiyicx.thinksnsplus.modules.register.rule.UserRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
@@ -271,6 +273,12 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         showMessage(getString(R.string.permisson_refused_nerver_ask));
                     }
                 });
+
+        RxView.clicks(mAppRule)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> UserRuleActivity.startUserRuleActivity(getActivity(),
+                        mPresenter.getSystemConfigBean().getRegisterSettings().getRules()));
     }
 
     @Override
