@@ -261,7 +261,6 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     private void initPayInfoPopWindow() {
         if (!mPresenter.getSystemConfigBean().getNewsContribute().hasPay()) {
             mPresenter.publishInfo(mInfoPublishBean);
-            mPayInfoPopWindow.hide();
             return;
         }
         if (mPayInfoPopWindow != null) {
