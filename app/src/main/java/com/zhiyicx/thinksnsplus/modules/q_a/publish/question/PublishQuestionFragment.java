@@ -32,7 +32,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
+        .BUNDLE_QUESTION_BEAN;
 
 
 /**
@@ -41,7 +42,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
+        QAListInfoBean>
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
@@ -104,7 +106,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void setRightClick() {
-        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
+        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() >
+                1) {
             addTopic();
         } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_hint));
@@ -227,7 +230,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private void initEditWarningPop() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
-        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) || mDraftQuestion == null;
+        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) ||
+                mDraftQuestion == null;
         if (mEditWarningPopupWindow != null) {
             return;
         }
@@ -240,7 +244,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    if (mDraftQuestion != null) {
+                    if (mDraftQuestionCopy != null) {
                         mPresenter.deleteQuestion(mDraftQuestionCopy);
                         mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
                         mPresenter.saveQuestion(mDraftQuestionCopy);
@@ -249,7 +253,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.deleteQuestion(mDraftQuestionCopy);
+                    if (mDraftQuestionCopy!=null){
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                    }
                     saveQuestion();
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
