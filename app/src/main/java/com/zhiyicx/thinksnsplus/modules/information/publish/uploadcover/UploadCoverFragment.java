@@ -184,6 +184,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void initView(View rootView) {
         initListener();
+        mBtSure.setText(getString(mPresenter.getSystemConfigBean().getNewsContribute().hasPay()
+                ? R.string.publish_withpay_info : R.string.publish_info));
     }
 
     @Override
@@ -257,6 +259,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     private void initPayInfoPopWindow() {
+        if (!mPresenter.getSystemConfigBean().getNewsContribute().hasPay()) {
+            mPresenter.publishInfo(mInfoPublishBean);
+            mPayInfoPopWindow.hide();
+            return;
+        }
         if (mPayInfoPopWindow != null) {
             mPayInfoPopWindow.show();
             return;
@@ -272,13 +279,13 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
                         .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mInfoPublishBean
-                        .getAmout(),mPresenter.getRatio()), mPresenter.getGoldName()))
+                        .getAmout(), mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
-                        .realCurrency2GameCurrency(mInfoPublishBean.getAmout(),mPresenter.getRatio())))
+                        .realCurrency2GameCurrency(mInfoPublishBean.getAmout(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
 ///                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
