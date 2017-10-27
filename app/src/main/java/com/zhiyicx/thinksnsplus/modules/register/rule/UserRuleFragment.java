@@ -29,6 +29,11 @@ public class UserRuleFragment extends TSFragment {
         return getString(R.string.user_rule_register);
     }
 
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
     public static UserRuleFragment newInstance(Bundle bundle) {
         UserRuleFragment fragment = new UserRuleFragment();
         fragment.setArguments(bundle);

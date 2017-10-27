@@ -23,6 +23,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 public class TextViewUtils {
 
     private OnSpanTextClickListener mSpanTextClickListener;
+    private OnTextSpanComplete mOnTextSpanComplete;
 
     private TextView mTextView;//显示富文本的控件
     private String mOriMsg;//全部文本信息
@@ -62,6 +63,11 @@ public class TextViewUtils {
 
     public TextViewUtils onSpanTextClickListener(OnSpanTextClickListener spanTextClickListener) {
         mSpanTextClickListener = spanTextClickListener;
+        return this;
+    }
+
+    public TextViewUtils onTextSpanComplete(OnTextSpanComplete onTextSpanComplete) {
+        mOnTextSpanComplete = onTextSpanComplete;
         return this;
     }
 
@@ -134,15 +140,24 @@ public class TextViewUtils {
                         String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
                         mTextView.setText(getSpannableString(result));
                         mTextView.setVisibility(View.VISIBLE);
+                        if (mOnTextSpanComplete!=null){
+                            mOnTextSpanComplete.onComplete();
+                        }
                     } else {
                         mTextView.setText(getSpannableString(mTextView.getText()));
                         mTextView.setVisibility(View.VISIBLE);
+                        if (mOnTextSpanComplete!=null){
+                            mOnTextSpanComplete.onComplete();
+                        }
                     }
                 }
             });
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
+            if (mOnTextSpanComplete!=null){
+                mOnTextSpanComplete.onComplete();
+            }
         }
     }
 
@@ -245,7 +260,7 @@ public class TextViewUtils {
         int count = 0;
         char[] chars = src.toString().toCharArray();
         for (char c : chars) {
-            if (c < 128) {// 英文ascii码值都是128以下
+            if (c < 128) {// 英文ascii码值都是128以下完成
                 count += 1;
             }
         }
@@ -254,6 +269,10 @@ public class TextViewUtils {
 
     public interface OnSpanTextClickListener {
         void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead);
+    }
+
+    public interface OnTextSpanComplete {
+        void onComplete();
     }
 }
 

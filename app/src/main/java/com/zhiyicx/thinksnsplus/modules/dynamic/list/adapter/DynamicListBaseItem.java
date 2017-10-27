@@ -237,6 +237,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
                             .disPlayText(true)
                             .build();
                 } else {
@@ -251,12 +252,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
+                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false))
                             .disPlayText(false)
                             .build();
                 }
-                Observable.timer(100, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(aLong -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false));
+
 
                 contentView.setVisibility(View.VISIBLE);
             }

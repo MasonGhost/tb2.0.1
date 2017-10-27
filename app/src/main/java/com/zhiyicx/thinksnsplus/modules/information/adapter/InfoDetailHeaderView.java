@@ -79,7 +79,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetai
  * @contact email:648129313@qq.com
  */
 
-public class InfoDetailHeaderView extends BaseWebLoad{
+public class InfoDetailHeaderView extends BaseWebLoad {
     private MarkdownView mContent;
     private MarkdownView mContentSubject;
     private TextView mTitle;
@@ -241,26 +241,11 @@ public class InfoDetailHeaderView extends BaseWebLoad{
             String imageMarkDown = matcher.group(0);
             String id = matcher.group(1);
 
-            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=10";
             String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
             markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
-
-//        String tag = "@![image](";
-//        while (markDownContent.contains(tag)) {
-//            int start = markDownContent.indexOf(tag) + tag.length();
-//            int end = markDownContent.indexOf(")", start);
-//            String id = "0";
-//            try {
-//                id = markDownContent.substring(start, end);
-//            } catch (Exception e) {
-//                LogUtils.d("Cathy", e.toString());
-//            }
-//            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-//            markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
-//            dealImageList(imgPath, id);
-//        }
         return markDownContent;
     }
 
@@ -335,8 +320,8 @@ public class InfoDetailHeaderView extends BaseWebLoad{
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType,String moneyName) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType,moneyName);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
         });
     }
@@ -439,10 +424,11 @@ public class InfoDetailHeaderView extends BaseWebLoad{
         setAdvertViewVisible(visible);
         mInfoRelateList.setVisibility(visible);
         mFtlRelate.setVisibility(visible);
+        mDigListView.setVisibility(visible);
         mRvRelateInfo.setVisibility(visible);
     }
 
-    public void destroyedWeb(){
+    public void destroyedWeb() {
         destryWeb(mContent);
         destryWeb(mContentSubject);
 
@@ -451,6 +437,7 @@ public class InfoDetailHeaderView extends BaseWebLoad{
     public MarkdownView getContentWebView() {
         return mContent;
     }
+
     public MarkdownView getContentSubWebView() {
         return mContentSubject;
     }
