@@ -111,7 +111,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected void initView(View rootView) {
         boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
-                || mSystemConfigBean.getRegisterSettings() != null && !mSystemConfigBean.getRegisterSettings().getType().equals(SystemConfig.REGITER_MODE_THIRDPART);
+                || mSystemConfigBean.getRegisterSettings() != null && !mSystemConfigBean.getRegisterSettings().getType().equals(SystemConfig
+                .REGITER_MODE_THIRDPART);
         mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
@@ -177,23 +178,38 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    showSnackLoadingMessage(getString(R.string.loading_state));
-                    thridLogin(SHARE_MEDIA.QQ);
+                    // QQ 和微信 该版本不提供网页支持，故提示安装应用
+                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+                        showSnackLoadingMessage(getString(R.string.loading_state));
+                        thridLogin(SHARE_MEDIA.QQ);
+                    } else {
+                        showSnackErrorMessage(getString(R.string.please_install_app));
+                    }
+
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    showSnackLoadingMessage(getString(R.string.loading_state));
-                    thridLogin(SHARE_MEDIA.SINA);
+//                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
+                        showSnackLoadingMessage(getString(R.string.loading_state));
+                        thridLogin(SHARE_MEDIA.SINA);
+//                    } else {
+//                        showSnackErrorMessage(getString(R.string.please_install_app));
+//                    }
                 });
         RxView.clicks(mTvLoginByWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    showSnackLoadingMessage(getString(R.string.loading_state));
-                    thridLogin(SHARE_MEDIA.WEIXIN);
+                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.WEIXIN)) {
+
+                        showSnackLoadingMessage(getString(R.string.loading_state));
+                        thridLogin(SHARE_MEDIA.WEIXIN);
+                    } else {
+                        showSnackErrorMessage(getString(R.string.please_install_app));
+                    }
                 });
     }
 
@@ -412,7 +428,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             }
             mThridName = data.get("screen_name");
             mAccessToken = data.get("accessToken");
-            dismissSnackBar();
             mPresenter.checkBindOrLogin(providerQq, mAccessToken);
         }
 

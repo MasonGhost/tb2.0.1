@@ -184,4 +184,5 @@
     <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
+    <string name="please_install_app">请先安装应用</string>
 </resources>

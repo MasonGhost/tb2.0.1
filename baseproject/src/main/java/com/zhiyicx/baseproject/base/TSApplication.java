@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.BuildConfig;
@@ -24,10 +25,13 @@ public abstract class TSApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        // 处理app崩溃异常
+        /// 处理app崩溃异常,打开后保存本地处理，
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
         // 友盟
+        UMShareConfig config = new UMShareConfig();
+        config.isNeedAuthOnGetUserInfo(true);
+        UMShareAPI.get(getApplicationContext()).setShareConfig(config);
         UMShareAPI.get(this);
         MobclickAgent.setDebugMode(BuildConfig.USE_LOG);
     }

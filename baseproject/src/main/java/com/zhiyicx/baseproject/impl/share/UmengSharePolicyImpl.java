@@ -17,6 +17,8 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.UmengConfig;
 import com.zhiyicx.baseproject.widget.popwindow.RecyclerViewPopupWindow;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -78,9 +80,6 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     }
 
     private void init(Context mContext) {
-        UMShareConfig config = new UMShareConfig();
-        config.isNeedAuthOnGetUserInfo(true);
-        UMShareAPI.get(mContext).setShareConfig(config);
         UMShareAPI.get(mContext);
         Config.DEBUG = true;
         initSharePopupWindow();
@@ -364,19 +363,50 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                                     public void call(Void aVoid) {
                                         switch (position) {
                                             case 0:
-                                                shareQQ((Activity) mContext, mOnShareCallbackListener);
+                                                // QQ 和微信 该版本不提供网页支持，故提示安装应用
+                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.QQ)) {
+
+                                                    shareQQ((Activity) mContext, mOnShareCallbackListener);
+                                                } else {
+                                                    installThirdAppTip();
+
+                                                }
                                                 break;
                                             case 1:
-                                                shareZone((Activity) mContext, mOnShareCallbackListener);
+                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.QQ) || (UMShareAPI.get
+                                                        (mContext).isInstall((Activity) mContext, SHARE_MEDIA.QZONE))) {
+
+                                                    shareZone((Activity) mContext, mOnShareCallbackListener);
+                                                } else {
+                                                    installThirdAppTip();
+
+                                                }
                                                 break;
                                             case 2:
-                                                shareWechat((Activity) mContext, mOnShareCallbackListener);
+                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN)) {
+
+                                                    shareWechat((Activity) mContext, mOnShareCallbackListener);
+                                                } else {
+                                                    installThirdAppTip();
+
+                                                }
                                                 break;
                                             case 3:
-                                                shareMoment((Activity) mContext, mOnShareCallbackListener);
+                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN) || UMShareAPI.get
+                                                        (mContext).isInstall((Activity) mContext, SHARE_MEDIA.WEIXIN_CIRCLE)) {
+
+                                                    shareMoment((Activity) mContext, mOnShareCallbackListener);
+                                                } else {
+                                                    installThirdAppTip();
+                                                }
                                                 break;
                                             case 4:
-                                                shareWeibo((Activity) mContext, mOnShareCallbackListener);
+//                                                if (UMShareAPI.get(mContext).isInstall((Activity) mContext, SHARE_MEDIA.SINA)) {
+
+                                                    shareWeibo((Activity) mContext, mOnShareCallbackListener);
+//                                                } else {
+//                                                    installThirdAppTip();
+//                                                }
                                                 break;
                                             default:
                                         }
@@ -392,5 +422,15 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                 })
                 .iFocus(true)
                 .build();
+    }
+
+    private void installThirdAppTip() {
+        try {
+            ((TSFragment) ((TSActivity) mContext).getContanierFragment()).showSnackErrorMessage
+                    (mContext.getString(R
+                            .string.please_install_app));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
