@@ -195,10 +195,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
 
         try {
-            if (holder.getView(R.id.iv_headpic).getVisibility() == View.VISIBLE) {
+            // 防止个人中心没后头像错误
+            try {
                 ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
-            }
+                setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
 
+            } catch (Exception ignored) {
+
+            }
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));
@@ -215,7 +219,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
                         DynamicDetailBeanV2.TOP_REVIEW ?
                         R.string.review_ing : R.string.dynamic_top_flag));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
@@ -269,7 +273,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                                 false));
             }
 
-            setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
