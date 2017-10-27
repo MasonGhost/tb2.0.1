@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,7 +34,7 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
         TextView timeDown = holder.getView(R.id.tv_time_down);
         String createdTime = dynamicBean.getCreated_at();
         String timeString = TimeUtils.getTimeFriendlyForUserHome(createdTime);
-        if (timeString.equals("今,天") || timeString.equals("昨,天")) {
+        if (mContext.getString(R.string.today_with_split).equals(timeString) || mContext.getString(R.string.yestorday_with_split).equals(timeString)) {
             timeString = timeString.replace(",", "\n");
             timeUp.setText(timeString);
             timeDown.setVisibility(View.GONE);
@@ -42,6 +44,7 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
             timeDown.setText(dayAndMonth[1]);
             timeDown.setVisibility(View.VISIBLE);
         }
+
     }
 
     @Override

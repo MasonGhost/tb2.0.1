@@ -88,13 +88,19 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mOnImageClickListener = onImageClickListener;
     }
 
-    protected OnImageClickListener mOnImageClickListener; // 图片点击监听
+    /**
+     * 图片点击监听
+     */
+    protected OnImageClickListener mOnImageClickListener;
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
         mOnUserInfoClickListener = onUserInfoClickListener;
     }
 
-    protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
+    /**
+     * 用户信息点击监听
+     */
+    protected OnUserInfoClickListener mOnUserInfoClickListener;
 
     protected TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
 
@@ -102,7 +108,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mOnMenuItemClickLisitener = onMenuItemClickLisitener;
     }
 
-    protected OnMenuItemClickLisitener mOnMenuItemClickLisitener; // 工具栏被点击
+    /**
+     * 工具栏被点击
+     */
+    protected OnMenuItemClickLisitener mOnMenuItemClickLisitener;
 
 
     public void setOnReSendClickListener(OnReSendClickListener onReSendClickListener) {
@@ -256,9 +265,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 }
                 Observable.timer(100, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(aLong -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false));
-
-                contentView.setVisibility(View.VISIBLE);
+                        .subscribe(aLong -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()),
+                                false));
             }
 
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
