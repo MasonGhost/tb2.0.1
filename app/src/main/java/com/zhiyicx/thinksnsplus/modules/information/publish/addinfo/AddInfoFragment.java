@@ -134,7 +134,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
             return true;
         });
         // 适配手机无法显示输入焦点
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
     }
