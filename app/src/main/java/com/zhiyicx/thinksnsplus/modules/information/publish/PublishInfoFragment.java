@@ -140,7 +140,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
         String content = getContentString();
         sInfoPublishBean.setContent(content);
-        sInfoPublishBean.setAmout(100);
+        sInfoPublishBean.setAmout(mPresenter.getSystemConfigBean().getNewsPayContribute());
         long cover;
         if (sInfoPublishBean.isRefuse()) {
             cover = sInfoPublishBean.getCover();

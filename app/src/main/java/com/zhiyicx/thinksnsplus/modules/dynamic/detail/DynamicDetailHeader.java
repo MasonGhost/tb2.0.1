@@ -263,9 +263,10 @@ public class DynamicDetailHeader {
 
         int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         // 提前设置图片控件的大小，使得占位图显示
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-//        imageView.setLayoutParams(layoutParams);
+//        layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        imageView.setLayoutParams(layoutParams);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             int part = (picWidth / imageBean.getWidth()) * 100;
@@ -275,7 +276,7 @@ public class DynamicDetailHeader {
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
                     && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             if (!canLook) {
-                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             }
 //            imageView.setLayoutParams(layoutParams);
             DrawableRequestBuilder requestBuilder =
