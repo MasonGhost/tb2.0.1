@@ -96,12 +96,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
     @BindView(R.id.bt_certification)
-    CombinationButton mBtCertification; // 认证
+    CombinationButton mBtCertification;
 
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
 
-    private CertificationTypePopupWindow mCertificationWindow; // 选择认证人类的弹窗
+    /**
+     * 选择认证人类的弹窗
+     */
+    private CertificationTypePopupWindow mCertificationWindow;
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -109,7 +112,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
-    private ActionPopupWindow mActionPopupWindow;// 请求音乐权限弹窗
+    /**
+     * 请求音乐权限弹窗
+     */
+    private ActionPopupWindow mActionPopupWindow;
 
     public MineFragment() {
     }
@@ -132,7 +138,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .minePresenterModule(new MinePresenterModule(this))
                 .build().inject(this);
-        mPresenter.getCertificationInfo();
     }
 
     @Override
@@ -145,6 +150,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (isVisibleToUser && mPresenter != null) {
             mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
+            mPresenter.getCertificationInfo();
         }
     }
 
@@ -254,7 +260,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
-                //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_draft_box:
                 startActivity(new Intent(getActivity(), DraftBoxActivity.class));
@@ -317,8 +322,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney,mPresenter.getRatio())
-                ,mPresenter.getGoldName()));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
+                , mPresenter.getGoldName()));
     }
 
     @Override
