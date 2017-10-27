@@ -428,7 +428,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             }
             mThridName = data.get("screen_name");
             mAccessToken = data.get("accessToken");
-            dismissSnackBar();
             mPresenter.checkBindOrLogin(providerQq, mAccessToken);
         }
 

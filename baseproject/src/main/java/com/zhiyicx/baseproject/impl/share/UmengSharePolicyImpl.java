@@ -80,9 +80,6 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
     }
 
     private void init(Context mContext) {
-        UMShareConfig config = new UMShareConfig();
-        config.isNeedAuthOnGetUserInfo(true);
-        UMShareAPI.get(mContext).setShareConfig(config);
         UMShareAPI.get(mContext);
         Config.DEBUG = true;
         initSharePopupWindow();
