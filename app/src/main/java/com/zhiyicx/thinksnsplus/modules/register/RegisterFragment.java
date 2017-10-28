@@ -46,7 +46,8 @@ import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIS
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements RegisterContract.View {
+public class RegisterFragment extends TSFragment<RegisterContract.Presenter> implements
+        RegisterContract.View {
 
     private static final int REGISTER_PHONE = 0; // 手机号注册
     private static final int REGISTER_EMAIL = 1; // 邮箱注册
@@ -137,11 +138,14 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     protected void initView(View rootView) {
         boolean isAccountAllType = mSystemConfigBean.getRegisterSettings() == null
                 || mSystemConfigBean.getRegisterSettings() != null
-                && SystemConfig.REGITER_ACCOUNTTYPE_ALL.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+                && SystemConfig.REGITER_ACCOUNTTYPE_ALL.equals(mSystemConfigBean
+                .getRegisterSettings().getMethod());
         boolean isOnlyMobile = mSystemConfigBean.getRegisterSettings() != null
-                && SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+                && SystemConfig.REGITER_ACCOUNTTYPE_MOBILE_ONLY.equals(mSystemConfigBean
+                .getRegisterSettings().getMethod());
         boolean isOnlyEmail = mSystemConfigBean.getRegisterSettings() != null
-                && SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY.equals(mSystemConfigBean.getRegisterSettings().getMethod());
+                && SystemConfig.REGITER_ACCOUNTTYPE_MAIL_ONLY.equals(mSystemConfigBean
+                .getRegisterSettings().getMethod());
 
         if (isOnlyMobile) {
             mCurrentRegisterType = REGISTER_PHONE;
@@ -157,7 +161,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
         initListener();
         // 游客判断
-//        mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
+//        mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE :
+// View.GONE);
         mToolbarRight.setVisibility(isAccountAllType ? View.VISIBLE : View.GONE);
     }
 
@@ -174,7 +179,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (mIsVertifyCodeEnalbe) {
-                        mBtRegistSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
+                        mBtRegistSendVertifyCode.setEnabled(charSequence.length() ==
+                                MOBILE_PHONE_NUMBER_LENGHT);
                     }
                     isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
@@ -209,7 +215,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         int selEndIndex = Selection.getSelectionEnd(editable);
                         String str = editable.toString();
                         //截取新字符串
-                        String newStr = str.substring(0, getResources().getInteger(R.integer.password_maxlenght));
+                        String newStr = str.substring(0, getResources().getInteger(R.integer
+                                .password_maxlenght));
                         mEtRegistPassword.setText(newStr);
                         editable = mEtRegistPassword.getText();
                         //新字符串的长度
@@ -230,14 +237,17 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mPresenter.getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())) {
+                    if (mPresenter
+                            .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
+                            ) {
                         showMessage("不能使用站点预留邮箱");
                         return;
                     }
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
                     } else {
-                        mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString().trim());
+                        mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
+                                .trim());
                     }
                 });
         // 点击注册按钮
@@ -246,7 +256,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensureEach(Manifest.permission.READ_PHONE_STATE))
                 .subscribe(permission -> {
-                    if (mPresenter.getSystemConfigBean().getSite().getReserved_nickname().contains(mEtRegistPhone.getText().toString().trim())) {
+                    String userName = mEtRegistUsername.getText().toString().trim();
+                    if (mPresenter
+                            .getSystemConfigBean().getSite().getReserved_nickname()
+                            .contains(mEtRegistUsername.getText().toString().trim())) {
                         showMessage("不能使用站点预留昵称");
                         return;
                     }
@@ -389,8 +402,10 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     private void setRegisterType() {
-        mLlRegisterByPhone.setVisibility(mCurrentRegisterType == REGISTER_PHONE ? View.VISIBLE : View.GONE);
-        mLlRegisterByEmail.setVisibility(mCurrentRegisterType == REGISTER_EMAIL ? View.VISIBLE : View.GONE);
+        mLlRegisterByPhone.setVisibility(mCurrentRegisterType == REGISTER_PHONE ? View.VISIBLE :
+                View.GONE);
+        mLlRegisterByEmail.setVisibility(mCurrentRegisterType == REGISTER_EMAIL ? View.VISIBLE :
+                View.GONE);
     }
 
     /**
@@ -414,7 +429,8 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
      * 重置UI
      */
     private void resetUI() {
-        mCurrentRegisterType = mCurrentRegisterType == REGISTER_PHONE ? REGISTER_EMAIL : REGISTER_PHONE;
+        mCurrentRegisterType = mCurrentRegisterType == REGISTER_PHONE ? REGISTER_EMAIL :
+                REGISTER_PHONE;
         setRightText(mCurrentRegisterType == REGISTER_PHONE ?
                 getString(R.string.email_address) : getString(R.string.phone_hint));
         setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
