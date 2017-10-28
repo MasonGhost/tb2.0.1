@@ -43,6 +43,7 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
     private double amount;// 问题价值，悬赏金额
     private Long id;
     @Id
+    @Unique
     private Long mark;
     private Long user_id;
     private String updated_at;
@@ -392,8 +393,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
 
     @Generated(hash = 489344590)
     public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations, String body,
-                         int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
-                         String updated_at, String created_at, boolean hasAgainEdite, boolean hasAdoption) {
+            int anonymity, int automaticity, int look, double amount, Long id, Long mark, Long user_id,
+            String updated_at, String created_at, boolean hasAgainEdite, boolean hasAdoption) {
         this.subject = subject;
         this.topics = topics;
         this.invitations = invitations;

@@ -79,7 +79,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
             return;
         }
 
-        double amount = PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(),getRatio());
+        double amount = PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(), getRatio());
 
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
@@ -158,7 +158,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
             return;
         }
         Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, child_id,
-                PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(),getRatio()),
+                PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView.getTopDyas(), getRatio()),
                 mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
@@ -198,7 +198,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
                         int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),getRatio()) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(), getRatio()) : 0);
                     }
 
                     @Override
@@ -220,7 +220,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                 return 0;
             }
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return PayConfig.realCurrency2GameCurrency(walletBean.getBalance(),getRatio());
+            return PayConfig.realCurrency2GameCurrency(walletBean.getBalance(), getRatio());
         }
         return 0;
     }

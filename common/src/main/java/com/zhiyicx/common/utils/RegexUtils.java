@@ -304,7 +304,7 @@ public class RegexUtils {
             Matcher matcher = Pattern.compile(regex).matcher(input);
             return matcher.replaceAll("[图片]");
         } catch (Exception e) {
-            return input;
+            return input == null ? "" : input;
         }
     }
 
@@ -341,7 +341,9 @@ public class RegexUtils {
 
     public static List<String> cutStringByNetSite(String targetStr) {
         List<String> splitTextList = new ArrayList<>();
-        Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
+        Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2," +
+                "6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*" +
+                "(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
@@ -361,7 +363,7 @@ public class RegexUtils {
         try {
             String reg = "@!\\[.*?]\\((\\d+)\\)";
             Matcher matcher2 = Pattern.compile(reg).matcher(input);
-            if (matcher2.find()){
+            if (matcher2.find()) {
                 return Integer.parseInt(matcher2.group(1));
             }
             return -1;

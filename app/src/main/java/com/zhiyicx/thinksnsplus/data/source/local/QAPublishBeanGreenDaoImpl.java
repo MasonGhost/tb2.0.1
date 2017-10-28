@@ -81,7 +81,7 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
     @Override
     public void deleteSingleCache(QAPublishBean dta) {
         if (dta != null) {
-            mQAPublishBeanDao.delete(dta);
+            getRDaoSession().getQAPublishBeanDao().delete(dta);
         }
     }
 

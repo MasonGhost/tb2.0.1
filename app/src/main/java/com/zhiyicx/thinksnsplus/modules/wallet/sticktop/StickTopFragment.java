@@ -216,6 +216,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 });
     }
 
+    @Override
+    public boolean useInputMoney() {
+        return !mEtTopInput.getText().toString().isEmpty();
+    }
+
     private void initSelectDays(List<Integer> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));

@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -130,9 +129,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
-        // 暂时屏蔽回答草稿箱功能
-//        initEditWarningPop();
+
 //        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
 //            super.onBackPressed();
 //        } else {
@@ -194,10 +193,14 @@ public class PublishAnswerFragment extends PublishContentFragment {
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    long draftMark = getArguments().getLong(BUNDLE_SOURCE_MARK);
                     AnswerDraftBean answerDraftBean = new AnswerDraftBean();
-                    String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
-                            .currentTimeMillis();
-                    answerDraftBean.setMark(Long.parseLong(mark));
+                    long mark = Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                            .currentTimeMillis());
+                    if (draftMark != 0) {
+                        mark = draftMark;
+                    }
+                    answerDraftBean.setMark(mark);
                     answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
                     answerDraftBean.setBody(getContentString());
                     answerDraftBean.setAnonymity(mAnonymity);
