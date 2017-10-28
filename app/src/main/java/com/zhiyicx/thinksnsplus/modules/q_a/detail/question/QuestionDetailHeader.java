@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -95,7 +96,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         mIvAddAnswer = (ImageView) mQuestionHeaderView.findViewById(R.id.iv_add_answer);
     }
 
-    public void setDetail(QAListInfoBean qaListInfoBean, double amount,int ratio) {
+    public void setDetail(QAListInfoBean qaListInfoBean, double amount, int ratio) {
         if (qaListInfoBean == null) {
             return;
         }
@@ -113,8 +114,16 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         mQdContent.setQuestionDetail(qaListInfoBean);
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
-            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
+            double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+            if (rewardMoney > 9999) {
+
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_str),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()), ConvertUtils.numberConvert((int) rewardMoney)));
+            } else {
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()),
+                        rewardMoney));
+            }
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -125,14 +134,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
         }
-        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount,ratio);
+        updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount, ratio);
         initListener();
         // 是否关注了这个话题
-        updateFollowState(qaListInfoBean,ratio);
+        updateFollowState(qaListInfoBean, ratio);
         // 答案条数
         updateAnswerView(qaListInfoBean);
         // 悬赏信息
-        updateRewardType(qaListInfoBean,ratio);
+        updateRewardType(qaListInfoBean, ratio);
         // 是否已经回答了这个问题
         updateIsAddedAnswerState(qaListInfoBean);
     }
@@ -154,11 +163,19 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      *
      * @param qaListInfoBean bean
      */
-    public void updateRewardType(QAListInfoBean qaListInfoBean,int ratio) {
+    public void updateRewardType(QAListInfoBean qaListInfoBean, int ratio) {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
-            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
+            double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+            if (rewardMoney > 9999) {
+
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_str),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()), ConvertUtils.numberConvert((int) rewardMoney)));
+            } else {
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()),
+                        rewardMoney));
+            }
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -180,18 +197,27 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      *
      * @param qaListInfoBean bean
      */
-    public void updateFollowState(QAListInfoBean qaListInfoBean,int ratio) {
+    public void updateFollowState(QAListInfoBean qaListInfoBean, int ratio) {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
-            mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(),ratio)));
+            double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+            if (rewardMoney > 9999) {
+
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_str),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()), ConvertUtils.numberConvert((int) rewardMoney)));
+            } else {
+                mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
+                        ConvertUtils.numberConvert(qaListInfoBean.getWatchers_count()),
+                        rewardMoney));
+            }
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
         }
         mTvTopicChangeFollow.setChecked(qaListInfoBean.getWatched());
         mTvTopicChangeFollow.setText(qaListInfoBean.getWatched() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
-        mTvTopicChangeFollow.setPadding(qaListInfoBean.getWatched() ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) : mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        mTvTopicChangeFollow.setPadding(qaListInfoBean.getWatched() ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) :
+                mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
     }
 
     /**
@@ -205,9 +231,10 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     /**
      * 更新围观信息
      */
-    public void updateOutLook(boolean onlook, double amount,int ratio) {
+    public void updateOutLook(boolean onlook, double amount, int ratio) {
         mTvQuestionOnlookAmount.setVisibility(onlook && amount > 0 ? View.VISIBLE : View.GONE);
-        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrency2GameCurrency(amount,ratio)));
+        mTvQuestionOnlookAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), PayConfig.realCurrency2GameCurrency(amount,
+                ratio)));
     }
 
     /**

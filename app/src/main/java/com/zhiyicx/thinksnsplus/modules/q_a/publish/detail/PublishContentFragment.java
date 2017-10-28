@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -44,6 +45,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
@@ -307,6 +311,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 break;
             case R.id.im_setting:
                 break;
+            default:
         }
     }
 
@@ -399,27 +404,42 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     private void initAnonymityPopWindow(int strRes) {
-        mImSetting.setImageResource(R.mipmap.icon_install_blue);
-        if (mAnonymityPopWindow != null) {
-            mAnonymityPopWindow.showParentViewTop();
-            return;
-        }
-        mAnonymityPopWindow = AnonymityPopWindow.builder()
-                .with(getActivity())
-                .isWrap(true)
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .parentView(mRlPublishTool)
-                .buildDescrStr(getString(strRes))
-                .contentView(R.layout.pop_for_anonymity)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
-                .build();
-        if (mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
-            mAnonymityPopWindow.setSwitchButton(true);
-        }
-        mAnonymityPopWindow.showParentViewTop();
-        mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
+        DeviceUtils.hideSoftKeyboard(getContext(), mImSetting);
+
+        Observable.timer(300, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (mImSetting == null) {
+                        return;
+                    }
+                    mImSetting.setImageResource(R.mipmap.icon_install_blue);
+                    if (mAnonymityPopWindow != null) {
+                        mAnonymityPopWindow.showParentViewTop();
+                        return;
+                    }
+                    mAnonymityPopWindow = AnonymityPopWindow.builder()
+                            .with(getActivity())
+                            .isWrap(true)
+                            .isFocus(true)
+                            .isOutsideTouch(true)
+                            .parentView(mRlPublishTool)
+                            .buildDescrStr(getString(strRes))
+                            .contentView(R.layout.pop_for_anonymity)
+                            .backgroundAlpha(POPUPWINDOW_ALPHA)
+                            .buildAnonymityPopWindowSwitchClickListener(new AnonymityPopWindow.AnonymityPopWindowSwitchClickListener() {
+                                @Override
+                                public void onClicked(boolean isChecked) {
+                                    initAnonymityAlertPopWindow(isChecked);
+                                }
+                            })
+                            .build();
+                    if (mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
+                        mAnonymityPopWindow.setSwitchButton(true);
+                    }
+                    mAnonymityPopWindow.showParentViewTop();
+                    mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
+                }, Throwable::printStackTrace);
+
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked) {
