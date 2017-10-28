@@ -40,6 +40,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -554,6 +555,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             case R.id.iv_more:
                 mPresenter.shareUserInfo(mUserInfoBean);
                 break;
+            default:
         }
     }
 
@@ -607,17 +609,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             // 修改成功后，关闭页面
             setChangeUserCoverState(true);
         } else {
-            TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
-                    .setPromptThemBackground(Prompt.ERROR)
-                    .show();
+            showSnackErrorMessage(getString(R.string.cover_uploadFailure));
+
         }
     }
 
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
-        TSnackbar.make(mSnackRootView, changeSuccess ? R.string.cover_change_success : R.string.cover_change_failure, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(changeSuccess ? Prompt.SUCCESS : Prompt.ERROR)
-                .show();
+        if (changeSuccess) {
+            showSnackSuccessMessage(getString(R.string.cover_change_success));
+        } else {
+            showSnackErrorMessage(getString(R.string.cover_change_failure));
+
+        }
     }
 
     @Override
@@ -951,13 +955,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio()),
+                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()),
                         mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
@@ -996,4 +1000,5 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             hideCommentView();
         }
     }
+
 }
