@@ -319,6 +319,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                         case R.id.rb_three:
                             mRewardMoney = mRewardLabels.get(2);
                             break;
+                            default:
                     }
                     if (checkedId != -1) {
                         configSureButton();
@@ -341,6 +342,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                         case R.id.rb_onlookers_three:
                             mOnLookerMoney = mOnLookerLabels.get(2);
                             break;
+                            default:
                     }
                     if (checkedId != -1) {
                         configSureButton();
@@ -383,8 +385,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mWcInvite.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mBtQaSelectExpert.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             mRlOnlooker.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            mWcOnlooker.setChecked(false);
             resetExpert();
-//            configSureButton();
+            configSureButton();
         });
         // 围观开关
         mWcOnlooker.setOnCheckedChangeListener((buttonView, isChecked) -> {
