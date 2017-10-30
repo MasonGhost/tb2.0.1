@@ -78,13 +78,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-//        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
     }
 
     @Override
     protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
         return false;
     }
 
@@ -99,8 +103,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initData();
         // 通知的未读数检查
         mPresenter.checkUnreadNotification();
-        // 除了通知的未读数用户信息获取
-        mPresenter.handleFlushMessage();
+
     }
 
     /**
@@ -120,17 +123,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
+            // 除了通知的未读数用户信息获取
+            mPresenter.handleFlushMessage();
         }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        // 通知列表单独抽取出来 不需要在这里请求了
-//        if (isVisibleToUser) {
-//            mPresenter.checkUnreadNotification();
-//            mPresenter.handleFlushMessage();
-//        }
     }
 
     @Override
@@ -397,8 +392,4 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
 }

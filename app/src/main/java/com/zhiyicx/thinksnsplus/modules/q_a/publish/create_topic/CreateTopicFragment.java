@@ -1,22 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.create_topic;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func2;
 
 /**
  * @Author Jliuer
@@ -33,8 +26,7 @@ public class CreateTopicFragment extends TSFragment<CreateTopicContract.Presente
     UserInfoInroduceInputView mEtTopicDesc;
 
     public static CreateTopicFragment getInstance() {
-        CreateTopicFragment createTopicFragment = new CreateTopicFragment();
-        return createTopicFragment;
+        return new CreateTopicFragment();
     }
 
     @Override
@@ -51,6 +43,14 @@ public class CreateTopicFragment extends TSFragment<CreateTopicContract.Presente
     protected void setRightClick() {
         super.setRightClick();
         mPresenter.createTopic(mEtTopicTitle.getInputContent(), mEtTopicDesc.getInputContent());
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS && getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override

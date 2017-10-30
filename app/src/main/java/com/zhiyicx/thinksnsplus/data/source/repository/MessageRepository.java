@@ -69,68 +69,64 @@ public class MessageRepository implements MessageContract.Repository {
         return mChatInfoClient.getConversaitonList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<Conversation>, Observable<List<MessageItemBean>>>() {
-                    @Override
-                    public Observable<List<MessageItemBean>> call(final List<Conversation> listBaseJson) {
-                        if (!listBaseJson.isEmpty()) {
-                            List<MessageItemBean> datas = new ArrayList<>();
-                            List<Object> integers = new ArrayList<>();
-                            for (Conversation tmp : listBaseJson) {
-                                MessageItemBean messageItemBean = new MessageItemBean();
-                                Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
-                                if (message != null) {
-                                    tmp.setLast_message(message);
-                                    tmp.setLast_message_time(message.getCreate_time());
-                                } else {
-                                    // 去除没有聊天消息的
-                                    continue;
-                                }
-                                tmp.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
-                                if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
-                                    try {
-                                        String[] uidsPair = tmp.getUsids().split(",");
-                                        int pair1 = Integer.parseInt(uidsPair[0]);
-                                        int pair2 = Integer.parseInt(uidsPair[1]);
-                                        tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   //
-                                        // type=0时此项为两个uid：min_uid&max_uid
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                // 存储对话信息
-                                ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
-                                String[] uidsTmp = tmp.getUsids().split(",");
-                                UserInfoBean userInfoBean = new UserInfoBean();
-                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ?
-                                        uidsTmp[1] : uidsTmp[0]));
-                                userInfoBean.setUser_id(toChatUser_id);
-                                integers.add(toChatUser_id);
-                                messageItemBean.setUserInfo(userInfoBean);
-                                // 获取未读消息数量
-                                int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
-                                messageItemBean.setConversation(tmp);
-                                messageItemBean.setUnReadMessageNums(unreadMessageCount);
-                                datas.add(messageItemBean);
+                .flatMap((Func1<List<Conversation>, Observable<List<MessageItemBean>>>) listBaseJson -> {
+                    if (!listBaseJson.isEmpty()) {
+                        List<MessageItemBean> datas = new ArrayList<>();
+                        List<Object> integers = new ArrayList<>();
+                        for (Conversation tmp : listBaseJson) {
+                            MessageItemBean messageItemBean = new MessageItemBean();
+                            Message message = MessageDao.getInstance(mContext).getLastMessageByCid(tmp.getCid());
+                            if (message != null) {
+                                tmp.setLast_message(message);
+                                tmp.setLast_message_time(message.getCreate_time());
+                            } else {
+                                // 去除没有聊天消息的
+                                continue;
                             }
-                            return mUserInfoRepository.getUserInfo(integers).
-                                    map(userInfoBeanBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userInfoBeanBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (int i = 0; i < datas.size(); i++) {
-                                            datas.get(i).setUserInfo(userInfoBeanSparseArray.get(datas.get(i).getUserInfo().getUser_id().intValue()));
-                                        }
-                                        // 存储用户信息
-                                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
-                                        return datas;
-                                    });
-
-                        } else
-
-                        {
-                            return Observable.just(new ArrayList<>());
+                            tmp.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
+                            if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
+                                try {
+                                    String[] uidsPair = tmp.getUsids().split(",");
+                                    int pair1 = Integer.parseInt(uidsPair[0]);
+                                    int pair2 = Integer.parseInt(uidsPair[1]);
+                                    tmp.setPair(pair1 > pair2 ? (pair2 + "&" + pair1) : (pair1 + "&" + pair2)); // "pair":null,   //
+                                    // type=0时此项为两个uid：min_uid&max_uid
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            // 存储对话信息
+                            ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
+                            String[] uidsTmp = tmp.getUsids().split(",");
+                            UserInfoBean userInfoBean = new UserInfoBean();
+                            long toChatUserId = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ?
+                                    uidsTmp[1] : uidsTmp[0]));
+                            userInfoBean.setUser_id(toChatUserId);
+                            integers.add(toChatUserId);
+                            messageItemBean.setUserInfo(userInfoBean);
+                            // 获取未读消息数量
+                            int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
+                            messageItemBean.setConversation(tmp);
+                            messageItemBean.setUnReadMessageNums(unreadMessageCount);
+                            datas.add(messageItemBean);
                         }
+                        return mUserInfoRepository.getUserInfo(integers).
+                                map(userInfoBeanBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeanBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < datas.size(); i++) {
+                                        datas.get(i).setUserInfo(userInfoBeanSparseArray.get(datas.get(i).getUserInfo().getUser_id().intValue()));
+                                    }
+                                    // 存储用户信息
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
+                                    return datas;
+                                });
+
+                    } else
+                    {
+                        return Observable.just(new ArrayList<>());
                     }
                 })
                 //去除没有聊过天的数据
@@ -138,7 +134,7 @@ public class MessageRepository implements MessageContract.Repository {
                     if (!listBaseJson.isEmpty()) {
                         int size = listBaseJson.size();
                         for (int i = 0; i < size; i++) {
-                            if (listBaseJson.get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.get(i)
+                            if (listBaseJson.get(i).getConversation().getLast_message() == null || TextUtils.isEmpty(listBaseJson.get(i)
                                     .getConversation().getLast_message().getTxt())) {
                                 listBaseJson.remove(i);
                             }

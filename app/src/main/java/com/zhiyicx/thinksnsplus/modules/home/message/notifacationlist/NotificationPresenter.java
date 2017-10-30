@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -33,6 +30,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Inject
     MessageRepository mMessageRepository;
+    private boolean mIsFirst = true;
 
     @Inject
     public NotificationPresenter(NotificationContract.Repository repository, NotificationContract.View rootView) {
@@ -61,6 +59,12 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                     }
                 });
         addSubscrebe(subscription);
+        // 除开第一次自动刷新外，其他的刷新时候需要更新小红点
+        if (!mIsFirst && !isLoadMore) {
+            readNotification();
+        } else {
+            mIsFirst = false;
+        }
 
     }
 

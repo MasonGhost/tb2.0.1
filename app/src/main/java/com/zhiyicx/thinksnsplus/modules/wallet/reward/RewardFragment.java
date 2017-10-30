@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -154,10 +155,15 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void initRechargeLables() {
         String[] amount = new String[]{};
         mRechargeLables = new ArrayList<>();
-        try {
-            amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (RewardType.DYNAMIC == mRewardType) {
+            amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
+        } else {
+            try {
+                amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (amount.length > 0) {// 配置的打赏金额
             mRechargeLables.add((float) PayConfig.realCurrency2GameCurrency(Float.parseFloat(amount[0]), mPresenter.getRatio()));
@@ -192,6 +198,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 mLlRechargeChooseMoneyItem.setVisibility(View.GONE);
                 break;
             default:
+                break;
 
         }
     }

@@ -66,20 +66,13 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (mPresenter != null && isVisibleToUser) {
-            mPresenter.readNotification();
             mRefreshlayout.autoRefresh();
         }
 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mRefreshlayout.autoRefresh();
-    }
-
-    @Override
     protected Long getMaxId(@NotNull List<TSPNotificationBean> data) {
-        return Long.valueOf(mListDatas.size());
+        return (long) mListDatas.size();
     }
 }
