@@ -656,6 +656,24 @@ public class SystemConfigBean implements Serializable {
         private static final long serialVersionUID = 2393545893640479534L;
         private boolean reward;
         private boolean paycontrol;
+        private int[] items;
+        private int limit;
+
+        public int getLimit() {
+            return limit;
+        }
+
+        public void setLimit(int limit) {
+            this.limit = limit;
+        }
+
+        public int[] getItems() {
+            return items;
+        }
+
+        public void setItems(int[] items) {
+            this.items = items;
+        }
 
         public boolean hasReward() {
             return reward;

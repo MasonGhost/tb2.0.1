@@ -27,6 +27,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
+    public static final String BUNDLE_SOURCE_ANONYMITY = "source_anonymity";
     public static final String BUNDLE_SOURCE_MARK = "source_mark";
     public static final String BUNDLE_SOURCE_TITLE = "source_title"; // 发布回答的提示语是问题的标题
 
@@ -56,7 +57,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
         mTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "");
-
+        mAnonymity = getArguments().getInt(BUNDLE_SOURCE_ANONYMITY, 0);
         if (mType == PublishType.PUBLISH_ANSWER) {
             mToolbarCenter.setText(getString(R.string.qa_publish_answer));
         } else if (mType == PublishType.UPDATE_ANSWER) {
@@ -146,12 +147,13 @@ public class PublishAnswerFragment extends PublishContentFragment {
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                      String body, String title) {
+                                      String body, String title, int anonymity) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
         bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
+        bundle.putInt(BUNDLE_SOURCE_ANONYMITY, anonymity);
         bundle.putString(BUNDLE_SOURCE_BODY, body);
         bundle.putString(BUNDLE_SOURCE_TITLE, title);
         intent.putExtras(bundle);

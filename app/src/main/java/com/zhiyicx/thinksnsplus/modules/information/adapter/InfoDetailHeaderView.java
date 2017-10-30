@@ -64,6 +64,8 @@ import java.util.regex.Pattern;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
+import br.tiagohm.markdownview.js.ExternalScript;
+import br.tiagohm.markdownview.js.JavaScript;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -156,11 +158,11 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             } else {
                 mContentSubject.setVisibility(GONE);
             }
-            // 资讯content
+            // 资讯contente
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setWebChromeClient(mWebChromeClient);

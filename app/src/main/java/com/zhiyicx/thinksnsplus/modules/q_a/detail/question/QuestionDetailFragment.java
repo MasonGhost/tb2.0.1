@@ -316,7 +316,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
-                    , null, mQaListInfoBean.getSubject());
+                    , null, mQaListInfoBean.getSubject(),mQaListInfoBean.getAnonymity());
         }
     }
 

@@ -426,14 +426,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                             .buildDescrStr(getString(strRes))
                             .contentView(R.layout.pop_for_anonymity)
                             .backgroundAlpha(POPUPWINDOW_ALPHA)
-                            .buildAnonymityPopWindowSwitchClickListener(new AnonymityPopWindow.AnonymityPopWindowSwitchClickListener() {
-                                @Override
-                                public void onClicked(boolean isChecked) {
-                                    initAnonymityAlertPopWindow(isChecked);
-                                }
-                            })
+                            .buildAnonymityPopWindowSwitchClickListener(isChecked -> initAnonymityAlertPopWindow(isChecked))
                             .build();
-                    if (mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
+                    if (mAnonymity == 1 || mQAPublishBean != null && mQAPublishBean.getAnonymity() == 1) {
                         mAnonymityPopWindow.setSwitchButton(true);
                     }
                     mAnonymityPopWindow.showParentViewTop();

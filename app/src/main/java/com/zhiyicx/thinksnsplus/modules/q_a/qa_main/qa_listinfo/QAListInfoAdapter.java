@@ -211,11 +211,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
     private void makeSpan(TextView mTextView, int h, int w, String plainText,
                           long answer_id, int question_position, int start, boolean canLook) {
 
-        Spanned htmlText = Html.fromHtml(plainText);
-        SpannableString mSpannableString = new SpannableString(htmlText);
+//        Spanned htmlText = Html.fromHtml(plainText);
+        SpannableString mSpannableString = new SpannableString(plainText);
 
         int allTextStart = 0;
-        int allTextEnd = htmlText.length() - 1;
+        int allTextEnd = plainText.length() - 1;
 
         int lines;
         float fontSpacing = mTextView.getPaint().getFontSpacing();
