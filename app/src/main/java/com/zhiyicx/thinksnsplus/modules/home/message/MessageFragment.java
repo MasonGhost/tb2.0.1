@@ -78,13 +78,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-//        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
     }
 
     @Override
     protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
         return false;
     }
 
@@ -388,8 +392,4 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
 }
