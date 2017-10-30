@@ -115,7 +115,7 @@ public class TSRefreshHeader extends FrameLayout implements RefreshHeader {
         if (background.isRunning()) {
             background.stop();
         }
-        return 500;
+        return 300;
     }
 
     @Override

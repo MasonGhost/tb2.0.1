@@ -297,18 +297,18 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
      * 充值方式选择弹框
      */
     private void initPayStylePop() {
-        List<String> recharge_types = new ArrayList<>();
+        List<String> rechargeTypes = new ArrayList<>();
         if (mWalletConfigBean.getRecharge_type() != null) {
-            recharge_types.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
+            rechargeTypes.addAll(Arrays.asList(mWalletConfigBean.getRecharge_type()));
         }
         if (mPayStylePopupWindow != null) {
             mPayStylePopupWindow.show();
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
-                .item4Str(recharge_types.size() == 0 ? getString(R.string.recharge_disallow) : "")
+                .item2Str(rechargeTypes.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
+                .item3Str(rechargeTypes.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item4Str(rechargeTypes.size() == 0 ? getString(R.string.recharge_disallow) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
