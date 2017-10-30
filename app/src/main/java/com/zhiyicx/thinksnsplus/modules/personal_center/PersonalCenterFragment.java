@@ -238,7 +238,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_ersonal_center;
+        return R.layout.fragment_personal_center;
     }
 
     @Override
