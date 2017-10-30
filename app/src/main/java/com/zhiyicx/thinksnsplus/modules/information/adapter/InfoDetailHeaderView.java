@@ -162,7 +162,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setWebChromeClient(mWebChromeClient);

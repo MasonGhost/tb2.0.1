@@ -274,6 +274,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                         case R.id.rb_three:
                             mRechargeMoney = mRechargeLables.get(2) / PayConfig.MONEY_UNIT;
                             break;
+                        default:
+                            break;
                     }
                     if (checkedId != -1) {
                         configSureButton();
