@@ -118,14 +118,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasReward = qaListInfoBean.getAmount() > 0;
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
-        mTvQuestionFeedCount.setText(String.format(mContext.getString(hasReward ? R.string.qa_show_question_followed_count :
+        mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(hasLook ? R.string.qa_show_question_reward_count :
+        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney)));
 
@@ -168,14 +168,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasReward = qaListInfoBean.getAmount() > 0;
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
-        mTvQuestionFeedCount.setText(String.format(mContext.getString(hasReward ? R.string.qa_show_question_followed_count :
+        mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(hasLook ? R.string.qa_show_question_reward_count :
+        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney)));
 
@@ -202,14 +202,14 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasReward = qaListInfoBean.getAmount() > 0;
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
-        mTvQuestionFeedCount.setText(String.format(mContext.getString(hasReward ? R.string.qa_show_question_followed_count :
+        mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(hasLook ? R.string.qa_show_question_reward_count :
+        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
                 ConvertUtils.numberConvert((int) rewardMoney)));
 
