@@ -241,7 +241,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             String imageMarkDown = matcher.group(0);
             String id = matcher.group(1);
 
-            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=10";
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
             markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
