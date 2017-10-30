@@ -126,6 +126,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     private MessageItemBean mItemBeanReview;
 
+    /**
+     * 通知的小红点
+     */
     private boolean mNotificaitonRedDotIsShow;
 
     @Inject
