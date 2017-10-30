@@ -27,11 +27,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.guide.GuideFragment.DEFAULT_DELAY_TIME;
 
 public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implements
         GuideContract.View,
         OnBannerListener, ViewPager.OnPageChangeListener, TCountTimer.OnTimeListener {
+
+    public static final int DEFAULT_DELAY_TIME = 1000;
 
     @BindView(R.id.guide_banner)
     Banner mGuideBanner;

@@ -99,10 +99,10 @@ public class MessageRepository implements MessageContract.Repository {
                             ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                             String[] uidsTmp = tmp.getUsids().split(",");
                             UserInfoBean userInfoBean = new UserInfoBean();
-                            long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ?
+                            long toChatUserId = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ?
                                     uidsTmp[1] : uidsTmp[0]));
-                            userInfoBean.setUser_id(toChatUser_id);
-                            integers.add(toChatUser_id);
+                            userInfoBean.setUser_id(toChatUserId);
+                            integers.add(toChatUserId);
                             messageItemBean.setUserInfo(userInfoBean);
                             // 获取未读消息数量
                             int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
