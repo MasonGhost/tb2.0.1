@@ -22,7 +22,6 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
