@@ -488,27 +488,16 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(Object o) {
-                        return mCommentRepository.paykNote(note);
+                .flatMap(o -> mCommentRepository.paykNote(note))
+                .flatMap(stringBaseJsonV2 -> {
+                    if (isImage) {
+                        return Observable.just(stringBaseJsonV2);
                     }
-                })
-                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        if (isImage) {
-                            return Observable.just(stringBaseJsonV2);
-                        }
-                        return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
-                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
-                                    @Override
-                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
-                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
-                                        return Observable.just(stringBaseJsonV2);
-                                    }
-                                });
-                    }
+                    return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                            .flatMap(detailBeanV2 -> {
+                                stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                return Observable.just(stringBaseJsonV2);
+                            });
                 })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
@@ -531,15 +520,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
                         Bundle bundle = new Bundle();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mRootView.getListDatas().get(dynamicPosition);
-
-                        try {
-                            if (dynamicDetailBeanV2.getComments().get(0).getComment_mark()
-                                    == null) {
-                                dynamicDetailBeanV2.getComments().remove(0);
-                            }
-                        } catch (Exception e) {
-                            LogUtils.d("该动态没有评论");
-                        }
 
                         bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
