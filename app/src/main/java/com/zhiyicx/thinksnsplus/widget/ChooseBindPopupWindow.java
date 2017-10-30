@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.zhiyicx.thinksnsplus.R;
 
 /**
@@ -59,8 +58,13 @@ public class ChooseBindPopupWindow extends PopupWindow {
 
     private void initView() {
         initLayout();
-        setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-        setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        if (mWidth * mHeight == 0) {
+            setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+            setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        } else {
+            setWidth(mWidth);
+            setHeight(mHeight);
+        }
         setFocusable(false);
         setOutsideTouchable(isOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);

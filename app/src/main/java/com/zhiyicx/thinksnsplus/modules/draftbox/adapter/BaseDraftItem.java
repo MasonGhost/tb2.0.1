@@ -44,6 +44,8 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
+                .width(200)
+                .height(240)
                 .itemlStr("编辑")
                 .item2Str("删除")
                 .isOutsideTouch(true)
@@ -60,7 +62,7 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
                     mPopupWindow.hide();
                 })
                 .build();
-        mPopupWindow.showAsDropDown(v, -100, 10);
+        mPopupWindow.showAsDropDown(v);
     }
 
     public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {
