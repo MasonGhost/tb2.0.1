@@ -99,8 +99,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initData();
         // 通知的未读数检查
         mPresenter.checkUnreadNotification();
-        // 除了通知的未读数用户信息获取
-        mPresenter.handleFlushMessage();
+
     }
 
     /**
@@ -120,17 +119,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
+            // 除了通知的未读数用户信息获取
+            mPresenter.handleFlushMessage();
         }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        // 通知列表单独抽取出来 不需要在这里请求了
-//        if (isVisibleToUser) {
-//            mPresenter.checkUnreadNotification();
-//            mPresenter.handleFlushMessage();
-//        }
     }
 
     @Override

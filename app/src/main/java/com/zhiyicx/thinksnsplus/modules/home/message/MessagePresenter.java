@@ -130,6 +130,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 通知的小红点
      */
     private boolean mNotificaitonRedDotIsShow;
+    private Subscription mUnreadNotiSub;
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -539,8 +540,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void handleFlushMessage() {
+        if (mUnreadNotiSub != null && !mUnreadNotiSub.isUnsubscribed()) {
+            mUnreadNotiSub.unsubscribe();
+        }
 
-        Subscription subscribe = mRepository.getUnreadNotificationData()
+        mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
 
@@ -632,7 +636,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         }
                     }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(mUnreadNotiSub);
     }
 
     /**
