@@ -237,15 +237,16 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mPresenter
-                            .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
-                            ) {
-                        showMessage("不能使用站点预留邮箱");
-                        return;
-                    }
+
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
                     } else {
+                        if (mPresenter
+                                .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
+                                ) {
+                            showMessage("不能使用站点预留邮箱");
+                            return;
+                        }
                         mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
                                 .trim());
                     }

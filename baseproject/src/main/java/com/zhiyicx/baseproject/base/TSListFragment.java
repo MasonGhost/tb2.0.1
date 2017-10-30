@@ -275,7 +275,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void getNewDataFromNet() {
         if (isNeedRefreshAnimation() && getUserVisibleHint()) {
-            mRefreshlayout.autoRefresh(100);
+            mRefreshlayout.autoRefresh();
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
             mPage = DEFAULT_PAGE;
