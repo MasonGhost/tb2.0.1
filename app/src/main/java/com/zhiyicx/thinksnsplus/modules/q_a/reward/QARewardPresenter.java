@@ -62,10 +62,8 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                             qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                             mRootView.publishQuestionSuccess(qaListInfoBean);
                             mRootView.showSnackMessage("编辑成功", Prompt.DONE);
-                            mRepository.deleteQuestion(qaPublishBean);
                         } else {
                             try {
-                                mRepository.deleteQuestion(qaPublishBean);
                                 JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                                 QAListInfoBean qaListInfoBean = new Gson().fromJson
                                         (jsonObject.getString("question"), QAListInfoBean.class);
@@ -77,6 +75,9 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                                 mRootView.showSnackErrorMessage(e.toString());
                             }
                         }
+                        mRepository.deleteQuestion(qaPublishBean);
+                        qaPublishBean.setMark(qaPublishBean.getMark() - 1);
+                        mRepository.deleteQuestion(qaPublishBean);
                     }
 
                     @Override
