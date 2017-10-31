@@ -119,7 +119,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
-                        R.string.qa_show_question_followed_count),
+                        R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额
@@ -169,7 +169,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
-                        R.string.qa_show_question_followed_count),
+                        R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额
@@ -203,7 +203,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
-                        R.string.qa_show_question_followed_count),
+                        R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
         //悬赏金额

@@ -156,7 +156,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         mRechargeLables = new ArrayList<>();
 
         if (RewardType.DYNAMIC == mRewardType) {
-            amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
+            try {
+                amount = Arrays.toString(mSystemConfigBean.getFeed().getItems()).split("[\\[\\]]")[1].split(", ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             try {
                 amount = mSystemConfigBean.getSite().getReward().getAmounts().split(",");
