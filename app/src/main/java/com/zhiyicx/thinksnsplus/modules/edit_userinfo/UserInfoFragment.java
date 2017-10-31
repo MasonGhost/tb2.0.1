@@ -150,26 +150,23 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
 //        initCityPickerView();
         // 这个是和其他反的
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
 
         RxView.globalLayouts(mDvViewGroup)
-                .flatMap(new Func1<Void, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Void aVoid) {
-                        if (mDvViewGroup == null) {
-                            return Observable.just(false);
-                        }
-                        Rect rect = new Rect();
-                        //获取root在窗体的可视区域
-                        mDvViewGroup.getWindowVisibleDisplayFrame(rect);
-                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                        int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
-                        int dispayHeight = UIUtils.getWindowHeight(getContext());
-///                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
-                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
+                .flatMap(aVoid -> {
+                    if (mDvViewGroup == null) {
+                        return Observable.just(false);
                     }
+                    Rect rect = new Rect();
+                    //获取root在窗体的可视区域
+                    mDvViewGroup.getWindowVisibleDisplayFrame(rect);
+                    //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                    int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
+                    int dispayHeight = UIUtils.getWindowHeight(getContext());
+///                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
+                    return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                 })
                 // 监听键盘弹起隐藏状态时，会多次调用globalLayouts方法，为了避免多个数据导致状态判断出错，只取200ms内最后一次数据
                 .debounce(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS)
@@ -214,7 +211,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(charSequence -> {
-                    LogUtils.i("userName-->" + charSequence);
                     String oldUserName = mUserInfoBean.getName();
                     if (TextUtils.isEmpty(oldUserName)) {
                         userNameChanged = !TextUtils.isEmpty(charSequence);
@@ -288,7 +284,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
 
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
-//                Bundle bundle = new Bundle();
+///               Bundle bundle = new Bundle();
 //                bundle.putString(LocationSearchFragment.BUNDLE_LOCATION_STRING, mTvCity.getText().toString().trim());
 //                intent.putExtras(bundle);
                 startActivityForResult(intent, REQUST_CODE_AREA);

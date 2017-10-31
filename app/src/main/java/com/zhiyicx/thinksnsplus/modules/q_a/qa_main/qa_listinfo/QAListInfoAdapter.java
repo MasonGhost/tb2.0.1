@@ -241,10 +241,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
     private List<Link> setLinks(String realContentText, String replacedContentText) {
         List<Link> links = new ArrayList<>();
         Link followCountLink = new Link(mContext.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor
-                (mContext, R.color
-                        .normal_for_assist_text))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
-                        .general_for_hint))
+                (mContext, R.color.normal_for_assist_text))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color.general_for_hint))
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(followCountLink);
