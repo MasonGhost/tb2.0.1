@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -116,24 +118,31 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         mQdContent.setQuestionDetail(qaListInfoBean);
 
         boolean hasReward = qaListInfoBean.getAmount() > 0;
-        boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
+
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
-        double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
-                        R.string.qa_show_question_reward_count_),
-                ConvertUtils.numberConvert((int) rewardMoney)));
-
         // 是否有围观
         double outLookAmount = 0d;
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
             outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
         }
+        double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
+        String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
+                        R.string.qa_show_question_reward_count_),
+                ConvertUtils.numberConvert((int) rewardMoney));
+        CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("[]")
+                .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
+                .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
+                .format();
+
+        mTvQuestionReward.setText(chars);
+
+
         updateOutLook(qaListInfoBean.getLook() == 1, outLookAmount, ratio);
         initListener();
         // 是否关注了这个话题
@@ -164,20 +173,30 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      * @param qaListInfoBean bean
      */
     public void updateRewardType(QAListInfoBean qaListInfoBean, int ratio) {
-        // 关注&&悬赏金额
         boolean hasReward = qaListInfoBean.getAmount() > 0;
-        boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
+
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
+        // 是否有围观
+        double outLookAmount = 0d;
+        if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
+            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * qaListInfoBean.getAmount();
+        }
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
+        String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
-                ConvertUtils.numberConvert((int) rewardMoney)));
+                ConvertUtils.numberConvert((int) rewardMoney));
+        CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("[]")
+                .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
+                .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
+                .format();
+
+        mTvQuestionReward.setText(chars);
 
 
         // 悬赏状态
@@ -198,20 +217,30 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
      * @param qaListInfoBean bean
      */
     public void updateFollowState(QAListInfoBean qaListInfoBean, int ratio) {
-        // 关注&&悬赏金额
         boolean hasReward = qaListInfoBean.getAmount() > 0;
-        boolean hasLook = qaListInfoBean.getLook() == 1;
         // 关注
         mTvQuestionFeedCount.setText(String.format(mContext.getString(!hasReward ? R.string.qa_show_question_followed_count :
                         R.string.qa_show_question_followed_count_),
                 qaListInfoBean.getWatchers_count()));
 
+
         //悬赏金额
         mTvQuestionReward.setVisibility(hasReward ? View.VISIBLE : View.GONE);
+        // 是否有围观
+        double outLookAmount = 0d;
+        if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
+            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * qaListInfoBean.getAmount();
+        }
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
-        mTvQuestionReward.setText(String.format(mContext.getString(!hasLook ? R.string.qa_show_question_reward_count :
+        String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
                         R.string.qa_show_question_reward_count_),
-                ConvertUtils.numberConvert((int) rewardMoney)));
+                ConvertUtils.numberConvert((int) rewardMoney));
+        CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("[]")
+                .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
+                .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
+                .format();
+
+        mTvQuestionReward.setText(chars);
 
         mTvTopicChangeFollow.setChecked(qaListInfoBean.getWatched());
         mTvTopicChangeFollow.setText(qaListInfoBean.getWatched() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
