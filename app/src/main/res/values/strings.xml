@@ -540,6 +540,7 @@
     <string name="qa_topic_open_all">展开全部</string>
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_cannot_adopt_selef">不能采纳自己的答案</string>
     <string name="qa_question_answer_invite">邀请回答</string>
     <string name="qa_question_answer_adopting">采纳答案</string>
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>

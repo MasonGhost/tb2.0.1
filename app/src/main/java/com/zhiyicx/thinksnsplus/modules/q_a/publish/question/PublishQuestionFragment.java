@@ -32,8 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
-        .BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 
 /**
@@ -106,8 +105,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void setRightClick() {
-        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() >
-                1) {
+        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
             addTopic();
         } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_hint));
@@ -247,13 +245,17 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     if (mDraftQuestionCopy != null) {
                         mPresenter.deleteQuestion(mDraftQuestionCopy);
                         mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
-                        mPresenter.saveQuestion(mDraftQuestionCopy);
+                        if (!mDraftQuestionCopy.isHasAgainEdite()) {
+                            mPresenter.saveQuestion(mDraftQuestionCopy);
+                        } else {
+                            mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        }
                     }
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
-                    if (mDraftQuestionCopy!=null){
+                    if (mDraftQuestionCopy != null) {
                         mPresenter.deleteQuestion(mDraftQuestionCopy);
                         mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
                         mPresenter.deleteQuestion(mDraftQuestionCopy);

@@ -453,6 +453,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     if (isMineAdopted) {
                         return;
                     }
+                    if (answerIsMine) {
+                        showSnackErrorMessage(getString(R.string.qa_question_cannot_adopt_selef));
+                        return;
+                    }
                     mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean
                             .getId());
 
@@ -465,8 +469,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {// 编辑
                     mDealInfoMationPopWindow.hide();
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
-                            mAnswerInfoBean.getQuestion().getSubject(),mAnswerInfoBean.getAnonymity());
+                                    .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
+                            mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())

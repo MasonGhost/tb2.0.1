@@ -84,6 +84,9 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                         qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                         qaListInfoBean.setLook(qaPublishBean.getLook());
                         mRootView.updateSuccess(qaListInfoBean);
+                        mRepository.deleteQuestion(qaPublishBean);
+                        qaPublishBean.setMark(qaPublishBean.getMark() - 1);
+                        mRepository.deleteQuestion(qaPublishBean);
                         mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
                     }
 

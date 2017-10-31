@@ -9,7 +9,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -23,7 +22,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 /**
  * @author Catherine
@@ -64,6 +62,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                             qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                             mRootView.publishQuestionSuccess(qaListInfoBean);
                             mRootView.showSnackMessage("编辑成功", Prompt.DONE);
+                            mRepository.deleteQuestion(qaPublishBean);
                         } else {
                             try {
                                 mRepository.deleteQuestion(qaPublishBean);
