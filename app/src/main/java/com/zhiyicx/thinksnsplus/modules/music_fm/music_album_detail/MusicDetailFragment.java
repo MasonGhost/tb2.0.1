@@ -708,7 +708,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     });
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
             bundle.putString(MUSIC_ID, id);// mMediaId_test
