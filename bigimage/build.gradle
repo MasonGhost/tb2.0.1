@@ -5,8 +5,9 @@ archivesBaseName = 'subsampling-scale-image-view'
 version = '3.6.0'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
 
     defaultConfig {
         consumerProguardFiles 'proguard-rules.txt'

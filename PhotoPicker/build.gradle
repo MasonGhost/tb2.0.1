@@ -1,16 +1,18 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     resourcePrefix "__picker_"
 
     dexOptions {
         javaMaxHeapSize "4g"
     }
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 25
-        versionName "0.9.1"
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
     }
     lintOptions {
         abortOnError false

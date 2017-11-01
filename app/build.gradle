@@ -115,8 +115,8 @@ android {
         javaMaxHeapSize "6g"//越大越好
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 greendao {
@@ -147,17 +147,15 @@ configurations.all {
     }
 }
 dependencies {
-    def dataDependences = rootProject.ext.dataDependencies;
-    def supportDependences = rootProject.ext.sdksoupportDependencies;
-    def testDependences = rootProject.ext.testDependencies;
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    def dataDependences = rootProject.ext.dataDependencies
+    def supportDependences = rootProject.ext.sdksoupportDependencies
+    def testDependences = rootProject.ext.testDependencies
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //support
     compile supportDependences.appcompatV7
     compile supportDependences.paletteV7
     compile supportDependences.supportV4
     compile supportDependences.constraintLayout
-
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -184,8 +182,8 @@ dependencies {
     compile dataDependences.butterknife
     annotationProcessor dataDependences.butterknifeApt
     // Project
-    compile project(":baseproject")
-    compile project(":media-cache")
+    compile project(':baseproject')
+    compile project(':media-cache')
     compile project(':banner')
     compile project(':tspay')
     compile project(':contacts')
@@ -197,16 +195,13 @@ dependencies {
     // jpush
     compile dataDependences.jiguangJpush
     compile dataDependences.jiguangJcore
-
     compile dataDependences.greendaoSqlcipher
     compile dataDependences.markdownView
     compile dataDependences.editor
     compile dataDependences.richtext
     compile(name: 'lint-library-release', ext: 'aar')
-
     compile dataDependences.flowlayout
-//    compile dataDependences.contacts
-
+    //    compile dataDependences.contacts
     compile dataDependences.update
 }
 

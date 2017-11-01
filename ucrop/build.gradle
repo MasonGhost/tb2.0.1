@@ -4,10 +4,10 @@ android {
     compileSdkVersion gConfig.getAt("compileSdkVersion")
     buildToolsVersion gConfig.getAt("buildToolsVersion")
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 22
-        versionName "2.2.0-native"
+        minSdkVersion gConfig.getAt("minSdkVersion")
+        targetSdkVersion gConfig.getAt("targetSdkVersion")
+        versionCode gConfig.getAt("versionCode")
+        versionName gConfig.getAt("versionName")
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
