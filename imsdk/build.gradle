@@ -90,13 +90,13 @@ task jarMyLib(type: Jar, dependsOn: ['build']) {
 //    include('com/nought/hellolib/*.class')
 //    include('com/xxx/*.class') // 同时记得加上第三方的package
 }
-def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
-def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
+//def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
+//def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
 
 task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) {
     injars('build/libs/imsdk1.1.5-beta-nop.jar')
     outjars('build/libs/imsdk1.1.5-beta.jar')
-    libraryjars(androidJarDir)
+//    libraryjars(androidJarDir)
     configuration 'proguard-rules.pro'
 }
 // 加快 gradle 编译

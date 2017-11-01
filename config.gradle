@@ -15,7 +15,7 @@ ext {
     versionCode = 120
     versionName = "1.2.0-beta"
     compileSdkVersion = 25
-    buildToolsVersion = "25.0.1"
+    buildToolsVersion = "26.0.2"
 
     //Libraries
     daggerVersion = '2.8'

@@ -10,6 +10,12 @@ android {
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     lintOptions {
@@ -20,7 +26,11 @@ android {
 
 }
 
-
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     def dataDependences = rootProject.ext.dataDependencies

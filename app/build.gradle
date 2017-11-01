@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
-apply plugin: 'me.tatarka.retrolambda'
+
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
@@ -13,6 +13,12 @@ android {
     compileSdkVersion gConfig["compileSdkVersion"]
     buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
         applicationId gConfig["applicationId"]
         minSdkVersion gConfig["minSdkVersion"]
         targetSdkVersion gConfig["targetSdkVersion"]
@@ -162,6 +168,7 @@ dependencies {
         exclude module: 'support-annotations'
         exclude group: 'javax.inject'
     }
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     androidTestCompile testDependences.espressoIntent
     androidTestCompile(testDependences.espressoRecyclerView) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -205,3 +212,9 @@ dependencies {
     compile dataDependences.update
 }
 
+
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+}
