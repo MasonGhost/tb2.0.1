@@ -27,7 +27,7 @@
     <application
         android:name=".base.AppApplication"
         android:allowBackup="false"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -173,7 +173,6 @@
         </activity>
         <activity
             android:name=".modules.gallery.GalleryActivity"
-            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:theme="@style/GalleryTheme">
         </activity>
@@ -271,7 +270,6 @@
         <!-- 硬件加速用于mx3 自定义输入控件绘制卡顿 -->
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -481,7 +479,6 @@
         </activity>
         <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
@@ -494,7 +491,6 @@
         <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.PublishInfoActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -514,7 +510,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
@@ -546,7 +541,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.draftbox.DraftBoxActivity"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.q_a.publish.create_topic.CreateTopicActivity">
         </activity>

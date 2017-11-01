@@ -263,9 +263,8 @@ public class DynamicDetailHeader {
 
         int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         // 提前设置图片控件的大小，使得占位图显示
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-//        layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         imageView.setLayoutParams(layoutParams);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
@@ -275,14 +274,11 @@ public class DynamicDetailHeader {
             }
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
                     && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-            if (!canLook) {
-//                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            }
-//            imageView.setLayoutParams(layoutParams);
             DrawableRequestBuilder requestBuilder =
                     Glide.with(mContext)
                             .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
                                     canLook ? height : 0, part, AppApplication.getTOKEN()))
+                            .override(picWidth, height)
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .error(R.drawable.shape_default_image);

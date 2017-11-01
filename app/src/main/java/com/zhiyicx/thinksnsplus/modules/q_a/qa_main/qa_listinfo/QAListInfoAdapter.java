@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -210,8 +208,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private void makeSpan(TextView mTextView, int h, int w, String plainText,
                           long answer_id, int question_position, int start, boolean canLook) {
-
-//        Spanned htmlText = Html.fromHtml(plainText);
+        mTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         SpannableString mSpannableString = new SpannableString(plainText);
 
         int allTextStart = 0;

@@ -203,7 +203,9 @@ public class WindowUtils {
                             LogUtils.d(e.toString());
                         }
 
-                        if (deltaX > 10 | deltaY > 10) isMove = true;
+                        if (deltaX > 10 | deltaY > 10) {
+                            isMove = true;
+                        }
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
@@ -228,6 +230,8 @@ public class WindowUtils {
 //                        mAnimationTimer.schedule(mAnimationTask, 0, mAnimatonPeriodTime);
 
                         break;
+                        default:
+                            break;
                 }
 
                 return false;

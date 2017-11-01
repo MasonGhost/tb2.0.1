@@ -53,6 +53,7 @@ public class TextViewUtils {
 
     private TextViewUtils(TextView textView, String oriMsg) {
         this.mTextView = textView;
+        mTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         this.mOriMsg = oriMsg;
     }
 
@@ -127,7 +128,7 @@ public class TextViewUtils {
     }
 
     private void handleTextDisplay() {
-         mTextView.setVisibility(View.INVISIBLE);
+        mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
             //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
@@ -140,13 +141,13 @@ public class TextViewUtils {
                         String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
                         mTextView.setText(getSpannableString(result));
                         mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete!=null){
+                        if (mOnTextSpanComplete != null) {
                             mOnTextSpanComplete.onComplete();
                         }
                     } else {
                         mTextView.setText(getSpannableString(mTextView.getText()));
                         mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete!=null){
+                        if (mOnTextSpanComplete != null) {
                             mOnTextSpanComplete.onComplete();
                         }
                     }
@@ -155,7 +156,7 @@ public class TextViewUtils {
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
-            if (mOnTextSpanComplete!=null){
+            if (mOnTextSpanComplete != null) {
                 mOnTextSpanComplete.onComplete();
             }
         }
