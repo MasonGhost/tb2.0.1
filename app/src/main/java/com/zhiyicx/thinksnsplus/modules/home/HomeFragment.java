@@ -180,7 +180,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         changeNavigationButton(PAGE_HOME);
         setCurrentPage();
         // 支持魅族手机首页状太栏文字白色问题
-        supportFlymeSutsusbar();
+//        supportFlymeSutsusbar();
         // app更新
         AppUpdateManager.getInstance(getContext()
                 , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")

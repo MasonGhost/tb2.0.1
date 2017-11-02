@@ -126,6 +126,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
+            supportFlymeSutsusbar(); // 兼容小米、魅族6.0以上
         }
         FrameLayout frameLayout = new FrameLayout(getActivity());
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -785,7 +786,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     protected void supportFlymeSutsusbar() {
-        mStatusbarSupport = Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusbarSupport = Observable.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override

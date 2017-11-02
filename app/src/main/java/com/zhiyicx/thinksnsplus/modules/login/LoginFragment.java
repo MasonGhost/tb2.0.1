@@ -40,6 +40,10 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -126,7 +130,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(aBoolean -> {
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
-
     }
 
     private void initListener() {
@@ -193,8 +196,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(aVoid -> {
 //                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
-                        showSnackLoadingMessage(getString(R.string.loading_state));
-                        thridLogin(SHARE_MEDIA.SINA);
+                    showSnackLoadingMessage(getString(R.string.loading_state));
+                    thridLogin(SHARE_MEDIA.SINA);
 //                    } else {
 //                        showSnackErrorMessage(getString(R.string.please_install_app));
 //                    }
@@ -223,6 +226,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mAccountList = new ArrayList<>();
         mAccountBean = new AccountBean();
         initAccount();
+//        supportFlymeSutsusbar();
     }
 
     @Override

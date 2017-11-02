@@ -103,7 +103,6 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected void initData() {
-        supportFlymeSutsusbar();
         mVpFragment.setCurrentItem(0);
 
     }
