@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -29,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -205,6 +207,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         setSendDynamicState();
         initWordsToll();
         initTollState();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
     }
 
     private void initTollState() {

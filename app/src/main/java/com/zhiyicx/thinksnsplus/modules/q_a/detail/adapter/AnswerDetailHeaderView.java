@@ -134,7 +134,7 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
             if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);

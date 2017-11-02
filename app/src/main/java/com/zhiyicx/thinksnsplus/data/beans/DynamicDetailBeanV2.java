@@ -720,7 +720,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeValue(this.feed_mark);
         dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
-        dest.writeDouble(this.amount);
+        dest.writeLong(this.amount);
         dest.writeTypedList(this.likes);
         dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.images);

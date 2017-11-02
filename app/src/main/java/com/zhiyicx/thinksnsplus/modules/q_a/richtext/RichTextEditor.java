@@ -38,6 +38,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifDecoder;
+import pl.droidsonroids.gif.InputSource;
+
 /**
  * @Author Jliuer
  * @Date 2017/8/7 11:08
@@ -434,7 +437,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(resource.getAbsolutePath(), options);
-
                         float scale = (float) allLayout.getWidth() / (float) options.outWidth;
                         imageView.setImage(ImageSource.uri(resource.getAbsolutePath())
                                 .region(new Rect(0, 0, options.outWidth, options.outHeight)));

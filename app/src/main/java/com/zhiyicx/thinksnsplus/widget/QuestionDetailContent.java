@@ -187,7 +187,7 @@ public class QuestionDetailContent extends FrameLayout {
     private void dealContent(String content, List<ImageBean> list) {
         InternalStyleSheet css = new Github();
         css.addRule("body", "line-height: 1.6", "padding: 0");
-        css.addRule(".container", "padding-right:0", ";padding-left:0");
+        css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
         mMdvQuestionContent.addStyleSheet(css);
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setOnElementListener(new MarkdownView.OnElementListener() {

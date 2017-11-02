@@ -320,7 +320,7 @@ public class SystemConfigBean implements Serializable {
             this.type = type;
         }
 
-        public boolean isShowTerms() {
+        public boolean hasShowTerms() {
             return showTerms;
         }
 

@@ -218,6 +218,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:hardwareAccelerated="false"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:name=".modules.dynamic.send.SendDynamicActivity"
             android:screenOrientation="portrait">
         </activity>
