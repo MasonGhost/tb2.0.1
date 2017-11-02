@@ -52,7 +52,6 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
         multiItemTypeAdapter.addItemViewDelegate(new RankTypeItem(getContext(), getRankType(), mPresenter));
-//        multiItemTypeAdapter.addItemViewDelegate(new RankTypeMineItem(getContext(), getRankType(), mPresenter));
         multiItemTypeAdapter.addItemViewDelegate(new RankTypeEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override

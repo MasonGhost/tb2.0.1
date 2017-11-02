@@ -53,33 +53,45 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         }
     }
 
-    private void dealRankType(int count, TextView tv) {
+    private void dealRankType(UserInfoBean userInfoBean, TextView tv) {
         String format = "";
+        int count = 0;
         // 粉丝
         switch (mRankType) {
             case RankTypeConfig.RANK_USER_FOLLOWER:
                 format = mContext.getString(R.string.rank_type_fans);
+                count=userInfoBean.getExtra().getFollowers_count();
                 break;
             case RankTypeConfig.RANK_USER_CHECK_ID:
                 format = mContext.getString(R.string.rank_type_check_in);
+                count=userInfoBean.getExtra().getLast_checkin_count();
+
                 break;
             case RankTypeConfig.RANK_USER_QUESTION_LIKE:
                 format = mContext.getString(R.string.rank_type_answer_dig_count);
+                count=userInfoBean.getExtra().getQuestions_count();
+
                 break;
             case RankTypeConfig.RANK_QUESTION_DAY:
             case RankTypeConfig.RANK_QUESTION_WEEK:
             case RankTypeConfig.RANK_QUESTION_MONTH:
                 format = mContext.getString(R.string.rank_type_answer_count);
+                count=userInfoBean.getExtra().getQuestions_count();
+
                 break;
             case RankTypeConfig.RANK_DYNAMIC_DAY:
             case RankTypeConfig.RANK_DYNAMIC_WEEK:
             case RankTypeConfig.RANK_DYNAMIC_MONTH:
                 format = mContext.getString(R.string.rank_type_like_count);
+                count=userInfoBean.getExtra().getLikes_count();
+
                 break;
             case RankTypeConfig.RANK_INFORMATION_DAY:
             case RankTypeConfig.RANK_INFORMATION_WEEK:
             case RankTypeConfig.RANK_INFORMATION_MONTH:
                 format = mContext.getString(R.string.rank_type_view_count);
+                count=userInfoBean.getExtra().getCount();
+
                 break;
             default:
         }
@@ -112,9 +124,9 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         holder.setText(R.id.tv_user_name, userInfoBean.getName());
         // 排行的信息
         if (mRankType.equals(RankTypeConfig.RANK_USER_CHECK_ID)) {
-            dealRankType(userInfoBean.getExtra().getLast_checkin_count(), holder.getView(R.id.tv_rank_type));
+            dealRankType(userInfoBean, holder.getView(R.id.tv_rank_type));
         } else {
-            dealRankType(userInfoBean.getExtra().getCheckin_count(), holder.getView(R.id.tv_rank_type));
+            dealRankType(userInfoBean, holder.getView(R.id.tv_rank_type));
         }
         // 关注按钮
         ImageView ivUserFollow = holder.getView(R.id.iv_user_follow);

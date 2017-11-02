@@ -47,8 +47,6 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         RecyclerView rvUsers = holder.getView(R.id.rv_users);
         rvUsers.setNestedScrollingEnabled(false);
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, 5);
-        int width = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_tiny);
-//        rvUsers.addItemDecoration(new LinearDecoration(0, 0, ConvertUtils.px2dp(mContext, 10), 0));
         rvUsers.setLayoutManager(layoutManager);
         if (rankIndexBean.getUserInfoList() != null){
             RankIndexUserAdapter adapter;
