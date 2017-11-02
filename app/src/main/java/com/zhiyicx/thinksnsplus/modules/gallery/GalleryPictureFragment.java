@@ -299,25 +299,19 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         return fragment;
     }
 
-    // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        mLlToll.setVisibility(View.GONE);
+        final Toll toll = mImageBean.getToll();
+        final boolean canLook;
+        canLook = toll == null || !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+        mLlToll.setVisibility(!canLook ? View.VISIBLE : View.GONE);
         final int w, h;
-        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
-            // 搞什么飞机，之前的本地规划画布没用了，
-            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
-//            imageBean.setWidth(screenW);
-//            imageBean.setHeight(screenH);
-        }
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
 
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
+        // 本地图片
         if (imageBean.getImgUrl() != null) {
-//            int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
-//            int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
-            // 加载本地图片
             DrawableRequestBuilder local = Glide.with(context)
                     .load(imageBean.getImgUrl())
                     .placeholder(R.drawable.shape_default_image)
@@ -325,59 +319,38 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .thumbnail(0.1f)
                     .centerCrop();
-//            if (with * height != 0) {
-//                local.override(with, height);
-//            }
             local.into(new GallarySimpleTarget(rect));
         } else {
-            // 加载网络图片
+            // 缩略图
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
                         public GlideUrl requestGlideUrl() {
-                            final Toll toll = mImageBean.getToll();
-                            final Boolean canLook;
-                            if (toll == null) {
-                                canLook = true;
-                            } else {
-                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
-                            }
-                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
                                     ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
-
                         }
                     }
                             .requestGlideUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-            // 尝试从缓存获取原图
+            // // 不从网络读取原图(cacheOnlyStreamLoader) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
-                    .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
-                    .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
+                    .using(cacheOnlyStreamLoader)
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0, ImageZipConfig.IMAGE_70_ZIP))
+                    // 加载缩略图，上一个页面已经缓存好了，直接读取
+                    .thumbnail(thumbnailBuilder)
+                    .override(w, h)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
+                        // 没有缓存到原图
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             LogUtils.i(TAG + "加载原图失败");
-                            // 如果不是点击放大进入的那张图片，就需要设置查看原图按钮为缩小状态，这样第一次切换到该页面，才能有放大到1.0的效果
                             if (mTvOriginPhoto != null) {
-                                if (!animationIn) {
-//                                    mTvOriginPhoto.setScaleY(0.0f);
-//                                    mTvOriginPhoto.setScaleX(0.0f);
-//                                    mTvOriginPhoto.setAlpha(0.0f);
-                                }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
-                            }
-                            final Toll toll = mImageBean.getToll();
-                            final Boolean canLook;
-                            if (toll == null) {
-                                canLook = true;
-                            } else {
-                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
                             }
                             if (!canLook) {
                                 if (mTvOriginPhoto != null) {
@@ -391,14 +364,14 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 }
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
-                                return false;
                             }
 
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             DrawableRequestBuilder builder = Glide.with(context)
-                                    .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
-                                            ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
+                                    .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
+                                            ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .override(w, h)
                                     .placeholder(R.drawable.shape_default_image)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
@@ -439,6 +412,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     if (mIvPager != null) {
                                         mIvPager.setImageDrawable(resource);
                                     }
+                                    if (mPbProgress != null) {
+                                        mPbProgress.setVisibility(View.GONE);
+                                    }
                                     mPhotoViewAttacherNormal.update();
                                 }
 
@@ -470,10 +446,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     // 加载原图:
     private void loadOriginImage(ImageBean imageBean) {
         final int w, h;
-        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
-//            imageBean.setWidth(screenW);
-//            imageBean.setHeight(screenH);
-        }
+
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
@@ -553,7 +526,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         backgroundAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (getActivity() != null) {// 防止空指针
+                if (getActivity() != null) {
                     getActivity().finish();
                     getActivity().overridePendingTransition(-1, -1);
                 }
@@ -636,7 +609,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
                     return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
+                // subscribeOn & doOnSubscribe 的特殊性质
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     switch (result) {
@@ -671,6 +645,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 break;
             case R.id.tv_to_vip:
 
+                break;
+            default:
                 break;
         }
     }
@@ -750,13 +726,13 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(),mPresenter.getRatio()),
+                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio()),
                         mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(),mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

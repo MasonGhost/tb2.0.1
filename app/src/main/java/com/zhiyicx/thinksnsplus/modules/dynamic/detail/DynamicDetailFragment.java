@@ -295,8 +295,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void onImageClick(int iamgePosition, double amount, int note) {
-        initImageCenterPopWindow(iamgePosition, (float) amount, note, R.string.buy_pay_words_desc, true);
+    public void onImageClick(int iamgePosition, long amount, int note) {
+        initImageCenterPopWindow(iamgePosition, amount, note, R.string.buy_pay_words_desc, true);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -346,8 +346,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
-        initImageCenterPopWindow(position, (float) amount,
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
+        initImageCenterPopWindow(position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -698,7 +698,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * @param strRes        文字说明
      * @param isImage       是否是图片收费
      */
-    private void initImageCenterPopWindow(final int imagePosition, float amout,
+    private void initImageCenterPopWindow(final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
 ///       if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();

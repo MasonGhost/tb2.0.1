@@ -393,7 +393,7 @@ public class DynamicDetailHeader {
     }
 
     public interface OnImageClickLisenter {
-        void onImageClick(int iamgePosition, double amount, int note);
+        void onImageClick(int iamgePosition, long amount, int note);
     }
 
 

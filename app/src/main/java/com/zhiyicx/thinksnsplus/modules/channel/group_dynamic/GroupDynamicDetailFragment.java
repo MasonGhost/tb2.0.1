@@ -332,7 +332,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         initImageCenterPopWindow(position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }

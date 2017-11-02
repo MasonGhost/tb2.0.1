@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,8 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -40,7 +37,6 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -394,7 +390,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean.getImages().get(position).getAmount(),
+            initImageCenterPopWindow(dynamicPosition, position, dynamicBean.getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc, true);
             return;
         }
@@ -526,7 +522,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null && !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth().getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(position, position, (float) detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(position, position, detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
@@ -535,9 +531,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
-        initImageCenterPopWindow(position, position, (float) amount,
+        initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -942,7 +938,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param strRes          文字说明
      * @param isImage         是否是图片收费
      */
-    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout,
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
 
         mPayImagePopWindow = PayPopWindow.builder()

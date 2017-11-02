@@ -71,19 +71,8 @@ public class GalleryPresenter extends AppBasePresenter<ICommentRepository, Galle
         handleWalletBlance((long)amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(Object o) {
-                        return mCommentRepository.paykNote(note);
-                    }
-                })
-                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        return Observable.just(stringBaseJsonV2);
-
-                    }
-                })
+                .flatMap(o -> mCommentRepository.paykNote(note))
+                .flatMap(stringBaseJsonV2 -> Observable.just(stringBaseJsonV2))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {

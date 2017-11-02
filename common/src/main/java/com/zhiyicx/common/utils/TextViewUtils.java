@@ -40,7 +40,7 @@ public class TextViewUtils {
 
     private int mNote;// 付费节点
 
-    private int mAmount;// 付费金额
+    private long mAmount;// 付费金额
 
     private Integer mSpanTextColor;
     private boolean mCanRead;
@@ -269,7 +269,7 @@ public class TextViewUtils {
     }
 
     public interface OnSpanTextClickListener {
-        void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead);
+        void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead);
     }
 
     public interface OnTextSpanComplete {
