@@ -121,7 +121,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 result = getString(R.string.apple_pay_upacp) + " " + recharge.getBody();
                 break;
             default:
-                result = recharge.getBody();
+                result = recharge.getSubject();
 
         }
         return result;

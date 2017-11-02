@@ -83,6 +83,37 @@
 
         <LinearLayout
             android:layout_marginBottom="@dimen/divider_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/transaction_description"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+
+            <TextView
+                android:id="@+id/bill_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_large"
+                android:text="@string/transaction_description"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginBottom="@dimen/divider_line"
             android:id="@+id/bill_account_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,37 +142,6 @@
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
                 tools:text="@string/transaction_account"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginBottom="@dimen/divider_line"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/dynamice_top_input_height"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing_mid"
-            android:paddingRight="@dimen/spacing_mid">
-
-            <TextView
-                android:layout_width="@dimen/withdrawal_detail_width"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/transaction_description"
-                android:textColor="@color/general_for_hint"
-                android:textSize="@dimen/size_content"
-                tools:text="@string/transaction_description"/>
-
-            <TextView
-                android:id="@+id/bill_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/spacing_large"
-                android:text="@string/transaction_description"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
-                tools:text="@string/transaction_description"/>
         </LinearLayout>
 
         <LinearLayout

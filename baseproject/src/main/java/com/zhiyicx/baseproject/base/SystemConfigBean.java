@@ -328,7 +328,6 @@ public class SystemConfigBean implements Serializable {
             this.showTerms = showTerms;
         }
 
-
         public boolean isCompleteData() {
             return completeData;
         }
