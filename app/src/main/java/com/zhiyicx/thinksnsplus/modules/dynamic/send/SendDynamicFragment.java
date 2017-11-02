@@ -243,7 +243,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initWordsToll() {
-        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), 50));
+        int wordLimit = mPresenter.getSystemConfigBean().getFeed().getLimit();
+        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
@@ -268,6 +269,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             break;
                         case R.id.rb_three:
                             mTollMoney = mSelectMoney.get(2);
+                            break;
+                        default:
                             break;
                     }
                 });

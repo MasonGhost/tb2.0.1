@@ -175,6 +175,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    @Override
+    public void onPause() {
+        WindowUtils.removeWindowDismisslistener(this);
+        super.onPause();
+    }
 
     @Override
     public void setPresenter(P presenter) {
@@ -266,6 +271,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void showMessage(String message) {
 
     }
+
+
 
     /**
      * 音乐图标消失
@@ -422,8 +429,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void showCenterLoading(String msg) {
-        if (mCenterLoadingDialog != null)
+        if (mCenterLoadingDialog != null) {
             mCenterLoadingDialog.showStateIng(msg);
+        }
     }
 
     /**
@@ -431,8 +439,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void hideCenterLoading() {
-        if (mCenterLoadingDialog != null)
+        if (mCenterLoadingDialog != null) {
             mCenterLoadingDialog.onDestroy();
+        }
     }
 
     /**

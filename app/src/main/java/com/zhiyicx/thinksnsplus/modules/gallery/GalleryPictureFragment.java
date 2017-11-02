@@ -358,7 +358,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
-                    .error(R.mipmap.pic_locked_square)
+                    .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -387,7 +387,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     mPbProgress.setVisibility(View.GONE);
                                 }
                                 if (mIvPager != null) {
-                                    mIvPager.setImageResource(R.mipmap.pic_locked_square);
+                                    mIvPager.setImageResource(R.drawable.shape_default_image);
                                 }
                                 mPhotoViewAttacherNormal.update();
                                 mLlToll.setVisibility(View.VISIBLE);
@@ -426,7 +426,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                             return false;
                                         }
                                     })
-                                    .error(R.mipmap.pic_locked_square)
+                                    .error(R.drawable.shape_default_image)
                                     .centerCrop();
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
