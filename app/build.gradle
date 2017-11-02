@@ -211,10 +211,3 @@ dependencies {
     //    compile dataDependences.contacts
     compile dataDependences.update
 }
-
-
-repositories {
-    maven {
-        url 'https://maven.google.com'
-    }
-}

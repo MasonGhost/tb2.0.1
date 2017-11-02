@@ -49,19 +49,17 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        google()
         maven {
             url "https://jitpack.io"
         }
+
     }
     dependencies {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
-repositories {
-    maven {
-        url 'https://maven.google.com'
-    }
-}
+
 configurations.all {
     resolutionStrategy {
         force 'com.android.support:support-annotations:25.0.1'
@@ -70,7 +68,6 @@ configurations.all {
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     def testDependences = rootProject.ext.testDependencies
     def dataDependences = rootProject.ext.dataDependencies
     def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies
