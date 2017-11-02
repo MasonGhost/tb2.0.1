@@ -384,7 +384,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean
+            initImageCenterPopWindow(dynamicPosition, position, dynamicBean
                             .getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,
                     true);
@@ -422,9 +422,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         position -= mHeaderAndFooterWrapper.getHeadersCount();
-        initImageCenterPopWindow(position, position, (float) amount,
+        initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -435,7 +435,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
+        // 游客处理
+        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
         if (userInfoBean.getUser_id().intValue() == -1) {
@@ -512,8 +513,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
         if (canNotLookWords) {
-            initImageCenterPopWindow(position, position, (float)
-                            detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(position, position,
+                    detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
@@ -872,7 +873,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param isImage         是否是图片收费
      */
     private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition,
-                                          float amout,
+                                          long amout,
                                           final int note, int strRes, final boolean isImage) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
@@ -888,12 +889,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio()), mPresenter.getGoldName()))
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

@@ -143,13 +143,17 @@ public class ImageBean implements Parcelable, Serializable {
     public String toString() {
         return "ImageBean{" +
                 "imgUrl='" + imgUrl + '\'' +
+                ", feed_id=" + feed_id +
                 ", storage_id=" + storage_id +
+                ", position=" + position +
+                ", dynamicPosition=" + dynamicPosition +
+                ", toll_type=" + toll_type +
+                ", toll_monye=" + toll_monye +
                 ", width=" + width +
                 ", height=" + height +
                 ", part=" + part +
                 ", imgMimeType='" + imgMimeType + '\'' +
-                "\n" + "toll_type=" + toll_type +
-                "\n" + "toll_monye=" + toll_monye + "\n" +
+                ", toll=" + toll +
                 '}';
     }
 

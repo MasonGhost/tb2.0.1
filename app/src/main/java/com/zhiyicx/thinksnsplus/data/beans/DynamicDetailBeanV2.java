@@ -389,7 +389,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private int paid_node;
         private int width;
         private int height;
-        private double amount;
+        private long amount;
         private String type;
         private Boolean paid;
 
@@ -464,11 +464,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             return 100;
         }
 
-        public double getAmount() {
+        public long getAmount() {
             return amount;
         }
 
-        public void setAmount(double amount) {
+        public void setAmount(long amount) {
             this.amount = amount;
         }
 
@@ -516,7 +516,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             dest.writeInt(this.width);
             dest.writeInt(this.paid_node);
             dest.writeInt(this.height);
-            dest.writeDouble(this.amount);
+            dest.writeLong(this.amount);
             dest.writeString(this.type);
             dest.writeValue(this.paid);
             dest.writeString(this.imgMimeType);
@@ -533,7 +533,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             this.width = in.readInt();
             this.paid_node = in.readInt();
             this.height = in.readInt();
-            this.amount = in.readDouble();
+            this.amount = in.readLong();
             this.type = in.readString();
             this.paid = (Boolean) in.readValue(Boolean.class.getClassLoader());
             this.imgMimeType = in.readString();
@@ -553,12 +553,18 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             ImagesBean that = (ImagesBean) o;
 
-            if (file != that.file) return false;
+            if (file != that.file) {
+                return false;
+            }
             return paid_node == that.paid_node;
 
         }
@@ -641,8 +647,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DynamicDetailBeanV2 that = (DynamicDetailBeanV2) o;
 
