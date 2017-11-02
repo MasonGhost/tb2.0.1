@@ -98,7 +98,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.R
             dynamicBean.setImages(new ArrayList<>());
         }
         // 发送动态 V2 所需要的数据
-        dynamicBean.setAmount((long)PayConfig.gameCurrency2RealCurrency(dynamicBean.getAmount(),getRatio()));
+        dynamicBean.setAmount((long) PayConfig.gameCurrency2RealCurrency(dynamicBean.getAmount(), getRatio()));
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
@@ -108,14 +108,15 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.R
             return;
         }
         int contentLenght = ConvertUtils.stringLenghtDealForEmoji(sendDynamicDataBeanV2.getFeed_content());
-
-        if (mRootView.wordsNumLimit() && contentLenght <= 50) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
+        int wordLimit = getSystemConfigBean().getFeed().getLimit();
+        wordLimit = wordLimit > 0 ? wordLimit : 50;
+        if (mRootView.wordsNumLimit() && contentLenght <= wordLimit) {
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), wordLimit));
             return;
         }
         if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {// 文字收费金额整数限制
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),String.format(Locale.getDefault(),
-                    mContext.getResources().getString(R.string.limit_monye_death),getGoldName()));
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
+                    mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
             return;
         }
 
