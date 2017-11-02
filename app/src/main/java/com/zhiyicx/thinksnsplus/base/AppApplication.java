@@ -269,7 +269,7 @@ public class AppApplication extends TSApplication {
                         e.printStackTrace();
                     }
                 })
-                .doOnError(throwable -> throwable.printStackTrace())
+                .doOnError(Throwable::printStackTrace)
                 .subscribe();
     }
 
