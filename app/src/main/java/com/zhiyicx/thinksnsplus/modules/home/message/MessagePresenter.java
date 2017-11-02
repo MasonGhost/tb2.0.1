@@ -548,7 +548,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
-
+                    if(data.getCounts()==null){
+                        return false;
+                    }
                     /**
                      * 设置未读数
                      */

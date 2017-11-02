@@ -231,6 +231,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_personal_page:
                 PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
+            /**
+             * 我的投稿
+             */
             case R.id.bt_my_info:
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));
                 break;
@@ -246,6 +249,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;
+            /*
+              我的音乐
+             */
             case R.id.bt_music:
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(getContext())) {
