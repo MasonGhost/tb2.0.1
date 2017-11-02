@@ -287,12 +287,12 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         showMessage(getString(R.string.permisson_refused_nerver_ask));
                     }
                 });
-
+        mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> UserRuleActivity.startUserRuleActivity(getActivity(),
-                        mPresenter.getSystemConfigBean().getRegisterSettings().getRules()));
+                        mPresenter.getSystemConfigBean().getRegisterSettings().getContent()));
     }
 
     @Override

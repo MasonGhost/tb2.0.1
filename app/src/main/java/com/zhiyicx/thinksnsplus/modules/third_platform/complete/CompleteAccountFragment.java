@@ -103,11 +103,12 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
                     setConfirmEnable(!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString().trim()));
                 });
 
+        mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> UserRuleActivity.startUserRuleActivity(getActivity(),
-                        mPresenter.getSystemConfigBean().getRegisterSettings().getRules()));
+                        mPresenter.getSystemConfigBean().getRegisterSettings().getContent()));
 
     }
 
