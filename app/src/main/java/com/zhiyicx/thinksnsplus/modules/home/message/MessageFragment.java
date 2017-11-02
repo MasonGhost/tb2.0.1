@@ -93,6 +93,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         DaggerMessageComponent
                 .builder()

@@ -56,7 +56,10 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     protected boolean showToolbar() {
         return false;
     }
-
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
     @Override
     protected boolean setUseStatusView() {
         return false;

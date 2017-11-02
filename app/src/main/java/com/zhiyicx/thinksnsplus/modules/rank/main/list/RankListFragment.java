@@ -85,6 +85,11 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     public String getCategory() {
         if (mRankIndexBean == null){
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
