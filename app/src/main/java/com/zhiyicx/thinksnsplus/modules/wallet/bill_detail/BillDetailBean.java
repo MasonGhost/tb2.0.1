@@ -104,11 +104,11 @@ public class BillDetailBean implements Parcelable{
         return billDetailBean;
     }
 
-    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean) {
+    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean,int ratio) {
         BillDetailBean billDetailBean = new BillDetailBean();
         billDetailBean.setAccount(withdrawalsListBean.getAccount());
         billDetailBean.setAction(2);
-        billDetailBean.setAmount(withdrawalsListBean.getValue());
+        billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(),ratio));
         billDetailBean.setBody("提现");
         billDetailBean.setChannel(withdrawalsListBean.getType());
         billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());

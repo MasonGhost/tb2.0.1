@@ -89,7 +89,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), BillDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(BILL_INFO, BillDetailBean.withdrawals2Bill(mListDatas.get(position)));
+                bundle.putParcelable(BILL_INFO, BillDetailBean.withdrawals2Bill(mListDatas.get(position),mPresenter.getRatio()));
                 intent.putExtra(BILL_INFO, bundle);
                 startActivity(intent);
             }

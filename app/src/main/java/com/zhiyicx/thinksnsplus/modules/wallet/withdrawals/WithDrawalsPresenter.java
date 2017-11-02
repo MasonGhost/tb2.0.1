@@ -40,7 +40,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
             return;
         }
 
-        if (value < PayConfig.gameCurrency2RealCurrency(mRootView.getWalletConfigBean().getCase_min_amount(), getRatio())) {
+        if (value < PayConfig.realCurrency2GameCurrency(mRootView.getWalletConfigBean().getCase_min_amount(), getRatio())) {
             mRootView.minMoneyLimit();
             return;
         }
