@@ -85,7 +85,7 @@ dependencies {
     // Image
     compile dataDependences.glide
     compile dataDependences.glideOkhttpIntegration
-    compile dataDependences.glideOkhttp
+    compile dataDependences.okhttp3
     // Eventbus
     compile dataDependences.androideventbus
     // Log
