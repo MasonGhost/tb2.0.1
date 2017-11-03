@@ -403,7 +403,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             imageBean.setImgUrl(task.getImgUrl());
             Toll toll = new Toll();
             toll.setPaid(task.isPaid());
-            toll.setToll_money((float) task.getAmount());
+            toll.setToll_money(task.getAmount());
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
