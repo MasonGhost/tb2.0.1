@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
@@ -68,11 +69,27 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         mRootView.setLogining();
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map((Func1<AuthBean, Boolean>) data -> {
+                    mAuthRepository.clearAuthBean();
+                    // 登录成功跳转
+                    mAuthRepository.saveAuthBean(data);// 保存auth信息
+                    // IM 登录 需要 token ,所以需要先保存登录信息
+                    handleIMLogin();
+                    // 钱包信息我也不知道在哪儿获取
+                    mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+                    mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+                    if (data.getUser().getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
+                    }
+                    mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
+                    return true;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
-                        loginSuccess(data);
+                    protected void onSuccess(Boolean data) {
+                        mRootView.setLoginState(data);
                     }
 
                     @Override
@@ -93,19 +110,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     }
 
     private void loginSuccess(AuthBean data) {
-        mAuthRepository.clearAuthBean();
-        // 登录成功跳转
-        mAuthRepository.saveAuthBean(data);// 保存auth信息
-        // IM 登录 需要 token ,所以需要先保存登录信息
-        handleIMLogin();
-        // 钱包信息我也不知道在哪儿获取
-        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
-        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
-        if (data.getUser().getWallet() != null) {
-            mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
-        }
-        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
-        mRootView.setLoginState(true);
+
     }
 
     @Override
@@ -133,7 +138,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                     protected void onFailure(String message, int code) {
                         if (code == DATA_HAS_BE_DELETED) {
                             // 三方注册
-                            mRootView.registerByThrid(provider,access_token);
+                            mRootView.registerByThrid(provider, access_token);
                         } else {
                             // 登录失败
                             mRootView.setLoginState(false);
@@ -149,6 +154,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 });
 
     }
+
     /**
      * 检查密码是否是最小长度
      *
@@ -162,7 +168,9 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         }
         return false;
     }
+
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 }

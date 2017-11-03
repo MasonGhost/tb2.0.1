@@ -367,7 +367,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         super.initData();
         // 支持魅族手机首页状太栏文字白色问题
-        supportFlymeSutsusbar();
     }
 
     /**

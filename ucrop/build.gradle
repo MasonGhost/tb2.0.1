@@ -33,8 +33,11 @@ android {
 
 dependencies {
     def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies;
+    def dataDependences = rootProject.ext.dataDependencies
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     compile sdkSoupportDependences.appcompatV7
-    compile 'com.squareup.okhttp3:okhttp:3.3.0'
+    compile dataDependences.okhttp3
 }
 

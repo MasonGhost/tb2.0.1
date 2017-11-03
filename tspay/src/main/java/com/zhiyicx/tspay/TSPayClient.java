@@ -10,8 +10,6 @@ import com.pingplusplus.android.Pingpp;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -51,7 +49,6 @@ public class TSPayClient {
         PAY_KEYS_TYPE.put(CHANNEL_WXWAPPAY, R.string.wxpay);
     }
 
-    @RestrictTo(LIBRARY_GROUP)
     @StringDef({CHANNEL_ALIPAY, CHANNEL_ALIQRPAY, CHANNEL_ALIWAPPAY, CHANNEL_WXPAY, CHANNEL_WXWAPPAY})
     @Retention(RetentionPolicy.SOURCE)
     public @interface PayKey {

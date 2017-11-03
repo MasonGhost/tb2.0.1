@@ -38,6 +38,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Describe
@@ -291,7 +292,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item2ClickListener(() -> {
                     if (mPresenter.loginOut()) {

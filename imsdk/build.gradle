@@ -61,15 +61,20 @@ android {
 }
 
 dependencies {
+    def testDependences = rootProject.ext.testDependencies
+    def dataDependences = rootProject.ext.dataDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'org.simple:androideventbus:1.0.5.1'
-    compile 'com.google.code.gson:gson:2.6.2'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile "junit:junit:4.12"
-    androidTestCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+
+    testCompile testDependences.junit
+    // Eventbus
+    compile dataDependences.androideventbus
+    compile dataDependences.gson
+
+    testCompile testDependences.mockito
+    androidTestCompile testDependences.junit
+    androidTestCompile testDependences.mockito
+    androidTestCompile testDependences.dexmaker
+    androidTestCompile testDependences.dexmakerMockito
     compile files('libs/jackson-core-asl-1.9.7.jar')
     compile files('libs/jackson-mapper-asl-1.9.7.jar')
 }

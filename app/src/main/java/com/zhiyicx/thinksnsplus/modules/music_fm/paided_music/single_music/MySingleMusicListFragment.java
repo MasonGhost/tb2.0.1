@@ -74,6 +74,11 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mCompatProvider = (MusicDetailFragment.MediaBrowserCompatProvider) activity;
