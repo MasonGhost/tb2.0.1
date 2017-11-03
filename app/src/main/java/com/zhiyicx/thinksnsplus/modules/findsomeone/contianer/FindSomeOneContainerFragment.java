@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
@@ -35,16 +36,21 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOne
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContainerContract.Presenter> implements FindSomeOneContainerContract.View {
+public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContainerContract.Presenter> implements FindSomeOneContainerContract.View,
+        AMapLocationListener {
     private static final int REQUST_CODE_LOCATION = 8200;
 
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
 
 
-    //声明AMapLocationClientOption对象
+    /**
+     * 声明AMapLocationClientOption对象
+     */
     public AMapLocationClientOption mLocationOption = null;
-    //声明定位回调监听器
+    /**
+     * 声明定位回调监听器
+     */
     private AMapLocationClient mLocationClient;
 
     private boolean mIscationed = false;
@@ -86,7 +92,6 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                 , mFindSomeOneContainerViewPagerFragment
                 , R.id.fragment_container);
 
-        initListener();
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                     if (aBoolean && !mIscationed) {
@@ -118,29 +123,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
         //启动定位
         mLocationClient.startLocation();
         //可以通过类implement方式实现AMapLocationListener接口，也可以通过创造接口类对象的方法实现
-        //以下为后者的举例：
-
-        AMapLocationListener mAMapLocationListener = aMapLocation -> {
-            if (aMapLocation != null) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    mIscationed = true;
-                    //可在其中解析amapLocation获取相应内容。
-                    LogUtils.d("1 = " + aMapLocation.getAddress());
-                    LogUtils.d("2 = " + aMapLocation.getCity());
-                    LatLonPoint latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                    mTvToolbarRight.setText(aMapLocation.getCity());
-                    EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LOCATION);
-                    mPresenter.updateUseLocation(latLonPoint);
-                } else {
-                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    LogUtils.d("AmapError" + "location Error, ErrCode:"
-                            + aMapLocation.getErrorCode() + ", errInfo:"
-                            + aMapLocation.getErrorInfo());
-                }
-            }
-
-        };
-        mLocationClient.setLocationListener(mAMapLocationListener);
+        mLocationClient.setLocationListener(this);
 
     }
 
@@ -148,10 +131,6 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     protected void initData() {
 
     }
-
-    private void initListener() {
-    }
-
 
     @OnClick({R.id.tv_toolbar_left, R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
     public void onViewClicked(View view) {
@@ -180,8 +159,9 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
             case R.id.tv_toolbar_right:
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
                 getActivity().startActivityForResult(intent, REQUST_CODE_LOCATION);
-                mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY,false);
+                mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY, false);
                 break;
+            default:
         }
     }
 
@@ -227,5 +207,34 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mLocationClient != null) {
+            mLocationClient.unRegisterLocationListener(this);
+            mLocationClient.onDestroy();
+        }
+    }
 
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                mIscationed = true;
+                //可在其中解析amapLocation获取相应内容。
+                LogUtils.d("1 = " + aMapLocation.getAddress());
+                LogUtils.d("2 = " + aMapLocation.getCity());
+                LatLonPoint latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                mTvToolbarRight.setText(aMapLocation.getCity());
+                EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LOCATION);
+                mPresenter.updateUseLocation(latLonPoint);
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                LogUtils.d("AmapError" + "location Error, ErrCode:"
+                        + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
+            }
+        }
+
+    }
 }

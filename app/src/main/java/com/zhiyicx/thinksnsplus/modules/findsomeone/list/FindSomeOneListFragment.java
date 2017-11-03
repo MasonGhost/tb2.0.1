@@ -67,7 +67,6 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
                 .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
                 .build().inject(this);
 
-        //mAuthBean = AppApplication.getmCurrentLoginAuth();
         super.initView(rootView);
     }
 
@@ -84,6 +83,11 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     @Override
     protected boolean showToolBarDivider() {
         return false;
+    }
+
+    @Override
+    protected boolean sethasFixedSize() {
+        return true;
     }
 
     @Override
@@ -125,7 +129,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
      */
     @Override
     protected Long getMaxId(@NotNull List<UserInfoBean> data) {
-        return Long.valueOf(mListDatas.size()-mRecommentUserSize);
+        return Long.valueOf(mListDatas.size() - mRecommentUserSize);
     }
 
     @Override
