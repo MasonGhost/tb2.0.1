@@ -363,6 +363,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(task.get(i).getFile_id());
+            imageBean.setWidth(task.get(i).getWidth());
+            imageBean.setHeight(task.get(i).getHeight());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
