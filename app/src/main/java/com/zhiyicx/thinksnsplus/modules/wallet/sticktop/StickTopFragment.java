@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.REPEAT_OPERATION;
 
 /**
  * @Author Jliuer
@@ -75,6 +77,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     private long parent_id, child_id;
     private String type;
+    private int mErrorCode;
 
     public static StickTopFragment newInstance(Bundle bundle) {
         StickTopFragment stickTopFragment = new StickTopFragment();
@@ -151,9 +154,16 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     @Override
+    public void onFailure(String message, int code) {
+        mErrorCode = code;
+    }
+
+    @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
+        } else if (prompt == Prompt.ERROR && mErrorCode == REPEAT_OPERATION) {
             getActivity().finish();
         }
     }

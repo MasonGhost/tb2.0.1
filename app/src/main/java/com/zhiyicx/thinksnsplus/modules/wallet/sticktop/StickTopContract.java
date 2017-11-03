@@ -33,6 +33,8 @@ public interface StickTopContract {
         void updateBalance(double balance);
 
         boolean useInputMoney();
+
+        void onFailure(String message, int code);
     }
 
     interface Presenter extends IBaseTouristPresenter {

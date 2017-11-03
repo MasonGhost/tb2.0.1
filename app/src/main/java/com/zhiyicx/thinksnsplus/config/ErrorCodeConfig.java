@@ -35,5 +35,6 @@ public class ErrorCodeConfig {
      */
     public static final int AUTH_FAIL = 401;// 	账号过期或者被挤下线
     public static final int DATA_HAS_BE_DELETED = 404;// 	查询的数据不存在或已删除
+    public static final int REPEAT_OPERATION = 422;// 	重复操作
 
 }
