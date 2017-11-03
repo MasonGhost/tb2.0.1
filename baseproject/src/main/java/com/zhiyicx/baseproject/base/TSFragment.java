@@ -806,12 +806,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void onDestroyView() {
-        if (mSnackBar != null) {
-            if (mSnackBar.isShown()) {
-                mSnackBar.dismiss();
-            }
-            mSnackBar = null;
-        }
         if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
             mStatusbarSupport.unsubscribe();
         }
@@ -819,5 +813,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mViewTreeSubscription.unsubscribe();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSnackBar != null) {
+            if (mSnackBar.isShown()) {
+                mSnackBar.dismiss();
+            }
+            mSnackBar = null;
+        }
     }
 }
