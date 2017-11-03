@@ -381,7 +381,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
 
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
-        Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
+        boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));
         if (!canLook) {
             initImageCenterPopWindow(dynamicPosition, position, dynamicBean

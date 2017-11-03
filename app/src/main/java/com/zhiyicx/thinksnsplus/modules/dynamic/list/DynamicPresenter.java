@@ -78,7 +78,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
-
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject

@@ -415,11 +415,15 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     public void setAdvertViewVisible(int visible) {
         if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mDynamicDetailAdvertHeader.hideAdvert();
-        } else if (visible == View.VISIBLE) {
+        } else if (visible == View.VISIBLE && com.zhiyicx.common.BuildConfig.USE_ADVERT
+                && mDynamicDetailAdvertHeader.getAdvertListBeans() != null && !mDynamicDetailAdvertHeader.getAdvertListBeans().isEmpty()) {
             mDynamicDetailAdvertHeader.showAdvert();
         }
     }
 
+    /**
+     * @param visible 0 正常，
+     */
     public void setInfoReviewIng(int visible) {
         isReviewIng = true;
         setReWardViewVisible(visible);
