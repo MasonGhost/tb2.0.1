@@ -109,9 +109,6 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         addSubscrebe(subscription);
     }
 
-    private void loginSuccess(AuthBean data) {
-
-    }
 
     @Override
     public List<AccountBean> getAllAccountList() {
@@ -128,10 +125,27 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     public void checkBindOrLogin(String provider, String access_token) {
 
         mUserInfoRepository.checkThridIsRegitser(provider, access_token)
-                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                .observeOn(Schedulers.io())
+                .map((Func1<AuthBean, Boolean>) data -> {
+                    mAuthRepository.clearAuthBean();
+                    // 登录成功跳转
+                    mAuthRepository.saveAuthBean(data);// 保存auth信息
+                    // IM 登录 需要 token ,所以需要先保存登录信息
+                    handleIMLogin();
+                    // 钱包信息我也不知道在哪儿获取
+                    mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+                    mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+                    if (data.getUser().getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
+                    }
+                    mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
-                        loginSuccess(data);
+                    protected void onSuccess(Boolean data) {
+                        mRootView.setLoginState(data);
                     }
 
                     @Override

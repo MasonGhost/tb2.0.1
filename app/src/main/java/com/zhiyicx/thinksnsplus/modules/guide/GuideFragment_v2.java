@@ -51,6 +51,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     private List<RealAdvertListBean> mBootAdverts;
 
+
+    /**
+     * Activity 手动调用处理
+     *
+     * @param intent
+     */
     public void onNewIntent(Intent intent) {
         isClick = false;
         isFirst = false;
@@ -238,6 +244,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         super.onDestroy();
         if (mTimer != null) {
             mTimer.cancel();
+        }
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        if (mGuideBanner != null) {
+            mGuideBanner.releaseBanner();
         }
     }
 }
