@@ -29,6 +29,7 @@ public class DynamicDetailAdvertHeader {
     private LinearLayout mLLAdvert;
     private TextView mTitle;
     private Context mContext;
+    private List<RealAdvertListBean> mAdvertListBeans;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -50,6 +51,7 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void setAdverts(List<RealAdvertListBean> adverts) {
+        mAdvertListBeans = adverts;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
@@ -68,10 +70,15 @@ public class DynamicDetailAdvertHeader {
                     .imagerView(imageView)
                     .build());
             imageView.setOnClickListener(v -> {
-                if (mOnItemClickListener != null)
+                if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClik(v, position, link);
+                }
             });
         }
+    }
+
+    public List<RealAdvertListBean> getAdvertListBeans() {
+        return mAdvertListBeans;
     }
 
     public void hideAdvert() {
