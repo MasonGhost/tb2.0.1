@@ -126,6 +126,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.showSnackErrorMessage(message);
+                        mRootView.onFailure(message,code);
                     }
 
                     @Override
