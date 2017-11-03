@@ -87,7 +87,7 @@ public class PictureTollFragment extends TSFragment {
 
     private int mPayType;
 
-    private double mRechargeMoney;
+    private long mRechargeMoney;
 
     private String mRechargeMoneyStr;
 
@@ -183,10 +183,11 @@ public class PictureTollFragment extends TSFragment {
     }
 
     private void initTollMoney() {
-        if (mToll == null)
+        if (mToll == null) {
             return;
+        }
         if (mToll.getCustom_money() > 0) {
-            mEtInput.setText(String.valueOf(Float.valueOf(mToll.getCustom_money()).intValue()));
+            mEtInput.setText(String.valueOf(mToll.getCustom_money()));
         } else {
             int position = mSelectDays.indexOf(mToll.getToll_money());
             if (position != -1) {
@@ -196,8 +197,9 @@ public class PictureTollFragment extends TSFragment {
     }
 
     private void initTollWays() {
-        if (mToll == null)
+        if (mToll == null) {
             return;
+        }
         if (mToll.getToll_type() == LOOK_TOLL) {
             mRbDaysGroupTollWays.check(R.id.rb_ways_one);
         } else if (mToll.getToll_type() == DOWNLOAD_TOLL) {
@@ -245,11 +247,12 @@ public class PictureTollFragment extends TSFragment {
             mRbDaysGroup.clearCheck();
             mToll.setToll_money(0);
             try {
-                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                mRechargeMoney = Long.parseLong(mRechargeMoneyStr);
             } catch (NumberFormatException ne) {
+                showSnackErrorMessage(getString(R.string.limit_monye_death));
                 mRechargeMoney = 0;
             }
-            mToll.setCustom_money(((Double) mRechargeMoney).floatValue());
+            mToll.setCustom_money(mRechargeMoney);
             setConfirmEnable();
         }, throwable -> {
             throwable.printStackTrace();
@@ -263,16 +266,16 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(checkedId -> {
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRechargeMoney = mSelectDays.get(0);
-                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            mRechargeMoney = mSelectDays.get(0).longValue();
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case R.id.rb_two:
-                            mRechargeMoney = mSelectDays.get(1);
-                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            mRechargeMoney = mSelectDays.get(1).longValue();
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case R.id.rb_three:
-                            mRechargeMoney = mSelectDays.get(2);
-                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            mRechargeMoney = mSelectDays.get(2).longValue();
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).longValue());
                             break;
                         case -1:
                             return;
@@ -291,6 +294,8 @@ public class PictureTollFragment extends TSFragment {
                             break;
                         case R.id.rb_ways_two:
                             mPayType = DOWNLOAD_TOLL;
+                            break;
+                        default:
                             break;
                     }
                     setConfirmEnable();
@@ -326,7 +331,7 @@ public class PictureTollFragment extends TSFragment {
         }
         mMoneyInstructionsPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.transaction_description))
-                .desStr(String.format(Locale.getDefault(),getString(R.string.limit_monye),mMoneyName))
+                .desStr(String.format(Locale.getDefault(), getString(R.string.limit_monye), mMoneyName))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

@@ -478,7 +478,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     })
                     .build();
         }
-        if (isChecked && mQAPublishBean.getAnonymity() != 1) {
+        if (isChecked && (mQAPublishBean == null || mQAPublishBean.getAnonymity() != 1)) {
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();

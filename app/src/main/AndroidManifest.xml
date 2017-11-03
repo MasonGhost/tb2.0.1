@@ -79,25 +79,25 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.password.changepassword.ChangePasswordActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.settings.account.AccountManagementActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.settings.bind.AccountBindActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.settings.init_password.InitPasswordActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.password.findpassword.FindPasswordActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -114,16 +114,16 @@
         </activity>
         <!-- 第三方登陆相关 -->
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.third_platform.choose_bind.ChooseBindActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.third_platform.bind.BindOldAccountActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.third_platform.complete.CompleteAccountActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -181,8 +181,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/TransParentTheme">
         </activity>
+
+        <!--低配手机用不起硬件加速 比如 HUAWEI Che1-CL10 Android 6.0.1 API 23-->
         <activity
             android:name=".modules.gallery.GalleryActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:theme="@style/GalleryTheme">
         </activity>
@@ -217,10 +220,10 @@
             android:name=".modules.information.infosearch.SearchActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
-            android:windowSoftInputMode="stateHidden|adjustResize"
             android:name=".modules.dynamic.send.SendDynamicActivity"
-            android:screenOrientation="portrait">
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
             android:name=".modules.wallet.WalletActivity"
@@ -246,8 +249,8 @@
         </activity>
         <!-- 查看头像页 -->
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.personal_center.portrait.HeadPortraitViewActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -256,8 +259,8 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.wallet.recharge.RechargeActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
@@ -283,8 +286,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <!-- 硬件加速用于mx3 自定义输入控件绘制卡顿 -->
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -292,8 +295,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.q_a.reward.QARewardActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -319,13 +322,13 @@
 
         <!-- 认证相关页面 -->
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.certification.input.CertificationInputActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.certification.send.SendCertificationActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -468,8 +471,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/DynamciSelectTheme"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity"
@@ -481,8 +484,8 @@
             android:name=".modules.wallet.bill.BillActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.feedback.FeedBackActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.home.message.messagereview.MessageReviewActivity"
@@ -498,14 +501,14 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.wallet.reward.RewardActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.wallet.reward.list.RewardListActivity"
@@ -521,21 +524,21 @@
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.information.publish.uploadcover.UploadCoverActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.wallet.sticktop.StickTopActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:hardwareAccelerated="false"
             android:name=".modules.q_a.answer.PublishAnswerActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity

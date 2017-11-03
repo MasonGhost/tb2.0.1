@@ -327,7 +327,7 @@ public class DynamicDetailHeader {
                     imageBean.setImgUrl(task.getImgUrl());// 本地地址，也许有
                     Toll toll = new Toll(); // 收费信息
                     toll.setPaid(task.isPaid());// 是否已經付費
-                    toll.setToll_money((float) task.getAmount());// 付费金额
+                    toll.setToll_money(task.getAmount());// 付费金额
                     toll.setToll_type_string(task.getType());// 付费类型
                     toll.setPaid_node(task.getPaid_node());// 付费节点
                     imageBean.setToll(toll);
