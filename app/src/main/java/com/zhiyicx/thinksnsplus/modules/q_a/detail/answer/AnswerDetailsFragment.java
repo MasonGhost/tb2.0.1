@@ -141,15 +141,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    protected void setCenterClick() {
-        Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BUNDLE_QUESTION_BEAN, mAnswerInfoBean.getQuestion());
-        intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
-        startActivity(intent);
-    }
-
-    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
@@ -365,6 +356,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                });
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_QUESTION_BEAN, mAnswerInfoBean.getQuestion());
+                    intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+                    startActivity(intent);
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

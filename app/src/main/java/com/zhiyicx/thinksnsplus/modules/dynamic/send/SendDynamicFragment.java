@@ -380,14 +380,21 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void addPlaceHolder() {
         // selectedPhotos.size() == 0 这个是为了配合这个
-        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {
+//        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {
+//            // 占位缺省图
+//            ImageBean camera = new ImageBean();
+//            selectedPhotos.add(camera);
+//            if (mCommonAdapter != null) {
+//                mTvToll.getCombinedButtonImgRight().performClick();
+//            }
+//        }
+
+        if (selectedPhotos.size() < MAX_PHOTOS) {
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
-            if (mCommonAdapter != null) {
-                mTvToll.getCombinedButtonImgRight().performClick();
-            }
         }
+
     }
 
     @Override
@@ -521,23 +528,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     mTollMoney = 0;
                 }
                 sl_send_dynamic.smoothScrollTo(0, 0);
-//                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
-
+                mCommonAdapter.notifyDataSetChanged();
                 /*           这里估计是要删的                       */
-                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
-                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
-                        mCommonAdapter.notifyDataSetChanged();
-                        return; // 九张
-                    }
-                    if (isToll) {
-                        selectedPhotos.remove(selectedPhotos.size() - 1);
-                    } else {
-                        // addPlaceHolder();
-                        selectedPhotos.add(new ImageBean());
-                    }
-                    mCommonAdapter.notifyDataSetChanged();
-                }
+//                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
+//                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+//                        mCommonAdapter.notifyDataSetChanged();
+//                        return; // 九张
+//                    }
+//                    if (isToll) {
+//                        selectedPhotos.remove(selectedPhotos.size() - 1);
+//                    } else {
+//                        // addPlaceHolder();
+//                        selectedPhotos.add(new ImageBean());
+//                    }
+//                    mCommonAdapter.notifyDataSetChanged();
+//                }
                 /*                                                           */
 
 
