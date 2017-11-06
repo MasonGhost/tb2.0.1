@@ -29,13 +29,13 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -50,13 +50,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.Observable;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_DELETE;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
  * @Author Jliuer
@@ -138,6 +138,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     protected boolean setUseCenterLoading() {
         return true;
+    }
+
+    @Override
+    protected void setCenterClick() {
+        Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_QUESTION_BEAN, mAnswerInfoBean.getQuestion());
+        intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+        startActivity(intent);
     }
 
     @Override
