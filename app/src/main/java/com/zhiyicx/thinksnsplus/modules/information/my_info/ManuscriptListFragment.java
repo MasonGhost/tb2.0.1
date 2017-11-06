@@ -86,12 +86,12 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(realData.getId())) {
-                        AppApplication.sOverRead.add(realData.getId());
+                        AppApplication.sOverRead.add(realData.getId().intValue());
                     }
 
                     if (getMyInfoType().equals(MY_INFO_TYPE_ERROR)) {
                         InfoPublishBean infoPublishBean = new InfoPublishBean();
-                        infoPublishBean.setNews_id(realData.getId());
+                        infoPublishBean.setNews_id(realData.getId().intValue());
                         infoPublishBean.setSubject(realData.getSubject());
                         infoPublishBean.setTitle(realData.getTitle());
                         infoPublishBean.setAuthor(realData.getAuthor());

@@ -53,6 +53,7 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -341,6 +342,12 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             List<UserTagBean> tagBeanList = infoMain.getTags();
             if (tagBeanList != null && tagBeanList.size() > 0) {
                 UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
+                mFtlRelate.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                    @Override
+                    public boolean onTagClick(View view, int position, FlowLayout parent) {
+                        return false;
+                    }
+                });
                 mFtlRelate.setAdapter(mUserInfoTagsAdapter);
             }
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -385,7 +392,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
                         if (!AppApplication.sOverRead.contains(infoListDataBean.getId())) {
-                            AppApplication.sOverRead.add(infoListDataBean.getId());
+                            AppApplication.sOverRead.add(infoListDataBean.getId().intValue());
                         }
                         FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                                 , imageView.getDrawable(), R.mipmap.icon), "info_share");

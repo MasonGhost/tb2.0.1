@@ -524,9 +524,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 //                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
 
-                /*           这里肯定是要删的           真滴很烦             */
+                /*           这里估计是要删的                       */
                 if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
                     if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+                        mCommonAdapter.notifyDataSetChanged();
                         return; // 九张
                     }
                     if (isToll) {

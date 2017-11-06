@@ -64,7 +64,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
                 break;
             case RankTypeConfig.RANK_USER_CHECK_ID:
                 format = mContext.getString(R.string.rank_type_check_in);
-                count=userInfoBean.getExtra().getLast_checkin_count();
+                count=userInfoBean.getExtra().getCheckin_count();
 
                 break;
             case RankTypeConfig.RANK_USER_QUESTION_LIKE:

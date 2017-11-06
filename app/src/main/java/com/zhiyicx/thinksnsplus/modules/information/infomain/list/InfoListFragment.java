@@ -65,6 +65,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -118,7 +123,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(realData.getId())) {
-                        AppApplication.sOverRead.add(realData.getId());
+                        AppApplication.sOverRead.add(realData.getId().intValue());
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                             , imageView.getDrawable(), R.mipmap.icon), "info_share");
