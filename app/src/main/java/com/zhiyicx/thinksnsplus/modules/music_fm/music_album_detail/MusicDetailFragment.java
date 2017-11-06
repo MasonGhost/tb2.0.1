@@ -325,7 +325,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter.notifyItemChanged(position);
         if (mAlbumDetailsBean != null) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
             controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
@@ -700,7 +700,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     public void onTollUpdate(final MusicDetaisBean e_albumListBean) {
         if (mAlbumDetailsBean != null) {
             Observable.from(mAlbumDetailsBean.getMusics())
-                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .filter(musicsBean -> e_albumListBean.getId().intValue() == musicsBean.getId().intValue())
                     .subscribe(musicsBean -> {
                         musicsBean.setHas_like(e_albumListBean.isHas_like());
                         musicsBean.setComment_count(e_albumListBean.getComment_count());
@@ -711,7 +711,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID, id);// mMediaId_test
+            bundle.putString(MUSIC_ID, id);
 
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();

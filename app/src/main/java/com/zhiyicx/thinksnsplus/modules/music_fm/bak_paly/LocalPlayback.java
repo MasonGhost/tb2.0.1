@@ -201,7 +201,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             relaxResources(false);
             MediaMetadataCompat track = mMusicProvider.getMusic(
                     MediaIDHelper.extractMusicIDFromMediaID(item.getDescription().getMediaId()));
-
+            if (track == null) {
+                onError(null, 0, 0);
+            }
             //noinspection ResourceType
             String source = track.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
             if (source != null) {
