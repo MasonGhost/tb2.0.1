@@ -65,7 +65,8 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_ME
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View,
+        PhotoSelectorImpl.IPhotoBackListener {
     public static final int PAGE_NUMS = 4; // 页数
 
     public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
@@ -96,8 +97,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
 
+    /**
+     * 仅用于构造
+     */
     @Inject
-    HomePresenter mHomePresenter;  // 仅用于构造
+    HomePresenter mHomePresenter;
     @BindView(R.id.fl_add)
     FrameLayout mFlAdd;
     @BindView(R.id.ll_message)
@@ -106,17 +110,28 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlMine;
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
+
+
     private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
     private int mCurrenPage;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
-    private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
+    /**
+     * 图片选择弹框
+     */
+    private ActionPopupWindow mPhotoPopupWindow;
+    /**
+     * 签到弹窗
+     */
+    private CheckInPopWindow mCheckInPopWindow;
 
-    private CheckInBean mCheckInBean; // 签到信息
-    private ArrayList<Fragment> mFragmentList= new ArrayList<>();
+    /**
+     * 签到信息
+     */
+    private CheckInBean mCheckInBean;
+    private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -183,7 +198,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 //        supportFlymeSutsusbar();
         // app更新
         AppUpdateManager.getInstance(getContext()
-                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) +
+                        "&type=android")
                 .startVersionCheck();
     }
 
@@ -301,7 +317,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(aLong -> {
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread
+                    ()).map(aLong -> {
                 mLlBottomContainer.setVisibility(View.VISIBLE);
                 return null;
             }).subscribe();
@@ -482,13 +499,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         this.mCheckInBean = data;
         if (mCheckInPopWindow != null) {
             if (mCheckInPopWindow.isShowing()) {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(),mPresenter.getGoldName());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
             } else {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(),mPresenter.getGoldName());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
                 mCheckInPopWindow.show();
             }
         } else {
-            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getGoldName(),mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getGoldName(), mPresenter.getWalletRatio(), () ->
+                    mPresenter.checkIn());
             mCheckInPopWindow.show();
         }
     }
