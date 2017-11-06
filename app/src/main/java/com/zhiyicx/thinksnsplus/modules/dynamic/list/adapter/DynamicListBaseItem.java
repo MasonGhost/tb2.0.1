@@ -223,7 +223,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             // 置顶标识 ,防止没有置顶布局错误
             try {
-                TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
+                // 待审核 也隐藏
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ?
                         View.VISIBLE : View.GONE);
                 topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
@@ -289,7 +290,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
-            if (showToolMenu && dynamicBean.getUser_id() > 0) {// user_id = -1 广告
+            // user_id = -1 广告
+            if (showToolMenu && dynamicBean.getUser_id() > 0) {
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
                 dynamicListMenuView.setImageNormalResourceIds(getToolImages());
@@ -297,9 +299,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getFeed_comment_count()), false, 1);
+                // 浏览量没有 0
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                                 .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
-                        false, 2);// 浏览量没有 0
+                        false, 2);
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
                 dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
@@ -322,7 +325,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     holder.setVisible(R.id.fl_tip, View.GONE);
                 }
                 RxView.clicks(holder.getView(R.id.fl_tip))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             if (mOnReSendClickListener != null) {
                                 mOnReSendClickListener.onReSendClick(position);
@@ -358,7 +361,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnUserInfoClickListener != null) {
                         mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
@@ -384,7 +387,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
+            // 是否是长图
+            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
 
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&

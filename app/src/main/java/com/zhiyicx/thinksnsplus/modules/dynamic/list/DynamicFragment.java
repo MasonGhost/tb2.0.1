@@ -374,7 +374,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        if (dynamicBean.getFeed_from() == -1) {// 广告
+        // 广告
+        if (dynamicBean.getFeed_from() == -1) {
             toAdvert(dynamicBean.getDeleted_at(), dynamicBean.getFeed_content());
             return;
         }
