@@ -392,7 +392,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
                         if (!AppApplication.sOverRead.contains(infoListDataBean.getId())) {
-                            AppApplication.sOverRead.add(infoListDataBean.getId());
+                            AppApplication.sOverRead.add(infoListDataBean.getId().intValue());
                         }
                         FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                                 , imageView.getDrawable(), R.mipmap.icon), "info_share");

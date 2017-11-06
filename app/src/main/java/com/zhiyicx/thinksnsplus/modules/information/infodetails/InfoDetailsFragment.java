@@ -192,7 +192,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
-            mInfoMation.setId(ids.intValue());
+            mInfoMation.setId(ids);
         }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -497,7 +497,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == RewardType.INFO.id) {
-                mPresenter.reqReWardsData(mInfoMation.getId());
+                mPresenter.reqReWardsData(mInfoMation.getId().intValue());
             }
         }
 

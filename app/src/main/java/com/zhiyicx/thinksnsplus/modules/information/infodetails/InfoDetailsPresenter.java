@@ -358,7 +358,6 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 String.valueOf(mRootView.getNewsId()))
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
@@ -369,6 +368,12 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.deleteInfo(false, false, message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.deleteInfo(false, false, throwable.getMessage());
                     }
                 });
         addSubscrebe(subscription);
