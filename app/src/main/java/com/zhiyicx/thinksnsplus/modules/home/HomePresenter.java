@@ -173,7 +173,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
                         if (message != null && message.getSeq() < seqsBean.getSeq()) {
                             ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
                         }
-                    }, throwable -> throwable.printStackTrace());
+                    }, Throwable::printStackTrace);
         }
     }
 
@@ -304,5 +304,11 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public double getWalletRatio() {
         return mWalletConfigBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()).getRatio();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ChatClient.getInstance(mContext).onDestroy();
     }
 }

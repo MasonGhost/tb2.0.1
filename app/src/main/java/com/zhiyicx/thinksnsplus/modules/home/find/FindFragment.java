@@ -61,8 +61,6 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindPerson;
     @BindView(R.id.find_nearby)
     CombinationButton mFindNearby;
-    @BindView(R.id.find_quiz)
-    CombinationButton mFindQuiz;
     @BindView(R.id.find_rank)
     CombinationButton mFindRank;
 
@@ -131,9 +129,12 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank})
+            R.id.find_person, R.id.find_nearby, R.id.find_qa, R.id.find_rank})
     public void onClick(View view) {
         switch (view.getId()) {
+                /*
+                  资讯
+                 */
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), InfoActivity.class));
@@ -142,21 +143,24 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
+                /*
+                  圈子
+                 */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-
-//                    Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-
                     startActivity(new Intent(getActivity(), ChannelListActivity.class));
                 } else {
                     showLoginPop();
                 }
                 break;
+                /*
+                活动
+                 */
             case R.id.find_active:
                 break;
+                /*
+                 音乐
+                 */
             case R.id.find_music:
                 if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
 
@@ -184,6 +188,9 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
+                /*
+                 极铺
+                 */
             case R.id.find_buy:
                 if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
                     CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
@@ -191,6 +198,9 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
+                /*
+                 找人
+                 */
             case R.id.find_person:
 
                 Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
@@ -200,6 +210,9 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_nearby:
                 break;
+                /*
+                 问答
+                 */
             case R.id.find_qa:
                 if (TouristConfig.MORE_QUESTION_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     Intent intent = new Intent(getActivity(), QA_Activity.class);
@@ -210,9 +223,9 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
-            case R.id.find_quiz:
-                startActivity(new Intent(getActivity(), QARewardActivity.class));
-                break;
+                /*
+                 排行榜
+                 */
             case R.id.find_rank:
                 startActivity(new Intent(getActivity(), RankIndexActivity.class));
                 break;

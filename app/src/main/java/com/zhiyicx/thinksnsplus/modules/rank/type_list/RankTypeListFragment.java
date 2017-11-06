@@ -81,6 +81,11 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
     }
 
     @Override
+    protected boolean isUseTouristLoadLimit() {
+        return false;
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) { // 空白展位图

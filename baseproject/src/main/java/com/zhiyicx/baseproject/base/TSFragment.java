@@ -786,7 +786,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     protected void supportFlymeSutsusbar() {
-        mStatusbarSupport = Observable.timer(300, TimeUnit.MILLISECONDS)
+        mStatusbarSupport = Observable.timer(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
