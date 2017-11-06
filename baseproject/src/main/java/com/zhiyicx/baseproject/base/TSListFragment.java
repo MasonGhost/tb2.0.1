@@ -45,7 +45,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements  ITSListView<T, P>, com.scwang.smartrefresh.layout.listener.OnRefreshListener, OnLoadmoreListener {
+public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TSFragment<P> implements ITSListView<T, P>, com
+        .scwang.smartrefresh.layout.listener.OnRefreshListener, OnLoadmoreListener {
     public static final int DEFAULT_PAGE_SIZE = 20; // 默认每页的数量
     public static final int DEFAULT_PAGE_SIZE_X = 10; // 有的地方是10条哦
     public static final int DEFAULT_ONE_PAGE_SIZE = 15; // 一个页面显示的最大条数，用来判断是否显示加载更多
@@ -566,13 +567,18 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return mListDatas;
     }
 
+
+    protected boolean isUseTouristLoadLimit() {
+        return true;
+    }
+
     /**
      * 下拉刷新
      */
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
         // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
-        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) {
+        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) {
             hideLoading();
             showLoginPop();
             return;
@@ -581,18 +587,21 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
+
     /**
      * 上拉加载
      */
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
-        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) { // 游客加载跟多处理
+        // 游客加载跟多处理
+        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) {
             hideLoading();
             return;
         }
         mPage++;
         requestNetData(mMaxId, true);
     }
+
     /**
      * @param data       内容信息
      * @param isLoadMore 加载状态
