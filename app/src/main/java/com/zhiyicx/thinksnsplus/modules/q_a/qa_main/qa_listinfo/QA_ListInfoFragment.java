@@ -140,6 +140,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
      *
      * @return
      */
+    @Override
     protected boolean isLayzLoad() {
         return true;
     }

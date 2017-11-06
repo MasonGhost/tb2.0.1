@@ -65,6 +65,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
