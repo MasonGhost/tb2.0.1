@@ -80,22 +80,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     TextView mTvFansCount;
     @BindView(R.id.tv_follow_count)
     TextView mTvFollowCount;
-    @BindView(R.id.ll_follow_container)
-    LinearLayout mLlFollowContainer;
-    @BindView(R.id.bt_personal_page)
-    CombinationButton mBtPersonalPage;
-    @BindView(R.id.bt_ranking)
-    CombinationButton mBtRanking;
-    @BindView(R.id.bt_collect)
-    CombinationButton mBtCollect;
     @BindView(R.id.bt_wallet)
     CombinationButton mBtWallet;
-    @BindView(R.id.bt_suggestion)
-    CombinationButton mBtSuggestion;
-    @BindView(R.id.bt_draft_box)
-    CombinationButton mDraftBox;
-    @BindView(R.id.bt_setting)
-    CombinationButton mBtSetting;
     @BindView(R.id.bt_certification)
     CombinationButton mBtCertification;
 
@@ -130,7 +116,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-        mBtRanking.setVisibility(View.GONE);// V2 点赞排行榜还没有,暂时隐藏
     }
 
     @Override
@@ -158,7 +143,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void onResume() {
         super.onResume();
-        reLoadUserInfo(true);
+        reLoadUserInfo(getUserVisibleHint());
     }
 
     @Override
@@ -204,7 +189,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
-            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
+            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -238,15 +223,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_my_info:
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));
                 break;
-            case R.id.bt_ranking:
-
-//                Intent toRank = new Intent(getContext(), RankActivity.class);
-//                startActivity(toRank);
-
-                break;
+            /*
+              我的收藏
+             */
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
+            /*
+              我的钱包
+             */
             case R.id.bt_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;

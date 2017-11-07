@@ -36,24 +36,6 @@ import butterknife.OnClick;
  */
 public class FindFragment extends TSFragment {
 
-    @BindView(R.id.find_info)
-    CombinationButton mFindInfo;
-    @BindView(R.id.find_qa)
-    CombinationButton mFindQa;
-    @BindView(R.id.find_chanel)
-    CombinationButton mFindChanel;
-    @BindView(R.id.find_active)
-    CombinationButton mFindActive;
-    @BindView(R.id.find_music)
-    CombinationButton mFindMusic;
-    @BindView(R.id.find_buy)
-    CombinationButton mFindBuy;
-    @BindView(R.id.find_person)
-    CombinationButton mFindPerson;
-    @BindView(R.id.find_nearby)
-    CombinationButton mFindNearby;
-    @BindView(R.id.find_rank)
-    CombinationButton mFindRank;
 
     private ActionPopupWindow mActionPopupWindow;
 

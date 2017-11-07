@@ -75,8 +75,14 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     @Override
+    protected int getOffsetPage() {
+        return 2;
+    }
+
+    @Override
     protected void initView(View rootView) {
-        AppApplication.AppComponentHolder.getAppComponent().inject(this);// 需要在 initview 之前，应为在 initview 中使用了 dagger 注入的数据
+        // 需要在 initview 之前，应为在 initview 中使用了 dagger 注入的数据
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
         super.initView(rootView);
         initToolBar();
     }
@@ -85,10 +91,12 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         // toolBar设置状态栏高度的marginTop
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
-        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) { // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
         }
-        mTsvToolbar.setLeftImg(0);//不需要返回键
+        //不需要返回键
+        mTsvToolbar.setLeftImg(0);
     }
 
     @Override
@@ -102,9 +110,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
             @Override
             public void onPageSelected(int position) {
-                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
+                // 游客处理
+                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
                     showLoginPop();
-                    mVpFragment.setCurrentItem(1);// 转回热门
+                    // 转回热门
+                    mVpFragment.setCurrentItem(1);
                 }
             }
 
@@ -136,10 +146,12 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<Fragment> initFragments() {
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) { // 游客处理
+        // 游客处理
+        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
             fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
         } else {
-            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));// 用于viewpager 占位
+            // 用于viewpager 占位
+            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
         }
         return fragments;
     }

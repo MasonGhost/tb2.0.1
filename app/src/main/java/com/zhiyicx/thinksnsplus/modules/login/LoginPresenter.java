@@ -57,7 +57,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 
     @Override
     public void login(String phone, String password) {
-        // 此处由于登陆方式有用户名和手机号还有邮箱 注册规则由服务器判断，所以我们不做判断处理
+        /// 此处由于登陆方式有用户名和手机号还有邮箱 注册规则由服务器判断，所以我们不做判断处理
 //        if (!RegexUtils.isMobileExact(phone) && !RegexUtils.isEmail(phone)) {
 //            // 不符合手机号格式
 //            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
@@ -73,7 +73,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 .map((Func1<AuthBean, Boolean>) data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转
-                    mAuthRepository.saveAuthBean(data);// 保存auth信息
+                    // 保存auth信息
+                    mAuthRepository.saveAuthBean(data);
                     // IM 登录 需要 token ,所以需要先保存登录信息
                     handleIMLogin();
                     // 钱包信息我也不知道在哪儿获取

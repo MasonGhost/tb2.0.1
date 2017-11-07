@@ -23,12 +23,6 @@ public class HomeActivity extends TSActivity {
     public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Bundle bundle = intent.getExtras();

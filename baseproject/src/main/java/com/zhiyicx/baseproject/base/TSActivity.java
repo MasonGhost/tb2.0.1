@@ -51,7 +51,9 @@ public abstract class TSActivity<P extends BasePresenter, F extends Fragment> ex
     @Override
     protected void initView() {
         // 添加fragment
-        mContanierFragment = getFragment();
+        if (mContanierFragment == null) {
+            mContanierFragment = getFragment();
+        }
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), mContanierFragment, R.id.fl_fragment_container);
     }
 

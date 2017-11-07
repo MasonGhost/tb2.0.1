@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
@@ -128,7 +129,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         repleaseAdvert();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
-        getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+        }
     }
 
     private void repleaseAdvert() {

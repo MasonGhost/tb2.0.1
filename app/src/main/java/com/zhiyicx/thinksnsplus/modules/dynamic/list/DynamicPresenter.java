@@ -60,6 +60,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -124,19 +125,25 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-
+        if (ApiConfig.DYNAMIC_TYPE_EMPTY.equals(mRootView.getDynamicType())) {
+            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
+            return;
+        }
         Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
                 .observeOn(Schedulers.io())
                 .map(listBaseJson -> {
-                    insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
-                    if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                    // 更新数据库
+                    insertOrUpdateDynamicDBV2(listBaseJson);
+                    // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                    if (!isLoadMore) {
                         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig
                                 .DYNAMIC_TYPE_FOLLOWS))) {
                             List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
                             data.addAll(listBaseJson);
                         }
                     }
-                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                    // 把自己发的评论加到评论列表的前面
+                    for (int i = 0; i < listBaseJson.size(); i++) {
                         List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
                                 .getFeed_mark());
                         if (!dynamicCommentBeen.isEmpty()) {
@@ -174,7 +181,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         List<DynamicDetailBeanV2> datas = null;
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
-                if (!isLoadMore) {// 刷新
+                if (!isLoadMore) {
                     datas = getDynamicBeenFromDBV2();
                     datas.addAll(mDynamicDetailBeanV2GreenDao.getFollowedDynamicList(maxId));
                 } else {
@@ -189,7 +196,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 }
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-                if (!isLoadMore) {// 刷新
+                // 刷新
+                if (!isLoadMore) {
                     datas = getDynamicBeenFromDBV2();
                     datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
                     List<DynamicDetailBeanV2> topNewDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_NEW);
@@ -204,6 +212,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 datas = mDynamicDetailBeanV2GreenDao.getMyCollectDynamic();
                 break;
             default:
+                datas = new ArrayList<>();
         }
         for (int i = 0; i < datas.size(); i++) {
             if (datas.get(i).getFeed_mark() != null) {
@@ -214,6 +223,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
+
         mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType());
     }
 
@@ -258,12 +268,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            // 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {
                 datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
             }
             msendingStatus.put(i, datas.get(i).getFeed_mark());
         }
-        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+        // 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {
             mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
         }
 
@@ -354,7 +366,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        if (replyToUserId == 0) { //当回复动态的时候
+        //当回复动态的时候
+        if (replyToUserId == 0) {
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);
@@ -402,7 +415,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void handleCollect(DynamicDetailBeanV2 dynamicBean) {
         // 收藏
         // 修改数据
-        boolean is_collection = dynamicBean.isHas_collect();// 旧状态
+        // 旧状态
+        boolean is_collection = dynamicBean.isHas_collect();
         dynamicBean.setHas_collect(!is_collection);
         boolean newCollectState = !is_collection;
         // 更新数据库
@@ -585,8 +599,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                             dynamicPosition = i;
                             break;
                         }
-                    }
-                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                    }// 如果列表有当前评论
+                    if (dynamicPosition != -1) {
                         int commentSize = mRootView.getListDatas().get(dynamicPosition).getComments().size();
                         for (int i = 0; i < commentSize; i++) {
                             if (mRootView.getListDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals
@@ -619,20 +633,32 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicDetailBeanV2 dynamicBean) {
+
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
                 || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
-            int position = hasDynamicContanied(dynamicBean);
-            if (position != -1) {// 如果列表有当前数据
-                mRootView.showNewDynamic(position);
-            } else {
-                List<DynamicDetailBeanV2> temps = new ArrayList<>();
-                temps.add(dynamicBean);
-                temps.addAll(mRootView.getListDatas());
-                mRootView.getListDatas().clear();
-                mRootView.getListDatas().addAll(temps);
-                temps.clear();
-                mRootView.showNewDynamic(-1);
-            }
+            Subscription subscribe = Observable.just(dynamicBean)
+                    .observeOn(Schedulers.computation())
+                    .map(dynamicDetailBeanV2 -> {
+                        int position = -1;
+                        position = hasDynamicContanied(dynamicBean);
+                        return position;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(position -> {
+                        // 如果列表有当前数据
+                        if (position != -1) {
+                            mRootView.showNewDynamic(position);
+                        } else {
+                            List<DynamicDetailBeanV2> temps = new ArrayList<>();
+                            temps.add(dynamicBean);
+                            temps.addAll(mRootView.getListDatas());
+                            mRootView.getListDatas().clear();
+                            mRootView.getListDatas().addAll(temps);
+                            temps.clear();
+                            mRootView.showNewDynamic(-1);
+                        }
+                    }, Throwable::printStackTrace);
+            addSubscrebe(subscribe);
 
         }
     }
@@ -647,11 +673,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void updateDynamic(Bundle data) {
         Subscription subscribe = Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.computation())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                     DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
                     int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
-                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                    // 如果列表有当前评论
+                    if (dynamicPosition != -1) {
                         mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                     }
                     return isNeedRefresh ? dynamicPosition : -1;
@@ -662,7 +690,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
     }
 

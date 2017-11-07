@@ -76,6 +76,11 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected int getOffsetPage() {
+        return 1;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
@@ -164,7 +169,8 @@ public class MessageContainerFragment extends TSViewPagerFragment {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils
                 .getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
-        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) { // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
         }
     }

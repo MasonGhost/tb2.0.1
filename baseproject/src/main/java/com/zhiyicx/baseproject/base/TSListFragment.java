@@ -332,7 +332,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRefreshlayout.setEnableRefresh(isRefreshEnable());
         mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
         if (!isLayzLoad()) {
-            onCacheResponseSuccess(requestCacheData(mMaxId, false), false); // 获取缓存数据
+            // 获取缓存数据
+            onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
         }
     }
 
@@ -500,7 +501,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param text
      */
     protected void showMessageNotSticky(@NotNull String text) {
-        if (mIsTipMessageSticky) {// 如果有常驻信息在，忽略此条提示
+        // 如果有常驻信息在，忽略此条提示
+        if (mIsTipMessageSticky) {
             return;
         }
         setTopTipVisible(View.VISIBLE);
