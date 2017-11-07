@@ -85,7 +85,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
             url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, imageBean.getFile(),
-                    canLook ? with : 0, canLook ? height : 0, proportion);
+                     0,0, 100);
             view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
 
         } else {
