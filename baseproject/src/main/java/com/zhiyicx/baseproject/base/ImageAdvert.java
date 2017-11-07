@@ -9,6 +9,15 @@ public class ImageAdvert implements Serializable ,Parcelable{
     private static final long serialVersionUID = 124L;
     private String link;
     private String image;
+    private int duration;
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
     public String getLink() {
         return link;
@@ -35,6 +44,7 @@ public class ImageAdvert implements Serializable ,Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.link);
+        dest.writeInt(this.duration);
         dest.writeString(this.image);
     }
 
@@ -43,6 +53,7 @@ public class ImageAdvert implements Serializable ,Parcelable{
 
     protected ImageAdvert(Parcel in) {
         this.link = in.readString();
+        this.duration = in.readInt();
         this.image = in.readString();
     }
 

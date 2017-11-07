@@ -77,23 +77,20 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     public void getLaunchAdverts() {
         Subscription subscribe = mRepository.getLaunchAdverts()
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
-                    @Override
-                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
-                                                                           allAdverListBeen) {
-                        List<Object> ids = new ArrayList<>();
-                        for (AllAdverListBean adverListBean : allAdverListBeen) {
-
-                            ids.add(adverListBean.getId());
-                        }
-                        return mRepository.getAllRealAdverts(ids).flatMap(new Func1<List<RealAdvertListBean>, Observable<List<AllAdverListBean>>>() {
-                            @Override
-                            public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
+                .flatMap(allAdverListBeen -> {
+                    List<Object> ids = new ArrayList<>();
+                    for (AllAdverListBean adverListBean : allAdverListBeen) {
+                        ids.add(adverListBean.getId());
+                    }
+                    return mRepository.getAllRealAdverts(ids)
+                            .flatMap(realAdvertListBeen -> {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
-                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils
-                                                        .getScreenWidth(mContext),
-                                                DeviceUtils.getScreenHeight(mContext));
+                                        Glide.with(mContext)
+                                                .load(boot.getAdvertFormat().getImage().getImage())
+                                                .downloadOnly(DeviceUtils
+                                                                .getScreenWidth(mContext),
+                                                        DeviceUtils.getScreenHeight(mContext));
                                     }
                                 }
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
@@ -101,13 +98,11 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                                     mRealAdvertListBeanGreenDao.clearTable();
                                 }
                                 return Observable.just(allAdverListBeen);
-                            }
-                        });
+                            });
 //                        Observable.merge(adverts).subscribe(realAdvertListBeen -> {
 //                            mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
 //                        });
 //                        return Observable.just(allAdverListBeen);
-                    }
                 })
                 .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
                     @Override

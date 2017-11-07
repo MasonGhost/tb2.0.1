@@ -24,7 +24,6 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -161,9 +160,11 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
         if (mPosition > 0) {
             mTimer.replease();
-            mGuideBanner.setDelayTime(position * 2000);
+            int time = mBootAdverts.get(position - 1).getAdvertFormat().getImage().getDuration() * 1000;
+            time = time > 0 ? time : position * 2000;
+            mGuideBanner.setDelayTime(time);
             mTimer = mTimer.newBuilder()
-                    .buildTimeCount(position * 2000)
+                    .buildTimeCount(time)
                     .buildCanUseOntick(true)
                     .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
@@ -218,21 +219,22 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 urls.add(realAdvertListBean.getAdvertFormat().getImage().getImage());
             }
         }
-
+        int time = mBootAdverts.get(0).getAdvertFormat().getImage().getDuration() * 1000;
+        time = time > 0 ? time : 5000;
         mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)
+                .buildTimeCount(time)
                 .buildCanUseListener(urls.size() <= 1)// 单张图片
                 .buildOnTimeListener(this)
                 .buildCanUseOntick(false)
                 .build();
-
         mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
         mGuideBanner.setImages(urls);
         mGuideBanner.isDownStopAutoPlay(false);
         mGuideBanner.setViewPagerIsScroll(false);
-        mGuideBanner.setDelayTime(5000);
+        mGuideBanner.setDelayTime(time);
         mGuideBanner.setOnBannerListener(this);
         mGuideBanner.setOnPageChangeListener(this);
         mGuideBanner.start();

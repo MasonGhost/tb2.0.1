@@ -73,6 +73,8 @@ public class RealAdvertListBean extends BaseListBean {
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
                     break;
+                default:
+                    break;
             }
         }
 
@@ -182,7 +184,7 @@ public class RealAdvertListBean extends BaseListBean {
 
     @Generated(hash = 1651798827)
     public RealAdvertListBean(Long id, Long space_id, String title, String type, String created_at,
-            String updated_at, AdvertFormat advertFormat) {
+                              String updated_at, AdvertFormat advertFormat) {
         this.id = id;
         this.space_id = space_id;
         this.title = title;

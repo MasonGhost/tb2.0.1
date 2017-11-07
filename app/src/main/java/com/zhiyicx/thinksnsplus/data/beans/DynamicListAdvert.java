@@ -22,6 +22,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
      * content : 内容|string
      * image : 图片|string
      * time : 时间|date
+     * duration : 持续时间|duration
      */
 
     private String avatar;
@@ -31,6 +32,15 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     private String image;
     private String time;
     private String link;
+    private int duration;
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
     public String getTitle() {
         return title;
@@ -98,6 +108,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.avatar);
         dest.writeString(this.name);
+        dest.writeInt(this.duration);
         dest.writeString(this.link);
         dest.writeString(this.content);
         dest.writeString(this.image);
@@ -113,6 +124,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         this.name = in.readString();
         this.link = in.readString();
         this.content = in.readString();
+        this.duration = in.readInt();
         this.image = in.readString();
         this.title = in.readString();
         this.time = in.readString();
