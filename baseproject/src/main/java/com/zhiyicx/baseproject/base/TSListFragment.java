@@ -368,8 +368,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
         if (!isLayzLoad()) {
             // 获取缓存数据
-            onCacheResponseSuccess(requestCacheData(mMaxId, false), false);
+            requestCacheData(mMaxId, false);
         }
+    }
+
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestCacheData(mMaxId, isLoadMore);
     }
 
     @Override
@@ -558,10 +562,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore);
-    }
-
-    protected List<T> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore);
     }
 
     /**

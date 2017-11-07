@@ -42,8 +42,8 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
     }
 
     @Override
-    public List<LocationBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
     }
 
     @Override

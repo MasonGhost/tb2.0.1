@@ -322,13 +322,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+         mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (userInfoBean.getUser_id() != mUserInfoBean.getUser_id()) {// 如果当前页面的主页已经是当前这个人了，不就用跳转了
+        // 如果当前页面的主页已经是当前这个人了，不就用跳转了
+        if (userInfoBean.getUser_id().equals(mUserInfoBean.getUser_id())) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }

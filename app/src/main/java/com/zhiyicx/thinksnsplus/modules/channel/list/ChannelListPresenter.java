@@ -78,7 +78,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     }
 
     @Override
-    public List<GroupInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
         List<GroupInfoBean> groupInfoBeanList = null;
         switch (pageType) {
@@ -90,7 +90,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                 break;
             default:
         }
-        return groupInfoBeanList;
+        mRootView.onCacheResponseSuccess( groupInfoBeanList,isLoadMore);
     }
 
     @Override

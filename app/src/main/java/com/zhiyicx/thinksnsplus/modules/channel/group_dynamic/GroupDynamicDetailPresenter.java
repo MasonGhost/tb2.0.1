@@ -152,15 +152,15 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public List<GroupDynamicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() ==
                 null) {
-            return new ArrayList<>();
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        } else {
+            // 从数据库获取评论列表
+            mRootView.onCacheResponseSuccess(mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByFeedId(mRootView.getCurrentDynamic()
+                    .getId()), isLoadMore);
         }
-
-        // 从数据库获取评论列表
-        return mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByFeedId(mRootView.getCurrentDynamic()
-                .getId());
     }
 
     @Override
@@ -263,6 +263,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     /**
      * 处理动态被删除了
      */
+
     private void handleDynamicHasBeDeleted(int code, Long dynamic_id) {
         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamic_id);
@@ -377,7 +378,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
                     .decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId())*/);
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

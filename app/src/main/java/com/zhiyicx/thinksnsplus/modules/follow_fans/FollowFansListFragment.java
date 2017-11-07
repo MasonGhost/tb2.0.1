@@ -118,8 +118,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
-    protected List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {

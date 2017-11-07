@@ -38,8 +38,8 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     }
 
     @Override
-    public List<BaseDraftBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     public List<BaseDraftBean> requestCacheData() {

@@ -102,8 +102,9 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     }
 
     @Override
-    public List<NearbyBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
+
     }
 
     @Override

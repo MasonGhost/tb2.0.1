@@ -124,8 +124,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
+
     }
 
     @Override
@@ -199,8 +200,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore, long user_id) {
-        return mDynamicDetailBeanV2GreenDao.getMyDynamics(user_id);
+    public List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore, long userId) {
+        List<DynamicDetailBeanV2> myDynamics = mDynamicDetailBeanV2GreenDao.getMyDynamics(userId);
+        mRootView.onCacheResponseSuccess(myDynamics,isLoadMore);
+        return myDynamics;
     }
 
     @Override

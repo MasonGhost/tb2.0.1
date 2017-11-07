@@ -19,9 +19,14 @@ import java.util.List;
  */
 
 public class DigListFragment extends TSListFragment<DigListContract.Presenter, DynamicDigListBean> implements DigListContract.View {
-    public static final String DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
+    /**
+     * 传入点赞榜的数据
+     */
+    public static final String DIG_LIST_DATA = "dig_list_data";
 
-    // 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
+    /**
+     * 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
+     */
     private DynamicDetailBeanV2 mDynamicBean;
 
     @Override
@@ -56,8 +61,8 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, D
     }
 
     @Override
-    protected List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, mDynamicBean);
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestCacheData(maxId, isLoadMore, mDynamicBean);
     }
 
     @Override

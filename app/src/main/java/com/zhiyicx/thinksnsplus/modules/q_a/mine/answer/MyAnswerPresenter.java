@@ -52,8 +52,8 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
     }
 
     @Override
-    public List<AnswerInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

@@ -55,10 +55,10 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
     }
 
     @Override
-    public List<RechargeSuccessBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
         Collections.sort(data, new TimeStringSortClass());
-        return data;
+        mRootView.onCacheResponseSuccess( data,isLoadMore);
     }
 
     @Override
@@ -75,13 +75,13 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
 
     @Override
     public void selectAll() {
-        List<RechargeSuccessBean> data = requestCacheData(1L, false);
-        mRootView.onNetResponseSuccess(data, false);
+      requestCacheData(1L, false);
     }
 
     public void removeAction(List<RechargeSuccessBean> list, int action) {
-        if (action == 0)
+        if (action == 0) {
             return;
+        }
         Iterator<RechargeSuccessBean> rechargesIterator = list.iterator();
         while (rechargesIterator.hasNext()) {
             RechargeSuccessBean data = rechargesIterator.next();

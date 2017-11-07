@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -69,8 +70,9 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
     }
 
     @Override
-    public List<TSPNotificationBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override

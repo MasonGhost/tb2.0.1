@@ -3,10 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -24,12 +22,9 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
-import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -56,26 +51,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.DEFAULT_TS_HELPER_TIP_MSG_ID;
 
 /**
@@ -233,15 +212,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @return
      */
     @Override
-    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mAuthRepository.getAuthBean() == null) {
-            return new ArrayList<>();
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+            return;
         }
         initHeaderItemData();
         // 处理本地通知数据
-
         mRootView.updateLikeItemData(mItemBeanDigg);
-        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+        mRootView.onCacheResponseSuccess(mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()), isLoadMore);
+
     }
 
     @Override
@@ -548,7 +528,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
-                    if(data.getCounts()==null){
+                    if (data.getCounts() == null) {
                         return false;
                     }
                     /**

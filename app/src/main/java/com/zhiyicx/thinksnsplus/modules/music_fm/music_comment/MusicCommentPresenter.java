@@ -14,13 +14,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 import com.zhiyicx.thinksnsplus.comment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
-import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
@@ -29,20 +26,19 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT;
-import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ERROR;
-import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ING;
-import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_SUCCESS;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 
 /**
@@ -409,27 +405,36 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
     }
 
     @Override
-    public List<MusicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        List<MusicCommentListBean> localComment;
-        if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
-            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS, mRootView
-                    .getCommentId());
-        } else {
-            localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_MUSIC, mRootView.getCommentId());
-        }
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        rx.Observable.just(1)
+                .observeOn(Schedulers.io())
+                .map(integer -> {
+                    List<MusicCommentListBean> localComment;
+                    if (mRootView.getType().equals(CURRENT_COMMENT_TYPE_MUSIC)) {
+                        localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig
+                                .APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS, mRootView
+                                .getCommentId());
+                    } else {
+                        localComment = mCommentListBeanGreenDao.getAblumCommentsCacheDataByType(ApiConfig.APP_COMPONENT_MUSIC, mRootView
+                                .getCommentId());
+                    }
 
-        if (!localComment.isEmpty()) {
-            for (int i = 0; i < localComment.size(); i++) {
-                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                        .getSingleDataFromCache(localComment.get(i).getUser_id()));
-                if (localComment.get(i).getReply_user() != 0) {
-                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                            .getSingleDataFromCache(localComment.get(i)
-                                    .getReply_user()));
-                }
-            }
-        }
-        return localComment;
+                    if (!localComment.isEmpty()) {
+                        for (int i = 0; i < localComment.size(); i++) {
+                            localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                                    .getSingleDataFromCache(localComment.get(i).getUser_id()));
+                            if (localComment.get(i).getReply_user() != 0) {
+                                localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                        .getSingleDataFromCache(localComment.get(i)
+                                                .getReply_user()));
+                            }
+                        }
+                    }
+                    return localComment;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(musicCommentListBeans -> mRootView.onCacheResponseSuccess(musicCommentListBeans, isLoadMore), Throwable::printStackTrace);
+
     }
 
     @Override

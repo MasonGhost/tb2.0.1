@@ -200,9 +200,9 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
     }
 
     @Override
-    public List<RankIndexBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<RankIndexBean> list = mRankIndexBeanGreenDao.getIndexRankList(mRootView.getCategory());
-        return list;
+        mRootView.onCacheResponseSuccess(list,isLoadMore);
     }
 
     @Override

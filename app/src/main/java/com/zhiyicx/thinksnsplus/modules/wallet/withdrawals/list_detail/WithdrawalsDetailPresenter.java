@@ -55,8 +55,8 @@ public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDeta
     }
 
     @Override
-    public List<WithdrawalsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mWithdrawalsListBeanGreenDao.getMultiDataFromCache();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(mWithdrawalsListBeanGreenDao.getMultiDataFromCache(),isLoadMore);
     }
 
     @Override
