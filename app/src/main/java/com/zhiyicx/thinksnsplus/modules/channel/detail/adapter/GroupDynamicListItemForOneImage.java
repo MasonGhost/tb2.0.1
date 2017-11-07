@@ -75,7 +75,7 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
         GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(0);
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            Boolean canLook = true;
+            boolean canLook = true;
             with = currentWith;
             height = (with * imageBean.getHeight() / imageBean.getWidth());
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -90,7 +90,7 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
             view.showLongImageTag(isLongImage(imageBean.getHeight(),imageBean.getWidth())); // 是否是长图
 
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), 0, 0, 100, AppApplication.getTOKEN()))
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), canLook?0:with,  canLook?0:height, 100, AppApplication.getTOKEN()))
                     .override(with, height)
                     .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

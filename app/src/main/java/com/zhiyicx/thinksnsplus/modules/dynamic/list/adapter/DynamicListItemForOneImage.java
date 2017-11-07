@@ -93,7 +93,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(),  0,  0
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(),  canLook?0:with,  canLook?0:height
                             , 100, AppApplication.getTOKEN()))
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)

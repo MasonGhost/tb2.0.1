@@ -90,9 +90,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         }
         subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(aLong -> mPresenter.getBootAdvert()
-                        != null && mPresenter.getAdvert() != null
-                        && mPresenter.getAdvert().getAdverts() != null)
+                .map(aLong -> mPresenter.getBootAdvert()!= null)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {

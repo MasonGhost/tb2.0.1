@@ -155,13 +155,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
 
     @Override
     public List<SystemConfigBean.Advert> getAdvert() {
-        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
-        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal().getAdverts()) {
-            if (advert.getImageAdvert() != null) {
-                imageAdvert.add(advert);
-            }
-        }
-        return imageAdvert;
+        return new ArrayList<>();
     }
 
     @Override

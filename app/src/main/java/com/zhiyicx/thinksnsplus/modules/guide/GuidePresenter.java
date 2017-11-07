@@ -125,7 +125,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public List<RealAdvertListBean> getBootAdvert() {
         AllAdverListBean boot = mAllAdvertLIstBeanGreendo.getBootAdvert();
-        if (boot != null) {
+        if (boot != null && boot.getMRealAdvertListBeen() != null && !boot.getMRealAdvertListBeen().isEmpty()) {
             return boot.getMRealAdvertListBeen();
         }
         return null;
