@@ -392,8 +392,27 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private long amount;
         private String type;
         private Boolean paid;
+        /**
+         * 图片类型
+         */
+        private String imgMimeType;
 
-        private String imgMimeType;// 图片类型
+        @Override
+        public String toString() {
+            return "ImagesBean{" +
+                    "propPart=" + propPart +
+                    ", file=" + file +
+                    ", size='" + size + '\'' +
+                    ", imgUrl='" + imgUrl + '\'' +
+                    ", paid_node=" + paid_node +
+                    ", width=" + width +
+                    ", height=" + height +
+                    ", amount=" + amount +
+                    ", type='" + type + '\'' +
+                    ", paid=" + paid +
+                    ", imgMimeType='" + imgMimeType + '\'' +
+                    '}';
+        }
 
         public int getPropPart() {
             return propPart;
@@ -496,11 +515,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             this.paid = paid;
         }
 
-
-        @Override
-        public String toString() {
-            return "付费：" + paid;
-        }
 
         @Override
         public int describeContents() {

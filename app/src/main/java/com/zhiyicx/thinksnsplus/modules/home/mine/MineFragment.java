@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -253,16 +254,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
               我的音乐
              */
             case R.id.bt_music:
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(getContext())) {
-                        startActivity(new Intent(getActivity(), MyMusicActivity.class));
-                    } else {
-                        initPermissionPopUpWindow();
-                        mActionPopupWindow.show();
-                    }
-                } else {
-                    startActivity(new Intent(getActivity(), MyMusicActivity.class));
-                }
+                startActivity(new Intent(getActivity(), MyMusicActivity.class));
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));

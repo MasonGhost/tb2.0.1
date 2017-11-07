@@ -66,10 +66,6 @@ public class RankIndexFragment extends TSViewPagerFragment {
         return fragment;
     }
 
-    @Override
-    public void setPresenter(Object presenter) {
-
-    }
 
     @Override
     protected boolean setUseSatusbar() {

@@ -80,11 +80,13 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             height = (with * imageBean.getHeight() / imageBean.getWidth());
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
             proportion = ((with / imageBean.getWidth()) * 100);
-            if (with * height == 0) {// 就怕是 0
+            // 就怕是 0
+            if (with * height == 0) {
                 with = height = DEFALT_IMAGE_HEIGHT;
             }
             boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
+            // 是否是长图
+            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
             if (height < DEFALT_IMAGE_HEIGHT) {
                 height = DEFALT_IMAGE_HEIGHT;
             }
@@ -110,7 +112,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
                 proportion = ((with / option.outWidth) * 100);
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+                // 是否是长图
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             }
             if (height < DEFALT_IMAGE_HEIGHT) {
                 height = DEFALT_IMAGE_HEIGHT;
@@ -130,7 +133,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             dynamicBean.getImages().get(positon).setPropPart(proportion);
         }
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnImageClickListener != null) {
                         mOnImageClickListener.onImageClick(holder, dynamicBean, positon);

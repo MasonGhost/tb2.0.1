@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.appupdate.AppUpdateManager;
+import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -82,8 +84,10 @@ public class AppApplication extends TSApplication {
     @Inject
     SystemRepository mSystemRepository;
 
-    private AlertDialog alertDialog; // token 过期弹框
-    private static AuthBean mCurrentLoginAuth; //当前登录用户的信息
+    /**
+     * 当前登录用户的信息
+     */
+    private static AuthBean mCurrentLoginAuth;
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
@@ -109,12 +113,13 @@ public class AppApplication extends TSApplication {
      */
     private void initAppProject() {
         initComponent();
-        // IM
-        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 安装了 IM
+        // 安装了 IM
+        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) {
             LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
         }
-        BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
+        // 开启后台任务
+        BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();
         registerActivityCallBacks();
         // ping++
         Pingpp.enableDebugLog(BuildConfig.USE_LOG);
@@ -130,7 +135,8 @@ public class AppApplication extends TSApplication {
      */
     @Override
     protected Set<Interceptor> getInterceptors() {
-        Map<String, String> params = new HashMap<>();//统一请求头数据
+        //统一请求头数据
+        Map<String, String> params = new HashMap<>();
         Set<Interceptor> set = new HashSet<>();
         set.add(new CommonRequestIntercept(params));
         return set;
@@ -214,8 +220,14 @@ public class AppApplication extends TSApplication {
         };
     }
 
+    /**
+     * 未读数处理
+     *
+     * @param originalResponse
+     */
     private void handleHeadRequest(Response originalResponse) {
-        if (originalResponse != null && originalResponse.header("unread-notification-limit") != null) { // 未读数处理
+
+        if (originalResponse != null && originalResponse.header("unread-notification-limit") != null) {
             EventBus.getDefault().post(originalResponse.header("unread-notification-limit"), EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT);
         }
 
@@ -227,50 +239,27 @@ public class AppApplication extends TSApplication {
      * @param tipStr
      */
     private void handleAuthFail(final String tipStr) {
-        // 跳到登陆页面，销毁之前的所有页面,添加弹框处理提示
-        // 通过rxjava在主线程处理弹框
-        Observable.empty()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> {
-                    if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
-                            .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
-                        return;
-                    }
-                    alertDialog = new AlertDialog.Builder(ActivityHandler
-                            .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
-                            .setMessage(tipStr)
-                            .setOnKeyListener((dialog, keyCode, event) -> {
-                                if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
-                                        && event.getRepeatCount() == 0) {
-                                    return true;
-                                }
-                                return false;
-                            })
-                            .setPositiveButton(R.string.determine, (dialogInterface, i) -> {
-                                // TODO: 2017/2/8  清理登录信息 token 信息
-                                mAuthRepository.clearAuthBean();
-                                mAuthRepository.clearThridAuth();
+        if (!(ActivityHandler
+                .getInstance().currentActivity() instanceof LoginActivity) && ActivityHandler
+                .getInstance().currentActivity() instanceof TSActivity) {
+            ((TSActivity) ActivityHandler
+                    .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
+                        // TODO: 2017/2/8  清理登录信息 token 信息
+                        mAuthRepository.clearAuthBean();
+                        mAuthRepository.clearThridAuth();
 
-                                Intent intent = new Intent
-                                        (getContext(),
-                                                LoginActivity
-                                                        .class);
-                                ActivityHandler.getInstance()
-                                        .currentActivity()
-                                        .startActivity
-                                                (intent);
-                                alertDialog.dismiss();
-                            })
-                            .create();
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    try {
-                        alertDialog.show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                })
-                .doOnError(Throwable::printStackTrace)
-                .subscribe();
+                        Intent intent = new Intent
+                                (getContext(),
+                                        LoginActivity
+                                                .class);
+                        ActivityHandler.getInstance()
+                                .currentActivity()
+                                .startActivity
+                                        (intent);
+                        dialog.dismiss();
+                    });
+        }
+
     }
 
     /**
@@ -289,11 +278,11 @@ public class AppApplication extends TSApplication {
     public void initComponent() {
         AppComponent appComponent = DaggerAppComponent
                 .builder()
-                .appModule(getAppModule())// baseApplication 提供
-                .httpClientModule(getHttpClientModule())// baseApplication 提供
-                .imageModule(getImageModule())// // 图片加载框架
-                .serviceModule(getServiceModule())// 需自行创建
-                .cacheModule(getCacheModule())// 需自行创建
+                .appModule(getAppModule())
+                .httpClientModule(getHttpClientModule())
+                .imageModule(getImageModule())
+                .serviceModule(getServiceModule())
+                .cacheModule(getCacheModule())
                 .build();
         AppComponentHolder.setAppComponent(appComponent);
         appComponent.inject(this);
@@ -367,8 +356,9 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
-        if (mCurrentLoginAuth != null)
+        if (mCurrentLoginAuth != null) {
             TOKEN = mCurrentLoginAuth.getToken();
+        }
     }
 
     public static String getTOKEN() {
@@ -382,7 +372,8 @@ public class AppApplication extends TSApplication {
 
     private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
-                .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)// liuchao 2017.3.27修改获取缓存路径
+                // liuchao 2017.3.27修改获取缓存路径
+                .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)
                         , "/media"))
                 .maxCacheFilesCount(100)
                 .build();
@@ -410,7 +401,8 @@ public class AppApplication extends TSApplication {
             @Override
             public void onActivityStopped(Activity activity) {
                 mActivityCount--;
-                if (mActivityCount == 0) {// 切到后台
+                // 切到后台
+                if (mActivityCount == 0) {
                     WindowUtils.hidePopupWindow();
                 }
             }

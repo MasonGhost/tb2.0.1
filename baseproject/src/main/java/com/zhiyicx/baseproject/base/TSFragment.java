@@ -52,25 +52,58 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> implements WindowUtils.OnWindowDismisslistener {
-    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
-    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
-    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
+    /**
+     * 默认的toolbar
+     */
+    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
+    /**
+     * 默认的toolbar背景色
+     */
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
+    /**
+     * 默认的toolbar下方分割线颜色
+     */
+    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
+    /**
+     * 默认的toolbar左边的图片，一般是返回键
+     */
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;
 
     protected TextView mToolbarLeft;
     protected View mDriver;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
-    private View mCenterLoadingView; // 加载
-    private ImageView mIvRefresh; // 头部左边的刷新控件
+    /**
+     * 加载
+     */
+    private View mCenterLoadingView;
+    /**
+     * 头部左边的刷新控件
+     */
+    private ImageView mIvRefresh;
 
     protected ViewGroup mSnackRootView;
-    private boolean mIsNeedClick = true;// 缺省图是否需要点击
-    private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
-    private boolean isFirstIn = true;// 是否是第一次进入页面
-    private Subscription mViewTreeSubscription = null;// View 树监听订阅器
-    private Subscription mStatusbarSupport = null;// View 树监听订阅器
+    /**
+     * 缺省图是否需要点击
+     */
+    private boolean mIsNeedClick = true;
+    /**
+     * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
+     */
+    private boolean rightViewHadTranslated = false;
+    /**
+     * 是否是第一次进入页面
+     */
+    private boolean isFirstIn = true;
+    /**
+     * View 树监听订阅器
+     */
+    private Subscription mViewTreeSubscription = null;
+    /**
+     * View 树监听订阅器
+     */
+    private Subscription mStatusbarSupport = null;
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
     private View mMusicWindowView;
@@ -89,6 +122,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
         FrameLayout musicWindowContainer = null;
+        // 添加音乐悬浮窗
         if (getParentFragment() == null) {
             mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
             musicWindowContainer = new FrameLayout(getActivity());
@@ -114,8 +148,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
 
         linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
+        // 是否添加和状态栏等高的占位 View
+        if (setUseSatusbar() && setUseStatusView()) {
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
                     (getContext())));
@@ -127,12 +163,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
             linearLayout.addView(mStatusPlaceholderView);
         }
-        if (showToolbar()) {// 在需要显示toolbar时，进行添加
+        // 在需要显示toolbar时，进行添加
+        if (showToolbar()) {
             View toolBarContainer = mLayoutInflater.inflate(getToolBarLayoutId(), null);
             initDefaultToolBar(toolBarContainer);
             linearLayout.addView(toolBarContainer);
         }
-        if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
+        // 在需要显示分割线时，进行添加
+        if (showToolBarDivider()) {
             mDriver = new View(getContext());
             mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen
                     .divider_line)));
@@ -148,12 +186,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
-        setToolBarTextColor();
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
             supportFlymeSutsusbar(); // 兼容小米、魅族6.0以上
         }
+        setToolBarTextColor();
         FrameLayout frameLayout = new FrameLayout(getActivity());
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 内容区域
@@ -827,13 +865,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            try {
-                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
-                                        .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                            } catch (Exception e) {
-                            }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                                && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) {
+                            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
+                                    .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                         }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
                     }
                 });
 
