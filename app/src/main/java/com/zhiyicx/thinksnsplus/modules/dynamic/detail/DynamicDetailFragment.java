@@ -571,7 +571,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void handleItemClick(int position) {
-        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
                 initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
