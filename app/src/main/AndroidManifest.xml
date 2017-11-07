@@ -516,6 +516,7 @@
         <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.PublishInfoActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait">
         </activity>
         <activity

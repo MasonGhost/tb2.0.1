@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,26 +17,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.ImageViewState;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.droidsonroids.gif.GifDecoder;
-import pl.droidsonroids.gif.InputSource;
 
 /**
  * @Author Jliuer
@@ -76,7 +67,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
-        array.recycle();
         if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
@@ -96,7 +86,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
-        array.recycle();
         if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
@@ -181,6 +170,27 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             }
         });
         mTransitioner.setDuration(300);
+    }
+
+    /**
+     * 在特定位置插入EditText
+     *
+     * @param index   位置
+     * @param editStr EditText显示的文字
+     */
+    public void updateEditTextAtIndex(final int index, CharSequence editStr) {
+        lastAddEdit = createEditText("", EDIT_PADDING);
+        lastAddEdit.setOnFocusChangeListener(focusListener);
+        lastAddEdit.setText(editStr);
+        allLayout.addView(lastAddEdit, index);
+    }
+
+    public void setHasContent(boolean hasContent) {
+        this.hasContent = hasContent;
+    }
+
+    public LinearLayout getAllLayout() {
+        return allLayout;
     }
 
     public int dip2px(Context context, float dipValue) {
@@ -288,7 +298,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     /**
      * 根据绝对路径添加view
      */
-    public SubsamplingScaleImageView insertImage(String imagePath, int width) {
+    public DataImageView insertImage(String imagePath, int width) {
         Bitmap bmp = getScaledBitmap(imagePath, width);
 
         return insertImage(bmp, imagePath);
@@ -297,7 +307,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     /**
      * 插入一张图片
      */
-    public SubsamplingScaleImageView insertImage(Bitmap bitmap, String imagePath) {
+    public DataImageView insertImage(Bitmap bitmap, String imagePath) {
         hideKeyBoard();
         String lastEditStr = lastFocusEdit.getText().toString();
         int cursorIndex = lastFocusEdit.getSelectionStart();
@@ -331,14 +341,13 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     public void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public void showKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        lastFocusEdit.requestFocus();
-        imm.showSoftInput(lastFocusEdit, 0);
+        imm.showSoftInput(lastFocusEdit, InputMethodManager.SHOW_FORCED);
 //        imm.showSoftInputFromInputMethod(lastFocusEdit.getApplicationWindowToken(),
 //                InputMethodManager.SHOW_FORCED);
     }
@@ -358,40 +367,32 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     }
 
     /**
-     * 在特定位置插入EditText
-     *
-     * @param index   位置
-     * @param editStr EditText显示的文字
-     */
-    public void updateEditTextAtIndex(final int index, CharSequence editStr) {
-        lastAddEdit = createEditText("", EDIT_PADDING);
-        lastAddEdit.setOnFocusChangeListener(focusListener);
-        lastAddEdit.setText(editStr);
-        allLayout.addView(lastAddEdit, index);
-    }
-
-    /**
      * 在特定位置添加ImageView
      */
-    private SubsamplingScaleImageView addImageViewAtIndex(final int index, String imagePath) {
+    private DataImageView addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
-        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) imageLayout.findViewById(R.id.edit_imageView);
+        DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);
-        float scale = (float) allLayout.getWidth() / (float) options.outWidth;
-        imageView.setImage(ImageSource.uri(imagePath).region(new Rect(0, 0, options.outWidth, options.outHeight)));
-        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
-        imageView.setMaxScale(scale);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+        int imageHeight = allLayout.getWidth() * options.outHeight / options.outWidth;
+
+        Glide.with(getContext())
+                .load(imagePath)
+                .override(allLayout.getWidth(), imageHeight)
+                .centerCrop()
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(imageView);
+
+        imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
         lp.bottomMargin = 10;
-//        lp.width = allLayout.getWidth();
-//        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         imageView.setLayoutParams(lp);
-        imageView.setAbsolutePath(imagePath);//保存数据会用
-
-
         allLayout.addView(imageLayout, index);
 
         onTextChanged("", 0, 0, 0);
@@ -406,9 +407,10 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             addFirstEditText(" ");// 这个空格是有必要的，没有空格就是默认文字
         }
         final RelativeLayout imageLayout = createImageLayout();
-        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) imageLayout.findViewById(R.id.edit_imageView);
+        DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         imageView.setId(id);
         imageView.setAbsolutePath(markdonw);//保留这句，后面保存数据会用
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
 
         // 调整imageView的高度，根据宽度来调整高度
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -423,39 +425,19 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             lp.bottomMargin = 10;
             imageView.setLayoutParams(lp);
         } else {
-            Bitmap bitmap = Bitmap.createBitmap(allLayout.getWidth(), allLayout.getWidth(), Bitmap.Config.RGB_565);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(getResources().getColor(R.color.general_for_line_light));
-            imageView.setImage(ImageSource.bitmap(bitmap));
+            imageHeight = allLayout.getWidth();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            imageView.setLayoutParams(lp);
+            imageView.setImageResource(R.drawable.shape_default_image);
         }
         LogUtils.d("updateImageViewAtIndex::" + imagePath);
         Glide.with(getContext())
                 .load(imagePath)
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(resource.getAbsolutePath(), options);
-                        float scale = (float) allLayout.getWidth() / (float) options.outWidth;
-                        imageView.setImage(ImageSource.uri(resource.getAbsolutePath())
-                                .region(new Rect(0, 0, options.outWidth, options.outHeight)));
-                        imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
-                        imageView.setMaxScale(scale);
-                    }
-
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        e.printStackTrace();
-                        LogUtils.e("onLoadFailed::" + imagePath);
-                    }
-                });
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-        lp.bottomMargin = 10;
-        imageView.setLayoutParams(lp);
-        imageView.setAbsolutePath(imagePath);//保存数据会用
+                .centerCrop()
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(imageView);
 
         allLayout.addView(imageLayout, index);
         if (isLast) {
@@ -493,7 +475,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 EditText item = (EditText) itemView;
                 itemData.inputStr = item.getText().toString();
             } else if (itemView instanceof RelativeLayout) {
-                SubsamplingScaleImageView item = (SubsamplingScaleImageView) itemView.findViewById(R.id.edit_imageView);
+                DataImageView item = (DataImageView) itemView.findViewById(R.id.edit_imageView);
                 itemData.imagePath = item.getAbsolutePath();
                 itemData.imageId = item.getId();
             }
@@ -522,6 +504,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         View view = allLayout.getChildAt(0);
         if (view != null && view instanceof EditText) {
             int tag = (int) view.getTag();
+
             EditText firstEditText = (EditText) view;
 
             if (tag == 1 && isFirstHasContent) {
@@ -532,7 +515,10 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 isFirstHasContent = true;
                 firstEditText.setHint(mHint);
             }
+
         }
+
+
     }
 
     public void setOnContentEmptyListener(OnContentChangeListener onContentChangeListener) {
@@ -541,10 +527,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public boolean isHasContent() {
         return hasContent;
-    }
-
-    public void setHasContent(boolean hasContent) {
-        this.hasContent = hasContent;
     }
 
     public class EditData {
@@ -570,9 +552,5 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             EditText text = (EditText) allLayout.getChildAt(0);
             text.setHint(mHint);
         }
-    }
-
-    public LinearLayout getAllLayout() {
-        return allLayout;
     }
 }

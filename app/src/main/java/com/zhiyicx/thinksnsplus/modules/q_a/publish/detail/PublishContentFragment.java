@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
 
@@ -86,7 +87,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private CenterAlertPopWindow mAnonymityAlertPopWindow;
 
     private QAPublishBean mQAPublishBean;
-    private SubsamplingScaleImageView test;
+    private DataImageView test;
 
     public static PublishContentFragment newInstance(Bundle bundle) {
         PublishContentFragment publishContentFragment = new PublishContentFragment();

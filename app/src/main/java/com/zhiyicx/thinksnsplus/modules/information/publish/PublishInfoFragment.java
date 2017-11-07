@@ -29,6 +29,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -72,7 +73,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    private SubsamplingScaleImageView mSubsamplingScaleImageView;
+    private DataImageView mSubsamplingScaleImageView;
 
     private int mPicTag;// 记录上传成功的张数
 
