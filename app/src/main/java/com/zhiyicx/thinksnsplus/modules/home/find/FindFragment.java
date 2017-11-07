@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -15,22 +11,17 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -163,27 +154,7 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_music:
                 if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-
-                    ActivityManager activityManager = (ActivityManager) getActivity()
-                            .getSystemService(Context.ACTIVITY_SERVICE);
-                    List<ActivityManager.RunningAppProcessInfo> infos = activityManager
-                            .getRunningAppProcesses();
-
-                    for (ActivityManager.RunningAppProcessInfo info : infos) {
-                        String name = info.processName;
-                        LogUtils.d(name);
-
-                    }
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        if (Settings.canDrawOverlays(getContext())) {
-                            startActivity(new Intent(getActivity(), MusicListActivity.class));
-                        } else {
-                            initPermissionPopUpWindow();
-                            mActionPopupWindow.show();
-                        }
-                    } else {
-                        startActivity(new Intent(getActivity(), MusicListActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), MusicListActivity.class));
                 } else {
                     showLoginPop();
                 }

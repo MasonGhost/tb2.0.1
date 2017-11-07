@@ -11,9 +11,12 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +25,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
-import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.common.base.BaseFragment;
@@ -72,6 +73,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private Subscription mStatusbarSupport = null;// View 树监听订阅器
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
+    private View mMusicWindowView;
 
     protected SystemConfigBean mSystemConfigBean;
 
@@ -85,10 +87,34 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     protected View getContentView() {
-
         LinearLayout linearLayout = new LinearLayout(getActivity());
+        FrameLayout musicWindowContainer = null;
+        if (getParentFragment() == null) {
+            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
+            musicWindowContainer = new FrameLayout(getActivity());
+            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
+                    ConvertUtils.dp2px(getActivity(), 24));
+            layoutParams.gravity = Gravity.RIGHT;
+            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
+            mMusicWindowView.setLayoutParams(layoutParams);
+            mMusicWindowView.setVisibility(View.GONE);
+            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.MAIN");
+                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                }
+            });
+            musicWindowContainer.addView(linearLayout);
+            musicWindowContainer.addView(mMusicWindowView);
+        }
+
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
@@ -159,20 +185,29 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
             frameLayout.addView(mCenterLoadingView);
         }
+
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
-        return linearLayout;
+        return musicWindowContainer == null ? linearLayout : musicWindowContainer;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        musicWindowsStatus(WindowUtils.getIsShown());
-        if (!this.getClass().getSimpleName().equals("InfoListFragment")) {
-            WindowUtils.setWindowDismisslistener(this);
+        boolean isshow = WindowUtils.getIsShown();
+        musicWindowsStatus(isshow);
+        WindowUtils.setWindowDismisslistener(this);
+        if (!this.getClass().getSimpleName().equals("InfoListFragment") && isshow) {
+            if (mMusicWindowView != null) {
+                mMusicWindowView.setVisibility(View.VISIBLE);
+                RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
+                        .music_window_rotate);
+                mMusicWindowView.setAnimation(mRotateAnimation);
+                mRotateAnimation.start();
+            }
         }
     }
 
@@ -274,17 +309,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
 
-
     /**
      * 音乐图标消失
      */
     @Override
-    public void onDismiss() {
+    public void onMusicWindowDismiss() {
         View view = getRightViewOfMusicWindow();
         if (view != null && WindowUtils.getIsPause()) {
             // 很遗憾，我也不知道为什么，不用减去 rightX；
             if (view.getTag() != null) {
-                int test = view.getPaddingLeft();
                 int right = (int) view.getTag();
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - right, view.getPaddingBottom());
                 view.setTag(null);
@@ -293,6 +326,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
+        }
+        if (mMusicWindowView != null) {
+            mMusicWindowView.setVisibility(View.GONE);
         }
     }
 
@@ -526,7 +562,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                             if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
-                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                                    int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
                                     view.setTag(rightX);
                                     view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
                                             .getPaddingBottom());
