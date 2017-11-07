@@ -107,7 +107,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
     private View mMusicWindowView;
-
+    private FrameLayout musicWindowContainer;
     protected SystemConfigBean mSystemConfigBean;
 
     @Nullable
@@ -121,7 +121,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
-        FrameLayout musicWindowContainer = null;
         // 添加音乐悬浮窗
         if (getParentFragment() == null) {
             mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
@@ -130,7 +129,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
                     ConvertUtils.dp2px(getActivity(), 24));
             layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
+            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 33), ConvertUtils.dp2px(getContext(), 10), 0);
             mMusicWindowView.setLayoutParams(layoutParams);
             mMusicWindowView.setVisibility(View.GONE);
             mMusicWindowView.setOnClickListener(new View.OnClickListener() {
@@ -352,6 +351,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void onMusicWindowDismiss() {
+        if (mMusicWindowView != null) {
+            mMusicWindowView.clearAnimation();
+            mMusicWindowView.setVisibility(View.GONE);
+        }
         View view = getRightViewOfMusicWindow();
         if (view != null && WindowUtils.getIsPause()) {
             // 很遗憾，我也不知道为什么，不用减去 rightX；
@@ -365,9 +368,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
         }
-        if (mMusicWindowView != null) {
-            mMusicWindowView.setVisibility(View.GONE);
-        }
+
     }
 
     /**
