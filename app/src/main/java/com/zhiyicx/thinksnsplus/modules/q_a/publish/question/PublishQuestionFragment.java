@@ -187,11 +187,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
-    protected List<QAListInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return super.requestCacheData(maxId, isLoadMore);
-    }
-
-    @Override
     protected RecyclerView.Adapter getAdapter() {
         PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout
                 .item_publish_question, mListDatas);

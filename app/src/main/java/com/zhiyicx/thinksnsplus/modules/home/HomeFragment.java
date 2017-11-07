@@ -67,9 +67,15 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_ME
  */
 public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View,
         PhotoSelectorImpl.IPhotoBackListener {
-    public static final int PAGE_NUMS = 4; // 页数
+    /**
+     * 页数
+     */
+    public static final int PAGE_NUMS = 4;
 
-    public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
+    /**
+     * 对应在 viewpager 中的位置
+     */
+    public static final int PAGE_HOME = 0;
     public static final int PAGE_FIND = 1;
     public static final int PAGE_MESSAGE = 2;
     public static final int PAGE_MINE = 3;
@@ -102,12 +108,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     @Inject
     HomePresenter mHomePresenter;
+
     @BindView(R.id.fl_add)
     FrameLayout mFlAdd;
-    @BindView(R.id.ll_message)
-    LinearLayout mLlMessage;
-    @BindView(R.id.ll_mine)
-    LinearLayout mLlMine;
+
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
 
@@ -194,8 +198,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         setJpushAlias();
         changeNavigationButton(PAGE_HOME);
         setCurrentPage();
-        // 支持魅族手机首页状太栏文字白色问题
-//        supportFlymeSutsusbar();
         // app更新
         AppUpdateManager.getInstance(getContext()
                 , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) +
@@ -331,10 +333,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 初始化 viewpager
      */
-
     private void initViewPager() {
         //设置缓存的个数
-        mVpHome.setOffscreenPageLimit(PAGE_NUMS);
+        mVpHome.setOffscreenPageLimit(PAGE_NUMS-1);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
@@ -420,7 +421,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void setJpushAlias() {
         if (mPresenter.isLogin()) {
-            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+            // 设置极光推送别名
+            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
             mJpushAlias.setAlias();
         }
 

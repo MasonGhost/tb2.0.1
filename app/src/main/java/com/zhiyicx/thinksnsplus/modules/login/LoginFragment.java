@@ -86,9 +86,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private boolean mIsPasswordEdited;
 
     private boolean mIsToourist;
-
-    private List<AccountBean> mAccountList; // 历史的账号
-    private AccountBean mAccountBean; // 当前登录的账号
+    /**
+     * 历史的账号
+     */
+    private List<AccountBean> mAccountList;
+    /**
+     * 当前登录的账号
+     */
+    private AccountBean mAccountBean;
 
     private ArrayAdapter mArrayAdapter;
     private AccountAdapter mAccountAdapter;
@@ -125,7 +130,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         if (mIsToourist || !mPresenter.isTourist()) {
             setLeftTextColor(R.color.themeColor);
         }
-        mRxPermissions.setLogging(true); //是否需要日志
+        //是否需要日志
+        mRxPermissions.setLogging(true);
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                 });
@@ -164,7 +170,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
                         .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
-                    if (aBoolean) {// 获取到了权限
+                    // 获取到了权限
+                    if (aBoolean) {
                         mAccountBean.setId(System.currentTimeMillis());
                         mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
                         mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
@@ -226,7 +233,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mAccountList = new ArrayList<>();
         mAccountBean = new AccountBean();
         initAccount();
-//        supportFlymeSutsusbar();
     }
 
     @Override
@@ -287,13 +293,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void setLoginState(boolean loginState) {
         mBtLoginLogin.handleAnimation(false);
-        mBtLoginLogin.setEnabled(true);
         if (loginState) {
-            mTvErrorTip.setVisibility(View.INVISIBLE);
-            mTvErrorTip.setText("");
-            mEtLoginPassword.setText("");
-            mEtLoginPhone.setText("");
-            mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
             if (mIsToourist) {
                 getActivity().setResult(RESULT_OK);
@@ -345,7 +345,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     private void goHome() {
-        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
+        // 清除 homeAcitivity 重新加载
+        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();
         startActivity(new Intent(getActivity(), HomeActivity.class));
         getActivity().finish();
     }

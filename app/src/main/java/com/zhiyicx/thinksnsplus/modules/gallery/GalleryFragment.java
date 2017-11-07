@@ -56,7 +56,10 @@ public class GalleryFragment extends TSFragment {
     MagicIndicator mMiIndicator;
 
     private SectionsPagerAdapter mPagerAdapter;
-    private int currentItem = 0;// 点击第几张图片进入的预览界面
+    /**
+     *  点击第几张图片进入的预览界面
+     */
+    private int currentItem = 0;
     private List<ImageBean> allImages;
 
     @Override

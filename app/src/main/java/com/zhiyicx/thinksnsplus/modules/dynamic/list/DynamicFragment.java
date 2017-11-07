@@ -97,7 +97,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
-    public static final long ITEM_SPACING = 5L; // 单位dp
+    /**
+     *  item 间距单位 dp
+     */
+    public static final long ITEM_SPACING = 5L;
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
     @BindView(R.id.ilv_comment)
