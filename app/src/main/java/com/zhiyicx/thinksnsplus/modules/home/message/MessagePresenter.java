@@ -51,6 +51,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
@@ -135,54 +136,50 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
-        List<Observable<Conversation>> datas = new ArrayList<>();
-        final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-        // 新版 ts 助手
-        for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-            if (imHelperBean.isDelete()) {
-                continue;
-            }
-            final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
-        }
-        if (datas.isEmpty()) {
-            getCoversationList();
-        } else {
-            Observable.zip(datas, (FuncN<Object>) args -> {
-                // 为 ts 助手添加提示语
-                for (int i = 0; i < args.length; i++) {
-                    Conversation data = ((Conversation) args[i]);
-                    // 写入 ts helper 默认提示语句
-                    long currentTime = System.currentTimeMillis();
-                    Message message = new Message();
-                    message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
-                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                    message.setSend_status(MessageStatus.SEND_SUCCESS);
-                    message.setIs_read(false);
-                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                    message.setCid(data.getCid());
-                    message.setCreate_time(currentTime);
+
+        Observable.just(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(integer -> {
+                        List<Observable<Conversation>> datas = new ArrayList<>();
+                        final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+                        // 新版 ts 助手
+                        for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+                            if (imHelperBean.isDelete()) {
+                                continue;
+                            }
+                            final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
+                            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
+                        }
+                        if (datas.isEmpty()) {
+                          return  mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
+                        } else {
+                          return   Observable.zip(datas, (FuncN<Object>) args -> {
+                                // 为 ts 助手添加提示语
+                                for (int i = 0; i < args.length; i++) {
+                                    Conversation data = ((Conversation) args[i]);
+                                    // 写入 ts helper 默认提示语句
+                                    long currentTime = System.currentTimeMillis();
+                                    Message message = new Message();
+                                    message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
+                                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                                    message.setSend_status(MessageStatus.SEND_SUCCESS);
+                                    message.setIs_read(false);
+                                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                                    message.setCid(data.getCid());
+                                    message.setCreate_time(currentTime);
 //                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                    message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
-                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                }
-                return args;
-            }).subscribe(new BaseSubscribeForV2<Object>() {
-                @Override
-                protected void onSuccess(Object data) {
-                    getCoversationList();
-                }
-            });
-        }
+                                    message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
+                                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                                }
+                                return args;
+                            }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
+                        }
 
-    }
 
-    /**
-     * 获取我的对话列表
-     */
-    private void getCoversationList() {
-        Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
+                    })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
                     @Override
@@ -201,7 +198,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
                     }
                 });
-        addSubscrebe(subscribe);
+
+
     }
 
     /**
@@ -507,7 +505,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             Message message = new Message();
             message.setCid(jsonObject.getInt("cid"));
             message.setSeq(jsonObject.getInt("seq"));
-            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());//
+            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());
             // 获取推送的信息
         } catch (JSONException e) {
             e.printStackTrace();
