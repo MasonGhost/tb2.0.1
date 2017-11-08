@@ -396,15 +396,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 Glide.with(view.getContext())
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? w : 0, canLook ? h : 0,
                                 propPart, AppApplication.getTOKEN()))
-//                        .override(w, h)
-//                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
                         .into(view);
             } else {
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
 
                 Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
@@ -451,7 +449,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             return 70;
         }
         with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();
-        proportion = ((with / imageBean.getWidth()) * 100);
+        int imageW = imageBean.getWidth();
+        float quality = (float) with / (float) imageW;
+        proportion = (int) (quality * 100);
         proportion = proportion > 100 ? 100 : proportion;
         return proportion;
     }
@@ -584,19 +584,22 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected abstract class BaseRegionResourceDecoder<T> implements ResourceDecoder<T, Bitmap> {
         private final BitmapPool bitmapPool;
         private final Rect region;
+
         public BaseRegionResourceDecoder(Context context, Rect region) {
             this(Glide.get(context).getBitmapPool(), region);
         }
+
         public BaseRegionResourceDecoder(BitmapPool bitmapPool, Rect region) {
             this.bitmapPool = bitmapPool;
             this.region = region;
         }
 
-        @Override public Resource<Bitmap> decode(T source, int width, int height) throws IOException {
+        @Override
+        public Resource<Bitmap> decode(T source, int width, int height) throws IOException {
             BitmapFactory.Options opts = new BitmapFactory.Options();
 
-            int sampleSize = (int)Math.ceil((double)region.width() / (double)width);
-            sampleSize = sampleSize == 0? 0 : Integer.highestOneBit(sampleSize);
+            int sampleSize = (int) Math.ceil((double) region.width() / (double) width);
+            sampleSize = sampleSize == 0 ? 0 : Integer.highestOneBit(sampleSize);
             sampleSize = Math.max(1, sampleSize);
             opts.inSampleSize = sampleSize;
 
@@ -605,9 +608,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             return BitmapResource.obtain(bitmap, bitmapPool);
         }
+
         protected abstract BitmapRegionDecoder createDecoder(T source, int width, int height) throws IOException;
 
-        @Override public String getId() {
+        @Override
+        public String getId() {
             return getClass().getName() + region; // + region is important for RESULT caching
         }
     }
@@ -617,7 +622,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             super(context, region);
         }
 
-        @Override protected BitmapRegionDecoder createDecoder(ImageVideoWrapper source, int width, int height) throws IOException {
+        @Override
+        protected BitmapRegionDecoder createDecoder(ImageVideoWrapper source, int width, int height) throws IOException {
             try {
                 return BitmapRegionDecoder.newInstance(source.getStream(), false);
             } catch (Exception ignore) {
@@ -631,7 +637,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             super(context, region);
         }
 
-        @Override protected BitmapRegionDecoder createDecoder(File source, int width, int height) throws IOException {
+        @Override
+        protected BitmapRegionDecoder createDecoder(File source, int width, int height) throws IOException {
             return BitmapRegionDecoder.newInstance(source.getAbsolutePath(), false);
         }
     }
