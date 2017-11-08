@@ -294,9 +294,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean == null) {
             return;
         }
-        this.mUserInfoBean = userInfoBean;
-        // 设置用户头像
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
+        if (mUserInfoBean == null) {
+            // 设置用户头像
+            ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
+        } else {
+            boolean imageAvatarIsChanged = userInfoBean.getAvatar() != null && (mUserInfoBean.getAvatar() == null || userInfoBean.getAvatar()
+                    .equals(mUserInfoBean.getAvatar()));
+            boolean verifiedIsChanged = userInfoBean.getVerified() != null && userInfoBean.getVerified().getType() != null && (mUserInfoBean
+                    .getVerified() == null ||
+                    !userInfoBean.getVerified().getType().equals(mUserInfoBean
+                            .getVerified()
+                            .getType()));
+            if (imageAvatarIsChanged || verifiedIsChanged) {
+                // 设置用户头像
+                ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
+            }
+        }
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
@@ -313,6 +326,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
                 , mPresenter.getGoldName()));
+        this.mUserInfoBean = userInfoBean;
     }
 
     @Override
