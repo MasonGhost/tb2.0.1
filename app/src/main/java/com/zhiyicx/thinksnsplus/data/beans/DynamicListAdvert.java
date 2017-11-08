@@ -154,6 +154,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dynamicDetailBeanV2.setFeed_mark(System.currentTimeMillis());
         dynamicDetailBeanV2.setDeleted_at(advert.getLink());// 广告外链
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
+        dynamicDetailBeanV2.handleData();
         dynamicDetailBeanV2.setFeed_content(advert.getContent());// 广告内容
         dynamicDetailBeanV2.setCreated_at(advert.getTime());// 广告时间
         dynamicDetailBeanV2.setUpdated_at(advert.getTime());// 广告时间

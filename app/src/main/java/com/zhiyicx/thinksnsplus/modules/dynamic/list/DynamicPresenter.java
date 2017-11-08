@@ -145,6 +145,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     }
                     // 把自己发的评论加到评论列表的前面
                     for (int i = 0; i < listBaseJson.size(); i++) {
+                        // 处理友好显示数据
+                        listBaseJson.get(i).handleData();
                         List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
                                 .getFeed_mark());
                         if (!dynamicCommentBeen.isEmpty()) {
@@ -219,6 +221,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                             datas = new ArrayList<>();
                     }
                     for (int i = 0; i < datas.size(); i++) {
+                        // 处理友好显示数据
+                        datas.get(i).handleData();
                         if (datas.get(i).getFeed_mark() != null) {
                             datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
                         }

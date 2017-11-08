@@ -2,10 +2,16 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 
 import com.google.gson.annotations.SerializedName;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
 
@@ -18,6 +24,7 @@ import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
@@ -33,6 +40,8 @@ import java.util.List;
  */
 @Entity
 public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Serializable {
+
+    public static final int DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE = 140;
     private static final Long serialVersionUID = 123453L;
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
@@ -117,6 +126,48 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = RewardCountBeanConverter.class, columnType = String.class)
     private RewardsCountBean reward;// 打赏总额
 
+
+    @Transient
+    private String friendlyTime;
+    @Transient
+    private String userCenterFriendlyTimeUp;
+    @Transient
+    private String userCenterFriendlyTimeDonw;
+    @Transient
+    private String friendlyContent;
+
+
+    public String getFriendlyTime() {
+        return friendlyTime;
+    }
+
+    public void setFriendlyTime(String friendlyTime) {
+        this.friendlyTime = friendlyTime;
+    }
+
+    public String getUserCenterFriendlyTimeUp() {
+        return userCenterFriendlyTimeUp;
+    }
+
+    public void setUserCenterFriendlyTimeUp(String userCenterFriendlyTimeUp) {
+        this.userCenterFriendlyTimeUp = userCenterFriendlyTimeUp;
+    }
+
+    public String getUserCenterFriendlyTimeDonw() {
+        return userCenterFriendlyTimeDonw;
+    }
+
+    public void setUserCenterFriendlyTimeDonw(String userCenterFriendlyTimeDonw) {
+        this.userCenterFriendlyTimeDonw = userCenterFriendlyTimeDonw;
+    }
+
+    public String getFriendlyContent() {
+        return friendlyContent;
+    }
+
+    public void setFriendlyContent(String friendlyContent) {
+        this.friendlyContent = friendlyContent;
+    }
 
     public boolean isFollowed() {
         return isFollowed;
@@ -371,6 +422,38 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Override
     public Long getMaxId() {
         return id;
+    }
+
+
+    /**
+     * 用户处理数据，防止在列表中处理
+     */
+    public void handleData() {
+        if (created_at != null) {
+            friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
+        }
+
+
+        String timeString = TimeUtils.getTimeFriendlyForUserHome(created_at);
+        if (AppApplication.getContext().getString(R.string.today_with_split).equals(timeString) || AppApplication.getContext().getString(R.string
+                .yestorday_with_split).equals
+                (timeString)) {
+            userCenterFriendlyTimeUp = timeString.replace(",", "\n");
+        } else {
+            String[] dayAndMonth = timeString.split(",");
+            userCenterFriendlyTimeUp = dayAndMonth[0];
+            userCenterFriendlyTimeDonw = dayAndMonth[1];
+        }
+        if (feed_content != null) {
+            friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+            if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
+                friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
+            }
+        }
+        boolean canLookWords = paid_node == null || paid_node.isPaid();
+        if (!canLookWords) {
+            feed_content += AppApplication.getContext().getString(R.string.words_holder);
+        }
     }
 
     public static class ImagesBean implements Parcelable, Serializable {
@@ -748,9 +831,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeInt(this.top);
         dest.writeTypedList(this.digUserInfoList);
         dest.writeParcelable(this.reward, flags);
+        dest.writeString(this.friendlyTime);
+        dest.writeString(this.userCenterFriendlyTimeUp);
+        dest.writeString(this.userCenterFriendlyTimeDonw);
+        dest.writeString(this.friendlyContent);
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -822,7 +911,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
         this.paid = in.readByte() != 0;
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
-        this.diggs = new ArrayList<>();
+        this.diggs = new ArrayList<Integer>();
         in.readList(this.diggs, Integer.class.getClassLoader());
         this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
@@ -833,16 +922,20 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.top = in.readInt();
         this.digUserInfoList = in.createTypedArrayList(DynamicDigListBean.CREATOR);
         this.reward = in.readParcelable(RewardsCountBean.class.getClassLoader());
+        this.friendlyTime = in.readString();
+        this.userCenterFriendlyTimeUp = in.readString();
+        this.userCenterFriendlyTimeDonw = in.readString();
+        this.friendlyContent = in.readString();
     }
 
     @Generated(hash = 1726011089)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
-            Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
-            int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
-            List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
-            PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
-            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
+                               int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String
+                                           feed_longtitude,
+                               String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
+                               List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
+                                           hot_creat_time,
+                               boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -885,13 +978,16 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             return new DynamicDetailBeanV2[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 49871375)
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
-
 }

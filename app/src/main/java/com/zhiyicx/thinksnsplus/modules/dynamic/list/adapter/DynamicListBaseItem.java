@@ -6,13 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,13 +27,11 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -58,9 +52,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -152,7 +143,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     }
 
     private int mTitleMaxShowNum;
-    private int mContentMaxShowNum;
 
 
     public DynamicListBaseItem(Context context) {
@@ -161,8 +151,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_title_max_show_size);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_content_max_show_size);
         mWidthPixels = DeviceUtils.getScreenWidth(context);
         mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
@@ -214,10 +202,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             }
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
-                    .getCreated_at()));
+            holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
-            String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
 
             // 置顶标识 ,防止没有置顶布局错误
@@ -232,24 +218,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } catch (Exception ignored) {
             }
 
+            String content = dynamicBean.getFriendlyContent();
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(content)) {
-
-                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
-
-
-                if (content.length() > mContentMaxShowNum) {
-                    content = content.substring(0, mContentMaxShowNum) + "...";
-                }
 
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
 
                 int contentLenght = content.length();
-
-                if (!canLookWords) {
-                    content += mContext.getString(R.string.words_holder);
-                }
 
                 if (canLookWords) {
                     TextViewUtils.newInstance(contentView, content)

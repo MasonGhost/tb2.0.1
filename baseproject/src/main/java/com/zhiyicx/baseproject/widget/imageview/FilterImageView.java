@@ -66,10 +66,12 @@ public class FilterImageView extends ImageView {
         super.onDraw(canvas);
         if (isPressed()) {
             switch (mShape) {
-                case SHAPE_SQUARE: // square
+                // square
+                case SHAPE_SQUARE:
                     canvas.drawColor(mPressedColor);
                     break;
-                case SHAPE_CIRLCE: // circle
+                // circle
+                case SHAPE_CIRLCE:
                     canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
                     break;
                 default:
@@ -103,9 +105,10 @@ public class FilterImageView extends ImageView {
     public void showLongImageTag(boolean isShow) {
         this.mIshowLongTag = isShow;
         if (isShow) {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
+            if (mBitmap == null) {
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
+            }
+            postInvalidate();
         }
-        postInvalidate();
-
     }
 }

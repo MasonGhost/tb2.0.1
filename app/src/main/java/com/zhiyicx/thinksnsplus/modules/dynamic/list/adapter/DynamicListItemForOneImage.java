@@ -30,9 +30,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
-
-    private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
-    private static final int CURREN_CLOUMS = 1; // 当前列数
+    /**
+     * 动态列表图片数量
+     */
+    private static final int IMAGE_COUNTS = 1;
+    /**
+     * 当前列数
+     */
+    private static final int CURREN_CLOUMS = 1;
 
     public DynamicListItemForOneImage(Context context) {
         super(context);
@@ -52,7 +57,10 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
+        long a = System.currentTimeMillis();
         initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
+        System.out.println(" times one = " + (System.currentTimeMillis() - a));
+
     }
 
     /**
@@ -76,6 +84,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            //  网络
             with = currentWith;
             height = (with * imageBean.getHeight() / imageBean.getWidth());
             height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -93,7 +102,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(),  canLook?0:with,  canLook?0:height
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? 0 : with, canLook ? 0 : height
                             , 100, AppApplication.getTOKEN()))
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
@@ -101,6 +110,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                     .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
+            // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
 //            with = option.outWidth > currentWith ? currentWith : option.outWidth;
             with = currentWith;

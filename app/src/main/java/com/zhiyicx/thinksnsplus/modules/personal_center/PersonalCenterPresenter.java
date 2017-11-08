@@ -104,8 +104,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Inject
     public SharePolicy mSharePolicy;
-
-    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
+    /**
+     * 纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
+     */
+    private int mInterfaceNum = 0;
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
@@ -125,7 +127,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
 
     }
 
@@ -136,6 +138,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         }
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId, mRootView.getDynamicType())
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .map(dynamicDetailBeanV2s -> {
                     List<DynamicDetailBeanV2> result = new ArrayList<>();
 
@@ -146,19 +149,23 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     }
                     return result;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(listBaseJson -> {
-                    if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                    // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                    if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) {
                         List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
                         try {
-                            mRootView.updateDynamicCounts(data.size());//修改动态条数
+                            //修改动态条数
+                            mRootView.updateDynamicCounts(data.size());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         data.addAll(listBaseJson);
                     }
-                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                    // 把自己发的评论加到评论列表的前面
+                    for (int i = 0; i < listBaseJson.size(); i++) {
+                        // 处理友好显示数据
+                        listBaseJson.get(i).handleData();
                         List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
                                 .getFeed_mark());
                         if (!dynamicCommentBeen.isEmpty()) {
@@ -169,7 +176,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     }
 
                     return listBaseJson;
-                }).subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override
                     protected void onSuccess(List<DynamicDetailBeanV2> data) {
                         mInterfaceNum++;
@@ -201,9 +210,11 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore, long userId) {
-        List<DynamicDetailBeanV2> myDynamics = mDynamicDetailBeanV2GreenDao.getMyDynamics(userId);
-        mRootView.onCacheResponseSuccess(myDynamics,isLoadMore);
-        return myDynamics;
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+        // 如下使用缓存，使用下面
+///        List<DynamicDetailBeanV2> myDynamics = mDynamicDetailBeanV2GreenDao.getMyDynamics(userId);
+//        mRootView.onCacheResponseSuccess(null, isLoadMore);
+        return null;
     }
 
     @Override
@@ -252,14 +263,14 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
-        mRepository.updateOrInsertDynamicV2(data, ApiConfig.DYNAMIC_TYPE_NEW);
+//        mRepository.updateOrInsertDynamicV2(data, ApiConfig.DYNAMIC_TYPE_NEW);
         return true;
     }
 
@@ -480,7 +491,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -611,7 +622,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
         Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(dynamicCommentBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
@@ -621,7 +632,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                             break;
                         }
                     }
-                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                    // 如果列表有当前评论
+                    if (dynamicPosition != -1) {
                         int commentSize = mRootView.getListDatas().get(dynamicPosition).getComments().size();
                         for (int i = 0; i < commentSize; i++) {
                             if (mRootView.getListDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals
@@ -636,12 +648,13 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     }
                     return dynamicPosition;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
 
     }
@@ -656,13 +669,13 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     public void updateDynamic(Bundle data) {
         Subscription subscribe = Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
                     DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
                     int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
-
-                    if (bundle.getBoolean(DYNAMIC_UPDATE_TOLL)) {// 是否是更新收费信息
+                    // 是否是更新收费信息
+                    if (bundle.getBoolean(DYNAMIC_UPDATE_TOLL)) {
                         position = mRootView.getListDatas().indexOf(dynamicBean);
                     }
 
@@ -674,18 +687,20 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                             break;
                         }
                     }
-                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                    // 如果列表有当前评论
+                    if (dynamicPosition != -1) {
                         mRootView.getListDatas().get(position).setImages(dynamicBean.getImages());
                     }
 
                     return isNeedRefresh ? dynamicPosition : -1;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
                     if (integer != -1) {
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
     }
 

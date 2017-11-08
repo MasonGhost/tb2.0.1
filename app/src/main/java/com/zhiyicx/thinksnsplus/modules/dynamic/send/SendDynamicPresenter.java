@@ -124,7 +124,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.R
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
 
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
-
+        dynamicBean.handleData();
         // 建立 task
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_V2);

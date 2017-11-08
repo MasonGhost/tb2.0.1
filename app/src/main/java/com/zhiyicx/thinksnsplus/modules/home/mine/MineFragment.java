@@ -298,7 +298,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             // 设置用户头像
             ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
         } else {
-            boolean imageAvatarIsChanged = userInfoBean.getAvatar() != null && (mUserInfoBean.getAvatar() == null || userInfoBean.getAvatar()
+            boolean imageAvatarIsChanged = userInfoBean.getAvatar() != null && (mUserInfoBean.getAvatar() == null || !userInfoBean.getAvatar()
                     .equals(mUserInfoBean.getAvatar()));
             boolean verifiedIsChanged = userInfoBean.getVerified() != null && userInfoBean.getVerified().getType() != null && (mUserInfoBean
                     .getVerified() == null ||

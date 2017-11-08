@@ -85,7 +85,8 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
     protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
         String content = handleName(dynamicCommentBean);
-        if (!dynamicCommentBean.getPinned()) {// 不是置顶的评论则不用处理
+        // 不是置顶的评论则不用处理
+        if (!dynamicCommentBean.getPinned()) {
             return content;
         } else if (mTopFlagPosition == TopFlagPosition.WORDS_RIGHT) {
             int lenght = content.length();

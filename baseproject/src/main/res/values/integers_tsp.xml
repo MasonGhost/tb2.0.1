@@ -55,8 +55,8 @@
     <integer name="dynamic_list_content_show_lines">3</integer>
     <!--动态列表标题最大显示字数-->
     <integer name="dynamic_list_title_max_show_size">18</integer>
-    <!--动态列表标题最大显示字数-->
-    <integer name="dynamic_list_content_max_show_size">140</integer>
+    <!--动态列表标题最大显示字数,最大限制修改到 DynamicDetialBeanV2 中-->
+    <!--<integer name="dynamic_list_content_max_show_size">140</integer>-->
 
     <integer name="certification_description_max_length">200</integer>
     <integer name="certification_description_show_limit_length">170</integer>
