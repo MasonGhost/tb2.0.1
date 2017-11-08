@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,7 +48,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
      * 上一个页面传过来的用户id
      */
     private long userId;
-    /// private AuthBean mAuthBean;
     /**
      * 页面显示给用户
      */
@@ -149,4 +150,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         return pageType;
     }
 
+    @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return (long) mListDatas.size();
+    }
 }
