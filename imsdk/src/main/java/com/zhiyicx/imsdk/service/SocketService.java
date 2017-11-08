@@ -1,9 +1,11 @@
 package com.zhiyicx.imsdk.service;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
@@ -11,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -386,15 +390,29 @@ public class SocketService extends BaseService implements ImService.ImListener {
         IntentFilter filter = new IntentFilter();
         filter.addAction(action);
         registerReceiver(mSocketRetryReceiver, filter);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.requestNetwork(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    super.onAvailable(network);
-                    socketReconnect();
+            if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.CHANGE_NETWORK_STATE)
+                    != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.WRITE_SETTINGS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // 申请权限
+
+            } else {
+                // 有权限
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager != null) {
+                    connectivityManager.requestNetwork(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
+                        @Override
+                        public void onAvailable(Network network) {
+                            super.onAvailable(network);
+                            socketReconnect();
+                        }
+                    });
                 }
-            });
+            }
+
         }
 
     }

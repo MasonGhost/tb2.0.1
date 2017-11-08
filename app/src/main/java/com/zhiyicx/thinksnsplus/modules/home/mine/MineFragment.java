@@ -196,6 +196,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.rl_userinfo_container:
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
+                /*
+                  粉丝列表
+                 */
             case R.id.ll_fans_container:
                 long fansUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFans = new Bundle();
@@ -205,6 +208,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 itFans.putExtras(bundleFans);
                 startActivity(itFans);
                 break;
+                /*
+                 关注列表
+                 */
             case R.id.ll_follow_container:
                 long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFollow = new Bundle();
