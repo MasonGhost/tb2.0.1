@@ -27,10 +27,15 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -94,16 +99,28 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (data != null) {
-            for (UserInfoBean userInfoBean : data) {
-                if (userInfoBean.getUser_id() == authBean.getUser_id()) {
-                    userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
-                    mRootView.setUserInfo(userInfoBean);
-                    break;
-                }
-            }
-        }
+        Subscription subscribe = rx.Observable.just(data)
+                .observeOn(Schedulers.io())
+                .map(userInfoBeans -> {
+                    AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+                    if (data != null) {
+                        for (UserInfoBean userInfoBean : data) {
+                            if (userInfoBean.getUser_id() == authBean.getUser_id()) {
+                                userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
+                                return userInfoBean;
+                            }
+                        }
+                    }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userInfoBean -> {
+                    if (userInfoBean != null) {
+                        mRootView.setUserInfo(userInfoBean);
+                    }
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
     }
 
     /**

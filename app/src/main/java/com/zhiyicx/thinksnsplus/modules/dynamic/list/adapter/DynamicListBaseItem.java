@@ -217,7 +217,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));
             holder.setVisible(R.id.tv_title, View.GONE);
-
             String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
 

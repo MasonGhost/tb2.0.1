@@ -293,7 +293,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));

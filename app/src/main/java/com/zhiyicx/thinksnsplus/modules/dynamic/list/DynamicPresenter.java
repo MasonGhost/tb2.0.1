@@ -58,6 +58,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -227,14 +228,15 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(dynamicDetailBeanV2s -> {
                     mRootView.onCacheResponseSuccess(dynamicDetailBeanV2s, isLoadMore);
-                },Throwable::printStackTrace);
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
 
     }
 
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
-
-        mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType());
+        Observable.just(data)
+                .observeOn(Schedulers.io())
+                .subscribe(dynamicDetailBeanV2s -> mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
     }
 
     /**
@@ -631,7 +633,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
 
     }

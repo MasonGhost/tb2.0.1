@@ -1679,25 +1679,29 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * socket重连
      */
     private boolean socketReconnect() {
-
-        if (isNeedReConnected) {
-            if (mService.isConnected()) {
-                if (!isDisconnecting) {
-                    LogUtils.debugInfo(TAG, "----------socketReconnect---by own---");
-                    mService.disconnect();
-                    isDisconnecting = true;
-                }
-            } else {
-                if (DeviceUtils.netIsConnected(getApplicationContext())) {
-                    LogUtils.debugInfo(TAG, "----------socketReconnect------");
-                    changeHeartBeatRateByReconnect();
-                    mService.connect();
-                    resetTime();
-                    if (disconnect_start_time == 0)
-                        disconnect_start_time = System.currentTimeMillis();
-                    return true;
+        try {
+            if (isNeedReConnected) {
+                if (mService.isConnected()) {
+                    if (!isDisconnecting) {
+                        LogUtils.debugInfo(TAG, "----------socketReconnect---by own---");
+                        mService.disconnect();
+                        isDisconnecting = true;
+                    }
+                } else {
+                    if (DeviceUtils.netIsConnected(getApplicationContext())) {
+                        LogUtils.debugInfo(TAG, "----------socketReconnect------");
+                        changeHeartBeatRateByReconnect();
+                        mService.connect();
+                        resetTime();
+                        if (disconnect_start_time == 0) {
+                            disconnect_start_time = System.currentTimeMillis();
+                        }
+                        return true;
+                    }
                 }
             }
+
+        } catch (IllegalStateException ignored) {
         }
         return false;
     }
