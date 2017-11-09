@@ -537,6 +537,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         float quality = (float) with / (float) netWidth;
         proportion = (int) (quality * 100);
         proportion = proportion > 100 ? 100 : proportion;
+        imageBean.setCurrentWith(currentWith);
         imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? currentWith : 0, canLook ? currentWith : 0,
                 proportion, AppApplication.getTOKEN()));
         if (imageCount == 1) {
@@ -553,6 +554,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             imageBean.setImageViewWidth(with);
             imageBean.setImageViewHeight(height);
         }
+        imageBean.setPropPart(proportion);
         float a = (float) netHeight * ImageUtils.getmHightPixels() / ((float) netWidth * ImageUtils.getmHightPixels());
         imageBean.setLongImage(a > 3 || a < .3f);
     }
@@ -582,11 +584,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private String imgMimeType;
 
         private int imageViewWidth;
+        private int currentWith;
         private int imageViewHeight;
         private boolean canLook;
         private boolean isLongImage;
         private String netUrl;
-        private GlideUrl glideUrl;
+        private transient GlideUrl glideUrl;
 
         @Override
         public String toString() {
@@ -606,6 +609,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
                     ", imageViewHeight=" + imageViewHeight +
                     ", netUrl='" + netUrl + '\'' +
                     '}';
+        }
+
+        public int getCurrentWith() {
+            return currentWith;
+        }
+
+        public void setCurrentWith(int currentWith) {
+            this.currentWith = currentWith;
         }
 
         public boolean hasLongImage() {
@@ -1046,9 +1057,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

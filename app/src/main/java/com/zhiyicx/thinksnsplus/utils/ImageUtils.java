@@ -79,11 +79,11 @@ public class ImageUtils {
     }
 
     public static int getmImageContainerWith() {
-        return getmDiverwith()-getmMargin();
+        return getmWidthPixels() - getmMargin();
     }
 
     public static int getmImageMaxHeight() {
-        return  getmImageContainerWith() * 4 / 3;
+        return getmImageContainerWith() * 4 / 3;
     }
 
     public static void updateCurrentLoginUserHeadPicSignature(Context context) {

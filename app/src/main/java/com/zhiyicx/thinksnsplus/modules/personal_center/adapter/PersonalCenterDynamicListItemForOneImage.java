@@ -30,6 +30,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
+
 public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDynamicListBaseItem {
     public PersonalCenterDynamicListItemForOneImage(Context context) {
         super(context);
@@ -64,42 +65,33 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
      */
     @Override
     protected void initImageView(final ViewHolder holder, FilterImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        /**
-         * 一张图时候，需要对宽高做限制
-         */
+
         int with;
         int height;
-        int proportion; // 压缩比例
-        int currentWith = getCurrenItemWith(part);
         DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
-        String url;
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            with = currentWith;
-            height = (with * imageBean.getHeight() / imageBean.getWidth());
-            height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            proportion = ((with / imageBean.getWidth()) * 100);
-            if (height < DEFALT_IMAGE_HEIGHT) {
-                height = DEFALT_IMAGE_HEIGHT;
-            }
-            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            with = imageBean.getImageViewWidth();
+            height = imageBean.getImageViewHeight();
+            // 是否是长图
+            view.showLongImageTag(imageBean.hasLongImage());
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
-            url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, imageBean.getFile(),
-                    canLook ? 0 : with, canLook ? 0 : height, 100);
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth())); // 是否是长图
+            Glide.with(mContext)
+                    .load(imageBean.getGlideUrl())
+                    .override(with, height)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.shape_default_image)
+                    .into(view);
 
         } else {
-            url = imageBean.getImgUrl();
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            with = currentWith;
+            with = getCurrenItemWith(part);
             if (option.outWidth == 0) {
                 height = with;
-                proportion = 100;
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                proportion = ((with / option.outWidth) * 100);
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
             }
 
@@ -113,16 +105,12 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             with = height = DEFALT_IMAGE_HEIGHT;
         }
         Glide.with(mContext)
-                .load(url)
-                .asBitmap()
+                .load(imageBean.getImgUrl())
                 .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_default_image)
                 .into(view);
-        if (dynamicBean.getImages() != null) {
-            dynamicBean.getImages().get(positon).setPropPart(proportion);
-        }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {

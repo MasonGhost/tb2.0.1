@@ -191,7 +191,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
-
+        long timeS = System.currentTimeMillis();
         try {
             // 防止个人中心没后头像错误
             try {
@@ -332,6 +332,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        long timeE = System.currentTimeMillis();
+        LogUtils.d(getClass().getSimpleName() + ":::" + (timeE - timeS));
     }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
@@ -355,22 +357,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected void initImageView(final ViewHolder holder, FilterImageView view, final
     DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        int propPart = getProportion(view, dynamicBean, positon, part);
-        int w, h;
-        w = h = getCurrenItemWith(part);
-
-
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             // 是否是长图
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
+            view.showLongImageTag(imageBean.hasLongImage());
 
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
-                        imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(view.getContext())
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? w : 0, canLook ? h : 0,
-                                propPart, AppApplication.getTOKEN()))
+                        .load(imageBean.getGlideUrl())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
@@ -381,16 +375,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
                 Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
-                        .override(w, h)
+                        .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
                         .into(view);
             }
-        }
-
-        if (dynamicBean.getImages() != null) {
-            dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
 
         RxView.clicks(view)
