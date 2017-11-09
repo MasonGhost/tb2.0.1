@@ -134,7 +134,7 @@ public class MessageRepository implements MessageContract.Repository {
                     if (!listBaseJson.isEmpty()) {
                         int size = listBaseJson.size();
                         for (int i = 0; i < size; i++) {
-                            if (listBaseJson.get(i).getConversation().getLast_message() == null || TextUtils.isEmpty(listBaseJson.get(i)
+                            if (listBaseJson.get(i).getConversation().getLast_message() != null || TextUtils.isEmpty(listBaseJson.get(i)
                                     .getConversation().getLast_message().getTxt())) {
                                 listBaseJson.remove(i);
                             }
