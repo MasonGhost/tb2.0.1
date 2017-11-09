@@ -46,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -537,8 +538,12 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                                 ());
                         walletBean.setBalance(walletBean.getBalance() - amount);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
+
                         if (isImage) {
-                            mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
+                            DynamicDetailBeanV2.ImagesBean imageBean=mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
+                            imageBean.setPaid(true);
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean.getCurrentWith(),
+                                    imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());

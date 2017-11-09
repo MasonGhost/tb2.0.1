@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -525,45 +526,39 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
+                .flatMap(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    if (userInfoBean.getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                        if (userInfoBean.getWallet().getBalance() < amount) {
+                            mRootView.goRecharge(WalletActivity.class);
+                            return Observable.error(new RuntimeException(""));
                         }
-                        return mCommentRepository.paykNote(note);
                     }
+                    return mCommentRepository.paykNote(note);
                 }, throwable -> {
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
                 }, () -> null)
-                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        if (isImage) {
-                            return Observable.just(stringBaseJsonV2);
-                        }
-                        return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
-                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
-                                    @Override
-                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
-                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
-                                        return Observable.just(stringBaseJsonV2);
-                                    }
-                                });
+                .flatMap(stringBaseJsonV2 -> {
+                    if (isImage) {
+                        return Observable.just(stringBaseJsonV2);
                     }
+                    return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                            .flatMap(detailBeanV2 -> {
+                                stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                return Observable.just(stringBaseJsonV2);
+                            });
                 })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         if (isImage) {
-                            mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
+                            DynamicDetailBeanV2.ImagesBean imageBean=mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
+                            imageBean.setPaid(true);
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean.getCurrentWith(),
+                                    imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
