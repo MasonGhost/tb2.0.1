@@ -319,6 +319,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         Subscription subscribe = mRepository.getSingleConversation(cid)
                 .observeOn(Schedulers.io())
                 .map(data -> {
+                    if (data == null || data.getConversation() == null) {
+                        return false;
+                    }
                     int size = mRootView.getListDatas().size();
                     for (int i = 0; i < size; i++) {
                         if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
@@ -460,10 +463,21 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+    /**
+     * 新对话创建回调
+     * @param messageItemBean
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
-        mRootView.getListDatas().add(0, messageItemBean);
-        mRootView.refreshData();
+
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        if (message != null) {
+            messageItemBean.getConversation().setLast_message(message);
+            messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+            mRootView.getListDatas().add(0, messageItemBean);
+            mRootView.refreshData();
+        }
+
     }
 
 
