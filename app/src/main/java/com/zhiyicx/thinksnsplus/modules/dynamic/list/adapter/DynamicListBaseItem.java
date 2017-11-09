@@ -439,8 +439,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected int getCurrenItemWith(int part) {
         try {
-            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums
-                    () * part;
+            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums() * part;
         } catch (Exception e) {
             LogUtils.d("获取当前 item 的宽 = 0");
         }

@@ -19,12 +19,15 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.Locale;
 
@@ -48,8 +51,40 @@ public class ImageUtils {
     private static long mHeadPicSigture;
     private static long mCoverSigture;
 
-    private static SparseArray<CircleImageDrawable> headImageDrawable = new SparseArray<>();
-    private static SparseBooleanArray isAnonymityArray = new SparseBooleanArray();
+    /**
+     * mWidthPixels = DeviceUtils.getScreenWidth(context);
+     * mHightPixels = DeviceUtils.getScreenHeight(context);
+     * mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
+     * .dynamic_list_image_marginright);
+     * mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
+     * mImageContainerWith = mWidthPixels - mMargin;
+     * // 最大高度是最大宽度的4/3 保持 宽高比 3：4
+     * mImageMaxHeight = mImageContainerWith * 4 / 3;
+     */
+
+    public static int getmWidthPixels() {
+        return DeviceUtils.getScreenWidth(AppApplication.getContext());
+    }
+
+    public static int getmHightPixels() {
+        return DeviceUtils.getScreenHeight(AppApplication.getContext());
+    }
+
+    public static int getmMargin() {
+        return 2 * AppApplication.getContext().getResources().getDimensionPixelSize(R.dimen.dynamic_list_image_marginright);
+    }
+
+    public static int getmDiverwith() {
+        return AppApplication.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
+    }
+
+    public static int getmImageContainerWith() {
+        return getmDiverwith()-getmMargin();
+    }
+
+    public static int getmImageMaxHeight() {
+        return  getmImageContainerWith() * 4 / 3;
+    }
 
     public static void updateCurrentLoginUserHeadPicSignature(Context context) {
         SharePreferenceUtils.saveLong(context.getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE, System

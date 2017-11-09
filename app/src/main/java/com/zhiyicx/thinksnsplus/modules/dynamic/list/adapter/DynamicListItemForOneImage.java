@@ -57,10 +57,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
-        long a = System.currentTimeMillis();
         initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
-        System.out.println(" times one = " + (System.currentTimeMillis() - a));
-
     }
 
     /**

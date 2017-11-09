@@ -2,18 +2,20 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.google.gson.annotations.SerializedName;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
@@ -135,7 +137,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private String userCenterFriendlyTimeDonw;
     @Transient
     private String friendlyContent;
-
 
     public String getFriendlyTime() {
         return friendlyTime;
@@ -429,6 +430,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
      * 用户处理数据，防止在列表中处理
      */
     public void handleData() {
+        int imageCount = images.size();
+        for (int i = 0; i < imageCount; i++) {
+            dealImageBean(images.get(i), i, imageCount);
+        }
+
         if (created_at != null) {
             friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
         }
@@ -456,6 +462,101 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
+    /**
+     * 计算图片压缩质量
+     *
+     * @param imageBean
+     * @param i
+     * @param imageCount
+     * @return
+     */
+    private void dealImageBean(ImagesBean imageBean, int i, int imageCount) {
+
+        // 计算宽高，从 size 中分离
+        int netWidth = imageBean.getWidth();
+        int netHeight = imageBean.getHeight();
+
+        int currenCloums;
+        int part;
+        boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
+                imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+        imageBean.setCanLook(canLook);
+        switch (imageCount) {
+            case 1:
+            case 9:
+                currenCloums = part = 1;
+                break;
+            case 2:
+                part = 2;
+                currenCloums = 1;
+                break;
+            case 3:
+                part = 3;
+                currenCloums = 1;
+                break;
+            case 4:
+                part = 2;
+                currenCloums = 1;
+                break;
+            case 5:
+                if (i == 1 || i == 2) {
+                    part = 1;
+                } else {
+                    part = 2;
+                }
+                currenCloums = 3;
+                break;
+            case 6:
+                part = i == 0 ? 2 : 1;
+                currenCloums = 3;
+                break;
+            case 7:
+                if (i == 0 || i == 3 || i == 4) {
+                    part = 2;
+                } else {
+                    part = 1;
+                }
+                currenCloums = 3;
+                break;
+            case 8:
+                if (i == 3 || i == 4) {
+                    part = 2;
+                } else {
+                    part = 1;
+                }
+                currenCloums = 3;
+                break;
+            default:
+                currenCloums = 1;
+                part = 1;
+                break;
+        }
+        int currentWith = (ImageUtils.getmImageContainerWith() - (currenCloums - 1) * ImageUtils.getmDiverwith()) / currenCloums * part;
+        int proportion;
+        int with = netWidth > currentWith ? currentWith : netWidth;
+        float quality = (float) with / (float) netWidth;
+        proportion = (int) (quality * 100);
+        proportion = proportion > 100 ? 100 : proportion;
+        imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? currentWith : 0, canLook ? currentWith : 0,
+                proportion, AppApplication.getTOKEN()));
+        if (imageCount == 1) {
+            with = currentWith;
+            int height = (with * netHeight / netWidth);
+            int mImageMaxHeight = ImageUtils.getmImageMaxHeight();
+            height = height > mImageMaxHeight ? mImageMaxHeight : height;
+            // 单张图最小高度
+            height = height < 300 ? 300 : height;
+            // 这个不知道好久才有用哎
+            proportion = ((with / netWidth) * 100);
+            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? 0 : with, canLook ? 0 : height
+                    , 100, AppApplication.getTOKEN()));
+            imageBean.setImageViewWidth(with);
+            imageBean.setImageViewHeight(height);
+        }
+        float a = (float) netHeight * ImageUtils.getmHightPixels() / ((float) netWidth * ImageUtils.getmHightPixels());
+        imageBean.setLongImage(a > 3 || a < .3f);
+    }
+
     public static class ImagesBean implements Parcelable, Serializable {
         private static final long serialVersionUID = 536871009L;
         /**
@@ -480,6 +581,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
          */
         private String imgMimeType;
 
+        private int imageViewWidth;
+        private int imageViewHeight;
+        private boolean canLook;
+        private boolean isLongImage;
+        private String netUrl;
+        private GlideUrl glideUrl;
+
         @Override
         public String toString() {
             return "ImagesBean{" +
@@ -494,7 +602,58 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
                     ", type='" + type + '\'' +
                     ", paid=" + paid +
                     ", imgMimeType='" + imgMimeType + '\'' +
+                    ", imageViewWidth=" + imageViewWidth +
+                    ", imageViewHeight=" + imageViewHeight +
+                    ", netUrl='" + netUrl + '\'' +
                     '}';
+        }
+
+        public boolean hasLongImage() {
+            return isLongImage;
+        }
+
+        public void setLongImage(boolean longImage) {
+            isLongImage = longImage;
+        }
+
+        public GlideUrl getGlideUrl() {
+            return glideUrl;
+        }
+
+        public void setGlideUrl(GlideUrl glideUrl) {
+            this.glideUrl = glideUrl;
+        }
+
+        public boolean isCanLook() {
+            return canLook;
+        }
+
+        public void setCanLook(boolean canLook) {
+            this.canLook = canLook;
+        }
+
+        public int getImageViewWidth() {
+            return imageViewWidth;
+        }
+
+        public void setImageViewWidth(int imageViewWidth) {
+            this.imageViewWidth = imageViewWidth;
+        }
+
+        public int getImageViewHeight() {
+            return imageViewHeight;
+        }
+
+        public void setImageViewHeight(int imageViewHeight) {
+            this.imageViewHeight = imageViewHeight;
+        }
+
+        public String getNetUrl() {
+            return netUrl;
+        }
+
+        public void setNetUrl(String netUrl) {
+            this.netUrl = netUrl;
         }
 
         public int getPropPart() {
@@ -543,27 +702,26 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
         public void setSize(String size) {
             this.size = size;
-            if (size != null && size.length() > 0) {
-                String[] sizes = size.split("x");
-                this.width = Integer.parseInt(sizes[0]);
-                this.height = Integer.parseInt(sizes[1]);
-            }
         }
 
         public int getWidth() {
-            if (size != null && size.length() > 0) {
+            if (size != null && size.length() > 0 && width * height == 0) {
                 String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[0]);
+                this.width = Integer.parseInt(sizes[0]);
+                this.height = Integer.parseInt(sizes[1]);
+                return width;
             }
-            return 100;
+            return width > 0 ? width : 100;
         }
 
         public int getHeight() {
-            if (size != null && size.length() > 0) {
+            if (size != null && size.length() > 0 && width * height == 0) {
                 String[] sizes = size.split("x");
-                return Integer.parseInt(sizes[1]);
+                this.width = Integer.parseInt(sizes[0]);
+                this.height = Integer.parseInt(sizes[1]);
+                return height;
             }
-            return 100;
+            return height > 0 ? height : 100;
         }
 
         public long getAmount() {
@@ -598,56 +756,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             this.paid = paid;
         }
 
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.propPart);
-            dest.writeInt(this.file);
-            dest.writeString(this.size);
-            dest.writeString(this.imgUrl);
-            dest.writeInt(this.width);
-            dest.writeInt(this.paid_node);
-            dest.writeInt(this.height);
-            dest.writeLong(this.amount);
-            dest.writeString(this.type);
-            dest.writeValue(this.paid);
-            dest.writeString(this.imgMimeType);
-        }
-
-        public ImagesBean() {
-        }
-
-        protected ImagesBean(Parcel in) {
-            this.propPart = in.readInt();
-            this.file = in.readInt();
-            this.size = in.readString();
-            this.imgUrl = in.readString();
-            this.width = in.readInt();
-            this.paid_node = in.readInt();
-            this.height = in.readInt();
-            this.amount = in.readLong();
-            this.type = in.readString();
-            this.paid = (Boolean) in.readValue(Boolean.class.getClassLoader());
-            this.imgMimeType = in.readString();
-        }
-
-        public static final Creator<ImagesBean> CREATOR = new Creator<ImagesBean>() {
-            @Override
-            public ImagesBean createFromParcel(Parcel source) {
-                return new ImagesBean(source);
-            }
-
-            @Override
-            public ImagesBean[] newArray(int size) {
-                return new ImagesBean[size];
-            }
-        };
-
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -672,6 +780,63 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             result = 31 * result + paid_node;
             return result;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.propPart);
+            dest.writeInt(this.file);
+            dest.writeString(this.size);
+            dest.writeString(this.imgUrl);
+            dest.writeInt(this.paid_node);
+            dest.writeInt(this.width);
+            dest.writeInt(this.height);
+            dest.writeLong(this.amount);
+            dest.writeString(this.type);
+            dest.writeValue(this.paid);
+            dest.writeString(this.imgMimeType);
+            dest.writeInt(this.imageViewWidth);
+            dest.writeInt(this.imageViewHeight);
+            dest.writeByte(this.canLook ? (byte) 1 : (byte) 0);
+            dest.writeString(this.netUrl);
+        }
+
+        public ImagesBean() {
+        }
+
+        protected ImagesBean(Parcel in) {
+            this.propPart = in.readInt();
+            this.file = in.readInt();
+            this.size = in.readString();
+            this.imgUrl = in.readString();
+            this.paid_node = in.readInt();
+            this.width = in.readInt();
+            this.height = in.readInt();
+            this.amount = in.readLong();
+            this.type = in.readString();
+            this.paid = (Boolean) in.readValue(Boolean.class.getClassLoader());
+            this.imgMimeType = in.readString();
+            this.imageViewWidth = in.readInt();
+            this.imageViewHeight = in.readInt();
+            this.canLook = in.readByte() != 0;
+            this.netUrl = in.readString();
+        }
+
+        public static final Creator<ImagesBean> CREATOR = new Creator<ImagesBean>() {
+            @Override
+            public ImagesBean createFromParcel(Parcel source) {
+                return new ImagesBean(source);
+            }
+
+            @Override
+            public ImagesBean[] newArray(int size) {
+                return new ImagesBean[size];
+            }
+        };
     }
 
     public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>, String> {
@@ -881,7 +1046,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -931,10 +1098,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Generated(hash = 1726011089)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
                                int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String
-                                           feed_longtitude,
+                                       feed_longtitude,
                                String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount,
                                List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long
-                                           hot_creat_time,
+                                       hot_creat_time,
                                boolean isFollowed, int state, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
         this.id = id;
         this.created_at = created_at;
