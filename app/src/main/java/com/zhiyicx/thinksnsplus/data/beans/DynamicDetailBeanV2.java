@@ -431,19 +431,18 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     public void handleData() {
         if (created_at != null) {
             friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
+            String timeString = TimeUtils.getTimeFriendlyForUserHome(created_at);
+            if (AppApplication.getContext().getString(R.string.today_with_split).equals(timeString) || AppApplication.getContext().getString(R.string
+                    .yestorday_with_split).equals
+                    (timeString)) {
+                userCenterFriendlyTimeUp = timeString.replace(",", "\n");
+            } else {
+                String[] dayAndMonth = timeString.split(",");
+                userCenterFriendlyTimeUp = dayAndMonth[0];
+                userCenterFriendlyTimeDonw = dayAndMonth[1];
+            }
         }
 
-
-        String timeString = TimeUtils.getTimeFriendlyForUserHome(created_at);
-        if (AppApplication.getContext().getString(R.string.today_with_split).equals(timeString) || AppApplication.getContext().getString(R.string
-                .yestorday_with_split).equals
-                (timeString)) {
-            userCenterFriendlyTimeUp = timeString.replace(",", "\n");
-        } else {
-            String[] dayAndMonth = timeString.split(",");
-            userCenterFriendlyTimeUp = dayAndMonth[0];
-            userCenterFriendlyTimeDonw = dayAndMonth[1];
-        }
         if (feed_content != null) {
             friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
             if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
