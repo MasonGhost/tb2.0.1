@@ -264,7 +264,7 @@ public class ImageUtils {
     private static void loadUserAvatar(UserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null && userInfoBean.getUser_id() != null) {
-            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
+            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? "" : userInfoBean.getAvatar();
             long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
             if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() ==
                     currentLoginUerId) {
@@ -319,12 +319,11 @@ public class ImageUtils {
      * @return
      */
     public static String getUserAvatar(UserInfoBean userInfoBean) {
-        if (TextUtils.isEmpty(userInfoBean.getAvatar())) {
-            return String.format(ApiConfig.IMAGE_AVATAR_PATH_V2, userInfoBean.getUser_id());
+        if (userInfoBean == null || userInfoBean.getAvatar() == null) {
+            return "";
         } else {
             return userInfoBean.getAvatar();
         }
-
     }
 
     /**

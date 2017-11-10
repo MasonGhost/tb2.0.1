@@ -147,8 +147,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        if (mRewardsCountBean != null&&!TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
-            mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter.getRatio()));
+        if (mRewardsCountBean != null && !TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
+            mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter
+                    .getRatio()));
         }
         mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());
     }
@@ -419,13 +420,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                        .dynamic_list_collect_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {
+                    // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
                     if (isMine) {
                         mPresenter.deleteInfo();
@@ -435,14 +438,17 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     }
                     mDealInfoMationPopWindow.hide();
                 })
-                .item1ClickListener(() -> {// 申请置顶
+                // 申请置顶
+                .item1ClickListener(() -> {
                     if (infoMation.is_pinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
                         // 跳转置顶页面
                         Bundle bundle = new Bundle();
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
-                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());// 资源id
+                        // 资源类型
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);
+                        // 资源id
+                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());
                         Intent intent = new Intent(getActivity(), StickTopActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -522,6 +528,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.onResume();
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
