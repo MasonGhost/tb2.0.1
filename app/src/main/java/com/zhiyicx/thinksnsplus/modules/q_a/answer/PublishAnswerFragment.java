@@ -214,4 +214,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
         mEditWarningPopupWindow.show();
     }
+
+    @Override
+    protected boolean showAnonymityAlertPopWindow() {
+        return mAnonymity != 1;
+    }
 }
