@@ -158,7 +158,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) {
                         List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
                         try {
-                            //修改动态条数
+                            //修改动态条数，把自己正在发布发加上
                             mRootView.updateDynamicCounts(data.size());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -558,9 +558,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         if (isImage) {
-                            DynamicDetailBeanV2.ImagesBean imageBean=mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
+                            DynamicDetailBeanV2.ImagesBean imageBean = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
                             imageBean.setPaid(true);
-                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean.getCurrentWith(),
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean
+                                            .getCurrentWith(),
                                     imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);

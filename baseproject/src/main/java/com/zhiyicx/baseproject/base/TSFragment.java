@@ -125,7 +125,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (getParentFragment() == null) {
             mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
             musicWindowContainer = new FrameLayout(getActivity());
-            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                    .MATCH_PARENT));
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
                     ConvertUtils.dp2px(getActivity(), 24));
             layoutParams.gravity = Gravity.RIGHT;
@@ -188,7 +189,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
-            supportFlymeSutsusbar(); // 兼容小米、魅族6.0以上
+//            supportFlymeSutsusbar(); // 兼容小米、魅族6.0以上
         }
         setToolBarTextColor();
         FrameLayout frameLayout = new FrameLayout(getActivity());
@@ -861,24 +862,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     protected void supportFlymeSutsusbar() {
-        mStatusbarSupport = Observable.timer(200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
+//        mStatusbarSupport = Observable.timer(50, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<Long>() {
+//                    @Override
+//                    public void call(Long aLong) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                                 && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                 && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) {
                             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
                                     .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                         }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+//                    }
+//                }, new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        throwable.printStackTrace();
+//                    }
+//                });
 
     }
 

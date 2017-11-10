@@ -66,6 +66,11 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_guide_v2;
     }

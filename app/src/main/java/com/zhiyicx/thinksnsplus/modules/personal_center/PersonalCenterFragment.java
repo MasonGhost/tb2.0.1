@@ -78,10 +78,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -323,7 +326,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected void requestCacheData(Long maxId, boolean isLoadMore) {
-         mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+        mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override
@@ -853,13 +856,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void updateDynamicCounts(int changeNums) {
-        int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
-        currenDynamicCounts += changeNums;
-        if (currenDynamicCounts < 0) {
-            currenDynamicCounts = 0;
-        }
-        mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
-        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+        rx.Observable.just(changeNums)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
+                    currenDynamicCounts += integer;
+                    if (currenDynamicCounts < 0) {
+                        currenDynamicCounts = 0;
+                    }
+                    mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
+                    mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+                }, Throwable::printStackTrace);
+
     }
 
     @Override

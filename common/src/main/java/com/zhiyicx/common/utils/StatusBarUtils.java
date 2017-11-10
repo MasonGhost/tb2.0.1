@@ -85,14 +85,14 @@ public class StatusBarUtils {
     public static int statusBarLightMode(Activity activity) {
 
         int result = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            result = STATUS_TYPE_ANDROID_M;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (MIUISetStatusBarLightMode(activity.getWindow(), true)) {
                 result = STATUS_TYPE_MIUUI;
             } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
                 result = STATUS_TYPE_FLYME;
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                result = STATUS_TYPE_ANDROID_M;
             }
         }
         return result;
@@ -113,7 +113,8 @@ public class StatusBarUtils {
             } else if (FlymeSetStatusBarLightMode(activity.getWindow(), false)) {
                 result = STATUS_TYPE_FLYME;
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | ~View
+                        .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 result = STATUS_TYPE_ANDROID_M;
             }
         }
