@@ -180,9 +180,9 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                         .toolbar_height);
                 if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
                     userName.setTranslationY(maxDistance - mDistanceY);
-                } else if (mDistanceY > maxDistance && userName.getTranslationY() != 0) {
+                } else if (mDistanceY > maxDistance) {
                     userName.setTranslationY(0);
-                } else if (userName.getTranslationY() != mToolBarHeight) {
+                } else  {
                     userName.setTranslationY(mToolBarHeight);
                 }
                 //当滑动的距离 <= needDistanceY高度的时候，改变Toolbar背景色的透明度，达到渐变的效果

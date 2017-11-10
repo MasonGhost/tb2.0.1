@@ -90,6 +90,9 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
 
     @Override
     public void onMessageReceived(final Message message) {
+        if (message.getIs_read()) {
+            return;
+        }
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
         // 应用在后台
@@ -164,6 +167,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
      * @param authData
      */
     private void synIMMessage(AuthData authData) {
+        System.out.println("authData = " + authData.toString());
         if (authData.getSeqs() != null) {
             Observable.from(authData.getSeqs()) // 消息同步
                     .subscribeOn(Schedulers.io())
@@ -172,6 +176,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
                         if (message != null && message.getSeq() < seqsBean.getSeq()) {
                             ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
+                        } else {
+                            ZBIMClient.getInstance().syncAsc(seqsBean.getCid(), 0, seqsBean.getSeq(), (int) System.currentTimeMillis());
                         }
                     }, Throwable::printStackTrace);
         }

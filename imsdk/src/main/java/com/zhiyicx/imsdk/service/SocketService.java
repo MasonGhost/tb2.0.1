@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.WebSocket;
@@ -34,6 +35,7 @@ import com.zhiyicx.imsdk.entity.EventContainer;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageContainer;
+import com.zhiyicx.imsdk.entity.MessageExt;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
@@ -41,6 +43,7 @@ import com.zhiyicx.imsdk.policy.timeout.TimeOutListener;
 import com.zhiyicx.imsdk.policy.timeout.TimeOutTask;
 import com.zhiyicx.imsdk.policy.timeout.TimeOutTaskManager;
 import com.zhiyicx.imsdk.policy.timeout.TimeOutTaskPool;
+import com.zhiyicx.imsdk.utils.CustomMessageExtGsonDeserializer;
 import com.zhiyicx.imsdk.utils.MessageHelper;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.imsdk.utils.common.LogUtils;
@@ -58,9 +61,14 @@ import org.simple.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
+import static com.google.gson.internal.UnsafeAllocator.create;
 import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_ERR_UID_OR_PWD;
 import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_NO_UID_OR_PWD;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_BODY_TYPE;
@@ -250,8 +258,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private void changeHeartBeatRateByReconnect() {
 
-        if (HEART_BEAT_RATE > HEART_BEAT_RATE_MAX)
+        if (HEART_BEAT_RATE > HEART_BEAT_RATE_MAX) {
             HEART_BEAT_RATE = HEART_BEAT_RATE - HEART_BEAT_REDUCE_RATE;
+        }
     }
 
     /**
@@ -477,7 +486,19 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onMessage(byte[] data) {
         responseTime();
-        checkDataType(data);
+        rx.Observable.just(data)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<byte[]>() {
+                    @Override
+                    public void call(byte[] bytes) {
+                        checkDataType(bytes);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE, mode = ThreadMode.ASYNC)
@@ -880,8 +901,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     /**
                      * 消息去重
                      */
-                    if (checkDuplicateMessages(eventContainer))
+                    if (checkDuplicateMessages(eventContainer)) {
                         return null;
+                    }
                     break;
                 /**
                  * 会话结束
@@ -1030,20 +1052,31 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
     private EventContainer dealPluck(EventContainer eventContainer, Gson gson, String content) {
         LogUtils.debugInfo("------------dealPluck---------- = " + content);
-        List<Message> messages = gson.fromJson(content, new TypeToken<List<Message>>() {
-        }.getType());
+        List<Message> messages = null;
+        try {
+            Gson gsonDs = new GsonBuilder()
+                    .registerTypeAdapter(MessageExt.class, new CustomMessageExtGsonDeserializer())
+                    .create();
+            messages = gsonDs.fromJson(content, new TypeToken<List<Message>>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (messages != null && messages.size() > 0) {
             int size = messages.size();
             for (int i = 0; i < size; i++) {
                 EventContainer tmp = new EventContainer();
                 MessageContainer messageContainer = new MessageContainer();
+                messages.get(i).setIs_read(true);
                 messageContainer.msg = messages.get(i);
                 messageContainer.mEvent = ImService.MSG;
                 tmp.mEvent = ImService.MSG;
                 tmp.mMessageContainer = messageContainer;
-                LogUtils.debugInfo("----------dealPluck---------messageContainer = " + messageContainer.toString());
-                if (checkData(tmp))
+                //消息去重
+                if (checkData(tmp) && !checkDuplicateMessages(tmp)) {
                     sendImBroadCast(tmp);
+                }
 
             }
         }

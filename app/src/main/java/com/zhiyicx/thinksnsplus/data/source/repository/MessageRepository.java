@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -70,6 +71,7 @@ public class MessageRepository implements MessageContract.Repository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap((Func1<List<Conversation>, Observable<List<MessageItemBean>>>) listBaseJson -> {
+                    LogUtils.d("listBaseJson = " + listBaseJson);
                     if (!listBaseJson.isEmpty()) {
                         List<MessageItemBean> datas = new ArrayList<>();
                         List<Object> integers = new ArrayList<>();
@@ -84,7 +86,8 @@ public class MessageRepository implements MessageContract.Repository {
                                 continue;
                             }
                             tmp.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
-                            if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
+                            // 单聊
+                            if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) {
                                 try {
                                     String[] uidsPair = tmp.getUsids().split(",");
                                     int pair1 = Integer.parseInt(uidsPair[0]);

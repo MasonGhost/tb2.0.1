@@ -80,6 +80,8 @@ dependencies {
     androidTestCompile testDependences.dexmakerMockito
     compile files('libs/jackson-core-asl-1.9.7.jar')
     compile files('libs/jackson-mapper-asl-1.9.7.jar')
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
 }
 
 task jarMyLib(type: Jar, dependsOn: ['build']) {

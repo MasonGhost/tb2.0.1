@@ -176,8 +176,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             return args;
                         }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
                     }
-
-
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(() -> mRootView.hideLoading())
@@ -218,9 +216,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-            mRootView.onCacheResponseSuccess(mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()), isLoadMore);
-        }
+//            mRootView.onCacheResponseSuccess(mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()), isLoadMore);
+            creatTsHelperConversation();
 
+        }
     }
 
     @Override
