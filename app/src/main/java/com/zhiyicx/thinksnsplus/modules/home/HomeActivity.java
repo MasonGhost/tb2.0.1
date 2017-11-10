@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
@@ -43,7 +45,7 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-
+       LogUtils.e("getActivityStack = ", ActivityHandler.getActivityStack());
     }
 
     @Override

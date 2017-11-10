@@ -101,14 +101,15 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             }
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
+            Glide.with(mContext)
+                    .load(imageBean.getImgUrl())
+                    .override(with, height)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.shape_default_image)
+                    .into(view);
         }
-        Glide.with(mContext)
-                .load(imageBean.getImgUrl())
-                .override(with, height)
-                .placeholder(R.drawable.shape_default_image)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.shape_default_image)
-                .into(view);
+
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
