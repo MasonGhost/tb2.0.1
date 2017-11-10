@@ -92,7 +92,8 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+                // 是否是长图
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             }
 
             if (height < DEFALT_IMAGE_HEIGHT) {
@@ -100,9 +101,6 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
             }
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
-        }
-        if (with * height == 0) {// 就怕是 0
-            with = height = DEFALT_IMAGE_HEIGHT;
         }
         Glide.with(mContext)
                 .load(imageBean.getImgUrl())

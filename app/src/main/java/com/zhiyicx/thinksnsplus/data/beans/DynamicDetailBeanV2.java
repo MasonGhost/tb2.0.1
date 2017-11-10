@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/22/15:55
@@ -560,6 +562,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             proportion = ((with / netWidth) * 100);
             imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? 0 : with, canLook ? 0 : height
                     , 100, AppApplication.getTOKEN()));
+            // 就怕是 0
+            if (with * height == 0) {
+                with = height = DEFALT_IMAGE_HEIGHT;
+            }
             imageBean.setImageViewWidth(with);
             imageBean.setImageViewHeight(height);
         }

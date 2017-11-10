@@ -70,7 +70,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
-    protected static final int DEFALT_IMAGE_HEIGHT = 300;
+    public static final int DEFALT_IMAGE_HEIGHT = 300;
     protected final int mWidthPixels; // 屏幕宽度
     protected final int mHightPixels; // 屏幕高度
     private final int mMargin; // 图片容器的边距
