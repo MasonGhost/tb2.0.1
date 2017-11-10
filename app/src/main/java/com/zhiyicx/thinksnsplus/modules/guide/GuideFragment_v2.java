@@ -32,7 +32,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         GuideContract.View,
         OnBannerListener, ViewPager.OnPageChangeListener, TCountTimer.OnTimeListener {
 
-    public static final int DEFAULT_DELAY_TIME = 1000;
+    public static final int DEFAULT_DELAY_TIME = 500;
 
     @BindView(R.id.guide_banner)
     Banner mGuideBanner;
@@ -83,12 +83,15 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (!isFirst) {
             return;
         }
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mPresenter.getLaunchAdverts();
+        } else {
             mPresenter.checkLogin();
             return;
         }
-        subscription = Observable.just(mPresenter.getBootAdvert() != null)
+        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(aLong -> mPresenter.getBootAdvert()!= null)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
@@ -100,7 +103,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 }, throwable -> {
 
                 });
-        mPresenter.getLaunchAdverts();
     }
 
 
