@@ -341,7 +341,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .thumbnail(thumbnailBuilder)
                     .override(w, h)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         // 没有缓存到原图

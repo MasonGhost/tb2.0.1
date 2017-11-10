@@ -4,6 +4,7 @@ import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -86,8 +87,10 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                             .flatMap(realAdvertListBeen -> {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
+                                        String url=boot.getAdvertFormat().getImage().getImage();
+                                        LogUtils.d("getLaunchAdverts:::"+url);
                                         Glide.with(mContext)
-                                                .load(boot.getAdvertFormat().getImage().getImage())
+                                                .load(url)
                                                 .downloadOnly(DeviceUtils
                                                                 .getScreenWidth(mContext),
                                                         DeviceUtils.getScreenHeight(mContext));

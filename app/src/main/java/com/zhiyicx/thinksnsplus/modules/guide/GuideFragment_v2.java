@@ -83,15 +83,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (!isFirst) {
             return;
         }
-        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-            mPresenter.getLaunchAdverts();
-        } else {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mPresenter.checkLogin();
             return;
         }
-        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+        subscription = Observable.just(mPresenter.getBootAdvert() != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(aLong -> mPresenter.getBootAdvert()!= null)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
@@ -103,6 +100,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 }, throwable -> {
 
                 });
+        mPresenter.getLaunchAdverts();
     }
 
 
