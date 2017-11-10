@@ -32,13 +32,17 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     private String image;
     private String time;
     private String link;
-    private int duration;
+    private String duration;
 
     public int getDuration() {
-        return duration;
+        try {
+            return Integer.parseInt(duration);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
@@ -108,7 +112,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.avatar);
         dest.writeString(this.name);
-        dest.writeInt(this.duration);
+        dest.writeString(this.duration);
         dest.writeString(this.link);
         dest.writeString(this.content);
         dest.writeString(this.image);
@@ -124,7 +128,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         this.name = in.readString();
         this.link = in.readString();
         this.content = in.readString();
-        this.duration = in.readInt();
+        this.duration = in.readString();
         this.image = in.readString();
         this.title = in.readString();
         this.time = in.readString();
