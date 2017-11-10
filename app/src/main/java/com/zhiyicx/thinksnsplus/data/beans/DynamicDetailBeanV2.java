@@ -128,7 +128,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = RewardCountBeanConverter.class, columnType = String.class)
     private RewardsCountBean reward;// 打赏总额
 
-
+    @Transient
+    private int startPosition;
     @Transient
     private String friendlyTime;
     @Transient
@@ -420,6 +421,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.isFollowed = isFollowed;
     }
 
+    public int getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(int startPosition) {
+        this.startPosition = startPosition;
+    }
+
     @Override
     public Long getMaxId() {
         return id;
@@ -454,10 +463,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                 friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
             }
+            startPosition = friendlyContent.length();
         }
         boolean canLookWords = paid_node == null || paid_node.isPaid();
         if (!canLookWords) {
-            feed_content += AppApplication.getContext().getString(R.string.words_holder);
+            friendlyContent += AppApplication.getContext().getString(R.string.words_holder);
         }
     }
 

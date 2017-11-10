@@ -225,13 +225,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
 
-                int contentLenght = content.length();
+                int startPosition = dynamicBean.getStartPosition();
 
                 if (canLookWords) {
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(contentLenght, content.length())
+                            .position(startPosition, content.length())
                             .dataPosition(holder.getAdapterPosition())
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
@@ -240,12 +240,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(true)
                             .build();
                 } else {
-                    int test_position = holder.getAdapterPosition();
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(contentLenght, content.length())
-                            .dataPosition(test_position)
+                            .position(startPosition, content.length())
+                            .dataPosition(holder.getAdapterPosition())
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
@@ -255,8 +254,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(false)
                             .build();
                 }
-
-
                 contentView.setVisibility(View.VISIBLE);
             }
 
@@ -522,7 +519,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
-                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFeed_content())
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFriendlyContent())
                             .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color

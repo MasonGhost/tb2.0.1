@@ -99,12 +99,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
-                        return mRepository.payForOnlook(answer_id);
-                    }
-                })
+                .flatMap(o -> mRepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
