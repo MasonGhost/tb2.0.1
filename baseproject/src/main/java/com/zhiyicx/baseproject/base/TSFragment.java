@@ -130,7 +130,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
                     ConvertUtils.dp2px(getActivity(), 24));
             layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 33), ConvertUtils.dp2px(getContext(), 10), 0);
+            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
             mMusicWindowView.setLayoutParams(layoutParams);
             mMusicWindowView.setVisibility(View.GONE);
             mMusicWindowView.setOnClickListener(new View.OnClickListener() {
