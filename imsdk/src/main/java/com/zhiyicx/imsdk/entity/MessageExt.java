@@ -22,6 +22,9 @@ public class MessageExt implements Serializable {
         this.custom = custom;
     }
 
+    public MessageExt() {
+    }
+
     public String getZBUSID() {
         return ZBUSID;
     }

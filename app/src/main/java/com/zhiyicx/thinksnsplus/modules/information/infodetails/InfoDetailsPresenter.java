@@ -500,8 +500,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     @Override
-    public List<InfoCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
     }
 
     @Override

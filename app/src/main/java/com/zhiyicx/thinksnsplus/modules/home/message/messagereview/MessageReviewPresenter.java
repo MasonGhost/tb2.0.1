@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -86,8 +87,10 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
     }
 
     @Override
-    public List<BaseListBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override
@@ -98,15 +101,19 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
     }
 
     @Override
-    public void approvedTopComment(Long feed_id, int comment_id, int pinned_id, BaseListBean result, int position) {
+    public void approvedTopComment(Long feedId, int commentId, int pinnedId, BaseListBean result, int position) {
         Observable observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
-                observable = mRepository.approvedTopComment(feed_id, comment_id, pinned_id);
+                observable = mRepository.approvedTopComment(feedId, commentId, pinnedId);
                 break;
             case TOP_NEWS_COMMENT:
-                observable = mRepository.approvedNewsTopComment(feed_id, comment_id, pinned_id);
+                observable = mRepository.approvedNewsTopComment(feedId, commentId, pinnedId);
                 break;
+                default:
+        }
+        if(observable==null){
+            return;
         }
         Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
@@ -144,8 +151,11 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 TopNewsCommentListBean data=(TopNewsCommentListBean)result;
                 observable = mRepository.refuseNewsTopComment(data.getNews().getId(),data.getComment().getId(),pinned_id);
                 break;
+                default:
         }
-
+        if(observable==null){
+            return;
+        }
         Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override

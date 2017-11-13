@@ -48,6 +48,11 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     }
 
     @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         return new NotificationAdapter(getContext(), mListDatas);
     }

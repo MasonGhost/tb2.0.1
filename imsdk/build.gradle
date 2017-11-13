@@ -63,9 +63,12 @@ android {
 dependencies {
     def testDependences = rootProject.ext.testDependencies
     def dataDependences = rootProject.ext.dataDependencies
+    def sdksoupportDependencies = rootProject.ext.sdksoupportDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     testCompile testDependences.junit
+
+    compile sdksoupportDependencies.appcompatV7
     // Eventbus
     compile dataDependences.androideventbus
     compile dataDependences.gson
@@ -77,6 +80,8 @@ dependencies {
     androidTestCompile testDependences.dexmakerMockito
     compile files('libs/jackson-core-asl-1.9.7.jar')
     compile files('libs/jackson-mapper-asl-1.9.7.jar')
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
 }
 
 task jarMyLib(type: Jar, dependsOn: ['build']) {

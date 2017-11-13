@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
-import com.google.gson.Gson;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
@@ -13,9 +12,6 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.QA$RewardRepositoryPublish;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -106,8 +102,8 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
     }
 
     @Override
-    public List<QATopicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

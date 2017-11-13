@@ -810,36 +810,25 @@ public class BackgroundTaskHandler {
                     .map(integers -> {
                         sendDynamicDataBean.setPhotos(null);
                         return sendDynamicDataBean;
-                    }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-                            return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
-                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                        @Override
-                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                            BaseJson<Object> baseJson = new BaseJson<>();
-                                            baseJson.setData((double) objectBaseJsonV2.getId());
-                                            String msg = objectBaseJsonV2.getMessage().get(0);
-                                            baseJson.setStatus(msg.equals("发布成功"));
-                                            baseJson.setMessage(msg);
-                                            return Observable.just(baseJson);
-                                        }
-                                    });
-                        }
-                    });
+                    }).flatMap(sendDynamicDataBeanV2 -> mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                            .flatMap(objectBaseJsonV2 -> {
+                                BaseJson<Object> baseJson = new BaseJson<>();
+                                baseJson.setData((double) objectBaseJsonV2.getId());
+                                String msg = objectBaseJsonV2.getMessage().get(0);
+                                baseJson.setStatus(msg.equals("发布成功"));
+                                baseJson.setMessage(msg);
+                                return Observable.just(baseJson);
+                            }));
         } else {
             // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
-                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                            BaseJson<Object> baseJson = new BaseJson<>();
-                            baseJson.setData((double) objectBaseJsonV2.getId());
-                            String msg = objectBaseJsonV2.getMessage().get(0);
-                            baseJson.setStatus(msg.equals("发布成功"));
-                            baseJson.setMessage(msg);
-                            return Observable.just(baseJson);
-                        }
+                    .flatMap(objectBaseJsonV2 -> {
+                        BaseJson<Object> baseJson = new BaseJson<>();
+                        baseJson.setData((double) objectBaseJsonV2.getId());
+                        String msg = objectBaseJsonV2.getMessage().get(0);
+                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setMessage(msg);
+                        return Observable.just(baseJson);
                     });
         }
         observable.subscribeOn(Schedulers.io())
@@ -945,37 +934,26 @@ public class BackgroundTaskHandler {
             }).map(integers -> {
                 sendDynamicDataBean.setPhotos(null);
                 return sendDynamicDataBean;
-            }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
-                @Override
-                public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBean) {
-                    return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
-                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                @Override
-                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                    BaseJson<Object> baseJson = new BaseJson<>();
-                                    baseJson.setData((double) objectBaseJsonV2.getId());
-                                    String msg = objectBaseJsonV2.getMessage().get(0);
-                                    baseJson.setStatus(msg.equals("发布成功"));
-                                    baseJson.setMessage(msg);
-                                    return Observable.just(baseJson);
-                                }
-                            });
-                }
-            });
+            }).flatMap(sendDynamicDataBean1 -> mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean1)
+                    .flatMap(objectBaseJsonV2 -> {
+                        BaseJson<Object> baseJson = new BaseJson<>();
+                        baseJson.setData((double) objectBaseJsonV2.getId());
+                        String msg = objectBaseJsonV2.getMessage().get(0);
+                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setMessage(msg);
+                        return Observable.just(baseJson);
+                    }));
         } else {
             // 没有图片上传任务，直接发布动态
             sendDynamicDataBean.setPhotos(null);
             observable = mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
-                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                            BaseJson<Object> baseJson = new BaseJson<>();
-                            baseJson.setData((double) objectBaseJsonV2.getId());
-                            String msg = objectBaseJsonV2.getMessage().get(0);
-                            baseJson.setStatus(msg.equals("发布成功"));
-                            baseJson.setMessage(msg);
-                            return Observable.just(baseJson);
-                        }
+                    .flatMap(objectBaseJsonV2 -> {
+                        BaseJson<Object> baseJson = new BaseJson<>();
+                        baseJson.setData((double) objectBaseJsonV2.getId());
+                        String msg = objectBaseJsonV2.getMessage().get(0);
+                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setMessage(msg);
+                        return Observable.just(baseJson);
                     });
         }
         observable.subscribeOn(Schedulers.io())
@@ -1331,23 +1309,15 @@ public class BackgroundTaskHandler {
                     }
                 }
                 return integers;
-            }).map(integers -> bean).flatMap(new Func1<SendCertificationBean, Observable<BaseJson<Object>>>() {
-                @Override
-                public Observable<BaseJson<Object>> call(SendCertificationBean bean) {
-                    return mSendCertificationRepository.sendCertification(bean)
-                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                @Override
-                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                    BaseJson<Object> baseJson = new BaseJson<>();
-                                    baseJson.setData((double) objectBaseJsonV2.getId());
-                                    String msg = objectBaseJsonV2.getMessage().get(0);
-                                    baseJson.setStatus(msg.equals("发布成功"));
-                                    baseJson.setMessage(msg);
-                                    return Observable.just(baseJson);
-                                }
-                            });
-                }
-            });
+            }).map(integers -> bean).flatMap(bean1 -> mSendCertificationRepository.sendCertification(bean1)
+                    .flatMap(objectBaseJsonV2 -> {
+                        BaseJson<Object> baseJson = new BaseJson<>();
+                        baseJson.setData((double) objectBaseJsonV2.getId());
+                        String msg = objectBaseJsonV2.getMessage().get(0);
+                        baseJson.setStatus(msg.equals("发布成功"));
+                        baseJson.setMessage(msg);
+                        return Observable.just(baseJson);
+                    }));
             observable.subscribeOn(Schedulers.io())
                     .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                     .observeOn(AndroidSchedulers.mainThread())

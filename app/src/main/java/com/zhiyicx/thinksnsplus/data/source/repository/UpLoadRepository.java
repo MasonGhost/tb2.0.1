@@ -78,31 +78,25 @@ public class UpLoadRepository implements IUploadRepository {
                     baseJson.setId(-1);
                     return baseJson;
                 })
-                .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
-                    @Override
-                    public Observable<BaseJson<Integer>> call(BaseJsonV2 baseJson) {
-                        if (baseJson.getId() != -1) {
-                            BaseJson<Integer> success = new BaseJson<>();
-                            success.setData(baseJson.getId());
-                            success.setStatus(true);
-                            return Observable.just(success);
-                        } else {
-                            // 封装图片File
-                            HashMap<String, String> fileMap = new HashMap<>();
-                            fileMap.put("file", filePath);
-                            return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap))
-                                    .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
-                                        @Override
-                                        public Observable<BaseJson<Integer>> call(BaseJsonV2 uploadFileResultV2) {
-                                            BaseJson<Integer> success = new BaseJson<>();
-                                            success.setData(uploadFileResultV2.getId());
-                                            baseJson.setId(1);
-                                            success.setStatus(true);
-                                            return Observable.just(success);
-                                        }
-                                    }, Observable::error, () -> null);
+                .flatMap(baseJson -> {
+                    if (baseJson.getId() != -1) {
+                        BaseJson<Integer> success = new BaseJson<>();
+                        success.setData(baseJson.getId());
+                        success.setStatus(true);
+                        return Observable.just(success);
+                    } else {
+                        // 封装图片File
+                        HashMap<String, String> fileMap = new HashMap<>();
+                        fileMap.put("file", filePath);
+                        return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap))
+                                .flatMap(uploadFileResultV2 -> {
+                                    BaseJson<Integer> success = new BaseJson<>();
+                                    success.setData(uploadFileResultV2.getId());
+                                    baseJson.setId(1);
+                                    success.setStatus(true);
+                                    return Observable.just(success);
+                                }, Observable::error, () -> null);
 
-                        }
                     }
                 });
     }

@@ -6,13 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,13 +27,11 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,9 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -79,7 +70,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
-    protected static final int DEFALT_IMAGE_HEIGHT = 300;
+    public static final int DEFALT_IMAGE_HEIGHT = 300;
     protected final int mWidthPixels; // 屏幕宽度
     protected final int mHightPixels; // 屏幕高度
     private final int mMargin; // 图片容器的边距
@@ -152,7 +143,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     }
 
     private int mTitleMaxShowNum;
-    private int mContentMaxShowNum;
 
 
     public DynamicListBaseItem(Context context) {
@@ -161,8 +151,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_title_max_show_size);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_content_max_show_size);
         mWidthPixels = DeviceUtils.getScreenWidth(context);
         mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
@@ -203,7 +191,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
-
+        long timeS = System.currentTimeMillis();
         try {
             // 防止个人中心没后头像错误
             try {
@@ -214,11 +202,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             }
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
-                    .getCreated_at()));
+            holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
-
-            String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
 
             // 置顶标识 ,防止没有置顶布局错误
@@ -233,30 +218,20 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } catch (Exception ignored) {
             }
 
+            String content = dynamicBean.getFriendlyContent();
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(content)) {
-
-                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
-
-
-                if (content.length() > mContentMaxShowNum) {
-                    content = content.substring(0, mContentMaxShowNum) + "...";
-                }
 
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
 
-                int contentLenght = content.length();
-
-                if (!canLookWords) {
-                    content += mContext.getString(R.string.words_holder);
-                }
+                int startPosition = dynamicBean.getStartPosition();
 
                 if (canLookWords) {
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(contentLenght, content.length())
+                            .position(startPosition, content.length())
                             .dataPosition(holder.getAdapterPosition())
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
@@ -265,12 +240,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(true)
                             .build();
                 } else {
-                    int test_position = holder.getAdapterPosition();
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(contentLenght, content.length())
-                            .dataPosition(test_position)
+                            .position(startPosition, content.length())
+                            .dataPosition(holder.getAdapterPosition())
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
@@ -280,8 +254,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(false)
                             .build();
                 }
-
-
                 contentView.setVisibility(View.VISIBLE);
             }
 
@@ -357,6 +329,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        long timeE = System.currentTimeMillis();
+        LogUtils.d(getClass().getSimpleName() + ":::" + (timeE - timeS));
     }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
@@ -380,44 +354,30 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected void initImageView(final ViewHolder holder, FilterImageView view, final
     DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        int propPart = getProportion(view, dynamicBean, positon, part);
-        int w, h;
-        w = h = getCurrenItemWith(part);
-
-
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             // 是否是长图
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
+            view.showLongImageTag(imageBean.hasLongImage());
 
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
-                        imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(view.getContext())
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? w : 0, canLook ? h : 0,
-                                propPart, AppApplication.getTOKEN()))
-//                        .override(w, h)
-//                        .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                        .load(imageBean.getGlideUrl())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
                         .into(view);
             } else {
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth)); // 是否是长图
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
 
                 Glide.with(view.getContext())
                         .load(imageBean.getImgUrl())
-                        .override(w, h)
+                        .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.shape_default_image)
                         .into(view);
             }
-        }
-
-        if (dynamicBean.getImages() != null) {
-            dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
 
         RxView.clicks(view)
@@ -451,7 +411,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             return 70;
         }
         with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();
-        proportion = ((with / imageBean.getWidth()) * 100);
+        int imageW = imageBean.getWidth();
+        float quality = (float) with / (float) imageW;
+        proportion = (int) (quality * 100);
         proportion = proportion > 100 ? 100 : proportion;
         return proportion;
     }
@@ -464,8 +426,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected int getCurrenItemWith(int part) {
         try {
-            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums
-                    () * part;
+            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums() * part;
         } catch (Exception e) {
             LogUtils.d("获取当前 item 的宽 = 0");
         }
@@ -584,19 +545,22 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected abstract class BaseRegionResourceDecoder<T> implements ResourceDecoder<T, Bitmap> {
         private final BitmapPool bitmapPool;
         private final Rect region;
+
         public BaseRegionResourceDecoder(Context context, Rect region) {
             this(Glide.get(context).getBitmapPool(), region);
         }
+
         public BaseRegionResourceDecoder(BitmapPool bitmapPool, Rect region) {
             this.bitmapPool = bitmapPool;
             this.region = region;
         }
 
-        @Override public Resource<Bitmap> decode(T source, int width, int height) throws IOException {
+        @Override
+        public Resource<Bitmap> decode(T source, int width, int height) throws IOException {
             BitmapFactory.Options opts = new BitmapFactory.Options();
 
-            int sampleSize = (int)Math.ceil((double)region.width() / (double)width);
-            sampleSize = sampleSize == 0? 0 : Integer.highestOneBit(sampleSize);
+            int sampleSize = (int) Math.ceil((double) region.width() / (double) width);
+            sampleSize = sampleSize == 0 ? 0 : Integer.highestOneBit(sampleSize);
             sampleSize = Math.max(1, sampleSize);
             opts.inSampleSize = sampleSize;
 
@@ -605,9 +569,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             return BitmapResource.obtain(bitmap, bitmapPool);
         }
+
         protected abstract BitmapRegionDecoder createDecoder(T source, int width, int height) throws IOException;
 
-        @Override public String getId() {
+        @Override
+        public String getId() {
             return getClass().getName() + region; // + region is important for RESULT caching
         }
     }
@@ -617,7 +583,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             super(context, region);
         }
 
-        @Override protected BitmapRegionDecoder createDecoder(ImageVideoWrapper source, int width, int height) throws IOException {
+        @Override
+        protected BitmapRegionDecoder createDecoder(ImageVideoWrapper source, int width, int height) throws IOException {
             try {
                 return BitmapRegionDecoder.newInstance(source.getStream(), false);
             } catch (Exception ignore) {
@@ -631,7 +598,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             super(context, region);
         }
 
-        @Override protected BitmapRegionDecoder createDecoder(File source, int width, int height) throws IOException {
+        @Override
+        protected BitmapRegionDecoder createDecoder(File source, int width, int height) throws IOException {
             return BitmapRegionDecoder.newInstance(source.getAbsolutePath(), false);
         }
     }

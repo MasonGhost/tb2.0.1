@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -115,8 +116,9 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
     }
 
     @Override
-    public List<ExpertBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override

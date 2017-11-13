@@ -4,6 +4,7 @@ import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -77,23 +78,22 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     public void getLaunchAdverts() {
         Subscription subscribe = mRepository.getLaunchAdverts()
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
-                    @Override
-                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
-                                                                           allAdverListBeen) {
-                        List<Object> ids = new ArrayList<>();
-                        for (AllAdverListBean adverListBean : allAdverListBeen) {
-
-                            ids.add(adverListBean.getId());
-                        }
-                        return mRepository.getAllRealAdverts(ids).flatMap(new Func1<List<RealAdvertListBean>, Observable<List<AllAdverListBean>>>() {
-                            @Override
-                            public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
+                .flatMap(allAdverListBeen -> {
+                    List<Object> ids = new ArrayList<>();
+                    for (AllAdverListBean adverListBean : allAdverListBeen) {
+                        ids.add(adverListBean.getId());
+                    }
+                    return mRepository.getAllRealAdverts(ids)
+                            .flatMap(realAdvertListBeen -> {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
-                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils
-                                                        .getScreenWidth(mContext),
-                                                DeviceUtils.getScreenHeight(mContext));
+                                        String url=boot.getAdvertFormat().getImage().getImage();
+                                        LogUtils.d("getLaunchAdverts:::"+url);
+                                        Glide.with(mContext)
+                                                .load(url)
+                                                .downloadOnly(DeviceUtils
+                                                                .getScreenWidth(mContext),
+                                                        DeviceUtils.getScreenHeight(mContext));
                                     }
                                 }
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
@@ -101,13 +101,11 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                                     mRealAdvertListBeanGreenDao.clearTable();
                                 }
                                 return Observable.just(allAdverListBeen);
-                            }
-                        });
+                            });
 //                        Observable.merge(adverts).subscribe(realAdvertListBeen -> {
 //                            mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
 //                        });
 //                        return Observable.just(allAdverListBeen);
-                    }
                 })
                 .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
                     @Override
@@ -130,7 +128,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public List<RealAdvertListBean> getBootAdvert() {
         AllAdverListBean boot = mAllAdvertLIstBeanGreendo.getBootAdvert();
-        if (boot != null) {
+        if (boot != null && boot.getMRealAdvertListBeen() != null && !boot.getMRealAdvertListBeen().isEmpty()) {
             return boot.getMRealAdvertListBeen();
         }
         return null;

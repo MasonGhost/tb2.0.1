@@ -92,7 +92,6 @@ public class SystemRepository implements ISystemRepository {
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
-                        // 广告类型
                         saveComponentStatus(data, mContext);
                     }
                 });
@@ -122,29 +121,6 @@ public class SystemRepository implements ISystemRepository {
         // 读取本地默认配置
         if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
-        }
-        if (systemConfigBean.getAdverts() == null) {
-            return systemConfigBean;
-        }
-        // 预先加载广告图片
-        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
-            if (advert.getData() instanceof LinkedHashMap) {
-                LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
-                ImageAdvert imageAdvert = new ImageAdvert();
-                for (Iterator it = advertMap.keySet().iterator(); it.hasNext(); ) {
-                    String key = (String) it.next();
-                    String value = (String) advertMap.get(key);
-                    if (key.equals("image")) {
-                        Glide.with(mContext).load(value).downloadOnly(DeviceUtils.getScreenWidth(mContext),
-                                DeviceUtils.getScreenHeight(mContext));
-                        imageAdvert.setImage(value);
-                    }
-                    if (key.equals("link")) {
-                        imageAdvert.setLink(value);
-                    }
-                }
-                advert.setImageAdvert(imageAdvert);
-            }
         }
         return systemConfigBean;
     }

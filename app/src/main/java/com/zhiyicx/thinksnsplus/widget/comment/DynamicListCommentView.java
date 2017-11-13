@@ -45,8 +45,10 @@ public class DynamicListCommentView extends LinearLayout {
     private OnCommentClickListener mOnCommentClickListener;
     private DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
     private DynamicDetailBeanV2 mDynamicBean;
-
-    private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
+    /**
+     * 标识用户名被点击还是评论被点击了
+     */
+    private boolean mIsUserNameClick = false;
 
     public DynamicListCommentView(Context context) {
         super(context);
@@ -73,7 +75,8 @@ public class DynamicListCommentView extends LinearLayout {
 
     private void setListener() {
         RxView.clicks(mMoreComment)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // JITTER_SPACING_TIME秒钟之内只取一个点击事件，防抖操作
+                // JITTER_SPACING_TIME秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnMoreCommentClickListener != null) {
                         mOnMoreCommentClickListener.onMoreCommentClick(mMoreComment, mDynamicBean);
@@ -123,7 +126,8 @@ public class DynamicListCommentView extends LinearLayout {
         List<DynamicCommentBean> data = new ArrayList<>();
 
         if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
-            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
+            //最多显示 SHOW_MORE_COMMENT_SIZE_LIMIT-1 条
+            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
                     data.add(dynamicBean.getComments().get(i));
                 }

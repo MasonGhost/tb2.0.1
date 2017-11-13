@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -99,8 +100,10 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override

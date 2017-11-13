@@ -3,9 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -125,22 +123,29 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     }
 
     @Override
-    public List<BaseListBean> requestCacheData(Long max_Id, final boolean isLoadMore) {
-        final List<BaseListBean> localData = new ArrayList<>();
+    public void requestCacheData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
         Observable.just(mInfoListDataBeanGreenDao)
+                .observeOn(Schedulers.io())
                 .map(infoListDataBeanGreenDao -> infoListDataBeanGreenDao
                         .getInfoByType(type))
-                .filter(infoListBean -> infoListBean != null).subscribe(data -> {
-            if (data != null) {
-                localData.addAll(data);
-            }
-            for (InfoListDataBean listDataBean : data) {
-                listDataBean.setInfo_type(type);
-            }
-        });
-        return localData;
+                .filter(infoListBean -> infoListBean != null)
+                .map(data -> {
+                    List<BaseListBean> localData = new ArrayList<>();
+
+                    if (data != null) {
+                        localData.addAll(data);
+                    }
+                    for (InfoListDataBean listDataBean : data) {
+                        listDataBean.setInfo_type(type);
+                    }
+                    return localData;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    mRootView.onCacheResponseSuccess(result,isLoadMore);
+                }, Throwable::printStackTrace);
     }
 
     @Override
@@ -149,7 +154,7 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     }
 
     @Override
-    public void getInfoList(String cate_id, long max_id, long limit, final long page) {
+    public void getInfoList(String cateId, long maxId, long limit, final long page) {
 
     }
 
@@ -159,9 +164,9 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     }
 
     @Subscriber(tag = EVENT_UPDATE_LIST_DELETE)
-    public void updateDeleteInfo(InfoListDataBean infoListDataBean){
-        for (BaseListBean listBean : mRootView.getListDatas()){
-            if (listBean instanceof InfoListDataBean && ((InfoListDataBean) listBean).getId() == infoListDataBean.getId()){
+    public void updateDeleteInfo(InfoListDataBean infoListDataBean) {
+        for (BaseListBean listBean : mRootView.getListDatas()) {
+            if (listBean instanceof InfoListDataBean && ((InfoListDataBean) listBean).getId() == infoListDataBean.getId()) {
                 mRootView.getListDatas().remove(listBean);
                 mRootView.refreshData();
                 break;

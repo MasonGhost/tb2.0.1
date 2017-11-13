@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -100,8 +99,8 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

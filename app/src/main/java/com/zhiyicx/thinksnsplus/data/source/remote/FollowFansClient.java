@@ -30,7 +30,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<List<UserInfoBean>> getUserFansList(@Path("user_id") long user_id, @Query("after") long max_id, @Query("limit") Integer limitCount);
+    Observable<List<UserInfoBean>> getUserFansList(@Path("user_id") long user_id, @Query("offset") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 获取用户关注列表
@@ -40,7 +40,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FOLLOW_LIST)
-    Observable<List<UserInfoBean>> getUserFollowsList(@Path("user_id") long user_id, @Query("after") long max_id, @Query("limit") Integer limitCount);
+    Observable<List<UserInfoBean>> getUserFollowsList(@Path("user_id") long user_id, @Query("offset") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 关注用户操作

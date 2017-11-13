@@ -215,9 +215,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
-    public List<GroupDynamicListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         // 频道的动态不要从数据库拉取数据
-        return null;
+       mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

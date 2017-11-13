@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -85,8 +84,8 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
@@ -100,12 +99,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
-                        return mRepository.payForOnlook(answer_id);
-                    }
-                })
+                .flatMap(o -> mRepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {

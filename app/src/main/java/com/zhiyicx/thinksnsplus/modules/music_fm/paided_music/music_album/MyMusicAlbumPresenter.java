@@ -50,8 +50,8 @@ public class MyMusicAlbumPresenter extends AppBasePresenter<MyMusicAblumListCont
     }
 
     @Override
-    public List<MusicAlbumListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+       mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

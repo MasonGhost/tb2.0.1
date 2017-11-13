@@ -199,8 +199,8 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     }
 
     @Override
-    protected List<QATopicBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mListDatas;
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        onCacheResponseSuccess( mListDatas,isLoadMore);
     }
 
     private List<Link> setLinks(QATopicBean topicBean) {

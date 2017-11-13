@@ -23,6 +23,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
@@ -42,6 +44,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -83,6 +87,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
     private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
 
+    private UserCertificationInfo mUserCertificationInfo;
+
     public static SelectDynamicTypeFragment getInstance(Bundle b) {
         SelectDynamicTypeFragment selectDynamicTypeFragment = new SelectDynamicTypeFragment();
         selectDynamicTypeFragment.setArguments(b);
@@ -110,52 +116,20 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     @Override
     protected void initView(View rootView) {
         initPopWindow();
-        initAnimation(mSendWordsDynamic);
-        long delay = DEFAULT_ANIMATE_DELAY_START;
-        delay += DEFAULT_ANIMATE_DELAY;
-        Observable.timer(delay, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> initAnimation(mSendImageDynamic));
+        initAnimation(mSelectDynamicParent);
 
-//        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-//            mOpenZhibo.setVisibility(View.INVISIBLE);
-//
-//            delay += DEFAULT_ANIMATE_DELAY;
-//            Observable.timer(delay, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(aLong -> initAnimation(mOpenZhibo));
-//        } else {
-//            mOpenZhibo.setVisibility(View.GONE);
-//
-//        }
         mOpenZhibo.setVisibility(View.GONE);
         SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
                 .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         // 如果已经签到了，则不再展示签到
         if (systemConfigBean != null && systemConfigBean.isCheckin() && mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-            mCheckIn.setVisibility(View.INVISIBLE);
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mCheckIn));
+            mCheckIn.setVisibility(View.VISIBLE);
         } else {
             mCheckIn.setVisibility(View.GONE);
         }
         if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-            mSendWordsQuestion.setVisibility(View.INVISIBLE);
-            mSendInfo.setVisibility(View.INVISIBLE);
-
-            // 提问
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mSendWordsQuestion));
-            // 投稿
-//            delay += DEFAULT_ANIMATE_DELAY;
-//            Observable.timer(delay, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(aLong -> initAnimation(mSendInfo));
-            mSendInfo.setVisibility(View.GONE);
+            mSendWordsQuestion.setVisibility(View.VISIBLE);
+            mSendInfo.setVisibility(View.VISIBLE);
         } else {
             mSendWordsQuestion.setVisibility(View.GONE);
             mSendInfo.setVisibility(View.GONE);
@@ -172,19 +146,37 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 .build().photoSelectorImpl();
     }
 
+    @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+        mUserCertificationInfo = userCertificationInfo;
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        SystemConfigBean.NewsConfig mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
+        if (userCertificationInfo.getStatus() == 1 || !mPublishInfoConfig.hasVerified()) {
+            if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
+                    && mPublishInfoConfig.hasPay())) {
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
+        } else {
+            mCertificationAlertPopWindow.show();
+        }
+    }
+
     private void initAnimation(final View view) {
         if (view == null) {
             return;
         }
         view.post(() -> {
-            if(mSelectDynamicParent==null||view==null){
+            if (mSelectDynamicParent == null) {
                 return;
             }
             AnimatorSet mAnimatorSet = new AnimatorSet();
-            int vertical_distance = mSelectDynamicParent.getBottom() - view.getTop();
+            int vertical_distance = view.getTop() - mImCloseDynamic.getBottom();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
             ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
-            mAnimatorSet.setDuration(1000);
+            mAnimatorSet.setDuration(400);
             mAnimatorSet.setInterpolator(new OvershootInterpolator(1f));
             ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
             mAnimatorSet.play(translationY);
@@ -241,16 +233,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             case R.id.send_info:
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
-                if (mPresenter.checkCertification()) {
-                    if (mPresenter.isNeedPayTip()) {
-                        mPayAlertPopWindow.show();
-                        mPresenter.savePayTip(false);
-                    } else {
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-                    }
-                } else {
-                    mCertificationAlertPopWindow.show();
-                }
+                mPresenter.checkCertification();
                 break;
             default:
         }
@@ -290,6 +273,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     private void initPopWindow() {
+
         if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
@@ -304,21 +288,42 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
                     .item2ClickListener(() -> {// 个人认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 0);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
-                        closeActivity();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 0);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 1);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
-                        closeActivity();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 1);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .build();
         }
@@ -326,7 +331,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(),getString(R.string.info_publish_hint_pay),mPresenter.getGoldName()))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
@@ -336,7 +341,6 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-                        closeActivity();
                     })
                     .build();
         }
@@ -352,4 +356,10 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         getActivity().overridePendingTransition(0, R.anim.fade_out);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dismissPop(mCertificationAlertPopWindow);
+        dismissPop(mPayAlertPopWindow);
+    }
 }

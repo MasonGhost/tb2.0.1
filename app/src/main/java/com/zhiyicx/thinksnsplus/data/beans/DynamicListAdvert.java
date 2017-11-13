@@ -22,6 +22,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
      * content : 内容|string
      * image : 图片|string
      * time : 时间|date
+     * duration : 持续时间|duration
      */
 
     private String avatar;
@@ -31,6 +32,19 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     private String image;
     private String time;
     private String link;
+    private String duration;
+
+    public int getDuration() {
+        try {
+            return Integer.parseInt(duration);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
     public String getTitle() {
         return title;
@@ -98,6 +112,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.avatar);
         dest.writeString(this.name);
+        dest.writeString(this.duration);
         dest.writeString(this.link);
         dest.writeString(this.content);
         dest.writeString(this.image);
@@ -113,6 +128,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         this.name = in.readString();
         this.link = in.readString();
         this.content = in.readString();
+        this.duration = in.readString();
         this.image = in.readString();
         this.title = in.readString();
         this.time = in.readString();
@@ -142,6 +158,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dynamicDetailBeanV2.setFeed_mark(System.currentTimeMillis());
         dynamicDetailBeanV2.setDeleted_at(advert.getLink());// 广告外链
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
+        dynamicDetailBeanV2.handleData();
         dynamicDetailBeanV2.setFeed_content(advert.getContent());// 广告内容
         dynamicDetailBeanV2.setCreated_at(advert.getTime());// 广告时间
         dynamicDetailBeanV2.setUpdated_at(advert.getTime());// 广告时间

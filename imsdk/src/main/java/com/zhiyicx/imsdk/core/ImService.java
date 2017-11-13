@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class ImService {
     private final String TAG = this.getClass().getSimpleName();
-    public static final int SEQ_LIMIT = 10;// 丢失数据默认拉去10条
+    public static final int SEQ_LIMIT = 30;// 丢失数据默认拉去10条
     /**
      * websocket连接建立
      */
@@ -57,7 +57,7 @@ public class ImService {
      * 获取指定序号消息
      */
     public static final String CONVR_MSG_PLUCK = "convr.msg.pluck";
-    public static final String CONVR_MSG_SYNC = "convr.msg.syncAsc";
+    public static final String CONVR_MSG_SYNC = "convr.msg.sync";
 
     /**
      * 获取会话信息

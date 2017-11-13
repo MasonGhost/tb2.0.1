@@ -26,7 +26,8 @@ import rx.android.schedulers.AndroidSchedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements MessageCommentContract.Presenter {
+public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements
+        MessageCommentContract.Presenter {
     @Inject
     CommentRepository mCommentRepository;
     @Inject
@@ -60,11 +61,14 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     }
 
     @Override
-    public List<CommentedBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (isLoadMore) {
-            return new ArrayList<>();
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), true);
+
+        } else {
+            mRootView.onCacheResponseSuccess(mCommentedBeanGreenDao.getMultiDataFromCache(), false);
+
         }
-        return mCommentedBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
@@ -79,8 +83,10 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
-        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel(),currentCommentBean.getSource_id());
-        Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
+        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel(), currentCommentBean
+                .getSource_id());
+        Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication
+                .getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<Object>() {

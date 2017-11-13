@@ -30,9 +30,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
-
-    private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
-    private static final int CURREN_CLOUMS = 1; // 当前列数
+    /**
+     * 动态列表图片数量
+     */
+    private static final int IMAGE_COUNTS = 1;
+    /**
+     * 当前列数
+     */
+    private static final int CURREN_CLOUMS = 1;
 
     public DynamicListItemForOneImage(Context context) {
         super(context);
@@ -65,53 +70,32 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
      */
     @Override
     protected void initImageView(final ViewHolder holder, FilterImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        /**
-         * 一张图时候，需要对宽高做限制
-         */
         int with;
         int height;
-        int proportion; // 压缩比例
-        int currentWith = getCurrenItemWith(part);
+
         DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
-
-
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            with = currentWith;
-            height = (with * imageBean.getHeight() / imageBean.getWidth());
-            height = height > mImageMaxHeight ? mImageMaxHeight : height;
-            proportion = ((with / imageBean.getWidth()) * 100);
-            // 就怕是 0
-            if (with * height == 0) {
-                with = height = DEFALT_IMAGE_HEIGHT;
-            }
-            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            with = imageBean.getImageViewWidth();
+            height = imageBean.getImageViewHeight();
             // 是否是长图
-            view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
-            if (height < DEFALT_IMAGE_HEIGHT) {
-                height = DEFALT_IMAGE_HEIGHT;
-            }
+            view.showLongImageTag(imageBean.hasLongImage());
             view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
-
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(),  0,  0
-                            , 100, AppApplication.getTOKEN()))
+                    .load(imageBean.getGlideUrl())
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
                     .into(view);
         } else {
+            // 本地
             BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-//            with = option.outWidth > currentWith ? currentWith : option.outWidth;
-            with = currentWith;
-
+            with = imageBean.getCurrentWith();
             if (option.outWidth == 0) {
                 height = with;
-                proportion = 100;
             } else {
                 height = with * option.outHeight / option.outWidth;
                 height = height > mImageMaxHeight ? mImageMaxHeight : height;
-                proportion = ((with / option.outWidth) * 100);
                 // 是否是长图
                 view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
             }
@@ -129,9 +113,6 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                     .into(view);
         }
 
-        if (dynamicBean.getImages() != null) {
-            dynamicBean.getImages().get(positon).setPropPart(proportion);
-        }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {

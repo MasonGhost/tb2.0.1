@@ -479,7 +479,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     })
                     .build();
         }
-        if (isChecked && (mQAPublishBean == null || mQAPublishBean.getAnonymity() != 1)) {
+        if (isChecked && (mQAPublishBean == null || mQAPublishBean.getAnonymity() != 1) && showAnonymityAlertPopWindow()) {
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();
@@ -495,6 +495,10 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     public void onPublishQuestionSuccess(Bundle bundle) {
         // 发布成功后关闭这个页面
         getActivity().finish();
+    }
+
+    protected boolean showAnonymityAlertPopWindow() {
+        return true;
     }
 
 }

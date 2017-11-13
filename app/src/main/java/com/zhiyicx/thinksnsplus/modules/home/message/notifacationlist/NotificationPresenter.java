@@ -11,11 +11,14 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @author Catherine
@@ -30,7 +33,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Inject
     MessageRepository mMessageRepository;
-    private boolean mIsFirst = true;
+    private Subscription subscribe;
 
     @Inject
     public NotificationPresenter(NotificationContract.Repository repository, NotificationContract.View rootView) {
@@ -39,7 +42,15 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getNotificationList(maxId.intValue())
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+        subscribe = mMessageRepository.makeNotificationAllReaded()
+                .flatMap(o -> {
+                    readNotification();
+                    return mRepository.getNotificationList(maxId.intValue());
+
+                })
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
                     protected void onSuccess(List<TSPNotificationBean> data) {
@@ -58,19 +69,13 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                         mRootView.onResponseError(null, isLoadMore);
                     }
                 });
-        addSubscrebe(subscription);
-        // 除开第一次自动刷新外，其他的刷新时候需要更新小红点
-        if (!mIsFirst && !isLoadMore) {
-            readNotification();
-        } else {
-            mIsFirst = false;
-        }
-
+        addSubscrebe(subscribe);
     }
 
     @Override
-    public List<TSPNotificationBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override
@@ -83,13 +88,5 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
 
-        Subscription subscribe = mMessageRepository.makeNotificationAllReaded()
-                .subscribe(new BaseSubscribeForV2<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
-                    }
-                });
-        addSubscrebe(subscribe);
     }
 }

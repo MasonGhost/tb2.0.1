@@ -129,7 +129,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 是否有围观
         double outLookAmount = 0d;
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
-            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * amount;
+            outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
@@ -185,7 +185,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 是否有围观
         double outLookAmount = 0d;
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
-            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * qaListInfoBean.getAmount();
+            outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :
@@ -229,7 +229,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 是否有围观
         double outLookAmount = 0d;
         if (qaListInfoBean.getInvitation_answers() != null && !qaListInfoBean.getInvitation_answers().isEmpty()) {
-            outLookAmount = qaListInfoBean.getInvitation_answers().get(0).getOnlookers_count() * qaListInfoBean.getAmount();
+            outLookAmount = Double.parseDouble(qaListInfoBean.getInvitation_answers().get(0).getOnlookers_total());
         }
         double rewardMoney = PayConfig.realCurrency2GameCurrency(qaListInfoBean.getAmount(), ratio);
         String rewardstr = String.format(mContext.getString(outLookAmount == 0 ? R.string.qa_show_question_reward_count :

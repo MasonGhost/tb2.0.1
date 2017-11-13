@@ -413,8 +413,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public List<AnswerCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+       mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

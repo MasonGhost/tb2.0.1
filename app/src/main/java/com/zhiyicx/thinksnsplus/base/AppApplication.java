@@ -42,6 +42,8 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
@@ -244,20 +246,20 @@ public class AppApplication extends TSApplication {
                 .getInstance().currentActivity() instanceof TSActivity) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
-                        // TODO: 2017/2/8  清理登录信息 token 信息
-                        mAuthRepository.clearAuthBean();
-                        mAuthRepository.clearThridAuth();
+                // TODO: 2017/2/8  清理登录信息 token 信息
+                mAuthRepository.clearAuthBean();
+                mAuthRepository.clearThridAuth();
 
-                        Intent intent = new Intent
-                                (getContext(),
-                                        LoginActivity
-                                                .class);
-                        ActivityHandler.getInstance()
-                                .currentActivity()
-                                .startActivity
-                                        (intent);
-                        dialog.dismiss();
-                    });
+                Intent intent = new Intent
+                        (getContext(),
+                                LoginActivity
+                                        .class);
+                ActivityHandler.getInstance()
+                        .currentActivity()
+                        .startActivity
+                                (intent);
+                dialog.dismiss();
+            });
         }
 
     }
@@ -418,7 +420,7 @@ public class AppApplication extends TSApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                if (activity instanceof MusicPlayActivity || activity instanceof GalleryActivity) {
+                if (activity instanceof MusicPlayActivity || activity instanceof GalleryActivity || activity instanceof SelectDynamicTypeActivity) {
                     WindowUtils.hidePopupWindow();
                 } else if (sPlaybackManager != null && sPlaybackManager.getState() != PlaybackStateCompat.STATE_NONE
                         && sPlaybackManager.getState() != PlaybackStateCompat.STATE_STOPPED

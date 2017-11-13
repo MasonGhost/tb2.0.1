@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
 
 /**
  * @Describe 动态列表适配器基类
@@ -134,15 +135,15 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_title_max_show_size);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_content_max_show_size);
+        mContentMaxShowNum = DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
         mWidthPixels = DeviceUtils.getScreenWidth(context);
         mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
         mImageContainerWith = mWidthPixels - mMargin;
-        mImageMaxHeight = mImageContainerWith * 4 / 3; // 最大高度是最大宽度的4/3 保持 宽高比 3：4
+        // 最大高度是最大宽度的4/3 保持 宽高比 3：4
+        mImageMaxHeight = mImageContainerWith * 4 / 3;
     }
 
     @Override
@@ -153,9 +154,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
     @Override
     public boolean isForViewType(GroupDynamicListBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        boolean isForViewType=
-        item.getId() != null && (item.getImages() != null && item.getImages().size
-                () == getImageCounts());
+        boolean isForViewType =
+                item.getId() != null && (item.getImages() != null && item.getImages().size
+                        () == getImageCounts());
         return isForViewType;
     }
 
@@ -180,19 +181,20 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
         try {
 
-            ImageUtils.loadCircleUserHeadPic( dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));
-//            holder.setText(R.id.tv_title,dynamicBean.getTitle());
-            holder.setVisible(R.id.tv_title,View.GONE);
+///            holder.setText(R.id.tv_title,dynamicBean.getTitle());
+            holder.setVisible(R.id.tv_title, View.GONE);
 
             String content = dynamicBean.getContent();
             TextView contentView = holder.getView(R.id.tv_content);
 
             try { // 置顶标识 ,防止没有置顶布局错误
-                TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
+                // 待审核 也隐藏
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(View.GONE);
             } catch (Exception e) {
 
@@ -273,7 +275,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
     private void setUserInfoClick(View view, final GroupDynamicListBean dynamicBean) {
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnUserInfoClickListener != null) {
                         mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
@@ -299,7 +302,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = true;
-                view.showLongImageTag(isLongImage(imageBean.getHeight(),imageBean.getWidth())); // 是否是长图
+                // 是否是长图
+                view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
                 Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), w, h,
                                 propPart, AppApplication.getTOKEN()))
@@ -309,8 +313,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
             } else {
+                // 是否是长图
                 BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-                view.showLongImageTag(isLongImage(option.outHeight,option.outWidth)); // 是否是长图
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())
                         .override(w, h)
@@ -325,7 +330,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnImageClickListener != null) {
                         mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
@@ -336,15 +342,17 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
     /**
      * 是否是长图
+     *
      * @param imageHeight 需要判断的图片的高
-     * @param imageWith 需要判断的图片的宽
+     * @param imageWith   需要判断的图片的宽
      * @return
      */
-    public boolean isLongImage(int imageHeight,int imageWith) {
+    public boolean isLongImage(int imageHeight, int imageWith) {
         float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
 
         return a > 3 || a < .3f;
     }
+
     /**
      * 计算压缩比例
      *

@@ -55,13 +55,14 @@ public class SystemConversationPresenter extends AppBasePresenter<SystemConversa
     }
 
     @Override
-    public List requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mSystemConversationBeanGreenDao.getMultiDataFromCache();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(mSystemConversationBeanGreenDao.getMultiDataFromCache(),isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List data, boolean isLoadMore) {
-        if (!isLoadMore) { // 刷新的时候清除数据
+        // 刷新的时候清除数据
+        if (!isLoadMore) {
             mSystemConversationBeanGreenDao.clearTable();
         }
         mSystemConversationBeanGreenDao.saveMultiData(data);

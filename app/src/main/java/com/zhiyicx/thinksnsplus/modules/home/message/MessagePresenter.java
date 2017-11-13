@@ -3,10 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -24,12 +22,9 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
-import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -56,26 +51,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.DEFAULT_TS_HELPER_TIP_MSG_ID;
 
 /**
@@ -156,54 +136,47 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
-        List<Observable<Conversation>> datas = new ArrayList<>();
-        final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-        // 新版 ts 助手
-        for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-            if (imHelperBean.isDelete()) {
-                continue;
-            }
-            final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
-        }
-        if (datas.isEmpty()) {
-            getCoversationList();
-        } else {
-            Observable.zip(datas, (FuncN<Object>) args -> {
-                // 为 ts 助手添加提示语
-                for (int i = 0; i < args.length; i++) {
-                    Conversation data = ((Conversation) args[i]);
-                    // 写入 ts helper 默认提示语句
-                    long currentTime = System.currentTimeMillis();
-                    Message message = new Message();
-                    message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
-                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                    message.setSend_status(MessageStatus.SEND_SUCCESS);
-                    message.setIs_read(false);
-                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                    message.setCid(data.getCid());
-                    message.setCreate_time(currentTime);
+        Subscription subscribe = Observable.just(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(integer -> {
+                    List<Observable<Conversation>> datas = new ArrayList<>();
+                    final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+                    // 新版 ts 助手
+                    for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+                        if (imHelperBean.isDelete()) {
+                            continue;
+                        }
+                        final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
+                        datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
+                    }
+                    if (datas.isEmpty()) {
+                        return mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
+                    } else {
+                        return Observable.zip(datas, (FuncN<Object>) args -> {
+                            // 为 ts 助手添加提示语
+                            for (int i = 0; i < args.length; i++) {
+                                Conversation data = ((Conversation) args[i]);
+                                // 写入 ts helper 默认提示语句
+                                long currentTime = System.currentTimeMillis();
+                                Message message = new Message();
+                                message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
+                                message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                                message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                                message.setSend_status(MessageStatus.SEND_SUCCESS);
+                                message.setIs_read(false);
+                                message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                                message.setCid(data.getCid());
+                                message.setCreate_time(currentTime);
 //                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                    message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
-                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                }
-                return args;
-            }).subscribe(new BaseSubscribeForV2<Object>() {
-                @Override
-                protected void onSuccess(Object data) {
-                    getCoversationList();
-                }
-            });
-        }
-
-    }
-
-    /**
-     * 获取我的对话列表
-     */
-    private void getCoversationList() {
-        Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
+                                message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
+                                MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                            }
+                            return args;
+                        }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
                     @Override
@@ -223,6 +196,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         addSubscrebe(subscribe);
+
+
     }
 
     /**
@@ -233,15 +208,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @return
      */
     @Override
-    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mAuthRepository.getAuthBean() == null) {
-            return new ArrayList<>();
-        }
-        initHeaderItemData();
-        // 处理本地通知数据
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        } else {
+            initHeaderItemData();
+            // 处理本地通知数据
+            mRootView.updateLikeItemData(mItemBeanDigg);
+            creatTsHelperConversation();
 
-        mRootView.updateLikeItemData(mItemBeanDigg);
-        return mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
+        }
     }
 
     @Override
@@ -285,14 +261,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     .getListDatas().get(i).getConversation().getCid()));
                         }
                     }
-
+                    checkBottomMessageTip();
                     return mRootView.getListDatas();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                     mRootView.refreshData();
-                    checkBottomMessageTip();
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(represhSu);
     }
 
@@ -341,6 +316,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         Subscription subscribe = mRepository.getSingleConversation(cid)
                 .observeOn(Schedulers.io())
                 .map(data -> {
+                    if (data == null || data.getConversation() == null) {
+                        return false;
+                    }
                     int size = mRootView.getListDatas().size();
                     for (int i = 0; i < size; i++) {
                         if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
@@ -418,6 +396,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message messageData) {
         Subscription subscribe = Observable.just(messageData)
+                .observeOn(Schedulers.io())
                 .map(message -> {
                     int size = mRootView.getListDatas().size();
                     // 对话是否存在
@@ -436,6 +415,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     // 不存在本地对话，直接服务器获取
                     return message.cid;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cid -> {
                     if (cid == 0) {
                         mRootView.refreshData();
@@ -480,10 +460,22 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+    /**
+     * 新对话创建回调
+     *
+     * @param messageItemBean
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
-        mRootView.getListDatas().add(0, messageItemBean);
-        mRootView.refreshData();
+
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        if (message != null) {
+            messageItemBean.getConversation().setLast_message(message);
+            messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+            mRootView.getListDatas().add(0, messageItemBean);
+            mRootView.refreshData();
+        }
+
     }
 
 
@@ -527,7 +519,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             Message message = new Message();
             message.setCid(jsonObject.getInt("cid"));
             message.setSeq(jsonObject.getInt("seq"));
-            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());//
+            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());
             // 获取推送的信息
         } catch (JSONException e) {
             e.printStackTrace();
@@ -548,7 +540,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
-                    if(data.getCounts()==null){
+                    if (data.getCounts() == null) {
                         return false;
                     }
                     /**
@@ -624,7 +616,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                     mItemBeanReview.getConversation().getLast_message().setTxt(
                             reviewTip);
-
+                    // 更新我的消息提示
+                    EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                    checkBottomMessageTip();
                     return true;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -633,9 +627,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     protected void onSuccess(Boolean result) {
                         if (result) {
                             mRootView.updateLikeItemData(mItemBeanDigg);
-                            // 更新我的消息提示
-                            EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
-                            checkBottomMessageTip();
                         }
                     }
                 });
@@ -646,28 +637,30 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 获取用户文字显示  张三、李四评论了我
      *
      * @param commentsNoti
-     * @param max_num
+     * @param maxNum
      * @return
      */
-    private String getItemTipStr(List<UnreadCountBean> commentsNoti, int max_num) {
-        String tip = "";
+    private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String dot = mContext.getString(R.string.str_pingyin_dot);
         for (int i = 0; i < commentsNoti.size(); i++) {
-            if (i < max_num) {
+            if (i < maxNum) {
                 try {
-                    if (tip.contains(commentsNoti.get(i).getUser().getName())) {
-                        max_num++;
+                    if (stringBuilder.toString().contains(commentsNoti.get(i).getUser().getName())) {
+                        maxNum++;
                     } else {
-                        tip += commentsNoti.get(i).getUser().getName() + "、";
+                        stringBuilder.append(commentsNoti.get(i).getUser().getName());
+                        stringBuilder.append(dot);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 服务器脏数据导致用户信息为空
+                } catch (NullPointerException ignored) {
                 }
-
             } else {
                 break;
             }
         }
-        if (tip.endsWith("、")) {
+        String tip = stringBuilder.toString();
+        if (tip.endsWith(dot)) {
             tip = tip.substring(0, tip.length() - 1);
         }
         return tip;

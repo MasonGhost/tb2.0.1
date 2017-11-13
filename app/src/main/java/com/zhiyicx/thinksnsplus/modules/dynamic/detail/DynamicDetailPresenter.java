@@ -168,15 +168,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public List<DynamicCommentBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() ==
                 null) {
-            return new ArrayList<>();
-        }
+            mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        }else {
 
-        // 从数据库获取评论列表
-        return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
-                .getFeed_mark());
+            // 从数据库获取评论列表
+            mRootView.onCacheResponseSuccess( mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
+                    .getFeed_mark()),isLoadMore);
+        }
     }
 
     @Override
