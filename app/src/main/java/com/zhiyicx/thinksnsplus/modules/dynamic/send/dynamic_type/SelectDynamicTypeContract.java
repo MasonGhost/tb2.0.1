@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 
 /**
  * @author Catherine
@@ -14,11 +15,11 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface SelectDynamicTypeContract {
 
     interface View extends IBaseView<Presenter>{
-
+        void setUserCertificationInfo(UserCertificationInfo userCertificationInfo);
     }
 
     interface Presenter extends IBaseTouristPresenter{
-        boolean checkCertification();
+        void checkCertification();
         boolean isNeedPayTip();
         void savePayTip(boolean isNeed);
     }

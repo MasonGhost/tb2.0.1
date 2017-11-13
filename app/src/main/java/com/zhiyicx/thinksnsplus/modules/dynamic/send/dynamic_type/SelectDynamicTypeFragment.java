@@ -23,6 +23,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
@@ -42,6 +44,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -82,6 +86,8 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
 
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
     private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
+
+    private UserCertificationInfo mUserCertificationInfo;
 
     public static SelectDynamicTypeFragment getInstance(Bundle b) {
         SelectDynamicTypeFragment selectDynamicTypeFragment = new SelectDynamicTypeFragment();
@@ -151,11 +157,11 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> initAnimation(mSendWordsQuestion));
             // 投稿
-//            delay += DEFAULT_ANIMATE_DELAY;
-//            Observable.timer(delay, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(aLong -> initAnimation(mSendInfo));
-            mSendInfo.setVisibility(View.GONE);
+            delay += DEFAULT_ANIMATE_DELAY;
+            Observable.timer(delay, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mSendInfo));
+//            mSendInfo.setVisibility(View.GONE);
         } else {
             mSendWordsQuestion.setVisibility(View.GONE);
             mSendInfo.setVisibility(View.GONE);
@@ -170,6 +176,24 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+    }
+
+    @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+        mUserCertificationInfo = userCertificationInfo;
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        SystemConfigBean.NewsConfig mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
+        if (userCertificationInfo.getStatus() == 1 || !mPublishInfoConfig.hasVerified()) {
+            if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
+                    && mPublishInfoConfig.hasPay())) {
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
+        } else {
+            mCertificationAlertPopWindow.show();
+        }
     }
 
     private void initAnimation(final View view) {
@@ -241,16 +265,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             case R.id.send_info:
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
-                if (mPresenter.checkCertification()) {
-                    if (mPresenter.isNeedPayTip()) {
-                        mPayAlertPopWindow.show();
-                        mPresenter.savePayTip(false);
-                    } else {
-                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-                    }
-                } else {
-                    mCertificationAlertPopWindow.show();
-                }
+                mPresenter.checkCertification();
                 break;
             default:
         }
@@ -290,6 +305,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     private void initPopWindow() {
+
         if (mCertificationAlertPopWindow == null) {
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
@@ -304,21 +320,42 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
                     .item2ClickListener(() -> {// 个人认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 0);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
-                        closeActivity();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 0);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .item3ClickListener(() -> {// 企业认证
                         mCertificationAlertPopWindow.hide();
-                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(BUNDLE_TYPE, 1);
-                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
-                        startActivity(intent);
-                        closeActivity();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != 2) {
+
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 1);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
                     })
                     .build();
         }
@@ -326,7 +363,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(),getString(R.string.info_publish_hint_pay),mPresenter.getGoldName()))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getGoldName()))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
@@ -336,7 +373,6 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
                         startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-                        closeActivity();
                     })
                     .build();
         }

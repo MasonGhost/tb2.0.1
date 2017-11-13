@@ -70,14 +70,11 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(infoTypeBeanGreenDao -> infoTypeBeanGreenDao.getSingleDataFromCache(1L))
-                .flatMap(new Func1<InfoTypeBean, Observable<InfoTypeBean>>() {
-                    @Override
-                    public Observable<InfoTypeBean> call(InfoTypeBean infoTypeBean) {
-                        if (infoTypeBean == null) {
-                            return mRepository.getInfoType();
-                        }
-                        return Observable.just(infoTypeBean);
+                .flatMap(infoTypeBean -> {
+                    if (infoTypeBean == null) {
+                        return mRepository.getInfoType();
                     }
+                    return Observable.just(infoTypeBean);
                 })
                 .subscribe(new BaseSubscribeForV2<InfoTypeBean>() {
                     @Override
