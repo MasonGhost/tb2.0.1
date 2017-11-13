@@ -24,6 +24,7 @@ import com.zhiyicx.baseproject.widget.indicator_expand.ScaleCircleNavigator;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -55,7 +56,10 @@ public class GalleryFragment extends TSFragment {
     MagicIndicator mMiIndicator;
 
     private SectionsPagerAdapter mPagerAdapter;
-    private int currentItem = 0;// 点击第几张图片进入的预览界面
+    /**
+     *  点击第几张图片进入的预览界面
+     */
+    private int currentItem = 0;
     private List<ImageBean> allImages;
 
     @Override
@@ -220,19 +224,16 @@ public class GalleryFragment extends TSFragment {
     public void showBackgroundImmediately() {
         if (mRootView.getBackground() == null) {
             mVpPhotos.setBackground(backgroundColor);
-            // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         }
         setIndiactorVisible(true);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public ObjectAnimator showBackgroundAnimate() {
-        // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
         bgAnim.addUpdateListener(animation -> {
             mVpPhotos.setBackground(backgroundColor);
-            //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
         });
         bgAnim.addListener(new AnimatorListenerAdapter() {
             @Override

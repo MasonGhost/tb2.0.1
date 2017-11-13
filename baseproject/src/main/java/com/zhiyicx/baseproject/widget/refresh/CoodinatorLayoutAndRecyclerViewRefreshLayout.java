@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
-import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
@@ -15,7 +15,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
  * @contact email:450127106@qq.com
  */
 
-public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLayout
+public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SmartRefreshLayout
         implements ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnScrollChangedListener {
     private static final String TAG = "CoodinatorLayoutAndRecy";
     private float downX, downY;
@@ -87,15 +87,19 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
                 if (Math.abs(dY) / Math.abs(dX) >= 1 && dY > 0) {
                     int[] location = new int[2];
                     getLocationOnScreen(location);
-                    if (location[1] < startY) {
+                    if (location[1] <= startY - 1) {// 少一点要求多一些包容 岂不美滋滋
                         LogUtils.i("onInterceptTouchEvent ::" + "不触发刷新");
                         return false;
                     }
+                } else {
+                    LogUtils.d(Math.abs(dY) / Math.abs(dX));
+                    LogUtils.d(dY);
                 }
 
                 break;
             case MotionEvent.ACTION_UP:
                 break;
+            default:
 
         }
         return super.onInterceptTouchEvent(ev);

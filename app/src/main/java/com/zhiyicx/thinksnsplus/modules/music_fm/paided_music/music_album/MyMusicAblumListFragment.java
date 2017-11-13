@@ -108,11 +108,6 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
     }
 
     @Override
-    protected boolean isNeedRefreshAnimation() {
-        return false;
-    }
-
-    @Override
     public void onNetResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
         if (mListDatas.isEmpty()) {

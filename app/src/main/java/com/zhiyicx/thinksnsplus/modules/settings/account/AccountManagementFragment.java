@@ -100,7 +100,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑手机号
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
                             intent.setClass(getActivity(), InitPasswordActivity.class);
                         }
                         Bundle bundle = new Bundle();
@@ -118,7 +118,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     if (mCurrentUser != null) {
                         // 跳转绑定/解绑邮箱
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()){
+                        if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
                             intent.setClass(getActivity(), InitPasswordActivity.class);
                         }
                         Bundle bundle = new Bundle();
@@ -166,26 +166,52 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
             } else {
                 mPresenter.bindOrUnbindThirdAccount(provider, null, false);
             }
-        } else { // 绑定
-            switch (provider) {
-                case ApiConfig.PROVIDER_QQ:
-                    thridLogin(SHARE_MEDIA.QQ);
-                    break;
-                case ApiConfig.PROVIDER_WEIBO:
-                    thridLogin(SHARE_MEDIA.SINA);
-                    break;
-                case ApiConfig.PROVIDER_WECHAT:
-                    thridLogin(SHARE_MEDIA.WEIXIN);
-                    break;
-                default:
-                    thridLogin(SHARE_MEDIA.QQ);
-            }
+        } else {
+            if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                showSnackErrorMessage(getString(R.string.you_must_bind_phone2));
+            } else {
+                // 绑定
+                switch (provider) {
+                    case ApiConfig.PROVIDER_QQ:
+                        // QQ 和微信 该版本不提供网页支持，故提示安装应用
+                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+                            thridLogin(SHARE_MEDIA.QQ);
+                        } else {
+                            showSnackErrorMessage(getString(R.string.please_install_app));
+                        }
+                        break;
+                    case ApiConfig.PROVIDER_WEIBO:
+//                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
+                            thridLogin(SHARE_MEDIA.SINA);
+//                        } else {
+//                            showSnackErrorMessage(getString(R.string.please_install_app));
+//                        }
+                        break;
+                    case ApiConfig.PROVIDER_WECHAT:
+                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.WEIXIN)) {
+
+                            thridLogin(SHARE_MEDIA.WEIXIN);
+                        } else {
+                            showSnackErrorMessage(getString(R.string.please_install_app));
+                        }
+                        break;
+                    default:
+                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+
+                            thridLogin(SHARE_MEDIA.QQ);
+                        } else {
+                            showSnackErrorMessage(getString(R.string.please_install_app));
+                        }
+                }
+
+            }
         }
     }
 
 
     public void thridLogin(SHARE_MEDIA type) {
+        showSnackLoadingMessage(getString(R.string.loading_state));
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
 
@@ -201,7 +227,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onStart(SHARE_MEDIA platform) {
-            showSnackLoadingMessage(getString(R.string.loading_state));
 
         }
 
@@ -326,10 +351,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
             mBtBindEmail.setEnabled(true);
         }
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
-    }
+
 
 }

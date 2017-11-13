@@ -55,8 +55,8 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

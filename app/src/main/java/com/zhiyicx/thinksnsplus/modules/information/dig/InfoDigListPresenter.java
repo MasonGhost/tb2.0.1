@@ -51,8 +51,8 @@ public class InfoDigListPresenter extends AppBasePresenter<InfoDigListContract.R
     }
 
     @Override
-    public List<InfoDigListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

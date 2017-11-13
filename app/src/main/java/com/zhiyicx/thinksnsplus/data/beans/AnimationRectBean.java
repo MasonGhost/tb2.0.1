@@ -126,7 +126,7 @@ public class AnimationRectBean implements Parcelable {
 
         rect.widgetHeight = imageView.getHeight();
 
-        rect.thumbnailWidthHeightRatio = (float)intrinsicWidth / (float) intrinsicHeight;
+        rect.thumbnailWidthHeightRatio = (float) intrinsicWidth / (float) intrinsicHeight;
 
         rect.thumbnailWidth = intrinsicWidth;
 
@@ -217,6 +217,9 @@ public class AnimationRectBean implements Parcelable {
                                 scaledBitmapRect.right - deltaX,
                                 scaledBitmapRect.bottom - deltaY);
 
+                break;
+
+            default:
                 break;
         }
 

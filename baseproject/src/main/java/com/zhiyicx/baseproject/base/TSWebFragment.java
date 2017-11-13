@@ -295,9 +295,7 @@ public abstract class TSWebFragment extends TSFragment {
                     }
                 });
         mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
-//        if(mOverScrollLayout !=null){// 是否需要下拉
-        mOverScrollLayout.setTopOverScrollEnable(false);
-//        }
+//        mOverScrollLayout.setTopOverScrollEnable(false);
     }
 
 
@@ -360,6 +358,7 @@ public abstract class TSWebFragment extends TSFragment {
         mCompositeSubscription = new CompositeSubscription();
         subscription = Observable.interval(0, 20, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .onBackpressureLatest()
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long newProgress) {
@@ -367,6 +366,11 @@ public abstract class TSWebFragment extends TSFragment {
                         if (newProgress == DEFALUT_SHOW_PROGRESS) {
                             rxUnsub();
                         }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
                     }
                 });
         mCompositeSubscription.add(subscription);

@@ -38,7 +38,7 @@ public class InfoCommentListBean extends BaseListBean {
     @Id
     private Long id;
     @SerializedName(value = "info_id",alternate = {"commentable_id"})
-    private int info_id = -1;// 自己创建的，用于记录隶属于哪一条资讯。
+    private long info_id = -1;// 用于记录隶属于哪一条资讯。
     private String created_at;
     @SerializedName(value = "comment_content",alternate = {"body"})
     private String comment_content;
@@ -160,49 +160,59 @@ public class InfoCommentListBean extends BaseListBean {
     public InfoCommentListBean() {
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    public int getInfo_id() {
+    public long getInfo_id() {
         return this.info_id;
     }
 
     public void setInfo_id(int info_id) {
         this.info_id = info_id;
     }
+
+
+
+    public long getTarget_user() {
+        return this.target_user;
+    }
+
+    public void setTarget_user(long target_user) {
+        this.target_user = target_user;
+    }
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeLong(this.info_id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.comment_content);
+        dest.writeLong(this.user_id);
+        dest.writeLong(this.reply_to_user_id);
+        dest.writeLong(this.comment_mark);
+        dest.writeParcelable(this.fromUserInfoBean, flags);
+        dest.writeParcelable(this.toUserInfoBean, flags);
+        dest.writeLong(this.target_user);
+        dest.writeParcelable(this.publishUserInfoBean, flags);
+        dest.writeString(this.commentable_type);
+        dest.writeInt(this.state);
+        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
+    }
+
+    public boolean getPinned() {
+        return this.pinned;
+    }
+
+    public void setInfo_id(long info_id) {
+        this.info_id = info_id;
+    }
+
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 662071464)
     public UserInfoBean getFromUserInfoBean() {
@@ -269,34 +279,12 @@ public class InfoCommentListBean extends BaseListBean {
         }
     }
 
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 786979885)
-    private transient InfoCommentListBeanDao myDao;
-    @Generated(hash = 262226026)
-    private transient Long fromUserInfoBean__resolvedKey;
-    @Generated(hash = 89682145)
-    private transient Long toUserInfoBean__resolvedKey;
-
-    public long getTarget_user() {
-        return this.target_user;
-    }
-
-    public void setTarget_user(long target_user) {
-        this.target_user = target_user;
-    }
-
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1683320735)
     public UserInfoBean getPublishUserInfoBean() {
         long __key = this.target_user;
-        if (publishUserInfoBean__resolvedKey == null || !publishUserInfoBean__resolvedKey.equals(__key)) {
+        if (publishUserInfoBean__resolvedKey == null
+                || !publishUserInfoBean__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -325,52 +313,40 @@ public class InfoCommentListBean extends BaseListBean {
         }
     }
 
-    @Generated(hash = 783792331)
-    private transient Long publishUserInfoBean__resolvedKey;
-
-    @Generated(hash = 1478166591)
-    public InfoCommentListBean(Long id, int info_id, String created_at, String comment_content, long user_id,
-            long reply_to_user_id, long comment_mark, long target_user, String commentable_type, int state,
-            boolean pinned) {
-        this.id = id;
-        this.info_id = info_id;
-        this.created_at = created_at;
-        this.comment_content = comment_content;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
-        this.comment_mark = comment_mark;
-        this.target_user = target_user;
-        this.commentable_type = commentable_type;
-        this.state = state;
-        this.pinned = pinned;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeInt(this.info_id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.comment_content);
-        dest.writeLong(this.user_id);
-        dest.writeLong(this.reply_to_user_id);
-        dest.writeLong(this.comment_mark);
-        dest.writeParcelable(this.fromUserInfoBean, flags);
-        dest.writeParcelable(this.toUserInfoBean, flags);
-        dest.writeLong(this.target_user);
-        dest.writeParcelable(this.publishUserInfoBean, flags);
-        dest.writeString(this.commentable_type);
-        dest.writeInt(this.state);
-        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
-    }
-
-    public boolean getPinned() {
-        return this.pinned;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -383,7 +359,7 @@ public class InfoCommentListBean extends BaseListBean {
     protected InfoCommentListBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.info_id = in.readInt();
+        this.info_id = in.readLong();
         this.created_at = in.readString();
         this.comment_content = in.readString();
         this.user_id = in.readLong();
@@ -398,6 +374,23 @@ public class InfoCommentListBean extends BaseListBean {
         this.pinned = in.readByte() != 0;
     }
 
+    @Generated(hash = 2113544214)
+    public InfoCommentListBean(Long id, long info_id, String created_at, String comment_content,
+            long user_id, long reply_to_user_id, long comment_mark, long target_user,
+            String commentable_type, int state, boolean pinned) {
+        this.id = id;
+        this.info_id = info_id;
+        this.created_at = created_at;
+        this.comment_content = comment_content;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+        this.comment_mark = comment_mark;
+        this.target_user = target_user;
+        this.commentable_type = commentable_type;
+        this.state = state;
+        this.pinned = pinned;
+    }
+
     public static final Creator<InfoCommentListBean> CREATOR = new Creator<InfoCommentListBean>() {
         @Override
         public InfoCommentListBean createFromParcel(Parcel source) {
@@ -409,4 +402,16 @@ public class InfoCommentListBean extends BaseListBean {
             return new InfoCommentListBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 786979885)
+    private transient InfoCommentListBeanDao myDao;
+    @Generated(hash = 262226026)
+    private transient Long fromUserInfoBean__resolvedKey;
+    @Generated(hash = 89682145)
+    private transient Long toUserInfoBean__resolvedKey;
+    @Generated(hash = 783792331)
+    private transient Long publishUserInfoBean__resolvedKey;
 }

@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+    <com.zhiyicx.thinksnsplus.modules.q_a.richtext.DataImageView
         android:id="@+id/edit_imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:zoomEnabled="false"/>
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/image_close"

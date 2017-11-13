@@ -1,9 +1,13 @@
-2017年5月11日10:04:01
-# thinksns-plus-android
+2017年10月17日10:58:48
+# ThinkSNS Plus Android  Dev Doc
+
+## 简介
+本文档旨在帮助开发者快速理解并基于 `ThinkSNS Plus Android ` 端的开发，为二次开发提高效率。
 
 整个项目相关的决策工作安排等记录在[thinksns-plus-document](https://github.com/zhiyicx/thinksns-plus-document).
 
 整个项目代码风格都遵守[智艺创想移动端开发代码风格指南](https://github.com/zhiyicx/mobile-devices-code-style-guide)
+
 ## 工程基础配置说明
 
 该工程使用 java 语言编写.支持 Android 4.0 (api 15) 以上系统.
@@ -26,6 +30,80 @@ Gradle 版本
 ### Git 忽略文件说明
 
 本工程忽略文件配置位于主工程下 `.gitignore`文件，可手动修改配置内容
+
+### 代码混淆说明
+开启代码混淆和混淆规则 `app` 的 `builde.gradle` 的文件下，`buildTypes` 节点添加 `release` 节点，` minifyEnabled` 属性表示是否开启混淆，`proguardFiles` 表示混淆依赖的文件，具体开启方法如下：
+```
+apply plugin: 'com.android.application'
+
+android {
+   ...
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    ...
+}
+
+
+```
+混淆配置说明
+```
+ # 指定代码的压缩级别
+-optimizationpasses 5
+ # 是否使用大小写混合
+-dontusemixedcaseclassnames
+ # 是否混淆第三方jar
+-dontskipnonpubliclibraryclasses
+ # 混淆时是否做预校验
+-dontpreverify
+ # 混淆时是否记录日志
+-verbose
+ # 混淆时所采用的算法
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+ # 保持哪些类不被混淆
+-keep public class * extends android.content.ContentProvider
+ # 保持哪些类不被混淆
+-keep public class * extends android.app.backup.BackupAgentHelper
+ # 保持哪些类不被混淆
+-keep public class * extends android.preference.Preference
+ # 保持哪些类不被混淆
+-keep public class com.android.vending.licensing.ILicensingService
+ # 保持 native 方法不被混淆
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+ # 保持自定义控件类不被混淆
+-keepclasseswithmembers class * {
+    public (android.content.Context, android.util.AttributeSet);
+}
+ # 保持自定义控件类不被混淆
+-keepclasseswithmembers class * {
+    public (android.content.Context, android.util.AttributeSet, int);
+}
+ # 保持自定义控件类不被混淆
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+ # 保持枚举 enum 类不被混淆
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+ # 保持 Parcelable 不被混淆
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+```
+> **注意:** 使用时请参考 `app/proguard-rules.pro`
+
+## 项目安装、打包、签名说明
+- [项目安装](document/tutorial/AndroidInstallDocTutorial.md)
+- [创建签名文件说明](document/tutorial/AndroidCreateSignatureFileTutorial.md)
+- [打包说明](document/tutorial/AndroidPackageTutorial.md)
 
 ## 文档位置说明
 
@@ -62,7 +140,7 @@ hotfix/pay_fail ( 修复分支 )
 
 - 整体结构   [MVP+Dagger2](https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger/)
 
-- 技术说明 ：  [retrofit](https://github.com/square/retrofit) + [dagger2](https://google.github.io/dagger/) + [rx](http://reactivex.io/)
+- 技术说明 ：  [retrofit](https://github.com/square/retrofit) + [dagger2](https://google.github.io/dagger/) + [rx](http://reactivex.io/) + [greenDao](https://github.com/greenrobot/greenDAO)
 
 
 ###   why choose this?
@@ -76,63 +154,6 @@ hotfix/pay_fail ( 修复分支 )
 |rx||1.使用干净的输入/输出函数;<br><br>2.减少代码行数；<br><br>3.异步的错误处理；<br><br>4.便于线程操作|
 
 
-## 主要模块介绍
+### 工程结构
 
-[app](document/app/APP.md) app 主工程
->- [打包账号说明](document/app/KEYSTORE_EXPLANATION.md)
->- [页面专场动画](document/app/ACTIVITYANIMATION.md)
->- [接口说明](document/app/API.md)
->- [动态功能说明文档](document/app/DYNAMIC.md)
->- [动态列表评论](document/app/DYNAMICLISTCOMMENT.md)
->- [消息对照表](document/app/ERROR_MESSAGE_CODE.md)
->- [图片浏览器](document/app/GALLERY.md)
->- [Lint 检测说明](document/app/LINT.md)
->- [音乐 FM](document/app/MUSIC_FM.md)
->- [文件上传逻辑说明](document/app/UPLOADFILE.md)
->- [RxBinding 的使用](document/app/RXBINDING.md)
-
-[baseproject](document/baseproject/BASEPROJECT.md) 项目基类定义，和各种配置信息,接入人员可修改，包涵资源文件
->- [App 启动优化](document/baseproject/APPLAUNCHEROPTIMIZE.md)
->- [关于 TSActivity 和 TSFragment 说明](document/baseproject/BASEClASS.md)
->- [缓存策略](document/baseproject/CACHE.md)
->- [程序异常崩溃处理](document/baseproject/CRASHHANDLER.md)
->- [动态工具栏类说明](document/baseproject/DYNAMICMENU.md)
->- [GreenDao3.0+ 的使用](document/baseproject/GREENDAO.md)
->- [图片加载实现](document/baseproject/IMAGELOADER.md)
->- [实体类说明](document/baseproject/JAVABEAN.md)
->- [信息弹框](document/baseproject/LOADINGDIALOG.md)
->- [图片选择器的功能整合](document/baseproject/PHOTOSELECTOR.md)
->- [刷新控件](document/baseproject/REFRESH.md)
->- [TabSelectView 自定义控件](document/baseproject/TABSELECTVIEW.md)
->- [分享功能](document/baseproject/THIRDSHARE.md)
->- [基础列表类说明](document/baseproject/TSLISTFRAGMENT.md)
->- [基础浏览器说明](document/baseproject/TSWEBFRAGMENT.md)
->- [uCrop 图片裁剪开源库](document/baseproject/UCROP.md)
-
-[common](document/common/COMMON.md) 基础框架包，基础公用累，接入人员不用修改，不包含资源文件，可打成`jar`
->- [辅助常量定义](document/common/CONSTANTCONFIG.md)
->- [dagger2 说明](document/common/DAGGER2.md)
->- [mvp 说明](document/common/MVP.md)
->- [6.0 权限适配](document/common/PERMISSION.md)
->- [日志说明](document/common/LOG.md)
->- [日志说明](document/common/LOG.md)
->- [常用工具类集合](document/common/UTILS.md)
->- [基础自定义控件](document/common/WIDGET.md)
-
-[test](document/test/TEST.md)测试框架
->- [测试报告生成说明](document/test/TESTREPORT.md)
-
-[imsdk](document/imsdk/STRUCTURE.md) 聊天SDK概述
->- [IMSDK文档](document/imsdk/MANUAL.md.md)
-
-[baseadapter-recyclerview](document/baseadapter/BASEADAPTER.md) 基础列表Adapter
-
-[refresh](document/refresh/REFRESH.md) 刷新控件
-
-[design](document/design/DESIGN.md) 视觉规范
-
-[ucrop](document/baseproject/UCROP.md) 图片裁剪库
-
-[PhotoPicker](document/baseproject/PHOTOPICKER.md) 图片选择器
-
-[pickerview](pickerview/README.md)  时间选择器，滑轮选择器
+请查看[二次开发文档](SecondaryDevelopmentTutorial.md)

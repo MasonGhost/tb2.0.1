@@ -23,7 +23,7 @@
                 android:layout_height="@dimen/answer_list_portrait_width"
                 android:layout_marginTop="@dimen/spacing_tiny"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/pic_default_portrait2"/>
+                android:src="@mipmap/pic_default_secret"/>
         </FrameLayout>
 
 

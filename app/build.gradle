@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
-apply plugin: 'me.tatarka.retrolambda'
+
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
@@ -13,6 +13,12 @@ android {
     compileSdkVersion gConfig["compileSdkVersion"]
     buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
         applicationId gConfig["applicationId"]
         minSdkVersion gConfig["minSdkVersion"]
         targetSdkVersion gConfig["targetSdkVersion"]
@@ -115,8 +121,8 @@ android {
         javaMaxHeapSize "6g"//越大越好
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 greendao {
@@ -126,7 +132,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 73
+    schemaVersion 76
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -147,23 +153,22 @@ configurations.all {
     }
 }
 dependencies {
-    def dataDependences = rootProject.ext.dataDependencies;
-    def supportDependences = rootProject.ext.sdksoupportDependencies;
-    def testDependences = rootProject.ext.testDependencies;
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    def dataDependences = rootProject.ext.dataDependencies
+    def supportDependences = rootProject.ext.sdksoupportDependencies
+    def testDependences = rootProject.ext.testDependencies
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //support
     compile supportDependences.appcompatV7
     compile supportDependences.paletteV7
     compile supportDependences.supportV4
     compile supportDependences.constraintLayout
-
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
         exclude module: 'support-annotations'
         exclude group: 'javax.inject'
     }
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     androidTestCompile testDependences.espressoIntent
     androidTestCompile(testDependences.espressoRecyclerView) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -184,8 +189,8 @@ dependencies {
     compile dataDependences.butterknife
     annotationProcessor dataDependences.butterknifeApt
     // Project
-    compile project(":baseproject")
-    compile project(":media-cache")
+    compile project(':baseproject')
+    compile project(':media-cache')
     compile project(':banner')
     compile project(':tspay')
     compile project(':contacts')
@@ -197,16 +202,12 @@ dependencies {
     // jpush
     compile dataDependences.jiguangJpush
     compile dataDependences.jiguangJcore
-
     compile dataDependences.greendaoSqlcipher
     compile dataDependences.markdownView
     compile dataDependences.editor
     compile dataDependences.richtext
     compile(name: 'lint-library-release', ext: 'aar')
-
     compile dataDependences.flowlayout
-//    compile dataDependences.contacts
-
+    //    compile dataDependences.contacts
     compile dataDependences.update
 }
-

@@ -19,7 +19,7 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_marginTop="@dimen/spacing_mid"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/size_primary_title"
+        android:textSize="@dimen/info_title_size"
         tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
     <!--栏目以及来源-->

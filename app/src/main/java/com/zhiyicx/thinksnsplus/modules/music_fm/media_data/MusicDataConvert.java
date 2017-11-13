@@ -17,6 +17,7 @@ import java.util.Iterator;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@SuppressWarnings("ALL")
 public class MusicDataConvert implements MusicProviderSource {
 
     private MusicAlbumDetailsBean mAlbumDetailsBean;
@@ -36,9 +37,11 @@ public class MusicDataConvert implements MusicProviderSource {
             return tracks.iterator();
         }
         for (MusicDetaisBean data : mAlbumDetailsBean.getMusics()) {
-            LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getTitle());
-            if (data.getStorage().getAmount() == 0 || data.getStorage().isPaid())// 跳过收费
+            // 跳过收费
+            if (data.getStorage().getAmount() == 0 || data.getStorage().isPaid()){
+                LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getTitle());
                 tracks.add(buildMusic(data));
+            }
         }
         return tracks.iterator();
     }
@@ -50,7 +53,7 @@ public class MusicDataConvert implements MusicProviderSource {
         String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(), 50, 50, 100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
         //noinspection ResourceType
-        return new MediaMetadataCompat.Builder()// 局限性有点大
+        return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
                         "" + needData.getId())
 

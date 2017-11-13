@@ -71,7 +71,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 int action = recharge.getAction();
                 desc.setEnabled(status_success);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
-                        PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
+                        PayConfig.realCurrency2GameCurrency(recharge.getAmount(), mPresenter.getRatio()));
                 desc.setText(status_success ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
                         getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));
                 account.setText(getDes(recharge));
@@ -81,9 +81,12 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0) {
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), BillDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(BILL_INFO, BillDetailBean.recharge2Bill(mListDatas.get(position)));
+                bundle.putParcelable(BILL_INFO, BillDetailBean.recharge2Bill(mListDatas.get(position), mPresenter.getRatio()));
                 intent.putExtra(BILL_INFO, bundle);
                 startActivity(intent);
             }
@@ -118,7 +121,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 result = getString(R.string.apple_pay_upacp) + " " + recharge.getBody();
                 break;
             default:
-                result = recharge.getBody();
+                result = recharge.getSubject();
 
         }
         return result;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
@@ -26,8 +27,15 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -36,7 +44,7 @@ import javax.inject.Inject;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class MinePresenter extends BasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
+public class MinePresenter extends AppBasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
@@ -77,7 +85,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
                 if (walletBean != null) {
                     int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-//                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
+///                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
                     userInfoBean.setWallet(walletBean);
                 }
                 mRootView.setUserInfo(userInfoBean);
@@ -91,16 +99,28 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_USERINFO_UPDATE)
     public void upDataUserInfo(List<UserInfoBean> data) {
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (data != null) {
-            for (UserInfoBean userInfoBean : data) {
-                if (userInfoBean.getUser_id() == authBean.getUser_id()) {
-                    userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
-                    mRootView.setUserInfo(userInfoBean);
-                    break;
-                }
-            }
-        }
+        Subscription subscribe = rx.Observable.just(data)
+                .observeOn(Schedulers.io())
+                .map(userInfoBeans -> {
+                    AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+                    if (data != null) {
+                        for (UserInfoBean userInfoBean : data) {
+                            if (userInfoBean.getUser_id() == authBean.getUser_id()) {
+                                userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
+                                return userInfoBean;
+                            }
+                        }
+                    }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userInfoBean -> {
+                    if (userInfoBean != null) {
+                        mRootView.setUserInfo(userInfoBean);
+                    }
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
     }
 
     /**
@@ -129,7 +149,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
      */
     @Override
     public void updateUserInfo() {
-        mUserInfoRepository.getCurrentLoginUserInfo()
+        Subscription subscribe = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
@@ -137,6 +157,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                         mRootView.setUserInfo(data);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -146,7 +167,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Override
     public void getCertificationInfo() {
-        mCertificationDetailRepository.getCertificationInfo()
+        Subscription subscribe = mCertificationDetailRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
 
@@ -156,11 +177,11 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                         mRootView.updateCertification(data);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
     public void updateCertification(Bundle bundle) {
-        // 发布成功
         if (bundle != null) {
             UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
             mRootView.updateCertification(info);

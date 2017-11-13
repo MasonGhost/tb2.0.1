@@ -112,4 +112,6 @@
     <dimen name="type_item_height">67dp</dimen>
     <dimen name="type_item_user_portrait">38dp</dimen>
     <dimen name="type_item_rank_num_width">35dp</dimen>
+    <dimen name="item_channel_detial_header_des_with">280dp</dimen>
+    <dimen name="info_title_size">25sp</dimen>
 </resources>

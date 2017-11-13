@@ -67,8 +67,8 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
     }
 
     @Override
-    public List<DynamicDigListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -14,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -23,6 +19,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -37,13 +34,16 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
 import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -86,9 +86,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private boolean mIsPasswordEdited;
 
     private boolean mIsToourist;
-
-    private List<AccountBean> mAccountList; // 历史的账号
-    private AccountBean mAccountBean; // 当前登录的账号
+    /**
+     * 历史的账号
+     */
+    private List<AccountBean> mAccountList;
+    /**
+     * 当前登录的账号
+     */
+    private AccountBean mAccountBean;
 
     private ArrayAdapter mArrayAdapter;
     private AccountAdapter mAccountAdapter;
@@ -108,24 +113,29 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         if (getArguments() != null) {
             mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
         }
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initView(View rootView) {
+        boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
+                || mSystemConfigBean.getRegisterSettings() != null && !mSystemConfigBean.getRegisterSettings().getType().equals(SystemConfig
+                .REGITER_MODE_THIRDPART);
+        mToolbarRight.setVisibility(openRegister ? View.VISIBLE : View.GONE);
         mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
         initListener();
         // 游客判断
-        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
-        if (mIsToourist || !mPresenter.istourist()) {
+        mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
+        if (mIsToourist || !mPresenter.isTourist()) {
             setLeftTextColor(R.color.themeColor);
         }
-        mRxPermissions.setLogging(true); //是否需要日志
+        //是否需要日志
+        mRxPermissions.setLogging(true);
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
-
     }
 
     private void initListener() {
@@ -160,8 +170,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
                         .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
-                    if (aBoolean) {// 获取到了权限
-                        mAccountBean.setId(new Date().getTime());
+                    // 获取到了权限
+                    if (aBoolean) {
+                        mAccountBean.setId(System.currentTimeMillis());
                         mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
                         mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
                     } else {// 拒绝权限，但是可以再次请求
@@ -177,36 +188,44 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    thridLogin(SHARE_MEDIA.QQ);
+                    // QQ 和微信 该版本不提供网页支持，故提示安装应用
+                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.QQ)) {
+                        showSnackLoadingMessage(getString(R.string.loading_state));
+                        thridLogin(SHARE_MEDIA.QQ);
+                    } else {
+                        showSnackErrorMessage(getString(R.string.please_install_app));
+                    }
 
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+//                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
+                    showSnackLoadingMessage(getString(R.string.loading_state));
                     thridLogin(SHARE_MEDIA.SINA);
-
+//                    } else {
+//                        showSnackErrorMessage(getString(R.string.please_install_app));
+//                    }
                 });
         RxView.clicks(mTvLoginByWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    thridLogin(SHARE_MEDIA.WEIXIN);
+                    if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.WEIXIN)) {
+
+                        showSnackLoadingMessage(getString(R.string.loading_state));
+                        thridLogin(SHARE_MEDIA.WEIXIN);
+                    } else {
+                        showSnackErrorMessage(getString(R.string.please_install_app));
+                    }
                 });
     }
 
     public void thridLogin(SHARE_MEDIA type) {
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
-
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -274,13 +293,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void setLoginState(boolean loginState) {
         mBtLoginLogin.handleAnimation(false);
-        mBtLoginLogin.setEnabled(true);
         if (loginState) {
-            mTvErrorTip.setVisibility(View.INVISIBLE);
-            mTvErrorTip.setText("");
-            mEtLoginPassword.setText("");
-            mEtLoginPhone.setText("");
-            mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
             if (mIsToourist) {
                 getActivity().setResult(RESULT_OK);
@@ -332,7 +345,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     private void goHome() {
-        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
+        // 清除 homeAcitivity 重新加载
+        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();
         startActivity(new Intent(getActivity(), HomeActivity.class));
         getActivity().finish();
     }
@@ -390,7 +404,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onStart(SHARE_MEDIA platform) {
-            showSnackLoadingMessage(getString(R.string.loading_state));
 
         }
 
@@ -402,7 +415,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            showSnackSuccessMessage(getString(R.string.loading_state));
+            dismissSnackBar();
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -432,7 +445,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
             showErrorTips(getString(R.string.login_fail));
-            showSnackWarningMessage(getString(R.string.login_fail));
+            showSnackErrorMessage(getString(R.string.login_fail));
         }
 
         /**

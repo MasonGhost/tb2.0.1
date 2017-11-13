@@ -3,12 +3,20 @@ package com.zhiyicx.thinksnsplus.modules.information.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,8 +33,10 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -43,6 +53,7 @@ import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -54,6 +65,8 @@ import java.util.regex.Pattern;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
+import br.tiagohm.markdownview.js.ExternalScript;
+import br.tiagohm.markdownview.js.JavaScript;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -69,8 +82,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetai
  * @contact email:648129313@qq.com
  */
 
-public class InfoDetailHeaderView {
-
+public class InfoDetailHeaderView extends BaseWebLoad {
     private MarkdownView mContent;
     private MarkdownView mContentSubject;
     private TextView mTitle;
@@ -120,9 +132,7 @@ public class InfoDetailHeaderView {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
-        if (adverts != null) {
-            initAdvert(context, adverts);
-        }
+        initAdvert(context, adverts);
     }
 
     public void setDetail(InfoListDataBean infoMain) {
@@ -136,26 +146,28 @@ public class InfoDetailHeaderView {
                 mFrom.setText(from);
             }
             // 引用
-//            if (!TextUtils.isEmpty(infoMain.getSubject())) {
-//                InternalStyleSheet css = new Github();
-//                css.addRule(".container", "padding:0px", "margin:0px");
-//                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-//                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
-//                css.addRule("p", "margin:0px", "padding:10px");
-//                mContentSubject.setVisibility(VISIBLE);
-//                mContentSubject.addStyleSheet(css);
-//                mContentSubject.loadMarkdown(infoMain.getSubject());
-//            } else {
-//                mContentSubject.setVisibility(GONE);
-//            }
-            mContentSubject.setVisibility(GONE);
-            // 资讯content
+            if (!TextUtils.isEmpty(infoMain.getSubject())) {
+                infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
+                InternalStyleSheet css = new Github();
+                css.addRule(".container", "padding:0px", "margin:0px");
+                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
+                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+                css.addRule("p", "margin:0px", "padding:10px");
+                mContentSubject.setVisibility(VISIBLE);
+                mContentSubject.addStyleSheet(css);
+                mContentSubject.loadMarkdown(infoMain.getSubject());
+            } else {
+                mContentSubject.setVisibility(GONE);
+            }
+            // 资讯contente
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
+                mContent.setWebChromeClient(mWebChromeClient);
+
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -187,7 +199,7 @@ public class InfoDetailHeaderView {
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-
+                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
                     }
 
                     @Override
@@ -209,7 +221,7 @@ public class InfoDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -237,21 +249,6 @@ public class InfoDetailHeaderView {
             markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
-
-//        String tag = "@![image](";
-//        while (markDownContent.contains(tag)) {
-//            int start = markDownContent.indexOf(tag) + tag.length();
-//            int end = markDownContent.indexOf(")", start);
-//            String id = "0";
-//            try {
-//                id = markDownContent.substring(start, end);
-//            } catch (Exception e) {
-//                LogUtils.d("Cathy", e.toString());
-//            }
-//            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-//            markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
-//            dealImageList(imgPath, id);
-//        }
         return markDownContent;
     }
 
@@ -265,7 +262,7 @@ public class InfoDetailHeaderView {
         imageBean.setImgUrl(imgPath);// 本地地址，也许有
         Toll toll = new Toll(); // 收费信息
         toll.setPaid(true);// 是否已經付費
-        toll.setToll_money(0f);// 付费金额
+        toll.setToll_money(0);// 付费金额
         toll.setToll_type_string("");// 付费类型
         toll.setPaid_node(0);// 付费节点
         imageBean.setToll(toll);
@@ -326,8 +323,8 @@ public class InfoDetailHeaderView {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
         });
     }
@@ -345,6 +342,12 @@ public class InfoDetailHeaderView {
             List<UserTagBean> tagBeanList = infoMain.getTags();
             if (tagBeanList != null && tagBeanList.size() > 0) {
                 UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
+                mFtlRelate.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                    @Override
+                    public boolean onTagClick(View view, int position, FlowLayout parent) {
+                        return false;
+                    }
+                });
                 mFtlRelate.setAdapter(mUserInfoTagsAdapter);
             }
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -389,10 +392,10 @@ public class InfoDetailHeaderView {
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
                         if (!AppApplication.sOverRead.contains(infoListDataBean.getId())) {
-                            AppApplication.sOverRead.add(infoListDataBean.getId());
+                            AppApplication.sOverRead.add(infoListDataBean.getId().intValue());
                         }
                         FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                                , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                                , imageView.getDrawable(), R.mipmap.icon), "info_share");
                         title.setTextColor(mContext.getResources()
                                 .getColor(R.color.normal_for_assist_text));
                         // 跳转到新的咨询页
@@ -417,21 +420,38 @@ public class InfoDetailHeaderView {
     }
 
     public void setAdvertViewVisible(int visible) {
-        if (visible == View.GONE) {
+        if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mDynamicDetailAdvertHeader.hideAdvert();
-        } else if (visible == View.VISIBLE) {
+        } else if (visible == View.VISIBLE && com.zhiyicx.common.BuildConfig.USE_ADVERT
+                && mDynamicDetailAdvertHeader.getAdvertListBeans() != null && !mDynamicDetailAdvertHeader.getAdvertListBeans().isEmpty()) {
             mDynamicDetailAdvertHeader.showAdvert();
         }
     }
 
+    /**
+     * @param visible 0 正常，
+     */
     public void setInfoReviewIng(int visible) {
         isReviewIng = true;
         setReWardViewVisible(visible);
         setAdvertViewVisible(visible);
-        mInfoRelateList.setVisibility(GONE);
-        mFtlRelate.setVisibility(GONE);
-        mRvRelateInfo.setVisibility(GONE);
+        mInfoRelateList.setVisibility(visible);
+        mFtlRelate.setVisibility(visible);
+        mDigListView.setVisibility(visible);
+        mRvRelateInfo.setVisibility(visible);
     }
 
+    public void destroyedWeb() {
+        destryWeb(mContent);
+        destryWeb(mContentSubject);
 
+    }
+
+    public MarkdownView getContentWebView() {
+        return mContent;
+    }
+
+    public MarkdownView getContentSubWebView() {
+        return mContentSubject;
+    }
 }

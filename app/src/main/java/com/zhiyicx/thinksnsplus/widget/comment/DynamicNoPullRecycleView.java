@@ -85,7 +85,8 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
     protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
         String content = handleName(dynamicCommentBean);
-        if (!dynamicCommentBean.getPinned()) {// 不是置顶的评论则不用处理
+        // 不是置顶的评论则不用处理
+        if (!dynamicCommentBean.getPinned()) {
             return content;
         } else if (mTopFlagPosition == TopFlagPosition.WORDS_RIGHT) {
             int lenght = content.length();
@@ -103,22 +104,22 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
     protected List<Link> setLiknks(final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getCommentUser() != null) {// 我也不知道这个怎么会是 null
+        // 我也不知道这个怎么会是 null
+        if (dynamicCommentBean.getCommentUser() != null) {
             Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
                     .setTextColor(ContextCompat.getColor(getContext(), R.color
                             .important_for_content))
-
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                             .general_for_hint))
                     .setHighlightAlpha(.8f)
                     .setUnderlined(false)
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean
-                                    .getReplyUser());
+                                    .getCommentUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         // single clicked
                         if (mOnUserNameClickListener != null) {
                             mOnUserNameClickListener.onUserNameClick(dynamicCommentBean
@@ -137,13 +138,13 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
                             .general_for_hint))
                     .setHighlightAlpha(.5f)
                     .setUnderlined(false)
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean
                                     .getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         // single clicked
                         if (mOnUserNameClickListener != null) {
                             mOnUserNameClickListener.onUserNameClick(dynamicCommentBean

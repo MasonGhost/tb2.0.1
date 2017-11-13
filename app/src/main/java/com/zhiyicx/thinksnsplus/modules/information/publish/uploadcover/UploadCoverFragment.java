@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,7 +59,10 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     private InfoPublishBean mInfoPublishBean;
     private PayPopWindow mPayInfoPopWindow;
     private PhotoSelectorImpl mPhotoSelector;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    /**
+     * 图片选择弹框
+     */
+    private ActionPopupWindow mPhotoPopupWindow;
     private ActionPopupWindow mCoverInstructionsPopupWindow;
 
     public static UploadCoverFragment newInstance(Bundle bundle) {
@@ -89,7 +93,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected String setRightTitle() {
-        return "重置封面";
+        return getString(R.string.reset_cover);
     }
 
     @Override
@@ -97,9 +101,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        int iamge_id = RegexUtils.getImageId(mInfoPublishBean.getContent());
+        int imageId = RegexUtils.getImageId(mInfoPublishBean.getContent());
         if (mInfoPublishBean.isRefuse()) {
-            mInfoPublishBean.setImage((long) iamge_id < 0 ? null : (long) iamge_id);
+            mInfoPublishBean.setImage((long) imageId < 0 ? null : (long) imageId);
         } else {
             mInfoPublishBean.setImage(mInfoPublishBean.getCover() < 0 ? null : (long) mInfoPublishBean.getCover());
         }
@@ -146,7 +150,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicSuccess(int id) {
         if (showUplaoding()) {
-            showSnackSuccessMessage("封面上传成功");
+            showSnackSuccessMessage(getString(R.string.cover_upload_success));
         }
         mInfoPublishBean.setImage((long) id);
         mBtSure.setEnabled(true);
@@ -180,6 +184,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void initView(View rootView) {
         initListener();
+        mBtSure.setText(getString(mPresenter.getSystemConfigBean().getNewsContribute().hasPay()
+                ? R.string.publish_withpay_info : R.string.publish_info));
     }
 
     @Override
@@ -191,7 +197,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-            mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+///            if (!TextUtils.isEmpty(mInfoPublishBean.getSubject())){
+//               mInfoPublishBean.setSubject(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n");
+//            }
         }
         if (mInfoPublishBean.isRefuse() && mInfoPublishBean.getImage() != null) {
             int w = getResources().getDimensionPixelSize(R.dimen.upload_info_cover_width);
@@ -212,13 +220,14 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     private void initListener() {
+        //两秒钟之内只取一个点击事件，防抖操作
         RxView.clicks(mFlInfoCoverContainer)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> initPhotoPopupWindow());
-
+        //两秒钟之内只取一个点击事件，防抖操作
         RxView.clicks(mBtSure)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 不要封面也可以发布了
@@ -226,6 +235,10 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 //                        initWithdrawalsInstructionsPop();
 //                        return;
 //                    }
+                    if (mInfoPublishBean.isRefuse()) {
+                        mPresenter.publishInfo(mInfoPublishBean);
+                        return;
+                    }
                     initPayInfoPopWindow();
                 });
 
@@ -246,6 +259,10 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     private void initPayInfoPopWindow() {
+        if (!mPresenter.getSystemConfigBean().getNewsContribute().hasPay()) {
+            mPresenter.publishInfo(mInfoPublishBean);
+            return;
+        }
         if (mPayInfoPopWindow != null) {
             mPayInfoPopWindow.show();
             return;
@@ -260,16 +277,16 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean
-                        .getAmout())))
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mInfoPublishBean
+                        .getAmout(), mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.send_info_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
-                        .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
+                        .realCurrency2GameCurrency(mInfoPublishBean.getAmout(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mInfoPublishBean.setContent(InfoPublishBean.DEFALUT_SUBJECT + mInfoPublishBean.getSubject() + "\n\n" + mInfoPublishBean.getContent());
+///                    mInfoPublishBean.setContent(mInfoPublishBean.getSubject() + mInfoPublishBean.getContent());
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })

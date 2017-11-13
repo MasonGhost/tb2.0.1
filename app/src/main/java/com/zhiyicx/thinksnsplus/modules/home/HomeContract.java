@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.content.Intent;
+
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
@@ -53,6 +56,8 @@ public interface HomeContract {
          * @return
          */
         CheckInBean getCheckInData();
+
+
     }
 
     /**
@@ -61,7 +66,7 @@ public interface HomeContract {
     interface Repository {
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         /**
          * 初始化 im
          */

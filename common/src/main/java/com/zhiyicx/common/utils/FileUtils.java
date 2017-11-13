@@ -451,6 +451,11 @@ public class FileUtils {
         return len == -1 ? "" : ConvertUtils.byte2FitMemorySize(len);
     }
 
+    public static String getDirSizeUnit(File dir) {
+        long len = getDirLength(dir);
+        return len == -1 ? "" : ConvertUtils.byte2FitMemorySizeUnit(len);
+    }
+
     /**
      * 获取文件大小
      *

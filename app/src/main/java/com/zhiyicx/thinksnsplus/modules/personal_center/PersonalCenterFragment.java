@@ -1,17 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -21,8 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.trycatch.mysnackbar.Prompt;
-import com.trycatch.mysnackbar.TSnackbar;
+import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -69,7 +66,6 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHe
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
@@ -82,13 +78,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -168,12 +164,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         if (userInfoBean.getHas_deleted()) {
             try {
-                if (context instanceof Activity) {
-                    TSnackbar.make(((Activity) context).findViewById(android.R.id.content).getRootView(), context.getString(R.string
-                                    .user_had_deleted),
-                            TSnackbar.LENGTH_SHORT)
-                            .setPromptThemBackground(Prompt.WARNING)
-                            .show();
+                if (context instanceof TSActivity) {
+                    if ((((TSActivity) context).getContanierFragment() instanceof TSFragment)) {
+                        ((TSFragment) ((TSActivity) context).getContanierFragment()).showSnackWarningMessage(context.getString(R.string
+                                .user_had_deleted));
+                    }
                 } else {
                     ToastUtils.showToast(context, R.string.user_had_deleted);
                 }
@@ -282,7 +277,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvMore.setVisibility(View.GONE);
-        setOverScroll(false, null);
+//        setOverScroll(false, null);
     }
 
     private void initListener() {
@@ -330,13 +325,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (userInfoBean.getUser_id() != mUserInfoBean.getUser_id()) {// 如果当前页面的主页已经是当前这个人了，不就用跳转了
+        // 如果当前页面的主页已经是当前这个人了，不就用跳转了
+        if (userInfoBean.getUser_id().equals(mUserInfoBean.getUser_id())) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
@@ -375,7 +371,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
         super.initData();
         // 支持魅族手机首页状太栏文字白色问题
-        supportFlymeSutsusbar();
     }
 
     /**
@@ -398,7 +393,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean.getImages().get(position).getAmount(),
+            initImageCenterPopWindow(dynamicPosition, position, dynamicBean.getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc, true);
             return;
         }
@@ -415,7 +410,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             imageBean.setImgUrl(task.getImgUrl());
             Toll toll = new Toll();
             toll.setPaid(task.isPaid());
-            toll.setToll_money((float) task.getAmount());
+            toll.setToll_money(task.getAmount());
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
@@ -441,7 +436,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         try {
             ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + mHeaderAndFooterWrapper.getHeadersCount())
                     .findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon);
         } catch (Exception e) {
         }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -530,7 +525,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null && !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth().getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(position, position, (float) detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(position, position, detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
@@ -539,9 +534,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
-        initImageCenterPopWindow(position, position, (float) amount,
+        initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -559,6 +554,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             case R.id.iv_more:
                 mPresenter.shareUserInfo(mUserInfoBean);
                 break;
+            default:
         }
     }
 
@@ -612,17 +608,19 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             // 修改成功后，关闭页面
             setChangeUserCoverState(true);
         } else {
-            TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
-                    .setPromptThemBackground(Prompt.ERROR)
-                    .show();
+            showSnackErrorMessage(getString(R.string.cover_uploadFailure));
+
         }
     }
 
     @Override
     public void setChangeUserCoverState(boolean changeSuccess) {
-        TSnackbar.make(mSnackRootView, changeSuccess ? R.string.cover_change_success : R.string.cover_change_failure, TSnackbar.LENGTH_SHORT)
-                .setPromptThemBackground(changeSuccess ? Prompt.SUCCESS : Prompt.ERROR)
-                .show();
+        if (changeSuccess) {
+            showSnackSuccessMessage(getString(R.string.cover_change_success));
+        } else {
+            showSnackErrorMessage(getString(R.string.cover_change_failure));
+
+        }
     }
 
     @Override
@@ -858,13 +856,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void updateDynamicCounts(int changeNums) {
-        int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
-        currenDynamicCounts += changeNums;
-        if (currenDynamicCounts < 0) {
-            currenDynamicCounts = 0;
-        }
-        mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
-        mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+        rx.Observable.just(changeNums)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
+                    currenDynamicCounts += integer;
+                    if (currenDynamicCounts < 0) {
+                        currenDynamicCounts = 0;
+                    }
+                    mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
+                    mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
+                }, Throwable::printStackTrace);
+
     }
 
     @Override
@@ -872,7 +875,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         if (mPersonalCenterHeaderViewItem.getHeadView() == null) {
             return null;
         }
-        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mPersonalCenterHeaderViewItem.getHeadView().getDrawable(), R.mipmap.icon_256);
+        return ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mPersonalCenterHeaderViewItem.getHeadView().getDrawable(), R.mipmap.icon);
     }
 
     /**
@@ -943,7 +946,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param strRes          文字说明
      * @param isImage         是否是图片收费
      */
-    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout,
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
 
         mPayImagePopWindow = PayPopWindow.builder()
@@ -956,12 +959,13 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()),
+                        mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
@@ -1000,4 +1004,5 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             hideCommentView();
         }
     }
+
 }

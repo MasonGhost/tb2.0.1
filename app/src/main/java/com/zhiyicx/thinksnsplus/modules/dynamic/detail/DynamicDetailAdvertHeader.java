@@ -13,7 +13,6 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
 
@@ -30,6 +29,7 @@ public class DynamicDetailAdvertHeader {
     private LinearLayout mLLAdvert;
     private TextView mTitle;
     private Context mContext;
+    private List<RealAdvertListBean> mAdvertListBeans;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -51,12 +51,13 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void setAdverts(List<RealAdvertListBean> adverts) {
+        mAdvertListBeans = adverts;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
         for (int i = 0; i < adverts.size(); i++) {
             FilterImageView imageView = new FilterImageView(mContext);
-            imageView.setImageResource(R.mipmap.icon_256);
+            imageView.setImageResource(R.mipmap.icon);
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;
@@ -69,18 +70,23 @@ public class DynamicDetailAdvertHeader {
                     .imagerView(imageView)
                     .build());
             imageView.setOnClickListener(v -> {
-                if (mOnItemClickListener != null)
+                if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClik(v, position, link);
+                }
             });
         }
     }
 
+    public List<RealAdvertListBean> getAdvertListBeans() {
+        return mAdvertListBeans;
+    }
+
     public void hideAdvert() {
-        mLLAdvert.setVisibility(View.GONE);
+        mRootView.setVisibility(View.GONE);
     }
 
     public void showAdvert() {
-        mLLAdvert.setVisibility(View.VISIBLE);
+        mRootView.setVisibility(View.VISIBLE);
     }
 
     public void setHeight(int height) {

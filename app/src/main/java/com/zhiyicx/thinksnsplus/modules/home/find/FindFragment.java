@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.find;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -15,22 +11,17 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,26 +36,6 @@ import butterknife.OnClick;
  */
 public class FindFragment extends TSFragment {
 
-    @BindView(R.id.find_info)
-    CombinationButton mFindInfo;
-    @BindView(R.id.find_qa)
-    CombinationButton mFindQa;
-    @BindView(R.id.find_chanel)
-    CombinationButton mFindChanel;
-    @BindView(R.id.find_active)
-    CombinationButton mFindActive;
-    @BindView(R.id.find_music)
-    CombinationButton mFindMusic;
-    @BindView(R.id.find_buy)
-    CombinationButton mFindBuy;
-    @BindView(R.id.find_person)
-    CombinationButton mFindPerson;
-    @BindView(R.id.find_nearby)
-    CombinationButton mFindNearby;
-    @BindView(R.id.find_quiz)
-    CombinationButton mFindQuiz;
-    @BindView(R.id.find_rank)
-    CombinationButton mFindRank;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -131,9 +102,13 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
+            R.id.find_person, R.id.find_nearby, R.id.find_qa, R.id.find_rank})
             R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank,R.id.find_live})
     public void onClick(View view) {
         switch (view.getId()) {
+                /*
+                  资讯
+                 */
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), InfoActivity.class));
@@ -142,48 +117,34 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
+                /*
+                  圈子
+                 */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-
-//                    Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-
                     startActivity(new Intent(getActivity(), ChannelListActivity.class));
                 } else {
                     showLoginPop();
                 }
                 break;
+                /*
+                活动
+                 */
             case R.id.find_active:
                 break;
+                /*
+                 音乐
+                 */
             case R.id.find_music:
                 if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-
-                    ActivityManager activityManager = (ActivityManager) getActivity()
-                            .getSystemService(Context.ACTIVITY_SERVICE);
-                    List<ActivityManager.RunningAppProcessInfo> infos = activityManager
-                            .getRunningAppProcesses();
-
-                    for (ActivityManager.RunningAppProcessInfo info : infos) {
-                        String name = info.processName;
-                        LogUtils.d(name);
-
-                    }
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        if (Settings.canDrawOverlays(getContext())) {
-                            startActivity(new Intent(getActivity(), MusicListActivity.class));
-                        } else {
-                            initPermissionPopUpWindow();
-                            mActionPopupWindow.show();
-                        }
-                    } else {
-                        startActivity(new Intent(getActivity(), MusicListActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), MusicListActivity.class));
                 } else {
                     showLoginPop();
                 }
                 break;
+                /*
+                 极铺
+                 */
             case R.id.find_buy:
                 if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
                     CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
@@ -191,6 +152,9 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
+                /*
+                 找人
+                 */
             case R.id.find_person:
 
                 Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
@@ -200,6 +164,9 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_nearby:
                 break;
+                /*
+                 问答
+                 */
             case R.id.find_qa:
                 if (TouristConfig.MORE_QUESTION_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     Intent intent = new Intent(getActivity(), QA_Activity.class);
@@ -210,9 +177,9 @@ public class FindFragment extends TSFragment {
                     showLoginPop();
                 }
                 break;
-            case R.id.find_quiz:
-                startActivity(new Intent(getActivity(), QARewardActivity.class));
-                break;
+                /*
+                 排行榜
+                 */
             case R.id.find_rank:
                 startActivity(new Intent(getActivity(), RankIndexActivity.class));
                 break;

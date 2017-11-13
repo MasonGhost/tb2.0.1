@@ -70,7 +70,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override
@@ -118,19 +118,20 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     @Override
     protected void initData() {
         super.initData();
-        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
-                infoContainerFragment.addBtnAnimation(dy > 0);
-            }
-        });
+        // 控制 + 号按钮的隐藏显示
+//        mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                QA_InfoContainerFragment infoContainerFragment = (QA_InfoContainerFragment) getParentFragment();
+//                infoContainerFragment.addBtnAnimation(dy > 0);
+//            }
+//        });
 
     }
 
@@ -139,6 +140,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
      *
      * @return
      */
+    @Override
     protected boolean isLayzLoad() {
         return true;
     }
@@ -164,6 +166,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             protected int getExcellentTag(boolean isExcellent) {
                 boolean isNewOrExcellent = getQAInfoType().equals(QA_TYPES[1]) || getQAInfoType().equals(QA_TYPES[3]);
                 return isNewOrExcellent ? 0 : (isExcellent ? R.mipmap.icon_choice : 0);
+            }
+
+            @Override
+            protected int getRatio() {
+                return mPresenter.getRatio();
             }
         };
         adapter.setSpanTextClickListener(this);
@@ -232,13 +239,14 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
-                        PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio())
+                        ,mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
-                        .getOnlookQuestion())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
+                        .getOnlookQuestion(),mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();

@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.base;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -10,9 +11,12 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,9 +25,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
-import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.common.base.BaseFragment;
@@ -50,27 +52,63 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<P> implements WindowUtils.OnWindowDismisslistener {
-    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom; // 默认的toolbar
-    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;// 默认的toolbar背景色
-    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;// 默认的toolbar下方分割线颜色
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
+    /**
+     * 默认的toolbar
+     */
+    private static final int DEFAULT_TOOLBAR = R.layout.toolbar_custom;
+    /**
+     * 默认的toolbar背景色
+     */
+    private static final int DEFAULT_TOOLBAR_BACKGROUD_COLOR = R.color.white;
+    /**
+     * 默认的toolbar下方分割线颜色
+     */
+    private static final int DEFAULT_DIVIDER_COLOR = R.color.general_for_line;
+    /**
+     * 默认的toolbar左边的图片，一般是返回键
+     */
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;
 
     protected TextView mToolbarLeft;
     protected View mDriver;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
-    private View mCenterLoadingView; // 加载
-    private ImageView mIvRefresh; // 头部左边的刷新控件
+    /**
+     * 加载
+     */
+    private View mCenterLoadingView;
+    /**
+     * 头部左边的刷新控件
+     */
+    private ImageView mIvRefresh;
 
     protected ViewGroup mSnackRootView;
-    private boolean mIsNeedClick = true;// 缺省图是否需要点击
-    private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
-    private boolean isFirstIn = true;// 是否是第一次进入页面
-    private Subscription mViewTreeSubscription = null;// View 树监听订阅器
-    private Subscription mStatusbarSupport = null;// View 树监听订阅器
+    /**
+     * 缺省图是否需要点击
+     */
+    private boolean mIsNeedClick = true;
+    /**
+     * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
+     */
+    private boolean rightViewHadTranslated = false;
+    /**
+     * 是否是第一次进入页面
+     */
+    private boolean isFirstIn = true;
+    /**
+     * View 树监听订阅器
+     */
+    private Subscription mViewTreeSubscription = null;
+    /**
+     * View 树监听订阅器
+     */
+    private Subscription mStatusbarSupport = null;
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
+    private View mMusicWindowView;
+    private FrameLayout musicWindowContainer;
+    protected SystemConfigBean mSystemConfigBean;
 
     @Nullable
     @Override
@@ -82,11 +120,38 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     protected View getContentView() {
-
         LinearLayout linearLayout = new LinearLayout(getActivity());
+        // 添加音乐悬浮窗
+        if (getParentFragment() == null) {
+            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
+            musicWindowContainer = new FrameLayout(getActivity());
+            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                    .MATCH_PARENT));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
+                    ConvertUtils.dp2px(getActivity(), 24));
+            layoutParams.gravity = Gravity.RIGHT;
+            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
+            mMusicWindowView.setLayoutParams(layoutParams);
+            mMusicWindowView.setVisibility(View.GONE);
+            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.MAIN");
+                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                }
+            });
+            musicWindowContainer.addView(linearLayout);
+            musicWindowContainer.addView(mMusicWindowView);
+        }
+
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (setUseSatusbar() && setUseStatusView()) { // 是否添加和状态栏等高的占位 View
+        linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 是否添加和状态栏等高的占位 View
+        if (setUseSatusbar() && setUseStatusView()) {
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
                     (getContext())));
@@ -98,12 +163,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
             linearLayout.addView(mStatusPlaceholderView);
         }
-        if (showToolbar()) {// 在需要显示toolbar时，进行添加
+        // 在需要显示toolbar时，进行添加
+        if (showToolbar()) {
             View toolBarContainer = mLayoutInflater.inflate(getToolBarLayoutId(), null);
             initDefaultToolBar(toolBarContainer);
             linearLayout.addView(toolBarContainer);
         }
-        if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
+        // 在需要显示分割线时，进行添加
+        if (showToolBarDivider()) {
             mDriver = new View(getContext());
             mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen
                     .divider_line)));
@@ -119,11 +186,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             StatusBarUtils.setStatusBarColor(getActivity(), setToolBarBackgroud());
             linearLayout.setFitsSystemWindows(true);
         }
-        setToolBarTextColor();
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
         }
+        setToolBarTextColor();
         FrameLayout frameLayout = new FrameLayout(getActivity());
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 内容区域
@@ -155,23 +222,37 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
             frameLayout.addView(mCenterLoadingView);
         }
+
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
-        return linearLayout;
+        return musicWindowContainer == null ? linearLayout : musicWindowContainer;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        musicWindowsStatus(WindowUtils.getIsShown());
-        if (!this.getClass().getSimpleName().equals("InfoListFragment")) {
-            WindowUtils.setWindowDismisslistener(this);
+        boolean isshow = WindowUtils.getIsShown();
+        musicWindowsStatus(isshow);
+        WindowUtils.setWindowDismisslistener(this);
+        if (!this.getClass().getSimpleName().equals("InfoListFragment") && isshow) {
+            if (mMusicWindowView != null) {
+                mMusicWindowView.setVisibility(View.VISIBLE);
+                RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
+                        .music_window_rotate);
+                mMusicWindowView.setAnimation(mRotateAnimation);
+                mRotateAnimation.start();
+            }
         }
     }
 
+    @Override
+    public void onPause() {
+        WindowUtils.removeWindowDismisslistener(this);
+        super.onPause();
+    }
 
     @Override
     public void setPresenter(P presenter) {
@@ -215,6 +296,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                     e.printStackTrace();
                                 }
                                 break;
+                            default:
                         }
                     }
                 });
@@ -263,16 +345,20 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     }
 
+
     /**
      * 音乐图标消失
      */
     @Override
-    public void onDismiss() {
+    public void onMusicWindowDismiss() {
+        if (mMusicWindowView != null) {
+            mMusicWindowView.clearAnimation();
+            mMusicWindowView.setVisibility(View.GONE);
+        }
         View view = getRightViewOfMusicWindow();
         if (view != null && WindowUtils.getIsPause()) {
             // 很遗憾，我也不知道为什么，不用减去 rightX；
             if (view.getTag() != null) {
-                int test = view.getPaddingLeft();
                 int right = (int) view.getTag();
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - right, view.getPaddingBottom());
                 view.setTag(null);
@@ -282,6 +368,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
         }
+
     }
 
     /**
@@ -293,7 +380,29 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         if (mCenterLoadingView.getVisibility() == View.VISIBLE) {
             ((AnimationDrawable) ((ImageView) mCenterLoadingView.findViewById(R.id.iv_center_load)).getDrawable()).stop();
-            mCenterLoadingView.setVisibility(View.GONE);
+            mCenterLoadingView.animate().alpha(0.3f).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (mCenterLoadingView != null) {
+                        mCenterLoadingView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
     }
 
@@ -396,8 +505,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void showCenterLoading(String msg) {
-        if (mCenterLoadingDialog != null)
+        if (mCenterLoadingDialog != null) {
             mCenterLoadingDialog.showStateIng(msg);
+        }
     }
 
     /**
@@ -405,8 +515,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void hideCenterLoading() {
-        if (mCenterLoadingDialog != null)
+        if (mCenterLoadingDialog != null) {
             mCenterLoadingDialog.onDestroy();
+        }
     }
 
     /**
@@ -490,7 +601,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                             if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
-                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+                                    int rightX = ConvertUtils.dp2px(getContext(), 24) + ConvertUtils.dp2px(getContext(), 10);
                                     view.setTag(rightX);
                                     view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view
                                             .getPaddingBottom());
@@ -749,33 +860,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return getResources().getColor(resId);
     }
 
-    protected void supportFlymeSutsusbar() {
-        mStatusbarSupport = Observable.timer(1500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            try {
-                                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
-                                        .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                            } catch (Exception e) {
-                            }
-                        }
-                    }
-                });
-
-    }
-
-
     @Override
     public void onDestroyView() {
-        if (mSnackBar != null) {
-            if (mSnackBar.isShown()) {
-                mSnackBar.dismiss();
-            }
-            mSnackBar = null;
-        }
         if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
             mStatusbarSupport.unsubscribe();
         }
@@ -783,5 +869,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mViewTreeSubscription.unsubscribe();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSnackBar != null) {
+            if (mSnackBar.isShown()) {
+                mSnackBar.dismiss();
+            }
+            mSnackBar = null;
+        }
     }
 }

@@ -89,6 +89,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     private TypeChoosePopupWindow mTypeChoosePopupWindow;// 类型选择框 付费、置顶
     private PersonalCenterContract.View mView;
 
+    private int mToolBarHeight;
+
     /**
      * 标题文字的颜色:#333333
      **/
@@ -134,8 +136,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         back = (ImageView) mToolBarContainer.findViewById(R.id.iv_back);
         more = (ImageView) mToolBarContainer.findViewById(R.id.iv_more);
         userName = (TextView) mToolBarContainer.findViewById(R.id.tv_user_name);
-        int translationY = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
-        userName.setY(translationY);
+        mToolBarHeight = mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
+        userName.setY(mToolBarHeight);
         bootomDivider = mToolBarContainer.findViewById(R.id.v_horizontal_line);
         // 设置初始透明度为0
         setViewColorWithAlpha(userName, TITLE_RGB, 255);
@@ -166,9 +168,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 //滑动的距离
                 mDistanceY += dy;
-                int headerTop = headerView.getTop();
                 //toolbar文字上边缘距离toolbar上边缘的距离
-                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) -
+                int userNamePadding = (mToolBarHeight -
                         mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
                 // 滑动距离为多少时，toolbar完全不透明
                 int needDistanceY = userNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
@@ -181,8 +182,8 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                     userName.setTranslationY(maxDistance - mDistanceY);
                 } else if (mDistanceY > maxDistance) {
                     userName.setTranslationY(0);
-                } else {
-                    userName.setTranslationY(mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height));
+                } else  {
+                    userName.setTranslationY(mToolBarHeight);
                 }
                 //当滑动的距离 <= needDistanceY高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
                 if (mDistanceY <= needDistanceY) {
@@ -216,7 +217,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                     //StatusBarUtils.statusBarLightMode(mActivity);
                 }
                 // 有可能到顶部了，仍然有一点白色透明背景，强制设置成完全透明
-                if (headerTop >= 0) {
+                if (headerView.getTop() >= 0) {
                     setViewColorWithAlpha(userName, TITLE_RGB, 0);
                     setViewColorWithAlpha(mToolBarContainer, STATUS_RGB, 0);
                     // setViewColorWithAlpha(mToolBar, TOOLBAR_RGB, 0);

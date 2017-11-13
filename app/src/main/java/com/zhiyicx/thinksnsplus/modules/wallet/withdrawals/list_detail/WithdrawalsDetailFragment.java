@@ -76,7 +76,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 boolean status_success = status == 1;
                 desc.setEnabled(status_success);
                 String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
-                        PayConfig.realCurrencyFen2Yuan(withdrawal.getValue()));
+                        PayConfig.realCurrency2GameCurrency(withdrawal.getValue(),mPresenter.getRatio()));
                 desc.setText(status_success ? "- " + moneyStr : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
                 account.setText(String.format(getString(R.string.withdraw_money_done),
                         PayType.getValue(withdrawal.getType().toLowerCase())));
@@ -89,7 +89,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), BillDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(BILL_INFO, BillDetailBean.withdrawals2Bill(mListDatas.get(position)));
+                bundle.putParcelable(BILL_INFO, BillDetailBean.withdrawals2Bill(mListDatas.get(position),mPresenter.getRatio()));
                 intent.putExtra(BILL_INFO, bundle);
                 startActivity(intent);
             }

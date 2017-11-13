@@ -5,6 +5,7 @@ import android.app.Application;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
@@ -18,6 +19,7 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -27,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
@@ -88,6 +91,10 @@ public class AuthRepository implements IAuthRepository {
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    QAPublishBeanGreenDaoImpl mQAPublishBeanGreenDaoImpl;
+    @Inject
+    AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -158,6 +165,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean clearAuthBean() {
+        WindowUtils.hidePopupWindow();
         if (AppApplication.getPlaybackManager() != null) { // 释放音乐播放器
             AppApplication.getPlaybackManager().handleStopRequest(null);
         }
@@ -165,6 +173,8 @@ public class AuthRepository implements IAuthRepository {
         new JpushAlias(mContext, "").setAlias(); // 注销极光
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
+        mAnswerDraftBeanGreenDaoImpl.clearTable();
+        mQAPublishBeanGreenDaoImpl.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
         mGroupInfoBeanGreenDao.clearTable();
         mInfoListDataBeanGreenDao.clearTable();
@@ -215,6 +225,7 @@ public class AuthRepository implements IAuthRepository {
             e.printStackTrace();
         }
     }
+
     UMAuthListener umAuthListener = new UMAuthListener() {
         @Override
         public void onStart(SHARE_MEDIA share_media) {

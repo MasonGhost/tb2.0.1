@@ -1,17 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -20,6 +30,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -28,9 +39,12 @@ import com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
 
 /**
  * @Describe 动态列表适配器基类
@@ -47,7 +61,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicListBean> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
+    protected static final int DEFALT_IMAGE_HEIGHT = 300;
     private final int mWidthPixels; // 屏幕宽度
+    private final int mHightPixels;
     private final int mMargin; // 图片容器的边距
     protected final int mDiverwith; // 分割先的宽高
     protected final int mImageContainerWith; // 图片容器最大宽度
@@ -119,14 +135,15 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
                 .dynamic_list_title_max_show_size);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
-                .dynamic_list_content_max_show_size);
+        mContentMaxShowNum = DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
         mWidthPixels = DeviceUtils.getScreenWidth(context);
+        mHightPixels = DeviceUtils.getScreenHeight(context);
         mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
                 .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
         mImageContainerWith = mWidthPixels - mMargin;
-        mImageMaxHeight = mImageContainerWith * 4 / 3; // 最大高度是最大宽度的4/3 保持 宽高比 3：4
+        // 最大高度是最大宽度的4/3 保持 宽高比 3：4
+        mImageMaxHeight = mImageContainerWith * 4 / 3;
     }
 
     @Override
@@ -137,9 +154,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
     @Override
     public boolean isForViewType(GroupDynamicListBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        boolean isForViewType=
-        item.getId() != null && (item.getImages() != null && item.getImages().size
-                () == getImageCounts());
+        boolean isForViewType =
+                item.getId() != null && (item.getImages() != null && item.getImages().size
+                        () == getImageCounts());
         return isForViewType;
     }
 
@@ -164,18 +181,20 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
         try {
 
-            ImageUtils.loadCircleUserHeadPic( dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+            ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
 
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));
-            holder.setText(R.id.tv_title,dynamicBean.getTitle());
+///            holder.setText(R.id.tv_title,dynamicBean.getTitle());
+            holder.setVisible(R.id.tv_title, View.GONE);
 
             String content = dynamicBean.getContent();
             TextView contentView = holder.getView(R.id.tv_content);
 
             try { // 置顶标识 ,防止没有置顶布局错误
-                TextView topFlagView = holder.getView(R.id.tv_top_flag);// 待审核 也隐藏
+                // 待审核 也隐藏
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(View.GONE);
             } catch (Exception e) {
 
@@ -184,7 +203,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             if (TextUtils.isEmpty(content)) {
                 contentView.setVisibility(View.GONE);
             } else {
+                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
                 contentView.setText(content);
+                ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText().toString()), false);
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
@@ -254,7 +275,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
     private void setUserInfoClick(View view, final GroupDynamicListBean dynamicBean) {
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnUserInfoClickListener != null) {
                         mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
@@ -271,7 +293,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(final ViewHolder holder, ImageView view, final
+    protected void initImageView(final ViewHolder holder, FilterImageView view, final
     GroupDynamicListBean dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
         int w, h;
@@ -280,6 +302,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = true;
+                // 是否是长图
+                view.showLongImageTag(isLongImage(imageBean.getHeight(), imageBean.getWidth()));
                 Glide.with(mContext)
                         .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), w, h,
                                 propPart, AppApplication.getTOKEN()))
@@ -289,6 +313,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
             } else {
+                // 是否是长图
+                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
                 Glide.with(mContext)
                         .load(imageBean.getImgUrl())
                         .override(w, h)
@@ -303,7 +330,8 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
         RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                // 两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnImageClickListener != null) {
                         mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
@@ -312,6 +340,18 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
 
     }
 
+    /**
+     * 是否是长图
+     *
+     * @param imageHeight 需要判断的图片的高
+     * @param imageWith   需要判断的图片的宽
+     * @return
+     */
+    public boolean isLongImage(int imageHeight, int imageWith) {
+        float a = (float) imageHeight * mHightPixels / ((float) imageWith * mHightPixels);
+
+        return a > 3 || a < .3f;
+    }
 
     /**
      * 计算压缩比例
@@ -399,6 +439,36 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
     public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener
                                                    onSpanTextClickListener) {
         mOnSpanTextClickListener = onSpanTextClickListener;
+    }
+
+    protected List<Link> setLiknks(final GroupDynamicListBean dynamicDetailBeanV2, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getContent())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+        return links;
     }
 }
 

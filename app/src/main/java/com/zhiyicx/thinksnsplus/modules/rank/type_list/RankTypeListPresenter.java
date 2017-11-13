@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.rank.type_list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -12,7 +10,6 @@ import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -131,8 +128,8 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">ThinkSNS+</string>
+    <!--© 2017 Chengdu ZhishiSoft Technology Co., Ltd. All rights reserved.-->
     <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
     <!-- 主页  -->
     <string name="home">首页</string>
     <string name="find">发现</string>
     <string name="message">消息</string>
     <string name="mine">我</string>
+    <string name="app_rule">点击下一步即代表同意《ThinkSNS+用户使用协议》</string>
+    <string name="app_rule_register">点击注册即代表同意《ThinkSNS+用户使用协议》</string>
+    <string name="user_rule_register">用户使用协议</string>
     <!--首页-->
     <string name="hot">热门</string>
     <string name="the_last">最新</string>
@@ -63,13 +67,14 @@
     <string name="select_sex">选择性别</string>
     <string name="city">城市</string>
     <string name="select_city">选择居住地</string>
+    <string name="select_tag">选择标签</string>
     <string name="tag">标签</string>
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
     <string name="all">全部</string>
-    <string name="edit_userinfo_success">信息修改成功</string>
-    <string name="edit_userinfo_failure">信息修改失败</string>
-    <string name="edit_userinfo_ing">信息修改中&#8230;</string>
+    <string name="edit_userinfo_success">修改成功</string>
+    <string name="edit_userinfo_failure">修改失败</string>
+    <string name="edit_userinfo_ing">修改中&#8230;</string>
     <string name="update_head_success">头像上传成功</string>
     <string name="update_head_failure">头像上传失败</string>
     <string name="update_head_ing">头像上传中&#8230;</string>
@@ -80,7 +85,7 @@
     <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
-    <string name="is_sure_clean_cache">确定清理缓存？</string>
+    <string name="is_sure_clean_cache">缓存大小:%s，确定清理缓存？</string>
     <string name="about_us">关于我们</string>
     <string name="check_version">版本更新</string>
     <string name="download_new_version">立即更新</string>
@@ -131,12 +136,15 @@
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
+    <string name="info_title_necessary">请填写正确的标题或者内容</string>
     <string name="info_published">已发布</string>
     <string name="info_publishing">投稿中</string>
     <string name="info_publishsuccess">投稿成功，等待审核</string>
     <string name="info_publishfailed">投稿失败</string>
     <string name="info_publishrefuse">被驳回</string>
     <string name="info_cover">上传封面</string>
+    <string name="reset_cover">重置封面</string>
+    <string name="cover_upload_success">封面上传成功</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
     <!--资讯的列表的信息汇总，来自-浏览数-时间-->
@@ -146,7 +154,7 @@
     <string name="info_publish_hint">提示</string>
     <string name="info_publish_hint_certification">只有认证过的用户才可以投稿，是否去认证?</string>
     <string name="info_publish_go_to_certification">去认证</string>
-    <string name="info_publish_hint_pay">投稿一次需付费1.00元，是否继续投稿？</string>
+    <string name="info_publish_hint_pay">投稿一次需付费1.00%s，是否继续投稿？</string>
     <string name="info_publish_go_to_next">继续投稿</string>
     <string name="edit_info">编辑文章</string>
     <string name="info_title_hint">输入标题，20字以内</string>
@@ -178,7 +186,7 @@
     <string name="dynamic_list_top_comment">申请评论置顶</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
-    <string name="reply">回复%s:</string>
+    <string name="reply">回复 %s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
     <string name="send_words_dynamic">文字</string>
@@ -200,7 +208,7 @@
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
-    <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
+    <string name="dynamic_send_toll_select_money">%1$.2f</string>
     <string name="dynamic_send_toll_select_money_">%1$.2f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
     <string name="group_dynamic_send_must_has_title">请输入标题</string>
@@ -268,19 +276,19 @@
     <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
     <string name="dynamic_list_top_success">申请置顶成功</string>
     <string name="comment_top_success">申请评论置顶成功</string>
-    <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
     <string name="dynamic_comment_toll">设置评论收费</string>
-    <string name="limit_monye">金额必须大于0元</string>
-    <string name="limit_monye_death">金额必须是整数且大于0元，不能出现小数</string>
+    <string name="limit_monye">金额必须大于0%s</string>
+    <string name="limit_monye_death">金额必须是整数且大于0%s，不能出现小数</string>
     <string name="monye_instructions">金额说明</string>
     <string name="dynamic_comment_toll_success">设置评论收费成功</string>
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
 
     <!--置顶评论-->
-    <string name="review">审核通知</string>
+    <string name="review">审核</string>
     <string name="review_ing">待审核</string>
     <string name="review_done">已审核</string>
     <string name="review_death">已过期</string>
@@ -288,16 +296,16 @@
     <string name="review_dynamic_deleted">该内容已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
     <string name="review_comment_deleted">该评论已被删除</string>
-    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
+    <string name="review_description">支付%1$.2f申请置顶评论“%2$s”</string>
     <string name="review_refuse">拒绝置顶</string>
     <string name="stick_dynamic_comment">置顶评论收费</string>
     <string name="dynamic_comment_top_success">置顶评论成功</string>
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>
-    <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
+    <string name="stick_comment_desc">您只需%1$.2f%2$s就可以置顶评论，\n</string>
     <string name="stick_type_dynamic_commnet">动态评论置顶</string>
-    <string name="stick_type_dynamic_commnet_message">对你的动态“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_dynamic_commnet_message">对你的动态进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
-    <string name="stick_type_news_commnet_message">对你的文章“%1$s”进行了评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_news_commnet_message">对你的文章进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_group_commnet">圈子帖子置顶</string>
     <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
     <string name="stick_type_group_join">圈子加入申请</string>
@@ -319,7 +327,7 @@
 
     <!--钱包-->
     <string name="default_mongy">0.00</string>
-    <string name="account_balance">账户余额(元)</string>
+    <string name="account_balance">账户余额(%s)</string>
     <string name="recharge">充值</string>
     <string name="withdraw">提现</string>
     <string name="withdraw_doing">提现中&#8230;</string>
@@ -329,6 +337,7 @@
     <string name="recharge_and_withdraw_rule">充值提现规则</string>
     <string name="recharge_instructions">充值说明</string>
     <string name="withdrawal_instructions">提现说明</string>
+    <string name="withdrawal_time">提现金额会在七个工作日内到账</string>
     <string name="recharge_instructions_detail">充值金额必须是整数，不能出现小数</string>
     <string name="withdrawal_instructions_detail">提现金额必须是整数，不能出现小数</string>
     <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
@@ -350,13 +359,15 @@
 
     <!--钱包 之 充值-->
     <string name="recharge_credentials_ing">获取充值凭证&#8230;</string>
+    <string name="recharge_disallow">当前未支持任何充值方式</string>
     <string name="recharge_credentials_succes">获取充值凭证成功</string>
 
     <!--钱包 之 提现-->
     <string name="withdraw_money">提现金额</string>
+    <string name="withdraw_disallow">当前未支持任何提现方式</string>
     <string name="withdraw_money_done">%1$s 账户提现</string>
     <string name="min_withdraw_money">未满足可提现最低金额</string>
-    <string name="min_withdraw_money_limit">最低提现金额：%.2f元</string>
+    <string name="min_withdraw_money_limit">最低提现金额：%1$.2f%2$s</string>
     <string name="limit_withdraw_count">一月只能提现一次</string>
     <string name="limit_withdraw_money">金额已超出可提现余额</string>
     <string name="withdraw_all">全部</string>
@@ -368,7 +379,7 @@
     <string name="withdraw_account_input">输入提现账户</string>
     <!--钱包 之 账户详情-->
     <string name="account_form_name">付款人</string>
-    <string name="account_detail">账户详情</string>
+    <string name="account_detail">账单详情</string>
     <string name="account_to_name">收款人</string>
     <string name="transaction_description">交易说明</string>
     <string name="transaction_account">交易账户</string>
@@ -407,8 +418,11 @@
     <!--打赏-->
     <string name="reward">打赏</string>
     <string name="reward_list">打赏列表</string>
-    <string name="reward_show">%1$s人打赏,共%2$s元</string>
+    <string name="reward_show">%1$s人打赏,共%2$s%3$s</string>
     <string name="reward_list_tip">%s打赏了文章</string>
+    <string name="reward_list_tip_dynamic">%s打赏了动态</string>
+    <string name="reward_list_tip_user">%s打赏了该用户</string>
+    <string name="reward_list_tip_answer">%s打赏了回答</string>
     <string name="choose_reward_money">选择打赏金额</string>
     <string name="reward_success">打赏成功</string>
     <string name="reward_failed">打赏失败</string>
@@ -470,7 +484,7 @@
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
     <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
-    <string name="create_topic">申请创建话题</string>
+    <string name="create_topic">建议创建话题</string>
     <string name="input_topic_tip">请输入话题名称</string>
     <string name="input_topic_des_tip">请输入话题相关描述信息</string>
 
@@ -489,16 +503,28 @@
     <string name="qa_publish_show_expert">%1$d 回答  ·  %2$d 赞</string>
     <string name="qa_publish_expert_show_hit_recommend">推荐专家</string>
     <string name="qa_publish_btn">发布</string>
-    <string name="qa_topic_all">全部话题</string>
-    <string name="qa_topic_user_followed">我关注的</string>
+    <string name="qa_topic_all">全部话题\t\t\t</string>
+    <string name="qa_topic_user_followed">\t\t\t我关注的</string>
     <string name="qa_topic_follow">关注</string>
     <string name="qa_topic_followed">已关注</string>
-    <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
-    <string name="qa_show_question_followed">%1$d 关注  ·  ¥%2$.2f 悬赏</string>
+    <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 问题</string>
+    <string name="qa_show_question_followed_str">%1$s 关注  ·  %2$s 悬赏</string>
+    <string name="qa_show_question_followed">%1$s 关注  ·  %2$.2f 悬赏</string>
     <string name="qa_show_question_followed_">%1$d 关注</string>
     <string name="qa_show_topic_followed_content">%1$d 关注  ·  %2$d 回答</string>
-    <string name="qa_show_topic_followed_reward">  ·  ¥%1$.2f 悬赏</string>
-    <string name="qa_show_topic_followed_reward_">¥%1$.2f 悬赏</string>
+    <string name="qa_show_topic_followed_reward_str">  ·  %1$s 悬赏</string>
+    <string name="qa_show_topic_followed_reward">  ·  %1$.2f 悬赏</string>
+    <string name="qa_show_topic_followed_reward_">%1$.2f 悬赏</string>
+
+    <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
+    <string name="qa_show_question_followed_count">%1$s 关注</string>
+    <string name="qa_show_question_followed_count_">%1$s 关注\t\t·\t</string>
+    <string name="qa_show_question_reward_count">[%1$s.0]</string>
+    <string name="qa_show_question_reward_count_">[%1$s.0]\t\t·\t</string>
+    <string name="qa_show_question_look_count">%1$s</string>
+    <string name="qa_watch_amount_count">%1$.1f</string>
+    <!--改了改了，真的改了-问答详情页的悬赏和围观金额样式-->
+
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
@@ -515,6 +541,7 @@
     <string name="qa_topic_open_all">展开全部</string>
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_cannot_adopt_selef">不能采纳自己的答案</string>
     <string name="qa_question_answer_invite">邀请回答</string>
     <string name="qa_question_answer_adopting">采纳答案</string>
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
@@ -527,8 +554,8 @@
     <string name="qa_reward_setting">已设置悬赏</string>
     <string name="qa_add_answer">添加回答</string>
     <string name="qa_go_to_answer">查看回答</string>
-    <string name="qa_reward_amount">￥%1$.1f</string>
-    <string name="qa_watch_amount">￥%1$.1f围观</string>
+    <string name="qa_reward_amount">%1$.1f</string>
+    <string name="qa_watch_amount">%1$.1f围观</string>
     <string name="qa_answer_list_order_default">默认排序</string>
     <string name="qa_answer_list_order_by_time">按时间排序</string>
     <string name="qa_answer_count">%d 个回答</string>
@@ -585,6 +612,7 @@
     <string name="check_in_today">每日签到</string>
     <string name="check_in_total_day_format">累计签到%d天</string>
     <string name="check_in_today_get_gold">每日签到得金币</string>
+    <string name="check_in_today_get_gold_format">每日签到得%s</string>
     <string name="check_in_fail">签到失败</string>
 
 
@@ -601,10 +629,11 @@
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
     <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
-    <string name="not_find_qa_topic_to_publish">未找到相关话题</string>
-    <string name="request_to_publish_topic">申请创建话题</string>
+    <string name="not_find_qa_topic_to_publish">没找到相关话题~</string>
+    <string name="request_to_publish_topic">向官方建议创建新话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
+    <string name="you_must_bind_phone2">你必须绑定手机才能绑定三方哦</string>
     <string name="bind_success">账号绑定成功</string>
     <string name="unbind_success">账号解绑成功</string>
 
@@ -655,17 +684,17 @@
     <string name="digg_format_questions">%s赞了你的问题</string>
     <string name="digg_format_questions_answer">%s赞了你的回答</string>
 
-    <string name="comment_format_reply">%1$s回复%2$s</string>
+    <string name="comment_format_reply">%1$s 回复 %2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的帖子</string>
+    <string name="comment_format_group_feed">%s评论了你的圈子</string>
     <string name="comment_format_music">%s评论了你的音乐</string>
     <string name="comment_format_music_specials">%s评论了你的专辑</string>
     <string name="comment_format_news">%s评论了你的文章</string>
     <string name="comment_format_questions">%s评论了你的问题</string>
     <string name="comment_format_questions_answer">%s评论了你的回答</string>
-    <string name="new_apply_data">新的申请请及时查看</string>
-    <string name="no_apply_data">暂无未查看的申请</string>
+    <string name="new_apply_data">未审核的信息请及时处理</string>
+    <string name="no_apply_data">暂无未审核的申请</string>
     <string-array name="personal_dynamic_typpe">
         <item>全部动态</item>
         <item>付费动态</item>
@@ -699,6 +728,12 @@
     <string name="domain_dev">开发服</string>
     <string name="domain_swith">服务器切换</string>
     <string name="no_new_version">当前已经是最新版</string>
+    <string name="defualt_golde_name">豆子</string>
+    <string name="today_with_split">今,天</string>
+    <string name="yestorday_with_split">昨,天</string>
+    <string name="can_not_use_protected_name">不能使用站点预留昵称</string>
+    <string name="can_not_use_protected_email">不能使用站点预留邮箱</string>
+    <string name="str_pingyin_dot">、</string>
     <string name="find_live">直播</string>
     <string name="mine_live">我的直播</string>
 </resources>

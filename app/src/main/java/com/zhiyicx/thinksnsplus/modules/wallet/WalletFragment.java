@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.Withdrawa
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -53,6 +54,8 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     CombinationButton mBtWithdraw;
     @BindView(R.id.tv_recharge_and_withdraw_rule)
     TextView mTvReChargeAndWithdrawRule;
+    @BindView(R.id.tv_account_unit)
+    TextView getTvMineMoney;
 
 
     private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
@@ -96,6 +99,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
         initListener();
+        getTvMineMoney.setText(String.format(Locale.getDefault(),getString(R.string.account_balance),mPresenter.getGoldName()));
     }
 
     @Override

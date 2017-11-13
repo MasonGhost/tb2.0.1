@@ -61,17 +61,27 @@ android {
 }
 
 dependencies {
+    def testDependences = rootProject.ext.testDependencies
+    def dataDependences = rootProject.ext.dataDependencies
+    def sdksoupportDependencies = rootProject.ext.sdksoupportDependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'org.simple:androideventbus:1.0.5.1'
-    compile 'com.google.code.gson:gson:2.6.2'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile "junit:junit:4.12"
-    androidTestCompile "org.mockito:mockito-core:1.9.5"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
+
+    testCompile testDependences.junit
+
+    compile sdksoupportDependencies.appcompatV7
+    // Eventbus
+    compile dataDependences.androideventbus
+    compile dataDependences.gson
+
+    testCompile testDependences.mockito
+    androidTestCompile testDependences.junit
+    androidTestCompile testDependences.mockito
+    androidTestCompile testDependences.dexmaker
+    androidTestCompile testDependences.dexmakerMockito
     compile files('libs/jackson-core-asl-1.9.7.jar')
     compile files('libs/jackson-mapper-asl-1.9.7.jar')
+    compile dataDependences.rxJava
+    compile dataDependences.rxAndroid
 }
 
 task jarMyLib(type: Jar, dependsOn: ['build']) {
@@ -90,13 +100,13 @@ task jarMyLib(type: Jar, dependsOn: ['build']) {
 //    include('com/nought/hellolib/*.class')
 //    include('com/xxx/*.class') // 同时记得加上第三方的package
 }
-def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
-def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
+//def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
+//def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
 
 task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) {
     injars('build/libs/imsdk1.1.5-beta-nop.jar')
     outjars('build/libs/imsdk1.1.5-beta.jar')
-    libraryjars(androidJarDir)
+//    libraryjars(androidJarDir)
     configuration 'proguard-rules.pro'
 }
 // 加快 gradle 编译

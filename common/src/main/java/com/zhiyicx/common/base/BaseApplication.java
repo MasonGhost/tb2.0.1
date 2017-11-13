@@ -42,8 +42,6 @@ public abstract class BaseApplication extends ZhiboApplication {
     private HttpClientModule mHttpClientModule;
     private AppModule mAppModule;
 
-    private RefWatcher mRefWatcher;//leakCanary观察器
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,8 +76,8 @@ public abstract class BaseApplication extends ZhiboApplication {
         // 字体切换支持
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
 //                .setDefaultFontPath("fonts/NotoKufiArabic-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
         );
 
     }
@@ -103,18 +101,10 @@ public abstract class BaseApplication extends ZhiboApplication {
      * 安装 leakCanary 检测内存泄露
      */
     protected void installLeakCanary() {
-        this.mRefWatcher = USE_CANARY ? LeakCanary.install(this) : RefWatcher.DISABLED;
-    }
-
-    /**
-     * 获得 leakCanary 观察器
-     *
-     * @param context
-     * @return
-     */
-    public RefWatcher getRefWatcher(Context context) {
-
-        return this.mRefWatcher;
+        if (USE_CANARY) {
+            System.out.println(" use  leakcanary ");
+            LeakCanary.install(this);
+        }
     }
 
     public HttpClientModule getHttpClientModule() {

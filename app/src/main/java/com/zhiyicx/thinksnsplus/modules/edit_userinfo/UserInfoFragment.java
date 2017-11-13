@@ -3,9 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview.OptionsPickerView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
@@ -40,10 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryActivity;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -109,6 +103,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     OverScrollLayout mDvViewGroup;
     @BindView(R.id.fl_tags)
     TagFlowLayout mFlTags;
+    @BindView(R.id.tv_tag_hint)
+    TextView mTvTagHint;
     @BindView(R.id.ll_tag_container)
     LinearLayout mLlTagContainer;
 
@@ -153,33 +149,31 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .build().photoSelectorImpl();
 
 //        initCityPickerView();
+        // 这个是和其他反的
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
 
         RxView.globalLayouts(mDvViewGroup)
-                .flatMap(new Func1<Void, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Void aVoid) {
-                        if (mDvViewGroup==null) {
-                            return Observable.just(false);
-                        }
-                        Rect rect = new Rect();
-                        //获取root在窗体的可视区域
-                        mDvViewGroup.getWindowVisibleDisplayFrame(rect);
-                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                        int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
-                        int dispayHeight = UIUtils.getWindowHeight(getContext());
-                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
-                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
+                .flatMap(aVoid -> {
+                    if (mDvViewGroup == null) {
+                        return Observable.just(false);
                     }
+                    Rect rect = new Rect();
+                    //获取root在窗体的可视区域
+                    mDvViewGroup.getWindowVisibleDisplayFrame(rect);
+                    //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                    int rootInvisibleHeight = mDvViewGroup.getRootView().getHeight() - rect.bottom;
+                    int dispayHeight = UIUtils.getWindowHeight(getContext());
+///                        LogUtils.i("rootInvisibleHeight-->" + rootInvisibleHeight + "  dispayHeight-->" + dispayHeight);
+                    return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                 })
                 // 监听键盘弹起隐藏状态时，会多次调用globalLayouts方法，为了避免多个数据导致状态判断出错，只取200ms内最后一次数据
                 .debounce(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
-                    if (mEtUserIntroduce==null) {
+                    if (mEtUserIntroduce == null) {
                         return;
                     }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
@@ -217,7 +211,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
                 .subscribe(charSequence -> {
-                    LogUtils.i("userName-->" + charSequence);
                     String oldUserName = mUserInfoBean.getName();
                     if (TextUtils.isEmpty(oldUserName)) {
                         userNameChanged = !TextUtils.isEmpty(charSequence);
@@ -291,7 +284,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
 
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
-//                Bundle bundle = new Bundle();
+///               Bundle bundle = new Bundle();
 //                bundle.putString(LocationSearchFragment.BUNDLE_LOCATION_STRING, mTvCity.getText().toString().trim());
 //                intent.putExtras(bundle);
                 startActivityForResult(intent, REQUST_CODE_AREA);
@@ -313,7 +306,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected void setRightClick() {
-        if(TextUtils.isEmpty(mEtUserIntroduce.getInputContent())){
+        if (TextUtils.isEmpty(mEtUserIntroduce.getInputContent())) {
             showSnackErrorMessage(getString(R.string.please_input_intro));
             return;
         }
@@ -333,19 +326,22 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     /**
      * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
+     * @param message
      */
     @Override
-    public void setUpLoadHeadIconState(int upLoadState) {
+    public void setUpLoadHeadIconState(int upLoadState, String message) {
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
-                        getString(R.string.update_head_failure), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.update_head_failure) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.ERROR)
                         .show();
                 break;
             case 0:
-                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
+                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, TextUtils.isEmpty(message) ? getString(R.string.update_head_ing) : message,
+                        TSnackbar
+                                .LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .addIconProgressLoading(0, true, false);
                 mTSnackbarUploadIcon.show();
@@ -353,7 +349,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             case 1:
             case 2:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
-                        getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.update_head_success) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 break;
@@ -376,20 +372,26 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .show();
                 break;
             case 0:
-                mTSnackbarUserInfo = TSnackbar.make(mSnackRootView, R.string.edit_userinfo_ing, TSnackbar.LENGTH_INDEFINITE)
+                mTSnackbarUserInfo = TSnackbar.make(mSnackRootView, TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_ing) : message,
+                        TSnackbar
+                                .LENGTH_INDEFINITE)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .addIconProgressLoading(0, true, false);
                 mTSnackbarUserInfo.show();
                 break;
             case 1:
                 TSnackbar.getTSnackBar(mTSnackbarUserInfo, mSnackRootView,
-                        getString(R.string.edit_userinfo_success), TSnackbar.LENGTH_SHORT)
+                        TextUtils.isEmpty(message) ? getString(R.string.edit_userinfo_success) : message, TSnackbar.LENGTH_SHORT)
                         .setPromptThemBackground(Prompt.SUCCESS)
                         .show();
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
                         .compose(this.bindToLifecycle())
-                        .subscribe(aLong -> getActivity().finish());
+                        .subscribe(aLong -> {
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                        });
                 break;
             default:
         }
@@ -428,6 +430,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         mUserTagBeens.clear();
         mUserTagBeens.addAll(datas);
+        mTvTagHint.setVisibility(datas.size() == 0 ? View.VISIBLE : View.GONE);
         mUserInfoTagsAdapter.notifyDataChanged();
     }
 
@@ -444,7 +447,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
             LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
             if (locationBean != null) {
-                setCity(LocationBean.getlocation(locationBean));
+                String loacaiton = LocationBean.getlocation(locationBean);
+                setCity(loacaiton);
             }
 
         }
@@ -560,7 +564,13 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         } catch (Exception e) {
 
         }
-
+        try {
+            String[] locatons = city.split(" ");
+            if (locatons.length > 2) {
+                city = locatons[locatons.length - 2] + " " + locatons[locatons.length - 1];
+            }
+        } catch (Exception ignored) {
+        }
         mTvCity.setText(city);//更新位置
     }
 

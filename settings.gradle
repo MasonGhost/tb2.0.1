@@ -1,2 +1,3 @@
 include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':ucrop', ':pickerview', ':PhotoPicker',
-        ':media-cache', ':banner', ':mysnackbar', ':overscrolllib', ':tspay', ':contacts', ':appupdate',':bigimage', ':zhibosdk', ':votesdk', ':zhibolibrary', ':onekeyshare', ':carousel', ':mainlibs', ':camerafilters', ':croplib'
+        ':media-cache', ':banner', ':mysnackbar', ':overscrolllib', ':tspay', ':contacts', ':appupdate',':bigimage',':link-library', ':zhibosdk',
+        ':votesdk', ':zhibolibrary', ':onekeyshare', ':carousel', ':mainlibs', ':camerafilters', ':croplib'

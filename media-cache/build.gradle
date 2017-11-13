@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.novoda:bintray-release:0.3.4'
+        classpath 'com.novoda:bintray-release:0.5.0'
     }
 }
 
@@ -20,6 +20,7 @@ android {
         targetSdkVersion gConfig["targetSdkVersion"]
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     lintOptions {
         abortOnError false
@@ -28,8 +29,9 @@ android {
 }
 
 dependencies {
-//    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'org.slf4j:slf4j-android:1.7.21'
+    def dataDependences = rootProject.ext.dataDependencies
+
+    compile dataDependences.slf4j
 }
 
 publish {

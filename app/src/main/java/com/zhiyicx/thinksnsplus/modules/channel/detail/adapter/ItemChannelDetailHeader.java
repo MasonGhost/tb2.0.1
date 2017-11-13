@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +20,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
@@ -44,11 +48,12 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
      * headerView控件
      ********************************/
     private ImageView iv_channel_header_icon;// 频道头像
+    private ImageView iv_tmp;// 封面占位
     private TextView tv_channel_name;//频道名称
     private TextView tv_channel_description;//频道简介
     private TextView tv_subscrib_count;//订阅数量
     private TextView tv_share_count;// 分享数量
-    private LinearLayout fl_header_container;// 布局根结点
+    private ViewGroup fl_header_container;// 布局根结点
 
     private Activity mActivity;
     private RecyclerView mRecyclerView;
@@ -64,6 +69,8 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     private ChannelDetailContract.Presenter mChannelDetailPresenter;
     private View headerView;
     private boolean isRefreshing = false;// 是否正在刷新
+    private int originWith;
+    private int originHeight;
 
 
     /**
@@ -153,10 +160,12 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                 mDistanceY += dy;
                 int headerTop = headerView.getTop();
                 //toolbar文字上边缘距离toolbar上边缘的距离
-                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
+                int userNamePadding = (mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height) - mActivity.getResources()
+                        .getDimensionPixelSize(R.dimen.toolbar_center_text_size)) / 2;
                 // 滑动距离为多少时，toolbar完全不透明
                 int needDistanceY = channelNameFirstY - mToolBarContainer.getHeight() - userNamePadding;
-                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " mDistanceY " + mDistanceY);
+                LogUtils.i(TAG + " mToolBarContainer.getHeight() " + mToolBarContainer.getHeight() + " needDistanceY " + needDistanceY + " " +
+                        "mDistanceY " + mDistanceY);
                 // toolbar文字移动到toolbar中间，这期间的最大滑动距离
                 int maxDistance = needDistanceY + mActivity.getResources().getDimensionPixelSize(R.dimen.toolbar_height);
                 if (mDistanceY >= needDistanceY && mDistanceY <= maxDistance) {
@@ -250,18 +259,19 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                 .transform(new GlideStokeTransform(mActivity, strokeWidth))
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
-                .into(new ImageViewTarget<Bitmap>(iv_channel_header_icon) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        // 设置封面
-                        iv_channel_header_icon.setImageBitmap(resource);
-                        Bitmap mBgBitmap = resource.copy(Bitmap.Config.RGB_565, false);
-                        // 设置封面
-                        BitmapDrawable drawable = new BitmapDrawable(FastBlur.blurBitmap
-                                (mBgBitmap, mBgBitmap.getWidth(), mBgBitmap.getHeight()));
-                        fl_header_container.setBackgroundDrawable(drawable);
-                    }
-                });
+                .into(iv_channel_header_icon);
+
+        Glide.with(mActivity)
+                .load(ImageUtils.imagePathConvertV2((int) groupInfoBean.getCover().getFile_id()
+                        , 0
+                        , 0
+                        , ImageZipConfig.IMAGE_100_ZIP))
+                .asBitmap()
+                .placeholder(R.drawable.shape_default_image)
+                .transform(new GaussianBlurTrasnform(mActivity))
+                .error(R.drawable.shape_default_image)
+                .into(iv_tmp);
+
         // 设置频道名称
         tv_channel_name.setText(groupInfoBean.getTitle());
         tv_channel_name.post(() -> {
@@ -279,9 +289,25 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(groupInfoBean.getMembers_count()));
         // 设置分享人数
         tv_share_count.setText(mActivity.getString(R.string.channel_share) + " " + ConvertUtils.numberConvert(groupInfoBean.getPosts_count()));
-        // 设置封面
-
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        // 设置封面
+        // 添加头部放缩
+        if (originHeight == 0) {
+            fl_header_container.postDelayed(() -> {
+                if (mActivity != null) {
+                    originHeight = fl_header_container.getHeight();
+                    if (originHeight == 0) {
+                        return;
+                    }
+                    originWith = UIUtils.getWindowWidth(mActivity);
+                    ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, originWith, originHeight);
+                    zoomView.initZoom();
+                    // 添加刷新监听
+                    zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
+                }
+            }, 300);
+
+        }
     }
 
     /**
@@ -293,23 +319,38 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     }
 
     private void initHeaderViewUI(View headerView) {
-        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams headerLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                .WRAP_CONTENT);
         headerView.setLayoutParams(headerLayoutParams);
         iv_channel_header_icon = (ImageView) headerView.findViewById(R.id.iv_channel_header_icon);
+        iv_tmp = (ImageView) headerView.findViewById(R.id.iv_tmp);
         tv_channel_name = (TextView) headerView.findViewById(R.id.tv_channel_name);
         tv_channel_description = (TextView) headerView.findViewById(R.id.tv_channel_description);
+        tv_channel_description.setWidth((int) (DeviceUtils.getScreenHeight(mActivity) - 2 * mActivity.getResources().getDimensionPixelOffset(R
+                .dimen.spacing_big_large)));
+
         tv_subscrib_count = (TextView) headerView.findViewById(R.id.tv_subscrib_count);
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
-        fl_header_container = (LinearLayout) headerView.findViewById(R.id.fl_header_container);
-        // 添加头部放缩
-        fl_header_container.post(() -> {
-            LogUtils.i("post run" + fl_header_container.getWidth() + "  " + fl_header_container.getHeight());
-            // 通过post获取控件宽高后，创建缩放头部
-            ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight());
-            zoomView.initZoom();
-            // 添加刷新监听
-            zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
-        });
+        fl_header_container = (ViewGroup) headerView.findViewById(R.id.fl_header_container);
+        Glide.with(mActivity)
+                .load(R.mipmap.default_pic_personal)
+                .asBitmap()
+                .placeholder(R.drawable.shape_default_image)
+                .transform(new GaussianBlurTrasnform(mActivity))
+                .error(R.drawable.shape_default_image)
+                .into(iv_tmp);
+//
+//        // 高度为屏幕宽度一半加上20dp
+//        int width = UIUtils.getWindowWidth(mActivity);
+//        int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen
+//                .spacing_large);
+//        LinearLayout.LayoutParams containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
+//                .MATCH_PARENT, height);
+//        fl_cover_contaner.setLayoutParams(containerLayoutParams);
+//        // 添加头部放缩
+//        new ZoomView(fl_cover_contaner, mActivity, mRecyclerView, width, height).initZoom();
+
+
     }
 
     public void setViewColorWithAlpha(View v, int[] colorRGB, int alpha) {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -19,7 +20,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -143,7 +143,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         shareContent.setContent(mRootView.getAnswerInfo().getBody());
 
         if (bitmap == null) {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         } else {
             shareContent.setBitmap(bitmap);
         }
@@ -259,7 +259,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
-                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
+                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrency2GameCurrency(data.getRewards_amount(),getRatio()),getGoldName()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data, isLoadMore);
                     }
@@ -350,7 +350,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
-    public void updateData(long tag) {
+    public void updateData(Long tag) {
         requestNetData(tag, false);
     }
 
@@ -413,8 +413,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public List<AnswerCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+       mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

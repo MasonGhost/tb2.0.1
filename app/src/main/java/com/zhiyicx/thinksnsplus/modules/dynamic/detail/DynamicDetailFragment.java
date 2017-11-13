@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -53,6 +54,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -173,13 +176,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
         initToolbar();
         //initToolbarTopBlankHeight();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
-        setOverScroll(false, false);
+//        setOverScroll(false, false);
     }
 
     private void initToolbar() {
@@ -233,6 +237,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        mDynamicDetailHeader.setReWardViewVisible(mSystemConfigBean.getSite().getReward().hasStatus()
+                && mSystemConfigBean.getFeed().hasReward() ? VISIBLE : GONE);
     }
 
     @Override
@@ -289,8 +295,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void onImageClick(int iamgePosition, double amount, int note) {
-        initImageCenterPopWindow(iamgePosition, (float) amount, note, R.string.buy_pay_words_desc, true);
+    public void onImageClick(int iamgePosition, long amount, int note) {
+        initImageCenterPopWindow(iamgePosition, amount, note, R.string.buy_pay_words_desc, true);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -340,8 +346,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
-        initImageCenterPopWindow(position, (float) amount,
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
+        initImageCenterPopWindow(position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -448,8 +454,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void updateReward() {
-
-        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
+        if (mDynamicBean.getReward() != null&& !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
+            mDynamicBean.getReward().setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mDynamicBean.getReward().getAmount()), mPresenter.getRatio()));
+        }
+        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
+                RewardType.DYNAMIC, mPresenter.getGoldName());
     }
 
 
@@ -513,6 +522,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         mOtherDynamicPopWindow.show();
                     }
                     break;
+                default:
             }
         });
     }
@@ -561,7 +571,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void handleItemClick(int position) {
-        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
                 initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
@@ -604,7 +615,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC,getCurrentDynamic().getId(), comment_id);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, getCurrentDynamic().getId(), comment_id);
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
@@ -623,7 +634,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+///                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -649,7 +660,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_share_dynamic))
+///                .item1Str(getString(R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.dynamic_list_top_dynamic))
                 .item4Str(getString(R.string.dynamic_list_delete_dynamic))
@@ -688,9 +699,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * @param strRes        文字说明
      * @param isImage       是否是图片收费
      */
-    private void initImageCenterPopWindow(final int imagePosition, float amout,
+    private void initImageCenterPopWindow(final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
-//        if (mPayImagePopWindow != null) {
+///       if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
 //        }
@@ -704,12 +715,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

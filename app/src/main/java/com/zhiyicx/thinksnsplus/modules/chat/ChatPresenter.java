@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
@@ -71,7 +72,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public List<ChatItemBean> getHistoryMessages(int cid, long creat_time) {
         final List<ChatItemBean> data = mRepository.getChatListData(cid, creat_time);
         Collections.reverse(data);
-        Observable.just(data)
+        Subscription subscribe = Observable.just(data)
                 .observeOn(Schedulers.io())
                 .subscribe(chatItemBeen -> {
                     for (ChatItemBean chatItemBean : chatItemBeen) {
@@ -81,6 +82,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         }
                     }
                 });
+        addSubscrebe(subscribe);
         mRootView.hideLoading();
         return data;
     }
@@ -96,13 +98,17 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void sendTextMessage(String text, int cid) {
-        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");// usid 暂不使用
-        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);// 更新
-        if (!ZBIMClient.getInstance().isLogin()) { // IM 没有连接成功
+        // usid 暂不使用
+        Message message = ChatClient.getInstance(mContext).sendTextMsg(text, cid, "");
+        // 更新
+        message.setUid(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
+        // IM 没有连接成功
+        if (!ZBIMClient.getInstance().isLogin()) {
             message.setSend_status(MessageStatus.SEND_FAIL);
         }
-        message.setIs_read(true); // 更新
-        MessageDao.getInstance(mContext).insertOrUpdateMessage(message); // 更新
+        // 更新
+        message.setIs_read(true);
+        MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
         updateMessage(message);
     }
 
@@ -128,7 +134,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         final String uids = AppApplication.getMyUserIdWithdefault() + "," + userInfoBean.getUser_id();
         final String pair = AppApplication.getMyUserIdWithdefault() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
+        Subscription subscribe = mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
                 .subscribe(new BaseSubscribeForV2<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
@@ -143,7 +149,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         MessageItemBean messageItemBean = new MessageItemBean();
                         messageItemBean.setConversation(data);
                         messageItemBean.setUserInfo(userInfoBean);
-                        EventBus.getDefault().post(messageItemBean, EVENT_IM_ONCONVERSATIONCRATED);// 通知会话列表
+                        // 通知会话列表
+                        EventBus.getDefault().post(messageItemBean, EVENT_IM_ONCONVERSATIONCRATED);
 
                     }
 
@@ -157,6 +164,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     /**
@@ -175,14 +183,16 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
         LogUtils.d(TAG, "------onMessageReceived------->" + message);
-        if (message.cid != mRootView.getCurrentChatCid()) {// 丢弃非当前房间的消息
+        // 丢弃非当前房间的消息
+        if (message.cid != mRootView.getCurrentChatCid()) {
             return;
         }
         updateMessage(message);
         // 把消息更新为已经读
-        Observable.just(message)
+        Subscription subscribe = Observable.just(message)
                 .observeOn(Schedulers.io())
                 .subscribe(message1 -> MessageDao.getInstance(mContext).readMessage(message1.getMid()));
+        addSubscrebe(subscribe);
 
     }
 

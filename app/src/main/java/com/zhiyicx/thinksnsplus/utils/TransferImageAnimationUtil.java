@@ -106,7 +106,9 @@ public class TransferImageAnimationUtil {
      * @param endAction 在监听ViewTree的同时，需要处理一些其他操作，在新的线程中进行
      */
     public static void startInAnim(final AnimationRectBean rect, final ImageView imageView, final Runnable endAction) {
-
+        if(imageView==null){
+            return;
+        }
         imageView.getViewTreeObserver()
                 .addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override

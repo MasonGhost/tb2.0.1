@@ -22,7 +22,7 @@
             android:textSize="@dimen/size_icon_assist"
             android:layout_marginTop="@dimen/spacing_mid_small_8dp"
             android:maxLines="1"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:layout_below="@+id/iv_user_portrait"
             tools:text="xxxxxxxxxxxx"
             android:gravity="center"

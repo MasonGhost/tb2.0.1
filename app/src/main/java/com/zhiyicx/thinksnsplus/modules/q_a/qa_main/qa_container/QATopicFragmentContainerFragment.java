@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 
@@ -22,6 +24,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST;
 
 /**
  * @Author Jliuer
@@ -102,6 +106,27 @@ public class QATopicFragmentContainerFragment extends TSViewPagerFragment {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    QATopicListFragment fragment = (QATopicListFragment) mFragments.get(1);
+                    if (fragment.handleTouristControl()) {
+                        mVpFragment.setCurrentItem(0,false);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @NonNull

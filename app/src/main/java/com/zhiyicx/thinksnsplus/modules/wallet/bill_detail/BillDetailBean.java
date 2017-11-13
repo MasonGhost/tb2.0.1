@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill_detail;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -90,11 +91,11 @@ public class BillDetailBean implements Parcelable{
         this.created_at = created_at;
     }
 
-    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean) {
+    public static BillDetailBean recharge2Bill(RechargeSuccessBean rechargeSuccessBean,int ratio) {
         BillDetailBean billDetailBean = new BillDetailBean();
         billDetailBean.setAccount(rechargeSuccessBean.getAccount());
         billDetailBean.setAction(rechargeSuccessBean.getAction());
-        billDetailBean.setAmount(rechargeSuccessBean.getAmount());
+        billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(rechargeSuccessBean.getAmount(),ratio));
         billDetailBean.setBody(rechargeSuccessBean.getBody());
         billDetailBean.setChannel(rechargeSuccessBean.getChannel());
         billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
@@ -103,11 +104,11 @@ public class BillDetailBean implements Parcelable{
         return billDetailBean;
     }
 
-    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean) {
+    public static BillDetailBean withdrawals2Bill(WithdrawalsListBean withdrawalsListBean,int ratio) {
         BillDetailBean billDetailBean = new BillDetailBean();
         billDetailBean.setAccount(withdrawalsListBean.getAccount());
         billDetailBean.setAction(2);
-        billDetailBean.setAmount(withdrawalsListBean.getValue());
+        billDetailBean.setAmount((int)PayConfig.realCurrency2GameCurrency(withdrawalsListBean.getValue(),ratio));
         billDetailBean.setBody("提现");
         billDetailBean.setChannel(withdrawalsListBean.getType());
         billDetailBean.setCreated_at(withdrawalsListBean.getCreated_at());

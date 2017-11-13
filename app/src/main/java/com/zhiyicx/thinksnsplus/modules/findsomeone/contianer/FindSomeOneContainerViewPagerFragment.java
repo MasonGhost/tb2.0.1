@@ -36,10 +36,6 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
-
-//        Bundle bundle = getArguments();
-//        int pageType = bundle.getInt(FindSomeOneListFragment.PAGE_TYPE);// 当前进入的是关注还是粉丝列表
-//        setCurrentItem();
     }
 
     @Override
@@ -51,6 +47,7 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
     protected boolean setUseStatusView() {
         return false;
     }
+
     @Override
     protected void initData() {
     }
@@ -86,9 +83,9 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
      *
      * @param position
      */
-    public void setCurrentItem(int position,boolean smoothScroll) {
-
-        mVpFragment.setCurrentItem(position,smoothScroll);// 设置进入页面时，切换到关注还是粉丝列表
+    public void setCurrentItem(int position, boolean smoothScroll) {
+        // 设置进入页面时，切换到关注还是粉丝列表
+        mVpFragment.setCurrentItem(position, smoothScroll);
 
     }
 

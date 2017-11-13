@@ -23,18 +23,19 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -49,13 +50,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.Observable;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_DELETE;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
  * @Author Jliuer
@@ -65,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANS
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -156,7 +157,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen,
-                mRewardsCountBean, RewardType.QA_ANSWER);
+                mRewardsCountBean, RewardType.QA_ANSWER, mPresenter.getGoldName());
     }
 
     @Override
@@ -168,7 +169,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
         onNetResponseSuccess(answerInfoBean.getCommentList(), isLoadMore);
-        closeLoadingView();
     }
 
     @Override
@@ -280,8 +280,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), mPresenter.getAdvert());
+//        mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), null);
         mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
+        mAnswerDetailHeaderView.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mAnswerDetailHeaderView.getAnswerDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -289,11 +291,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    @Override
-    public void loadFinish() {
-        closeLoadingView();
     }
 
     @Override
@@ -359,6 +356,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                });
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_QUESTION_BEAN, mAnswerInfoBean.getQuestion());
+                    intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+                    startActivity(intent);
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -437,7 +443,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(answerIsMine && !isMineAdopted && !isInvited ? getString(R.string.info_delete) : "")
-                .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.qa_question_answer_adopt : R.string.empty)
+                .item2Str(getString(isAdopted ? (isMineAdopted ? R.string.empty : R.string.empty)
                         : questionIsMine ? R.string.qa_question_answer_adopting : R.string.empty))
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
@@ -456,6 +462,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     if (isMineAdopted) {
                         return;
                     }
+                    if (answerIsMine) {
+                        showSnackErrorMessage(getString(R.string.qa_question_cannot_adopt_selef));
+                        return;
+                    }
                     mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean
                             .getId());
 
@@ -468,11 +478,17 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item4ClickListener(() -> {// 编辑
                     mDealInfoMationPopWindow.hide();
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(), mAnswerInfoBean.getQuestion().getSubject());
+                                    .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
+                            mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
+    }
+
+    @Override
+    public void onLoadFinish() {
+        closeLoadingView();
     }
 
     class ItemOnCommentListener implements AnswerDetailCommentItem.OnCommentItemListener {
@@ -519,4 +535,28 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         }
 
     }
+
+    @Override
+    public void onPause() {
+        mAnswerDetailHeaderView.getContentWebView().onPause();
+        mAnswerDetailHeaderView.getContentWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mAnswerDetailHeaderView.getContentWebView().onResume();
+        mAnswerDetailHeaderView.getContentWebView().resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAnswerDetailHeaderView.destroyedWeb();
+    }
+
+
 }

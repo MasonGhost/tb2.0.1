@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -22,6 +23,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -65,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener, BaseWebLoad.OnWebLoadListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
@@ -145,12 +147,16 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
+        if (mRewardsCountBean != null && !TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
+            mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter
+                    .getRatio()));
+        }
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());
     }
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
-        closeLoadingView();
+//        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
@@ -187,7 +193,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         if (mInfoMation == null) {
             mInfoMation = new InfoListDataBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
-            mInfoMation.setId(ids.intValue());
+            mInfoMation.setId(ids);
         }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -293,6 +299,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initHeaderView() {
         mInfoDetailHeader = new InfoDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mInfoDetailHeader.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -409,22 +416,19 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    /**
-     * 初始化他人动态操作选择弹框
-     *
-     * @param infoMation curent infoMation
-     */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
         boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                        .dynamic_list_collect_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {
+                    // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
                     if (isMine) {
                         mPresenter.deleteInfo();
@@ -434,14 +438,17 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     }
                     mDealInfoMationPopWindow.hide();
                 })
-                .item1ClickListener(() -> {// 申请置顶
+                // 申请置顶
+                .item1ClickListener(() -> {
                     if (infoMation.is_pinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
                         // 跳转置顶页面
                         Bundle bundle = new Bundle();
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
-                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());// 资源id
+                        // 资源类型
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);
+                        // 资源id
+                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());
                         Intent intent = new Intent(getActivity(), StickTopActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -452,33 +459,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .build();
     }
 
-    class ItemOnWebEventListener implements InfoDetailWebItem.OnWebEventListener {
-        @Override
-        public void onWebImageLongClick(String mLongClickUrl) {
-
-        }
-
-        @Override
-        public void onWebImageClick(String url, List<String> mImageList) {
-
-        }
-
-        @Override
-        public void onLoadFinish() {
-            if (isFirstIn) {
-                closeLoadingView();
-            }
-            isFirstIn = false;
-        }
-
-        @Override
-        public void onLoadStart() {
-            if (isFirstIn) {
-                showLoadingView();
-            }
-
-        }
+    @Override
+    public void onLoadFinish() {
+        closeLoadingView();
     }
+
 
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
@@ -487,10 +472,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             InfoCommentListBean infoCommentListBean = mListDatas.get(position);
             if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getComment_content())) {
                 if (infoCommentListBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {// 自己的评论
-//                if (mListDatas.get(position).getId() != -1) {
-                    initDeleteCommentPopupWindow(infoCommentListBean);
-                    mDeletCommentPopWindow.show();
-//                } else {
+                    if (mListDatas.get(position).getId() != -1) {
+                        initDeleteCommentPopupWindow(infoCommentListBean);
+                        mDeletCommentPopWindow.show();
+                    }
+//                else {
 //
 //                    return;
 //                }
@@ -517,9 +503,35 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == RewardType.INFO.id) {
-                mPresenter.reqReWardsData(mInfoMation.getId());
+                mPresenter.reqReWardsData(mInfoMation.getId().intValue());
             }
         }
 
+    }
+
+    @Override
+    public void onPause() {
+        mInfoDetailHeader.getContentWebView().onPause();
+        mInfoDetailHeader.getContentWebView().pauseTimers();
+        mInfoDetailHeader.getContentSubWebView().onPause();
+        mInfoDetailHeader.getContentSubWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mInfoDetailHeader.getContentWebView().onResume();
+        mInfoDetailHeader.getContentWebView().resumeTimers();
+        mInfoDetailHeader.getContentSubWebView().onResume();
+        mInfoDetailHeader.getContentSubWebView().resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mInfoDetailHeader.destroyedWeb();
     }
 }

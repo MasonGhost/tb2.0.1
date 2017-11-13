@@ -199,7 +199,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             ImageBean imageBean = new ImageBean();
             Toll toll = new Toll(); // 收费信息
             toll.setPaid(true);// 是否已經付費
-            toll.setToll_money(0f);// 付费金额
+            toll.setToll_money(0);// 付费金额
             toll.setToll_type_string("");// 付费类型
             toll.setPaid_node(0);// 付费节点
             imageBean.setToll(toll);

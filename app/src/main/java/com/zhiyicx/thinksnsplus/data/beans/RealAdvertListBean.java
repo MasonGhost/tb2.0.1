@@ -4,12 +4,9 @@ import android.os.Parcel;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 import com.zhiyicx.baseproject.config.AdvertConfig;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AdvertFormatConvert;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicListAdvertConvert;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.ImageAdvertConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -75,6 +72,8 @@ public class RealAdvertListBean extends BaseListBean {
                 case AdvertConfig.APP_INFO_TYPE_ADVERT:
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
+                    break;
+                default:
                     break;
             }
         }
@@ -185,7 +184,7 @@ public class RealAdvertListBean extends BaseListBean {
 
     @Generated(hash = 1651798827)
     public RealAdvertListBean(Long id, Long space_id, String title, String type, String created_at,
-            String updated_at, AdvertFormat advertFormat) {
+                              String updated_at, AdvertFormat advertFormat) {
         this.id = id;
         this.space_id = space_id;
         this.title = title;

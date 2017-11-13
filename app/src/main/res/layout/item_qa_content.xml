@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/spacing_mid"
+    android:paddingBottom="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_normal">
 
     <TextView
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"
+            android:textSize="@dimen/size_content"
             tools:text="ssss"/>
 
         <TextView

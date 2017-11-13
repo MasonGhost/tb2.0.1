@@ -8,9 +8,13 @@
         layout="@layout/item_dynamic_detail_content"
         />
 
-    <include
-        layout="@layout/item_dynamic_detail_dig"
-        />
+    <com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView
+        android:id="@+id/detail_dig_view"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_normal_large">
+    </com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView>
 
     <include
         layout="@layout/include_reward"/>

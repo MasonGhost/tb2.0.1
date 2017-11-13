@@ -58,19 +58,21 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
         return fragment;
     }
 
+
+    @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
+        mRefreshlayout.autoRefresh();
     }
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
-    }
-
-    @Override
-    protected boolean isNeedRefreshAnimation() {
-        return false;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTopictype= initTopicType();
+        mTopictype = initTopicType();
     }
 
     protected String initTopicType() {
@@ -130,7 +132,8 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 boolean isJoined = topicBean.getHas_follow();
                 subscrib.setChecked(isJoined);
                 subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
-                subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+                subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources
+                        ().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
                 RxView.clicks(subscrib)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
@@ -196,8 +199,8 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     }
 
     @Override
-    protected List<QATopicBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mListDatas;
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        onCacheResponseSuccess( mListDatas,isLoadMore);
     }
 
     private List<Link> setLinks(QATopicBean topicBean) {
@@ -222,5 +225,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
 
     protected String getName() {
         return "";
+    }
+
+    public boolean handleTouristControl() {
+        return mPresenter.handleTouristControl();
     }
 }

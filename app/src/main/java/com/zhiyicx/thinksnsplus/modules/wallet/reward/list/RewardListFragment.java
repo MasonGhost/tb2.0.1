@@ -13,6 +13,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +56,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     @Override
     protected CommonAdapter<RewardsListBean> getAdapter() {
-        return new RewardListAdapter(getContext(), R.layout.item_reward_user, mListDatas);
+        return new RewardListAdapter(getContext(), R.layout.item_reward_user, mListDatas, mRewardType);
     }
 
     @Override
@@ -106,5 +108,13 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
         intent.putExtras(bundle);
         context.startActivity(intent);
 
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<RewardsListBean> data) {
+        if (mListDatas.size() > 0) {
+            return (long) mListDatas.size();
+        }
+        return DEFAULT_PAGE_MAX_ID;
     }
 }

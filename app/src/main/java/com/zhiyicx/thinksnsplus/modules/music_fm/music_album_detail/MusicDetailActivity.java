@@ -122,6 +122,12 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
+    }
+
+    @Override
     public MediaBrowserCompat getMediaBrowser() {
         return mMediaBrowserCompat;
     }

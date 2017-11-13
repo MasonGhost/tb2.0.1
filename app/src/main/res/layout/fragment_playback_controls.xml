@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:scaleType="centerCrop"
-        android:src="@mipmap/icon_256"/>
+        android:src="@mipmap/icon"/>
 
     <LinearLayout
         android:id="@+id/fragment_back_content"

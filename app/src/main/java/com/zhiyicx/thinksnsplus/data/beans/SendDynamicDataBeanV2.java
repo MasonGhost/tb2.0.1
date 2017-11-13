@@ -211,7 +211,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
         sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
-        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? (long) PayConfig.realCurrencyYuan2Fen(dynamicBean.getAmount()): null);
+        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? dynamicBean.getAmount(): null);
         return sendDynamicDataBeanV2;
     }
 

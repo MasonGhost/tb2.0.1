@@ -17,4 +17,10 @@ public class DraftBoxActivity extends TSActivity<DraftBoxPresenter, DraftBoxFrag
                 .draftBoxPresenterModule(new DraftBoxPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mContanierFragment.updateDate();
+    }
 }

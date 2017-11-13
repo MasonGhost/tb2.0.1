@@ -41,7 +41,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
+        QAListInfoBean>
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
@@ -57,6 +58,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
     private QAPublishBean mDraftQuestion;
+    private QAPublishBean mDraftQuestionCopy;
 
     public static PublishQuestionFragment newInstance(Bundle args) {
         PublishQuestionFragment fragment = new PublishQuestionFragment();
@@ -152,6 +154,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.initView(rootView);
         if (mDraftQuestion != null) {
             mEtQustion.setText(mDraftQuestion.getSubject());
+            mDraftQuestionCopy = mDraftQuestion;
+            mDraftQuestionCopy.setMark(mDraftQuestion.getMark() + 1);
+            mPresenter.saveQuestion(mDraftQuestionCopy);
         }
         initListener();
     }
@@ -179,11 +184,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         if (data.isEmpty()) {
             mEmptyView.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    protected List<QAListInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return super.requestCacheData(maxId, isLoadMore);
     }
 
     @Override
@@ -223,7 +223,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
      */
     private void initEditWarningPop() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
-        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) || mDraftQuestion == null;
+        boolean canSaveDraft = (mDraftQuestion != null && !mDraftQuestion.isHasAgainEdite()) ||
+                mDraftQuestion == null;
         if (mEditWarningPopupWindow != null) {
             return;
         }
@@ -236,11 +237,24 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    mPresenter.deleteQuestion(mDraftQuestion);
+                    if (mDraftQuestionCopy != null) {
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
+                        if (!mDraftQuestionCopy.isHasAgainEdite()) {
+                            mPresenter.saveQuestion(mDraftQuestionCopy);
+                        } else {
+                            mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        }
+                    }
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    if (mDraftQuestionCopy != null) {
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
+                        mPresenter.deleteQuestion(mDraftQuestionCopy);
+                    }
                     saveQuestion();
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();

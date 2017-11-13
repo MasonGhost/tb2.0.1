@@ -6,7 +6,6 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -50,8 +49,8 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
     }
 
     @Override
-    public List<AnswerDigListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
@@ -91,6 +90,8 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
 
     @Override
     public List<AnswerDigListBean> requestCacheData(Long maxId, boolean isLoadMore, AnswerInfoBean answerInfoBean) {
-        return answerInfoBean.getLikes();
+        List<AnswerDigListBean> likes = answerInfoBean.getLikes();
+        mRootView.onCacheResponseSuccess(likes,isLoadMore);
+        return likes;
     }
 }

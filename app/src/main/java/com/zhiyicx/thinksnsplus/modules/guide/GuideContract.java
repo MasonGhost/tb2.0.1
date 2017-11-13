@@ -2,13 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.Context;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
-import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 
 import java.util.List;
 

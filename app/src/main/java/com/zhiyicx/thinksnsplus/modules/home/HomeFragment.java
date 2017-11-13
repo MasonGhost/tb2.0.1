@@ -65,10 +65,17 @@ import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_ME
  * @Date 2017/1/4
  * @Contact master.jungle68@gmail.com
  */
-public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View, PhotoSelectorImpl.IPhotoBackListener {
-    public static final int PAGE_NUMS = 4; // 页数
+public class HomeFragment extends TSFragment<HomeContract.Presenter> implements DynamicFragment.OnCommentClickListener, HomeContract.View,
+        PhotoSelectorImpl.IPhotoBackListener {
+    /**
+     * 页数
+     */
+    public static final int PAGE_NUMS = 4;
 
-    public static final int PAGE_HOME = 0; // 对应在 viewpager 中的位置
+    /**
+     * 对应在 viewpager 中的位置
+     */
+    public static final int PAGE_HOME = 0;
     public static final int PAGE_FIND = 1;
     public static final int PAGE_MESSAGE = 2;
     public static final int PAGE_MINE = 3;
@@ -96,26 +103,39 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @BindView(R.id.vp_home)
     NoPullViewPager mVpHome;
 
+    /**
+     * 仅用于构造
+     */
     @Inject
-    HomePresenter mHomePresenter;  // 仅用于构造
+    HomePresenter mHomePresenter;
+
     @BindView(R.id.fl_add)
     FrameLayout mFlAdd;
-    @BindView(R.id.ll_message)
-    LinearLayout mLlMessage;
-    @BindView(R.id.ll_mine)
-    LinearLayout mLlMine;
+
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
+
+
     private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
     private int mCurrenPage;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
-    private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
+    /**
+     * 图片选择弹框
+     */
+    private ActionPopupWindow mPhotoPopupWindow;
+    /**
+     * 签到弹窗
+     */
+    private CheckInPopWindow mCheckInPopWindow;
 
-    private CheckInBean mCheckInBean; // 签到信息
+    /**
+     * 签到信息
+     */
+    private CheckInBean mCheckInBean;
+    private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -178,18 +198,18 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         setJpushAlias();
         changeNavigationButton(PAGE_HOME);
         setCurrentPage();
-        // 支持魅族手机首页状太栏文字白色问题
-        supportFlymeSutsusbar();
         // app更新
         AppUpdateManager.getInstance(getContext()
-                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) + "&type=android")
+                , ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_GET_APP_VERSION + "?version_code=" + DeviceUtils.getVersionCode(getContext()) +
+                        "&type=android")
                 .startVersionCheck();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mPresenter.isLogin() && mVpHome.getChildCount() < PAGE_NUMS) { // 游客登录后的处理
+        // 游客登录后的处理
+        if (mPresenter.isLogin() && mFragmentList.size() < PAGE_NUMS) {
             initViewPager();
             mVpHome.setCurrentItem(mCurrenPage, false);
         }
@@ -299,7 +319,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(aLong -> {
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread
+                    ()).map(aLong -> {
                 mLlBottomContainer.setVisibility(View.VISIBLE);
                 return null;
             }).subscribe();
@@ -312,12 +333,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     /**
      * 初始化 viewpager
      */
-
     private void initViewPager() {
         //设置缓存的个数
-        mVpHome.setOffscreenPageLimit(PAGE_NUMS);
+        mVpHome.setOffscreenPageLimit(PAGE_NUMS-1);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
-        List<Fragment> mFragmentList = new ArrayList<>();
+        mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
@@ -326,7 +346,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());
         }
-        mHomePager.bindData(mFragmentList);//将 List 设置给 adapter
+        //将 List 设置给 adapter
+        mHomePager.bindData(mFragmentList);
         mVpHome.setAdapter(mHomePager);
     }
 
@@ -400,7 +421,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void setJpushAlias() {
         if (mPresenter.isLogin()) {
-            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+            // 设置极光推送别名
+            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
             mJpushAlias.setAlias();
         }
 
@@ -479,13 +501,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         this.mCheckInBean = data;
         if (mCheckInPopWindow != null) {
             if (mCheckInPopWindow.isShowing()) {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
             } else {
-                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio());
+                mCheckInPopWindow.setData(mCheckInBean, mPresenter.getWalletRatio(), mPresenter.getGoldName());
                 mCheckInPopWindow.show();
             }
         } else {
-            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, mPresenter.getGoldName(), mPresenter.getWalletRatio(), () ->
+                    mPresenter.checkIn());
             mCheckInPopWindow.show();
         }
     }

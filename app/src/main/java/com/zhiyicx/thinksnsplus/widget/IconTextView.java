@@ -113,7 +113,7 @@ public class IconTextView extends View {
         }
         mTouchSlop = touchSlop * touchSlop;
         inTapRegion = false;
-
+        mPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
         fixDrawableSize();
     }
 
@@ -254,7 +254,6 @@ public class IconTextView extends View {
         mCacheBound.right = getPaddingLeft() + width;
         mCacheBound.bottom = getPaddingTop() + height;
 
-        mPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
 
         composeDrawableBound();
         setMeasuredDimension(width + getPaddingLeft() + getPaddingRight(), height +
@@ -351,6 +350,8 @@ public class IconTextView extends View {
                 mIconBound.right = mIconBound.left + mIconWidth;
                 mIconBound.bottom = mCacheBound.bottom - tempGap;
                 break;
+            default:
+                break;
         }
         mDrawable.setBounds(mIconBound);
     }
@@ -389,8 +390,9 @@ public class IconTextView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mDrawable == null)
+        if (mDrawable == null) {
             return;
+        }
         switch (mDirection) {
             case TOP:
                 mDrawable.draw(canvas);
@@ -415,6 +417,8 @@ public class IconTextView extends View {
                 canvas.drawText(mText, 0, mText.length(),
                         mCacheBound.left + (mCacheBound.width() - mTextBound.width()) / 2,
                         mIconBound.top - mGap, mPaint);  // 文字的起点是第一个文字的左下角位置开始
+                break;
+            default:
                 break;
         }
     }

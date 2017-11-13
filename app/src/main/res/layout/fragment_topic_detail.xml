@@ -36,7 +36,7 @@
                             android:layout_width="@dimen/topic_cover_height"
                             android:layout_height="@dimen/topic_cover_height"
                             android:scaleType="centerCrop"
-                            android:src="@mipmap/pic_default_portrait2"
+                            android:src="@mipmap/pic_default_secret"
                             android:layout_marginRight="@dimen/spacing_normal"/>
 
                     <TextView

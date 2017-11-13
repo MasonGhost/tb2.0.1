@@ -21,12 +21,12 @@ import javax.inject.Inject;
  */
 
 public class NotificationFragment extends TSListFragment<NotificationContract.Presenter, TSPNotificationBean>
-        implements NotificationContract.View{
+        implements NotificationContract.View {
 
     @Inject
     NotificationPresenter mNotificationPresenter;
 
-    public NotificationFragment instance(){
+    public NotificationFragment instance() {
         NotificationFragment fragment = new NotificationFragment();
         fragment.setArguments(new Bundle());
         return fragment;
@@ -43,6 +43,16 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         return new NotificationAdapter(getContext(), mListDatas);
     }
@@ -51,7 +61,10 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     protected boolean showToolbar() {
         return false;
     }
-
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
     @Override
     protected boolean setUseStatusView() {
         return false;
@@ -60,14 +73,14 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(mPresenter!=null&&isVisibleToUser){
-            mPresenter.readNotification();
+        if (mPresenter != null && isVisibleToUser) {
+            mRefreshlayout.autoRefresh();
         }
 
     }
 
     @Override
     protected Long getMaxId(@NotNull List<TSPNotificationBean> data) {
-        return Long.valueOf(mListDatas.size());
+        return (long) mListDatas.size();
     }
 }

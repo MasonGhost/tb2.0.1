@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -152,7 +151,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvSubscribBtn.setVisibility(View.GONE);// 隐藏订阅按钮
         initListener();
-        setOverScroll(false, null);
+//        setOverScroll(false, null);
     }
 
     @Override
@@ -217,10 +216,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         setAdapter(adapter, new GroupDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForNineImage(getContext()));
-        if (getGroupId() >= 0) {
-            GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
-            adapter.addItemViewDelegate(emptyItem);
-        }
+        GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -366,6 +363,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(task.get(i).getFile_id());
+            imageBean.setWidth(task.get(i).getWidth());
+            imageBean.setHeight(task.get(i).getHeight());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
@@ -413,7 +412,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
-                            .getDrawable(), R.mipmap.icon_256);
+                            .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

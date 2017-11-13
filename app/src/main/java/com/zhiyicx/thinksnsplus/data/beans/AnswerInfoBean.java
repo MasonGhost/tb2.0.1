@@ -44,6 +44,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
     private int views_count; // 回答浏览量统计
     private String created_at;
     private String updated_at;
+    private String onlookers_total;// 围观金额总数
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean user;
     private boolean liked;
@@ -226,6 +227,14 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         return this.updated_at;
     }
 
+    public String getOnlookers_total() {
+        return onlookers_total;
+    }
+
+    public void setOnlookers_total(String onlookers_total) {
+        this.onlookers_total = onlookers_total;
+    }
+
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
@@ -286,6 +295,39 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.could = could;
     }
 
+    public int getOnlookers_count() {
+        return this.onlookers_count;
+    }
+
+    public void setOnlookers_count(int onlookers_count) {
+        this.onlookers_count = onlookers_count;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AnswerInfoBean that = (AnswerInfoBean) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        return question_id != null ? question_id.equals(that.question_id) : that.question_id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (question_id != null ? question_id.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -308,6 +350,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         dest.writeInt(this.views_count);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+        dest.writeString(this.onlookers_total);
         dest.writeParcelable(this.user, flags);
         dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
         dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
@@ -320,12 +363,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         dest.writeInt(this.onlookers_count);
     }
 
-    public int getOnlookers_count() {
-        return this.onlookers_count;
-    }
-
-    public void setOnlookers_count(int onlookers_count) {
-        this.onlookers_count = onlookers_count;
+    public AnswerInfoBean() {
     }
 
     protected AnswerInfoBean(Parcel in) {
@@ -344,6 +382,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.views_count = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
+        this.onlookers_total = in.readString();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.liked = in.readByte() != 0;
         this.collected = in.readByte() != 0;
@@ -356,13 +395,13 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.onlookers_count = in.readInt();
     }
 
-    @Generated(hash = 1858838836)
+    @Generated(hash = 555183698)
     public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
             int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
-            boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
-            List<RewardsListBean> rewarders, QAListInfoBean question, boolean could,
-            int onlookers_count) {
+            int likes_count, int views_count, String created_at, String updated_at,
+            String onlookers_total, UserInfoBean user, boolean liked, boolean collected,
+            boolean rewarded, List<AnswerDigListBean> likes, List<RewardsListBean> rewarders,
+            QAListInfoBean question, boolean could, int onlookers_count) {
         this.id = id;
         this.question_id = question_id;
         this.user_id = user_id;
@@ -377,6 +416,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.views_count = views_count;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.onlookers_total = onlookers_total;
         this.user = user;
         this.liked = liked;
         this.collected = collected;
@@ -386,10 +426,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable {
         this.question = question;
         this.could = could;
         this.onlookers_count = onlookers_count;
-    }
-
-    @Generated(hash = 1616850933)
-    public AnswerInfoBean() {
     }
 
     public static final Creator<AnswerInfoBean> CREATOR = new Creator<AnswerInfoBean>() {

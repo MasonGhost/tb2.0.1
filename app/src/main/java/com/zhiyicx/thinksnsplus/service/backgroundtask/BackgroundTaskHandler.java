@@ -283,18 +283,24 @@ public class BackgroundTaskHandler {
               通用 POST 接口处理
              */
             case POST:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
 
             case PUT:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 putMethod(backgroundRequestTaskBean);
                 break;
             case POST_V2:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethodV2(backgroundRequestTaskBean);
                 break;
@@ -302,12 +308,16 @@ public class BackgroundTaskHandler {
               通用 GET 接口处理
              */
             case GET:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
 
             case PATCH:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 PatchMethod(backgroundRequestTaskBean);
                 break;
@@ -315,12 +325,16 @@ public class BackgroundTaskHandler {
               通用 DELETE 接口处理
              */
             case DELETE:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethod(backgroundRequestTaskBean);
                 break;
             case DELETE_V2:
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethodV2(backgroundRequestTaskBean);
                 break;
@@ -329,7 +343,9 @@ public class BackgroundTaskHandler {
              */
             case GET_IM_INFO:
 
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
 
                 getIMInfo(backgroundRequestTaskBean);
@@ -339,7 +355,9 @@ public class BackgroundTaskHandler {
              */
             case GET_USER_INFO:
 
-                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) {
+                    return;
+                }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 getUserInfo(backgroundRequestTaskBean);
                 break;
@@ -638,10 +656,14 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        if (ApiConfig.APP_DOMAIN.equals(ApiConfig.APP_DOMAIN_DEV)) {
+
+                        if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:") || mSystemRepository
+                                .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {
                             imConfig.setWeb_socket_authority(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+
                         } else {
                             imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
+
                         }
 
                         mAuthRepository.saveIMConfig(imConfig);
@@ -1244,7 +1266,7 @@ public class BackgroundTaskHandler {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             infoCommentListBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
-                            infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                            infoCommentListBean.setState(InfoCommentListBean.SEND_SUCCESS);
                             mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                             EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
                         } catch (JSONException e) {
@@ -1256,7 +1278,7 @@ public class BackgroundTaskHandler {
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        infoCommentListBean.setState(InfoCommentListBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }
@@ -1264,7 +1286,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        infoCommentListBean.setState(InfoCommentListBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
                     }

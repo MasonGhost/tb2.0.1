@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ActivityUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
@@ -21,12 +23,6 @@ import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 public class HomeActivity extends TSActivity {
     public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
-
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -49,7 +45,6 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-
     }
 
     @Override

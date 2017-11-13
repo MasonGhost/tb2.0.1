@@ -65,6 +65,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -81,8 +86,9 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         } catch (Exception e) {
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if (mInfoBannerHeader == null)
+        if (mInfoBannerHeader == null) {
             return;
+        }
         if (!isLoadMore && data.isEmpty()) {
             mInfoBannerHeader.getInfoBannerHeader().setVisibility(View.GONE);
         } else {
@@ -117,10 +123,10 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(realData.getId())) {
-                        AppApplication.sOverRead.add(realData.getId());
+                        AppApplication.sOverRead.add(realData.getId().intValue());
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                            , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                            , imageView.getDrawable(), R.mipmap.icon), "info_share");
                     title.setTextColor(getResources()
                             .getColor(R.color.normal_for_assist_text));
                     Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
@@ -192,12 +198,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     protected void onEmptyViewClick() {
-        mRefreshlayout.setRefreshing(true);
-    }
-
-    @Override
-    protected boolean isNeedRefreshAnimation() {
-        return false;
+        mRefreshlayout.autoRefresh();
     }
 
     @Override

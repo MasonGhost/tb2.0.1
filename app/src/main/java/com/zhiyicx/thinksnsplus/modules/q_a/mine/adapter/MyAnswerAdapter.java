@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -64,7 +65,7 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         // 是否围观
         holder.setVisible(R.id.tv_to_watch, View.GONE);
         // 时间
-        holder.setText(R.id.tv_time, answerInfoBean.getCreated_at());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
         // 正文
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
         // 点赞数量

@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
-import com.google.gson.Gson;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
@@ -13,9 +12,6 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.QA$RewardRepositoryPublish;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -50,23 +46,24 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
-            @Override
-            protected void onSuccess(List<QATopicBean> data) {
-                mRootView.onNetResponseSuccess(data, isLoadMore);
-            }
+        Subscription subscribe = mRepository.getAllTopic(name, maxId, follow)
+                .subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+                    @Override
+                    protected void onSuccess(List<QATopicBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.onResponseError(throwable, isLoadMore);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
         addSubscrebe(subscribe);
     }
 
@@ -83,6 +80,9 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
                         qaListInfoBean.setUser_id(AppApplication.getMyUserIdWithdefault());
                         qaListInfoBean.setLook(qaPublishBean.getLook());
                         mRootView.updateSuccess(qaListInfoBean);
+                        mRepository.deleteQuestion(qaPublishBean);
+                        qaPublishBean.setMark(qaPublishBean.getMark() - 1);
+                        mRepository.deleteQuestion(qaPublishBean);
                         mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
                     }
 
@@ -102,8 +102,8 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
     }
 
     @Override
-    public List<QATopicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

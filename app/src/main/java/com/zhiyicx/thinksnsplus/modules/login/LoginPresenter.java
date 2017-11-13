@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -10,6 +8,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -24,6 +23,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
@@ -57,7 +57,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 
     @Override
     public void login(String phone, String password) {
-        // 此处由于登陆方式有用户名和手机号还有邮箱 注册规则由服务器判断，所以我们不做判断处理
+        /// 此处由于登陆方式有用户名和手机号还有邮箱 注册规则由服务器判断，所以我们不做判断处理
 //        if (!RegexUtils.isMobileExact(phone) && !RegexUtils.isEmail(phone)) {
 //            // 不符合手机号格式
 //            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
@@ -69,11 +69,28 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         mRootView.setLogining();
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map((Func1<AuthBean, Boolean>) data -> {
+                    mAuthRepository.clearAuthBean();
+                    // 登录成功跳转
+                    // 保存auth信息
+                    mAuthRepository.saveAuthBean(data);
+                    // IM 登录 需要 token ,所以需要先保存登录信息
+                    handleIMLogin();
+                    // 钱包信息我也不知道在哪儿获取
+                    mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+                    mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+                    if (data.getUser().getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
+                    }
+                    mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
+                    return true;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
-                        loginSuccess(data);
+                    protected void onSuccess(Boolean data) {
+                        mRootView.setLoginState(data);
                     }
 
                     @Override
@@ -93,21 +110,6 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         addSubscrebe(subscription);
     }
 
-    private void loginSuccess(AuthBean data) {
-        mAuthRepository.clearAuthBean();
-        // 登录成功跳转
-        mAuthRepository.saveAuthBean(data);// 保存auth信息
-        // IM 登录 需要 token ,所以需要先保存登录信息
-        handleIMLogin();
-        // 钱包信息我也不知道在哪儿获取
-        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
-        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
-        if (data.getUser().getWallet() != null) {
-            mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
-        }
-        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
-        mRootView.setLoginState(true);
-    }
 
     @Override
     public List<AccountBean> getAllAccountList() {
@@ -124,17 +126,34 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     public void checkBindOrLogin(String provider, String access_token) {
 
         mUserInfoRepository.checkThridIsRegitser(provider, access_token)
-                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                .observeOn(Schedulers.io())
+                .map((Func1<AuthBean, Boolean>) data -> {
+                    mAuthRepository.clearAuthBean();
+                    // 登录成功跳转
+                    mAuthRepository.saveAuthBean(data);// 保存auth信息
+                    // IM 登录 需要 token ,所以需要先保存登录信息
+                    handleIMLogin();
+                    // 钱包信息我也不知道在哪儿获取
+                    mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+                    mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+                    if (data.getUser().getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
+                    }
+                    mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(AuthBean data) {
-                        loginSuccess(data);
+                    protected void onSuccess(Boolean data) {
+                        mRootView.setLoginState(data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         if (code == DATA_HAS_BE_DELETED) {
                             // 三方注册
-                            mRootView.registerByThrid(provider,access_token);
+                            mRootView.registerByThrid(provider, access_token);
                         } else {
                             // 登录失败
                             mRootView.setLoginState(false);
@@ -150,6 +169,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 });
 
     }
+
     /**
      * 检查密码是否是最小长度
      *
@@ -163,8 +183,9 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         }
         return false;
     }
-    private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
-    }
 
+    private void handleIMLogin() {
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
+    }
 }

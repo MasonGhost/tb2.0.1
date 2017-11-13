@@ -60,41 +60,38 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
         return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<InfoCommentBean, Observable<InfoCommentBean>>() {
-                    @Override
-                    public Observable<InfoCommentBean> call(InfoCommentBean infoCommentBean) {
-                        final List<Object> user_ids = new ArrayList<>();
-                        if (infoCommentBean.getPinneds() != null) {
-                            for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_to_user_id());
-                                user_ids.add(commentListBean.getTarget_user());
-                            }
+                .flatMap(infoCommentBean -> {
+                    final List<Object> user_ids = new ArrayList<>();
+                    if (infoCommentBean.getPinneds() != null) {
+                        for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                            user_ids.add(commentListBean.getTarget_user());
                         }
-                        if (infoCommentBean.getComments() != null) {
-                            for (InfoCommentListBean commentListBean : infoCommentBean.getComments()) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_to_user_id());
-                                user_ids.add(commentListBean.getTarget_user());
-                            }
-                        }
-                        if (user_ids.isEmpty()) {
-                            return Observable.just(infoCommentBean);
-                        }
-                        return mUserInfoRepository.getUserInfo(user_ids)
-                                .map(userInfoBeanList -> {
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                            SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userInfoBeanList) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                .intValue(), userInfoBean);
-                                    }
-                                    dealCommentData(infoCommentBean.getPinneds(), userInfoBeanSparseArray);
-                                    dealCommentData(infoCommentBean.getComments(), userInfoBeanSparseArray);
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
-                                    return infoCommentBean;
-                                });
                     }
+                    if (infoCommentBean.getComments() != null) {
+                        for (InfoCommentListBean commentListBean : infoCommentBean.getComments()) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                            user_ids.add(commentListBean.getTarget_user());
+                        }
+                    }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(infoCommentBean);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(userInfoBeanList -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeanList) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
+                                }
+                                dealCommentData(infoCommentBean.getPinneds(), userInfoBeanSparseArray);
+                                dealCommentData(infoCommentBean.getComments(), userInfoBeanSparseArray);
+                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
+                                return infoCommentBean;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -103,31 +100,28 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
         return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<InfoDigListBean>, Observable<List<InfoDigListBean>>>() {
-                    @Override
-                    public Observable<List<InfoDigListBean>> call(List<InfoDigListBean> infoDigListBeen) {
-                        List<Object> user_ids = new ArrayList<>();
-                        for (InfoDigListBean digListBean : infoDigListBeen) {
-                            user_ids.add(digListBean.getUser_id());
-                            user_ids.add(digListBean.getTarget_user());
-                        }
-                        if (user_ids.isEmpty()) {
-                            return Observable.just(infoDigListBeen);
-                        }
-                        return mUserInfoRepository.getUserInfo(user_ids)
-                                .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                        for (InfoDigListBean digListBean : infoDigListBeen) {
-                                            digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
-                                            digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
-                                        }
-                                    return infoDigListBeen;
-                                });
+                .flatMap(infoDigListBeen -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    for (InfoDigListBean digListBean : infoDigListBeen) {
+                        user_ids.add(digListBean.getUser_id());
+                        user_ids.add(digListBean.getTarget_user());
                     }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(infoDigListBeen);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                    for (InfoDigListBean digListBean : infoDigListBeen) {
+                                        digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
+                                        digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
+                                    }
+                                return infoDigListBeen;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }

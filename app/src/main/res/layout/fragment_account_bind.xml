@@ -1,145 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout style="@style/style_edit_white_container">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/rl_send_verify_code_container">
-            <!--手机找回-->
-            <LinearLayout
-                android:id="@+id/ll_bind_phone"
-                style="@style/style_edit_white_container">
+        <RelativeLayout style="@style/style_edit_white_container">
 
-                <TextView
-                    style="@style/style_bind_account_text"
-                    android:text="@string/phone_number"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/rl_send_verify_code_container">
+                <!--手机找回-->
+                <LinearLayout
+                    android:id="@+id/ll_bind_phone"
+                    style="@style/style_edit_white_container">
 
-                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                    android:id="@+id/et_phone"
-                    style="@style/style_edit"
-                    android:hint="@string/phone_number_input_hint"
-                    android:inputType="phone"
-                    android:maxLength="@integer/phone_number_length"/>
-            </LinearLayout>
-            <!--邮箱找回-->
-            <LinearLayout
-                android:id="@+id/ll_bind_email"
-                style="@style/style_edit_white_container">
+                    <TextView
+                        style="@style/style_bind_account_text"
+                        android:text="@string/phone_number"/>
 
-                <TextView
-                    style="@style/style_bind_account_text"
-                    android:text="@string/email_address"/>
+                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                        android:id="@+id/et_phone"
+                        style="@style/style_edit"
+                        android:hint="@string/phone_number_input_hint"
+                        android:inputType="phone"
+                        android:maxLength="@integer/phone_number_length"/>
+                </LinearLayout>
+                <!--邮箱找回-->
+                <LinearLayout
+                    android:id="@+id/ll_bind_email"
+                    style="@style/style_edit_white_container">
 
-                <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                    android:id="@+id/et_email"
-                    style="@style/style_edit"
-                    android:hint="@string/email_address_input_hint"
-                    android:inputType="textEmailAddress"/>
-            </LinearLayout>
-        </FrameLayout>
+                    <TextView
+                        style="@style/style_bind_account_text"
+                        android:text="@string/email_address"/>
 
-        <RelativeLayout
-            android:id="@+id/rl_send_verify_code_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingRight="@dimen/spacing_mid"
-            >
+                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                        android:id="@+id/et_email"
+                        style="@style/style_edit"
+                        android:hint="@string/email_address_input_hint"
+                        android:inputType="textEmailAddress"/>
+                </LinearLayout>
+            </FrameLayout>
 
-            <TextView
-                android:id="@+id/bt_send_verify_code"
+            <RelativeLayout
+                android:id="@+id/rl_send_verify_code_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="@null"
-                android:enabled="false"
-                android:gravity="center"
-                android:minWidth="@dimen/button_send_vertify_code_min_width"
-                android:text="@string/send_vertify_code"
-                android:textColor="@color/selector_text_color"
-                android:textSize="@dimen/size_content"/>
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/spacing_mid"
+                >
 
-            <ImageView
-                android:id="@+id/iv_verify_loading"
-                android:layout_width="@dimen/icon_for_assist_small"
-                android:layout_height="@dimen/icon_for_assist_small"
-                android:layout_centerInParent="true"
-                android:src="@drawable/frame_loading_grey"
-                android:visibility="invisible"
-                />
+                <TextView
+                    android:id="@+id/bt_send_verify_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:minWidth="@dimen/button_send_vertify_code_min_width"
+                    android:text="@string/send_vertify_code"
+                    android:textColor="@color/selector_text_color"
+                    android:textSize="@dimen/size_content"/>
+
+                <ImageView
+                    android:id="@+id/iv_verify_loading"
+                    android:layout_width="@dimen/icon_for_assist_small"
+                    android:layout_height="@dimen/icon_for_assist_small"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/frame_loading_grey"
+                    android:visibility="invisible"
+                    />
+            </RelativeLayout>
+
         </RelativeLayout>
 
-    </RelativeLayout>
+        <ImageView style="@style/style_divider_horizontal_light"/>
 
-    <ImageView style="@style/style_divider_horizontal_light"/>
+        <LinearLayout style="@style/style_edit_white_container">
 
-    <LinearLayout style="@style/style_edit_white_container">
+            <TextView
+                style="@style/style_bind_account_text"
+                android:text="@string/vertify_code"/>
 
-        <TextView
-            style="@style/style_bind_account_text"
-            android:text="@string/vertify_code"/>
+            <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                android:id="@+id/et_verify_code"
+                style="@style/style_edit"
+                android:hint="@string/vertify_code_input_hint"
+                android:inputType="number"
+                android:maxLength="@integer/vertiry_code_lenght"/>
+        </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-            android:id="@+id/et_verify_code"
-            style="@style/style_edit"
-            android:hint="@string/vertify_code_input_hint"
-            android:inputType="number"
-            android:maxLength="@integer/vertiry_code_lenght"/>
+        <ImageView style="@style/style_divider_horizontal_light"/>
+
+        <LinearLayout
+            android:id="@+id/ll_container_password"
+            style="@style/style_edit_white_container">
+
+            <TextView
+                android:id="@+id/tv_pasword_tip"
+                style="@style/style_bind_account_text"
+                android:text="@string/password"/>
+
+            <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+                android:id="@+id/et_password"
+                style="@style/style_passward_edit"
+                android:hint="@string/password_input_hint"
+                android:inputType="textPassword"
+                android:maxLength="@integer/password_maxlenght"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_container_sure_password"
+            style="@style/style_edit_white_container">
+
+            <TextView
+                style="@style/style_bind_account_text"
+                android:text="@string/duplicate_password"/>
+
+            <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
+                android:id="@+id/et_sure_password"
+                style="@style/style_passward_edit"
+                android:hint="@string/password_input_hint"
+                android:inputType="textPassword"
+                android:maxLength="@integer/password_maxlenght"/>
+
+        </LinearLayout>
+
+        <include
+            layout="@layout/include_error_tip_text"/>
+
+        <com.zhiyicx.baseproject.widget.button.LoadingButton
+            android:id="@+id/bt_sure"
+            style="@style/style_login_button"
+            android:layout_marginTop="@dimen/button_login_margin_top"
+            android:enabled="false"
+            app:text="@string/binding"/>
+
     </LinearLayout>
-
-    <ImageView style="@style/style_divider_horizontal_light"/>
-
-    <LinearLayout
-        android:id="@+id/ll_container_password"
-        style="@style/style_edit_white_container">
-
-        <TextView
-            android:id="@+id/tv_pasword_tip"
-            style="@style/style_bind_account_text"
-            android:text="@string/password"/>
-
-        <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
-            android:id="@+id/et_password"
-            style="@style/style_passward_edit"
-            android:hint="@string/password_input_hint"
-            android:inputType="textPassword"
-            android:maxLength="@integer/password_maxlenght"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_container_sure_password"
-        style="@style/style_edit_white_container">
-
-        <TextView
-            style="@style/style_bind_account_text"
-            android:text="@string/duplicate_password"/>
-
-        <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
-            android:id="@+id/et_sure_password"
-            style="@style/style_passward_edit"
-            android:hint="@string/password_input_hint"
-            android:inputType="textPassword"
-            android:maxLength="@integer/password_maxlenght"/>
-
-    </LinearLayout>
-
-    <include
-        layout="@layout/include_error_tip_text"/>
-
-    <com.zhiyicx.baseproject.widget.button.LoadingButton
-        android:id="@+id/bt_sure"
-        style="@style/style_login_button"
-        android:layout_marginTop="@dimen/button_login_margin_top"
-        android:enabled="false"
-        app:text="@string/binding"/>
-
-</LinearLayout>
+</com.wcy.overscroll.OverScrollLayout>

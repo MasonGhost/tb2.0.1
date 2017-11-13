@@ -49,7 +49,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     private QAListInfoBean mQaListInfoBean;
     protected TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
 
-    public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter, @NotNull QAListInfoBean qaListInfoBean) {
+    public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter, @NotNull
+            QAListInfoBean qaListInfoBean) {
         mQaListInfoBean = qaListInfoBean;
         this.mPresenter = mPresenter;
     }
@@ -65,7 +66,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT,
+                        int position, int itemCounts) {
 
         boolean isOnlook = mQaListInfoBean.getLook() == 1; // 是否开启了围观
 
@@ -76,11 +78,14 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
         // 发布者信息
         boolean isMine = answerInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
-        ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
+        ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id
+                .iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
         TextView nameView = holder.getTextView(R.id.tv_name);
         if (answerInfoBean.getAnonymity() == 1) {
-            nameView.setText(!isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
-                    : answerInfoBean.getUser().getName() + nameView.getContext().getString(R.string.qa_question_answer_anonymity_current_user));
+            nameView.setText(!isMine ? nameView.getResources().getString(R.string
+                    .qa_question_answer_anonymity_user)
+                    : answerInfoBean.getUser().getName() + nameView.getContext().getString(R
+                    .string.qa_question_answer_anonymity_current_user));
             ConvertUtils.stringLinkConvert(nameView, setLinks(nameView.getContext()));
         } else {
             nameView.setText(answerInfoBean.getUser().getName());
@@ -89,27 +94,34 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         holder.setVisible(R.id.tv_watcher_count, isOnlook && isInvited ? View.VISIBLE : View.GONE);
         if (isOnlook) {
             holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
-                    .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
+                    .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean
+                    .getOnlookers_count()));
         }
         // 跳转
         RxView.clicks(holder.getView(R.id.iv_portrait))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (answerInfoBean.getAnonymity() != 1) {
-                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView()
+                                .getContext(), answerInfoBean.getUser());
                     }
                 });
 
         // 是否采纳
-        holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE : View.GONE);
+        holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE :
+                View.GONE);
         // 是否邀请
-        holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
+        holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE :
+                View.GONE);
         // 时间
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at
+                ()));
         // 正文
-        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
+        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
+                answerInfoBean.getBody()));
 
-        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody());
+        String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
+                .getBody());
         TextView contentView = holder.getView(R.id.tv_content);
 
         if (!canNotLook) {
@@ -136,6 +148,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .amount(10)
                     .disPlayText(false)
                     .build();
+            contentView.setSingleLine(canNotLook);
         }
         contentView.setVisibility(View.VISIBLE);
 
@@ -152,19 +165,22 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     } else {
                         answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
                     }
-                    mPresenter.handleAnswerLike(!answerInfoBean.getLiked(), answerInfoBean.getId(), answerInfoBean);
+                    mPresenter.handleAnswerLike(!answerInfoBean.getLiked(), answerInfoBean.getId
+                            (), answerInfoBean);
                     // 修改UI
                     dealLikeUI(answerInfoBean, tvLikeCount);
                 });
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(canNotLook ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isOnlook && isInvited ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
-        tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
+        tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string
+                .qa_go_to_watched)
                 : tvToWatch.getContext().getString(R.string.qa_go_to_watch));
-        tvToWatch.setTextColor(answerInfoBean.getCould() ? ContextCompat.getColor(tvToWatch.getContext(), R.color.normal_for_assist_text)
+        tvToWatch.setTextColor(answerInfoBean.getCould() ? ContextCompat.getColor(tvToWatch
+                .getContext(), R.color.normal_for_assist_text)
                 : ContextCompat.getColor(tvToWatch.getContext(), R.color.white));
         RxView.clicks(tvToWatch)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -179,9 +195,12 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     private void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount) {
         // 是否点赞
-        Drawable unLike = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_normal);
-        Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_high);
-        tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null, null);
+        Drawable unLike = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap
+                .home_ico_good_normal);
+        Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap
+                .home_ico_good_high);
+        tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null,
+                null);
         // 回答数量
         tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
     }
@@ -190,7 +209,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         this.mListener = listener;
     }
 
-    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener onSpanTextClickListener) {
+    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener
+                                                   onSpanTextClickListener) {
         mOnSpanTextClickListener = onSpanTextClickListener;
     }
 
@@ -200,7 +220,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     private List<Link> setLinks(Context context) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(context.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(context, R.color
+        Link followCountLink = new Link(context.getString(R.string
+                .qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor
+                (context, R.color
                 .normal_for_assist_text))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
                         .general_for_hint))

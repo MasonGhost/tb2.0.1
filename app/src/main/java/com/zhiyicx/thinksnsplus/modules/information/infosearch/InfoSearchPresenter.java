@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
@@ -61,8 +60,8 @@ public class InfoSearchPresenter extends AppBasePresenter<SearchContract.Reposit
     }
 
     @Override
-    public List<InfoListDataBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
     }
 
     @Override

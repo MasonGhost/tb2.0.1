@@ -114,7 +114,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         new Thread() {
             @Override
             public void run() {
-                Looper.prepare();
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
                 Toast.makeText(BaseApplication.getContext(), "很抱歉,程序出现异常,请重新打开使用!", Toast.LENGTH_LONG).show();
                 Looper.loop();
                 ActivityHandler.getInstance().AppExit();

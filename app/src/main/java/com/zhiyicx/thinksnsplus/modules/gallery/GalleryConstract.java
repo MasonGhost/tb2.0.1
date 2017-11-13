@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -17,7 +18,7 @@ public interface GalleryConstract {
         void reLoadImage();
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBaseTouristPresenter{
         void checkNote(int note);
 
         void payNote(Long feed_id,int imagePosition,int note);

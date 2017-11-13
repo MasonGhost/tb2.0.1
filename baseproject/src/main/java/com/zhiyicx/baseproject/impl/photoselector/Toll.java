@@ -18,14 +18,14 @@ public class Toll implements Parcelable, Serializable {
     int toll_type;
     int paid_node;
     String toll_type_string;
-    float toll_money;
-    float custom_money;
+    long toll_money;
+    long custom_money;
     Boolean isPaid;
 
     public Toll() {
     }
 
-    public Toll(int toll_type, float toll_money, float custom_money) {
+    public Toll(int toll_type, long toll_money, long custom_money) {
         this.toll_type = toll_type;
         this.toll_money = toll_money;
         this.custom_money = custom_money;
@@ -62,15 +62,15 @@ public class Toll implements Parcelable, Serializable {
         this.toll_type = toll_type;
     }
 
-    public void setToll_money(float toll_money) {
+    public void setToll_money(long toll_money) {
         this.toll_money = toll_money;
     }
 
-    public float getCustom_money() {
+    public long getCustom_money() {
         return custom_money;
     }
 
-    public void setCustom_money(float custom_money) {
+    public void setCustom_money(long custom_money) {
         this.custom_money = custom_money;
     }
 
@@ -78,11 +78,11 @@ public class Toll implements Parcelable, Serializable {
         return toll_type;
     }
 
-    public float getToll_money() {
+    public long getToll_money() {
         return toll_money;
     }
 
-    private Toll(int toll_type, float toll_money) {
+    private Toll(int toll_type, long toll_money) {
         this.toll_type = toll_type;
         this.toll_money = toll_money;
     }
@@ -111,8 +111,8 @@ public class Toll implements Parcelable, Serializable {
         dest.writeInt(this.toll_type);
         dest.writeInt(this.paid_node);
         dest.writeString(this.toll_type_string);
-        dest.writeFloat(this.toll_money);
-        dest.writeFloat(this.custom_money);
+        dest.writeLong(this.toll_money);
+        dest.writeLong(this.custom_money);
         dest.writeValue(this.isPaid);
     }
 
@@ -120,8 +120,8 @@ public class Toll implements Parcelable, Serializable {
         this.toll_type = in.readInt();
         this.paid_node = in.readInt();
         this.toll_type_string = in.readString();
-        this.toll_money = in.readFloat();
-        this.custom_money = in.readFloat();
+        this.toll_money = in.readLong();
+        this.custom_money = in.readLong();
         this.isPaid = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 

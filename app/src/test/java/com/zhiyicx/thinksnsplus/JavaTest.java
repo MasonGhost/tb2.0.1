@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus;
 
 import android.annotation.SuppressLint;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -13,13 +13,11 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
-import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.junit.Assert;
@@ -40,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -103,6 +100,28 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testArrays() {
+        String[] test = new String[2];
+        test[0] = "aa";
+        test[1] = "bb";
+        System.out.print(java.util.Arrays.toString(test).contains("aa"));
+    }
+
+    @Test
+    public void testInt() {
+        String test = "https://m.baidu.com/?from=1014254f#iact=wiseindex%2Ftabs%2Fnews%2Factivity%2Fnewsdetail%3D%257B%2522linkData%2522%253A%257B%2522name%2522%253A%2522iframe%252Fmib-iframe%2522%252C%2522id%2522%253A%2522feed%2522%252C%2522index%2522%253A0%252C%2522url%2522%253A%2522https%253A%252F%252Ffeed.baidu.com%252Ffeed%252Fdata%252Fwise%252Flandingpage%253Fs_type%253Dnews%2526dsp%253Dwise%2526nid%253D9385399617810917542%2526n_type%253D0%2526p_from%253D-1%2526innerIframe%253D1%2522%252C%2522title%2522%253Anull%257D%257D";
+        System.out.println(test.matches(MarkdownConfig.NETSITE_FORMAT_));
+//        Matcher matcher=
+        System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
+
+        Matcher matcher = Pattern.compile(MarkdownConfig.NETSITE_FORMAT).matcher(test);
+        int lastIndex = 0;
+        while (matcher.find()) {
+            System.out.println(test.substring(matcher.start(), matcher.end()));
+        }
     }
 
     @Test
@@ -169,17 +188,39 @@ public class JavaTest {
         String reg = "(@!\\[.*]\\((\\d+)\\))";
 
         try {
-            String sss = "@!\\[.*]\\((\\d+)\\)";
-            Matcher matcher2 = Pattern.compile(sss).matcher("@![image](2604)");
+            String sss = "@!\\[.*?]\\((\\d+)\\)";
+            String res = "@![image](2604)@![image](2609)";
+            Matcher matcher2 = Pattern.compile(sss).matcher(res);
+//            String test=res.substring(0,matcher2.start());
+
+
+            int lastIndex = 0;
             if (matcher2.find()) {
+                System.out.println("result:test:" + matcher2.start());
+                System.out.println("result:test:" + matcher2.end());
+                System.out.println("result:result:" + res.substring(matcher2.start(), matcher2.end()));
+                System.out.println("result:count:" + matcher2.groupCount());
                 System.out.println("result:count:" + matcher2.group(1));
+
+
+//                if (matcher2.start() > lastIndex) {
+//                    String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
+//                    splitTextList.add(result1);
+//                }
+//                String result2 = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+//                splitTextList.add(result2);
+//
+//                lastIndex = matcher1.end();
             }
+//            if (matcher2.find()) {
+//
+//            }
 
         } catch (Exception e) {
             System.out.println("result::" + e.toString());
         }
 
-        String test = "xxx@![image](123)ssss@![image](123)";
+        String test = "xxx@![image](123)ssss@![image](125)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
             System.out.println("result::" + matcher.group(0));
@@ -1432,7 +1473,7 @@ public class JavaTest {
 
         String[] split = new String[10000];
         for (int i = 0; i < 10000; i++) {
-            split[i] = i+"";
+            split[i] = i + "";
         }
 
         AbstractList<String> mContentList = new ArrayList<>();
@@ -1451,5 +1492,14 @@ public class JavaTest {
 
     }
 
+
+    @Test
+    public void testTimestrEques() {
+        String s1 = "2003-12-12   11:30:24";
+        String s2 = "2004-04-01   13:31:40";
+        int res = s1.compareTo(s2);
+        System.out.println("res = " + res);
+        Assert.assertTrue(res < 0);
+    }
 
 }

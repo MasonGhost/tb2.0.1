@@ -72,11 +72,12 @@ public class HorizontalStackIconView extends FrameLayout {
                 // 需要显示的图片控件
                 if (i < expertList.size()) {
                     UserInfoBean userInfoBean = expertList.get(i);
+                    int defaultAvatar = ImageUtils.getDefaultAvatar(userInfoBean);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(R.mipmap.pic_default_portrait2)
-                                    .errorPic(R.mipmap.pic_default_portrait2)
+                                    .placeholder(defaultAvatar)
+                                    .errorPic(defaultAvatar)
                                     .imagerView(mImageViews[i])
                                     .url(ImageUtils.getUserAvatar(userInfoBean))
                                     .build()

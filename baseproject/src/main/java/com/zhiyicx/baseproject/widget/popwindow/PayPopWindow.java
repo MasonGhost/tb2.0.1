@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -112,14 +113,14 @@ public class PayPopWindow extends CustomPopupWindow {
 
     protected void initMoneyTextView(String moneyStr, int colorId, int resId) {
 
-        Spannable moneySpan = new SpannableString(moneyStr);
-        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,15)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,30)), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        Spannable moneySpan = new SpannableString(moneyStr);
+//        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,15)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,30)), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (!TextUtils.isEmpty(moneyStr)) {
             TextView textView = (TextView) mContentView.findViewById(resId);
             textView.setVisibility(View.VISIBLE);
-            textView.setText(moneySpan);
+            textView.setText(moneyStr);
             if (colorId != 0) {
                 textView.setTextColor(ContextCompat.getColor(mActivity, colorId));
             }
@@ -135,7 +136,7 @@ public class PayPopWindow extends CustomPopupWindow {
                 .setUnderlined(false)                                       // optional, defaults to true
                 .setOnLongClickListener(new Link.OnLongClickListener() {
                     @Override
-                    public void onLongClick(String clickedText) {
+                    public void onLongClick(String clickedText, LinkMetadata linkMetadata) {
                         if (mCenterPopWindowLinkClickListener != null) {
                             mCenterPopWindowLinkClickListener.onLongClick();
                         }
@@ -143,7 +144,7 @@ public class PayPopWindow extends CustomPopupWindow {
                 })
                 .setOnClickListener(new Link.OnClickListener() {
                     @Override
-                    public void onClick(String clickedText) {
+                    public void onClick(String clickedText, LinkMetadata linkMetadata) {
                         if (mCenterPopWindowLinkClickListener != null) {
                             mCenterPopWindowLinkClickListener.onClicked();
                         }

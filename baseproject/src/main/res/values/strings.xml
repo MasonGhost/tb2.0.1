@@ -50,8 +50,8 @@
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
     <string name="skip">跳过</string>
-    <string name="intro_default">这家伙很懒,什么都没有留下</string>
-    <string name="money_format_with_unit">%.2f元</string>
+    <string name="intro_default">这家伙很懒，什么也没有留下</string>
+    <string name="money_format_with_unit">%1$.2f%2$s</string>
     <string name="money_format">%.2f</string>
     <string name="upload_sucess">上传成功</string>
     <string name="qa_detail_edit">编辑</string>
@@ -128,16 +128,16 @@
     <!-- 中间弹窗 -->
     <string name="buy_pay">购买支付</string>
     <string name="send_info_pay">投稿支付</string>
-    <string name="buy_pay_desc">您只需¥%.2f元就可查看图片</string>
-    <string name="buy_pay_words_desc">您只需¥%.2f元就可查看</string>
-    <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可下载图片</string>
-    <string name="buy_pay_music_ablum_desc">该专辑为付费专辑，您只需\n支付¥%.2f元即可收听该专辑</string>
-    <string name="buy_pay_single_music_desc">该歌曲为付费歌曲，您只需\n支付¥%.2f元即可收听该歌曲</string>
-    <string name="publish_pay_info">本次投稿您需支付¥%.2f元\n是否继续投稿</string>
-    <string name="qa_pay_for_excellent_hint">您只需要支付¥%.2f元\n就可以使问题成为精选问答</string>
-    <string name="qa_pay_for_watch_answer_hint">您只需要支付¥%.2f元\n就可以围观该回答</string>
+    <string name="buy_pay_desc">您只需%1$.2f%2$s就可查看图片</string>
+    <string name="buy_pay_words_desc">您只需%1$.2f%2$s就可查看</string>
+    <string name="buy_pay_downlaod_desc">您只需%1$.2f%2$s就可下载图片</string>
+    <string name="buy_pay_music_ablum_desc">该专辑为付费专辑，您只需\n支付%1$.2f%2$s即可收听该专辑</string>
+    <string name="buy_pay_single_music_desc">该歌曲为付费歌曲，您只需\n支付%1$.2f%2$s即可收听该歌曲</string>
+    <string name="publish_pay_info">本次投稿您需支付%1$.2f%2$s\n是否继续投稿</string>
+    <string name="qa_pay_for_excellent_hint">您只需要支付%1$.2f%2$s\n就可以使问题成为精选问答</string>
+    <string name="qa_pay_for_watch_answer_hint">您只需要支付%1$.2f%2$s\n就可以围观该回答</string>
     <string name="buy_pay_member">""</string>
-    <string name="buy_pay_money">¥%.2f</string>
+    <string name="buy_pay_money">%.2f</string>
     <string name="buy_pay_in">购买</string>
     <string name="buy_pay_in_payment">支付</string>
     <string name="buy_pay_out">返回</string>
@@ -167,7 +167,8 @@
     <string name="info_hot">热门</string>
     <string name="info_recommend">推荐</string>
     <string name="info_close">收起</string>
-    <string name="publish_info">支付并发布文章</string>
+    <string name="publish_withpay_info">支付并发布文章</string>
+    <string name="publish_info">发布文章</string>
     <string name="upload_info_cover">点击上传封面</string>
     <string name="upload_info_cover_instructions">请上传封面</string>
     <string name="upload_info_cover_des">不上传封面则默认为文章内第一张图</string>
@@ -183,4 +184,5 @@
     <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
+    <string name="please_install_app">请先安装应用</string>
 </resources>

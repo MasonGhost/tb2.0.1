@@ -3,11 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -25,11 +22,10 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
-import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -55,24 +51,12 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.DEFAULT_TS_HELPER_TIP_MSG_ID;
 
 /**
  * @Describe
@@ -84,7 +68,6 @@ import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KE
 public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
-    public static final int DEFAULT_MAX_REQUEST_UNREAD_NUM = 100;
 
     @Inject
     ChatContract.Repository mChatRepository;
@@ -110,21 +93,25 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     SystemRepository mSystemRepository;
 
+    /**
+     * 评论的
+     */
+    private MessageItemBean mItemBeanComment;
+    /**
+     * 点赞的
+     */
+    private MessageItemBean mItemBeanDigg;
+    /**
+     * 评论置顶的
+     */
+    private MessageItemBean mItemBeanReview;
 
-    private MessageItemBean mItemBeanComment; // 评论的
-    private MessageItemBean mItemBeanDigg;    // 点赞的
-    private MessageItemBean mItemBeanReview;    // 评论置顶的
-
-    private int mUnreadNotificationTotalNums; // 未读消息总数
-
-    List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
-    List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
-    List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
-    List<TSPNotificationBean> mNoti = new ArrayList<>();
-
-    private boolean mMessageContainerRedDotIsShow;
-    private boolean mMessageRedDotIsShow;
+    /**
+     * 通知的小红点
+     */
     private boolean mNotificaitonRedDotIsShow;
+
+    private Subscription mUnreadNotiSub;
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -138,8 +125,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (AppApplication.getmCurrentLoginAuth() == null)
+        if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
+        }
         creatTsHelperConversation();
     }
 
@@ -148,53 +136,47 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
-        List<Observable<Conversation>> datas = new ArrayList<>();
-        final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-        // 新版 ts 助手
-        for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
-            if (imHelperBean.isDelete()) {
-                continue;
-            }
-            final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
-            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr));
-        }
-        if (datas.isEmpty()) {
-            getCoversationList();
-        } else {
-            Observable.zip(datas, (FuncN<Object>) args -> {
-                for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
-                    Conversation data = ((Conversation) args[i]);
-                    // 写入 ts helper 默认提示语句
-                    long currentTime = System.currentTimeMillis();
-                    Message message = new Message();
-                    message.setId((int) currentTime);
-                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                    message.setSend_status(MessageStatus.SEND_SUCCESS);
-                    message.setIs_read(false);
-                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                    message.setCid(data.getCid());
-                    message.setCreate_time(currentTime);
+        Subscription subscribe = Observable.just(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(integer -> {
+                    List<Observable<Conversation>> datas = new ArrayList<>();
+                    final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+                    // 新版 ts 助手
+                    for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+                        if (imHelperBean.isDelete()) {
+                            continue;
+                        }
+                        final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
+                        datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
+                    }
+                    if (datas.isEmpty()) {
+                        return mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
+                    } else {
+                        return Observable.zip(datas, (FuncN<Object>) args -> {
+                            // 为 ts 助手添加提示语
+                            for (int i = 0; i < args.length; i++) {
+                                Conversation data = ((Conversation) args[i]);
+                                // 写入 ts helper 默认提示语句
+                                long currentTime = System.currentTimeMillis();
+                                Message message = new Message();
+                                message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
+                                message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                                message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                                message.setSend_status(MessageStatus.SEND_SUCCESS);
+                                message.setIs_read(false);
+                                message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                                message.setCid(data.getCid());
+                                message.setCreate_time(currentTime);
 //                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                    message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
-                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                }
-                return args;
-            }).subscribe(new BaseSubscribeForV2<Object>() {
-                @Override
-                protected void onSuccess(Object data) {
-                    getCoversationList();
-                }
-            });
-        }
-
-    }
-
-    /**
-     * 获取对话列表
-     */
-    private void getCoversationList() {
-        mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
+                                message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
+                                MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                            }
+                            return args;
+                        }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
                     @Override
@@ -213,6 +195,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscribe);
+
+
     }
 
     /**
@@ -223,31 +208,22 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @return
      */
     @Override
-    public List<MessageItemBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mAuthRepository.getAuthBean() == null) {
-            return new ArrayList<>();
-        }
-        initHeaderItemData();
-        // 处理本地通知数据
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        } else {
+            initHeaderItemData();
+            // 处理本地通知数据
+            mRootView.updateLikeItemData(mItemBeanDigg);
+            creatTsHelperConversation();
 
-        mRootView.updateLikeItemData(mItemBeanDigg);
-        List<MessageItemBean> cacheData = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
-        return cacheData;
+        }
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MessageItemBean> data, boolean isLoadMore) {
         return mChatRepository.insertOrUpdateMessageItemBean(data);
     }
-
-    /**
-     * 检测 ts helper 是否是当前用户
-     */
-    @Override
-    public String checkTShelper(long user_id) {
-        return mSystemRepository.checkTShelper(user_id);
-    }
-
 
     @Override
     public MessageItemBean updateCommnetItemData() {
@@ -272,24 +248,26 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void refreshConversationReadMessage() {
         Subscription represhSu = Observable.just("")
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(s -> {
                     int size = mRootView.getListDatas().size();
                     for (int i = 0; i < size; i++) {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
                                 .getCid());
-                        mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                        mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                        mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
-                                .getListDatas().get(i).getConversation().getCid()));
+                        if (message != null) {
+                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
+                                    .getListDatas().get(i).getConversation().getCid()));
+                        }
                     }
-
+                    checkBottomMessageTip();
                     return mRootView.getListDatas();
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                     mRootView.refreshData();
-                    checkBottomMessageTip();
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(represhSu);
     }
 
@@ -335,90 +313,73 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void getSingleConversation(int cid) {
-        mRepository.getSingleConversation(cid)
-                .subscribe(new BaseSubscribeForV2<MessageItemBean>() {
-                    @Override
-                    protected void onSuccess(MessageItemBean data) {
-                        if (mRootView.getListDatas().size() == 0) {
-                            mRootView.getListDatas().add(data);
-                        } else {
-                            mRootView.getListDatas().add(0, data);// 置顶新消息
+        Subscription subscribe = mRepository.getSingleConversation(cid)
+                .observeOn(Schedulers.io())
+                .map(data -> {
+                    if (data == null || data.getConversation() == null) {
+                        return false;
+                    }
+                    int size = mRootView.getListDatas().size();
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getConversation().getCid() == cid) {
+                            return false;
                         }
-                        mRootView.refreshData();
                     }
-
+                    if (mRootView.getListDatas().size() == 0) {
+                        mRootView.getListDatas().add(data);
+                    } else {
+                        // 置顶新消息
+                        mRootView.getListDatas().add(0, data);
+                    }
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onFailure(String message, int code) {
-
+                    protected void onSuccess(Boolean data) {
+                        if (data) {
+                            mRootView.refreshData();
+                        }
                     }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
                 });
+        addSubscrebe(subscribe);
     }
 
+    /**
+     * 检测未读消息数
+     */
     @Override
-    public void readMessageByKey(String key) {
-        String notificationIds = "";
-        switch (key) {
-            // 所有评论
-            case NOTIFICATION_KEY_FEED_COMMENTS:
-            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
-            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
-            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
-            case NOTIFICATION_KEY_NEWS_COMMENT:
-            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
-            case NOTIFICATION_KEY_QUESTION_COMMENT:
-            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
-            case NOTIFICATION_KEY_ANSWER_COMMENT:
-            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
-                notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
-                break;
-            // 所有点赞
-            case NOTIFICATION_KEY_FEED_DIGGS:
-                notificationIds = getNotificationIds(mDiggNoti, notificationIds);
-                break;
-            // 所有审核
-            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                notificationIds = getNotificationIds(mReviewNoti, notificationIds);
-                break;
-            default:
-        }
-
-        mRepository.makeNotificationReaded(notificationIds)
-                .subscribe(new BaseSubscribeForV2<Object>() {
+    public void checkUnreadNotification() {
+        mRepository.ckeckUnreadNotification()
+                .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
-                    protected void onSuccess(Object data) {
-                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
+                    protected void onSuccess(Void data) {
+                        LogUtils.i("addBtnAnimation notification", data);
                     }
                 });
     }
 
-    private String getNotificationIds(List<TSPNotificationBean> datas, String notificationIds) {
-        for (TSPNotificationBean tspNotificationBean : datas) {
-            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) { //代表未读
-                notificationIds += tspNotificationBean.getId() + ",";
-            }
+    /**
+     * 未读数获取到
+     *
+     * @param unreadNumStr unread  notificaiton nums
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT)
+    private void onCheckUnreadNotifyRecieved(String unreadNumStr) {
+        int unreadNum = 0;
+        try {
+            unreadNum = Integer.parseInt(unreadNumStr);
+
+        } catch (Exception igonred) {
         }
-        return notificationIds;
+        mNotificaitonRedDotIsShow = unreadNum > 0;
+        checkBottomMessageTip();
     }
+
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE)
     private void updateNotificaitonReddot(boolean isHide) {
-        String notificationIds = "";
-        notificationIds = getNotificationIds(mNoti, notificationIds);
-        if (!TextUtils.isEmpty(notificationIds)) {
-            mRepository.makeNotificationReaded(notificationIds)
-                    .subscribe(new BaseSubscribeForV2<Object>() {
-                        @Override
-                        protected void onSuccess(Object data) {
-                            LogUtils.d("makeNotificationReaded::" + "onSuccess");
-                        }
-                    });
-        }
         mNotificaitonRedDotIsShow = false;
         checkBottomMessageTip();
     }
@@ -430,27 +391,42 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     /**
      * 收到聊天消息
      *
-     * @param message 聊天类容
+     * @param messageData 聊天类容
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
-    private void onMessageReceived(Message message) {
-        int size = mRootView.getListDatas().size();
-        boolean isHasConversion = false; // 对话是否存在
-        for (int i = 0; i < size; i++) {
-            if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
-                mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
-                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                mRootView.getListDatas().add(0, mRootView.getListDatas().get(i)); // 加到第一个
-                mRootView.getListDatas().remove(i + 1);
-                mRootView.refreshData(); // 加上 header 的位置
-                isHasConversion = true;
-                break;
-            }
-        }
-        if (!isHasConversion) { // 不存在本地对话，直接服务器获取
-            getSingleConversation(message.getCid());
-        }
+    private void onMessageReceived(Message messageData) {
+        Subscription subscribe = Observable.just(messageData)
+                .observeOn(Schedulers.io())
+                .map(message -> {
+                    int size = mRootView.getListDatas().size();
+                    // 对话是否存在
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
+                            mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                            // 加到第一个
+                            mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
+                            // 加上 header 的位置
+                            mRootView.getListDatas().remove(i + 1);
+                            return 0;
+                        }
+                    }
+                    // 不存在本地对话，直接服务器获取
+                    return message.cid;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(cid -> {
+                    if (cid == 0) {
+                        mRootView.refreshData();
+                    } else {
+                        getSingleConversation(cid);
+                    }
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
+
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -484,25 +460,24 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+    /**
+     * 新对话创建回调
+     *
+     * @param messageItemBean
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
-        mRootView.getListDatas().add(0, messageItemBean);
-        mRootView.refreshData();
-    }
 
-    /**
-     * 未读数获取到
-     *
-     * @param unreadNum unread  notificaiton nums
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT)
-    private void onCheckUnreadNotifyRecieved(String unreadNum) {
-        try {
-            mUnreadNotificationTotalNums = Integer.parseInt(unreadNum);
-        } catch (Exception e) {
+        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
+        if (message != null) {
+            messageItemBean.getConversation().setLast_message(message);
+            messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
+            mRootView.getListDatas().add(0, messageItemBean);
+            mRootView.refreshData();
         }
 
     }
+
 
     /**
      * 推送相关
@@ -515,8 +490,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             return;
         }
         switch (jpushMessageBean.getType()) {
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im",
-                // "uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+            // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im",
+            // "uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM:
                 handleIMPush(jpushMessageBean);
                 break;
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED_CONTENT:
@@ -524,6 +500,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             default:
                 // 服务器同步未读评论和点赞消息
                 handleFlushMessage();
+                checkUnreadNotification();
                 break;
 
 
@@ -542,25 +519,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             Message message = new Message();
             message.setCid(jsonObject.getInt("cid"));
             message.setSeq(jsonObject.getInt("seq"));
-            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());//
+            ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq() - 1, message.getSeq() + 1, (int) System.currentTimeMillis());
             // 获取推送的信息
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 检测未读消息数
-     */
-    @Override
-    public void checkUnreadNotification() {
-        mRepository.ckeckUnreadNotification()
-                .subscribe(new BaseSubscribeForV2<Void>() {
-                    @Override
-                    protected void onSuccess(Void data) {
-                        LogUtils.i("addBtnAnimation notification", data);
-                    }
-                });
     }
 
     /**
@@ -570,173 +533,134 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void handleFlushMessage() {
-        Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
-        if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
-            last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
+        if (mUnreadNotiSub != null && !mUnreadNotiSub.isUnsubscribed()) {
+            mUnreadNotiSub.unsubscribe();
         }
-        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM :
-                mUnreadNotificationTotalNums, 0)
-                .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
+
+        mUnreadNotiSub = mRepository.getUnreadNotificationData()
+                .observeOn(Schedulers.io())
+                .map(data -> {
+                    if (data.getCounts() == null) {
+                        return false;
+                    }
+                    /**
+                     * 设置未读数
+                     */
+                    mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
+                    mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
+                    int pinnedNums = 0;
+                    if (data.getPinneds() != null && (data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount()) > 0) {
+                        pinnedNums = data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount();
+                        mItemBeanReview.setUnReadMessageNums(pinnedNums);
+                    } else {
+                        mItemBeanReview.setUnReadMessageNums(0);
+
+                    }
+
+                    /**
+                     * 设置时间
+                     */
+                    mItemBeanComment.getConversation().setLast_message_time(data.getComments() == null || data.getComments().isEmpty() ? 0 :
+                            TimeUtils
+                                    .utc2LocalLong(data.getComments().get(0).getTime()));
+                    mItemBeanDigg.getConversation().setLast_message_time(data.getLikes() == null || data.getLikes().isEmpty() ? 0 :
+                            TimeUtils
+                                    .utc2LocalLong(data.getLikes().get(0).getTime()));
+
+                    String feedTime = data.getPinneds().getFeeds().getTime();
+
+                    String newTime = data.getPinneds().getNews().getTime();
+                    long reviewTime = 0;
+                    if (feedTime != null) {
+                        reviewTime = TimeUtils
+                                .utc2LocalLong(feedTime);
+                    }
+                    if (newTime != null && TimeUtils.utc2LocalLong(newTime) > reviewTime) {
+                        reviewTime = TimeUtils.utc2LocalLong(newTime);
+                    }
+
+                    mItemBeanReview.getConversation().setLast_message_time(reviewTime);
+
+                    /**
+                     * 设置提示内容
+                     * mContext.getString(R.string.has_no_body)
+                     + mContext.getString(R.string.comment_me)
+                     */
+                    String commentTip = getItemTipStr(data.getComments(), MAX_USER_NUMS_COMMENT);
+                    if (!TextUtils.isEmpty(commentTip)) {
+                        commentTip += mContext.getString(R.string.comment_me);
+                    } else {
+                        commentTip = mContext.getString(R.string.has_no_body)
+                                + mContext.getString(R.string.comment_me);
+                    }
+                    mItemBeanComment.getConversation().getLast_message().setTxt(
+                            commentTip);
+
+                    String diggTip = getItemTipStr(data.getLikes(), MAX_USER_NUMS_DIGG);
+                    if (!TextUtils.isEmpty(diggTip)) {
+                        diggTip += mContext.getString(R.string.like_me);
+                    } else {
+                        diggTip = mContext.getString(R.string.has_no_body)
+                                + mContext.getString(R.string.like_me);
+                    }
+                    mItemBeanDigg.getConversation().getLast_message().setTxt(
+                            diggTip);
+
+                    String reviewTip;
+                    if (data.getPinneds() != null && pinnedNums > 0) {
+                        reviewTip = mContext.getString(R.string.new_apply_data);
+                    } else {
+                        reviewTip = mContext.getString(R.string.no_apply_data);
+                        mItemBeanReview.getConversation().setLast_message_time(0);
+
+                    }
+                    mItemBeanReview.getConversation().getLast_message().setTxt(
+                            reviewTip);
+                    // 更新我的消息提示
+                    EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
+                    checkBottomMessageTip();
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<Boolean>() {
                     @Override
-                    protected void onSuccess(List<TSPNotificationBean> data) {
-                        if (data.isEmpty()) {
-                            return;
+                    protected void onSuccess(Boolean result) {
+                        if (result) {
+                            mRootView.updateLikeItemData(mItemBeanDigg);
                         }
-                        mCommentsNoti.clear();
-                        mDiggNoti.clear();
-                        mReviewNoti.clear();
-                        for (TSPNotificationBean tspNotificationBean : data) {
-                            switch (tspNotificationBean.getData().getChannel()) {
-                                // 所有评论
-                                case NOTIFICATION_KEY_FEED_COMMENTS:
-                                case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_NEWS_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_QUESTION_COMMENT:
-                                case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
-                                case NOTIFICATION_KEY_ANSWER_COMMENT:
-                                case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
-                                    mCommentsNoti.add(tspNotificationBean);
-                                    break;
-                                // 所有点赞
-                                case NOTIFICATION_KEY_FEED_DIGGS:
-                                    mDiggNoti.add(tspNotificationBean);
-                                    break;
-                                // 所有审核
-                                case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
-                                case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
-                                    mReviewNoti.add(tspNotificationBean);
-                                    break;
-                                default:
-                                    if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                                        mNotificaitonRedDotIsShow = true;
-                                        mNoti.add(tspNotificationBean);
-                                    }
-
-                            }
-                        }
-                        /**
-                         * 设置未读数
-                         */
-                        mItemBeanComment.setUnReadMessageNums(getUnreadNums(mCommentsNoti));
-                        mItemBeanDigg.setUnReadMessageNums(getUnreadNums(mDiggNoti));
-                        mItemBeanReview.setUnReadMessageNums(getUnreadNums(mReviewNoti));
-
-                        /**
-                         * 设置时间
-                         */
-                        mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
-                        mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
-                        mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils
-                                .utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
-
-                        /**
-                         * 设置提示内容
-                         * mContext.getString(R.string.has_no_body)
-                         + mContext.getString(R.string.comment_me)
-                         */
-                        String commentTip = getItemTipStr(mCommentsNoti, MAX_USER_NUMS_COMMENT);
-                        if (!TextUtils.isEmpty(commentTip)) {
-                            commentTip += mContext.getString(R.string.comment_me);
-                        } else {
-                            commentTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.comment_me);
-                        }
-                        mItemBeanComment.getConversation().getLast_message().setTxt(
-                                commentTip);
-
-                        String diggTip = getItemTipStr(mDiggNoti, MAX_USER_NUMS_DIGG);
-                        if (!TextUtils.isEmpty(diggTip)) {
-                            diggTip += mContext.getString(R.string.like_me);
-                        } else {
-                            diggTip = mContext.getString(R.string.has_no_body)
-                                    + mContext.getString(R.string.like_me);
-                        }
-                        mItemBeanDigg.getConversation().getLast_message().setTxt(
-                                diggTip);
-
-                        String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
-//                        if (!TextUtils.isEmpty(reviewTip)) {
-//                            reviewTip += mContext.getString(R.string.recieved_review);
-//                        } else {
-//                            reviewTip = mContext.getString(R.string.has_no_body)
-//                                    + mContext.getString(R.string.recieved_review);
-//                        }
-                        if (getUnreadNums(mReviewNoti) > 0) {
-                            reviewTip = mContext.getString(R.string.new_apply_data);
-                        } else {
-                            reviewTip = mContext.getString(R.string.no_apply_data);
-                            mItemBeanReview.getConversation().setLast_message_time(0);
-
-                        }
-                        mItemBeanReview.getConversation().getLast_message().setTxt(
-                                reviewTip);
-
-                        mRootView.updateLikeItemData(mItemBeanDigg);
-                        // 更新我的消息提示
-                        EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
-                        checkBottomMessageTip();
                     }
                 });
-        mUnreadNotificationTotalNums = 0;
-    }
-
-
-    @Override
-    public List<TSPNotificationBean> getReviewListData() {
-        return mReviewNoti;
-    }
-
-    @Override
-    public List<TSPNotificationBean> getCommentsNoti() {
-        return mCommentsNoti;
-    }
-
-    @Override
-    public List<TSPNotificationBean> getDiggNoti() {
-        return mDiggNoti;
+        addSubscrebe(mUnreadNotiSub);
     }
 
     /**
-     * 没有阅读时间说明没有阅读
+     * 获取用户文字显示  张三、李四评论了我
      *
-     * @param datas
+     * @param commentsNoti
+     * @param maxNum
      * @return
      */
-    private int getUnreadNums(List<TSPNotificationBean> datas) {
-        int nums = 0;
-        for (TSPNotificationBean tspNotificationBean : datas) {
-            if (tspNotificationBean.getRead_at() == null) {
-                nums++;
-            }
-        }
-        return nums;
-    }
-
-    private String getItemTipStr(List<TSPNotificationBean> commentsNoti, int max_num) {
-        String tip = "";
+    private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String dot = mContext.getString(R.string.str_pingyin_dot);
         for (int i = 0; i < commentsNoti.size(); i++) {
-            if (i < max_num) {
+            if (i < maxNum) {
                 try {
-                    if (tip.contains(commentsNoti.get(i).getUserInfo().getName())) {
-                        max_num++;
+                    if (stringBuilder.toString().contains(commentsNoti.get(i).getUser().getName())) {
+                        maxNum++;
                     } else {
-                        tip += commentsNoti.get(i).getUserInfo().getName() + "、";
+                        stringBuilder.append(commentsNoti.get(i).getUser().getName());
+                        stringBuilder.append(dot);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 服务器脏数据导致用户信息为空
+                } catch (NullPointerException ignored) {
                 }
-
             } else {
                 break;
             }
         }
-        if (tip.endsWith("、")) {
+        String tip = stringBuilder.toString();
+        if (tip.endsWith(dot)) {
             tip = tip.substring(0, tip.length() - 1);
         }
         return tip;
@@ -777,33 +701,43 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 检测底部小红点是否需要显示
      */
     private void checkBottomMessageTip() {
-        // 是否显示底部红点
-        boolean isShowMessgeTip;
-        if (mItemBeanDigg != null && mItemBeanComment != null
-                && mItemBeanDigg.getUnReadMessageNums() == 0
-                && mItemBeanComment.getUnReadMessageNums() == 0) {
-            isShowMessgeTip = false;
-        } else {
-            isShowMessgeTip = true;
-        }
-        if (!isShowMessgeTip) {
-            for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-                if (messageItemBean.getUnReadMessageNums() > 0) {
-                    isShowMessgeTip = true;
-                    break;
-                } else {
-                    isShowMessgeTip = false;
-                }
-            }
-        }
-        mMessageRedDotIsShow = isShowMessgeTip;
-        Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
-        if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
-            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mMessageRedDotIsShow, 0);
-            ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
-        }
-        mMessageContainerRedDotIsShow = mMessageRedDotIsShow || mNotificaitonRedDotIsShow;
-        EventBus.getDefault().post(mMessageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+        Subscription subscribe = Observable.just(true)
+                .observeOn(Schedulers.io())
+                .map(aBoolean -> {
+                    // 是否显示底部红点
+                    boolean isShowMessgeTip;
+                    if (mItemBeanDigg != null && mItemBeanComment != null
+                            && mItemBeanDigg.getUnReadMessageNums() == 0
+                            && mItemBeanComment.getUnReadMessageNums() == 0) {
+                        isShowMessgeTip = false;
+                    } else {
+                        isShowMessgeTip = true;
+                    }
+                    if (!isShowMessgeTip) {
+                        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
+                            if (messageItemBean.getUnReadMessageNums() > 0) {
+                                isShowMessgeTip = true;
+                                break;
+                            } else {
+                                isShowMessgeTip = false;
+                            }
+                        }
+                    }
+                    return isShowMessgeTip;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isShowMessgeTip -> {
+                    Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
+                    if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
+                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(isShowMessgeTip, 0);
+                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
+                    }
+                    boolean messageContainerRedDotIsShow = isShowMessgeTip || mNotificaitonRedDotIsShow;
+                    EventBus.getDefault().post(messageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+
 
     }
 
