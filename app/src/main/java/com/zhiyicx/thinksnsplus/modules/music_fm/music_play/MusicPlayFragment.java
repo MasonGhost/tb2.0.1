@@ -87,8 +87,6 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
@@ -510,7 +508,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void initLyricsAnimation() {
         LayoutTransition transition = new LayoutTransition();
-        transition.setDuration(500);
+        transition.setDuration(200);
         transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator
                 (getActivity(), R.animator.view_visible_alpha));
         transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator
@@ -981,7 +979,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
                 mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),
-                        mCurrentImageView.getDrawable(), R.mipmap.icon_256));
+                        mCurrentImageView.getDrawable(), R.mipmap.icon));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(!mCurrentMusic.isHas_like(),
@@ -1098,12 +1096,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio()),mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

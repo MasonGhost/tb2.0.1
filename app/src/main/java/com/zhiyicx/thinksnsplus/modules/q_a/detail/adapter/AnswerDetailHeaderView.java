@@ -27,6 +27,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -35,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -67,7 +69,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class AnswerDetailHeaderView {
+public class AnswerDetailHeaderView extends BaseWebLoad{
+
 
     private UserAvatarView mUserAvatarView;
     private TextView mName;
@@ -120,19 +123,9 @@ public class AnswerDetailHeaderView {
         mCommentHintView = (FrameLayout) mAnswerDetailHeader.findViewById(R.id.answer_detail_comment);
         mCommentCountView = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_comment_count);
         mIvDetail = (ImageView) mAnswerDetailHeader.findViewById(R.id.iv_detail);
-        mContent.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);// 这个方法不知道什么时候才调用
-                if (mAnswerHeaderEventListener != null) {
-                    mAnswerHeaderEventListener.loadFinish();
-                }
-            }
-        });
 
-        if (adverts != null) {
-            initAdvert(context, adverts);
-        }
+
+        initAdvert(context, adverts);
     }
 
     public void setDetail(AnswerInfoBean answerInfoBean) {
@@ -141,9 +134,10 @@ public class AnswerDetailHeaderView {
             if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
+                mContent.setWebChromeClient(mWebChromeClient);
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -175,7 +169,7 @@ public class AnswerDetailHeaderView {
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-
+                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
                     }
 
                     @Override
@@ -233,7 +227,8 @@ public class AnswerDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mAnswerDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
+        boolean noAdvert=!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || (adverts != null && adverts.isEmpty());
+        if (noAdvert) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -274,7 +269,7 @@ public class AnswerDetailHeaderView {
         imageBean.setImgUrl(imgPath);// 本地地址，也许有
         Toll toll = new Toll(); // 收费信息
         toll.setPaid(true);// 是否已經付費
-        toll.setToll_money(0f);// 付费金额
+        toll.setToll_money(0);// 付费金额
         toll.setToll_type_string("");// 付费类型
         toll.setPaid_node(0);// 付费节点
         imageBean.setToll(toll);
@@ -339,8 +334,8 @@ public class AnswerDetailHeaderView {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
 
         });
@@ -350,11 +345,17 @@ public class AnswerDetailHeaderView {
         mAnswerHeaderEventListener = answerHeaderEventListener;
     }
 
-    public interface AnswerHeaderEventListener {
-        void loadFinish();
+    public MarkdownView getContentWebView() {
+        return mContent;
+    }
 
+    public interface AnswerHeaderEventListener {
         void userFollowClick(boolean isChecked);
 
         void clickUserInfo(UserInfoBean user);
+    }
+    public void destroyedWeb(){
+        destryWeb(mContent);
+
     }
 }

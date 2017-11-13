@@ -10,12 +10,18 @@ android {
         versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
 
-        // 友盟三方key配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+        // 三方 key
         manifestPlaceholders = [
-                TECENT_APPID: 1105978541,
-                UMENG_APPKEY: "58d0998e9f06fd05680011f6",
-                AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf",
+                TECENT_APPID: 1105978541, // 腾讯 QQ id
+                UMENG_APPKEY: "58d0998e9f06fd05680011f6", // 友盟三方key配置
+                AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
         ]
+        multiDexEnabled true
 
     }
     buildTypes {
@@ -53,9 +59,10 @@ buildscript {
 }
 
 dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -70,10 +77,7 @@ dependencies {
 
     // Dagger dependencies
     compile dataDependences.dagger
-    // 刷新:三方库compat版本过高，使用主工程的版本
-    compile(dataDependences.refresh) {
-        exclude group: 'com.android.support', module: 'support-compat'
-    }
+
     compile dataDependences.swipeLayout
     compile(dataDependences.recyclerviewAnimator) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -94,5 +98,14 @@ dependencies {
     compile project(':pickerview')
     compile project(':PhotoPicker')
     compile project(':overscrolllib')
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
+    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'//没有使用特殊Header，可以不加这行
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'//一个开源gif控件
 
+}
+
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
 }

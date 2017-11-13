@@ -65,8 +65,8 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
@@ -117,6 +117,8 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
             followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
         }
+        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+
         return followFansBeanList;
     }
 

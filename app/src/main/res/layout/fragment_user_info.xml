@@ -44,7 +44,7 @@
                         android:layout_height="@dimen/headpic_for_list"
                         app:ts_avatare_size="@dimen/headpic_for_list"
                         android:layout_gravity="center_vertical"
-                        android:src="@mipmap/pic_default_portrait1"/>
+                        android:src="@mipmap/pic_default_secret"/>
                 </LinearLayout>
 
                 <TextView
@@ -196,16 +196,30 @@
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_sub_title"/>
 
-                <com.zhy.view.flowlayout.TagFlowLayout
-                    android:id="@+id/fl_tags"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:paddingBottom="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_normal"
-                    app:max_select="0"
-                    />
+                <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                    <com.zhy.view.flowlayout.TagFlowLayout
+                            android:id="@+id/fl_tags"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:paddingBottom="@dimen/spacing_normal"
+                            android:paddingTop="@dimen/spacing_normal"
+                            app:max_select="0"/>
+                    <TextView
+                            android:id="@+id/tv_tag_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/select_tag"
+                            android:text=""
+                            android:textColor="@color/important_for_content"
+                            android:textColorHint="@color/general_for_hint"
+                            android:textSize="@dimen/size_sub_title"
+                            android:visibility="visible"/>
+                </FrameLayout>
+
 
                 <ImageView
                     android:layout_width="wrap_content"

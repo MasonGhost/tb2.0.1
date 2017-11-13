@@ -351,6 +351,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
      * "followings_count": 1, // 用户关注数
      * "updated_at": "2017-07-16 09:44:25", // 更新时间
      * "feeds_count": 0 // 发布的动态统计，没有安装 动态应用则不存在
+     * extra.count	int	浏览量
      * }
      */
     public static class UserInfoExtraBean implements Serializable, Parcelable {

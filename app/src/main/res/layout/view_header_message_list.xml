@@ -194,31 +194,33 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_header_review_headpic"
-            app:pressShape="circle"
             android:layout_width="@dimen/headpic_for_list"
             android:layout_height="@dimen/headpic_for_list"
-            android:src="@mipmap/ico_message_check"/>
+            android:src="@mipmap/ico_message_check"
+            app:pressShape="circle"/>
+
         <TextView
             android:id="@+id/tv_header_review_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_header_review_headpic"
-            android:maxLength="@integer/username_max_length"
-            android:includeFontPadding="false"
-            android:gravity="top"
-            android:maxLines="1"
             android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:layout_toRightOf="@id/iv_header_review_headpic"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLength="@integer/username_max_length"
+            android:maxLines="1"
             android:paddingLeft="@dimen/spacing_mid"
+            android:text="@string/review"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_sub_title"
-            android:text="@string/review"/>
+            android:textSize="@dimen/size_sub_title"/>
+
         <TextView
             android:id="@+id/tv_header_review_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tv_header_review_name"
             android:layout_alignParentRight="true"
             android:maxLines="1"
-            android:layout_alignBaseline="@id/tv_header_review_name"
             android:textColor="@color/general_for_hint"
             android:textSize="@dimen/size_icon_assist"
             tools:text="2016-05-06"/>
@@ -246,19 +248,18 @@
         </FrameLayout>
 
 
-
         <TextView
             android:id="@+id/tv_header_review_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_header_review_time"
             android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
             android:layout_toLeftOf="@+id/fl_header_review_tip"
             android:layout_toRightOf="@+id/iv_header_review_headpic"
             android:ellipsize="end"
             android:gravity="bottom"
             android:maxLines="1"
-            android:layout_marginTop="@dimen/textview_spacing_offset_height"
             android:paddingBottom="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingTop="@dimen/spacing_normal"

@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/02/17:23
@@ -33,7 +35,7 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Reposit
 //        }
 
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
-        mSystemRepository.systemFeedback(content, Long.parseLong(comment_mark))
+        Subscription subscribe = mSystemRepository.systemFeedback(content, Long.parseLong(comment_mark))
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.feed_back_ing)))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
@@ -53,6 +55,7 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Reposit
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.feed_back_failed));
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 }

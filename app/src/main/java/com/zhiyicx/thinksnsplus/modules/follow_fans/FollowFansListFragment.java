@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,21 +23,35 @@ import javax.inject.Inject;
  */
 
 public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, UserInfoBean> implements FollowFansListContract.View {
-    // 当前页面是关注页面还是粉丝页面:pageType
+    /**
+     * 当前页面是关注页面还是粉丝页面:pageType
+     */
     public static final int FANS_FRAGMENT_PAGE = 0;
     public static final int FOLLOW_FRAGMENT_PAGE = 1;
 
-    // 获取页面类型的key
+    /**
+     * 获取页面类型的key
+     */
     public static final String PAGE_TYPE = "page_type";
-    // 获取用户id，决定这是谁的关注粉丝列表
+    /**
+     * 获取用户id，决定这是谁的关注粉丝列表
+     */
     public static final String PAGE_DATA = "page_data";
     @Inject
     FollowFansListPresenter mFollowFansListPresenter;
-    private int pageType;// 页面类型，由上一个页面决定
-    private long userId;// 上一个页面传过来的用户id
-    //private AuthBean mAuthBean;
 
-    private boolean mIsVisibleToUser;//页面显示给用户
+    /**
+     * 页面类型，由上一个页面决定
+     */
+    private int pageType;
+    /**
+     * 上一个页面传过来的用户id
+     */
+    private long userId;
+    /**
+     * 页面显示给用户
+     */
+    private boolean mIsVisibleToUser;
 
     @Override
     protected CommonAdapter<UserInfoBean> getAdapter() {
@@ -103,8 +119,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
-    protected List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+        mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
     }
 
     public static FollowFansListFragment initFragment(Bundle bundle) {
@@ -115,7 +131,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     public void upDateFollowFansState(int index) {
-        if (getPageType() == FOLLOW_FRAGMENT_PAGE && !mListDatas.get(index).isFollowing()) { // 关注页面,并且取消了关注则删除该条 item
+        // 关注页面,并且取消了关注则删除该条 item
+        if (getPageType() == FOLLOW_FRAGMENT_PAGE && !mListDatas.get(index).isFollowing()) {
             mListDatas.remove(index);
             refreshData();
         } else {
@@ -133,4 +150,8 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
         return pageType;
     }
 
+    @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return (long) mListDatas.size();
+    }
 }

@@ -115,16 +115,20 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         List<Link> links = new ArrayList<>();
         if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
-                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
-                    .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
-                    .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(clickedText -> {
+                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))
+                    // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint))
+                    // optional, defaults to .15f
+                    .setHighlightAlpha(.5f)
+                    .setBold(true)
+                    // optional, defaults to true
+                    .setUnderlined(false)
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserInfoLongClickListener != null) {
                             mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d("-----dy------setOnClickListener----------------");
                         // single clicked
                         if (mOnUserInfoClickListener != null) {

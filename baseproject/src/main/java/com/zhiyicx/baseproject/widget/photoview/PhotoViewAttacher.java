@@ -57,7 +57,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     private static final boolean DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG);
 
     static final Interpolator sInterpolator = new AccelerateDecelerateInterpolator();
-    private static final float DEFAULT_WITH_SCALE_OF_VIEW = 1.5F;
+    private static final float DEFAULT_WITH_SCALE_OF_VIEW = 1.5F; // 放大到屏幕的 1.5 倍
     private boolean mIsCanScal = true;
     int ZOOM_DURATION = DEFAULT_ZOOM_DURATION;
 
@@ -248,15 +248,16 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
     @Override
     public boolean setDisplayMatrix(Matrix finalMatrix) {
-        if (finalMatrix == null)
+        if (finalMatrix == null) {
             throw new IllegalArgumentException("Matrix cannot be null");
-
+        }
         ImageView imageView = getImageView();
-        if (null == imageView)
+        if (null == imageView) {
             return false;
-
-        if (null == imageView.getDrawable())
+        }
+        if (null == imageView.getDrawable()) {
             return false;
+        }
 
         mSuppMatrix.set(finalMatrix);
         setImageViewMatrix(getDrawMatrix());
@@ -704,6 +705,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         float deltaX = 0, deltaY = 0;
 
         final int viewHeight = getImageViewHeight(imageView);
+        final int viewWidth = getImageViewWidth(imageView);
         if (height <= viewHeight) {
             switch (mScaleType) {
                 case FIT_START:
@@ -722,17 +724,25 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
             deltaY = viewHeight - rect.bottom;
         }
 
-        final int viewWidth = getImageViewWidth(imageView);
 //        LogUtils.d(
 //                LOG_TAG,
 //                String.format(Locale.getDefault(), "viewWith : %1$s with : %2$s MAX : %3$s", viewWidth, width, viewWidth *
 //                        DEFAULT_WITH_SCALE_OF_VIEW));
-        if (width >= viewWidth * DEFAULT_WITH_SCALE_OF_VIEW) { // 最大倍数为view 宽度的1.5倍
-            mIsCanScal = false;
+        if (height > width) {
+            // 最大倍数为view 宽度的1.5倍
+            if (width >= viewWidth * DEFAULT_WITH_SCALE_OF_VIEW) {
+                mIsCanScal = false;
+            } else {
+                mIsCanScal = true;
+            }
         } else {
-            mIsCanScal = true;
+            // 最大倍数为view 宽度的1.5倍
+            if (height >= viewHeight * DEFAULT_WITH_SCALE_OF_VIEW) {
+                mIsCanScal = false;
+            } else {
+                mIsCanScal = true;
+            }
         }
-
         if (width <= viewWidth) {
             switch (mScaleType) {
                 case FIT_START:
@@ -782,6 +792,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         return null;
     }
 
+    @Override
     public Bitmap getVisibleRectangleBitmap() {
         ImageView imageView = getImageView();
         return imageView == null ? null : imageView.getDrawingCache();
@@ -789,8 +800,9 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
     @Override
     public void setZoomTransitionDuration(int milliseconds) {
-        if (milliseconds < 0)
+        if (milliseconds < 0) {
             milliseconds = DEFAULT_ZOOM_DURATION;
+        }
         this.ZOOM_DURATION = milliseconds;
     }
 
@@ -911,8 +923,9 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     }
 
     private int getImageViewHeight(ImageView imageView) {
-        if (null == imageView)
+        if (null == imageView) {
             return 0;
+        }
         return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
     }
 

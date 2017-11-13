@@ -221,7 +221,9 @@ public class RegexUtils {
      * @return 正则匹配的部分
      */
     public static List<String> getMatches(String regex, CharSequence input) {
-        if (input == null) return null;
+        if (input == null) {
+            return null;
+        }
         List<String> matches = new ArrayList<>();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
@@ -239,7 +241,9 @@ public class RegexUtils {
      * @return 正则匹配分组
      */
     public static String[] getSplits(String input, String regex) {
-        if (input == null) return null;
+        if (input == null) {
+            return null;
+        }
         return input.split(regex);
     }
 
@@ -252,7 +256,9 @@ public class RegexUtils {
      * @return 替换正则匹配的第一部分
      */
     public static String getReplaceFirst(String input, String regex, String replacement) {
-        if (input == null) return null;
+        if (input == null) {
+            return null;
+        }
         return Pattern.compile(regex).matcher(input).replaceFirst(replacement);
     }
 
@@ -265,7 +271,9 @@ public class RegexUtils {
      * @return 替换所有正则匹配的部分
      */
     public static String getReplaceAll(String input, String regex, String replacement) {
-        if (input == null) return null;
+        if (input == null) {
+            return null;
+        }
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
     }
 
@@ -277,7 +285,9 @@ public class RegexUtils {
      * @return
      */
     public static int getImageIdFromMarkDown(String regex, String input) {
-        if (regex == null || input == null) return -1;
+        if (regex == null || input == null) {
+            return -1;
+        }
         try {
             Matcher matcher = Pattern.compile(regex).matcher(input);
             if (matcher.find()) {
@@ -294,7 +304,7 @@ public class RegexUtils {
             Matcher matcher = Pattern.compile(regex).matcher(input);
             return matcher.replaceAll("[图片]");
         } catch (Exception e) {
-            return input;
+            return input == null ? "" : input;
         }
     }
 
@@ -329,6 +339,20 @@ public class RegexUtils {
         return splitTextList;
     }
 
+    public static List<String> cutStringByNetSite(String targetStr) {
+        List<String> splitTextList = new ArrayList<>();
+        Pattern pattern = Pattern.compile("((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2," +
+                "6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*" +
+                "(/[a-zA-Z0-9\\&%_\\./-~-]*)?");
+        Matcher matcher1 = pattern.matcher(targetStr);
+        int lastIndex = 0;
+        while (matcher1.find()) {
+            String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+            splitTextList.add(result);
+        }
+        return splitTextList;
+    }
+
     /**
      * 提取第一个 图片 id
      *
@@ -337,9 +361,9 @@ public class RegexUtils {
      */
     public static int getImageId(String input) {
         try {
-            String reg = "@!\\[.*]\\((\\d+)\\)";
+            String reg = "@!\\[.*?]\\((\\d+)\\)";
             Matcher matcher2 = Pattern.compile(reg).matcher(input);
-            if (matcher2.find()){
+            if (matcher2.find()) {
                 return Integer.parseInt(matcher2.group(1));
             }
             return -1;

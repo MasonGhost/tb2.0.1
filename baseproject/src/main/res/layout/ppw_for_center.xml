@@ -28,10 +28,11 @@
         />
 
     <TextView
+        android:textSize="@dimen/size_paypop_window"
         android:id="@+id/ppw_center_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/important_for_note"
+        android:textColor="@color/money_gold_light"
         tool:text="4.4"/>
 
     <TextView

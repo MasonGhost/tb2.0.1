@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,8 +19,12 @@ import android.widget.TextView;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -29,14 +35,12 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -88,22 +92,23 @@ public class DynamicDetailHeader {
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
                 .ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
-        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
-                (R.dimen.spacing_normal) * 2;
+//        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
+//                (R.dimen.spacing_normal) * 2;
+        picWidth = screenWidth;
         mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
-                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
         );
     }
 
@@ -121,6 +126,7 @@ public class DynamicDetailHeader {
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
         } else {
+            mTitle.setVisibility(View.VISIBLE);
             mTitle.setText(titleText);
         }
         String contentText = dynamicBean.getFeed_content();
@@ -129,7 +135,7 @@ public class DynamicDetailHeader {
         } else {
 //            dealTollWords(dynamicBean, contentText);// 处理文字收费
             mContent.setVisibility(View.VISIBLE);
-            mContent.setText(contentText);
+            dealLinkWords(dynamicBean, contentText);
         }
 
         final Context context = mTitle.getContext();
@@ -138,7 +144,7 @@ public class DynamicDetailHeader {
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
             sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
-                    .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
+                    .getResources(), R.mipmap.icon).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
@@ -146,9 +152,15 @@ public class DynamicDetailHeader {
             }
             FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                    .getDrawable(), R.mipmap.icon_256);
+                    .getDrawable(), R.mipmap.icon);
             setImageClickListener(photoList, dynamicBean);
         }
+    }
+
+    private void dealLinkWords(DynamicDetailBeanV2 dynamicBean, String content) {
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+        mContent.setText(content);
+        ConvertUtils.stringLinkConvert(mContent, setLiknks(dynamicBean, mContent.getText().toString()), false);
     }
 
     private void dealTollWords(DynamicDetailBeanV2 dynamicBean, String contentText) {
@@ -184,7 +196,7 @@ public class DynamicDetailHeader {
         }
         FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
         sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
-                .getDrawable(), R.mipmap.icon_256);
+                .getDrawable(), R.mipmap.icon);
         setImageClickListener(photoList, dynamicBean);
     }
 
@@ -234,8 +246,9 @@ public class DynamicDetailHeader {
      * @param rewardsCountBean all reward data
      * @param rewardType       reward type
      */
-    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
-        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean,
+                             RewardType rewardType, String moneyName) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
     }
 
     private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
@@ -248,7 +261,6 @@ public class DynamicDetailHeader {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
 
-        // 如果有本地图片，优先显示本地图片
         int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
@@ -260,20 +272,18 @@ public class DynamicDetailHeader {
             if (part > 100) {
                 part = 100;
             }
-            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
-            if (!canLook) {
-                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            }
-            imageView.setLayoutParams(layoutParams);
+            boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid()
+                    && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             DrawableRequestBuilder requestBuilder =
                     Glide.with(mContext)
-                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth,
-                                    height, part, AppApplication.getTOKEN()))
+                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), canLook ? picWidth : 0,
+                                    canLook ? height : 0, part, AppApplication.getTOKEN()))
+                            .override(picWidth, height)
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked);
+                            .error(R.drawable.shape_default_image);
             if (!canLook) {// 切换展位图防止闪屏
-                requestBuilder.placeholder(R.mipmap.pic_locked);
+                requestBuilder.placeholder(R.drawable.shape_default_image);
             }
             requestBuilder.into(imageView);
         } else {
@@ -317,7 +327,7 @@ public class DynamicDetailHeader {
                     imageBean.setImgUrl(task.getImgUrl());// 本地地址，也许有
                     Toll toll = new Toll(); // 收费信息
                     toll.setPaid(task.isPaid());// 是否已經付費
-                    toll.setToll_money((float) task.getAmount());// 付费金额
+                    toll.setToll_money(task.getAmount());// 付费金额
                     toll.setToll_type_string(task.getType());// 付费类型
                     toll.setPaid_node(task.getPaid_node());// 付费节点
                     imageBean.setToll(toll);
@@ -344,8 +354,47 @@ public class DynamicDetailHeader {
         mOnImageClickLisenter = onImageClickLisenter;
     }
 
-    public interface OnImageClickLisenter {
-        void onImageClick(int iamgePosition, double amount, int note);
+    public void setReWardViewVisible(int visible) {
+        mReWardView.setVisibility(visible);
     }
+
+    public ReWardView getReWardView() {
+        return mReWardView;
+    }
+
+    protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, dynamicDetailBeanV2.getFeed_content())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
+        return links;
+    }
+
+    public interface OnImageClickLisenter {
+        void onImageClick(int iamgePosition, long amount, int note);
+    }
+
 
 }

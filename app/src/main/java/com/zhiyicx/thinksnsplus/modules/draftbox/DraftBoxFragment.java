@@ -80,10 +80,10 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
             bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, realData);
             intent.putExtras(bundle);
             startActivity(intent);
-        }else if (draftBean instanceof AnswerDraftBean){
+        } else if (draftBean instanceof AnswerDraftBean) {
             AnswerDraftBean realData = (AnswerDraftBean) draftBean;
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                    .PUBLISH_ANSWER, realData.getId(), realData.getBody(), "");
+                    .PUBLISH_ANSWER, realData);
         }
     }
 
@@ -94,4 +94,7 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
         refreshData();
     }
 
+    public void updateDate() {
+        mPresenter.requestNetData(0L, false);
+    }
 }

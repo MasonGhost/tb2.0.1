@@ -2,22 +2,25 @@
 <com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -40,45 +43,44 @@
             <RelativeLayout style="@style/style_edit_white_container">
 
                 <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_toLeftOf="@+id/rl_send_vertify_code_container"
-                        android:layout_toStartOf="@+id/rl_send_vertify_code_container">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/rl_send_vertify_code_container"
+                    android:layout_toStartOf="@+id/rl_send_vertify_code_container">
                     <!--手机注册-->
                     <LinearLayout
-                            android:id="@+id/ll_register_by_phone"
-                            style="@style/style_edit_white_container">
+                        android:id="@+id/ll_register_by_phone"
+                        style="@style/style_edit_white_container">
 
                         <TextView
-                                style="@style/style_small_text"
-                                android:text="@string/phone_number"/>
+                            style="@style/style_small_text"
+                            android:text="@string/phone_number"/>
 
                         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                                android:id="@+id/et_regist_phone"
-                                style="@style/style_edit"
-                                android:hint="@string/phone_number_input_hint"
-                                android:inputType="phone"
-                                android:maxLength="@integer/phone_number_length"/>
+                            android:id="@+id/et_regist_phone"
+                            style="@style/style_edit"
+                            android:hint="@string/phone_number_input_hint"
+                            android:inputType="phone"
+                            android:maxLength="@integer/phone_number_length"/>
                     </LinearLayout>
 
                     <!--邮箱注册-->
                     <LinearLayout
-                            android:id="@+id/ll_register_by_email"
-                            style="@style/style_edit_white_container">
+                        android:id="@+id/ll_register_by_email"
+                        style="@style/style_edit_white_container">
 
                         <TextView
-                                style="@style/style_small_text"
-                                android:text="@string/email_address"/>
+                            style="@style/style_small_text"
+                            android:text="@string/email_address"/>
 
                         <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                                android:id="@+id/et_register_email"
-                                style="@style/style_edit"
-                                android:hint="@string/email_address_input_hint"
-                                android:inputType="textEmailAddress"/>
+                            android:id="@+id/et_register_email"
+                            style="@style/style_edit"
+                            android:hint="@string/email_address_input_hint"
+                            android:inputType="textEmailAddress"/>
                     </LinearLayout>
 
                 </FrameLayout>
-
 
 
                 <RelativeLayout
@@ -175,15 +177,27 @@
                     android:id="@+id/tv_look_around"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/no_login"
-                    android:paddingTop="@dimen/spacing_mid"
-                    android:visibility="gone"
                     android:paddingBottom="@dimen/spacing_mid"
+                    android:paddingTop="@dimen/spacing_mid"
+                    android:text="@string/no_login"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"
+                    android:visibility="gone"
                     />
 
             </RelativeLayout>
+
+
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_app_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="@dimen/spacing_large"
+        android:text="@string/app_rule_register"/>
+    </FrameLayout>
+
 </com.wcy.overscroll.OverScrollLayout>

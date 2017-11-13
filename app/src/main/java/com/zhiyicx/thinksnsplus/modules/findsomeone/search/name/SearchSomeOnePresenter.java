@@ -1,15 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.search.name;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
-import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchContract;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,8 +40,8 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
     }
 
     @Override

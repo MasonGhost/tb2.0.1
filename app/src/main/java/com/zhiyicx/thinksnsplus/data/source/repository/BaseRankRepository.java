@@ -4,9 +4,8 @@ import android.app.Application;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.RankClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;

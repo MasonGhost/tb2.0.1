@@ -1,9 +1,13 @@
 package com.zhiyicx.common.base;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -14,6 +18,8 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import skin.support.app.SkinCompatActivity;
 
 /**
@@ -32,7 +38,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
     protected P mPresenter;
     private Unbinder mUnbinder;
     protected LayoutInflater mLayoutInflater;
-    public boolean mIsForeground; // 用于应用是否处于前台还是后台的判断；
+    /**
+     * 用于应用是否处于前台还是后台的判断；
+     */
+    public boolean mIsForeground;
 
     @Nullable
     @Override
@@ -46,7 +55,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
         mLayoutInflater = LayoutInflater.from(this);
         // 如果要使用 eventbus 请将此方法返回 true
         if (useEventBus()) {
-            EventBus.getDefault().register(this);// 注册到事件主线
+            EventBus.getDefault().register(this);
         }
         setContentView(getLayoutId());
         // 绑定到 butterknife

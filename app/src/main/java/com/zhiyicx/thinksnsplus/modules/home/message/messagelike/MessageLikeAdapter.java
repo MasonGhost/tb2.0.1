@@ -161,7 +161,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                 .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                 .setUnderlined(false)                                       // optional, defaults to true
-                .setOnClickListener(clickedText -> {
+                .setOnClickListener((clickedText, linkMetadata) -> {
                     // single clicked
                     toUserCenter(digedBean.getDigedUserInfo());
                 });

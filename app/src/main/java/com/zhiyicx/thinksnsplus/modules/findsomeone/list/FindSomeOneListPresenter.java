@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,8 +61,9 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
+
     }
 
     @Override
@@ -81,7 +83,8 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
             case TYPE_NEW:
                 observable = mUserInfoRepository.getNewUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
-            case TYPE_RECOMMENT: // 后台推荐 + 用户 tag 推荐 ，
+                // 后台推荐 + 用户 tag 推荐 ，
+            case TYPE_RECOMMENT:
                 if (!isLoadMore) {
                     observable = Observable.zip(mUserInfoRepository.getRecommendUserInfo(), mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue()), (userInfoBeen, userInfoBeen2) -> {
                         mRootView.setRecommentUserSize(userInfoBeen.size());
@@ -97,6 +100,7 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
             case TYPE_NEARBY:
                 observable = mUserInfoRepository.getHotUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
+                default:
         }
 
         Subscription subscription = observable

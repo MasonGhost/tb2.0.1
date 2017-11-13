@@ -54,20 +54,10 @@ public class CollectInformationListFragment extends InfoListFragment {
     @Override
     public void handleCollectInfo(InfoListDataBean info) {
         boolean isCollect = info.getHas_collect();
-        // 存在这样的动态
-        if (isCollect) {// 取消收藏
-            mListDatas.remove(info);
-        } else {
+        if (isCollect) {
             mListDatas.add(info);
-            // 按资讯id大小进行逆序排列，防止上啦加载重复
-            Collections.sort(mListDatas, new Comparator<BaseListBean>() {
-                @Override
-                public int compare(BaseListBean o1, BaseListBean o2) {
-                    InfoListDataBean infoListDataBean1 = (InfoListDataBean) o1;
-                    InfoListDataBean infoListDataBean2 = (InfoListDataBean) o2;
-                    return infoListDataBean2.getId() > infoListDataBean1.getId() ? 1 : -1;
-                }
-            });
+        } else {
+            mListDatas.remove(info);
         }
         refreshData();
     }

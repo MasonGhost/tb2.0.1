@@ -39,4 +39,10 @@ public class TopicDetailActivity extends TSActivity<TopicDetailPresenter, TopicD
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
         mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
+    }
 }

@@ -104,6 +104,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @BindView(R.id.rl_invite_container)
     RelativeLayout mRlInviteContainer;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     // 悬赏相关
     private List<Float> mRewardLabels; // reward labels
     private double mRewardMoney; // money choosed for reward
@@ -146,6 +149,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         }
         if (!mQuestionId.equals(0L)) {
             mBtPublish.setText(getString(R.string.determine));
+            mToolbarCenter.setText(getString(R.string.qa_reward_public));
             mRlInviteContainer.setVisibility(View.GONE);
         }
         mTvChooseTip.setText(R.string.qa_publish_reward_set_money);
@@ -167,9 +171,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (draft != null) {
             mWcInvite.setChecked(draft.getAutomaticity() == 1);
             mWcOnlooker.setChecked(draft.getLook() == 1);
-            double money = PayConfig.realCurrencyFen2Yuan(draft.getAmount());
+            double money = PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio());
             if (money > 0) {
-                mEtInput.setText(String.valueOf(PayConfig.realCurrencyFen2Yuan(draft.getAmount())));
+                mEtInput.setText(String.valueOf(PayConfig.realCurrency2GameCurrency(draft.getAmount(), mPresenter.getRatio())));
             }
             if (draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
@@ -184,6 +188,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 mRlInviteContainer.setVisibility(View.GONE);
             }
         }
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override
@@ -313,6 +319,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                         case R.id.rb_three:
                             mRewardMoney = mRewardLabels.get(2);
                             break;
+                        default:
                     }
                     if (checkedId != -1) {
                         configSureButton();
@@ -335,6 +342,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                         case R.id.rb_onlookers_three:
                             mOnLookerMoney = mOnLookerLabels.get(2);
                             break;
+                        default:
                     }
                     if (checkedId != -1) {
                         configSureButton();
@@ -377,8 +385,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mWcInvite.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mBtQaSelectExpert.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             mRlOnlooker.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            mWcOnlooker.setChecked(false);
             resetExpert();
-//            configSureButton();
+            configSureButton();
         });
         // 围观开关
         mWcOnlooker.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -412,7 +421,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mRewardMoney != (int) mRewardMoney) {
-                        initInstructionsPop(R.string.sticktop_reward_instructions_detail);
+                        initInstructionsPop(R.string.limit_monye_death);
                         return;
                     }
                     // 发布
@@ -425,10 +434,11 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                                 return;
                             }
                             packgQuestion();
+                            mQAPublishBean.setAmount(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
-                            mPresenter.resetReward(mQuestionId, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+                            mPresenter.resetReward(mQuestionId, PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
                         }
                     } catch (Exception e) {
                         mBtPublish.setEnabled(true);
@@ -446,7 +456,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         if (mQAPublishBean == null) {
             return null;
         }
-        mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+        if (!mQAPublishBean.isHasAgainEdite()) {// 发布成功后编辑的设置悬赏要放到最后一步
+            mQAPublishBean.setAmount(PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
+        }
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
         return mQAPublishBean;
@@ -537,7 +549,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
+        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.gameCurrency2RealCurrency(mRewardMoney, mPresenter.getRatio()));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);

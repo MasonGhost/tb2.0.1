@@ -50,6 +50,7 @@
                 tools:hint="@string/et_top_input"/>
 
             <TextView
+                android:id="@+id/tv_custom_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/yuan"
@@ -95,6 +96,7 @@
                 tools:hint="@string/et_top_total"/>
 
             <TextView
+                android:id="@+id/tv_total_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/yuan"

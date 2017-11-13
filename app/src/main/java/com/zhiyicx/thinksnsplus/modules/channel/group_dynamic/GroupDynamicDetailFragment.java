@@ -172,7 +172,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         initBottomToolListener();
         initHeaderView();
         initListener();
-        setOverScroll(false, false);
+//        setOverScroll(false, false);
     }
 
     private void initToolbar() {
@@ -332,7 +332,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         initImageCenterPopWindow(position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }
@@ -684,7 +684,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), amout))
+                        .string.buy_pay_member), amout,mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))

@@ -41,12 +41,18 @@ public class WalletRepository implements WalletContract.Repository {
     }
 
     public void getWalletConfigWhenStart(Long user_id) {
-        getWalletConfig().subscribe(new BaseSubscribeForV2<WalletConfigBean>() {
-            @Override
-            protected void onSuccess(WalletConfigBean data) {
-                data.setUser_id(user_id);
-                mWalletConfigBeanGreenDao.insertOrReplace(data);
-            }
-        });
+        getWalletConfig()
+                .subscribe(new BaseSubscribeForV2<WalletConfigBean>() {
+                    @Override
+                    protected void onSuccess(WalletConfigBean data) {
+                        data.setUser_id(user_id);
+                        mWalletConfigBeanGreenDao.insertOrReplace(data);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
     }
 }

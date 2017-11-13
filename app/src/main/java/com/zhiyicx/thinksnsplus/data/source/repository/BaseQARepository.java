@@ -78,8 +78,10 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     }
 
     @Override
-    public Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId, String type) {
-        return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+    public Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject,
+                                                                 Long maxId, String type) {
+        return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type, (long) TSListFragment
+                .DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -93,7 +95,8 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<QATopicBean>> getFollowTopic(String type, Long after) {
-        return dealMyFollowTopics(mQAClient.getQAFollowTopic(type, after, (long) TSListFragment.DEFAULT_PAGE_SIZE));
+        return dealMyFollowTopics(mQAClient.getQAFollowTopic(type, after, (long) TSListFragment
+                .DEFAULT_PAGE_SIZE));
     }
 
     Observable<List<QATopicBean>> dealMyFollowTopics(Observable<List<QATopicBean>> observable) {
@@ -184,6 +187,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                 }, throwable -> throwable.printStackTrace());
     }
 
+    @Override
     public Observable<BaseJsonV2<AnswerInfoBean>> payForOnlook(Long answer_id) {
         return mQAClient.payForOnlook(answer_id)
                 .subscribeOn(Schedulers.io())
@@ -192,6 +196,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveQuestion(QAPublishBean qestion) {
+        deleteQuestion(qestion);
         mQAPublishBeanGreenDaoImpl.saveSingleData(qestion);
     }
 
@@ -207,7 +212,7 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-//        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);// 暂时屏蔽掉回答的草稿
+        mAnswerDraftBeanGreenDaoImpl.saveSingleData(answer);
     }
 
     @Override

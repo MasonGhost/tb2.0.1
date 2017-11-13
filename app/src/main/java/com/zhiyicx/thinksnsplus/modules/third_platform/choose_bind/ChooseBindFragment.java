@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.umeng.socialize.UMAuthListener;
@@ -9,6 +10,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.third_platform.bind.BindOldAccountActivity;
@@ -36,6 +38,12 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
         ChooseBindFragment fragment = new ChooseBindFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -70,6 +78,12 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
                     .alpha(0.8f)
                     .itemListener(this)
                     .build();
+
+            boolean openThirdRegister = mSystemConfigBean.getRegisterSettings() == null
+                    || mSystemConfigBean.getRegisterSettings().getType() == null
+                    || SystemConfig.REGITER_MODE_THIRDPART.equals(mSystemConfigBean.getRegisterSettings().getType())
+                    || SystemConfig.REGITER_MODE_ALL.equals(mSystemConfigBean.getRegisterSettings().getType());
+            mPopupWindow.canNotRegiterByThirdPlatform(openThirdRegister);
         }
         mPopupWindow.show();
     }
@@ -131,7 +145,7 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

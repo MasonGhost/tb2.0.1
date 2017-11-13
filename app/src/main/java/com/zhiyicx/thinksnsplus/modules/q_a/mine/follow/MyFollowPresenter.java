@@ -17,11 +17,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyFollowContainerFragment.TYPE_TOPIC;
-import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_FOLLOW;
 
 /**
  * @author Catherine
@@ -82,14 +80,14 @@ public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.Reposit
     }
 
     @Override
-    public List<BaseListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<BaseListBean> listBeen = new ArrayList<>();
         if (mRootView.getType().equals(TYPE_TOPIC)){
             if (mQaTopicBeanGreenDao.getUserFollowTopic() != null){
                 listBeen.addAll(mQaTopicBeanGreenDao.getUserFollowTopic());
             }
         }
-        return listBeen;
+        mRootView.onCacheResponseSuccess(listBeen,isLoadMore);
     }
 
     @Override

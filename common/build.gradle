@@ -9,21 +9,27 @@ android {
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
-    buildTypes { // 作为libary时只会触发 relase
+    buildTypes {
         release {
-            buildConfigField "boolean", "USE_DOMAIN_SWITCH", "true"
-            buildConfigField "boolean", "USE_LOG", "true"
-            buildConfigField "boolean", "USE_CANARY", "true"
-            buildConfigField "boolean", "USE_ADVERT", "true"
-            buildConfigField "boolean", "USE_TOLL", "true"
+            buildConfigField "boolean", "USE_DOMAIN_SWITCH", "false"  // 域名切换开关
+            buildConfigField "boolean", "USE_LOG", "false"            // 日志开关
+            buildConfigField "boolean", "USE_CANARY", "false"         // Learcanary 内存检查开关
+            buildConfigField "boolean", "USE_ADVERT", "true"         // 广告开关
+            buildConfigField "boolean", "USE_TOLL", "true"           // 置顶功能开关
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            buildConfigField "boolean", "USE_DOMAIN_SWITCH", "true"  // 域名切换开关
             buildConfigField "boolean", "USE_LOG", "true"
             buildConfigField "boolean", "USE_CANARY", "true"
-            buildConfigField "boolean", "USE_ADVERT", "false"
+            buildConfigField "boolean", "USE_ADVERT", "true"
             buildConfigField "boolean", "USE_TOLL", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -43,9 +49,11 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        google()
         maven {
             url "https://jitpack.io"
         }
+
     }
     dependencies {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
@@ -60,7 +68,6 @@ configurations.all {
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     def testDependences = rootProject.ext.testDependencies
     def dataDependences = rootProject.ext.dataDependencies
     def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies
@@ -78,7 +85,7 @@ dependencies {
     // Image
     compile dataDependences.glide
     compile dataDependences.glideOkhttpIntegration
-    compile dataDependences.glideOkhttp
+    compile dataDependences.okhttp3
     // Eventbus
     compile dataDependences.androideventbus
     // Log
@@ -106,13 +113,12 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
-    compile dataDependences.clickSpanLink // click span
+//    compile dataDependences.clickSpanLink // click span
 
     compile dataDependences.gson
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
     releaseCompile developmentDependencies.leakCanaryRelease
-    testCompile developmentDependencies.leakCanaryTest
     // Test
     testCompile testDependences.junit
     androidTestCompile(testDependences.espresso) {
@@ -127,6 +133,7 @@ dependencies {
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
     compile project(':mysnackbar')
+    compile project(':link-library')
     // 指示器
     compile dataDependences.magicIndicator
 

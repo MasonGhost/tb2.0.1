@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -28,6 +27,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
     public static final String BUNDLE_SOURCE_TYPE = "source_type";
+    public static final String BUNDLE_SOURCE_ANONYMITY = "source_anonymity";
     public static final String BUNDLE_SOURCE_MARK = "source_mark";
     public static final String BUNDLE_SOURCE_TITLE = "source_title"; // 发布回答的提示语是问题的标题
 
@@ -57,7 +57,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
         mTitle = getArguments().getString(BUNDLE_SOURCE_TITLE, "");
-
+        mAnonymity = getArguments().getInt(BUNDLE_SOURCE_ANONYMITY, 0);
         if (mType == PublishType.PUBLISH_ANSWER) {
             mToolbarCenter.setText(getString(R.string.qa_publish_answer));
         } else if (mType == PublishType.UPDATE_ANSWER) {
@@ -130,9 +130,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
-        // 暂时屏蔽回答草稿箱功能
-//        initEditWarningPop();
+
 //        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
 //            super.onBackPressed();
 //        } else {
@@ -147,12 +147,13 @@ public class PublishAnswerFragment extends PublishContentFragment {
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                      String body, String title) {
+                                      String body, String title, int anonymity) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
         bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
+        bundle.putInt(BUNDLE_SOURCE_ANONYMITY, anonymity);
         bundle.putString(BUNDLE_SOURCE_BODY, body);
         bundle.putString(BUNDLE_SOURCE_TITLE, title);
         intent.putExtras(bundle);
@@ -194,10 +195,14 @@ public class PublishAnswerFragment extends PublishContentFragment {
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    long draftMark = getArguments().getLong(BUNDLE_SOURCE_MARK);
                     AnswerDraftBean answerDraftBean = new AnswerDraftBean();
-                    String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
-                            .currentTimeMillis();
-                    answerDraftBean.setMark(Long.parseLong(mark));
+                    long mark = Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                            .currentTimeMillis());
+                    if (draftMark != 0) {
+                        mark = draftMark;
+                    }
+                    answerDraftBean.setMark(mark);
                     answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
                     answerDraftBean.setBody(getContentString());
                     answerDraftBean.setAnonymity(mAnonymity);
@@ -208,5 +213,10 @@ public class PublishAnswerFragment extends PublishContentFragment {
                 })
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
         mEditWarningPopupWindow.show();
+    }
+
+    @Override
+    protected boolean showAnonymityAlertPopWindow() {
+        return mAnonymity != 1;
     }
 }

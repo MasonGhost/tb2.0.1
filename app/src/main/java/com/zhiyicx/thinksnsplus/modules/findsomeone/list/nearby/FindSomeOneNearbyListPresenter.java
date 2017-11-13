@@ -74,7 +74,7 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
         }
 
         if (mLatLonPoint == null) {
-            mRootView.onNetResponseSuccess(new ArrayList<>(), false);
+            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
 
         } else {
             Subscription subscribe = mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
@@ -82,7 +82,19 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
                     .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
                         @Override
                         protected void onSuccess(List<NearbyBean> data) {
-                            mRootView.onNetResponseSuccess(data, false);
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            mRootView.showMessage(message);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable,isLoadMore);
                         }
                     });
             addSubscrebe(subscribe);
@@ -90,8 +102,9 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     }
 
     @Override
-    public List<NearbyBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
+
     }
 
     @Override

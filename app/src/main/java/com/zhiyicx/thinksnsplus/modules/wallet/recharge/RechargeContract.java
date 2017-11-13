@@ -25,6 +25,7 @@ public interface RechargeContract {
         void initmRechargeInstructionsPop();
         double getMoney();
 
+        boolean useInputMonye();
     }
 
     interface Repository {

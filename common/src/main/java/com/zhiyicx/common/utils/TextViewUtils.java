@@ -23,6 +23,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 public class TextViewUtils {
 
     private OnSpanTextClickListener mSpanTextClickListener;
+    private OnTextSpanComplete mOnTextSpanComplete;
 
     private TextView mTextView;//显示富文本的控件
     private String mOriMsg;//全部文本信息
@@ -39,7 +40,7 @@ public class TextViewUtils {
 
     private int mNote;// 付费节点
 
-    private int mAmount;// 付费金额
+    private long mAmount;// 付费金额
 
     private Integer mSpanTextColor;
     private boolean mCanRead;
@@ -52,6 +53,7 @@ public class TextViewUtils {
 
     private TextViewUtils(TextView textView, String oriMsg) {
         this.mTextView = textView;
+        mTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         this.mOriMsg = oriMsg;
     }
 
@@ -62,6 +64,11 @@ public class TextViewUtils {
 
     public TextViewUtils onSpanTextClickListener(OnSpanTextClickListener spanTextClickListener) {
         mSpanTextClickListener = spanTextClickListener;
+        return this;
+    }
+
+    public TextViewUtils onTextSpanComplete(OnTextSpanComplete onTextSpanComplete) {
+        mOnTextSpanComplete = onTextSpanComplete;
         return this;
     }
 
@@ -121,7 +128,7 @@ public class TextViewUtils {
     }
 
     private void handleTextDisplay() {
-         mTextView.setVisibility(View.INVISIBLE);
+        mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
             //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
@@ -134,15 +141,24 @@ public class TextViewUtils {
                         String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
                         mTextView.setText(getSpannableString(result));
                         mTextView.setVisibility(View.VISIBLE);
+                        if (mOnTextSpanComplete != null) {
+                            mOnTextSpanComplete.onComplete();
+                        }
                     } else {
                         mTextView.setText(getSpannableString(mTextView.getText()));
                         mTextView.setVisibility(View.VISIBLE);
+                        if (mOnTextSpanComplete != null) {
+                            mOnTextSpanComplete.onComplete();
+                        }
                     }
                 }
             });
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
+            if (mOnTextSpanComplete != null) {
+                mOnTextSpanComplete.onComplete();
+            }
         }
     }
 
@@ -173,7 +189,7 @@ public class TextViewUtils {
     }
 
     private SpannableString getSpannableString(CharSequence temp) {
-        SpannableString spanableInfo = new SpannableString(temp);
+        SpannableString spanableInfo = SpannableString.valueOf(temp);
         if (mEndPos > temp.length()) {
             mEndPos = temp.length();
         }
@@ -245,7 +261,7 @@ public class TextViewUtils {
         int count = 0;
         char[] chars = src.toString().toCharArray();
         for (char c : chars) {
-            if (c < 128) {// 英文ascii码值都是128以下
+            if (c < 128) {// 英文ascii码值都是128以下完成
                 count += 1;
             }
         }
@@ -253,7 +269,11 @@ public class TextViewUtils {
     }
 
     public interface OnSpanTextClickListener {
-        void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead);
+        void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead);
+    }
+
+    public interface OnTextSpanComplete {
+        void onComplete();
     }
 }
 

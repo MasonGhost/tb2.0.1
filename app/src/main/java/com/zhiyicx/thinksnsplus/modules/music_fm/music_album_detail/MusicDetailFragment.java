@@ -325,7 +325,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter.notifyItemChanged(position);
         if (mAlbumDetailsBean != null) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
             controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
@@ -700,7 +700,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     public void onTollUpdate(final MusicDetaisBean e_albumListBean) {
         if (mAlbumDetailsBean != null) {
             Observable.from(mAlbumDetailsBean.getMusics())
-                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .filter(musicsBean -> e_albumListBean.getId().intValue() == musicsBean.getId().intValue())
                     .subscribe(musicsBean -> {
                         musicsBean.setHas_like(e_albumListBean.isHas_like());
                         musicsBean.setComment_count(e_albumListBean.getComment_count());
@@ -708,10 +708,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     });
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID, id);// mMediaId_test
+            bundle.putString(MUSIC_ID, id);
 
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
@@ -746,12 +746,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio()),mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

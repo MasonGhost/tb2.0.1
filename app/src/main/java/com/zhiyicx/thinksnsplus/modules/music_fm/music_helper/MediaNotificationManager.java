@@ -249,7 +249,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                         .setShowActionsInCompactView(new int[]{playPauseButtonPosition})
                         .setMediaSession(mSessionToken))
                 .setColor(mNotificationColor)
-                .setSmallIcon(R.mipmap.icon_256)
+                .setSmallIcon(R.mipmap.icon)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setUsesChronometer(true)
                 .setContentIntent(createContentIntent(description))

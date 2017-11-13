@@ -56,5 +56,7 @@
 
     <!--启动广告字体大小-->
     <dimen name="size_advert_launche">11sp</dimen>
+    <!--付费弹窗金额字体大小-->
+    <dimen name="size_paypop_window">30sp</dimen>
 
 </resources>

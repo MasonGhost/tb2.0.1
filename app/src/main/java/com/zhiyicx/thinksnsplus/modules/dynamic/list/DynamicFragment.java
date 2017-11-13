@@ -53,7 +53,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
@@ -81,9 +80,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
 /**
  * @Describe 动态列表
@@ -101,7 +97,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
-    public static final long ITEM_SPACING = 5L; // 单位dp
+    /**
+     *  item 间距单位 dp
+     */
+    public static final long ITEM_SPACING = 5L;
     @BindView(R.id.fl_container)
     FrameLayout mFlContainer;
     @BindView(R.id.ilv_comment)
@@ -109,20 +108,31 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+    /**
+     * 仅用于构造
+     */
     @Inject
-    DynamicPresenter mDynamicPresenter;  // 仅用于构造
+    DynamicPresenter mDynamicPresenter;
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
-    // 每条动态都有三个点点了
+    /**
+     * 每条动态都有三个点点了
+     */
     private ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
-    //    private PayPopWindow mPayWordsPopWindow;
-    private int mCurrentPostion;// 当前评论的动态位置
-    private long mReplyToUserId;// 被评论者的 id
+    ///    private PayPopWindow mPayWordsPopWindow;
+    /**
+     * 当前评论的动态位置
+     */
+    private int mCurrentPostion;
+    /**
+     * 被评论者的 id
+     */
+    private long mReplyToUserId;
 
     private DynamicBannerHeader mDynamicBannerHeader;
     private List<RealAdvertListBean> mListAdvert;
@@ -167,15 +177,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onStart() {
         super.onStart();
-        if (mDynamicBannerHeader != null)
+        if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mDynamicBannerHeader != null)
+        if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.stopBanner();
+        }
     }
 
     @Override
@@ -249,6 +261,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             }
         }
 
+        if (advertUrls.isEmpty()) {
+            return;
+        }
+
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
         mDynamicBannerHeader.setHeadlerClickEvent(this);
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
@@ -277,7 +293,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
@@ -345,6 +361,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.onCacheResponseSuccess(data, isLoadMore);
     }
 
+    @Override
+    protected boolean showEmptyViewWithNoData() {
+        return true;
+    }
+
     /**
      * scan imags
      *
@@ -356,17 +377,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        if (dynamicBean.getFeed_from() == -1) {// 广告
+        // 广告
+        if (dynamicBean.getFeed_from() == -1) {
             toAdvert(dynamicBean.getDeleted_at(), dynamicBean.getFeed_content());
             return;
         }
         int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
 
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
-        Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
+        boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean
+            initImageCenterPopWindow(dynamicPosition, position, dynamicBean
                             .getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,
                     true);
@@ -385,7 +407,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             imageBean.setImgUrl(task.getImgUrl());
             Toll toll = new Toll();
             toll.setPaid(task.isPaid());
-            toll.setToll_money((float) task.getAmount());
+            toll.setToll_money(task.getAmount());
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
@@ -404,9 +426,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         position -= mHeaderAndFooterWrapper.getHeadersCount();
-        initImageCenterPopWindow(position, position, (float) amount,
+        initImageCenterPopWindow(position, position, amount,
                 note, R.string.buy_pay_words_desc, false);
     }
 
@@ -417,7 +439,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
+        // 游客处理
+        if (!TouristConfig.USER_INFO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
         if (userInfoBean.getUser_id().intValue() == -1) {
@@ -494,8 +517,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
         if (canNotLookWords) {
-            initImageCenterPopWindow(position, position, (float)
-                            detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(position, position,
+                    detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
@@ -552,7 +575,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
                             (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
-                            .getDrawable(), R.mipmap.icon_256);
+                            .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
                 }
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)
@@ -854,7 +877,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param isImage         是否是图片收费
      */
     private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition,
-                                          float amout,
+                                          long amout,
                                           final int note, int strRes, final boolean isImage) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
@@ -870,12 +893,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

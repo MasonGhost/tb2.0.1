@@ -80,6 +80,7 @@
     </LinearLayout>
 
     <!--发送动态按钮-->
+    <!--app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"-->
     <ImageView
         android:id="@+id/btn_send_dynamic"
         android:layout_width="@dimen/channel_detail_float_btn_height"
@@ -87,8 +88,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/floating_button_bottom_margin"
         android:scaleType="fitXY"
-        android:src="@mipmap/channel_btn_suspension"
-        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"/>
+        android:src="@mipmap/channel_btn_suspension" />
     <View
         android:id="@+id/v_shadow"
         android:layout_width="match_parent"

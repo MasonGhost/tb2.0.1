@@ -190,14 +190,14 @@ public interface DynamicClient {
      *
      * @param news_id    动态 id
      * @param limit      列表返回数据条数
-     * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param offset      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
      * @param order_type 排序规则 date-按时间 amount-按金额
      * @return
      */
     @GET(APP_PATH_DYNAMIC_REWARDS_USER_LIST)
     Observable<List<RewardsListBean>> rewardDynamicList(@Path("feed_id") long news_id, @Query("limit") Integer limit,
-                                                        @Query("since") Integer since, @Query("order") String order,
+                                                        @Query("offset") Integer offset, @Query("order") String order,
                                                         @Query("order_type") String order_type);
 
 

@@ -123,6 +123,9 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
         ZBIMClient.getInstance().removeImMsgReceveListener(this);
         ZBIMClient.getInstance().removeImStatusListener(this);
         ZBIMClient.getInstance().removeImTimeoutListener(this);
+        mImMsgReceveListener=null;
+        mImStatusListener=null;
+        mImTimeoutListener=null;
     }
 
     /**
@@ -247,4 +250,5 @@ public class ChatClient implements ChatSoupport, ImMsgReceveListener, ImStatusLi
         }
         return false;
     }
+
 }

@@ -190,6 +190,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
             case BannerConfig.RIGHT:
                 this.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
                 break;
+            default:
+                break;
         }
         return this;
     }
@@ -504,7 +506,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
                     || action == MotionEvent.ACTION_OUTSIDE) {
                 startAutoPlay();
             } else if (action == MotionEvent.ACTION_DOWN) {
-                if (isDownStopAutoPlay){
+                if (isDownStopAutoPlay) {
                     stopAutoPlay();
                 }
             }

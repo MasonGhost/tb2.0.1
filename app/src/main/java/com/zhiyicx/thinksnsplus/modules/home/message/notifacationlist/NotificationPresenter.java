@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -14,11 +11,14 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @author Catherine
@@ -33,6 +33,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Inject
     MessageRepository mMessageRepository;
+    private Subscription subscribe;
 
     @Inject
     public NotificationPresenter(NotificationContract.Repository repository, NotificationContract.View rootView) {
@@ -41,7 +42,15 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getNotificationList(maxId.intValue())
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+        subscribe = mMessageRepository.makeNotificationAllReaded()
+                .flatMap(o -> {
+                    readNotification();
+                    return mRepository.getNotificationList(maxId.intValue());
+
+                })
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
                     protected void onSuccess(List<TSPNotificationBean> data) {
@@ -60,13 +69,13 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
                         mRootView.onResponseError(null, isLoadMore);
                     }
                 });
-        addSubscrebe(subscription);
-
+        addSubscrebe(subscribe);
     }
 
     @Override
-    public List<TSPNotificationBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+
     }
 
     @Override
@@ -76,33 +85,8 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Override
     public void readNotification() {
-        StringBuilder notificationIds = new StringBuilder();
-        //代表未读
-        for (TSPNotificationBean tspNotificationBean:mRootView.getListDatas()){
-            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) {
-                notificationIds.append(tspNotificationBean.getId());
-                notificationIds.append(",");
-                tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
-            }
-        }
-        // stream() 部分机型并不支持 Java 8 的循环(魅族 M5 NOTE)
-//        mRootView.getListDatas().stream().filter(tspNotificationBean -> TextUtils.isEmpty(tspNotificationBean.getRead_at())).forEach(tspNotificationBean -> { //代表未读
-//            notificationIds.append(tspNotificationBean.getId());
-//            notificationIds.append(",");
-//            tspNotificationBean.setRead_at(TimeUtils.getCurrenZeroTimeStr());
-//        });
+
         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_NOTIFICATION_TIP_VISABLE);
 
-        if (TextUtils.isEmpty(notificationIds.toString())) {
-            return;
-        }
-        Subscription subscribe = mMessageRepository.makeNotificationReaded(notificationIds.toString())
-                .subscribe(new BaseSubscribeForV2<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
-                    }
-                });
-        addSubscrebe(subscribe);
     }
 }

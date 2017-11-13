@@ -155,7 +155,19 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+    public void refreshData(int index) {
+        super.refreshData(index);
+        try {
+            mQuestionDetailHeader.setDetail(getCurrentQuestion(),mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio());
+//            mQuestionDetailHeader.updateOutLook(getCurrentQuestion().getLook() == 1,
+//                    getCurrentQuestion().getInvitation_answers().get(0).getOnlookers_count()
+//                            * mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio());
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void setSpanText(int position, int note, long amount, TextView view, boolean canNotRead) {
         onToWatchClick(null, position, canNotRead);
     }
 
@@ -205,7 +217,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
-        mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion());
+        mQuestionDetailHeader.setDetail(questionDetail, mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio());
     }
 
     @Override
@@ -234,7 +246,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void updateFollowState() {
-        mQuestionDetailHeader.updateFollowState(mQaListInfoBean);
+        mQuestionDetailHeader.updateFollowState(mQaListInfoBean,mPresenter.getRatio());
     }
 
     @Override
@@ -305,7 +317,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
                             .PUBLISH_ANSWER, mQaListInfoBean.getId()
-                    , null, mQaListInfoBean.getSubject());
+                    , null, mQaListInfoBean.getSubject(),mQaListInfoBean.getAnonymity());
         }
     }
 
@@ -451,14 +463,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
+                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(),mPresenter.getRatio())
+                            ,mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .backgroundDrawable(new ColorDrawable(0x000000))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
-                            .getExcellentQuestion())))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
+                            .getExcellentQuestion(),mPresenter.getRatio())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -491,13 +504,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
+                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio())
+                            ,mPresenter.getGoldName()))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig()
-                            .getOnlookQuestion())))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
+                            .getOnlookQuestion(),mPresenter.getRatio())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         if (answerInfoBean == null || answerInfoBean.getId() == null) {
@@ -592,7 +606,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             if (bundle != null) {
                 Double amount = bundle.getDouble(BUNDLE_QUESTION_ID, 0);
                 mQaListInfoBean.setAmount(amount);
-                mQuestionDetailHeader.updateRewardType(mQaListInfoBean);
+                mQuestionDetailHeader.updateRewardType(mQaListInfoBean,mPresenter.getRatio());
             }
         }
     }
@@ -611,7 +625,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         cancelPop(mOrderTypeSelectPop);
         cancelPop(mDeleteQuestionPopWindow);
         cancelPop(mMorePop);

@@ -5,13 +5,15 @@
               android:layout_height="wrap_content"
               android:background="@color/white"
               android:orientation="vertical"
-              android:paddingTop="@dimen/spacing_normal_large">
+              >
     <!--动态标题-->
     <TextView
+
         android:id="@+id/tv_dynamic_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:paddingTop="@dimen/spacing_normal_large"
         android:paddingBottom="@dimen/spacing_normal_large"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
@@ -23,18 +25,17 @@
         android:id="@+id/ll_dynamic_photos_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:orientation="vertical"
         android:visibility="gone"/>
     <!--动态内容-->
     <TextView
+        android:layout_marginTop="@dimen/spacing_large"
         android:id="@+id/tv_dynamic_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
+        android:layout_height="wrap_content"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
-        android:paddingBottom="@dimen/spacing_normal_large"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"
         tools:text="北京时间3月1日，名记马克-斯坦推特爆料，刚刚与费城76人完成买断的安德鲁-博古特，正式确认将与克利夫兰骑士签约。

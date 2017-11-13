@@ -2,17 +2,16 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.AdvertConfig;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RealAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -24,7 +23,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -74,48 +76,59 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Override
     public void getLaunchAdverts() {
-        mRepository.getLaunchAdverts()
-                .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
-                    @Override
-                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
-                                                                           allAdverListBeen) {
-                        List<Object> ids = new ArrayList<>();
-                        for (AllAdverListBean adverListBean : allAdverListBeen) {
-
-                            ids.add(adverListBean.getId());
-                        }
-                        return mRepository.getAllRealAdverts(ids).flatMap(new Func1<List<RealAdvertListBean>, Observable<List<AllAdverListBean>>>() {
-                            @Override
-                            public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
+        Subscription subscribe = mRepository.getLaunchAdverts()
+                .observeOn(Schedulers.io())
+                .flatMap(allAdverListBeen -> {
+                    List<Object> ids = new ArrayList<>();
+                    for (AllAdverListBean adverListBean : allAdverListBeen) {
+                        ids.add(adverListBean.getId());
+                    }
+                    return mRepository.getAllRealAdverts(ids)
+                            .flatMap(realAdvertListBeen -> {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
-                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils.getScreenWidth(mContext),
-                                                DeviceUtils.getScreenHeight(mContext));
+                                        String url=boot.getAdvertFormat().getImage().getImage();
+                                        LogUtils.d("getLaunchAdverts:::"+url);
+                                        Glide.with(mContext)
+                                                .load(url)
+                                                .downloadOnly(DeviceUtils
+                                                                .getScreenWidth(mContext),
+                                                        DeviceUtils.getScreenHeight(mContext));
                                     }
                                 }
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
+                                if (realAdvertListBeen.isEmpty()) {
+                                    mRealAdvertListBeanGreenDao.clearTable();
+                                }
                                 return Observable.just(allAdverListBeen);
-                            }
-                        });
+                            });
 //                        Observable.merge(adverts).subscribe(realAdvertListBeen -> {
 //                            mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
 //                        });
 //                        return Observable.just(allAdverListBeen);
-                    }
                 })
                 .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
                     @Override
                     protected void onSuccess(List<AllAdverListBean> data) {
                         // 出入数据库
                         mAllAdvertLIstBeanGreendo.saveMultiData(data);
+                        if (data.isEmpty()) {
+                            mAllAdvertLIstBeanGreendo.clearTable();
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public List<RealAdvertListBean> getBootAdvert() {
         AllAdverListBean boot = mAllAdvertLIstBeanGreendo.getBootAdvert();
-        if (boot != null) {
+        if (boot != null && boot.getMRealAdvertListBeen() != null && !boot.getMRealAdvertListBeen().isEmpty()) {
             return boot.getMRealAdvertListBeen();
         }
         return null;

@@ -64,7 +64,12 @@ public class SharePreferenceUtils {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
-        return mSharedPreferences.getLong(key, 0L);
+        try {
+            return mSharedPreferences.getLong(key, 0L);
+
+        } catch (Exception e) {
+        }
+        return 0L;
     }
 
     /**

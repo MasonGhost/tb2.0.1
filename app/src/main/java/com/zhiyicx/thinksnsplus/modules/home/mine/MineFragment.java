@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -79,29 +80,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     TextView mTvFansCount;
     @BindView(R.id.tv_follow_count)
     TextView mTvFollowCount;
-    @BindView(R.id.ll_follow_container)
-    LinearLayout mLlFollowContainer;
-    @BindView(R.id.bt_personal_page)
-    CombinationButton mBtPersonalPage;
-    @BindView(R.id.bt_ranking)
-    CombinationButton mBtRanking;
-    @BindView(R.id.bt_collect)
-    CombinationButton mBtCollect;
     @BindView(R.id.bt_wallet)
     CombinationButton mBtWallet;
-    @BindView(R.id.bt_suggestion)
-    CombinationButton mBtSuggestion;
-    @BindView(R.id.bt_draft_box)
-    CombinationButton mDraftBox;
-    @BindView(R.id.bt_setting)
-    CombinationButton mBtSetting;
     @BindView(R.id.bt_certification)
-    CombinationButton mBtCertification; // 认证
+    CombinationButton mBtCertification;
 
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
 
-    private CertificationTypePopupWindow mCertificationWindow; // 选择认证人类的弹窗
+    /**
+     * 选择认证人类的弹窗
+     */
+    private CertificationTypePopupWindow mCertificationWindow;
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -109,7 +99,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
-    private ActionPopupWindow mActionPopupWindow;// 请求音乐权限弹窗
+    /**
+     * 请求音乐权限弹窗
+     */
+    private ActionPopupWindow mActionPopupWindow;
 
     public MineFragment() {
     }
@@ -123,7 +116,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-        mBtRanking.setVisibility(View.GONE);// V2 点赞排行榜还没有,暂时隐藏
     }
 
     @Override
@@ -132,21 +124,26 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .minePresenterModule(new MinePresenterModule(this))
                 .build().inject(this);
-        mPresenter.getCertificationInfo();
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        reLoadUserInfo(isVisibleToUser);
+    }
+
+    private void reLoadUserInfo(boolean isVisibleToUser) {
         if (isVisibleToUser && mPresenter != null) {
+            mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
+            mPresenter.getCertificationInfo();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.getUserInfoFromDB();
+        reLoadUserInfo(getUserVisibleHint());
     }
 
     @Override
@@ -194,11 +191,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,R.id.bt_my_live})
+            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
                 startActivity(new Intent(getActivity(), UserInfoActivity.class));
                 break;
+                /*
+                  粉丝列表
+                 */
             case R.id.ll_fans_container:
                 long fansUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFans = new Bundle();
@@ -208,6 +210,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 itFans.putExtras(bundleFans);
                 startActivity(itFans);
                 break;
+                /*
+                 关注列表
+                 */
             case R.id.ll_follow_container:
                 long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFollow = new Bundle();
@@ -218,38 +223,34 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(itFollow);
                 break;
             case R.id.bt_personal_page:
-                PersonalCenterFragment.startToPersonalCenter(getContext(),mUserInfoBean);
+                PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
+            /**
+             * 我的投稿
+             */
             case R.id.bt_my_info:
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));
                 break;
-            case R.id.bt_ranking:
-
-//                Intent toRank = new Intent(getContext(), RankActivity.class);
-//                startActivity(toRank);
-
-                break;
+            /*
+              我的收藏
+             */
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
+            /*
+              我的钱包
+             */
             case R.id.bt_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;
+            /*
+              我的音乐
+             */
             case R.id.bt_music:
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(getContext())) {
-                        startActivity(new Intent(getActivity(), MyMusicActivity.class));
-                    } else {
-                        initPermissionPopUpWindow();
-                        mActionPopupWindow.show();
-                    }
-                } else {
-                    startActivity(new Intent(getActivity(), MyMusicActivity.class));
-                }
+                startActivity(new Intent(getActivity(), MyMusicActivity.class));
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
-                //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_draft_box:
                 startActivity(new Intent(getActivity(), DraftBoxActivity.class));
@@ -299,9 +300,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean == null) {
             return;
         }
-        this.mUserInfoBean = userInfoBean;
-        // 设置用户头像
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
+        if (mUserInfoBean == null) {
+            // 设置用户头像
+            ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
+        } else {
+            boolean imageAvatarIsChanged = userInfoBean.getAvatar() != null && (mUserInfoBean.getAvatar() == null || !userInfoBean.getAvatar()
+                    .equals(mUserInfoBean.getAvatar()));
+            boolean verifiedIsChanged = userInfoBean.getVerified() != null && userInfoBean.getVerified().getType() != null && (mUserInfoBean
+                    .getVerified() == null ||
+                    !userInfoBean.getVerified().getType().equals(mUserInfoBean
+                            .getVerified()
+                            .getType()));
+            if (imageAvatarIsChanged || verifiedIsChanged) {
+                // 设置用户头像
+                ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvHeadIcon);
+            }
+        }
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
@@ -316,7 +330,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
+                , mPresenter.getGoldName()));
+        this.mUserInfoBean = userInfoBean;
     }
 
     @Override
@@ -337,7 +353,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
             } else if (data.getStatus() == 0) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
-            } else if (data.getStatus() == 2){
+            } else if (data.getStatus() == 2) {
                 mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {

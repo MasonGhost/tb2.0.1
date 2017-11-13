@@ -6,7 +6,6 @@ package com.zhiyicx.baseproject.config;
  * @Date 2016/12/16
  * @Contact 335891510@qq.com
  */
-
 public class ApiConfig {
     /**
      * 添加平台名称，用于接口
@@ -19,9 +18,7 @@ public class ApiConfig {
      */
     public static final int DEFAULT_MAX_RETRY_COUNT = 5;
 
-    public static final String API_VERSION = "v1";
     public static final String API_VERSION_2 = "v2";
-
     /**
      * 网络根地址  http://192.168.10.222/
      * 测试服务器：http://192.168.2.222:8080/mockjs/2/test-get-repose-head-normal?
@@ -30,13 +27,12 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 自定义证书时使用false
-    //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
     public static final String APP_DOMAIN_DEV = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
     public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.200/";// 乔老师本地服务器
 
-    public static String APP_DOMAIN = APP_DOMAIN_DEV;
+    public static String APP_DOMAIN = APP_DOMAIN_FORMAL;
 
     public static final String URL_ABOUT_US = "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
@@ -101,12 +97,16 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NOTIFICATION_DETIAL = "api/" + API_VERSION_2 + "/user/notifications/{notification}";
     // 标记通知阅读
     public static final String APP_PATH_MAKE_NOTIFICAITON_READED = "api/" + API_VERSION_2 + "/user/notifications/";
+    // 标记所有通知已读
+    public static final String APP_PATH_MAKE_NOTIFICAITON_ALL_READED = "api/" + API_VERSION_2 + "/user/notifications/all";
     // type  获取通知类型，可选 all,read,unread 默认 all
 
     public static final String NOTIFICATION_TYPE_ALL = "all";
     public static final String NOTIFICATION_TYPE_READ = "read";
     public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
 
+    // 获取用户未读信息
+    public static final String APP_PATH_GET_UNREAD_NOTIFICATION = "api/" + API_VERSION_2 + "/user/unread-count";
     /**
      * 聊天相关
      */
@@ -133,6 +133,7 @@ public class ApiConfig {
 
     public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s";// 删除一条动态
     // 获取动态列表
+    public static final String DYNAMIC_TYPE_EMPTY= "empty"; // 占位
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态

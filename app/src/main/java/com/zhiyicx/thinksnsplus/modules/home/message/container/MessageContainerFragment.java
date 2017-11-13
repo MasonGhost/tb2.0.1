@@ -60,6 +60,11 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     private CommonNavigatorAdapter mCommonNavigatorAdapter;
     private List<BadgePagerTitleView> mBadgePagerTitleViews;
     List<Fragment> mFragments;
+    /**
+     * 0-消息 1=通知
+     */
+    private boolean mIsMessageTipShow;
+    private boolean mIsNotificationTipShow;
 
     public MessageContainerFragment instance() {
         return new MessageContainerFragment();
@@ -68,6 +73,11 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_main_viewpager;
+    }
+
+    @Override
+    protected int getOffsetPage() {
+        return 1;
     }
 
     @Override
@@ -117,12 +127,30 @@ public class MessageContainerFragment extends TSViewPagerFragment {
 
     /**
      * 设置提示的红点的显示和隐藏
-     * @param isShow 状态
+     *
+     * @param isShow   状态
      * @param position 位置 0-消息 1=通知
      */
     public void setNewMessageNoticeState(boolean isShow, int position) {
         if (position < 0 && position > 1) {
             return;
+        }
+        switch (position) {
+            case 0:
+                if (isShow == mIsMessageTipShow) {
+                    return;
+                } else {
+                    mIsMessageTipShow = isShow;
+                }
+
+            case 1:
+                if (isShow == mIsNotificationTipShow) {
+                    return;
+                } else {
+                    mIsNotificationTipShow = isShow;
+                }
+
+            default:
         }
         BadgePagerTitleView badgePagerTitleView = mBadgePagerTitleViews.get(position);
         if (isShow) {
@@ -138,9 +166,11 @@ public class MessageContainerFragment extends TSViewPagerFragment {
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
-        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) { // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        // 适配非6.0以上、非魅族系统、非小米系统状态栏
+        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
         }
     }

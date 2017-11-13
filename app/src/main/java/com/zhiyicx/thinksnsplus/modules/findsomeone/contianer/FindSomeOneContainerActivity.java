@@ -10,11 +10,6 @@ public class FindSomeOneContainerActivity extends TSActivity<FindSomeOneContaine
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     protected void componentInject() {
         DaggerFindSomeOneContainerComponent
                 .builder()

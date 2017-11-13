@@ -470,13 +470,6 @@ public class GroupDynamicListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1201375789)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getGroupDynamicListBeanDao() : null;
-    }
-
     public GroupDynamicListBean() {
     }
 
@@ -546,4 +539,30 @@ public class GroupDynamicListBean extends BaseListBean {
     private transient GroupDynamicListBeanDao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupDynamicListBean that = (GroupDynamicListBean) o;
+
+        if (group_id != that.group_id) return false;
+        return id != null ? id.equals(that.id) : that.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + group_id;
+        return result;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1201375789)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getGroupDynamicListBeanDao() : null;
+    }
 }

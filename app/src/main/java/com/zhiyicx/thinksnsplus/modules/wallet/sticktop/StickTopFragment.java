@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.REPEAT_OPERATION;
 
 /**
  * @Author Jliuer
@@ -61,14 +63,21 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @BindView(R.id.rb_days_group)
     RadioGroup mRbDaysGroup;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+    @BindView(R.id.tv_total_money)
+    TextView mTotalMoney;
+
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private int mInputMoney;
     private double mBlance;
+    private double mInputMoneyDouble;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
     private long parent_id, child_id;
     private String type;
+    private int mErrorCode;
 
     public static StickTopFragment newInstance(Bundle bundle) {
         StickTopFragment stickTopFragment = new StickTopFragment();
@@ -89,6 +98,9 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         child_id = getArguments().getLong(CHILD_ID, -1L);
         mBlance = mPresenter.getBalance();
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mBlance));
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
+        mTotalMoney.setText(moneyName);
     }
 
     @Override
@@ -142,9 +154,16 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     @Override
+    public void onFailure(String message, int code) {
+        mErrorCode = code;
+    }
+
+    @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
+        } else if (prompt == Prompt.ERROR && mErrorCode == REPEAT_OPERATION) {
             getActivity().finish();
         }
     }
@@ -176,6 +195,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 .subscribe(charSequence -> {
                     if (!TextUtils.isEmpty(charSequence)) {
                         try {
+                            mInputMoneyDouble = Double.parseDouble(charSequence.toString());
                             mInputMoney = Integer.parseInt(charSequence.toString());
                         } catch (Exception e) {
                             mInputMoney = -1;
@@ -206,6 +226,11 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 });
     }
 
+    @Override
+    public boolean useInputMoney() {
+        return !mEtTopInput.getText().toString().isEmpty();
+    }
+
     private void initSelectDays(List<Integer> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
@@ -213,11 +238,12 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     private void setConfirmEnable() {
-        boolean enable = mCurrentDays > 0 && mInputMoney > 0;
+//        boolean enable = mCurrentDays > 0 && mInputMoney > 0;
+        boolean enable = mCurrentDays > 0 && mInputMoneyDouble > 0;
         mBtTop.setEnabled(enable);
 //        if (!enable)
 //            return;
-        long money = mCurrentDays * mInputMoney;
+        double money = mCurrentDays * mInputMoneyDouble;
         mEtTopTotal.setText(money > 0 ? money + "" : "");
     }
 

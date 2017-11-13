@@ -54,8 +54,8 @@ public class AnswerDigListFragment extends TSListFragment<AnswerDigListContract.
     }
 
     @Override
-    protected List<AnswerDigListBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, mAnswerInfoBean);
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+         mPresenter.requestCacheData(maxId, isLoadMore, mAnswerInfoBean);
     }
 
     @Override

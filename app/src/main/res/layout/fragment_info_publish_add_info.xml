@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bgColor"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <!--选择栏目-->
@@ -51,10 +51,10 @@
                     android:id="@+id/fl_tags"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing_normal"
-                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:background="@color/white"
+                    android:paddingBottom="@dimen/spacing_normal"
                     app:max_select="0"
                     />
 
@@ -74,38 +74,35 @@
                 android:id="@+id/tv_from"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
-                app:isRequired="gone"
-                app:rightMaxLength="@integer/authorname_min"
                 android:background="@color/white"
-                app:leftHintText="@string/info_from"
                 android:paddingLeft="@dimen/spacing_mid"
+                app:isRequired="gone"
+                app:leftHintText="@string/info_from"
                 app:rightHint="@string/info_from_hint"
                 app:rightInputType="text"
+                app:rightMaxLength="@integer/authorname_min"
                 />
             <!--作者-->
             <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
                 android:id="@+id/tv_author"
-                app:rightMaxLength="@integer/authorname_min"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
-                app:isRequired="gone"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/spacing_mid"
+                app:isRequired="gone"
                 app:leftHintText="@string/info_author"
                 app:rightHint="@string/info_author_hint"
                 app:rightInputType="text"
+                app:rightMaxLength="@integer/authorname_min"
                 />
             <!--修改简介-->
             <LinearLayout
-                android:focusableInTouchMode="true"
-                android:descendantFocusability="beforeDescendants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:minHeight="@dimen/full_button_height"
                 android:orientation="horizontal">
 
-                <requestFocus/>
 
                 <TextView
                     android:layout_width="@dimen/uerinfo_sub_title_hint_with"

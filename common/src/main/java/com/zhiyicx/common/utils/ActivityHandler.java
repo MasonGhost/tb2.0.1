@@ -18,6 +18,8 @@ public class ActivityHandler {
     }
 
     private static Stack<Activity> activityStack = new Stack<>();
+
+
     private volatile static ActivityHandler instance;
 
     private ActivityHandler() {

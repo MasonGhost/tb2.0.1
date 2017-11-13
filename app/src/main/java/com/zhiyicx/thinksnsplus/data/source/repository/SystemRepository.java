@@ -20,10 +20,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.ImageAdvert;
+import com.zhiyicx.baseproject.base.ImageAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -35,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ISystemRepository;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,6 +57,7 @@ import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY
 
 public class SystemRepository implements ISystemRepository {
 
+    public static final int DEFAULT_TS_HELPER_TIP_MSG_ID = -1000;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
@@ -92,10 +92,15 @@ public class SystemRepository implements ISystemRepository {
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
-                        // 广告类型
                         saveComponentStatus(data, mContext);
                     }
                 });
+    }
+
+    public Observable<SystemConfigBean> getBootstrappersInfo() {
+        return mCommonClient.getBootstrappersInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -106,31 +111,29 @@ public class SystemRepository implements ISystemRepository {
      */
     @Override
     public SystemConfigBean getBootstrappersInfoFromLocal() {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
-        if (systemConfigBean.getAdverts() == null)
-            return systemConfigBean;
-        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
-            if (advert.getData() instanceof LinkedHashMap) {
-                LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
-                ImageAdvert imageAdvert = new ImageAdvert();
-                for (Iterator it = advertMap.keySet().iterator(); it.hasNext(); ) {
-                    String key = (String) it.next();
-                    String value = (String) advertMap.get(key);
-                    if (key.equals("image")) {
-                        Glide.with(mContext).load(value).downloadOnly(DeviceUtils.getScreenWidth(mContext),
-                                DeviceUtils.getScreenHeight(mContext));
-                        imageAdvert.setImage(value);
-                    }
-                    if (key.equals("link")) {
-                        imageAdvert.setLink(value);
-                    }
-                }
-                advert.setImageAdvert(imageAdvert);
-            }
+        return systemConfigBean;
+    }
+
+    public SystemConfigBean getAppConfigInfoFromLocal() {
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        if (systemConfigBean == null) { // 读取本地默认配置
+            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
         return systemConfigBean;
     }
@@ -158,8 +161,13 @@ public class SystemRepository implements ISystemRepository {
      */
     public static String checkHelperUrl(Context context, long user_id) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean systemConfigBean = null;
+        try {
+
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -183,9 +191,14 @@ public class SystemRepository implements ISystemRepository {
      */
     public static void resetTSHelper(Context context) {
         String tsHelperUrl = null;
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         } else {
             if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
@@ -205,9 +218,14 @@ public class SystemRepository implements ISystemRepository {
      * @param user_id user_id
      */
     public static void updateTsHelperDeletStatus(Context context, long user_id, boolean isDelete) {
-        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-        if (systemConfigBean == null) { // 读取本地默认配置
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        // 读取本地默认配置
+        if (systemConfigBean == null) {
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
         if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
@@ -228,12 +246,17 @@ public class SystemRepository implements ISystemRepository {
      * @param systemConfigBean
      * @return
      */
-    private boolean saveComponentStatus(SystemConfigBean systemConfigBean, Context context) {
+    public boolean saveComponentStatus(SystemConfigBean systemConfigBean, Context context) {
         if (systemConfigBean == null || systemConfigBean.getIm_helper() == null) {
             return false;
         }
-        SystemConfigBean localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        SystemConfigBean localSystemConfigBean = null;
+        try {
+            localSystemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig
+                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception igonre) {
+        }
+
         if (localSystemConfigBean == null) { // 读取本地默认配置
             localSystemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
@@ -326,7 +349,7 @@ public class SystemRepository implements ISystemRepository {
                             mChatRepository.insertOrUpdateConversation(data);
                             // 写入 ts helper 默认提示语句
                             Message message = new Message();
-                            message.setId((int) System.currentTimeMillis());
+                            message.setId(DEFAULT_TS_HELPER_TIP_MSG_ID);
                             message.setType(MessageType.MESSAGE_TYPE_TEXT);
                             message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
                             message.setSend_status(MessageStatus.SEND_SUCCESS);
@@ -391,6 +414,7 @@ public class SystemRepository implements ISystemRepository {
                     tsHleper : myUserInfo);
         }
     }
+
     @Override
     public Observable<List<AppVersionBean>> getAppNewVersion() {
 

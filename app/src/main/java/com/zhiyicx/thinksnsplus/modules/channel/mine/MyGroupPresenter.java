@@ -59,13 +59,9 @@ public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repositor
     }
 
     @Override
-    public List<GroupInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<GroupInfoBean> list = mGroupInfoBeanGreenDao.getUserJoinedGroup();
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list;
-        }
+        mRootView.onCacheResponseSuccess(list,isLoadMore);
     }
 
     @Override

@@ -2,8 +2,12 @@ package com.zhiyicx.baseproject.base;
 
 import android.text.TextUtils;
 
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -21,9 +25,15 @@ public abstract class TSApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        // 处理app崩溃异常
+        /// 处理app崩溃异常,打开后保存本地处理，
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init();
+        // 友盟
+        UMShareConfig config = new UMShareConfig();
+        config.isNeedAuthOnGetUserInfo(true);
+        UMShareAPI.get(getApplicationContext()).setShareConfig(config);
+        UMShareAPI.get(this);
+        MobclickAgent.setDebugMode(BuildConfig.USE_LOG);
     }
 
     /**
@@ -33,7 +43,7 @@ public abstract class TSApplication extends BaseApplication {
      */
     @Override
     public String getBaseUrl() {
-        if (com.zhiyicx.common.BuildConfig.USE_DOMAIN_SWITCH) {
+        if (BuildConfig.USE_DOMAIN_SWITCH) {
             String domain = SharePreferenceUtils.getString(getContext(), SharePreferenceUtils.SP_DOMAIN);
             if (!TextUtils.isEmpty(domain)) {
                 ApiConfig.APP_DOMAIN = domain;

@@ -50,8 +50,8 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
     }
 
     @Override
-    public List<DynamicDigListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -94,6 +94,8 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
 
     @Override
     public List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean) {
-        return dynamicBean.getDigUserInfoList();
+        List<DynamicDigListBean> data = dynamicBean.getDigUserInfoList();
+        mRootView.onCacheResponseSuccess(dynamicBean.getDigUserInfoList(), isLoadMore);
+        return data;
     }
 }

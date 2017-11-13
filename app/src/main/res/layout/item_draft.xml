@@ -35,9 +35,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/spacing_mid_small_8dp">
+        >
 
         <TextView
+            android:paddingTop="@dimen/spacing_mid_small_8dp"
             android:id="@+id/tv_draft_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
 
 
         <ImageView
+            android:paddingLeft="@dimen/spacing_large"
             android:id="@+id/iv_draft_more"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

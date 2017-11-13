@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
     }
     buildTypes {
         release {
@@ -21,12 +22,19 @@ android {
 }
 
 dependencies {
+    def supportDependences = rootProject.ext.sdksoupportDependencies
+    def testDependences = rootProject.ext.testDependencies
+    def dataDependences = rootProject.ext.dataDependencies
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.nineoldandroids:library:2.4.0+'
-    compile 'com.android.support:design:25.0.1'
-    compile 'com.android.support:support-annotations:25.0.1'
+
+    testCompile testDependences.junit
+
+    compile supportDependences.appcompatV7
+    compile dataDependences.nineoldandroids
+    compile supportDependences.design
+    compile supportDependences.annotations
+
 }
 
 

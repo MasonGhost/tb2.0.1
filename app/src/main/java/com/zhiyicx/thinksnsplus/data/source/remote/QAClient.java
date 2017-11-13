@@ -6,8 +6,6 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
-import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
-import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -46,17 +44,21 @@ public interface QAClient {
 
     /**
      * 发布答案
+     *
      * @param question_id
      * @param body
-     * @param anonymity 是否匿名
+     * @param anonymity   是否匿名
      * @return
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
-    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id,
+                                                         @Field("body") String body,
+                                                         @Field("anonymity") int anonymity);
 
     /**
      * 申请创建话题
+     *
      * @param name
      * @param description
      * @return
@@ -66,10 +68,10 @@ public interface QAClient {
     Observable<BaseJsonV2> createTopic(@Field("name") String name, @Field("description") String description);
 
     /**
-     * @param body  如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
      */
     @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
-    Observable<Object> uplaodQuestion(@Path("question") Long question_id,@Body RequestBody body);
+    Observable<Object> uplaodQuestion(@Path("question") Long question_id, @Body RequestBody body);
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
@@ -140,6 +142,7 @@ public interface QAClient {
 
     /**
      * 某话题下的问题
+     *
      * @param topic_id
      * @param subject
      * @param after
@@ -153,6 +156,7 @@ public interface QAClient {
 
     /**
      * 获取话题下专家列表
+     *
      * @param topic_id 话题id
      * @param after
      * @param limit
@@ -209,6 +213,7 @@ public interface QAClient {
 
     /**
      * 申请精选问答
+     *
      * @param question_id 问答 id
      * @return
      */
@@ -245,12 +250,13 @@ public interface QAClient {
 
     /**
      * 批量获取专家列表
+     *
      * @param topic_ids
      * @param size
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
-    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword,@Query("offset") int size);
+    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword, @Query("offset") int size);
 
     /*******************************************  打赏  *********************************************/
 

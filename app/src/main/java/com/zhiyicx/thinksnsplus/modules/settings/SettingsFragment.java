@@ -18,6 +18,7 @@ import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.appupdate.CustomVersionDialogActivity;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -37,6 +38,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Describe
@@ -261,7 +263,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
             return;
         }
         mCleanCachePopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.is_sure_clean_cache))
+                .item1Str(String.format(getString(R.string.is_sure_clean_cache), mBtCleanCache.getRightText()))
                 .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -290,7 +292,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item2ClickListener(() -> {
                     if (mPresenter.loginOut()) {

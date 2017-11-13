@@ -32,4 +32,10 @@ public class MusicPlayActivity extends TSActivity<MusicPlayPresenter, MusicPlayF
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
+    }
 }

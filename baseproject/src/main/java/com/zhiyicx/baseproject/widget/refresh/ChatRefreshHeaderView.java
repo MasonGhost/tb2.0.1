@@ -1,17 +1,26 @@
 package com.zhiyicx.baseproject.widget.refresh;
 
+
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.support.v4.view.ViewCompat;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger;
-import com.aspsine.swipetoloadlayout.SwipeTrigger;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshKernel;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.RefreshState;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.zhiyicx.baseproject.R;
-
+import com.zhiyicx.common.utils.UIUtils;
 
 /**
  * @Describe 聊天刷新头部
@@ -20,121 +29,106 @@ import com.zhiyicx.baseproject.R;
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatRefreshHeaderView extends LinearLayout implements SwipeTrigger, SwipeRefreshTrigger {
-    private ImageView mPullDownView;
-    private ImageView mReleaseRefreshingView;
+public class ChatRefreshHeaderView extends FrameLayout implements RefreshHeader {
 
-    private AnimationDrawable mChangeToReleaseRefreshAd;
-    private AnimationDrawable mRefreshingAd;
+    private TextView mTvtip;
 
-    private int mChangeToReleaseRefreshAnimResId;
-    private int mRefreshingAnimResId;
-
-    private int headerViewHeight;
 
     public ChatRefreshHeaderView(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     public ChatRefreshHeaderView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     public ChatRefreshHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        mRefreshingAnimResId = R.drawable.frame_loading_grey;
-        mChangeToReleaseRefreshAnimResId =R.drawable.frame_loading_grey;
+    private void init() {
+        mTvtip = new TextView(getContext());
+        UIUtils.getCompoundDrawables(getContext(), R.drawable.frame_loading_grey);
+        mTvtip.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.drawable.frame_loading_grey), null, null, null);
+        mTvtip.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.spacing_small));
+        mTvtip.setTextColor(ContextCompat.getColor(getContext(), R.color.general_for_loading_more));
+        mTvtip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        mTvtip.setGravity(Gravity.CENTER);
+        addView(mTvtip);
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mTvtip.getLayoutParams();
+        layoutParams.height = getResources().getDimensionPixelOffset(R.dimen.refresh_header_height);
+        layoutParams.width = LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+    }
 
-        LayoutInflater.from(context).inflate(R.layout.vw_header, this);
-        mPullDownView = (ImageView) findViewById(R.id.iv_pull_down);
-        mReleaseRefreshingView = (ImageView) findViewById(R.id.iv_release_refreshing);
-        mPullDownView.setImageResource(R.mipmap.default_grey000);
-        mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);
-        headerViewHeight = getResources().getDimensionPixelSize(R.dimen.refresh_header_height);
+
+    @NonNull
+    @Override
+    public View getView() {
+        return this;
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    public SpinnerStyle getSpinnerStyle() {
+        return SpinnerStyle.Translate;
+    }
+
+    @Override
+    public void setPrimaryColors(@ColorInt int... colors) {
+        setBackgroundColor(colors[0]);
+    }
+
+    @Override
+    public void onInitialized(RefreshKernel kernel, int height, int extendHeight) {
 
     }
 
     @Override
-    public void onRefresh() {
-        stopChangeToReleaseRefreshAd();
-
-        mReleaseRefreshingView.setImageResource(mRefreshingAnimResId);
-        mRefreshingAd = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
-
-        mReleaseRefreshingView.setVisibility(VISIBLE);
-        mPullDownView.setVisibility(INVISIBLE);
-
-        mRefreshingAd.start();
-    }
-
-    @Override
-    public void onPrepare() {
+    public void onHorizontalDrag(float percentX, int offsetX, int offsetMax) {
 
     }
 
     @Override
-    public void onMove(int y, boolean isComplete, boolean automatic) {
-        mPullDownView.setVisibility(VISIBLE);
-        mReleaseRefreshingView.setVisibility(INVISIBLE);
-        // 移动距离小于headerView的实际高度（释放手指的盖度）
-        if (y <= headerViewHeight) {
-            float scale = y * 1.0f / headerViewHeight;
-            handleScale(scale);
+    public void onStartAnimator(RefreshLayout layout, int height, int extendHeight) {
+        AnimationDrawable background = (AnimationDrawable) mTvtip.getCompoundDrawables()[0];
+        if (!background.isRunning()) {
+            background.start();
         }
 
     }
 
     @Override
-    public void onRelease() {
-        mReleaseRefreshingView.setImageResource(mChangeToReleaseRefreshAnimResId);
-        mChangeToReleaseRefreshAd = (AnimationDrawable) mReleaseRefreshingView.getDrawable();
-
-        mReleaseRefreshingView.setVisibility(VISIBLE);
-        mPullDownView.setVisibility(INVISIBLE);
-
-        mChangeToReleaseRefreshAd.start();
+    public int onFinish(RefreshLayout layout, boolean success) {
+        if (success) {
+            // 刷新成功
+        } else {
+            // 刷新失败
+        }
+        AnimationDrawable background = (AnimationDrawable) mTvtip.getCompoundDrawables()[0];
+        if (background.isRunning()) {
+            background.stop();
+        }
+        return 500;
     }
 
     @Override
-    public void onComplete() {
-        stopChangeToReleaseRefreshAd();
-        stopRefreshingAd();
+    public boolean isSupportHorizontalDrag() {
+        return false;
     }
 
     @Override
-    public void onReset() {
+    public void onStateChanged(RefreshLayout refreshLayout, RefreshState oldState, RefreshState newState) {
 
     }
 
-    private void stopRefreshingAd() {
-        if (mRefreshingAd != null) {
-            mRefreshingAd.stop();
-            mRefreshingAd = null;
-        }
+    @Override
+    public void onPullingDown(float percent, int offset, int headerHeight, int extendHeight) {
+
     }
 
-    private void stopChangeToReleaseRefreshAd() {
-        if (mChangeToReleaseRefreshAd != null) {
-            mChangeToReleaseRefreshAd.stop();
-            mChangeToReleaseRefreshAd = null;
-        }
-    }
+    @Override
+    public void onReleasing(float percent, int offset, int headerHeight, int extendHeight) {
 
-    public void handleScale(float scale) {
-        scale = 0.1f + 0.9f * scale;
-        ViewCompat.setScaleX(mPullDownView, scale);
-        ViewCompat.setPivotY(mPullDownView, mPullDownView.getHeight());
-        ViewCompat.setScaleY(mPullDownView, scale);
     }
 }

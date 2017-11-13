@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -21,6 +23,7 @@ import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -34,7 +37,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repository, SendDynamicContract.View>
+public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.Repository, SendDynamicContract.View>
         implements SendDynamicContract.Presenter {
 
     @Inject
@@ -57,12 +60,12 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             dynamicBean.setImages(new ArrayList<>());
         }
 
-        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
-                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
-                    mContext.getString(R.string.group_dynamic_send_must_has_title));
-            return;
-        }
+//        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
+//                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
+//            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
+//                    mContext.getString(R.string.group_dynamic_send_must_has_title));
+//            return;
+//        }
 
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
         groupSendDynamicDataBean.setGroup_post_mark(dynamicBean.getFeed_mark());
@@ -95,6 +98,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             dynamicBean.setImages(new ArrayList<>());
         }
         // 发送动态 V2 所需要的数据
+        dynamicBean.setAmount((long) PayConfig.gameCurrency2RealCurrency(dynamicBean.getAmount(), getRatio()));
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
@@ -104,13 +108,15 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             return;
         }
         int contentLenght = ConvertUtils.stringLenghtDealForEmoji(sendDynamicDataBeanV2.getFeed_content());
-
-        if (mRootView.wordsNumLimit() && contentLenght <= 50) {
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
+        int wordLimit = getSystemConfigBean().getFeed().getLimit();
+        wordLimit = wordLimit > 0 ? wordLimit : 50;
+        if (mRootView.wordsNumLimit() && contentLenght <= wordLimit) {
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), wordLimit));
             return;
         }
         if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d) || mRootView.getTollMoney() != (long) mRootView.getTollMoney()) {// 文字收费金额整数限制
-            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), mContext.getResources().getString(R.string.limit_monye_death));
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(Locale.getDefault(),
+                    mContext.getResources().getString(R.string.limit_monye_death), getGoldName()));
             return;
         }
 
@@ -118,7 +124,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
 
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
-
+        dynamicBean.handleData();
         // 建立 task
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_V2);

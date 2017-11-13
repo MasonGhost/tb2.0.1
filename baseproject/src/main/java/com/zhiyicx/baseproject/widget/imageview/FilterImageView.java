@@ -2,6 +2,8 @@ package com.zhiyicx.baseproject.widget.imageview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +22,6 @@ import com.zhiyicx.common.utils.SkinUtils;
  * @Date 2017/2/29
  * @Contact master.jungle68@gmail.com
  */
-
 public class FilterImageView extends ImageView {
     private static final int SHAPE_SQUARE = 0;
     private static final int SHAPE_CIRLCE = 1;
@@ -30,6 +31,9 @@ public class FilterImageView extends ImageView {
     private Paint mPaint;
     private boolean isText;
     private Rect mRect;
+
+    private Bitmap mBitmap;
+    private boolean mIshowLongTag;
 
     public FilterImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -62,10 +66,12 @@ public class FilterImageView extends ImageView {
         super.onDraw(canvas);
         if (isPressed()) {
             switch (mShape) {
-                case SHAPE_SQUARE: // square
+                // square
+                case SHAPE_SQUARE:
                     canvas.drawColor(mPressedColor);
                     break;
-                case SHAPE_CIRLCE: // circle
+                // circle
+                case SHAPE_CIRLCE:
                     canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
                     break;
                 default:
@@ -74,10 +80,13 @@ public class FilterImageView extends ImageView {
         }
         if (isText) {
             mPaint.setColor(SkinUtils.getColor(R.color.general_for_hint));
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2,getWidth() / 2, mPaint);
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
             mPaint.setTextSize(getWidth() / 2);
             mPaint.setColor(Color.WHITE);
             canvas.drawText("匿", getWidth() / 2 - mPaint.measureText("匿") / 2, getHeight() / 2 - (mPaint.descent() + mPaint.ascent()) / 2, mPaint);
+        }
+        if (mIshowLongTag && mBitmap != null) {
+            canvas.drawBitmap(mBitmap, getWidth() - mBitmap.getWidth(), getHeight() - mBitmap.getHeight(), null);
         }
     }
 
@@ -90,5 +99,16 @@ public class FilterImageView extends ImageView {
     public void setIsText(boolean isText) {
         this.isText = isText;
         postInvalidate();
+    }
+
+
+    public void showLongImageTag(boolean isShow) {
+        this.mIshowLongTag = isShow;
+        if (isShow) {
+            if (mBitmap == null) {
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_longpic);
+            }
+            postInvalidate();
+        }
     }
 }

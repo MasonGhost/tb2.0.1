@@ -168,15 +168,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public List<DynamicCommentBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() ==
                 null) {
-            return new ArrayList<>();
-        }
+            mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        }else {
 
-        // 从数据库获取评论列表
-        return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
-                .getFeed_mark());
+            // 从数据库获取评论列表
+            mRootView.onCacheResponseSuccess( mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
+                    .getFeed_mark()),isLoadMore);
+        }
     }
 
     @Override
@@ -443,7 +444,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             shareContent.setBitmap(bitmap);
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
-                    .decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+                    .decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
@@ -463,7 +464,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
                 .getFeed_comment_count() - 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments()
+        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getListDatas()
                 .get(commentPosition));
         mRootView.getListDatas().remove(commentPosition);
         if (mRootView.getListDatas().isEmpty()) {
@@ -504,7 +505,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 .currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setReply_to_user_id(replyToUserId);
-        if (replyToUserId == 0) { //当回复动态的时候
+        //当回复动态的时候
+        if (replyToUserId == 0) {
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(replyToUserId);
             creatComment.setReplyUser(userInfoBean);

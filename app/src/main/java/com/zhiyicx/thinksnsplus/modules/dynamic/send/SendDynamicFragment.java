@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -29,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -105,6 +107,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.v_horizontal_line)
     View mTitleUnderLine;
 
+    @BindView(R.id.tv_custom_money)
+    TextView mCustomMoney;
+
     private List<ImageBean> selectedPhotos;// 已经选择的图片
     private CommonAdapter<ImageBean> mCommonAdapter;
 
@@ -116,6 +121,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private int dynamicType;// 需要发送的动态类型
 
     private boolean isToll;// 是否开启收费
+
+    private boolean isFromGroup;
 
     private boolean hasTollPic;// 是否有图片设置了收费
 
@@ -199,6 +206,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         initDynamicType();
         setSendDynamicState();
         initWordsToll();
+        initTollState();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+    }
+
+    private void initTollState() {
+        mTvToll.setEnabled(mPresenter.getSystemConfigBean().getFeed().hasPaycontrol());
+//        mLLToll.setVisibility(isToll && dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -208,6 +224,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mSelectMoney.add(5f);
         mSelectMoney.add(10f);
         initSelectMoney(mSelectMoney);
+        String moneyName = mPresenter.getGoldName();
+        mCustomMoney.setText(moneyName);
     }
 
     @Override
@@ -230,7 +248,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initWordsToll() {
-        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), 50));
+        int wordLimit = mPresenter.getSystemConfigBean().getFeed().getLimit();
+        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
@@ -255,6 +274,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             break;
                         case R.id.rb_three:
                             mTollMoney = mSelectMoney.get(2);
+                            break;
+                        default:
                             break;
                     }
                 });
@@ -359,14 +380,21 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void addPlaceHolder() {
         // selectedPhotos.size() == 0 这个是为了配合这个
-        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {
+//        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {
+//            // 占位缺省图
+//            ImageBean camera = new ImageBean();
+//            selectedPhotos.add(camera);
+//            if (mCommonAdapter != null) {
+//                mTvToll.getCombinedButtonImgRight().performClick();
+//            }
+//        }
+
+        if (selectedPhotos.size() < MAX_PHOTOS) {
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
-            if (mCommonAdapter != null) {
-                mTvToll.getCombinedButtonImgRight().performClick();
-            }
         }
+
     }
 
     @Override
@@ -415,7 +443,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void setRightClick() {
         com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
-        if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
+        if (isFromGroup) {// 圈子
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
             mPresenter.sendDynamicV2(packageDynamicData());
@@ -436,7 +464,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.gameCurrency2RealCurrency(imageBean.getToll_monye(),
+                            mPresenter.getRatio())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);
@@ -456,7 +485,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())) : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? (long) (PayConfig.gameCurrency2RealCurrency(imageBean.getToll_monye(),
+                            mPresenter.getRatio())) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                 }
@@ -498,22 +528,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     mTollMoney = 0;
                 }
                 sl_send_dynamic.smoothScrollTo(0, 0);
-//                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
-
-                /*           这里肯定是要删的           真滴很烦             */
-                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
-                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
-                        return; // 九张
-                    }
-                    if (isToll) {
-                        selectedPhotos.remove(selectedPhotos.size() - 1);
-                    } else {
-                        // addPlaceHolder();
-                        selectedPhotos.add(new ImageBean());
-                    }
-                    mCommonAdapter.notifyDataSetChanged();
-                }
+                mCommonAdapter.notifyDataSetChanged();
+                /*           这里估计是要删的                       */
+//                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
+//                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+//                        mCommonAdapter.notifyDataSetChanged();
+//                        return; // 九张
+//                    }
+//                    if (isToll) {
+//                        selectedPhotos.remove(selectedPhotos.size() - 1);
+//                    } else {
+//                        // addPlaceHolder();
+//                        selectedPhotos.add(new ImageBean());
+//                    }
+//                    mCommonAdapter.notifyDataSetChanged();
+//                }
                 /*                                                           */
 
 
@@ -751,8 +781,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 selectedPhotos.addAll(originPhotos);
             }
             if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
-                mEtDynamicTitle.setVisibility(View.VISIBLE);
-                mTitleUnderLine.setVisibility(View.VISIBLE);
+                isFromGroup = true;
+//                mEtDynamicTitle.setVisibility(View.VISIBLE);
+//                mTitleUnderLine.setVisibility(View.VISIBLE);
                 mTvToll.setVisibility(View.GONE);
             }
         }

@@ -32,10 +32,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
      * updated_at : 2017-03-13 09:59:32
      * storage : {"id":1,"image_width":null,"image_height":null}
      */
-    @Id(autoincrement = true)
-    private Long _id;
+    @Id
     @Unique
-    private int id;
+    private Long id;
     private long user_id; // 发布者Id
     private Long info_type;
     private int is_collection_news;
@@ -123,11 +122,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.from = from;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -244,14 +243,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
     public InfoListDataBean() {
-    }
-
-    public Long get_id() {
-        return this._id;
-    }
-
-    public void set_id(Long _id) {
-        this._id = _id;
     }
 
     public String getCreated_at() {
@@ -464,43 +455,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
 
-    @Generated(hash = 1756309224)
-    public InfoListDataBean(Long _id, int id, long user_id, Long info_type, int is_collection_news,
-                            int is_digg_news, String title, String content, String from, String created_at,
-                            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
-                            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
-                            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
-                            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
-        this._id = _id;
-        this.id = id;
-        this.user_id = user_id;
-        this.info_type = info_type;
-        this.is_collection_news = is_collection_news;
-        this.is_digg_news = is_digg_news;
-        this.title = title;
-        this.content = content;
-        this.from = from;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.image = image;
-        this.audit_status = audit_status;
-        this.is_pinned = is_pinned;
-        this.subject = subject;
-        this.has_collect = has_collect;
-        this.has_like = has_like;
-        this.category = category;
-        this.isTop = isTop;
-        this.author = author;
-        this.hits = hits;
-        this.tags = tags;
-        this.digg_count = digg_count;
-        this.comment_count = comment_count;
-        this.is_recommend = is_recommend;
-        this.audit_count = audit_count;
-        this.digList = digList;
-        this.relateInfoList = relateInfoList;
-    }
-
     public static class TagConvert extends BaseConvert<List<UserTagBean>> {
     }
 
@@ -512,83 +466,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.tags = tags;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1050686231)
-    public List<InfoCommentListBean> getCommentList() {
-        if (commentList == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            InfoCommentListBeanDao targetDao = daoSession.getInfoCommentListBeanDao();
-            List<InfoCommentListBean> commentListNew = targetDao._queryInfoListDataBean_CommentList(id);
-            synchronized (this) {
-                if (commentList == null) {
-                    commentList = commentListNew;
-                }
-            }
-        }
-        return commentList;
-    }
-
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 1195658147)
-    public synchronized void resetCommentList() {
-        commentList = null;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 438734104)
-    private transient InfoListDataBeanDao myDao;
-
     @Override
     public int describeContents() {
         return 0;
@@ -597,8 +474,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeValue(this._id);
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeLong(this.user_id);
         dest.writeValue(this.info_type);
         dest.writeInt(this.is_collection_news);
@@ -632,6 +508,82 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return this.is_pinned;
     }
 
+
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1050686231)
+    public List<InfoCommentListBean> getCommentList() {
+        if (commentList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InfoCommentListBeanDao targetDao = daoSession.getInfoCommentListBeanDao();
+            List<InfoCommentListBean> commentListNew = targetDao._queryInfoListDataBean_CommentList(id);
+            synchronized (this) {
+                if (commentList == null) {
+                    commentList = commentListNew;
+                }
+            }
+        }
+        return commentList;
+    }
+
+
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1195658147)
+    public synchronized void resetCommentList() {
+        commentList = null;
+    }
+
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
@@ -643,8 +595,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
     protected InfoListDataBean(Parcel in) {
         super(in);
-        this._id = (Long) in.readValue(Long.class.getClassLoader());
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.user_id = in.readLong();
         this.info_type = (Long) in.readValue(Long.class.getClassLoader());
         this.is_collection_news = in.readInt();
@@ -674,6 +625,44 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.relateInfoList = in.createTypedArrayList(InfoListDataBean.CREATOR);
     }
 
+
+
+    @Generated(hash = 197884313)
+    public InfoListDataBean(Long id, long user_id, Long info_type, int is_collection_news,
+            int is_digg_news, String title, String content, String from, String created_at,
+            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
+            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
+            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
+            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
+        this.id = id;
+        this.user_id = user_id;
+        this.info_type = info_type;
+        this.is_collection_news = is_collection_news;
+        this.is_digg_news = is_digg_news;
+        this.title = title;
+        this.content = content;
+        this.from = from;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.image = image;
+        this.audit_status = audit_status;
+        this.is_pinned = is_pinned;
+        this.subject = subject;
+        this.has_collect = has_collect;
+        this.has_like = has_like;
+        this.category = category;
+        this.isTop = isTop;
+        this.author = author;
+        this.hits = hits;
+        this.tags = tags;
+        this.digg_count = digg_count;
+        this.comment_count = comment_count;
+        this.is_recommend = is_recommend;
+        this.audit_count = audit_count;
+        this.digList = digList;
+        this.relateInfoList = relateInfoList;
+    }
+
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {
         @Override
         public InfoListDataBean createFromParcel(Parcel source) {
@@ -685,5 +674,12 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
             return new InfoListDataBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 438734104)
+    private transient InfoListDataBeanDao myDao;
+
 }
 

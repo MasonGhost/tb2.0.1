@@ -231,19 +231,13 @@ public class CommentedBean extends BaseListBean implements Serializable {
 
                     break;
                 case APP_LIKE_MUSIC:
-                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
-                    if (musicDetaisBean != null && musicDetaisBean.getStorage() != null) {
-                        target_image = (long) musicDetaisBean.getStorage().getId();
-                    }
-
+                    JSONObject jsonMusic = new JSONObject(gson.toJson(commentable));
+                    target_image = (long) jsonMusic.getInt("storage");
                     break;
 
                 case APP_LIKE_MUSIC_SPECIALS:
-                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
-                    if (musicAlbumDetailsBean != null && musicAlbumDetailsBean.getStorage() != null) {
-                        target_image = (long) musicAlbumDetailsBean.getStorage().getId();
-                    }
-
+                    JSONObject jsonAlbum = new JSONObject(gson.toJson(commentable));
+                    target_image = (long) jsonAlbum.getInt("storage");
                     break;
 
                 case APP_LIKE_NEWS:
@@ -302,19 +296,12 @@ public class CommentedBean extends BaseListBean implements Serializable {
                     break;
 
                 case APP_LIKE_MUSIC:
-                    MusicDetaisBean musicDetaisBean = new Gson().fromJson(new Gson().toJson(commentable), MusicDetaisBean.class);
-                    if (musicDetaisBean != null) {
-                        target_title = musicDetaisBean.getTitle();
-                    }
-
+                    JSONObject jsonMusic = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonMusic.getString("title");
                     break;
-
                 case APP_LIKE_MUSIC_SPECIALS:
-                    MusicAlbumDetailsBean musicAlbumDetailsBean = new Gson().fromJson(new Gson().toJson(commentable), MusicAlbumDetailsBean.class);
-                    if (musicAlbumDetailsBean != null) {
-                        target_title = musicAlbumDetailsBean.getTitle();
-                    }
-
+                    JSONObject jsonAlbum = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonAlbum.getString("title");
                     break;
                 case APP_LIKE_NEWS:
                     InfoListDataBean infoListDataBean = new Gson().fromJson(new Gson().toJson(commentable), InfoListDataBean.class);

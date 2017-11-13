@@ -92,7 +92,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        long group_id = mRootView.getGroupId();
+        long group_id = mRootView.getGroupId();// 是不是收藏的
         if (group_id < 0) {
             Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
                     .map(listBaseJson -> {
@@ -215,9 +215,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
-    public List<GroupDynamicListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         // 频道的动态不要从数据库拉取数据
-        return null;
+       mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
@@ -346,6 +346,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         GroupDynamicCommentListBean creatComment = new GroupDynamicCommentListBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
         creatComment.setContent(commentContent);
+        creatComment.setId(-1L);
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
         creatComment.setGroup_id(mRootView.getListDatas().get(mCurrentPostion).getGroup_id());
@@ -359,7 +360,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         List<GroupDynamicCommentListBean> commentBeanList = new ArrayList<>();
         commentBeanList.add(creatComment);
@@ -388,9 +389,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, dynamicBean.getId()
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -435,7 +436,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
      *
      * @param dynamicCommentBean
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC)
     public void handleSendComment(GroupDynamicCommentListBean dynamicCommentBean) {
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())

@@ -5,9 +5,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
@@ -21,9 +19,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 
 /**
  * @Author Jliuer
@@ -115,7 +111,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
+                        mRootView.onResponseError(null,false);
                     }
 
                     @Override
@@ -129,8 +125,8 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
     }
 
     @Override
-    public List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mRepository.getMusicAlbumFromCache(maxId);
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess( mRepository.getMusicAlbumFromCache(maxId),isLoadMore);
     }
 
     @Override

@@ -22,7 +22,8 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract.Presenter {
+public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract
+        .Presenter {
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
 
@@ -55,11 +56,14 @@ public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.R
     }
 
     @Override
-    public List<DigedBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (isLoadMore) {
-            return new ArrayList<>();
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), true);
+
+        } else {
+            mRootView.onCacheResponseSuccess(mDigedBeanGreenDao.getMultiDataFromCache(), false);
+
         }
-        return mDigedBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override

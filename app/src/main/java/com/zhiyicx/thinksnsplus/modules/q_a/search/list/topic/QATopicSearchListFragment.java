@@ -255,9 +255,9 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         mRvSearchHistory.setVisibility(View.GONE);
 
         if (mRefreshlayout.isRefreshing()) {
-            onRefresh();
+            onRefresh(mRefreshlayout);
         } else {
-            mRefreshlayout.setRefreshing(true);
+            mRefreshlayout.autoRefresh();
         }
     }
 

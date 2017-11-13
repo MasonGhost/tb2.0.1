@@ -27,11 +27,6 @@
         >
         <!-- android 单元测试需要添加的内容  -->
         <uses-library android:name="android.test.runner"/>
-        <instrumentation
-            android:name="android.test.InstrumentationTestRunner"
-            android:label="Test Sqlite"
-            android:targetPackage="com.zhiyicx.imsdk"
-      />
 
         <!--#########################################      IM 相关       ################################-->
 

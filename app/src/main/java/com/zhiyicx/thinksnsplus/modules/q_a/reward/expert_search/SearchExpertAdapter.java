@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -61,7 +62,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         answerCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getAnswers_count();
         digCount = expertBean.getExtra() == null ? 0 : expertBean.getExtra().getLikes_count();
         tvDigCount.setText(String.format(Locale.getDefault(), mContext.getString(R.string.qa_publish_show_expert), answerCount, digCount));
-        ConvertUtils.stringLinkConvert(tvDigCount, setLinks(),false);
+        ConvertUtils.stringLinkConvert(tvDigCount, setLinks(), false);
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
 
@@ -70,9 +71,9 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         userInfoBean.setFollower(expertBean.isFollower());
         userInfoBean.setName(expertBean.getName());
         userInfoBean.setVerified(expertBean.getVerified());
-        if (mIsShowFollow){
+        if (mIsShowFollow) {
             // 不是不要 是邀请才不要
-            subscrib.setVisibility(View.VISIBLE);
+            subscrib.setVisibility(userInfoBean.getUser_id() != AppApplication.getMyUserIdWithdefault() ? View.VISIBLE : View.GONE);
             boolean isJoined = expertBean.isFollower();
             userInfoBean.setFollower(isJoined);
             subscrib.setChecked(isJoined);
@@ -82,6 +83,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
                 mPresenter.handleFollowUser(userInfoBean);
                 subscrib.setText(userInfoBean.getFollower() ? getContext().getString(R.string.qa_topic_followed) :
                         getContext().getString(R.string.qa_topic_follow));
+                subscrib.setPadding(userInfoBean.getFollower() ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
             });
         } else {
             subscrib.setVisibility(View.GONE);

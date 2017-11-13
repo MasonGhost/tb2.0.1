@@ -152,15 +152,15 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public List<GroupDynamicCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() ==
                 null) {
-            return new ArrayList<>();
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        } else {
+            // 从数据库获取评论列表
+            mRootView.onCacheResponseSuccess(mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByFeedId(mRootView.getCurrentDynamic()
+                    .getId()), isLoadMore);
         }
-
-        // 从数据库获取评论列表
-        return mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByFeedId(mRootView.getCurrentDynamic()
-                .getId());
     }
 
     @Override
@@ -263,6 +263,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     /**
      * 处理动态被删除了
      */
+
     private void handleDynamicHasBeDeleted(int code, Long dynamic_id) {
         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamic_id);
@@ -375,9 +376,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             shareContent.setBitmap(bitmap);
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
-                    .decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+                    .decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN+ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
                 == null ? "" : dynamicBean.getId())*/);
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
@@ -389,14 +390,13 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.upDateFollowFansState(userInfoBean);
     }
 
-
     @Override
     public void deleteCommentV2(long comment_id, int commentPosition) {
         mIsNeedDynamicListRefresh = true;
         mRootView.getCurrentDynamic().setComments_count(mRootView.getCurrentDynamic()
                 .getComments_count() - 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
-        mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getCommentslist()
+        mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getListDatas()
                 .get(commentPosition));
         mRootView.getListDatas().remove(commentPosition);
         if (mRootView.getListDatas().isEmpty()) {
@@ -443,7 +443,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(creatComment);
 //         处理评论数

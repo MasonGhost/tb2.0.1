@@ -17,7 +17,10 @@ import android.widget.RelativeLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
@@ -25,6 +28,8 @@ import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerAc
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -64,6 +69,9 @@ public class QA_Fragment extends TSFragment {
     private QA_InfoContainerFragment mQA_ListInfoFragment;
     private QATopicFragmentContainerFragment mQA_TopicInfoFragment;
 
+    @Inject
+    AuthRepository mAuthRepository;
+
     @Override
     protected boolean showToolbar() {
         return false;
@@ -76,6 +84,7 @@ public class QA_Fragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
         initListener();
     }
 
@@ -127,7 +136,14 @@ public class QA_Fragment extends TSFragment {
         RxView.clicks(mBtnSendDynamic)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> startActivity(new Intent(getActivity(), PublishQuestionActivity.class)));
+                .subscribe(aVoid -> {
+                    // 登录
+                    if (mAuthRepository.isTourist()) {
+                        showLoginPop();
+                    } else {
+                        startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+                    }
+                });
 
         RxView.clicks(mIvBack)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -137,7 +153,14 @@ public class QA_Fragment extends TSFragment {
         RxView.clicks(mIvSerach)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> startActivity(new Intent(getActivity(), QASearchContainerActivity.class))
+                .subscribe(aVoid -> {
+                            // 登录
+                            if (mAuthRepository.isTourist()) {
+                                showLoginPop();
+                            } else {
+                                startActivity(new Intent(getActivity(), QASearchContainerActivity.class));
+                            }
+                        }
                 );
     }
 
@@ -155,14 +178,17 @@ public class QA_Fragment extends TSFragment {
         ViewCompat.animate(mBtnSendDynamic).translationY(100.0f).alpha(0.0f).scaleX(0.0f).scaleY(0.0f)
                 .setInterpolator(INTERPOLATOR).withLayer()
                 .setListener(new ViewPropertyAnimatorListener() {
+                    @Override
                     public void onAnimationStart(View view) {
                         mIsAnimatingOut = true;
                     }
 
+                    @Override
                     public void onAnimationCancel(View view) {
                         mIsAnimatingOut = false;
                     }
 
+                    @Override
                     public void onAnimationEnd(View view) {
                         mIsAnimatingOut = false;
                     }

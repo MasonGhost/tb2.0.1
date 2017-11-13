@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,7 +21,9 @@ import java.util.List;
  * @Description 置顶动态单独保存
  */
 @Entity
-public class TopDynamicBean implements Parcelable {
+public class TopDynamicBean implements Parcelable, Serializable {
+    private static final long serialVersionUID = 1234536L;
+
     public static final Long TYPE_HOT = 0L;
     public static final Long TYPE_NEW = 1L;
 

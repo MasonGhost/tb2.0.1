@@ -5,13 +5,15 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -43,13 +45,18 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public boolean istourist() {
+    public boolean isTourist() {
         return false;
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -77,8 +84,8 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
@@ -92,12 +99,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
-                        return mRepository.payForOnlook(answer_id);
-                    }
-                })
+                .flatMap(o -> mRepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
@@ -122,6 +124,20 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_ONLOOK_ANSWER)
+    public void updateQusetion(AnswerInfoBean answerInfoBean) {
+        Observable.from(mRootView.getListDatas())
+                .forEach(listInfoBean -> {
+                    int position = -1;
+                    if (listInfoBean.getId().intValue() == answerInfoBean.getQuestion().getId().intValue()
+                            && listInfoBean.getAnswer().getId().intValue() == answerInfoBean.getId().intValue()) {
+                        position = mRootView.getListDatas().indexOf(listInfoBean);
+                        listInfoBean.setAnswer(answerInfoBean);
+                        mRootView.refreshData(position);
+                    }
+                });
     }
 
     @Override

@@ -104,12 +104,12 @@ public class GroupDynamicDetailCommentItem implements ItemViewDelegate<GroupDyna
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(clickedText -> {
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
                         if (mOnUserInfoLongClickListener != null) {
                             mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(clickedText -> {
+                    .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d("-----dy------setOnClickListener----------------");
                         // single clicked
                         if (mOnUserInfoClickListener != null) {

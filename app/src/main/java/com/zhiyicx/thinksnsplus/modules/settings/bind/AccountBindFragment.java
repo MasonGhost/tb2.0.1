@@ -305,9 +305,11 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mIsBind) {// 解绑
-                        mPresenter.unBindPhoneOrEmail(mEtPassword.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
+                        mPresenter.unBindPhoneOrEmail(mEtPassword.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType ==
+                                DEAL_TYPE_PHONE);
                     } else {// 绑定
-                        mPresenter.bindPhoneOrEmail(mEtPassword.getText().toString(), mEtSurePassword.getText().toString(), mEtPhone.getText().toString(), mEtEmail.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
+                        mPresenter.bindPhoneOrEmail(mEtPassword.getText().toString(), mEtSurePassword.getText().toString(), mEtPhone.getText()
+                                .toString(), mEtEmail.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
                     }
 
 
@@ -337,19 +339,22 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
      * 设置绑定按钮是否可点击
      */
     private void setConfirmEnable() {
+        // 验证码和确认按钮是否可用
         if (!isCodeEdited || (!(mCurrentType == DEAL_TYPE_PHONE && isPhoneEdited)
-                && !(mCurrentType == DEAL_TYPE_EMAIL && isEmailEdited))) { // 验证码和确认按钮是否可用
+                && !(mCurrentType == DEAL_TYPE_EMAIL && isEmailEdited))) {
             mBtSure.setEnabled(false);
             return;
         }
-        if (mIsBind) {// 解绑
+        // 解绑
+        if (mIsBind) {
             if (isPassEdited) {
                 mBtSure.setEnabled(true);
             } else {
                 mBtSure.setEnabled(false);
             }
-        } else {// 绑定
-            if (mIsNeedSetPasswordWithBindAccount) { // 是否需要设置密码
+            // 绑定
+        } else { // 是否需要设置密码
+            if (mIsNeedSetPasswordWithBindAccount) {
                 if (isPassEdited && isSurePassEdited) {
                     mBtSure.setEnabled(true);
                 } else {

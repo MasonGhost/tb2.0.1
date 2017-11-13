@@ -75,7 +75,9 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
+        if (mUnbinder != Unbinder.EMPTY) {
+            mUnbinder.unbind();
+        }
     }
 
     @Override
@@ -92,8 +94,11 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
         if (mPresenter != null) {
             mPresenter.onDestroy();
         }
-        if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        // 如果要使用 eventbus 请将此方法返回 true
+        if (useEventBus())
+        {
             EventBus.getDefault().unregister(this);
+        }
     }
 
     protected abstract View getContentView();

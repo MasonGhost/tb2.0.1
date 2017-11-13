@@ -20,7 +20,7 @@ import org.greenrobot.greendao.DaoException;
  * @Author Jliuer
  * @Date 2017/07/31/17:09
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 广告位
  */
 @Entity
 public class AllAdverListBean extends BaseListBean {

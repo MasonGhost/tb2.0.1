@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
@@ -42,7 +43,7 @@ import static android.app.Activity.RESULT_OK;
  * @Contact master.jungle68@gmail.com
  */
 public class LocationRecommentFragment extends TSFragment<LocationRecommentContract.Presenter> implements
-        LocationRecommentContract.View {
+        LocationRecommentContract.View, AMapLocationListener {
 
     private static final int DEFAULT_COLUMN = 4;
     private static final int REQUST_CODE_AREA = 8110;
@@ -57,9 +58,13 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
 
-    // 声明 AMapLocationClientOption 对象
+    /**
+     * 声明 AMapLocationClientOption 对象
+     */
     public AMapLocationClientOption mLocationOption = null;
-    // 声明定位回调监听器
+    /**
+     * 声明定位回调监听器
+     */
     private AMapLocationClient mLocationClient;
     protected AnimationDrawable mAnimationDrawable;
 
@@ -94,6 +99,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     protected boolean usePermisson() {
         return true;
     }
+
     @Override
     protected View getRightViewOfMusicWindow() {
         return mTvSearchCancel;
@@ -140,29 +146,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
 
-        //可以通过类implement方式实现AMapLocationListener接口，也可以通过创造接口类对象的方法实现
-        //以下为后者的举例：
-
-        AMapLocationListener mAMapLocationListener = aMapLocation -> {
-            if (aMapLocation != null) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    //可在其中解析amapLocation获取相应内容。
-                    LogUtils.d("1 = " + aMapLocation.getAddress());
-                    LogUtils.d("2 = " + aMapLocation.getCity());
-                    mCurrentLocation = aMapLocation.getCity();
-                    mTvCurrentLocation.setText(aMapLocation.getCity());
-                } else {
-                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    LogUtils.d("AmapError" + "location Error, ErrCode:"
-                            + aMapLocation.getErrorCode() + ", errInfo:"
-                            + aMapLocation.getErrorInfo());
-                    mTvCurrentLocation.setText(getString(R.string.wu));
-
-                }
-            }
-            handleAnimation(false);
-        };
-        mLocationClient.setLocationListener(mAMapLocationListener);
+        mLocationClient.setLocationListener(this);
     }
 
     @Override
@@ -176,20 +160,13 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
         mRvHotCity.setAdapter(initUnsubscribeAdapter());
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mLocationClient != null) {
-            mLocationClient.onDestroy();
-        }
-    }
 
     @OnClick({R.id.tv_toolbar_center, R.id.tv_cancel, R.id.iv_location, R.id.tv_current_location})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_center:
                 Intent intent = new Intent(getActivity(), LocationSearchActivity.class);
-//                Bundle bundle = new Bundle();
+///                Bundle bundle = new Bundle();
 //                bundle.putString(LocationSearchFragment.BUNDLE_LOCATION_STRING, mTvCity.getText().toString().trim());
 //                intent.putExtras(bundle);
                 startActivityForResult(intent, REQUST_CODE_AREA);
@@ -202,7 +179,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 startLocation();
                 break;
             case R.id.tv_current_location:
-                if(mTvCurrentLocation.getText().toString().trim().equals(getString(R.string.wu))){
+                if (mTvCurrentLocation.getText().toString().trim().equals(getString(R.string.wu))) {
                     return;
                 }
                 LocationBean bean = new LocationBean();
@@ -290,8 +267,9 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
      * @param status true 开启动画，false 关闭动画
      */
     private void handleAnimation(boolean status) {
-        if (mAnimationDrawable == null)
+        if (mAnimationDrawable == null) {
             throw new IllegalArgumentException("load animation not be null");
+        }
         if (status) {
             if (!mAnimationDrawable.isRunning()) {
                 mIvLocation.setVisibility(View.GONE);
@@ -308,8 +286,38 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mLocationClient != null) {
+            mLocationClient.unRegisterLocationListener(this);
+            mLocationClient.onDestroy();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         getActivity().setResult(RESULT_OK, getActivity().getIntent());
         getActivity().finish();
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                //可在其中解析amapLocation获取相应内容。
+                LogUtils.d("1 = " + aMapLocation.getAddress());
+                LogUtils.d("2 = " + aMapLocation.getCity());
+                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() + " " + aMapLocation.getCity();
+                mTvCurrentLocation.setText(aMapLocation.getCity());
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                LogUtils.d("AmapError" + "location Error, ErrCode:"
+                        + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
+                mTvCurrentLocation.setText(getString(R.string.wu));
+
+            }
+        }
+        handleAnimation(false);
     }
 }

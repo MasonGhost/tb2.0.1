@@ -14,14 +14,17 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 
+import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
+
 /**
- * @Describe
+ * @Describe doc  {@see https://slimkit.github.io/plus-docs/v2/package-feed/reward}
  * @Author Jungle68
  * @Date 2017/2/10
  * @Contact master.jungle68@gmail.com
  */
 
-public class RewardListPresenter extends AppBasePresenter<RewardListContract.Repository, RewardListContract.View> implements RewardListContract.Presenter {
+public class RewardListPresenter extends AppBasePresenter<RewardListContract.Repository, RewardListContract.View> implements RewardListContract
+        .Presenter {
 
 
     @Inject
@@ -29,23 +32,33 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
         super(repository, rootView);
     }
 
+    /**
+     * 默认排序 是 amount
+     *
+     * @param maxId      当前获取到数据的最大 id
+     * @param isLoadMore 加载状态
+     */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
+        Integer since = null;
+        if (!DEFAULT_PAGE_MAX_ID.equals(maxId)) {
+            since = maxId.intValue();
+        }
         switch (mRootView.getCurrentType()) {
             case INFO:
-                getRewardUsers(mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null, null)
+                getRewardUsers(mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null,
+                        null)
                         , isLoadMore);
                 break;
 
             case DYNAMIC:
-                getRewardUsers(mRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null, null)
+                getRewardUsers(mRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null, null)
                         , isLoadMore);
                 break;
             case QA_ANSWER:
-                getRewardUsers(mRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null)
+                getRewardUsers(mRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null)
                         , isLoadMore);
             default:
-
 
         }
 
@@ -73,8 +86,9 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
 
 
     @Override
-    public List<RewardsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mRootView.getCacheData();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(mRootView.getCacheData(),isLoadMore);
+
     }
 
     @Override

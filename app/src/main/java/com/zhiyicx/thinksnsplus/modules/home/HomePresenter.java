@@ -15,6 +15,7 @@ import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -50,7 +51,8 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener, ImStatusListener, ImTimeoutListener {
+class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
+        ImStatusListener, ImTimeoutListener {
     @Inject
     AuthRepository mAuthRepository;
 
@@ -88,10 +90,14 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onMessageReceived(final Message message) {
+        if (message.getIs_read()) {
+            return;
+        }
         setMessageTipVisable(true);
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
-            mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
+        // 应用在后台
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {
+            Subscription subscribe = mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
                     .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                         @Override
                         protected void onSuccess(UserInfoBean data) {
@@ -110,6 +116,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
                         protected void onException(Throwable throwable) {
                         }
                     });
+            addSubscrebe(subscribe);
         }
     }
 
@@ -161,15 +168,18 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
      */
     private void synIMMessage(AuthData authData) {
         if (authData.getSeqs() != null) {
-            Observable.from(authData.getSeqs()) // 消息同步
+            // 消息同步
+            Observable.from(authData.getSeqs())
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(seqsBean -> {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
                         if (message != null && message.getSeq() < seqsBean.getSeq()) {
                             ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
+                        } else {
+                            ZBIMClient.getInstance().syncAsc(seqsBean.getCid(), 0, seqsBean.getSeq(), (int) System.currentTimeMillis());
                         }
-                    }, throwable -> throwable.printStackTrace());
+                    }, Throwable::printStackTrace);
         }
     }
 
@@ -186,6 +196,9 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void onError(Exception error) {
+        if (error == null) {
+            error = new Exception("null data");
+        }
         EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONERROR);
     }
 
@@ -279,6 +292,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
                     protected void onSuccess(CheckInBean data) {
                         mRootView.showCheckInPop(data);
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showSnackErrorMessage(message);
@@ -296,5 +310,11 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public double getWalletRatio() {
         return mWalletConfigBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()).getRatio();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ChatClient.getInstance(mContext).onDestroy();
     }
 }

@@ -24,10 +24,12 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.richtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -71,11 +73,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    private SubsamplingScaleImageView test;
-    private int mPicTag;
+    private DataImageView mSubsamplingScaleImageView;
+
+    private int mPicTag;// 记录上传成功的张数
 
     private ActionPopupWindow mInstructionsPopupWindow;
-//    private InfoPublishBean mInfoPublishBean;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -136,31 +138,26 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        InfoPublishBean infoPublishBean;
-        if (sInfoPublishBean == null) {
-            infoPublishBean = new InfoPublishBean();
-        } else {
-            infoPublishBean = sInfoPublishBean;
-        }
 
         String content = getContentString();
-        infoPublishBean.setContent(content);
-        infoPublishBean.setAmout(100);
+        sInfoPublishBean.setContent(content);
+        sInfoPublishBean.setAmout(mPresenter.getSystemConfigBean().getNewsPayContribute());
         long cover;
-        if (infoPublishBean.isRefuse()) {
-            cover = infoPublishBean.getCover();
+        if (sInfoPublishBean.isRefuse()) {
+            cover = sInfoPublishBean.getCover();
         } else {
             cover = RegexUtils.getImageId(content);
         }
-        infoPublishBean.setCover((int) cover);
-        infoPublishBean.setImage(cover < 0 ? null : cover);
-        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+        sInfoPublishBean.setCover((int) cover);
+        sInfoPublishBean.setImage(cover < 0 ? null : cover);
+        sInfoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+        if (!TextUtils.isEmpty(sInfoPublishBean.getContent()) && !TextUtils.isEmpty(sInfoPublishBean.getTitle())) {
+            Intent intent = new Intent(getActivity(), AddInfoActivity.class);
+            startActivity(intent);
+        } else {
+            showSnackErrorMessage(getString(R.string.info_title_necessary));
+        }
 
-        Intent intent = new Intent(getActivity(), AddInfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     @NonNull
@@ -205,7 +202,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .build().photoSelectorImpl();
         if (sInfoPublishBean != null && !TextUtils.isEmpty(sInfoPublishBean.getContent())
                 && !TextUtils.isEmpty(sInfoPublishBean.getContent()) && mRicheTest != null) {
-            mRicheTest.post(() -> {
+            mRicheTest.getAllLayout().post(() -> {
                 mRicheTest.clearAllLayout();
                 mPresenter.pareseBody(sInfoPublishBean.getContent());
                 mEtInfoTitle.setText(sInfoPublishBean.getTitle());
@@ -232,8 +229,9 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        test = mRicheTest.insertImage(path, mRicheTest.getWidth());
-
+        mSubsamplingScaleImageView = mRicheTest.insertImage(path, mRicheTest.getWidth());
+        mPicTag++;
+        LogUtils.d("uploadPicSuccess::"+mPicTag);
     }
 
     @Override
@@ -256,8 +254,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicSuccess(int id) {
         mPbImageUpload.setVisibility(View.GONE);
-        test.setId(id);
-        mPicTag++;
+        mSubsamplingScaleImageView.setId(id);
     }
 
     @Override
@@ -292,6 +289,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (mPicTag > 0) {
             mPicTag--;
         }
+        LogUtils.d("onImageDelete::"+mPicTag);
     }
 
     @Override

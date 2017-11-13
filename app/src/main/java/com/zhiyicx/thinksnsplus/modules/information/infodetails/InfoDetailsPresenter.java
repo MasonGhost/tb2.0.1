@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -12,7 +11,6 @@ import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -31,7 +29,6 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
@@ -53,7 +50,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
@@ -201,7 +197,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 
         if (bitmap == null) {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         } else {
             shareContent.setBitmap(bitmap);
         }
@@ -249,7 +245,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             mRootView.getCurrentInfo().setDigList(new ArrayList<>());
         }
         if (isLiked) {
-            mRootView.getCurrentInfo().getDigList().add(0,digListBean); // 放到第一个
+            mRootView.getCurrentInfo().getDigList().add(0, digListBean); // 放到第一个
             mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() + 1);
         } else {
             for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()) {
@@ -362,9 +358,9 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 String.valueOf(mRootView.getNewsId()))
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
+                        mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
                         mRootView.deleteInfo(false, true, "");
                     }
 
@@ -372,6 +368,12 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.deleteInfo(false, false, message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.deleteInfo(false, false, throwable.getMessage());
                     }
                 });
         addSubscrebe(subscription);
@@ -390,7 +392,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
         mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() - 1);
-        if (mRootView.getListDatas().size() == 1) {// 占位
+        if (mRootView.getListDatas().size() == 0) {// 占位
             InfoCommentListBean emptyData = new InfoCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }
@@ -498,8 +500,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     @Override
-    public List<InfoCommentListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
     }
 
     @Override

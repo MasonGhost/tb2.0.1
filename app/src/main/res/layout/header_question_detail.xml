@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="@color/white"
-        android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <!--标签-->
     <com.zhy.view.flowlayout.TagFlowLayout
@@ -36,7 +36,6 @@
             android:layout_weight="1"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_primary_title"
-            android:textStyle="bold"
             tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
         <!--悬赏金额-->
         <TextView
@@ -62,22 +61,43 @@
 
         <TextView
             android:id="@+id/tv_question_feed_count"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"
             tools:text="xxxxx"/>
 
-        <!--围观金额-->
         <TextView
+            android:id="@+id/tv_question_detail_reward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/icon_shang"
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:textColor="@color/money_gold_light"
+            android:textSize="@dimen/size_content_assist"
             android:visibility="gone"
+            tools:text="sss"/>
+
+        <TextView
             android:id="@+id/tv_question_onlook_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/themeColor"
+            android:drawableLeft="@mipmap/icon_wei"
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:textColor="@color/money_gold_light"
             android:textSize="@dimen/size_content_assist"
-            tools:text="xxxxx"/>
+            android:visibility="gone"
+            tools:text="qqq"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <!--围观金额-->
+
 
         <CheckBox
             android:id="@+id/tv_topic_change_follow"

@@ -10,6 +10,12 @@ android {
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     lintOptions {
@@ -20,20 +26,20 @@ android {
 
 }
 
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     def dataDependences = rootProject.ext.dataDependencies
+    def testDependences = rootProject.ext.testDependencies
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testCompile testDependences.junit
 
     compile dataDependences.gson
     compile dataDependences.markdownView
+    compile dataDependences.vsersionUpdate
+
     compile project(":baseproject")
 
-
-    compile 'com.allenliu.versionchecklib:library:1.6.6'
 }
