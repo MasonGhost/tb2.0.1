@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
+    <ImageView
+        android:src="@mipmap/pic_adver_logo"
+        android:scaleType="centerInside"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="4"/>
 
     <LinearLayout
         android:id="@+id/select_dynamic_parent"
@@ -31,7 +33,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="invisible"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_words"
@@ -47,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="invisible"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_potoablum"
@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="invisible"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_zhibo"
@@ -81,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="gone"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_contribute"
@@ -104,7 +102,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="gone"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_attendance"
@@ -121,7 +118,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_large"
-                android:visibility="gone"
                 zhiyi:itv_direction="TOP"
                 zhiyi:itv_gap="@dimen/spacing_normal"
                 zhiyi:itv_icon="@mipmap/ico_question"

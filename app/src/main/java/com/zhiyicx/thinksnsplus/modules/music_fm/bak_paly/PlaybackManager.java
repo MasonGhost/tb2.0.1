@@ -346,7 +346,7 @@ public class PlaybackManager implements Playback.Callback {
         if (orderType > 2 && orderType < 0) {
             return;
         }
-        switch (orderType) {
+        switch (orderType) { // 只需要 orderType了,在其他地方处理播放顺序
             case ORDERLOOP:
 //                mQueueManager.setNormalQueue(currentMusicMediaId);
                 break;

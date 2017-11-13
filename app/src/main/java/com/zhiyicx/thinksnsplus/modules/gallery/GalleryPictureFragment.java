@@ -404,6 +404,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                             }
                                             Observable.timer(20, TimeUnit.MILLISECONDS)
                                                     .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribeOn(Schedulers.io())
                                                     .subscribe(aLong -> mPhotoViewAttacherNormal.update());
 
                                             return false;

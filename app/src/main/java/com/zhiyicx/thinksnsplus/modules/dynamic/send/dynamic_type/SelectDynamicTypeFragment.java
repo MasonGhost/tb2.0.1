@@ -116,52 +116,20 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     @Override
     protected void initView(View rootView) {
         initPopWindow();
-        initAnimation(mSendWordsDynamic);
-        long delay = DEFAULT_ANIMATE_DELAY_START;
-        delay += DEFAULT_ANIMATE_DELAY;
-        Observable.timer(delay, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> initAnimation(mSendImageDynamic));
+        initAnimation(mSelectDynamicParent);
 
-//        if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-//            mOpenZhibo.setVisibility(View.INVISIBLE);
-//
-//            delay += DEFAULT_ANIMATE_DELAY;
-//            Observable.timer(delay, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(aLong -> initAnimation(mOpenZhibo));
-//        } else {
-//            mOpenZhibo.setVisibility(View.GONE);
-//
-//        }
         mOpenZhibo.setVisibility(View.GONE);
         SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig
                 .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         // 如果已经签到了，则不再展示签到
         if (systemConfigBean != null && systemConfigBean.isCheckin() && mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-            mCheckIn.setVisibility(View.INVISIBLE);
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mCheckIn));
+            mCheckIn.setVisibility(View.VISIBLE);
         } else {
             mCheckIn.setVisibility(View.GONE);
         }
         if (mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
-            mSendWordsQuestion.setVisibility(View.INVISIBLE);
-            mSendInfo.setVisibility(View.INVISIBLE);
-
-            // 提问
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mSendWordsQuestion));
-            // 投稿
-            delay += DEFAULT_ANIMATE_DELAY;
-            Observable.timer(delay, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mSendInfo));
-//            mSendInfo.setVisibility(View.GONE);
+            mSendWordsQuestion.setVisibility(View.VISIBLE);
+            mSendInfo.setVisibility(View.VISIBLE);
         } else {
             mSendWordsQuestion.setVisibility(View.GONE);
             mSendInfo.setVisibility(View.GONE);
@@ -201,14 +169,14 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             return;
         }
         view.post(() -> {
-            if(mSelectDynamicParent==null||view==null){
+            if (mSelectDynamicParent == null) {
                 return;
             }
             AnimatorSet mAnimatorSet = new AnimatorSet();
-            int vertical_distance = mSelectDynamicParent.getBottom() - view.getTop();
+            int vertical_distance = view.getTop() - mImCloseDynamic.getBottom();
             ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
             ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
-            mAnimatorSet.setDuration(1000);
+            mAnimatorSet.setDuration(400);
             mAnimatorSet.setInterpolator(new OvershootInterpolator(1f));
             ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
             mAnimatorSet.play(translationY);
