@@ -134,6 +134,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && mPresenter != null&&mListDatas.isEmpty()) {
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        }
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
 
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);

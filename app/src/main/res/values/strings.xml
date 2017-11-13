@@ -731,4 +731,7 @@
     <string name="defualt_golde_name">豆子</string>
     <string name="today_with_split">今,天</string>
     <string name="yestorday_with_split">昨,天</string>
+    <string name="can_not_use_protected_name">不能使用站点预留昵称</string>
+    <string name="can_not_use_protected_email">不能使用站点预留邮箱</string>
+    <string name="str_pingyin_dot">、</string>
 </resources>

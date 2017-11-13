@@ -244,7 +244,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         if (mPresenter
                                 .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
                                 ) {
-                            showMessage("不能使用站点预留邮箱");
+                            showMessage(getString(R.string.can_not_use_protected_email));
                             return;
                         }
                         mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
@@ -261,7 +261,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                     if (mPresenter
                             .getSystemConfigBean().getSite().getReserved_nickname()
                             .contains(mEtRegistUsername.getText().toString().trim())) {
-                        showMessage("不能使用站点预留昵称");
+                        showMessage(getString(R.string.can_not_use_protected_name));
                         return;
                     }
                     if (permission.granted) {// 获取到了权限

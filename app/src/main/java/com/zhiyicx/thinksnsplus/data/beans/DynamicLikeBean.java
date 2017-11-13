@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class DynamicLikeBean implements Parcelable, Serializable {
 
-    private static final Long serialVersionUID = 1231L;
+    private static final long serialVersionUID = 1231L;
 
     /**
      * id : 2

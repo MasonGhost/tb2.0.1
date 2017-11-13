@@ -189,7 +189,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         // 是否设置状态栏文字图标灰色，对 小米、魅族、Android 6.0 及以上系统有效
         if (setStatusbarGrey()) {
             StatusBarUtils.statusBarLightMode(getActivity());
-//            supportFlymeSutsusbar(); // 兼容小米、魅族6.0以上
         }
         setToolBarTextColor();
         FrameLayout frameLayout = new FrameLayout(getActivity());
@@ -860,29 +859,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected int getColor(int resId) {
         return getResources().getColor(resId);
     }
-
-    protected void supportFlymeSutsusbar() {
-//        mStatusbarSupport = Observable.timer(50, TimeUnit.MILLISECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<Long>() {
-//                    @Override
-//                    public void call(Long aLong) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                                && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                && getActivity().getWindow().getDecorView().getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) {
-                            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
-                                    .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                        }
-//                    }
-//                }, new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        throwable.printStackTrace();
-//                    }
-//                });
-
-    }
-
 
     @Override
     public void onDestroyView() {

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -61,14 +60,14 @@ import org.simple.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static com.google.gson.internal.UnsafeAllocator.create;
 import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_ERR_UID_OR_PWD;
 import static com.zhiyicx.imsdk.core.ErroCode.AUTH_FAILED_NO_UID_OR_PWD;
 import static com.zhiyicx.imsdk.core.ErroCode.PACKET_EXCEPTION_ERR_BODY_TYPE;
@@ -89,16 +88,46 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * IM 操作类型
      */
-    public static final int TAG_IM_LOGIN = 10000;//登录im
-    public static final int TAG_IM_LOGINOUT = 10001;//断开im
-    public static final int TAG_IM_JOIN_CONVERSATION = 10002;//进入房间
-    public static final int TAG_IM_LEAVE_CONVERSATION = 10003;//离开房间
-    public static final int TAG_IM_SEND_MESSAGE = 10004;//发送消息
-    public static final int TAG_IM_MC = 10005;//查看房间人数
-    public static final int TAG_IM_RECONNECT = 10006;//尝试重连
-    public static final int TAG_IM_PLUCK = 10007;//获取指定序号消息
-    public static final int TAG_IM_SYNC = 10008;//获取指定序号消息
-    public static final int TAG_IM_SYNCLASTMESSAGE = 10009;//获取最新的几条消息
+    /**
+     * 登录im
+     */
+    public static final int TAG_IM_LOGIN = 10000;
+    /**
+     * 断开im
+     */
+    public static final int TAG_IM_LOGINOUT = 10001;
+    /**
+     * 进入房间
+     */
+    public static final int TAG_IM_JOIN_CONVERSATION = 10002;
+    /**
+     * 离开房间
+     */
+    public static final int TAG_IM_LEAVE_CONVERSATION = 10003;
+    /**
+     * 发送消息
+     */
+    public static final int TAG_IM_SEND_MESSAGE = 10004;
+    /**
+     * 查看房间人数
+     */
+    public static final int TAG_IM_MC = 10005;
+    /**
+     * 尝试重连
+     */
+    public static final int TAG_IM_RECONNECT = 10006;
+    /**
+     * 获取指定序号消息
+     */
+    public static final int TAG_IM_PLUCK = 10007;
+    /**
+     * 获取指定序号消息
+     */
+    public static final int TAG_IM_SYNC = 10008;
+    /**
+     * 获取最新的几条消息
+     */
+    public static final int TAG_IM_SYNCLASTMESSAGE = 10009;
 
     /**
      * 和 IMClient 通信的 intent key
@@ -118,15 +147,24 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
 
     public static final String SOCKET_RETRY_CONNECT = "com.zhiyicx.zhibo.socket_retry_connect";
-    public static final String EVENT_SOCKET_DEAL_MESSAGE = "event_socket_deal_message";//分发处理消息
-    public static final String EVENT_SOCKET_RECEIVE_MESSAGE = "event_socket_receive_message";//分发处理消息
+    /**
+     * 分发处理消息
+     */
+    public static final String EVENT_SOCKET_DEAL_MESSAGE = "event_socket_deal_message";
+    /**
+     * 分发处理消息
+     */
+    public static final String EVENT_SOCKET_RECEIVE_MESSAGE = "event_socket_receive_message";
     public static final String EVENT_SOCKET_TAG = "event_socket_tag";
 
     /**
      * 心跳维持时常
      */
     private long HEART_BEAT_RATE = HEART_BEAT_RATE_MIDDLE;
-    private static final long HEART_BEAT_RATE_MAX_PING = 250 * 1000;// 最大心跳间隔时间
+    /**
+     * 最大心跳间隔时间
+     */
+    private static final long HEART_BEAT_RATE_MAX_PING = 250 * 1000;
     private static final long HEART_BEAT_RATE_MAX = 70 * 1000;
     private static final long HEART_BEAT_RATE_HEIGHT = 110 * 1000;
     private static final long HEART_BEAT_RATE_MIDDLE = 170 * 1000;
@@ -134,40 +172,84 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long HEART_BEAT_RATE_HEIGHT_BACKGROUND = 130 * 1000;
     private static final long HEART_BEAT_RATE_MIDDLE_BACKGROUND = 190 * 1000;
     private static final long HEART_BEAT_RATE_LOW_BACKGROUND = HEART_BEAT_RATE_MAX_PING;
-    private static final long HEART_BEAT_REDUCE_RATE = 10 * 1000;//心跳频率递减时间
-
-    private static final long HEART_PING_PONG_RATE = 10 * 1000;//间隔10s重连,10秒没有收到服务器回应
-    private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
-    private static final long HEART_BEAT_RATE_INTERVAL_FOR_CPU = 500;//心跳，防止cpu占用过高
-    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
-    private static final long DELAY_RECONNECT_TIME = 5000;//消息发送间隔时间，防止cpu占用过高
-    private long disconnect_start_time = 0;//重连开始时间
-    private int MAX_RESEND_COUNT = 3;//最大的重发次数
+    /**
+     * 心跳频率递减时间
+     */
+    private static final long HEART_BEAT_REDUCE_RATE = 10 * 1000;
+    /**
+     * 间隔10s重连,10秒没有收到服务器回应
+     */
+    private static final long HEART_PING_PONG_RATE = 10 * 1000;
+    /**
+     * IM超过10s没有连上，通知下发
+     */
+    private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;
+    /**
+     * 心跳，防止cpu占用过高
+     */
+    private static final long HEART_BEAT_RATE_INTERVAL_FOR_CPU = 500;
+    /**
+     * 消息发送间隔时间，防止cpu占用过高
+     */
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;
+    /**
+     * 消息发送间隔时间，防止cpu占用过高
+     */
+    private static final long DELAY_RECONNECT_TIME = 5000;
+    /**
+     * 重连开始时间
+     */
+    private long mDisconnectStartTime = 0;
+    /**
+     * 最大的重发次数
+     */
+    private static final int MAX_RESEND_COUNT = 3;
 
 
     private ImService mService;
     private Context mContext;
     private long sendTime = 0L;
     private long responsTime = 0L;
-    private boolean isBackground = false;//判断应用处于前台还是后台
+    /**
+     * 判断应用处于前台还是后台
+     */
+    private boolean isBackground = false;
     private boolean isDisconnecting = false;
 
-    // For heart Beat
+    /**
+     * For heart Beat
+     */
     private Thread mThread;
 
     private Thread mSendMessageThread;
-    public volatile boolean exit = false;//终止线程
+    /**
+     * 终止线程
+     */
+    public volatile boolean exit = false;
     private SocketRetryReceiver mSocketRetryReceiver;
     private TimeOutTaskPool timeOutTaskPool;
 
     private IMConfig mIMConfig;
-
-    private boolean isNeedReConnected = true;//是否需要重连
-    private boolean connected = false;//当前连接状态
-    private int send_serilize_type = ImService.BIN_MSGPACK;//向服务器发送的数据类型
-
-    private Queue<MessageContainer> mMessageContainers = new ConcurrentLinkedQueue<>();//线程安全的队列
+    /**
+     * 是否需要重连
+     */
+    private boolean isNeedReConnected = true;
+    /**
+     * 当前连接状态
+     */
+    private boolean connected = false;
+    /**
+     * 向服务器发送的数据类型
+     */
+    private int mSendSerilizeType = ImService.BIN_MSGPACK;
+    /**
+     * 线程安全的队列
+     */
+    private Queue<MessageContainer> mMessageContainers = new ConcurrentLinkedQueue<>();
     private SparseArray<EventContainer> mEventContainerCache = new SparseArray<>();
+
+    private Subscription mSubscription;
+
 
     private Runnable heartBeatRunnable = new Runnable() {
 
@@ -442,11 +524,15 @@ public class SocketService extends BaseService implements ImService.ImListener {
             unregisterReceiver(mSocketRetryReceiver);
         }
 
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
+
     }
 
     @Override
     public void onConnected() {
-        disconnect_start_time = 0;
+        mDisconnectStartTime = 0;
         responseTime();
         sendConnectedMsg();
         connected = true;
@@ -485,12 +571,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     @Override
     public void onMessage(byte[] data) {
-        responseTime();
-        rx.Observable.just(data)
+        mSubscription = rx.Observable.just(data)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<byte[]>() {
                     @Override
                     public void call(byte[] bytes) {
+                        responseTime();
                         checkDataType(bytes);
                     }
                 }, new Action1<Throwable>() {
@@ -501,11 +587,34 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 });
     }
 
-    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE, mode = ThreadMode.ASYNC)
+    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE)
     public boolean dealMessage(Bundle bundle) {
+        Observable.just(bundle)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Bundle>() {
+                    @Override
+                    public void call(Bundle bundle) {
+                        dealSendMessage(bundle);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+        return true;
+
+    }
+
+    /**
+     * 处理发送调用消息
+     *
+     * @param bundle
+     */
+    private void dealSendMessage(Bundle bundle) {
         boolean result = false;
         if (bundle == null) {
-            return result;
+            return;
         }
         try {
             switch (bundle.getInt(EVENT_SOCKET_TAG)) {
@@ -586,20 +695,20 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (result) {
             resetTime();
         }
-        return result;
     }
 
     /**
      * 向IM服务器发送msgpack类型数据
      */
     public boolean sendMessage(MessageContainer messageContainer) {
-        if (!messageContainer.msg.rt)
+        if (!messageContainer.msg.rt) {
             resetTime();
+        }
         if (!DeviceUtils.netIsConnected(getApplicationContext()) || !connected) {
             return false;
         }
         checkMessageType(messageContainer);
-        switch (send_serilize_type) {
+        switch (mSendSerilizeType) {
 
             case ImService.BIN_JSON:
 
@@ -608,6 +717,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case ImService.BIN_MSGPACK:
 
                 return mService.sendMsgpackData(messageContainer);
+            default:
 
         }
         return false;
@@ -653,8 +763,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param txt              默认文本
      */
     private void setDefaultTxt(MessageContainer messageContainer, String txt) {
-        if (TextUtils.isEmpty(messageContainer.msg.txt))
+        if (TextUtils.isEmpty(messageContainer.msg.txt)) {
             messageContainer.msg.txt = txt;
+        }
     }
 
     /**
@@ -808,8 +919,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 LogUtils.debugInfo(TAG, "ser = " + "unkonw");
                 break;
         }
-        if (checkData(eventContainer))
+        if (checkData(eventContainer)) {
             sendImBroadCast(eventContainer);
+        }
     }
 
     /**
@@ -887,10 +999,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
             jsonArray = new JSONArray(MessageHelper.getRecievedBody(data));
             eventContainer.mEvent = jsonArray.get(0).toString();
             eventContainer.mEvent = eventContainer.mEvent.replace("\"", "");
-            if (jsonArray.length() >= 3)
+            if (jsonArray.length() >= 3) {
                 cancleTimeoutListen(jsonArray.get(2).toString());
-            else
+            } else {
                 cancleTimeoutListen(0 + "");
+            }
 
             switch (eventContainer.mEvent) {
                 /**
@@ -1291,10 +1404,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
         eventContainer.mEvent = dst1.get(0).toString();
         eventContainer.mEvent = eventContainer.mEvent.replace("\"", "");
         String msg = dst1.get(1).toString();
-        if (dst1.size() >= 3)
+        if (dst1.size() >= 3) {
             cancleTimeoutListen(dst1.get(2).toString());
-        else
+        } else {
             cancleTimeoutListen(0 + "");
+        }
 
         switch (eventContainer.mEvent) {
             /**
@@ -1507,10 +1621,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 eventContainer.err = jsonObject.getInt("code");
                 eventContainer.mMessageContainer.msg.err = eventContainer.err;
             }
-            if (jsonObject.has("msg"))
+            if (jsonObject.has("msg")) {
                 eventContainer.errMsg = jsonObject.getString("msg");
-            if (jsonObject.has("blk"))
+            }
+            if (jsonObject.has("blk")) {
                 eventContainer.blk = jsonObject.getBoolean("blk");
+            }
             if (jsonObject.has("expire")) {
                 eventContainer.expire = jsonObject.getInt("expire");
                 eventContainer.mMessageContainer.msg.expire = eventContainer.expire;
@@ -1519,10 +1635,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (dst1.size() >= 3)
+        if (dst1.size() >= 3) {
             cancleTimeoutListen(dst1.get(2).toString());
-        else
+        } else {
             cancleTimeoutListen(0 + "");
+        }
         if (eventContainer != null && eventContainer.mEvent != null && eventContainer.mEvent.equals(ImService.MSG)) {
             eventContainer.mEvent = ImService.MSG_ACK;
         }
@@ -1599,7 +1716,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onDisconnect(int code, String reason) {
         LogUtils.debugInfo(TAG, "----------onDisconnect------");
-        if (connected) sendDisconnectedMsg(code, reason);
+        if (connected) {
+            sendDisconnectedMsg(code, reason);
+        }
         connected = false;
         isDisconnecting = false;
 
@@ -1656,6 +1775,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case WebSocket.ConnectionHandler.CLOSE_RECONNECT:
 
                 break;
+            default:
 
         }
         LogUtils.debugInfo(TAG, code + "");
@@ -1670,7 +1790,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param reason
      */
     private void sendDisconnectedMsg(int code, String reason) {
-        if (System.currentTimeMillis() - disconnect_start_time > DISCONNECT_NOTIFY_TIME) {
+        if (System.currentTimeMillis() - mDisconnectStartTime > DISCONNECT_NOTIFY_TIME) {
             EventContainer eventContainer = new EventContainer();
             eventContainer.mEvent = ImService.WEBSOCKET_DISCONNECTED;
             Bundle bundle = new Bundle();
@@ -1726,8 +1846,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
                         changeHeartBeatRateByReconnect();
                         mService.connect();
                         resetTime();
-                        if (disconnect_start_time == 0) {
-                            disconnect_start_time = System.currentTimeMillis();
+                        if (mDisconnectStartTime == 0) {
+                            mDisconnectStartTime = System.currentTimeMillis();
                         }
                         return true;
                     }
