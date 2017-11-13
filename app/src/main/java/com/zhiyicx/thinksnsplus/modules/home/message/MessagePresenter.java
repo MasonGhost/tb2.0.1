@@ -136,7 +136,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
-
         Subscription subscribe = Observable.just(1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -216,7 +215,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-//            mRootView.onCacheResponseSuccess(mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id()), isLoadMore);
             creatTsHelperConversation();
 
         }
@@ -464,6 +462,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 新对话创建回调
+     *
      * @param messageItemBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
@@ -638,28 +637,30 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 获取用户文字显示  张三、李四评论了我
      *
      * @param commentsNoti
-     * @param max_num
+     * @param maxNum
      * @return
      */
-    private String getItemTipStr(List<UnreadCountBean> commentsNoti, int max_num) {
-        String tip = "";
+    private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String dot = mContext.getString(R.string.str_pingyin_dot);
         for (int i = 0; i < commentsNoti.size(); i++) {
-            if (i < max_num) {
+            if (i < maxNum) {
                 try {
-                    if (tip.contains(commentsNoti.get(i).getUser().getName())) {
-                        max_num++;
+                    if (stringBuilder.toString().contains(commentsNoti.get(i).getUser().getName())) {
+                        maxNum++;
                     } else {
-                        tip += commentsNoti.get(i).getUser().getName() + "、";
+                        stringBuilder.append(commentsNoti.get(i).getUser().getName());
+                        stringBuilder.append(dot);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 服务器脏数据导致用户信息为空
+                } catch (NullPointerException ignored) {
                 }
-
             } else {
                 break;
             }
         }
-        if (tip.endsWith("、")) {
+        String tip = stringBuilder.toString();
+        if (tip.endsWith(dot)) {
             tip = tip.substring(0, tip.length() - 1);
         }
         return tip;

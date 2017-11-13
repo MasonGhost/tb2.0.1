@@ -44,7 +44,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListB
  */
 @Entity
 public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Serializable {
-    private static final long serialVersionUID = 123453L;
+    private static final long serialVersionUID = -7644468875941863599L;
 
     public static final int DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE = 140;
     public static final int SEND_ERROR = 0;

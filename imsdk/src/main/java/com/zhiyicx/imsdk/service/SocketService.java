@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -586,11 +587,34 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 });
     }
 
-    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE, mode = ThreadMode.ASYNC)
+    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE)
     public boolean dealMessage(Bundle bundle) {
+        Observable.just(bundle)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Bundle>() {
+                    @Override
+                    public void call(Bundle bundle) {
+                        dealSendMessage(bundle);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+        return true;
+
+    }
+
+    /**
+     * 处理发送调用消息
+     *
+     * @param bundle
+     */
+    private void dealSendMessage(Bundle bundle) {
         boolean result = false;
         if (bundle == null) {
-            return result;
+            return;
         }
         try {
             switch (bundle.getInt(EVENT_SOCKET_TAG)) {
@@ -671,7 +695,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
         if (result) {
             resetTime();
         }
-        return result;
     }
 
     /**

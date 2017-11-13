@@ -167,9 +167,9 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
      * @param authData
      */
     private void synIMMessage(AuthData authData) {
-        System.out.println("authData = " + authData.toString());
         if (authData.getSeqs() != null) {
-            Observable.from(authData.getSeqs()) // 消息同步
+            // 消息同步
+            Observable.from(authData.getSeqs())
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(seqsBean -> {
