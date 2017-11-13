@@ -51,7 +51,7 @@ dependencies {
     compile dataDependences.gson
 
     compile dataDependences.androideventbus
-    compile dataDependences.glideOkhttp
+    compile dataDependences.okhttp3
     compile dataDependences.dagger
     annotationProcessor dataDependences.daggerCompiler
     provided dataDependences.javaxAnnotation
@@ -88,12 +88,12 @@ task jarMyLib(type: Jar, dependsOn: ['build']) {
 //    include('com/nought/hellolib/*.class')
 //    include('com/xxx/*.class') // 同时记得加上第三方的package
 }
-def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
-def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
-
-task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) {
-    injars('build/libs/zhibosdk1.1.2-beta-nop.jar')
-    outjars('build/libs/zhibosdk1.1.2-beta.jar')
-    libraryjars(androidJarDir)
-    configuration 'proguard-rules.pro'
-}
+//def androidSDKDir = plugins.getPlugin('com.android.library').sdkHandler.getSdkFolder()
+//def androidJarDir = androidSDKDir.toString() + '/platforms/' + "android-16" + '/android.jar'
+//
+//task proguardMyLib(type: proguard.gradle.ProGuardTask, dependsOn: ['jarMyLib']) {
+//    injars('build/libs/zhibosdk1.1.2-beta-nop.jar')
+//    outjars('build/libs/zhibosdk1.1.2-beta.jar')
+//    libraryjars(androidJarDir)
+//    configuration 'proguard-rules.pro'
+//}

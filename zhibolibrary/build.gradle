@@ -102,6 +102,6 @@ dependencies {
     compile dataDependences.gson
 
     compile dataDependences.androideventbus
-    compile dataDependences.glideOkhttp
+    compile dataDependences.okhttp3
 
 }
