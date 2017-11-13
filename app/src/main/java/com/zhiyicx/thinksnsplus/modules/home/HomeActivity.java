@@ -45,7 +45,6 @@ public class HomeActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-       LogUtils.e("getActivityStack = ", ActivityHandler.getActivityStack());
     }
 
     @Override
