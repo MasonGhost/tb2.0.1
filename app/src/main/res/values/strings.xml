@@ -668,7 +668,7 @@
     <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
     <string name="rank_type_like_count">点赞量：%d</string>
     <string name="rank_type_view_count">浏览量：%d</string>
-    <string name="rank_type_check_in">连续签到：%d</string>
+    <string name="rank_type_check_in">累计签到：%d</string>
     <string name="please_input_intro">请输入简介</string>
     <string name="default_intro_format">简介：%s</string>
     <string name="default_certify_format">认证：%s</string>
