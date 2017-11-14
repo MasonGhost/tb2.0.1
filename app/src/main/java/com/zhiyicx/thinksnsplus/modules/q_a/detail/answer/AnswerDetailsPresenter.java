@@ -137,7 +137,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle("ThinkSNS+\b\b回答");
+        shareContent.setTitle(mContext.getString(R.string.app_name_anster,mContext.getString(R.string.app_name)));
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getAnswerInfo().getId()));
         shareContent.setContent(mRootView.getAnswerInfo().getBody());
