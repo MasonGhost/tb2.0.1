@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListContract;
+import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.dig_list.GroupDigListContract;
 
 import javax.inject.Inject;
 

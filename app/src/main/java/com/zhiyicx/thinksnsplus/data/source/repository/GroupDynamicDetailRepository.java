@@ -1,15 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailContract;
-
-import java.util.List;
+import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.GroupDynamicDetailContract;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * @author Catherine

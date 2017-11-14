@@ -6,20 +6,16 @@ import android.view.View;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenterModule;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListBaseItem;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailPresenter;
+import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.circle.detail.adapter.GroupDynamicListBaseItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

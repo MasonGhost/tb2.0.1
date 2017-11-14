@@ -22,7 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.GroupDynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;

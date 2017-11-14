@@ -267,15 +267,15 @@
 
         <!-- 圈子相关页面 -->
         <activity
-            android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
+            android:name=".modules.circle.group_dynamic.GroupDynamicDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
+            android:name=".modules.circle.group_dynamic.dig_list.GroupDigListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.channel.mine.MyGroupActivity"
+            android:name=".modules.circle.mine.MyGroupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
@@ -444,11 +444,11 @@
 
         <!-- 频道 -->
         <activity
-            android:name=".modules.channel.list.ChannelListActivity"
+            android:name=".modules.circle.list.ChannelListActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".modules.channel.detail.ChannelDetailActivity"
+            android:name=".modules.circle.detail.ChannelDetailActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity

@@ -1,16 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -29,7 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
-import com.zhiyicx.thinksnsplus.modules.channel.mine.MyGroupActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -38,7 +34,6 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;

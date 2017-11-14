@@ -27,6 +27,7 @@ public class DynamicDetailAdvertHeader {
     private View mRootView;
     private LinearLayout mAdvertContainer;
     private LinearLayout mLLAdvert;
+    private LinearLayout mLLAdvertTag;
     private TextView mTitle;
     private Context mContext;
     private List<RealAdvertListBean> mAdvertListBeans;
@@ -42,6 +43,7 @@ public class DynamicDetailAdvertHeader {
         mRootView = rootView;
         mTitle = (TextView) mRootView.findViewById(R.id.tv_advert_title);
         mAdvertContainer = (LinearLayout) mRootView.findViewById(R.id.fl_advert_container);
+        mLLAdvertTag = (LinearLayout) mRootView.findViewById(R.id.ll_advert_tag);
         mLLAdvert = (LinearLayout) mRootView.findViewById(R.id.ll_advert);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
@@ -102,6 +104,10 @@ public class DynamicDetailAdvertHeader {
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setAdvertTagVisible(int visible) {
+        mLLAdvertTag.setVisibility(visible);
     }
 
     public interface OnItemClickListener {

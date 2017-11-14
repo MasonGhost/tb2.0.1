@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListContract;
+import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListContract;
 
 import java.util.List;
 

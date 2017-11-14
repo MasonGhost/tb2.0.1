@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 
@@ -24,8 +23,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST;
 
 /**
  * @Author Jliuer

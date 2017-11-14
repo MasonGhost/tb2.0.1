@@ -247,6 +247,7 @@
     <string name="quit_group">退出</string>
     <string name="group_joined">已加入</string>
     <string name="group_mine">我的圈子</string>
+    <string name="group_count">%d个兴趣小组，等待你的加入！</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>
