@@ -288,6 +288,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                     }
                 });
         mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        mAppRule.setText(getString(R.string.app_rule_register, getString(R.string.app_name)));
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())

@@ -7,8 +7,8 @@
     <string name="find">发现</string>
     <string name="message">消息</string>
     <string name="mine">我</string>
-    <string name="app_rule">点击下一步即代表同意《ThinkSNS+用户使用协议》</string>
-    <string name="app_rule_register">点击注册即代表同意《ThinkSNS+用户使用协议》</string>
+    <string name="app_rule">点击下一步即代表同意《%s用户使用协议》</string>
+    <string name="app_rule_register">点击注册即代表同意《%s用户使用协议》</string>
     <string name="user_rule_register">用户使用协议</string>
     <!--首页-->
     <string name="hot">热门</string>
@@ -668,7 +668,7 @@
     <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
     <string name="rank_type_like_count">点赞量：%d</string>
     <string name="rank_type_view_count">浏览量：%d</string>
-    <string name="rank_type_check_in">连续签到：%d</string>
+    <string name="rank_type_check_in">累计签到：%d</string>
     <string name="please_input_intro">请输入简介</string>
     <string name="default_intro_format">简介：%s</string>
     <string name="default_certify_format">认证：%s</string>
@@ -734,4 +734,7 @@
     <string name="can_not_use_protected_name">不能使用站点预留昵称</string>
     <string name="can_not_use_protected_email">不能使用站点预留邮箱</string>
     <string name="str_pingyin_dot">、</string>
+    <string name="app_name_info">%s 资讯</string>
+    <string name="app_name_anster">%s 回答</string>
+
 </resources>
