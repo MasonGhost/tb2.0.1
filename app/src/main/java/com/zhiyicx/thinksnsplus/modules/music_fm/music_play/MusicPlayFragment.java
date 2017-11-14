@@ -373,8 +373,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Override
     protected void initData() {
-        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(AppApplication.getmQueueManager().getCurrentMusic()
-                .getDescription().getMediaId());
+        MediaSessionCompat.QueueItem currentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+        if (currentMusic == null) {
+            getActivity().finish();
+            return;
+        }
+        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(currentMusic.getDescription().getMediaId());
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
@@ -1096,12 +1100,12 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio()),mPresenter.getGoldName()))
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout,mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(position, note);
                     mPayMusicPopWindow.hide();

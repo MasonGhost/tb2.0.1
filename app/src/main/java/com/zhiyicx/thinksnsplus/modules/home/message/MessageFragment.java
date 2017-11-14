@@ -66,6 +66,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_home_message_list;
+    }
+
+    @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
     }
@@ -82,10 +87,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         rootView.setBackgroundResource(R.color.bgColor);
     }
 
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
+
 
     @Override
     protected boolean showToolbar() {
@@ -111,15 +113,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    /**
-     * 是否需要上拉加载
-     *
-     * @return true 是需要
-     */
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
-    }
 
     @Override
     public void onResume() {
@@ -136,7 +129,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null&&mListDatas.isEmpty()) {
+        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
     }

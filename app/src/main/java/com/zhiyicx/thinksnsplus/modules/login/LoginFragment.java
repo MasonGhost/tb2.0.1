@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -81,6 +82,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     TextView mTvLoginByWeibo;
     @BindView(R.id.tv_login_by_wechat)
     TextView mTvLoginByWechat;
+    @BindView(R.id.fl_placeholder)
+    View mFlPlaceholder;
 
     private boolean mIsPhoneEdited;
     private boolean mIsPasswordEdited;
@@ -137,6 +140,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
     }
+
 
     private void initListener() {
         // 手机号码输入框观察
@@ -286,12 +290,15 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void setLogining() {
+        mFlPlaceholder.setVisibility(View.VISIBLE);
+        mToolbarRight.setEnabled(false);
         mBtLoginLogin.handleAnimation(true);
         mBtLoginLogin.setEnabled(false);
     }
 
     @Override
     public void setLoginState(boolean loginState) {
+
         mBtLoginLogin.handleAnimation(false);
         if (loginState) {
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
@@ -301,6 +308,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             } else {
                 goHome();
             }
+        }else {
+            mToolbarRight.setEnabled(true);
+            mFlPlaceholder.setVisibility(View.GONE);
         }
     }
 
@@ -471,4 +481,5 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
 }

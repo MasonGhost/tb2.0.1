@@ -71,6 +71,7 @@ import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -370,7 +371,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                             ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .override(w, h)
-                                    .placeholder(R.drawable.shape_default_image)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
@@ -394,29 +394,29 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                         @Override
                                         public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
                                                                        boolean isFromMemoryCache, boolean isFirstResource) {
+                                            LogUtils.i(TAG + "加载高清图成功");
+
+//                                            if (mIvPager != null) {
+//                                                mIvPager.setImageDrawable(resource);
+//                                            }
+                                            if (mPbProgress != null) {
+                                                mPbProgress.setVisibility(View.GONE);
+                                            }
+                                            Observable.timer(20, TimeUnit.MILLISECONDS)
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribeOn(Schedulers.io())
+                                                    .subscribe(aLong -> mPhotoViewAttacherNormal.update());
+
                                             return false;
                                         }
+
+
                                     })
-                                    .error(R.drawable.shape_default_image)
                                     .centerCrop();
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
                             }
-                            builder.into(new SimpleTarget<GlideDrawable>() {
-                                @Override
-                                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                    LogUtils.i(TAG + "加载高清图成功");
-
-                                    if (mIvPager != null) {
-                                        mIvPager.setImageDrawable(resource);
-                                    }
-                                    if (mPbProgress != null) {
-                                        mPbProgress.setVisibility(View.GONE);
-                                    }
-                                    mPhotoViewAttacherNormal.update();
-                                }
-
-                            });
+                            builder.into(mIvPager);
                             return false;
                         }
 

@@ -12,6 +12,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -792,5 +793,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected int getPagesize() {
         return DEFAULT_PAGE_SIZE;
     }
+
 
 }
