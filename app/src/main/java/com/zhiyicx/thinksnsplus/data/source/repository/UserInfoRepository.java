@@ -293,12 +293,14 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);
         return getUserInfo(user_ids)
+                .observeOn(Schedulers.io())
                 .map(datas -> {
                     if (datas.isEmpty()) {
                         return null;
                     }
                     return datas.get(0);
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
 
     }
 

@@ -85,5 +85,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/important_for_content</item>
     </style>
-
+    <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
