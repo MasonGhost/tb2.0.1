@@ -171,6 +171,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             showSnackLoadingMessage(getString(R.string.info_deleting));
         } else {
             if (success) {
+                showSnackSuccessMessage(message);
                 EventBus.getDefault().post(mInfoMation, EVENT_UPDATE_LIST_DELETE);
                 getActivity().finish();
             } else {

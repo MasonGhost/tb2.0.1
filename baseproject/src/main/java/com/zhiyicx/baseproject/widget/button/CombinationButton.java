@@ -2,10 +2,10 @@ package com.zhiyicx.baseproject.widget.button;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.UIUtils;
 
 /**
  * @author LiuChao
@@ -49,6 +48,8 @@ public class CombinationButton extends FrameLayout {
         int rightTextColor = array.getColor(R.styleable.combinationBtn_rightTextColor, -1);
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
         int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
+        float leftTextSize = array.getDimension(R.styleable.combinationBtn_leftTextSize, 0);
+        float rightTextSize = array.getDimension(R.styleable.combinationBtn_rightTextSize, 0);
         int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
         int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context, 10));
         array.recycle();
@@ -86,6 +87,10 @@ public class CombinationButton extends FrameLayout {
      */
     public void setLeftText(String leftText) {
         mCombinedButtonLeftText.setText(leftText);
+    }
+
+    public void setLeftTextSize(float leftTextSize) {
+        mCombinedButtonLeftText.setTextSize(TypedValue.COMPLEX_UNIT_SP, leftTextSize);
     }
 
     /**

@@ -24,6 +24,10 @@
         <attr name="leftTextColor" format="reference|color"/>
         <!--右边文字颜色-->
         <attr name="rightTextColor" format="reference|color"/>
+        <!--左边文字大小-->
+        <attr name="leftTextSize" format="reference|dimension"/>
+        <!--右边文字大小-->
+        <attr name="rightTextSize" format="reference|dimension"/>
         <!--是否显示分割线-->
         <attr name="showLine" format="reference|boolean"/>
         <!--分割线左右间距-->

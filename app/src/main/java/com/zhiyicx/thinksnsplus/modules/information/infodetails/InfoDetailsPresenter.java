@@ -361,7 +361,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
-                        mRootView.deleteInfo(false, true, "");
+                        mRootView.deleteInfo(false, true, data.getMessage().get(0));
                     }
 
                     @Override
@@ -501,7 +501,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override

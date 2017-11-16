@@ -17,6 +17,5 @@
         android:layout_marginTop="@dimen/spacing_small_4dp"
         app:dividerLeftMargin="@dimen/spacing_normal"
         app:dividerRightMargin="@dimen/spacing_normal"
-        app:leftText="@string/information"
         app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 </LinearLayout>

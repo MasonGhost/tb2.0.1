@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_small"
+    android:orientation="vertical">
+
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/tv_circle_type"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_marginTop="@dimen/spacing_small_4dp"
+        app:dividerLeftMargin="@dimen/spacing_normal"
+        app:dividerRightMargin="@dimen/spacing_normal"
+        app:leftTextColor="@color/normal_for_assist_text"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:rightTextColor="@color/normal_for_assist_text"/>
+
+</LinearLayout>
