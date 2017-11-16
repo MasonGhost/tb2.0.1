@@ -2,6 +2,7 @@ package com.zhiyicx.common.utils;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +76,7 @@ public class ZoomView {
      */
     private void initzoomView() {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressWarnings("AlibabaSwitchStatement")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ViewGroup.LayoutParams lp = zoomView.getLayoutParams();

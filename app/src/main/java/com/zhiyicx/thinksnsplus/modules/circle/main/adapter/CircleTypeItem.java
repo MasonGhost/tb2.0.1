@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -14,12 +15,12 @@ public class CircleTypeItem implements ItemViewDelegate<GroupInfoBean> {
 
     @Override
     public int getItemViewLayoutId() {
-        return 0;
+        return R.layout.view_circle_type;
     }
 
     @Override
     public boolean isForViewType(GroupInfoBean item, int position) {
-        return false;
+        return item.getId() < 0;
     }
 
     @Override
