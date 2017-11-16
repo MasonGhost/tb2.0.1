@@ -20,6 +20,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -875,10 +876,20 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     public void onDestroy() {
         super.onDestroy();
         if (mSnackBar != null) {
-            if (mSnackBar.isShown()) {
+            if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }
             mSnackBar = null;
+        }
+    }
+
+    /**
+     * 取消 pop
+     * @param popupWindow
+     */
+    protected void dismissPop(PopupWindow popupWindow) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
         }
     }
 }

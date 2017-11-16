@@ -356,4 +356,10 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         getActivity().overridePendingTransition(0, R.anim.fade_out);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dismissPop(mCertificationAlertPopWindow);
+        dismissPop(mPayAlertPopWindow);
+    }
 }

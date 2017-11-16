@@ -197,7 +197,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:padding="@dimen/spacing_large"
-        android:text="@string/app_rule_register"/>
+       />
     </FrameLayout>
 
 </com.wcy.overscroll.OverScrollLayout>

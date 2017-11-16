@@ -372,4 +372,5 @@ public class PlaybackManager implements Playback.Callback {
 
         void onCustomAction(String action, Bundle extras);
     }
+
 }
