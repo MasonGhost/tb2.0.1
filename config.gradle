@@ -27,7 +27,7 @@ ext {
     gsonVersion = '2.6'
     retrofitSdkVersion = '2.1.0'
     butterKnifeVersion = '8.4.0'
-    androidSupportSdkVersion = '25.0.1'
+    androidSupportSdkVersion = '25.3.1'
     refreshVersion = '1.0.4'
     clickSpanLinkVersion = '1.5.2'
 

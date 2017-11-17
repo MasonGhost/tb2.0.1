@@ -156,6 +156,7 @@ dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def supportDependences = rootProject.ext.sdksoupportDependencies
     def testDependences = rootProject.ext.testDependencies
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //support
     compile supportDependences.appcompatV7
@@ -196,6 +197,7 @@ dependencies {
     compile project(':contacts')
     compile project(':appupdate')
     compile project(':bigimage')
+    compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
     compile dataDependences.guava

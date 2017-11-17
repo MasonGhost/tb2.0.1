@@ -578,6 +578,8 @@
         </activity>
         <activity android:name=".modules.circle.main.CircleMainActivity">
         </activity>
+        <activity android:name=".modules.markdown_editor.MarkdownActivity">
+        </activity>
     </application>
 
 </manifest>
