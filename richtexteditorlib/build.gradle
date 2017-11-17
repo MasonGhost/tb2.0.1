@@ -21,6 +21,7 @@ dependencies {
     def testDependences = rootProject.ext.testDependencies
 
     compile fileTree(dir: 'libs', include: '*.jar')
+
     testCompile testDependences.junit
     compile supportDependences.appcompatV7
     compile supportDependences.paletteV7

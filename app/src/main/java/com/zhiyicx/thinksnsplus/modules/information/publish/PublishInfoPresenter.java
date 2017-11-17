@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -40,7 +41,15 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
 
     @Override
     public void uploadPic(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
-        mUpLoadRepository.upLoadSingleFileV2(filePath, mimeType, true, photoWidth, photoHeight)
+        mUpLoadRepository.upLoadFileWithProgress(filePath, mimeType, true, photoWidth, photoHeight, (bytesWritten, contentLength, done) ->
+        {
+            LogUtils.d("bytesWritten::" + bytesWritten + "\n" +
+                    "contentLength::" + contentLength + "\n" +
+                    "done::" + done);
+
+            LogUtils.d("currentThread::" +Thread.currentThread().getName());
+
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {

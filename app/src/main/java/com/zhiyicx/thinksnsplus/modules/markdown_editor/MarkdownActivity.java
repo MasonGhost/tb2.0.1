@@ -1,18 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class MarkdownActivity extends TSActivity {
+public class MarkdownActivity extends TSActivity<MarkdownPresenter, MarkdownFragment> {
 
     @Override
-    protected Fragment getFragment() {
+    protected MarkdownFragment getFragment() {
         return MarkdownFragment.newInstance();
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerMarkdownComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .markdownPresenterModule(new MarkdownPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

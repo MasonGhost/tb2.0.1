@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayoutr
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity">
 
-    <net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
+    <com.lu.richtexteditorlib.SimpleRichEditor
         android:id="@+id/rich_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -18,4 +18,4 @@
         android:layout_height="54dp">
     </com.lu.richtexteditorlib.view.LuBottomMenu>
 
-</FrameLayoutr>
+</FrameLayout>

@@ -80,7 +80,7 @@ public abstract class RichEditor extends WebView {
         void onTextLengthChange(long length);
     }
 
-    private static final String SETUP_HTML = "file:///android_asset/editor.html";
+    private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
     private static final String CALLBACK_SCHEME = "callback://";
     private static final String STATE_SCHEME = "state://";
     private static final String LINK_CHANGE_SCHEME = "change://";

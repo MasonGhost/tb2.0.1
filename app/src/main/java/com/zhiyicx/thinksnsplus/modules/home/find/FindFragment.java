@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
@@ -178,7 +179,8 @@ public class FindFragment extends TSFragment {
                  排行榜
                  */
             case R.id.find_rank:
-                startActivity(new Intent(getActivity(), RankIndexActivity.class));
+//                startActivity(new Intent(getActivity(), RankIndexActivity.class));
+                startActivity(new Intent(getActivity(), MarkdownActivity.class));
                 break;
             default:
                 break;

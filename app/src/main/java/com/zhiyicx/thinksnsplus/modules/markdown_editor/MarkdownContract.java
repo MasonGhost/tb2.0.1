@@ -1,0 +1,37 @@
+package com.zhiyicx.thinksnsplus.modules.markdown_editor;
+
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
+
+import rx.Observable;
+
+/**
+ * @Author Jliuer
+ * @Date 2017/11/17/17:34
+ * @Email Jliuer@aliyun.com
+ * @Description
+ */
+public interface MarkdownContract {
+    interface View extends IBaseView<Presenter> {
+        void onUploading(long id, String filePath, int progress);
+
+        void onFailed(String filePath, long id);
+    }
+
+    interface Presenter extends IBaseTouristPresenter {
+        void uploadPic(final String filePath, long tagId);
+
+        void publishInfo(InfoPublishBean infoPublishBean);
+
+        void pareseBody(String body);
+    }
+
+    interface Repository {
+        Observable<BaseJsonV2<Object>> publishInfo(InfoPublishBean infoPublishBean);
+
+        Observable<BaseJsonV2<Object>> updateInfo(InfoPublishBean infoPublishBean);
+    }
+}

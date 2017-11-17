@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -401,5 +402,10 @@ public class ImageUtils {
         return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
-
+    public static long[] getBitmapSize(String url){
+        BitmapFactory.Options op=new BitmapFactory.Options();
+        op.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(url, op);
+        return new long[]{op.outWidth,op.outHeight};
+    }
 }
