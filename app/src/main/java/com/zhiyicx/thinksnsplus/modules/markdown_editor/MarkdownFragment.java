@@ -1,17 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.view.View;
 
-import com.lu.richtexteditorlib.SimpleRichEditor;
-import com.lu.richtexteditorlib.view.LuBottomMenu;
+import com.zhiyi.richtexteditorlib.SimpleRichEditor;
+import com.zhiyi.richtexteditorlib.view.BottomMenu;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
+import com.zhiyi.richtexteditorlib.view.dialogs.PictureHandleDialog;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -26,11 +32,12 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements SimpleRichEditor.OnEditorClickListener,
+public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements
+        SimpleRichEditor.OnEditorClickListener,
         View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener, MarkdownContract.View {
 
     @BindView(R.id.lu_bottom_menu)
-    LuBottomMenu mLuBottomMenu;
+    BottomMenu mBottomMenu;
     @BindView(R.id.rich_text_view)
     SimpleRichEditor mRichTextView;
 
@@ -47,6 +54,9 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
         init();
@@ -58,7 +68,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
-        mRichTextView.setLuBottomMenu(mLuBottomMenu);
+        mRichTextView.setBottomMenu(mBottomMenu);
     }
 
     @Override
@@ -78,7 +88,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onLinkButtonClick() {
-
+        showLinkDialog(LinkDialog.createLinkDialog(), false);
     }
 
     @Override
@@ -88,12 +98,17 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onLinkClick(String name, String url) {
-
+        showLinkDialog(LinkDialog.createLinkDialog(name, url), true);
     }
 
     @Override
     public void onImageClick(Long id) {
-
+        if (mInsertedImages.containsKey(id)) {
+            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new CharSequence[]{getString(R.string.delete)});
+        } else if (mFailedImages.containsKey(id)) {
+            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
+                    new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
+        }
     }
 
     @Override
@@ -137,7 +152,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onUploading(long id, String filePath, int progress) {
         getActivity().runOnUiThread(() -> mRichTextView.setImageUploadProcess(id, progress));
-
     }
 
     @Override
@@ -205,5 +219,59 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 })
                 .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
         mCanclePopupWindow.show();
+    }
+
+    private void showLinkDialog(final LinkDialog dialog, final boolean isChange) {
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(url)) {
+                    ToastUtils.showToast(R.string.not_empty);
+                } else {
+                    //do something
+                    if (!isChange) {
+                        mRichTextView.insertLink(url, name);
+                    } else {
+                        mRichTextView.changeLink(url, name);
+                    }
+                    onCancelButtonClick();
+                }
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    private void showPictureClickDialog(final PictureHandleDialog dialog, CharSequence[] items) {
+
+        dialog.setListener(new PictureHandleDialog.OnDialogClickListener() {
+            @Override
+            public void onDeleteButtonClick(Long id) {
+                mRichTextView.deleteImageById(id);
+                removeFromLocalCache(id);
+            }
+
+            @Override
+            public void onReloadButtonClick(Long id) {
+                mRichTextView.setImageReload(id);
+                mPresenter.uploadPic(mFailedImages.get(id), id);
+                mInsertedImages.put(id, mFailedImages.get(id));
+                mFailedImages.remove(id);
+            }
+        });
+        dialog.setItems(items);
+        dialog.show(getFragmentManager(), PictureHandleDialog.Tag);
+    }
+
+    private void removeFromLocalCache(long id) {
+        if (mInsertedImages.containsKey(id)) {
+            mInsertedImages.remove(id);
+        } else if (mFailedImages.containsKey(id)) {
+            mFailedImages.remove(id);
+        }
     }
 }

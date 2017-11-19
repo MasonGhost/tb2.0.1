@@ -17,19 +17,22 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Repository, MarkdownContract.View> implements MarkdownContract.Presenter {
+public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Repository,
+        MarkdownContract.View> implements MarkdownContract.Presenter {
 
     @Inject
     UpLoadRepository mUpLoadRepository;
 
     @Inject
-    public MarkdownPresenter(MarkdownContract.Repository repository, MarkdownContract.View rootView) {
+    public MarkdownPresenter(MarkdownContract.Repository repository, MarkdownContract.View
+            rootView) {
         super(repository, rootView);
     }
 
     @Override
     public void uploadPic(String filePath, long tagId) {
-        mUpLoadRepository.upLoadFileWithProgress(filePath, "", true, 0, 0, (bytesWritten, contentLength, done) ->
+        mUpLoadRepository.upLoadFileWithProgress(filePath, "", true, 0, 0, (bytesWritten,
+                                                                            contentLength, done) ->
         {
             LogUtils.d("bytesWritten::" + bytesWritten + "\n" +
                     "contentLength::" + contentLength + "\n" +
@@ -46,7 +49,7 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                 .subscribe(new BaseSubscribe<Integer>() {
                     @Override
                     protected void onSuccess(Integer data) {
-
+                        mRootView.onUploading(tagId, filePath, 100);
                     }
 
                     @Override

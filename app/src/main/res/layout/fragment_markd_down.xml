@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity">
 
-    <com.lu.richtexteditorlib.SimpleRichEditor
+    <com.zhiyi.richtexteditorlib.SimpleRichEditor
         android:id="@+id/rich_text_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/lu_bottom_menu"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
-    <com.lu.richtexteditorlib.view.LuBottomMenu
-        android:layout_gravity="bottom"
+    <com.zhiyi.richtexteditorlib.view.BottomMenu
         android:id="@+id/lu_bottom_menu"
         android:layout_width="match_parent"
-        android:layout_height="54dp">
-    </com.lu.richtexteditorlib.view.LuBottomMenu>
+        android:layout_height="@dimen/full_button_height"
+        android:layout_alignParentBottom="true">
+    </com.zhiyi.richtexteditorlib.view.BottomMenu>
 
-</FrameLayout>
+</RelativeLayout>
