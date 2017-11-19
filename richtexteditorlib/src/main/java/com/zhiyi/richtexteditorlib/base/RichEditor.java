@@ -12,7 +12,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.zhiyi.richtexteditorlib.utils.Utils;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -227,9 +228,9 @@ public abstract class RichEditor extends WebView {
     }
 
     public void load(){
-        Log.e("load","before load");
+        LogUtils.d("load","before load");
         loadUrl(SETUP_HTML);
-        Log.e("load","after load");
+        LogUtils.d("load","after load");
 
     }
 
@@ -345,7 +346,7 @@ public abstract class RichEditor extends WebView {
 
     public void insertTodo() {
         exec("javascript:RE.prepareInsert();");
-        exec("javascript:RE.setTodo('" + Utils.getCurrentTime() + "');");
+        exec("javascript:RE.setTodo('" + ConvertUtils.getCurrentTime() + "');");
     }
 
     public void setImageUploadProcess(long id,int process){
@@ -406,7 +407,7 @@ public abstract class RichEditor extends WebView {
         @Override
         public void onPageFinished(WebView view, String url) {
             isReady = url.equalsIgnoreCase(SETUP_HTML);
-            Log.e("load","after onPageFinished");
+            LogUtils.d("load","after onPageFinished");
 
             if (mLoadListener != null) {
                 mLoadListener.onAfterInitialLoad(isReady);
@@ -425,7 +426,7 @@ public abstract class RichEditor extends WebView {
                 return false;
             }
 
-            Log.e("decode",decode);
+            LogUtils.d("decode",decode);
 
             if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
                 callback(decode);

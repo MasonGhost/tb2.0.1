@@ -20,6 +20,7 @@ import com.zhiyi.richtexteditorlib.view.logiclist.MenuItem;
 import com.zhiyi.richtexteditorlib.view.logiclist.MenuItemTree;
 import com.zhiyi.richtexteditorlib.view.menuitem.AbstractBottomMenuItem;
 import com.zhiyi.richtexteditorlib.view.theme.LightTheme;
+import com.zhiyicx.common.utils.ConvertUtils;
 
 
 import java.util.ArrayDeque;
@@ -116,7 +117,7 @@ public class BottomMenu extends ViewGroup {
                 MAX_LEVELS = 5;
                 //若为WRAP_CONTENT时设置默认高度54dp
             case MeasureSpec.AT_MOST:
-                heightSize = Utils.dip2px(getContext(), DEFAULT_HEIGHT);
+                heightSize = ConvertUtils.dp2px(getContext(), DEFAULT_HEIGHT);
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY);
                 //大部分情况下为精确计算宽高
             case MeasureSpec.EXACTLY:
@@ -508,7 +509,7 @@ public class BottomMenu extends ViewGroup {
         if (getLayoutTransition() != null && getLayoutTransition().isRunning()) {
             return;
         }
-        mPaint.setColor(Utils.getDarkerColor(getColorByDeep(mDisplayRowNum), 0.2f));
+        mPaint.setColor(ConvertUtils.getDarkerColor(getColorByDeep(mDisplayRowNum), 0.2f));
         mPaint.setAlpha(80);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             canvas.drawLine(getPaddingStart(), getPaddingTop(), getWidth() - getPaddingEnd(), getPaddingTop(), mPaint);

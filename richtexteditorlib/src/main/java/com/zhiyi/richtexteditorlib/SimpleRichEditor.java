@@ -5,9 +5,13 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import com.zhiyi.richtexteditorlib.base.RichEditor;
+import com.zhiyi.richtexteditorlib.constant.ItemIndex;
+import com.zhiyi.richtexteditorlib.factories.BaseItemFactory;
+import com.zhiyi.richtexteditorlib.factories.DefaultItemFactory;
+import com.zhiyi.richtexteditorlib.utils.SelectController;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
 import com.zhiyi.richtexteditorlib.view.api.IBottomMenuItem;
 import com.zhiyi.richtexteditorlib.view.api.ITheme;
@@ -16,12 +20,8 @@ import com.zhiyi.richtexteditorlib.view.menuitem.AbstractBottomMenuItem;
 import com.zhiyi.richtexteditorlib.view.theme.AbstractTheme;
 import com.zhiyi.richtexteditorlib.view.theme.DarkTheme;
 import com.zhiyi.richtexteditorlib.view.theme.LightTheme;
-import com.zhiyi.richtexteditorlib.base.RichEditor;
-import com.zhiyi.richtexteditorlib.constant.ItemIndex;
-import com.zhiyi.richtexteditorlib.factories.BaseItemFactory;
-import com.zhiyi.richtexteditorlib.factories.DefaultItemFactory;
-import com.zhiyi.richtexteditorlib.utils.SelectController;
-import com.zhiyi.richtexteditorlib.utils.Utils;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,22 +133,37 @@ public class SimpleRichEditor extends RichEditor {
 
 //        等效与以下
 //       mLuBottomMenu.
-//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x01, R.drawable.insert_image, false)).//
-//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x02, R.drawable.a)).//
-//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x03, R.drawable.more)).//
-//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x04, R.drawable.undo, false)).
-//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x05, R.drawable.redo, false)).
+//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x01, R.drawable
+// .insert_image, false)).//
+//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x02, R.drawable.a)
+// ).//
+//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x03, R.drawable
+// .more)).//
+//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x04, R.drawable
+// .undo, false)).
+//                addRootItem(MenuItemFactory.generateImageItem(getContext(), 0x05, R.drawable
+// .redo, false)).
 //
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x06, R.drawable.bold)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x07, R.drawable.italic)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x08, R.drawable.strikethrough)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x09, R.drawable.blockquote)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0a, R.drawable.h1)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0b, R.drawable.h2)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0c, R.drawable.h3)).
-//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0d, R.drawable.h4)).
-//                addItem(0x03, MenuItemFactory.generateImageItem(getContext(), 0x0e, R.drawable.halving_line, false)).
-//                addItem(0x03, MenuItemFactory.generateImageItem(getContext(), 0x0f, R.drawable.link, false));
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x06, R.drawable
+// .bold)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x07, R.drawable
+// .italic)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x08, R.drawable
+// .strikethrough)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x09, R.drawable
+// .blockquote)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0a, R.drawable
+// .h1)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0b, R.drawable
+// .h2)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0c, R.drawable
+// .h3)).
+//                addItem(0x02, MenuItemFactory.generateImageItem(getContext(), 0x0d, R.drawable
+// .h4)).
+//                addItem(0x03, MenuItemFactory.generateImageItem(getContext(), 0x0e, R.drawable
+// .halving_line, false)).
+//                addItem(0x03, MenuItemFactory.generateImageItem(getContext(), 0x0f, R.drawable
+// .link, false));
         //mLuBottomMenu.setOnItemClickListener(this);
 
         //mSelectController.addAll(0x09L, 0x0aL, 0x0bL, 0x0cL, 0x0dL);
@@ -196,7 +211,7 @@ public class SimpleRichEditor extends RichEditor {
         setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
             @Override
             public void onTextChange(String text) {
-                Log.e("onTextChange", text);
+                LogUtils.d("onTextChange", text);
             }
         });
         setOnFocusChangeListener(new RichEditor.OnFocusChangeListener() {
@@ -294,9 +309,10 @@ public class SimpleRichEditor extends RichEditor {
         post(new Runnable() {
             @Override
             public void run() {
-                String backgroundColor = Utils.converInt2HexColor(theme.getBackGroundColors()[0]);
+                String backgroundColor = ConvertUtils.converInt2HexColor(theme.getBackGroundColors()[0]);
                 //从高亮色和基础色中找出和背景明度差异大的作为字体颜色
-                double backgroundLum = ColorUtils.calculateLuminance(theme.getBackGroundColors()[0]);
+                double backgroundLum = ColorUtils.calculateLuminance(theme.getBackGroundColors()
+                        [0]);
                 double normalLum = ColorUtils.calculateLuminance(theme.getNormalColor());
                 double accentLum = ColorUtils.calculateLuminance(theme.getAccentColor());
 
@@ -307,10 +323,11 @@ public class SimpleRichEditor extends RichEditor {
                     fontColorInt = theme.getAccentColor();
                 }
 
-                String fontColor = Utils.converInt2HexColor(fontColorInt);
+                String fontColor = ConvertUtils.converInt2HexColor(fontColorInt);
                 //找出背景色和字体色的中间色作为引用块底色
                 //unused
-                int color = ColorUtils.blendARGB(fontColorInt, theme.getBackGroundColors()[0], 0.5f);
+                int color = ColorUtils.blendARGB(fontColorInt, theme.getBackGroundColors()[0],
+                        0.5f);
 
                 exec("javascript:RE.setBackgroundColor('" + backgroundColor + "');");
                 exec("javascript:RE.setFontColor('" + fontColor + "');");
@@ -320,7 +337,8 @@ public class SimpleRichEditor extends RichEditor {
         //do something
     }
 
-    public SimpleRichEditor addTypefaceBranch(boolean needBold, boolean needItalic, boolean needStrikeThrough, boolean needBlockQuote, boolean needH) {
+    public SimpleRichEditor addTypefaceBranch(boolean needBold, boolean needItalic, boolean
+            needStrikeThrough, boolean needBlockQuote, boolean needH) {
         checkNull(mBottomMenu);
 
         if (!(needBlockQuote || needBold || needH || needItalic || needStrikeThrough)) {
@@ -351,7 +369,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 setBold();
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
                                 return isInSelectController(item.getId());
@@ -364,7 +382,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 setItalic();
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 return isInSelectController(item.getId());
                             }
@@ -376,7 +394,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 setStrikeThrough();
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 return isInSelectController(item.getId());
                             }
@@ -388,7 +406,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 setBlockquote(!isSelected);
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
                                 return isInSelectController(item.getId());
@@ -402,7 +420,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 setHeading(1, !isSelected);
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 //mSelectController.changeState(ItemIndex.H1);
                                 return isInSelectController(item.getId());
@@ -527,7 +545,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 insertHr();
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
                                 return false;
                             }
                         }
@@ -539,7 +557,7 @@ public class SimpleRichEditor extends RichEditor {
                             @Override
                             public boolean onItemClick(MenuItem item, boolean isSelected) {
                                 showLinkDialog();
-                                Log.e("onItemClick", item.getId() + "");
+                                LogUtils.d("onItemClick", item.getId() + "");
 
                                 return false;
                             }

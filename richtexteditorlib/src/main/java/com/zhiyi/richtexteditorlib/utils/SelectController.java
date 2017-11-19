@@ -2,6 +2,8 @@ package com.zhiyi.richtexteditorlib.utils;
 
 import android.util.Log;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,12 +100,12 @@ public class SelectController {
     public abstract class StatesTransAdapter implements StatesTransHandler{
         @Override
         public void handleA2B(long id) {
-            Log.e("handleA2B",id+"");
+            LogUtils.d("handleA2B",id+"");
         }
 
         @Override
         public void handleB2A(long id) {
-            Log.e("handleB2A",id+"");
+            LogUtils.d("handleB2A",id+"");
         }
     }
 }
