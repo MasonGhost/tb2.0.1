@@ -53,6 +53,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             AndroidBug5497Workaround.assistActivity(getActivity());
@@ -104,7 +109,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onImageClick(Long id) {
         if (mInsertedImages.containsKey(id)) {
-            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new CharSequence[]{getString(R.string.delete)});
+            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
+                    CharSequence[]{getString(R.string.delete)});
         } else if (mFailedImages.containsKey(id)) {
             showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
                     new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
@@ -228,7 +234,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 if (TextUtils.isEmpty(name) || TextUtils.isEmpty(url)) {
                     ToastUtils.showToast(R.string.not_empty);
                 } else {
-                    //do something
                     if (!isChange) {
                         mRichTextView.insertLink(url, name);
                     } else {
