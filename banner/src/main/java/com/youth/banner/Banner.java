@@ -434,9 +434,9 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
             params.leftMargin = mIndicatorMargin;
             params.rightMargin = mIndicatorMargin;
             if (i == 0) {
-                imageView.setImageResource(mIndicatorSelectedResId);
-            } else {
                 imageView.setImageResource(mIndicatorUnselectedResId);
+            } else {
+                imageView.setImageResource(mIndicatorSelectedResId);
             }
             indicatorImages.add(imageView);
             if (bannerStyle == BannerConfig.CIRCLE_INDICATOR ||
@@ -612,8 +612,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         if (bannerStyle == BannerConfig.CIRCLE_INDICATOR ||
                 bannerStyle == BannerConfig.CIRCLE_INDICATOR_TITLE ||
                 bannerStyle == BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE) {
-            indicatorImages.get((lastPosition - 1 + count) % count).setImageResource(mIndicatorUnselectedResId);
-            indicatorImages.get((position - 1 + count) % count).setImageResource(mIndicatorSelectedResId);
+            indicatorImages.get((lastPosition - 1 + count) % count).setImageResource(mIndicatorSelectedResId);
+            indicatorImages.get((position - 1 + count) % count).setImageResource(mIndicatorUnselectedResId);
             lastPosition = position;
         }
         if (position == 0) position = count;
