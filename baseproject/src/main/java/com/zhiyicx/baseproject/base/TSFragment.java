@@ -884,10 +884,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                         @Override
                         public void onItemClicked() {
+                            mDeleteTipPopupWindow.dismiss();
                             if (listener != null) {
                                 listener.onItemClicked();
                             }
-                            mDeleteTipPopupWindow.dismiss();
                         }
                     })
                     .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

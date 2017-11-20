@@ -620,7 +620,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteCommentV2(comment_id, commentPosition);
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteCommentV2(comment_id, commentPosition);
+                    }, true);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -674,9 +676,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     mMyDynamicPopWindow.hide();
                 })
                 .item4ClickListener(() -> {// 删除
-                    EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
                     mMyDynamicPopWindow.hide();
-                    getActivity().finish();
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
+                        getActivity().finish();
+                    }, true);
                 })
                 .item2ClickListener(() -> {// 收藏
                     mPresenter.handleCollect(dynamicBean);
