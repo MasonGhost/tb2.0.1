@@ -736,5 +736,6 @@
     <string name="str_pingyin_dot">、</string>
     <string name="app_name_info">%s 资讯</string>
     <string name="app_name_anster">%s 回答</string>
+    <string name="delete_comment">删除评论</string>
 
 </resources>

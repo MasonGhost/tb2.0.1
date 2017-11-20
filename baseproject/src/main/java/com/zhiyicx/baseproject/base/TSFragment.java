@@ -29,6 +29,7 @@ import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -38,12 +39,11 @@ import com.zhiyicx.common.utils.UIUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Describe
@@ -111,9 +111,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private FrameLayout musicWindowContainer;
     protected SystemConfigBean mSystemConfigBean;
 
+    private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
+
+
     @Nullable
     @Override
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         return view;
@@ -861,6 +863,44 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return getResources().getColor(resId);
     }
 
+
+    /**
+     * 显示删除二次提示弹框
+     */
+    protected void showDeleteTipPopupWindow(String tipStr, final ActionPopupWindow.ActionPopupWindowItem1ClickListener listener, boolean
+            createEveryTime) {
+        if (TextUtils.isEmpty(tipStr)) {
+            return;
+        }
+        if (mDeleteTipPopupWindow == null || createEveryTime) {
+            mDeleteTipPopupWindow = ActionPopupWindow.builder()
+                    .item1Str(tipStr)
+                    .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                        @Override
+                        public void onItemClicked() {
+                            if (listener != null) {
+                                listener.onItemClicked();
+                            }
+                            mDeleteTipPopupWindow.dismiss();
+                        }
+                    })
+                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                        @Override
+                        public void onItemClicked() {
+                            mDeleteTipPopupWindow.hide();
+                        }
+                    }).build();
+        }
+        mDeleteTipPopupWindow.show();
+
+    }
+
     @Override
     public void onDestroyView() {
         if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
@@ -881,10 +921,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             }
             mSnackBar = null;
         }
+        dismissPop(mDeleteTipPopupWindow);
     }
 
     /**
      * 取消 pop
+     *
      * @param popupWindow
      */
     protected void dismissPop(PopupWindow popupWindow) {
