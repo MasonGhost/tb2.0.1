@@ -98,6 +98,11 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentUser != null) {
+                        // 三方绑定,解绑逻辑.是否保留某个主信息无法解绑. [邮箱和手机必须保留一个]
+                        if (!TextUtils.isEmpty(mCurrentUser.getPhone()) && TextUtils.isEmpty(mCurrentUser.getEmail())) {
+                            showSnackErrorMessage(getString(R.string.you_must_bind_email_to_unbind_phone));
+                            return;
+                        }
                         // 跳转绑定/解绑手机号
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
                         if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
@@ -116,6 +121,11 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentUser != null) {
+                        // 三方绑定,解绑逻辑.是否保留某个主信息无法解绑. [邮箱和手机必须保留一个]
+                        if (!TextUtils.isEmpty(mCurrentUser.getEmail()) && TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                            showSnackErrorMessage(getString(R.string.you_must_bind_phone_to_unbind_email));
+                            return;
+                        }
                         // 跳转绑定/解绑邮箱
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
                         if (!AppApplication.getmCurrentLoginAuth().getUser().isInitial_password()) {
@@ -123,6 +133,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                         }
                         Bundle bundle = new Bundle();
                         bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
+
                         bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
                         bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
                         intent.putExtras(bundle);
@@ -183,7 +194,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     case ApiConfig.PROVIDER_WEIBO:
 //                        if (UMShareAPI.get(getContext()).isInstall(getActivity(), SHARE_MEDIA.SINA)) {
 
-                            thridLogin(SHARE_MEDIA.SINA);
+                        thridLogin(SHARE_MEDIA.SINA);
 //                        } else {
 //                            showSnackErrorMessage(getString(R.string.please_install_app));
 //                        }
