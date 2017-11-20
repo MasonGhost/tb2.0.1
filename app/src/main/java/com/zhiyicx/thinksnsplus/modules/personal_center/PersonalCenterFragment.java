@@ -803,7 +803,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
                         mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
                                 commentPosition);
                     }, true);
