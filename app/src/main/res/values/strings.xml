@@ -636,6 +636,8 @@
     <string name="request_to_publish_topic">向官方建议创建新话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
+    <string name="you_must_bind_email_to_unbind_phone">你必须绑定邮箱才能解绑手机哦</string>
+    <string name="you_must_bind_phone_to_unbind_email">你必须绑定手机才能解绑邮箱哦</string>
     <string name="you_must_bind_phone2">你必须绑定手机才能绑定三方哦</string>
     <string name="bind_success">账号绑定成功</string>
     <string name="unbind_success">账号解绑成功</string>
@@ -739,5 +741,7 @@
     <string name="str_pingyin_dot">、</string>
     <string name="app_name_info">%s 资讯</string>
     <string name="app_name_anster">%s 回答</string>
+    <string name="delete_comment">删除评论</string>
+    <string name="delete_info">删除资讯</string>
 
 </resources>

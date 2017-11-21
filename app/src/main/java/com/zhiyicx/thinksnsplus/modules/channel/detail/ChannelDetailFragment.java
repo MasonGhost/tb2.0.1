@@ -544,6 +544,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletDynamicPopWindow.hide();
+
                     mPresenter.deleteDynamic(dynamicBean, position);
                 })
                 .bottomClickListener(() -> mDeletDynamicPopWindow.hide())
@@ -609,8 +610,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getNew_comments().get(commentPosition).getId(),
-                            commentPosition);
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getNew_comments().get(commentPosition).getId(),
+                                commentPosition);
+                    }, true);
+
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -833,8 +837,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item3ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
-                    mPresenter.deleteDynamic(dynamicBean, position);
-                    showBottomView(true);
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                        showBottomView(true);
+                    }, true);
+
                 })
                 .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitMap);
