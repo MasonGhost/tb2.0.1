@@ -587,6 +587,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.circle.detailv2.CircleDetailActivity">
         </activity>
+        <activity android:name=".modules.circle.create.CreateCircleActivity">
+        </activity>
     </application>
 
 </manifest>
