@@ -349,14 +349,18 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
-                    setHeaderInfo(mHeaderInfo);
-                    if (WindowUtils.getAblumHeadInfo() != null) {
-                        if (WindowUtils.getAblumHeadInfo().getCommentCount() > 0)
-                            WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
-                    }
-                    mPresenter.deleteComment(data);
+
                     mDeletCommentPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
+                        setHeaderInfo(mHeaderInfo);
+                        if (WindowUtils.getAblumHeadInfo() != null) {
+                            if (WindowUtils.getAblumHeadInfo().getCommentCount() > 0) {
+                                WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
+                            }
+                        }
+                        mPresenter.deleteComment(data);
+                    }, true);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();

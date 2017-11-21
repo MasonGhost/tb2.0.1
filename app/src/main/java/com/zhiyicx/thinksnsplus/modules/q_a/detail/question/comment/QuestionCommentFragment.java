@@ -221,8 +221,10 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
 //                    startActivity(intent);
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.deleteComment(mQaListInfoBean.getId(), questionCommentBean.getId(), position);
                     mDeleteCommentPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete), () -> {
+                        mPresenter.deleteComment(mQaListInfoBean.getId(), questionCommentBean.getId(), position);
+                    }, true);
 
                 })
                 .bottomClickListener(() -> mDeleteCommentPopWindow.hide())
