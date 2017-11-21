@@ -53,7 +53,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTopTypes = getResources().getStringArray(R.array.top_type);
-        mTopType = mTopTypes[0];
+        if (getArguments() != null) {
+            mUnhandlePinnedBean = getArguments().getParcelable(BUNDLE_PINNED_DATA);
+        }
     }
 
     @Override
@@ -70,7 +72,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     protected boolean isNeedRefreshAnimation() {
-        return false;
+        return true;
     }
 
     @Override
@@ -93,24 +95,21 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        if (mUnhandlePinnedBean != null) {
+            if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
+            } else if (mUnhandlePinnedBean.getNews() != null && mUnhandlePinnedBean.getNews().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_news_commnet), 1);
+            } else {
+                chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
+            }
+
+        }
     }
 
     @Override
     protected void initData() {
         super.initData();
-        if (getArguments() != null) {
-            mUnhandlePinnedBean = getArguments().getParcelable(BUNDLE_PINNED_DATA);
-        }
-
-        if (mUnhandlePinnedBean != null) {
-            if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
-                chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
-
-            } else if (mUnhandlePinnedBean.getNews() != null && mUnhandlePinnedBean.getNews().getCount() > 0) {
-                chooseType(getString(R.string.stick_type_news_commnet), 1);
-            }
-
-        }
     }
 
     /**
@@ -122,8 +121,12 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     private void chooseType(String title, int position) {
         mToolbarCenter.setText(title);
         mTopType = mTopTypes[position];
-        mPresenter.requestNetData(0L, false);
-        mActionPopupWindow.hide();
+        if (mPresenter != null) {
+            mRefreshlayout.autoRefresh();
+        }
+        if (mActionPopupWindow != null) {
+            mActionPopupWindow.hide();
+        }
     }
 
     @Override
