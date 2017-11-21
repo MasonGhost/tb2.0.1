@@ -7,7 +7,7 @@ public class CircleMainActivity extends TSActivity<CircleMainPresenter, CircleMa
 
     @Override
     protected CircleMainFragment getFragment() {
-        return null;
+        return CircleMainFragment.newInstance();
     }
 
     @Override

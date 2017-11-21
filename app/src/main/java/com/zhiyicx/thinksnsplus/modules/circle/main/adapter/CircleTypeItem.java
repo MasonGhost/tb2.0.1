@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -25,6 +27,9 @@ public class CircleTypeItem implements ItemViewDelegate<GroupInfoBean> {
 
     @Override
     public void convert(ViewHolder holder, GroupInfoBean groupInfoBean, GroupInfoBean lastT, int position, int itemCounts) {
-
+        CombinationButton button = holder.getView(R.id.tv_circle_type);
+        button.setLeftTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
+        button.setLeftText(groupInfoBean.getTitle());
+        button.setRightText(groupInfoBean.getIntro());
     }
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
@@ -27,6 +28,7 @@ public class CircleMainHeader {
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private CombinationButton mCircleCount;
     private View mCircleMainHeader;
+    private View mAdvertTag;
 
     public View getCircleMainHeader() {
         return mCircleMainHeader;
@@ -41,7 +43,11 @@ public class CircleMainHeader {
         mCircleMainHeader = LayoutInflater.from(context).inflate(R.layout
                 .circle_main_header, null);
         mCircleCount = (CombinationButton) mCircleMainHeader.findViewById(R.id.tv_circle_count);
+        mAdvertTag = mCircleMainHeader.findViewById(R.id.ll_advert_tag);
+        mAdvertTag.setVisibility(View.GONE);
         mCircleCount.setLeftTextSize(12f);
+        mCircleCount.setLeftTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
+        mCircleCount.setLeftText(countSpan);
         initAdvert(context, adverts);
     }
 

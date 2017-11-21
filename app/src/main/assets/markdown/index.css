@@ -24,7 +24,7 @@ p {
   border-color: inherit;
 }
 .content .line {
-  border: 1px dashed #969696;
+  border: 1px solid #969696;
   margin-top: 5px;
 }
 .content #editor {

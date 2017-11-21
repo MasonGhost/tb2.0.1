@@ -89,6 +89,10 @@ public class CombinationButton extends FrameLayout {
         mCombinedButtonLeftText.setText(leftText);
     }
 
+    public void setLeftText(CharSequence leftText) {
+        mCombinedButtonLeftText.setText(leftText);
+    }
+
     public void setLeftTextSize(float leftTextSize) {
         mCombinedButtonLeftText.setTextSize(TypedValue.COMPLEX_UNIT_SP, leftTextSize);
     }
@@ -101,10 +105,13 @@ public class CombinationButton extends FrameLayout {
     }
 
     /**
-     * 设置右边文字内容颜色
+     * 设置文字内容颜色
      */
     public void setRightTextColor(int color) {
         mCombinedButtonRightText.setTextColor(color);
+    }
+    public void setLeftTextColor(int color) {
+        mCombinedButtonLeftText.setTextColor(color);
     }
 
     public TextView getCombinedButtonRightTextView() {
