@@ -148,7 +148,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
 //            }
 
             Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(),
-                    "ThinkSNSFileProvider", toFile);
+                    mContext.getPackageName() + ".ThinkSNSFileProvider", toFile);
             Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePhotoUri);
 
@@ -158,7 +158,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 List<ResolveInfo> resInfoList = mContext.getPackageManager().queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
-                    mContext.grantUriPermission(packageName, mTakePhotoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mContext.grantUriPermission(packageName, mTakePhotoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent
+                            .FLAG_GRANT_READ_URI_PERMISSION);
                 }
             }
 
