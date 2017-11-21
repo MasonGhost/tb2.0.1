@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -8,5 +11,10 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListRepository extends BaseCircleRepository implements IBaseCircleRepository {
+public class CircleListRepository extends BaseCircleRepository implements CircleListContract.Repository {
+
+    @Inject
+    public CircleListRepository(ServiceManager serviceManager) {
+        super(serviceManager);
+    }
 }

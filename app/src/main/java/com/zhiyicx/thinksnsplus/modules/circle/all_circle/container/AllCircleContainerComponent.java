@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
+package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

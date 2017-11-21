@@ -1,12 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 /**
@@ -15,7 +18,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, GroupInfoBean> implements CircleMainContract.View {
+public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, GroupInfoBean>
+        implements CircleMainContract.View,BaseCircleItem.CircleItemItemEvent {
 
     private CircleMainHeader mCircleMainHeader;
 
@@ -59,8 +63,8 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
             mListDatas.add(groupInfoBean);
         }
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem());
-        adapter.addItemViewDelegate(new CircleTypeItem());
+        adapter.addItemViewDelegate(new CircleListItem(this));
+        adapter.addItemViewDelegate(new CircleTypeItem(this));
         return adapter;
     }
 
@@ -69,5 +73,15 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         mCircleMainHeader = new CircleMainHeader(getActivity(), null, 2341);
         mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
         super.initData();
+    }
+
+    @Override
+    public void toAllCircle(GroupInfoBean groupInfoBean) {
+
+    }
+
+    @Override
+    public void toCircleDetail(GroupInfoBean groupInfoBean) {
+        startActivity(new Intent(getActivity(), MarkdownActivity.class));
     }
 }

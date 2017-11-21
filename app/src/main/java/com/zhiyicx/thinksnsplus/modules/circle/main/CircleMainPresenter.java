@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main;
 
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
@@ -16,7 +15,7 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Repository,CircleMainContract.View> implements CircleMainContract.Presenter {
+public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Repository, CircleMainContract.View> implements CircleMainContract.Presenter {
 
     @Inject
     public CircleMainPresenter(CircleMainContract.Repository repository, CircleMainContract.View rootView) {

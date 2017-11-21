@@ -1,6 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -8,5 +15,26 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListPresenter extends AppBasePresenter implements CircleListContract.Presenter {
+public class CircleListPresenter extends AppBasePresenter<CircleListContract.Repository, CircleListContract.View>
+        implements CircleListContract.Presenter {
+
+    @Inject
+    public CircleListPresenter(CircleListContract.Repository repository, CircleListContract.View rootView) {
+        super(repository, rootView);
+    }
+
+    @Override
+    public void requestNetData(Long maxId, boolean isLoadMore) {
+
+    }
+
+    @Override
+    public void requestCacheData(Long maxId, boolean isLoadMore) {
+
+    }
+
+    @Override
+    public boolean insertOrUpdateData(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
+        return false;
+    }
 }

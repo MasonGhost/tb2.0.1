@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
+package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.AllCircleContainerRepository;
 

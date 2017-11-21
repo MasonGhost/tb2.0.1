@@ -1,9 +1,12 @@
-package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
+package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,14 +18,26 @@ import java.util.List;
 public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleContainerContract.Presenter>
         implements AllCircleContainerContract.View {
 
+    private List<String> mTitle;
+    private List<Fragment> mFragments;
+    public static final String RECOMMEND_INFO = "-1";
+
     @Override
     protected List<String> initTitles() {
-        return null;
+        if (mTitle == null) {
+            mTitle = new ArrayList<>();
+            mTitle.add(getString(R.string.info_recommend));
+        }
+        return mTitle;
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        return null;
+        if (mFragments == null) {
+            mFragments = new ArrayList<>();
+            mFragments.add(InfoListFragment.newInstance(RECOMMEND_INFO));
+        }
+        return mFragments;
     }
 
     @Override

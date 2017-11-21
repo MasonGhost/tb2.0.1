@@ -36,7 +36,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListItem implements ItemViewDelegate<GroupInfoBean> {
+public class CircleListItem extends BaseCircleItem {
+
+    public CircleListItem(CircleItemItemEvent circleItemItemEvent) {
+        super(circleItemItemEvent);
+    }
 
     @Override
     public int getItemViewLayoutId() {
@@ -135,7 +139,10 @@ public class CircleListItem implements ItemViewDelegate<GroupInfoBean> {
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-
+                    if (mCircleItemItemEvent == null) {
+                        return;
+                    }
+                    mCircleItemItemEvent.toCircleDetail(groupInfoBean);
                 });
         RxView.clicks(holder.getView(R.id.iv_channel_cover))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

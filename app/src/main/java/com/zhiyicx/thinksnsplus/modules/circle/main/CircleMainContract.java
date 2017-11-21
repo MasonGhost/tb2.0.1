@@ -5,6 +5,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 /**
  * @Author Jliuer
@@ -19,6 +20,6 @@ public interface CircleMainContract {
     interface Presenter extends ITSListPresenter<GroupInfoBean> {
     }
 
-    interface Repository extends IBaseChannelRepository {
+    interface Repository extends IBaseCircleRepository {
     }
 }
