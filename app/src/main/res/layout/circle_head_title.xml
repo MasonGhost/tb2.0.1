@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    app:layout_collapseMode="pin">
+
+    <LinearLayout
+        android:id="@+id/title_center_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/title_uc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20px"
+            android:paddingRight="15dp"
+            android:text="tym"
+            android:textColor="#333333"
+            android:textSize="28px"/>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/uc_setting_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/uc_msg_iv"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:src="@mipmap/ic_launcher"/>
+
+    <ImageView
+        android:id="@+id/uc_msg_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="15dp"
+        android:src="@mipmap/ic_launcher"/>
+
+</RelativeLayout>

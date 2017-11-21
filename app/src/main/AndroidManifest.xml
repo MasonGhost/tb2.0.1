@@ -573,18 +573,20 @@
             android:name=".modules.draftbox.DraftBoxActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:screenOrientation="portrait"
-            android:name=".modules.q_a.publish.create_topic.CreateTopicActivity"/>
+            android:name=".modules.q_a.publish.create_topic.CreateTopicActivity"
+            android:screenOrientation="portrait"/>
         <activity
-            android:screenOrientation="portrait"
-            android:name=".modules.register.rule.UserRuleActivity"/>
+            android:name=".modules.register.rule.UserRuleActivity"
+            android:screenOrientation="portrait"/>
         <activity
-            android:screenOrientation="portrait"
-            android:name=".modules.circle.main.CircleMainActivity"/>
+            android:name=".modules.circle.main.CircleMainActivity"
+            android:screenOrientation="portrait"/>
         <activity
+            android:name=".modules.markdown_editor.MarkdownActivity"
             android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:name=".modules.markdown_editor.MarkdownActivity"/>
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.detailv2.CircleDetailActivity">
+        </activity>
     </application>
 
 </manifest>

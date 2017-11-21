@@ -249,6 +249,11 @@
     <string name="group_mine">我的圈子</string>
     <string name="group_count">%d个兴趣小组，等待你的加入！</string>
 
+    <string name="appbar_overscroll_behavior">com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
     <!--收藏-->
     <string name="collect">收藏</string>
     <string name="collect_dynamic">动态</string>
