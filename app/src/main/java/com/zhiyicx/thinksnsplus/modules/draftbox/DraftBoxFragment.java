@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -20,6 +21,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
@@ -31,10 +34,35 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuest
 public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter, BaseDraftBean>
         implements DraftBoxContract.View, QuestionDraftItem.QuestionDraftItemEvent {
 
-    public static DraftBoxFragment getInstance(Bundle bundle) {
+
+    public static final String MY_DRAFT_TYPE = "MY_DRAFT_TYPE";
+    public static final String MY_DRAFT_TYPE_QUESTION = "0";
+    public static final String MY_DRAFT_TYPE_ANSWER = "1";
+
+    @Inject
+    DraftBoxPresenter mDraftBoxPresenter;
+
+    public static DraftBoxFragment getInstance(String type) {
         DraftBoxFragment draftBoxFragment = new DraftBoxFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(MY_DRAFT_TYPE, type);
         draftBoxFragment.setArguments(bundle);
         return draftBoxFragment;
+    }
+
+    @Override
+    public String getDraftType() {
+        return getArguments().getString(MY_DRAFT_TYPE);
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -45,11 +73,6 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.draft_box);
     }
 
     @Override
@@ -94,7 +117,13 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
         refreshData();
     }
 
-    public void updateDate() {
-        mPresenter.requestNetData(0L, false);
+    @Override
+    protected void initData() {
+        DaggerDraftBoxComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .draftBoxPresenterModule(new DraftBoxPresenterModule(this))
+                .build().inject(this);
+        super.initData();
     }
 }

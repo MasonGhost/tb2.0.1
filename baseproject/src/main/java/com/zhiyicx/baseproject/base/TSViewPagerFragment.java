@@ -8,6 +8,8 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+
 import java.util.List;
 
 
@@ -51,6 +53,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.setAdjustMode(isAdjustMode());
+        mTsvToolbar.setIndicatorMode(setIndicatorMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
             @Override
@@ -62,6 +65,9 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
 
     protected boolean isAdjustMode() {
         return false;
+    }
+    protected int setIndicatorMode() {
+        return LinePagerIndicator.MODE_WRAP_CONTENT;
     }
 
     @Override

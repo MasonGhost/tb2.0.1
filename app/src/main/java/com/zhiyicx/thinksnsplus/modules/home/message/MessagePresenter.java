@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -110,6 +111,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 通知的小红点
      */
     private boolean mNotificaitonRedDotIsShow;
+
+    /**
+     * 用户未读消息
+     */
+    private UnReadNotificaitonBean mUnReadNotificaitonBean;
 
     private Subscription mUnreadNotiSub;
 
@@ -360,6 +366,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 });
     }
 
+    @Override
+    public UnReadNotificaitonBean getUnreadNotiBean() {
+        return mUnReadNotificaitonBean;
+    }
+
     /**
      * 未读数获取到
      *
@@ -540,6 +551,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
+                    mUnReadNotificaitonBean = data;
                     if (data.getCounts() == null) {
                         return false;
                     }
