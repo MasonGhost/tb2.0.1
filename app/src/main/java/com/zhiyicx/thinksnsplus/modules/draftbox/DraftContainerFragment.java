@@ -6,8 +6,6 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
-
 import java.util.Arrays;
 import java.util.List;
 
