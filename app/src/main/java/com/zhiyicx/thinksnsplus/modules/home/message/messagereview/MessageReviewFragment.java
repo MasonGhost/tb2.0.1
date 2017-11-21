@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UnhandlePinnedBean;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopNewsCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -27,6 +28,7 @@ import butterknife.BindView;
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
         BaseListBean> implements MessageReviewContract.View {
 
+    public static final String BUNDLE_PINNED_DATA = "bundle_pinned_data";
     private String[] mTopTypes;
     private String mTopType;
 
@@ -34,6 +36,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @BindView(R.id.v_shadow)
     View mVshadow;
+    private UnhandlePinnedBean mUnhandlePinnedBean;
 
     public static MessageReviewFragment newInstance(Bundle args) {
         MessageReviewFragment fragment = new MessageReviewFragment();
@@ -93,6 +96,37 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
+    protected void initData() {
+        super.initData();
+        if (getArguments() != null) {
+            mUnhandlePinnedBean = getArguments().getParcelable(BUNDLE_PINNED_DATA);
+        }
+
+        if (mUnhandlePinnedBean != null) {
+            if (mUnhandlePinnedBean.getFeeds() != null && mUnhandlePinnedBean.getFeeds().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
+
+            } else if (mUnhandlePinnedBean.getNews() != null && mUnhandlePinnedBean.getNews().getCount() > 0) {
+                chooseType(getString(R.string.stick_type_news_commnet), 1);
+            }
+
+        }
+    }
+
+    /**
+     * 选择置顶类型
+     *
+     * @param title    类型标题
+     * @param position 类型位置
+     */
+    private void chooseType(String title, int position) {
+        mToolbarCenter.setText(title);
+        mTopType = mTopTypes[position];
+        mPresenter.requestNetData(0L, false);
+        mActionPopupWindow.hide();
+    }
+
+    @Override
     protected void setCenterClick() {
         initTopPopWindow();
     }
@@ -123,28 +157,17 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 //                .item4Str(getString(R.string.stick_type_group_join))
 //                .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
                 .item1ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.stick_type_dynamic_commnet));
-                    mTopType = mTopTypes[0];
-                    mPresenter.requestNetData(0L, false);
-                    mActionPopupWindow.hide();
+                    chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
                 })
                 .item2ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.stick_type_news_commnet));
-                    mTopType = mTopTypes[1];
-                    mPresenter.requestNetData(0L, false);
-                    mActionPopupWindow.hide();
+
+                    chooseType(getString(R.string.stick_type_news_commnet), 1);
                 })
                 .item3ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.stick_type_group_commnet));
-                    mTopType = mTopTypes[2];
-                    mPresenter.requestNetData(0L, false);
-                    mActionPopupWindow.hide();
+                    chooseType(getString(R.string.stick_type_group_commnet), 2);
                 })
                 .item4ClickListener(() -> {
-                    mToolbarCenter.setText(getString(R.string.stick_type_group_join));
-                    mTopType = mTopTypes[3];
-                    mPresenter.requestNetData(0L, false);
-                    mActionPopupWindow.hide();
+                    chooseType(getString(R.string.stick_type_group_join), 3);
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override
