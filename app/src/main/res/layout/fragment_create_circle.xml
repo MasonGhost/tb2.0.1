@@ -9,7 +9,9 @@
     android:orientation="vertical"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-    <ScrollView
+
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bgColor"
@@ -195,6 +197,45 @@
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--修改位置-->
             <LinearLayout
+                android:id="@+id/ll_location_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_location"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/edit_circle_type"
+                    android:text=""
+                    android:textColor="@color/important_for_content"
+                    android:textColorHint="@color/general_for_hint"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:src="@mipmap/ic_arrow_smallgrey"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <!--简介-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -213,7 +254,7 @@
                     android:textSize="@dimen/size_sub_title"/>
                 <!--简介编辑框-->
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
-                    android:id="@+id/et_user_introduce"
+                    android:id="@+id/et_circle_introduce"
                     style="@style/style_edit_cursor"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -226,6 +267,119 @@
                     app:limitSize="@integer/introduce_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:id="@+id/ll_synchro"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_synchronization"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/wc_synchro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:id="@+id/ll_block"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_block"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/wc_block"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:id="@+id/ll_charge"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_charge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:hint="xxss"
+                    android:gravity="right"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="@string/gold"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:id="@+id/ll_free"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_free"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:text="@string/gold"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </com.wcy.overscroll.OverScrollLayout>
