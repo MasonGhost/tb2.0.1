@@ -11,7 +11,9 @@ import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
  * @Description
  */
 public interface DraftBoxContract {
-    interface View extends ITSListView<BaseDraftBean,Presenter> {}
+    interface View extends ITSListView<BaseDraftBean,Presenter> {
+        String getDraftType();
+    }
     interface Presenter extends ITSListPresenter<BaseDraftBean> {
         void deleteDraft(BaseDraftBean draftBean);
     }

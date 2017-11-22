@@ -43,10 +43,12 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     }
 
     public List<BaseDraftBean> requestCacheData() {
-        List<BaseDraftBean> answers = mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
-        List<BaseDraftBean> questions = mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
-        questions.addAll(answers);
-        return questions;
+        if (DraftBoxFragment.MY_DRAFT_TYPE_QUESTION.equals(mRootView.getDraftType())){
+            return mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        }else if(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER.equals(mRootView.getDraftType())){
+            return mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        }
+        return null;
     }
 
     @Override

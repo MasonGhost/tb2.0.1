@@ -133,7 +133,7 @@ public class ApiConfig {
 
     public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s";// 删除一条动态
     // 获取动态列表
-    public static final String DYNAMIC_TYPE_EMPTY= "empty"; // 占位
+    public static final String DYNAMIC_TYPE_EMPTY = "empty"; // 占位
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态
@@ -214,8 +214,7 @@ public class ApiConfig {
     // 订阅资讯频道
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
-    // 资讯详情网页
-    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
+
 
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
@@ -401,7 +400,10 @@ public class ApiConfig {
     public static final String APP_PATH_SHARE_GROUNP_DYNAMIC = "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
     public static final String APP_PATH_SHARE_DEFAULT = "api/develop";// 开发中的提示
     public static final String APP_PATH_SHARE_GROUP = "api/develop";// 分享圈子动态，目前暂时用开发中
-
+    public static final String APP_PATH_SHARE_QA_QUESTION_DETAIL = APP_DOMAIN + "h5/questions/%s/detail";// 问答问题分享 h5
+    public static final String APP_PATH_SHARE_QA_ANSWER_DETAIL = APP_DOMAIN + "h5/questions/answers/%s";// 问答回答分享 h5
+    // 资讯详情网页
+    public static final String APP_PATH_INFO_DETAILS_FORMAT = "/h5/news/%s/detail";
 
     /**
      * 仅仅测试使用
