@@ -42,6 +42,9 @@ public class CircleListItem extends BaseCircleItem {
         super(circleItemItemEvent);
     }
 
+    public CircleListItem() {
+    }
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.item_channel_list;

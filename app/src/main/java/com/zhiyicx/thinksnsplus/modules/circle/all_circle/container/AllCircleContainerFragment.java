@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,31 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     public static final String RECOMMEND_INFO = "-1";
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_createcircle;
+    }
+
+    @Override
+    protected int setRightLeftImg() {
+        return R.mipmap.search_icon_search;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.all_group);
+    }
+
+    @Override
     protected List<String> initTitles() {
         if (mTitle == null) {
             mTitle = new ArrayList<>();
@@ -35,13 +60,13 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(InfoListFragment.newInstance(RECOMMEND_INFO));
+            mFragments.add(CircleListFragment.newInstance(RECOMMEND_INFO));
         }
         return mFragments;
     }
 
     @Override
     protected void initData() {
-
+        mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow,R.color.white);
     }
 }

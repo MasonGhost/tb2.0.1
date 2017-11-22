@@ -585,12 +585,17 @@
             android:name=".modules.markdown_editor.MarkdownActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.detailv2.CircleDetailActivity">
-        </activity>
-        <activity android:name=".modules.circle.create.CreateCircleActivity">
-        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".modules.circle.detailv2.CircleDetailActivity"/>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".modules.circle.create.CreateCircleActivity"/>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".modules.circle.all_circle.container.AllCircleContainerActivity"/>
         <activity android:name=".modules.circle.mine.container.MyCircleContainerActivity"
-                  android:screenOrientation="portrait"/>
+                                                                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

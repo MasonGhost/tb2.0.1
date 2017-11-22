@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/21/15:50
  * @Email Jliuer@aliyun.com
  * @Description
@@ -13,7 +13,7 @@ public class AllCircleContainerActivity extends TSActivity<AllCircleContainerPre
 
     @Override
     protected AllCircleContainerFragment getFragment() {
-        return null;
+        return new AllCircleContainerFragment();
     }
 
     @Override

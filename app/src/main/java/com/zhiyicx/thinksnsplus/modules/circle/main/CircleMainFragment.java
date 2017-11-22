@@ -60,6 +60,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected int setRightLeftImg() {
+        return R.mipmap.search_icon_search;
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), CreateCircleActivity.class));

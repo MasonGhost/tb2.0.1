@@ -72,6 +72,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected TextView mToolbarLeft;
     protected View mDriver;
     protected TextView mToolbarRight;
+    protected TextView mToolbarRightLeft;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
     /**
@@ -642,6 +643,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         toolBarContainer.setBackgroundResource(setToolBarBackgroud());
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
+        mToolbarRightLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_left);
         mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
         mIvRefresh = (ImageView) toolBarContainer.findViewById(R.id.iv_refresh);
         // 如果标题为空，就隐藏它
@@ -651,9 +653,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
+        mToolbarRightLeft.setVisibility(TextUtils.isEmpty(setRightLeftTitle()) && setRightLeftImg() == 0 ? View.GONE : View.VISIBLE);
+        mToolbarRightLeft.setText(setRightLeftTitle());
 
         setToolBarLeftImage(setLeftImg());
         setToolBarRightImage(setRightImg());
+        setToolBarRightLeftImage(setRightLeftImg());
         RxView.clicks(mToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
@@ -670,6 +675,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     @Override
                     public void call(Void aVoid) {
                         setRightClick();
+                    }
+                });
+
+        RxView.clicks(mToolbarRightLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setRightLeftClick();
                     }
                 });
         RxView.clicks(mToolbarCenter)
@@ -698,6 +713,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected void setToolBarRightImage(int resImg) {
         mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
+        mToolbarRightLeft.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
+    }
+
+    protected void setToolBarRightLeftImage(int resImg) {
+        mToolbarRightLeft.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
     }
 
     /**
@@ -743,6 +763,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
+     * 设置右边靠左边那个的标题
+     */
+    protected String setRightLeftTitle() {
+        return "";
+    }
+
+    /**
      * 设置左边的图片
      */
     protected int setLeftImg() {
@@ -753,6 +780,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置右边的图片
      */
     protected int setRightImg() {
+        return 0;
+    }
+
+    /**
+     * 设置右边靠左边那个的图片
+     */
+    protected int setRightLeftImg() {
         return 0;
     }
 
@@ -769,6 +803,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void setRightClick() {
     }
 
+    /**
+     * 设置右边的点击时间，有必要重写该方法
+     */
+    protected void setRightLeftClick() {
+    }
+
     protected void setCenterClick() {
     }
 
@@ -780,6 +820,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
         }
     }
