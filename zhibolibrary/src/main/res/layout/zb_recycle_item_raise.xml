@@ -12,7 +12,7 @@
         android:layout_height="50px"
         android:layout_centerVertical="true"
         android:layout_marginLeft="26px"
-        android:src="@mipmap/pic_touxiang_150" />
+        android:src="@mipmap/default_user" />
 
     <TextView
         android:id="@+id/tv_raise_name"

@@ -9,6 +9,7 @@ import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
@@ -16,6 +17,7 @@ import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.FormBody;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -48,10 +50,25 @@ public class GoldRankModeImpl implements GoldRankModel {
             }
         });
     }
-    @Override
-    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String userId, String filed) {
+    /**
+     * 通过uisd获取用户信息
+     *
+     * @param usid
+     * @return
+     */
 
-        return mUserService.getUsIdInfo(ZBLApi.API_GET_USID_INFO, userId, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn(Schedulers.io());
+    @Override
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_INFO);
+        builder.add("usid", usid);
+        builder.add("filed", filed);
+        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+        for (PermissionData data : permissionDatas) {
+            builder.add(data.auth_key, data.auth_value);
+        }
+        FormBody formBody = builder.build();
+        return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
 
     }
 }

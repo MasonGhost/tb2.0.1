@@ -17,7 +17,7 @@
         android:layout_width="100px"
         android:layout_height="100px"
         android:layout_marginLeft="20px"
-        tool:src="@mipmap/pic_touxiang_150"/>
+        tool:src="@mipmap/default_user"/>
 
     <ImageView
         android:id="@+id/iv_follow_item_verified"

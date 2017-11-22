@@ -40,7 +40,7 @@ public class LiveChatFollowListHolder extends ZBLBaseHolder<UserMessage> {
 
 
         try {
-            CharSequence chars = ColorPhrase.from(content).withSeparator("<>").innerColor(0xff64d7fe).outerColor(0xfffebf17).format();
+            CharSequence chars = ColorPhrase.from(content).withSeparator("<>").innerColor(0xff0096E6).outerColor(0xfffebf17).format();
             mContentTV.setText(chars);
         } catch (Exception e) {
             e.printStackTrace();

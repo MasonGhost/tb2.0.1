@@ -2,13 +2,17 @@ package com.zhiyicx.zhibolibrary.model.api.service;
 
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
+import com.zhiyicx.zhibolibrary.model.entity.GoldHistoryJson;
 import com.zhiyicx.zhibolibrary.model.entity.TradeOrder;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.model.entity.ZBApiToken;
 
+import okhttp3.FormBody;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -49,58 +53,37 @@ public interface GoldService {
     /**
      * 生成口令
      *
-     * @param token     通讯口令,每个口令有效期60s (当前时间戳+口令类型(type)+当前操作的用户uid组成的md5字符串)
-     * @param hextime   十六进制的时间戳
-     * @param userId    当前登陆的用户UID
-     * @param type      兑换消耗的产品类型 (默认为1)
-     * @param toUserId  涉及接收方的时候传递该参数
-     * @param accessKey 授权accesskey
-     * @param secretKey 授权secretkey
+
      * @return
      */
-    @FormUrlEncoded
-    @POST(ZBLApi.EXTRAL_URL)
-    Observable<BaseJson<ZBApiToken>> getPreToken(@Field("api") String api, @Field("token") String token,
-                                                 @Field("hextime") String hextime,
-                                                 @Field("user_id") String userId,
-                                                 @Field("type") int type,
-                                                 @Field("to_user_id") String toUserId,
-                                                 @Field("auth_accesskey") String accessKey,
-                                                 @Field("auth_secretkey") String secretKey);
+    @POST
+    Observable<BaseJson<ZBApiToken>> getPreToken(@Url String url, @Body FormBody formBody);
 
 
     /**
-     * @param preToken  预操作的口令
-     * @param count     要兑换的数量
-     * @param giftCode 赠送礼物的代号
-     * @param accessKey 授权accesskey
-     * @param secretKey 授权secretkey
+
      * @return
      */
-    @FormUrlEncoded
-    @POST(ZBLApi.EXTRAL_URL)
-    Observable<BaseJson<TradeOrder>> createOrder(@Field("api") String api, @Field("pre_token") String preToken,
-                                                 @Field("count") int count,
-                                                 @Field("gift_code") String giftCode,
-                                                 @Field("params") String params,
-                                                 @Field("auth_accesskey") String accessKey,
-                                                 @Field("auth_secretkey") String secretKey);
+    @POST
+    Observable<BaseJson<TradeOrder>> createOrder(@Url String url, @Body FormBody formBody);
 
 
     /**
      * 查看订单状态
      *
-     * @param tradeOrder 订单号
-     * @param accessKey  授权accesskey
-     * @param secretKey  授权secretkey
+
      * @return
      */
-    @FormUrlEncoded
-    @POST(ZBLApi.EXTRAL_URL)
-    Observable<BaseJson<UserInfo>> getOrderStatus(@Field("api") String api, @Field("trade_order") String tradeOrder,
-                                                  @Field("auth_accesskey") String accessKey,
-                                                  @Field("auth_secretkey") String secretKey);
+    @POST
+    Observable<BaseJson<UserInfo>> getOrderStatus(@Url String url, @Body FormBody formBody);
 
-
+    /**
+     * 获取金币兑换的历史记录
+     *
+     * @param formBody
+     * @return
+     */
+    @POST
+    Observable<BaseJson<GoldHistoryJson[]>> getGoldList(@Url String url,@Body FormBody formBody);
 
 }

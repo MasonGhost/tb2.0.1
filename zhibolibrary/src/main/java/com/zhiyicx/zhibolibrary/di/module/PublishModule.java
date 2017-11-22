@@ -6,9 +6,9 @@ import com.zhiyicx.zhibolibrary.model.PublishModel;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.impl.PublishModelImpl;
 import com.zhiyicx.zhibolibrary.ui.common.ZBLBaseFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.CameraFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.PublishCoreFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.ScrollClearnFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLCameraFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLPublishCoreFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLScrollClearnFragment;
 import com.zhiyicx.zhibolibrary.ui.view.CameraView;
 import com.zhiyicx.zhibolibrary.ui.view.PublishCoreView;
 import com.zhiyicx.zhibolibrary.ui.view.PublishView;
@@ -43,17 +43,17 @@ public class PublishModule {
     @ActivityScope
     @Provides
     PublishCoreView providePublishCoreView() {
-        return PublishCoreFragment.newInstance(PublishCoreFragment.PUBLISH_VIEW);
+        return ZBLPublishCoreFragment.newInstance(ZBLPublishCoreFragment.PUBLISH_VIEW);
     }
     @ActivityScope
     @Provides
     ZBLBaseFragment provideBaseFragment(){
-        return ScrollClearnFragment.newInstance(PublishCoreFragment.LIVE_VIEW);
+        return ZBLScrollClearnFragment.newInstance(ZBLPublishCoreFragment.LIVE_VIEW);
     }
 
     @ActivityScope
     @Provides
     CameraView provideCameraView(){
-        return CameraFragment.newInstance();
+        return ZBLCameraFragment.newInstance();
     }
 }

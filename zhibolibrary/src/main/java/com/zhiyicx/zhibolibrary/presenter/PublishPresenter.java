@@ -2,6 +2,7 @@ package com.zhiyicx.zhibolibrary.presenter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,16 +27,16 @@ import com.soundcloud.android.crop.Crop;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.PublishModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
-
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.PublishLiveActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLPublishLiveActivity;
 import com.zhiyicx.zhibolibrary.ui.view.PublishView;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
 import com.zhiyicx.zhibolibrary.util.DeviceUtils;
@@ -45,6 +46,7 @@ import com.zhiyicx.zhibolibrary.util.SensitivewordFilter;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 import com.zhiyicx.zhibosdk.manage.ZBInitConfigManager;
 import com.zhiyicx.zhibosdk.manage.ZBStreamingClient;
+import com.zhiyicx.zhibosdk.manage.listener.OnCloseStatusListener;
 import com.zhiyicx.zhibosdk.manage.listener.OnGiftConfigCallback;
 import com.zhiyicx.zhibosdk.manage.listener.OnLiveStartPlayListener;
 import com.zhiyicx.zhibosdk.manage.listener.ZBFrameCapturedCallback;
@@ -68,6 +70,7 @@ import javax.inject.Inject;
 
 import okhttp3.ResponseBody;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -84,7 +87,6 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     private File mCropfile;
     private LocationManager mLocationManager;
     private String mLocation = "";
-    private ZBStreamingClient mZBStreamingClient = ZBStreamingClient.getInstance();
     public boolean isStreaming;
     public final String TAG = this.getClass().getSimpleName();
 
@@ -95,7 +97,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     private FilterManager mFilterManager;
     private MyListener myListener;
     private int mGLTextureId;
-
+    private Subscription glsSubscrebtion;
 
     ZBFrameCapturedCallback mCapturedCallback = new ZBFrameCapturedCallback() {
         @Override
@@ -117,19 +119,22 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
                     });
         }
     };
+
     OnGlSurfaceShotListener mShotLitener = new OnGlSurfaceShotListener() {
         @Override
         public void onGlSurfaceShot(final Bitmap bitmap, final String path) {
 
-            Observable.just(bitmap).subscribeOn(Schedulers.io()).map(new Func1<Bitmap, Bitmap>() {
+            glsSubscrebtion = Observable.just(bitmap).subscribeOn(Schedulers.io()).map(new Func1<Bitmap, Bitmap>() {
                 @Override
                 public Bitmap call(Bitmap bitmap) {
-                    if (bitmap == null) return null;
+                    if (bitmap == null) {
+                        return null;
+                    }
                     Bitmap map = null;
                     android.graphics.Matrix matrix = new android.graphics.Matrix();
 
 
-                    if (mZBStreamingClient.isBackCamera()) {
+                    if (ZBStreamingClient.getInstance().isBackCamera()) {
                         matrix.postScale(-1, 1);
                         matrix.postRotate(270);
                         map = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -163,7 +168,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     @Inject
     public PublishPresenter(PublishModel model, PublishView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
         initSensitiveWordFilter();
         myInfo = ZhiboApplication.getUserInfo();
@@ -199,6 +204,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
             case Surface.ROTATION_270:
                 degrees = 270;
                 break;
+            default:
         }
 
         int result;
@@ -220,15 +226,16 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
             return;
         }
 
-        if (ZhiboApplication.filter == null)
+        if (ZhiboApplication.filter == null) {
             ZhiboApplication.initFilterWord();
+        }
     }
 
     /**
      * 设置监听
      */
     private void initListener() {
-        mZBStreamingClient.setNetworkJitterListener(new OnNetworkJitterListener() {
+        ZBStreamingClient.getInstance().setNetworkJitterListener(new OnNetworkJitterListener() {
             /**
              * 当前网络不太稳定
              */
@@ -246,20 +253,23 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
             }
         });
 
-        mZBStreamingClient.setReconnetListener(new OnReconnetListener() {
+        ZBStreamingClient.getInstance().setReconnetListener(new OnReconnetListener() {
             @Override
             public void reconnectStart() {
+                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectStart ");
                 mRootView.setPlaceHolderVisible(true);
             }
 
             @Override
             public void reconnectScuccess() {
                 mRootView.setPlaceHolderVisible(false);
+                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
             }
 
             @Override
             public void reConnentFailure() {
                 mRootView.setPlaceHolderVisible(false);
+                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reConnentFailure ");
                 isException = true;//重连失败标记为异常状态
                 close();
             }
@@ -271,7 +281,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
                 .defaultFilter(new FilterInfo(false, 0))
                 .addGlSurfaceShotListener(mShotLitener)
                 .build();
-        mZBStreamingClient.setZBStreamingPreviewListener(new ZBStreamingPreviewListener() {
+        ZBStreamingClient.getInstance().setZBStreamingPreviewListener(new ZBStreamingPreviewListener() {
 
             @Override
             public boolean onPreviewFrame(final byte[] var1, final int var2, final int var3) {
@@ -280,7 +290,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         });
 
 
-        mZBStreamingClient.setZBSurfaceTextureListener(new ZBSurfaceTextureListener() {
+        ZBStreamingClient.getInstance().setZBSurfaceTextureListener(new ZBSurfaceTextureListener() {
             @Override
             public void onSurfaceCreated() {
                 mFilterManager.initialize();
@@ -312,9 +322,10 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      */
     public void captureFrame(boolean isHolder) {
         this.isHolder = isHolder;
-        if (mFilterManager != null)
+        if (mFilterManager != null) {
             mFilterManager.setIsCapture(true);
-        //mZBStreamingClient.captureFrame(0, 0, mCapturedCallback);
+        }
+        // ZBStreamingClient.getInstance().captureFrame(0, 0, mCapturedCallback);
     }
 
     /**
@@ -323,7 +334,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
 
     public void getLocation() {
         //获得位置管理器
-        mLocationManager = (LocationManager) UiUtils.getContext().getSystemService(UiUtils.getContext().LOCATION_SERVICE);
+        mLocationManager = (LocationManager) UiUtils.getContext().getSystemService(Context.LOCATION_SERVICE);
         // 设定标准
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);// 精确度
@@ -360,25 +371,30 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      */
     class MyListener implements LocationListener {
 
+        @Override
         public void onLocationChanged(Location location) {
             // 位置发生改变时调用
             // 获取经纬度并且把把正确经纬度转换成火星坐标
             mLocation = location.getLatitude() + "," + location.getLongitude();
             System.out.println("location = " + location.getLatitude());
             // 成功获得地址后,停止获取更新节约资源和电量
-            if (mLocationManager != null)
+            if (mLocationManager != null) {
                 mLocationManager.removeUpdates(this);
+            }
 
         }
 
+        @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             // 状态改变时调用
         }
 
+        @Override
         public void onProviderEnabled(String provider) {
             // 位置提供者可用时调用
         }
 
+        @Override
         public void onProviderDisabled(String provider) {
             // 位置提供者不可用时调用
         }
@@ -400,7 +416,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareMoment(PublishLiveActivity publishLiveActivity) {
+    public void shareMoment(ZBLPublishLiveActivity publishLiveActivity) {
         mSharePolicy.shareMoment(publishLiveActivity, this);
     }
 
@@ -409,7 +425,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareWechat(PublishLiveActivity publishLiveActivity) {
+    public void shareWechat(ZBLPublishLiveActivity publishLiveActivity) {
         mSharePolicy.shareWechat(publishLiveActivity, this);
     }
 
@@ -418,7 +434,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareWeibo(PublishLiveActivity publishLiveActivity) {
+    public void shareWeibo(ZBLPublishLiveActivity publishLiveActivity) {
         mSharePolicy.shareWeibo(publishLiveActivity, this);
     }
 
@@ -427,7 +443,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareQQ(PublishLiveActivity publishLiveActivity) {
+    public void shareQQ(ZBLPublishLiveActivity publishLiveActivity) {
         mSharePolicy.shareQQ(publishLiveActivity, this);
     }
 
@@ -436,9 +452,11 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareZone(PublishLiveActivity publishLiveActivity) {
+    public void shareZone(ZBLPublishLiveActivity publishLiveActivity) {
         mSharePolicy.shareZone(publishLiveActivity, this);
     }
+
+
 
 
     /**
@@ -446,15 +464,71 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      */
     public void close() {
         mRootView.isSelfClose(true);
-        if (mRootView != null) mRootView.killMyself();//杀死自己
+
         //如果开始直播才调用服务器的关闭流接口
         ZBEndStreamJson endStream = mRootView.getEndStream();
-        if (isException) endStream.isException = true;
+        if (isException) {
+            endStream.isException = true;
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("endStream", endStream);
         bundle.putSerializable("presenter", ZhiboApplication.getUserInfo());
 
-        if (isStreaming) EventBus.getDefault().post(bundle, "close_stearm");
+        if (isStreaming) {
+            close(bundle);
+        } else if (mRootView != null) {
+            mRootView.killMyself();//杀死自己
+        }
+    }
+
+    /**
+     * 关闭流
+     */
+    @org.simple.eventbus.Subscriber(tag = "close_stearm")
+    public void close(Bundle bundle) {
+        final ZBEndStreamJson json = (ZBEndStreamJson) bundle.getSerializable("endStream");
+
+        ZBStreamingClient.getInstance().closePlay(new OnCloseStatusListener() {
+            @Override
+            public void onSuccess(ZBEndStreamJson endStreamJson) {
+//                if (json != null)
+//                    launchEndStreamActivity(json);
+//                else
+//                    launchEndStreamActivity(endStreamJson);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                throwable.printStackTrace();
+//                if(json != null)
+//                launchEndStreamActivity(json);
+            }
+
+            @Override
+            public void onFial(String code, String message) {
+                LogUtils.warnInfo(TAG, message);
+            }
+        });
+        launchEndStreamActivity(json, (UserInfo) bundle.getSerializable("presenter"));
+        if (mRootView != null) {
+            mRootView.killMyself();//杀死自己
+        }
+    }
+
+    /**
+     * 发送数据到结束直播页面
+     *
+     * @param endStreamJson
+     */
+    private void launchEndStreamActivity(ZBEndStreamJson endStreamJson, UserInfo userInfo) {
+        Intent intent = new Intent(UiUtils.getContext(), ZBLEndStreamingActivity.class);
+        intent.putExtra("isAudience", false);//是否为观众
+        intent.putExtra("isException", endStreamJson.isException);//是异常结束
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("income", endStreamJson.data);
+        bundle.putSerializable("presenter", userInfo);
+        intent.putExtras(bundle);
+        mRootView.launchEndStreamActivity(intent);
     }
 
     /**
@@ -496,10 +570,10 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         String title = "";//标题为可选参数
         if (!TextUtils.isEmpty(mRootView.getTitel())) {
             title = mRootView.getTitel();
-            if (ZhiboApplication.filter != null)
+            if (ZhiboApplication.filter != null) {
                 title = ZhiboApplication.filter.replaceSensitiveWord(title, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf
                         .filter_word_replace);
-            else {
+            } else {
                 ZhiboApplication.initFilterWord();
                 mRootView.showMessage(UiUtils.getString("str_network_error_action"));
                 return;
@@ -510,7 +584,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
             UiUtils.SnackbarTextWithLong(UiUtils.getString(R.string.str_not_wifi_prompt));
         }
 
-        mZBStreamingClient.startPlay(title, mLocation, mCropfile, new OnLiveStartPlayListener() {
+        ZBStreamingClient.getInstance().startPlay(title, mLocation, mCropfile, new OnLiveStartPlayListener() {
             @Override
             public void onStartPre() {
 //                showLoading();
@@ -524,8 +598,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
 
             @Override
             public void onStartSuccess() {
-                if (mLocationManager != null && myListener != null)
+                if (mLocationManager != null && myListener != null) {
                     mLocationManager.removeUpdates(myListener);
+                }
                 hideLoading();
                 isStreaming = true;
                 EventBus.getDefault().post("1", "remove_all");//清除屏幕按钮
@@ -585,8 +660,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
                                 public void call(final ResponseBody responseBody) {
 
                                     boolean isDownload = UiUtils.writeResponseBodyToDisk(responseBody, value.image);
-                                    if (isDownload)
+                                    if (isDownload) {
                                         DataHelper.SetStringSF(value.image, value.image, UiUtils.getContext());
+                                    }
 
 
                                 }
@@ -618,13 +694,15 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      * 转换摄像头
      */
     public void switchCamera() {
-        if (mZBStreamingClient == null) return;
+        if (ZBStreamingClient.getInstance() == null) {
+            return;
+        }
         LogUtils.warnInfo(TAG, "switchCamera");
-        mZBStreamingClient.switchCamera();//转换摄像头
+        ZBStreamingClient.getInstance().switchCamera();//转换摄像头
     }
 
     public void reconnect() {
-        mZBStreamingClient.reconnect();
+        ZBStreamingClient.getInstance().reconnect();
     }
 
     /**
@@ -634,10 +712,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      */
     public void createLiveRoom(Intent intent) {
         try {
-            mZBStreamingClient = ZBStreamingClient.getInstance();
             //水印
             WatermarkSetting watermarkSetting = getWaterMarkSetting();
-            mZBStreamingClient.initConfig(
+            ZBStreamingClient.getInstance().initConfig(
                     mRootView.getCameraPreViewAFL(),
                     mRootView.getCameraPreViewSFV(), null);
         } catch (JSONException e) {
@@ -695,28 +772,29 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     }
 
 
-    /**
-     * activity销毁时做的事情
-     * private FilterManager mFilterManager;
-     */
+    @Override
     public void onDestroy() {
-        if (mCropfile != null)
+        if (mCropfile != null) {
             mCropfile = null;
-        if (mLocationManager != null)
+        }
+        if (mLocationManager != null) {
             mLocationManager = null;
-        if (mFilterManager != null)
+        }
+        if (mFilterManager != null) {
             mFilterManager.release();
-        mZBStreamingClient.onDestroy();
+        }
+        ZBStreamingClient.getInstance().onDestroy();
+        unSubscribe(glsSubscrebtion);
         super.onDestroy();
     }
 
     public void onResume() {
-        mZBStreamingClient.onResume();
+        ZBStreamingClient.getInstance().onResume();
     }
 
 
     public void onPause() {
-        mZBStreamingClient.onPause();
+        ZBStreamingClient.getInstance().onPause();
     }
 
     public void isBackGround(boolean isBackGround) {
@@ -726,6 +804,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     public boolean isBackGround() {
         return this.isBackGround;
     }
+
 
     @Override
     public void onStart(Share share) {

@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibolibrary.model.entity;
 
-import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.*;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 
 import java.io.Serializable;
@@ -100,9 +100,9 @@ public class UserInfo implements Serializable {
      * @param userInfo
      * @return
      */
-    public static ShareContent getShareContentByUserInfo(UserInfo userInfo) throws NullPointerException {
+    public static com.zhiyicx.common.thridmanager.share.ShareContent getShareContentByUserInfo(UserInfo userInfo) throws NullPointerException {
 
-        ShareContent shareContent = new ShareContent();
+        com.zhiyicx.common.thridmanager.share.ShareContent shareContent = new com.zhiyicx.common.thridmanager.share.ShareContent();
         if (userInfo.uname != null) {
             shareContent.setTitle(ZhiboApplication.getShareContent().getTitle());
             shareContent.setTitle(shareContent.getTitle().replace(STR_SHARE_NAME, userInfo.uname));
@@ -119,5 +119,4 @@ public class UserInfo implements Serializable {
 
         return shareContent;
     }
-
 }

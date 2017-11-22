@@ -1,6 +1,7 @@
 package com.zhiyicx.zhibolibrary.model.impl;
 
 
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.model.LivePlayModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.service.CommonService;
@@ -8,10 +9,13 @@ import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 
+import okhttp3.FormBody;
 import okhttp3.ResponseBody;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by jungle on 2016/4/1.
@@ -33,17 +37,38 @@ public class LivePlayModelImpl implements LivePlayModel {
     }
 
     @Override
-    public Observable<BaseJson<UserInfo[]>> getUsidInfo(String user_id, String file,
-                                                        String accessKey,
-                                                        String secretKey) {
-        return mUserService.getUsIdInfo(ZBLApi.API_GET_USID_INFO, user_id, file, accessKey, secretKey);
+    public Observable<BaseJson<FollowInfo>> followUser(String action, String usid) {
+
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_USER_FOLLW);
+        builder.add("action",action);
+        getPermissionData(usid, builder);
+        FormBody formBody = builder.build();
+        return mUserService.followUser(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
     }
 
+    private void getPermissionData(String usid, FormBody.Builder builder) {
+        builder.add("usid", usid);
+        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+        for (PermissionData data : permissionDatas) {
+            builder.add(data.auth_key, data.auth_value);
+        }
+    }
+
+    /**
+     * 通过uisd获取用户信息
+     *
+     * @return
+     */
 
     @Override
-    public Observable<BaseJson<FollowInfo>> followUser(String action, String userId, String accessKey, String secretKey) {
-        return mUserService.followUser(ZBLApi.API_USER_FOLLW,action, userId, accessKey, secretKey);
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_INFO);
+        builder.add("filed", filed);
+        getPermissionData(usid, builder);
+        FormBody formBody = builder.build();
+        return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
+
     }
-
-
 }

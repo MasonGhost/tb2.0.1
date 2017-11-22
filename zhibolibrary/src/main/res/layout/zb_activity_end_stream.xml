@@ -58,7 +58,7 @@
             android:id="@+id/tv_end_stream_fans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_blue_gray"
+            android:textColor="@color/title_blue"
             android:textSize="35px" />
 
         <TextView
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="32px"
-            android:textColor="@color/color_blue_gray"
+            android:textColor="@color/title_blue"
             android:textSize="60px" />
 
 
@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="32px"
-            android:textColor="@color/color_blue_gray"
+            android:textColor="@color/title_blue"
             android:textSize="60px" />
 
     </LinearLayout>

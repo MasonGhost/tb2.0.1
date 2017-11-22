@@ -3,6 +3,7 @@ package com.zhiyicx.zhibolibrary.di.module;
 import com.zhiyicx.imsdk.core.ImService;
 import com.zhiyicx.imsdk.core.autobahn.WebSocket;
 import com.zhiyicx.zhibolibrary.model.api.service.CommonService;
+import com.zhiyicx.zhibolibrary.model.api.service.GoldService;
 import com.zhiyicx.zhibolibrary.model.api.service.LiveService;
 import com.zhiyicx.zhibolibrary.model.api.service.SearchService;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
@@ -51,6 +52,12 @@ public class ServiceModule {
         return new ImService(webSocket);
     }
 
+
+    @Singleton
+    @Provides
+    GoldService provideGoldService(Retrofit retrofit) {
+        return retrofit.create(GoldService.class);
+    }
     @Singleton
     @Provides
     ServiceManager provideServiceManager(
@@ -58,10 +65,10 @@ public class ServiceModule {
             , LiveService liveService
             , SearchService searchService
             , UserService userService
-
-            , ImService imService) {
+            , ImService imService
+            , GoldService goldService) {
         return new ServiceManager(commonService, liveService
-                , searchService,  userService,imService);
+                , searchService,  userService,imService,goldService);
     }
 
 

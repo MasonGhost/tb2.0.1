@@ -461,7 +461,7 @@ public class UiUtils {
                 .crossFade()
                 .centerCrop()
                 .transform(transformation)
-                .placeholder(R.mipmap.pic_touxiang_150)
+                .placeholder(R.mipmap.default_user)
                 .into(imageView);
     }
 

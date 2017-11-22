@@ -18,9 +18,8 @@ public class SearchResult implements Serializable, Parcelable {
 
     public SearchResult() {
     }
-    public SearchResult(String uid) {
-        this.user=new UserInfo();
-        user.uid=uid;
+    public SearchResult(UserInfo userInfo) {
+        this.user=userInfo;
     }
 
     @Override

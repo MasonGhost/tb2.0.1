@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="bbblack">#bb000000</color>
+    <color name="title_blue">#0096E6</color>
     <color name="test">#fb667d</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -15,17 +17,18 @@
     <color name="color_light_gray">#999999</color>
     <color name="color_font_gray">#ebebeb</color>
     <color name="color_font_red">#e83632</color>
-
-
+    <color name="bar">#99202020</color>
+    <color name="fav_border">#17a0e9</color>
     <color name="color_divider">#e1e1e1</color>
-    <color name="color_top_navigate">#353743</color>
+    <!--<color name="color_top_navigate">#353743</color>-->
+    <color name="color_top_navigate">#ffffff</color>
 
     <color name="color_blue_dark">#48b4d8</color>
     <color name="color_blue_dark2">#00a9e5</color>
     <color name="color_blue_dark3">#4eabcc</color>
     <color name="color_blue_light">#49cfff</color>
     <color name="color_blue_gray">#60C1E4</color>
-    <color name="color_blue_button">#59b6d7</color>
+    <color name="color_blue_button">#0096E6</color>
     <color name="color_blue_10_button">#2259b6d7</color>
     <color name="color_blue_button_transparent">#ee59b6d7</color>
     <color name="color_gray_button_transparent">#eecccccc</color>
@@ -36,7 +39,8 @@
 
 
     <color name="color_bottom_navigate">#363844</color>
-    <color name="color_background">#f0f0f0</color>
+    <!--<color name="color_background">#f0f0f0</color>-->
+    <color name="color_background">#ffffff</color>
     <!--字体颜色-->
     <color name="color_font_second">#646464</color>
     <color name="color_font_black_light">#333333</color>
@@ -66,6 +70,15 @@
     <color name="name">#64d7fe</color>
     <color name="color_loading">#1691d9</color>
     <color name="color_dot">#ea2000</color>
-
-
+    <color name="blue">#ff0f81d9</color>
+    <color name="tab_selected_text_color">@color/blue</color>
+    <dimen name="indicatorHeight">2dp</dimen>
+    <!--选项卡游标颜色-->
+    <color name="tab_indicator_color">@color/blue</color>
+    <!--选项卡游标高度-->
+    <dimen name="tab_indicator_height">@dimen/indicatorHeight</dimen>
+    <!--公共按钮高度-->
+    <dimen name="button_height">40dp</dimen>
+    <!--缺省字颜色-->
+    <color name="StormDust">#59606060</color>
 </resources>

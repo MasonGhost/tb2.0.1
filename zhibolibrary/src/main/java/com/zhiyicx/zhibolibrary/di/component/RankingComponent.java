@@ -2,7 +2,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.RankingModule;
-import com.zhiyicx.zhibolibrary.ui.activity.RankingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLRankingActivity;
 
 import dagger.Component;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = RankingModule.class, dependencies = ClientComponent.class)
 public interface RankingComponent {
-    void inject(RankingActivity activity);
+    void inject(ZBLRankingActivity activity);
 }

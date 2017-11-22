@@ -12,8 +12,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_search_tab"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/color_font_divide_gry"
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -21,10 +21,11 @@
 
     </com.zhiyicx.zhibolibrary.ui.components.refresh.RefreshLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/iv_search_tab_placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/color_light_gray"
         android:layout_centerInParent="true"
         android:visibility="gone"
         />

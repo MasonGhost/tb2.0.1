@@ -9,6 +9,7 @@
     <ImageView
         android:id="@+id/iv_camera_capture"
         android:layout_width="match_parent"
+        android:scaleType="centerCrop"
         android:layout_height="match_parent" />
 
     <com.zhy.autolayout.AutoRelativeLayout

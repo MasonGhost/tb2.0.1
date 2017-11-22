@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.EndStreamModule;
-import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = EndStreamModule.class, dependencies = ClientComponent.class)
 public interface EndStreamComponent {
-    void inject(EndStreamingActivity activity);
+    void inject(ZBLEndStreamingActivity activity);
 }

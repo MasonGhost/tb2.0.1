@@ -26,9 +26,9 @@ public class SpaceItemGridDecoration extends RecyclerView.ItemDecoration {
 
         if (position % 2 == 0) {
             outRect.left = space;
-            outRect.right = space * 2;
+//            outRect.right = space * 2;
         } else {
-            outRect.left = space * 2;
+//            outRect.left = space * 2;
             outRect.right = space;
         }
     }

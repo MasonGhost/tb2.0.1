@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.GoldRankModule;
-import com.zhiyicx.zhibolibrary.ui.activity.GoldRankActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLGoldRankActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = GoldRankModule.class, dependencies = ClientComponent.class)
 public interface GoldRankComponent {
-    void inject(GoldRankActivity activity);
+    void inject(ZBLGoldRankActivity activity);
 }

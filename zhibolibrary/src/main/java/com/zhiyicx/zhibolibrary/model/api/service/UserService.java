@@ -3,6 +3,7 @@ package com.zhiyicx.zhibolibrary.model.api.service;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.model.entity.WalletStatus;
@@ -12,6 +13,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -46,19 +48,15 @@ public interface UserService {
      * @param formBody
      * @return
      */
-    @POST(ZBLApi.EXTRAL_URL)
-    Observable<BaseJson<SearchResult[]>> getFollowList(@Body FormBody formBody);
+    @POST
+    Observable<BaseJson<SearchResult[]>> getFollowList(@Url String url,@Body FormBody formBody);
 
 
-    @FormUrlEncoded
-    @POST(ZBLApi.EXTRAL_URL)
-    Observable<BaseJson<FollowInfo>> followUser(@Field("api") String api, @Field("action") String action,
-                                                @Field("user_id") String userId,
-                                                @Field("auth_accesskey") String accessKey,
-                                                @Field("auth_secretkey") String secretKey);
-
+    @POST
+    Observable<BaseJson<FollowInfo>>  followUser(@Url String url, @Body FormBody formBody);
     /**
      * 获取用户最新的统计数据
+     *
      * @param api
      * @param userId
      * @param accessKey
@@ -76,7 +74,6 @@ public interface UserService {
     Observable<BaseJson<UserInfo>> updateAuth(@Field("api") String api, @Field("key") String key,
                                               @Field("auth_accesskey") String accessKey,
                                               @Field("auth_secretkey") String secretKey);
-
 
 
     /**
@@ -108,6 +105,30 @@ public interface UserService {
                                                  @Field("field") String field,
                                                  @Field("auth_accesskey") String accessKey,
                                                  @Field("auth_secretkey") String secretKey);
+
+    /**
+     * 获取第三方用户个人信息
+     *
+     * @param url
+     * @param formBody
+     * @return
+     */
+    @POST
+    Observable<BaseJson<UserInfo[]>> getUsIdInfobyFrom(@Url String url, @Body FormBody formBody);
+
+    /**
+     * 通过票据获取权限信息
+     *
+     * @param url
+     * @param api
+     * @param ticket
+     * @return
+     */
+    @FormUrlEncoded
+    @POST
+    Observable<BaseJson<PermissionData[]>> getPermission(@Url String url, @Field("api") String api,
+                                                         @Field("ticket") String ticket);
+
 
     /**
      * 绑定提现账户

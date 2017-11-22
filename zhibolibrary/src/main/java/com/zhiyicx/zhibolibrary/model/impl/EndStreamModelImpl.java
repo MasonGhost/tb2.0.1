@@ -2,6 +2,7 @@ package com.zhiyicx.zhibolibrary.model.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.model.EndStreamModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
@@ -9,11 +10,14 @@ import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
+import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.FormBody;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -50,17 +54,39 @@ public class EndStreamModelImpl implements EndStreamModel {
         });
     }
 
+    @Override
+    public Observable<BaseJson<FollowInfo>> followUser(String action, String usid) {
+
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_USER_FOLLW);
+        builder.add("action",action);
+        getPermissionData(usid, builder);
+        FormBody formBody = builder.build();
+        return mUserService.followUser(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
+    }
+
+    private void getPermissionData(String usid, FormBody.Builder builder) {
+        builder.add("usid", usid);
+        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+        for (PermissionData data : permissionDatas) {
+            builder.add(data.auth_key, data.auth_value);
+        }
+    }
 
     /**
-     * 关注
-     * @param action
-     * @param userId
-     * @param accessKey
-     * @param secretKey
+     * 通过uisd获取用户信息
+     *
      * @return
      */
+
     @Override
-    public Observable<BaseJson<FollowInfo>> followUser(String action, String userId, String accessKey, String secretKey) {
-        return mUserService.followUser(ZBLApi.API_USER_FOLLW,action, userId, accessKey, secretKey);
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_INFO);
+        builder.add("filed", filed);
+        getPermissionData(usid, builder);
+        FormBody formBody = builder.build();
+        return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
+
     }
 }

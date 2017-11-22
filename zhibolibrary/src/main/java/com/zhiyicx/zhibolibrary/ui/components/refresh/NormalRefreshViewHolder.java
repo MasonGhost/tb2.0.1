@@ -41,9 +41,9 @@ public class NormalRefreshViewHolder extends RefreshViewHolder {
     private RotateAnimation mUpAnim;
     private RotateAnimation mDownAnim;
 
-    private String mPullDownRefreshText = "下拉刷新";
-    private String mReleaseRefreshText = "释放更新";
-    private String mRefreshingText = "加载中...";
+    private String mPullDownRefreshText = "下拉可以刷新";
+    private String mReleaseRefreshText = "松开立即刷新";
+    private String mRefreshingText = "正在刷新内容...";
 
     /**
      * @param context

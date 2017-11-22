@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.PublishModule;
-import com.zhiyicx.zhibolibrary.ui.activity.PublishLiveActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLPublishLiveActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = PublishModule.class, dependencies = ClientComponent.class)
 public interface PublishComponent {
-    void inject(PublishLiveActivity activity);
+    void inject(ZBLPublishLiveActivity activity);
 }

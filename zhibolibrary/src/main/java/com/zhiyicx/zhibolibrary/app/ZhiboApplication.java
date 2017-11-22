@@ -9,6 +9,7 @@ import com.zhiyicx.zhibolibrary.di.component.DaggerClientComponent;
 import com.zhiyicx.zhibolibrary.di.module.ClientModule;
 import com.zhiyicx.zhibolibrary.di.module.ServiceModule;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
@@ -28,9 +29,11 @@ import java.util.Set;
  * +eventbus
  * +butterknife组成
  */
-public class ZhiboApplication {
+public class ZhiboApplication  {
+    public static final String INTENT_ACTION_UESRINFO = "com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity";
     public static final String INTNET_ACTION_USERHOMEACTIVITY = "com.zhiyicx.zhibo.UserHomeActivity";
     public static final String INTENT_ACTION_GOLDEEXCHANGEACTIVITY = "com.zhiyicx.zhibo.GoldExchangeActivity";
+
     private static ShareContent mShareContent;
 
     public static ShareContent getShareContent() {
@@ -43,14 +46,13 @@ public class ZhiboApplication {
 
     static private Application mContext;
     static public ClientComponent mZhiboClientComponent;
-    public static String auth_accesskey;
-    public static String auth_secretkey;
     public static SensitivewordFilter filter;
     public static UserInfo userInfo;
 
     public static UserInfo getUserInfo() {
-        if (userInfo == null)
+        if (userInfo == null) {
             userInfo = DataHelper.getDeviceData(DataHelper.USER_INFO, mContext);
+        }
         return userInfo;
     }
 
@@ -58,17 +60,17 @@ public class ZhiboApplication {
         ZhiboApplication.userInfo = userInfo;
         DataHelper.saveDeviceData(DataHelper.USER_INFO, userInfo, mContext);
     }
+    public static PermissionData[] getPermissionDatas() {
+        return sPermissionDatas;
+    }
 
-    //
-//    @Override
-//    public void onCreate() {
-//        super.onCreate();
-//        mApplication = this;
-//        /**
-//         * 推流初始化
-//         */
-//        ZBSmartLiveSDK.init(this, ZBLApi.ZHIBO_BASE_URL,ZBLApi.ZHIBO_BASE_VERSION);
-//    }
+    public static void setPermissionDatas(PermissionData[] permissionDatas) {
+        sPermissionDatas = permissionDatas;
+    }
+
+    public static PermissionData[] sPermissionDatas;
+
+
     public static void init(Application application) {
         mContext = application;
         /**

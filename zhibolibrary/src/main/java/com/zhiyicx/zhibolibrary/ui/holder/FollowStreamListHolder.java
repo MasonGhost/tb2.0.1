@@ -95,8 +95,8 @@ public class FollowStreamListHolder extends ZBLBaseHolder<SearchResult> implemen
      * @param data
      */
     private void watchUser(SearchResult data) {
-        // TODO: 16/10/10 跳转到个人主页
-        Intent intent = new Intent(ZhiboApplication.INTNET_ACTION_USERHOMEACTIVITY);
+        //
+        Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
         bundle.putSerializable("user_info", data);
         intent.putExtras(bundle);

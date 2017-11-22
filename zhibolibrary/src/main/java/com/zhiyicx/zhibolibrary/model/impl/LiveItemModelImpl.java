@@ -10,10 +10,11 @@ import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.StreamStatus;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
-import com.zhiyicx.zhibolibrary.ui.fragment.LiveItemFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLLiveItemFragment;
 import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
 
 import org.json.JSONException;
@@ -67,7 +68,7 @@ public class LiveItemModelImpl implements LiveItemModel {
             final int page, Map<String, Object> map
     ) {
         map.put("p", page);
-        if (order.equals(LiveItemFragment.TYPE_VIDEO)) {//回放地址和order
+        if (order.equals(ZBLLiveItemFragment.TYPE_VIDEO)) {//回放地址和order
             map.put("order", videoOrder);
             return ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_GET_VIDEO_LIST, map).subscribeOn(Schedulers.io())
                     .map(new Func1<JsonObject, ApiList>() {
@@ -80,7 +81,7 @@ public class LiveItemModelImpl implements LiveItemModel {
         else {//直播orrder和地址
             map.put("order", order);
             //获取关注的直播列表,先获取关注信息，再获取播放状态信息
-            if (order.equals(LiveItemFragment.TYPE_FOLLOW)) {
+            if (order.equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
                 return getFollowApiListObservable(page);
 
 
@@ -107,8 +108,7 @@ public class LiveItemModelImpl implements LiveItemModel {
      * @return
      */
     private Observable<ApiList> getFollowApiListObservable(int page) {
-        return getUserFollowList(ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey, ZhiboApplication.userInfo.usid, LiveItemFragment.TYPE_FOLLOW, page).subscribeOn(Schedulers.io())
+        return getUserFollowList(ZhiboApplication.getUserInfo().usid, ZBLLiveItemFragment.TYPE_FOLLOW, page).subscribeOn(Schedulers.io())
                 .flatMap(new Func1<BaseJson<SearchResult[]>, Observable<ApiList>>() {
                     @Override
                     public Observable<ApiList> call(BaseJson<SearchResult[]> json) {
@@ -150,8 +150,6 @@ public class LiveItemModelImpl implements LiveItemModel {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
-
                                     return tmp;
                                 }
                             });
@@ -183,42 +181,41 @@ public class LiveItemModelImpl implements LiveItemModel {
                         return new Gson().fromJson(jsonObject, ApiList.class);
                     }
                 });
-
-
-    }
-
-    @Override
-    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String userId, String filed) {
-
-        return mUserService.getUsIdInfo(ZBLApi.API_GET_USID_INFO, userId, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn(Schedulers.io());
-
-    }
-
-    @Override
-    public Observable<BaseJson<SearchResult[]>> getUserFollowList(String accessKey, String
-            secretKey, String userId, String type, int page) {
-        FormBody.Builder builder = getFormBody(accessKey, secretKey);
-        builder.add("type", type);
-        builder.add("user_id", userId);
-        builder.add(ZBLApi.VAR_PAGE, page + "");
-        FormBody formBody = builder.build();
-        return mUserService.getFollowList(formBody);
     }
 
     /**
-     * 获取formbody,其他地方可以继续增加param
+     * 通过uisd获取用户信息
      *
-     * @param accessKey
-     * @param secretKey
      * @return
      */
 
-    private FormBody.Builder getFormBody(String accessKey, String secretKey) {
-        FormBody.Builder builder = new FormBody.Builder();//form表单提交
-        builder.add("api", ZBLApi.API_GET_USER_LIST);
-        builder.add("auth_accesskey", accessKey);
-        builder.add("auth_secretkey", secretKey);
-        return builder;
+    @Override
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_INFO);
+        builder.add("filed", filed);
+        getPerssionData(builder,usid);
+        FormBody formBody = builder.build();
+        return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
+
     }
 
+    private void getPerssionData(FormBody.Builder builder,String usid) {
+        builder.add("usid", usid);
+        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+        for (PermissionData data : permissionDatas) {
+            builder.add(data.auth_key, data.auth_value);
+        }
+    }
+
+    @Override
+    public Observable<BaseJson<SearchResult[]>> getUserFollowList( String usid, String type, int page) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_LIST);
+        getPerssionData(builder,usid);
+        builder.add("type", type);
+        builder.add(ZBLApi.VAR_PAGE, page + "");
+        FormBody formBody = builder.build();
+        return mUserService.getFollowList(ZBLApi.CONFIG_BASE_DOMAIN,formBody);
+    }
 }

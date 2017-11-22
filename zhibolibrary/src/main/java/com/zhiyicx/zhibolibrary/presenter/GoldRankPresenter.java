@@ -117,12 +117,15 @@ public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankM
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
                     @Override
                     public void call(BaseJson<UserInfo[]> baseJson) {
-
-                        for (int i = 0; i < baseJson.data.length; i++) {
-                            baseJson.data[i].gold = mApiList.data[i].user.gold;
-                            mApiList.data[i].user = baseJson.data[i];
+                        if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                            for (int i = 0; i < baseJson.data.length; i++) {
+                                baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                mApiList.data[i].user = baseJson.data[i];
+                            }
+                            refresh(mApiList, isMore);//刷新数据
+                        }else {
+                            errorDeal(isMore);
                         }
-                        refresh(mApiList, isMore);//刷新数据
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -139,7 +142,15 @@ public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankM
             mRootView.showMessage(apiList.message);
         }
     }
-
+    private void errorDeal(boolean isMore){
+        if (!isMore) {//隐藏loading
+            mRootView.hideRefreshing();
+            mRootView.hidePlaceHolder();
+        }
+        else {
+            mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+        }
+    }
     /**
      * 隐藏缺省图
      */
@@ -168,7 +179,7 @@ public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankM
      */
     private void watchUser(SearchResult data) {
         // TODO: 16/10/10 跳转到用户信息
-        Intent intent = new Intent(ZhiboApplication.INTNET_ACTION_USERHOMEACTIVITY);
+        Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
         bundle.putSerializable("user_info", data);
         intent.putExtras(bundle);

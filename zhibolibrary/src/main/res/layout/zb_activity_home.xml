@@ -141,14 +141,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:src="@mipmap/ico_bottom_myself_grey"/>
+                    android:src="@mipmap/ico_search"/>
 
                 <TextView
                     android:id="@+id/tv_home_my"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3px"
-                    android:text="我"
+                    android:text="@string/str_search"
                     android:textColor="@color/gray"
                     android:textSize="@dimen/font_smart_little"/>
             </LinearLayout>

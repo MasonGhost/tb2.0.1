@@ -3,7 +3,8 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.LiveItemModule;
-import com.zhiyicx.zhibolibrary.ui.fragment.LiveItemFragment;
+
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLLiveItemFragment;
 
 import dagger.Component;
 
@@ -13,5 +14,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = LiveItemModule.class, dependencies = ClientComponent.class)
 public interface LiveItemComponent {
-    void inject(LiveItemFragment fragment);
+    void inject(ZBLLiveItemFragment fragment);
 }

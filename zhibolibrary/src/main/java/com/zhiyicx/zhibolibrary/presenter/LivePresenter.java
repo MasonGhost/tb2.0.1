@@ -44,6 +44,8 @@ public class LivePresenter extends BasePresenter<LiveModel, LiveView> implements
     TextView mFilterTitle3;
 
     TextView mFilterSubTitle2;
+    View LLFilterSubTitle2;
+    View LLFilterSubTitle3;
 
     TextView mFilterSubTitle3;
 
@@ -86,9 +88,11 @@ public class LivePresenter extends BasePresenter<LiveModel, LiveView> implements
         mFilterTitle2 = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_title2);
         mFilterTitle3 = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_title3);
         mFilterSubTitle2 = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_subTitle2);
-        mFilterSubTitle2.setOnClickListener(this);
+        LLFilterSubTitle2= ((Fragment) rootView).getActivity().findViewById(R.id.ll_filter_subTitle2);
+        LLFilterSubTitle2.setOnClickListener(this);
         mFilterSubTitle3 = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_subTitle3);
-        mFilterSubTitle3.setOnClickListener(this);
+        LLFilterSubTitle3= ((Fragment) rootView).getActivity().findViewById(R.id.ll_filter_subTitle3);
+        LLFilterSubTitle3 .setOnClickListener(this);
         mFilterTimeStart = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_time_start);
         mFilterTimeStart.setOnClickListener(this);
         mFilterTimeEnd = (TextView) ((Fragment) rootView).getActivity().findViewById(R.id.tv_filter_time_end);
@@ -187,12 +191,11 @@ public class LivePresenter extends BasePresenter<LiveModel, LiveView> implements
             inflateEndDate();
             mTimePicker.show();
         }
-        else if (v.getId() == R.id.tv_filter_subTitle2) {
-
+        else if (v.getId() == R.id.ll_filter_subTitle2) {
             inflateGender();
             mOptionsPicker.show();
         }
-        else if (v.getId() == R.id.tv_filter_subTitle3) {
+        else if (v.getId() == R.id.ll_filter_subTitle3) {
             inflateArea();
             mAreaPicker.show();
         }

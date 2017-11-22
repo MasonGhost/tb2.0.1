@@ -5,8 +5,8 @@ import com.zhiyicx.zhibolibrary.model.LivePlayModel;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.impl.LivePlayModelImpl;
 import com.zhiyicx.zhibolibrary.ui.common.ZBLBaseFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.PublishCoreFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.ScrollClearnFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLPublishCoreFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLScrollClearnFragment;
 import com.zhiyicx.zhibolibrary.ui.view.LivePlayView;
 import com.zhiyicx.zhibolibrary.ui.view.PublishCoreView;
 
@@ -39,12 +39,12 @@ public class LivePlayModule {
     @ActivityScope
     @Provides
     PublishCoreView providePublishCoreView() {
-        return PublishCoreFragment.newInstance(PublishCoreFragment.LIVE_VIEW);
+        return ZBLPublishCoreFragment.newInstance(ZBLPublishCoreFragment.LIVE_VIEW);
     }
     @ActivityScope
     @Provides
     ZBLBaseFragment provideBaseFragment(){
-        return ScrollClearnFragment.newInstance(PublishCoreFragment.LIVE_VIEW);
+        return ZBLScrollClearnFragment.newInstance(ZBLPublishCoreFragment.LIVE_VIEW);
     }
 
 }

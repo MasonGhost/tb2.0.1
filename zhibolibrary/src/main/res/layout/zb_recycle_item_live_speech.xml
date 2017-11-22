@@ -16,7 +16,7 @@
             android:id="@+id/iv_live_chat_icon"
             android:layout_width="60px"
             android:layout_height="60px"
-            android:src="@mipmap/pic_touxiang_150" />
+            android:src="@mipmap/default_user" />
 
         <ImageView
             android:id="@+id/iv_ietm_verified"

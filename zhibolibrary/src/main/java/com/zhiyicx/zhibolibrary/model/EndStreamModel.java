@@ -10,14 +10,9 @@ import rx.Observable;
 /**
  * Created by zhiyicx on 2016/4/5.
  */
-public interface EndStreamModel {
+public interface EndStreamModel extends UserHomeModel{
     Observable<ApiList> getList(String accesskey,
                                 String secretkey,
                                 String order,
                                 int page);
-
-    Observable<BaseJson<FollowInfo>> followUser(String action,
-                                                String userId,
-                                                String accessKey,
-                                                String secretKey);
 }

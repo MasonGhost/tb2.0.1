@@ -51,6 +51,7 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.zhibosdk.ZBSmartLiveSDK;
 
 import org.simple.eventbus.EventBus;
 

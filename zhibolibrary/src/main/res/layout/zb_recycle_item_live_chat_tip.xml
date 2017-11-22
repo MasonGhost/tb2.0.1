@@ -16,7 +16,7 @@
           android:paddingRight="30px"
           android:paddingTop="15px"
           android:text="@string/str_chat_rule"
-          android:textColor="@color/name"
+          android:textColor="@color/title_blue"
           android:textSize="@dimen/font_smart"/>
 
 

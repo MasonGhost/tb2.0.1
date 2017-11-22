@@ -20,7 +20,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zhiyicx.zhibolibrary.R;
+import com.zhiyicx.zhibolibrary.util.DeviceUtils;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
+import com.zhiyicx.zhibolibrary.util.UiUtils;
 import com.zhiyicx.zhibosdk.widget.soupport.ZBMediaController;
 
 import java.util.Locale;
@@ -118,8 +120,15 @@ public class MediaController extends FrameLayout implements ZBMediaController {
      */
     protected View makeControllerView() {
 
-        return ((LayoutInflater) mContext
+        View view= ((LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.zb_media_controller, this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && DeviceUtils.hasHardwareMenuKey(mContext)) {
+        }else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                view.setPadding(0,0,0,80);
+            }
+        }
+        return view;
     }
 
     @SuppressWarnings("unchecked")

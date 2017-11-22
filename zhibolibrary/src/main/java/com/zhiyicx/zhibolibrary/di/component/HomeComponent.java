@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.HomeModule;
-import com.zhiyicx.zhibolibrary.ui.activity.HomeActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLHomeActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = HomeModule.class, dependencies = ClientComponent.class)
 public interface HomeComponent {
-    void inject(HomeActivity activity);
+    void inject(ZBLHomeActivity activity);
 }

@@ -10,9 +10,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageType;
@@ -24,11 +25,10 @@ import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
-
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.model.entity.UserMessage;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
 import com.zhiyicx.zhibolibrary.ui.components.sweetsheet.entity.MenuEntity;
 import com.zhiyicx.zhibolibrary.ui.holder.LiveChatTextListHolder;
 import com.zhiyicx.zhibolibrary.ui.view.PublishCoreView;
@@ -64,8 +64,7 @@ import rx.schedulers.Schedulers;
  * Created by jess on 16/5/11.
  */
 @ActivityScope
-public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener,
-        OnIMMessageTimeOutListener, OnShareCallbackListener {
+public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener, OnIMMessageTimeOutListener,OnShareCallbackListener {
     private Subscription mSubscription;
     private Subscription mVoteSenderSubscirption;
     private Subscription mGiftRank;
@@ -83,10 +82,9 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
 
 
     @Inject
-    public PublishCorePresenter(PublishCoreModel model, PublishCoreView rootView
-    ) {
+    public PublishCorePresenter(PublishCoreModel model, PublishCoreView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
         setIMListioner();
         initSensitiveWordFilter();
@@ -100,7 +98,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             ZBStreamingClient.getInstance().setOnImListener(this);
             ZBStreamingClient.getInstance().setOnImStatusListener(this);
             ZBStreamingClient.getInstance().setOnIMMessageTimeOutListener(this);
-        } else {
+        }
+        else {
             ZBPlayClient.getInstance().setOnImListener(this);
             ZBPlayClient.getInstance().setOnImStatusListener(this);
             ZBPlayClient.getInstance().setOnIMMessageTimeOutListener(this);
@@ -116,8 +115,9 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             return;
         }
 
-        if (ZhiboApplication.filter == null)
+        if (ZhiboApplication.filter == null) {
             ZhiboApplication.initFilterWord();
+        }
     }
 
     /**
@@ -148,7 +148,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                                 e.printStackTrace();
                                 mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
                             }
-                        } else {
+                        }
+                        else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -186,7 +187,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
+                .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
                         if (!isMore) {
@@ -228,16 +229,14 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                 usid += searchResult.user.usid + ",";
             }
 
-            if (usid.length() > 0)
-                usid = usid.substring(0, usid.length() - 1);
             if (usid.length() > 0) {
-                mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey).subscribeOn
-                        (Schedulers.io())
+                usid = usid.substring(0, usid.length() - 1);
+            }
+            if (usid.length() > 0) {
+                mModel.getUsidInfo(usid, "")
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
                     @Override
                     public void call(BaseJson<UserInfo[]> baseJson) {
-
-
                         for (int i = 0; i < baseJson.data.length; i++) {
                             baseJson.data[i].gold = mApiList.data[i].user.gold;
                             mApiList.data[i].user = baseJson.data[i];
@@ -255,7 +254,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             }
 
 
-        } else {
+        }
+        else {
             mRootView.showMessage(apiList.message);
         }
     }
@@ -263,12 +263,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     /**
      * 通过uid获取用户信息
      *
-     * @param user_id
+     * @param usid
      */
-    public void getUserInfo(String user_id) {
-        mUserInfoSubscription = mModel.getUserInfo(user_id, null, ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey
-        ).subscribeOn(Schedulers.io())
+    public void getUserInfo(String usid) {
+        mUserInfoSubscription = mModel.getUsidInfo(usid, null)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -289,9 +287,11 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                     @Override
                     public void call(BaseJson<UserInfo[]> apiList) {
                         if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                            if (apiList.data.length > 0)
+                            if (apiList.data.length > 0) {
                                 mRootView.updatePresenterInfo(apiList.data[0]);
-                        } else {
+                            }
+                        }
+                        else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -300,7 +300,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
-
+                        mRootView.setClickable(true, 0);
+                        mRootView.hideLoading();
                     }
                 });
 
@@ -311,23 +312,11 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * 增加一条直播规则
      */
     public void initZhiboRules() {
-        if (ZBLApi.sZBApiConfig.stream_notice != null && ZBLApi.sZBApiConfig.stream_notice.size() > 0)
+        if (ZBLApi.sZBApiConfig.stream_notice != null && ZBLApi.sZBApiConfig.stream_notice.size() > 0) {
             sendTipmsg(ZBLApi.sZBApiConfig.stream_notice.get(0).text);
-        else
+        } else {
             sendTipmsg(UiUtils.getString(R.string.str_chat_rule));
-
-    }
-
-    /**
-     * 增加一条直播规则，增加主播提示语
-     */
-    public void initPresenterWelcomes(UserInfo presenter) {
-//        if (!mRootView.isPresenter()) { // 主播自己也欢迎自己
-        UserMessage welcomesMsg = new UserMessage(presenter, new Message());
-        welcomesMsg.msg.type = MessageType.MESSAGE_TYPE_TEXT;
-        welcomesMsg.msg.txt = UiUtils.getString("str_zhibo_chat_welcomes");
-        mRootView.addChat(welcomesMsg);
-//        }
+        }
     }
 
 
@@ -350,18 +339,19 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * @param text
      */
     public void sendTextmsg(String text) {
-        if (ZhiboApplication.filter != null)
+        if (ZhiboApplication.filter != null) {
             text = ZhiboApplication.filter.replaceSensitiveWord(text, SensitivewordFilter.minMatchTYpe, ZBLApi.sZBApiConfig.filter_word_conf
                     .filter_word_replace);
-        else {
+        } else {
             ZhiboApplication.initFilterWord();
             mRootView.showMessage(UiUtils.getString("str_network_error_action"));
             return;
         }
-        if (mRootView.isPresenter())
+        if (mRootView.isPresenter()) {
             mModel.sendTextMsg(text, true);
-        else
+        } else {
             mModel.sendTextMsg(text, false);
+        }
 
     }
 
@@ -389,7 +379,6 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * @param type
      */
     public void sendZan(int type) {
-        System.out.println("------------send  zan------- = " + type);
         mModel.sendZan(type);
     }
 
@@ -401,10 +390,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * @param field
      */
     public void getLocalUserInfo(final Message message, String field) {
-        if (message == null || message.ext == null || ZhiboApplication.userInfo == null) return;
-        mSubscription = mModel.getUssidInfo(message.ext.ZBUSID, field, ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey
-        ).subscribeOn(Schedulers.io())
+        if (message == null || message.ext == null || ZhiboApplication.getUserInfo() == null) {
+            return;
+        }
+        mSubscription = mModel.getUsidInfo(message.ext.ZBUSID, field)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -413,7 +402,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
+                .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
                     }
@@ -423,7 +412,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                     public void call(BaseJson<UserInfo[]> users) {
                         if (users.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.saveAndAddChat(users, message);
-                        } else {
+                        }
+                        else {
                             mRootView.showMessage(users.message);
                         }
                     }
@@ -476,7 +466,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void disableSendMsg(long gag) {
         if (gag == 0) {//永久
             mRootView.disableSendMsgEver();
-        } else if (gag > 0) {//时段
+        }
+        else if (gag > 0) {//时段
             mRootView.disableSendMsgSomeTime(gag);
 
         }
@@ -489,10 +480,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     }
 
     private void updateUserCount(UserInfo data) {
-        ZhiboApplication.userInfo.gold = data.gold;
-        ZhiboApplication.userInfo.follow_count = data.follow_count;
-        ZhiboApplication.userInfo.fans_count = data.fans_count;
-        ZhiboApplication.userInfo.zan_count = data.zan_count;
+        ZhiboApplication.getUserInfo().gold = data.gold;
+        ZhiboApplication.getUserInfo().follow_count = data.follow_count;
+        ZhiboApplication.getUserInfo().fans_count = data.fans_count;
+        ZhiboApplication.getUserInfo().zan_count = data.zan_count;
         mRootView.updatedGold();//刷新金币信息
     }
 
@@ -507,39 +498,41 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void lauchEnd(SearchResult[] datas, final String uid, final int viewcount) throws Exception {
 
         mRecommendDatas = datas;
-        /**
-         * 通过usid获取用户信息
-         */
-        String usid = "";
-        for (SearchResult searchResult : datas) {
-            usid += searchResult.user.usid + ",";
-        }
-        if (usid.length() > 0)
-            usid = usid.substring(0, usid.length() - 1);
-        if (usid.length() > 0) {
-            mUserinfoSubscription = mModel.getUssidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                        @Override
-                        public void call(BaseJson<UserInfo[]> baseJson) {
-                            for (int i = 0; i < baseJson.data.length; i++) {
-                                mRecommendDatas[i].user = baseJson.data[i];
+            /**
+             * 通过usid获取用户信息
+             */
+            String usid = "";
+            for (SearchResult searchResult : datas) {
+                usid += searchResult.user.usid + ",";
+            }
+            if (usid.length() > 0) {
+                usid = usid.substring(0, usid.length() - 1);
+            }
+            if (usid.length() > 0) {
+                mUserinfoSubscription = mModel.getUsidInfo(usid, "")
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                            @Override
+                            public void call(BaseJson<UserInfo[]> baseJson) {
+                                for (int i = 0; i < baseJson.data.length; i++) {
+                                    mRecommendDatas[i].user = baseJson.data[i];
+                                }
+                                doEnd(mRecommendDatas, uid, viewcount);
                             }
-                            doEnd(mRecommendDatas, uid, viewcount);
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            throwable.printStackTrace();
-                            doEnd(new SearchResult[]{}, uid, viewcount);
-                        }
-                    });
-        } else
-            doEnd(mRecommendDatas, uid, viewcount);
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                doEnd(new SearchResult[]{}, uid, viewcount);
+                            }
+                        });
+            }
+            else {
+                doEnd(mRecommendDatas, uid, viewcount);
+            }
     }
 
     private void doEnd(SearchResult[] datas, String uid, int viewcount) {
-        Intent intent = new Intent(UiUtils.getContext(), EndStreamingActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLEndStreamingActivity.class);
         intent.putExtra("isAudience", true);//是否为观众
         intent.putExtra("userId", uid);//uid用于关注用户
         Bundle bundle = new Bundle();
@@ -609,7 +602,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     @Override
     public void onMessageReceived(Message message) {
-        Log.v("taglei", "onMessageReceived" + message.type);
+        LogUtils.v("taglei", "onMessageReceived" + message.type);
         mRootView.handleMessage(message);
         switch (message.type) {
             //文本消息
@@ -701,9 +694,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     @Override
     public void onMessageACK(Message message) {
-        System.out.println("---------message = " + message.toString());
-        if (message.type == MessageType.MESSAGE_TYPE_TEXT)
+       LogUtils.d("---------message = " + message.toString());
+        if (message.type == MessageType.MESSAGE_TYPE_TEXT) {
             mRootView.addSelfChat(true, message);
+        }
 
 
     }
@@ -736,8 +730,9 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     @Override
     public void onMessageTimeout(Message message) {
         mRootView.receivedTimeOutMessage(message);
-        if (message.type == MessageType.MESSAGE_TYPE_TEXT)
+        if (message.type == MessageType.MESSAGE_TYPE_TEXT) {
             sendTipmsg("\"" + message.txt + "\"" + UiUtils.getString("str_im_send_text_timeout"));
+        }
     }
 
     /**

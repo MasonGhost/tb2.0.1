@@ -39,7 +39,7 @@ public class LiveChatTextListHolder extends ZBLBaseHolder<UserMessage> {
 
         String content = "<" + data.mUserInfo.uname + ">" + " : " + data.msg.txt;
         try {
-            CharSequence chars = ColorPhrase.from(content).withSeparator("<>").innerColor(0xff64d7fe).outerColor(0xffffffff).format();
+            CharSequence chars = ColorPhrase.from(content).withSeparator("<>").innerColor(0xff0096E6).outerColor(0xffffffff).format();
             mContentTV.setText(chars);
         } catch (Exception e) {
             e.printStackTrace();

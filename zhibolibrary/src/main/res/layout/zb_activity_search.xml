@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.zhiyicx.zhibolibrary.ui.components.AutoAppBarLayout
         android:id="@+id/al_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/style_toolbar"
+            android:background="@color/white"
             android:elevation="0dp"
             android:translationZ="0dp"
             app:contentInsetStart="0dp"
@@ -25,7 +28,10 @@
                     android:id="@+id/rl_search_back"
                     style="@style/style_back_container">
 
-                    <ImageView style="@style/style_back_button"/>
+                    <ImageView
+                        style="@style/style_back_button"
+                        android:src="@mipmap/img_back" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -44,21 +50,20 @@
                         android:layout_width="match_parent"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10px"
-                        android:hint="搜索用户、直播、回放"
+                        android:hint="搜索直播、回放"
                         android:imeOptions="actionSearch"
-                        android:singleLine="true"
-                        />
+                        android:singleLine="true" />
 
                     <ImageView
                         android:id="@+id/et_search_clear"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignRight="@+id/et_search_keyword"
+                        android:layout_marginRight="18px"
                         android:paddingLeft="10px"
                         android:paddingRight="5px"
-                        android:layout_marginRight="18px"
-                        android:src="@mipmap/iconfont_guanbi"
-                        android:visibility="gone"/>
+                        android:src="@mipmap/tv_home_buttom_cancel"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <ImageView
@@ -68,8 +73,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="35px"
-                    android:src="@drawable/selector_search_icon"
-                    android:textSize="@dimen/font_smart"/>
+                    android:src="@mipmap/ic_weiba_search"
+                    android:textSize="@dimen/font_smart" />
 
                 <TextView
                     android:id="@+id/tv_search_cancel"
@@ -80,24 +85,38 @@
                     android:layout_marginRight="52px"
                     android:text="取消"
                     android:textSize="@dimen/font_smart"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
+        <View
+            android:id="@+id/imageView1"
+            style="@style/divider_style_horizontal" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tl_search_tab"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:tabIndicatorColor="@color/color_blue_gray"
-            app:tabSelectedTextColor="@color/color_blue_gray"
-            app:tabTextColor="@color/color_gray_dark"/>
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@+id/imageView1"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/white"
+            android:textSize="14sp"
+            app:tabGravity="center"
+            app:tabIndicatorColor="@color/tab_indicator_color"
+            app:tabIndicatorHeight="@dimen/tab_indicator_height"
+            app:tabSelectedTextColor="@color/title_blue"
+            app:tabTextColor="@color/black" />
+
+        <View
+            android:id="@+id/imageView2"
+            style="@style/divider_style_horizontal" />/>
     </com.zhiyicx.zhibolibrary.ui.components.AutoAppBarLayout>
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </android.support.design.widget.CoordinatorLayout>

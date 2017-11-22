@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.LivePlayModule;
-import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLLivePlayActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = LivePlayModule.class, dependencies = ClientComponent.class)
 public interface LivePlayComponent {
-    void inject(LivePlayActivity activity);
+    void inject(ZBLLivePlayActivity activity);
 }

@@ -12,17 +12,21 @@ public class ServiceManager {
     private SearchService mSearchService;
     private UserService mUserService;
     private ImService mImService;
+    private GoldService mGoldService;
 
     public ServiceManager(CommonService commonService
             , LiveService liveService
             , SearchService searchService
             , UserService userService
-            , ImService imService) {
+            , ImService imService
+            , GoldService goldService
+    ) {
         this.mCommonService = commonService;
         this.mLiveService = liveService;
         this.mSearchService = searchService;
         this.mUserService = userService;
         this.mImService = imService;
+        this.mGoldService=goldService;
     }
 
     public CommonService getCommonService() {
@@ -47,4 +51,5 @@ public class ServiceManager {
     public ImService getImService() {
         return mImService;
     }
+    public GoldService getGoldService(){return mGoldService;}
 }

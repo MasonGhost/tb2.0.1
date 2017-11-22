@@ -9,9 +9,7 @@ import rx.Observable;
 /**
  * Created by jess on 16/4/23.
  */
-public interface UserHomeModel {
+public interface UserHomeModel extends UserInfoModel{
     Observable<BaseJson<FollowInfo>> followUser(String action,
-                                                String userId,
-                                                String accessKey,
-                                                String secretKey);
+                                                String userId);
 }

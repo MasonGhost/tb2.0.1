@@ -64,6 +64,7 @@
             android:layout_marginTop="155px"
             android:hint="直播间标题，不要超过15个字"
             android:inputType="text"
+            android:background="@null"
             android:maxLength="15"
             android:textColor="@color/white"
             android:textColorHint="@color/white"

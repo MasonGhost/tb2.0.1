@@ -4,7 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               xmlns:tool="http://schemas.android.com/tools"
-              android:background="@mipmap/splash_bg"
               android:orientation="vertical">
 
     <com.zhiyicx.zhibolibrary.ui.components.AutoToolbar

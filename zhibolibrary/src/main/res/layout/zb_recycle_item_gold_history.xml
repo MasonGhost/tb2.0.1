@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.zhy.autolayout.AutoLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/content_container"
+    android:layout_height="110px"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+
+    <TextView
+        android:id="@+id/tv_gold_history_item_time"
+        android:layout_width="100px"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25px"
+        android:gravity="center_vertical"
+        android:textColor="@color/color_light_gray"
+        android:textSize="@dimen/font_large"
+        tool:text="2015."/>
+
+    <TextView
+        android:id="@+id/tv_gold_history_item_description"
+        android:layout_width="0dp"
+        android:layout_marginRight="10px"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="2"
+        android:textColor="@color/color_font_black_light"
+        android:textSize="@dimen/font_large_16sp"
+        tool:text="1agfdsgfdsgfdsgfdsgfdsgfdsgfdsgh231agfdsgfdsgfdsgfdsgfdsgfdsgfdsgh23"/>
+
+    <TextView
+        android:id="@+id/tv_gold_history_cost"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25px"
+        android:gravity="center_vertical"
+        android:textColor="@color/color_font_orange"
+        android:textSize="@dimen/font_large_16sp"
+        tool:text="+10000"/>
+
+
+</com.zhy.autolayout.AutoLinearLayout>

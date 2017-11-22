@@ -15,10 +15,10 @@ import com.zhiyicx.zhibolibrary.model.entity.SearchJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLLivePlayActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.MoreLinearAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.SearchListAdapter;
-import com.zhiyicx.zhibolibrary.ui.fragment.SearchTabFragement;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLSearchTabFragement;
 import com.zhiyicx.zhibolibrary.ui.holder.SearchListHolder;
 import com.zhiyicx.zhibolibrary.ui.view.SearchTabView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
@@ -70,9 +70,9 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
 
     /**
      * 获取搜索Observable
+     *
      * @param keyword
      * @return
-     *
      * @throws Exception
      */
     private Observable<SearchJson> getSearchObservable(String keyword) throws Exception {
@@ -81,8 +81,8 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
         map.put("keyword", keyword);
         switch (mRootView.getType()) {
             case "user":
-                return mModel.Search(ZhiboApplication.userInfo.auth_accesskey
-                        , ZhiboApplication.userInfo.auth_secretkey
+                return mModel.Search(ZhiboApplication.getUserInfo().auth_accesskey
+                        , ZhiboApplication.getUserInfo().auth_secretkey
                         , keyword
                         , mPage)
                         .subscribeOn(Schedulers.io());
@@ -107,6 +107,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
 
     /**
      * 搜索
+     *
      * @param keyword
      * @param isMore
      */
@@ -114,7 +115,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
         if (!isMore) {
             mPage = 1;//如果刷新,PAGE默认为1
         }
-        if (keyword.equals(SearchTabFragement.DEFAULT_KEYWORD))
+        if (keyword.equals(ZBLSearchTabFragement.DEFAULT_KEYWORD))
             keyword = "";
         initAdapter();//初始化adapter
         try {
@@ -152,8 +153,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                                         for (SearchResult searchResult : json.data.stream_list) {
                                             usid += searchResult.user.usid + ",";
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         for (SearchResult searchResult : json.data.video_list) {
                                             usid += searchResult.user.usid + ",";
                                         }
@@ -165,38 +165,37 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                                                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
                                                     @Override
                                                     public void call(BaseJson<UserInfo[]> baseJson) {
-                                                        if (mSearchJson.data.stream_list != null) {
-                                                            for (int i = 0; i < baseJson.data.length; i++) {
-                                                                mSearchJson.data.stream_list[i].user = baseJson.data[i];
+                                                        if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                                                            if (mSearchJson.data.stream_list != null) {
+                                                                for (int i = 0; i < baseJson.data.length; i++) {
+                                                                    mSearchJson.data.stream_list[i].user = baseJson.data[i];
+                                                                }
+                                                            } else {
+                                                                for (int i = 0; i < baseJson.data.length; i++) {
+                                                                    mSearchJson.data.video_list[i].user = baseJson.data[i];
+                                                                }
                                                             }
-
+                                                            refresh(mSearchJson, isMore);//刷新数据
+                                                        } else {
+                                                            errorDeal(isMore);
                                                         }
-                                                        else {
-                                                            for (int i = 0; i < baseJson.data.length; i++) {
-                                                                mSearchJson.data.video_list[i].user = baseJson.data[i];
-                                                            }
-                                                        }
-
-                                                        refresh(mSearchJson, isMore);//刷新数据
                                                     }
                                                 }, new Action1<Throwable>() {
                                                     @Override
                                                     public void call(Throwable throwable) {
                                                         throwable.printStackTrace();
+                                                        errorDeal(isMore);
                                                     }
                                                 });
 
-                                    }
-                                    else {
+                                    } else {
                                         refresh(json, isMore);//刷新数据
                                     }
-                                }
-                                else {
+                                } else {
                                     refresh(json, isMore);//刷新数据
                                 }
 
-                            }
-                            else {
+                            } else {
                                 mRootView.showMessage(json.message);
                             }
                         }
@@ -208,8 +207,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                                 if (!isMore) {//隐藏loading
                                     mRootView.hideRefreshing();
                                     loadForNetBad();
-                                }
-                                else {
+                                } else {
                                     mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
                                 }
                             } catch (Exception e) {
@@ -223,13 +221,24 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
             if (!isMore) {//隐藏loading
                 mRootView.hideRefreshing();
                 loadForNetBad();
-            }
-            else {
+            } else {
                 mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
             }
         }
     }
 
+    private void errorDeal(boolean isMore) {
+        if (!isMore) {//隐藏loading
+            mRootView.hideRefreshing();
+            if (mListDatas != null && mAdapter != null) {
+                mListDatas.clear();
+                mAdapter.notifyDataSetChanged();//通知页面更新数据
+                mRootView.showPlaceHolder();
+            }
+        } else {
+            mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+        }
+    }
 
     /**
      * 加载时遇到网络状况不佳
@@ -260,8 +269,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                 mAdapter.notifyDataSetChanged();//通知页面更新数据
 //                mRootView.showMessage("搜索不到信息~");
                 mRootView.showPlaceHolder();
-            }
-            else {
+            } else {
                 mRootView.showMessage(UiUtils.getString("str_load_more_prompt"));
             }
             return;
@@ -297,16 +305,13 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
         if (type.equals("user")) {
             currentSearch = SEARCH_USER;
             return data.user_list;
-        }
-        else if (type.equals("stream")) {
+        } else if (type.equals("stream")) {
             currentSearch = SEARCH_STREAM;
             return data.stream_list;
-        }
-        else if (type.equals("video")) {
+        } else if (type.equals("video")) {
             currentSearch = SEARCH_VIDEO;
             return data.video_list;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -353,8 +358,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
             startPlay(data.stream.id);
             mIconUrl = data.stream.icon.getOrigin();//获得封面
 
-        }
-        else if (data.video != null) {
+        } else if (data.video != null) {
             if (mUserInfo != null)
                 mUserInfo.location = data.video.video_location;
             startVideo(data.video.vid);
@@ -370,11 +374,11 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
      */
     public void watchUser(SearchResult data) {
         // TODO: 16/10/10 跳转到用户信息
-        Intent intent = new Intent(ZhiboApplication.INTNET_ACTION_USERHOMEACTIVITY);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user_info", data);
-        intent.putExtras(bundle);
-        mRootView.launchActivity(intent);
+//        Intent intent = new Intent(UiUtils.getContext(), UserHomeActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("user_info", data);
+//        intent.putExtras(bundle);
+//        mRootView.launchActivity(intent);
     }
 
     /**
@@ -388,7 +392,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
             return;
         }
 
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("iconUrl", mIconUrl);
         bundle.putSerializable("userInfo", mUserInfo);
@@ -409,7 +413,7 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
             mRootView.showMessage(UiUtils.getString("str_get_userinfo_fail"));
             return;
         }
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", mUserInfo);
         bundle.putString("iconUrl", mIconUrl);

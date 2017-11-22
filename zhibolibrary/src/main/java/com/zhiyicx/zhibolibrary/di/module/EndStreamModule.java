@@ -6,7 +6,6 @@ import com.zhiyicx.zhibolibrary.model.EndStreamModel;
 import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.impl.EndStreamModelImpl;
 import com.zhiyicx.zhibolibrary.ui.view.EndStreamView;
-import com.zhiyicx.zhibolibrary.util.UiUtils;
 
 import dagger.Module;
 import dagger.Provides;

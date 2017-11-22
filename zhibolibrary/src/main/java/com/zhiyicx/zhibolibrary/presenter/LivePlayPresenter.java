@@ -13,9 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
-import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.zhibolibrary.R;
-import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.LivePlayModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
@@ -25,7 +23,7 @@ import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
 import com.zhiyicx.zhibolibrary.ui.components.MediaController;
 import com.zhiyicx.zhibolibrary.ui.view.LivePlayView;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
@@ -147,7 +145,6 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         }
     };
 
-
     /**
      * 分享
      */
@@ -157,7 +154,6 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         sharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
         sharePolicy.showShare(context);
     }
-
 
     /**
      * 设置播放器需要的监听
@@ -317,9 +313,10 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                                 @Override
                                 public void call(ResponseBody responseBody) {
                                     boolean isDownload = UiUtils.writeResponseBodyToDisk(responseBody, value.image);
-                                    if (isDownload)
-                                        DataHelper.SetStringSF(value.image, value.image,UiUtils.getContext());
-                                    System.out.println("isDownload = " + isDownload);
+                                    if (isDownload) {
+                                        DataHelper.SetStringSF(value.image, value.image, UiUtils.getContext());
+                                    }
+                                    LogUtils.debugInfo(TAG,"isDownload = " + isDownload);
 
                                 }
                             }, new Action1<Throwable>() {
@@ -389,11 +386,11 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
             usid += searchResult.user.usid + ",";
         }
 
-        if (usid.length() > 0)
-            usid = usid.substring(0, usid.length() - 1);
         if (usid.length() > 0) {
-            mUserinfoSubscription = mModel.getUsidInfo(usid, "", ZhiboApplication.userInfo.auth_accesskey, ZhiboApplication.userInfo.auth_secretkey)
-                    .subscribeOn(Schedulers.io())
+            usid = usid.substring(0, usid.length() - 1);
+        }
+        if (usid.length() > 0) {
+            mUserinfoSubscription = mModel.getUsidInfo(usid, "")
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
                         @Override
                         public void call(BaseJson<UserInfo[]> baseJson) {
@@ -417,7 +414,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
     }
 
     private void doEnd(SearchResult[] datas, String uid, int viewCount) {
-        Intent intent = new Intent(UiUtils.getContext(), EndStreamingActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLEndStreamingActivity.class);
         intent.putExtra("isAudience", true);//是否为观众
         intent.putExtra("userId", uid);//uid用于关注用户
         Bundle bundle = new Bundle();
@@ -467,9 +464,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
 
     public void follow(String action) {
         //设置关注按钮状态
-        mfollowSubscription = mModel.followUser(action, mUserInfo.uid
-                , ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey)
+        mfollowSubscription = mModel.followUser(action, mUserInfo.usid)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -478,7 +473,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                     }
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
+                .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
                         mRootView.setFollowEnable(true);
@@ -527,6 +522,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         unSubscribe(mUserinfoSubscription);
 
     }
+
 
     @Override
     public void onStart(Share share) {

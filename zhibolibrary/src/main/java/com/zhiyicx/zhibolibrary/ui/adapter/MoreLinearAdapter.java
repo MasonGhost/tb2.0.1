@@ -58,7 +58,7 @@ public abstract class MoreLinearAdapter<T> extends RecyclerView.Adapter<ZBLBaseH
             View view = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.zb_footer_linear, null);
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    AutoUtils.getPercentHeightSize(70)));
+                    AutoUtils.getPercentHeightSize(140)));
             ((AnimationDrawable) ((ImageView) view.findViewById(R.id.tv_load_more)).getDrawable()).start();
             return new FooterView1Holder(view);
         }

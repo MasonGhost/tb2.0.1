@@ -5,6 +5,8 @@ android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig["compileSdkVersion"]
     buildToolsVersion gConfig["buildToolsVersion"]
+
+
     defaultConfig {
         minSdkVersion gConfig["minSdkVersion"]
         targetSdkVersion gConfig["targetSdkVersion"]
@@ -85,7 +87,6 @@ dependencies {
     annotationProcessor dataDependences.daggerCompiler
     provided dataDependences.javaxAnnotation
 
-
 //    compile project(':onekeyshare')
     compile project(':camerafilters')
     compile project(':carousel')
@@ -108,5 +109,6 @@ dependencies {
 
     compile dataDependences.androideventbus
     compile dataDependences.okhttp3
-
+//下拉刷新库 TS使用
+//    compile project(':android-pulltorefresh')
 }

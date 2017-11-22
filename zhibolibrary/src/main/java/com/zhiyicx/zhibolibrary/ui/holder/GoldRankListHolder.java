@@ -162,11 +162,11 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
 
             // TODO: 16/10/10
             //跳转到个人主页
-            Intent intent = new Intent(ZhiboApplication.INTNET_ACTION_USERHOMEACTIVITY);
+            Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
             Bundle bundle = new Bundle();
             bundle.putSerializable("user_info", mData);
             intent.putExtras(bundle);
-            mContext.startActivity(intent);
+            UiUtils.startActivity(intent);
         }
 
 

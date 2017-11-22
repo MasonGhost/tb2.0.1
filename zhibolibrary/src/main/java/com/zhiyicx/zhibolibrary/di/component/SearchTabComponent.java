@@ -2,7 +2,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.SearchTabModule;
-import com.zhiyicx.zhibolibrary.ui.fragment.SearchTabFragement;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLSearchTabFragement;
 
 import dagger.Component;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = SearchTabModule.class, dependencies = ClientComponent.class)
 public interface SearchTabComponent {
-    void inject(SearchTabFragement fragement);
+    void inject(ZBLSearchTabFragement fragement);
 }

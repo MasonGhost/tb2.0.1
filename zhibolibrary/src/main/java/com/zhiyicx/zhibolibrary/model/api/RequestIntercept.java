@@ -37,7 +37,6 @@ public class RequestIntercept implements Interceptor {
             LogUtils.warnInfo("request.body() == null");
         }
 
-
         //打印url信息
         LogUtils.warnInfo("Request",
                 String.format("Sending Request %s on %n Params --->  %s%n Connection ---> %s%n Headers ---> %s", request.url()

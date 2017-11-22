@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.zhibolibrary.R;
-import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.UserHomeModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
@@ -51,9 +49,8 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     public void follow(String action) {
         mUserInfo = mRootView.getUserInfo();
         //设置关注按钮状态
-        mfollowSubscription = mModel.followUser(action, mUserInfo.user.uid
-                , ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey)
+        mfollowSubscription = mModel.followUser(action, mUserInfo.user.usid
+               )
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -62,7 +59,7 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
                     }
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
+                .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
                         mRootView.setFollowEnable(true);
@@ -92,9 +89,8 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
      */
     public void queryFollow() {
         mUserInfo = mRootView.getUserInfo();
-        mQuerySubscribe = mModel.followUser(UserService.STATUS_FOLLOW_QUERY + "", mUserInfo.user.uid
-                , ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey)
+        mQuerySubscribe = mModel.followUser(UserService.STATUS_FOLLOW_QUERY + "", mUserInfo.user.usid
+               )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<FollowInfo>>() {

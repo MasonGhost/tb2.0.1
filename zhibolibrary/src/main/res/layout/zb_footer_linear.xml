@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                     android:id="@+id/load_layout"
-                                     android:layout_width="match_parent"
-                                     android:layout_height="wrap_content"
-                                     android:gravity="center"
-                                     android:orientation="horizontal"
-                                     android:paddingBottom="22px"
-                                     android:paddingTop="22px">
+    android:id="@+id/load_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="22px"
+    android:paddingTop="22px">
 
     <!--<ProgressBar-->
     <!--style="?android:attr/progressBarStyleSmall"-->
@@ -18,8 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5px"
-        android:src="@drawable/refresh_loading_more"
-        />
+        android:src="@drawable/frame_loading" />
 
     <TextView
         android:id="@+id/more_data_msg"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="正在加载"
         android:textColor="@color/black"
-        android:textSize="@dimen/font_normal"/>
+        android:textSize="@dimen/font_normal" />
 
 
 </com.zhy.autolayout.AutoLinearLayout>

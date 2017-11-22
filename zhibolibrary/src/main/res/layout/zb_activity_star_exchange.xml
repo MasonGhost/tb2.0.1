@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.zhiyicx.zhibolibrary.ui.components.AutoToolbar
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_star_exchange_back"
+            style="@style/style_back_container">
+
+            <ImageView style="@style/style_back_button"
+                android:src="@mipmap/img_back"
+                />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/style_toolbar_title"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_star_history"
+            android:layout_width="200px"
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing_large"
+                android:text="@string/str_history"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_large"/>
+
+        </RelativeLayout>
+
+    </com.zhiyicx.zhibolibrary.ui.components.AutoToolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@mipmap/pic_bg_zan">
+
+                <TextView
+                    android:id="@+id/tv_star_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="6"
+                    android:gravity="center_horizontal|bottom"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_huge_add"
+                    android:textStyle="bold"
+                    tools:text="1024"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="4"
+                    android:layout_below="@+id/tv_star_count"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/str_star_amount"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_large"
+                    />
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100px"
+                android:layout_marginTop="20px"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/str_exchange_gold"
+                    android:textColor="@color/color_font_black_light"
+                    android:textSize="@dimen/font_large"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_gold_exchange_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="80px"
+                    android:textColor="@color/color_font_black_light"
+                    android:textSize="@dimen/font_huge_add"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/tv_gold_exchange_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/tv_gold_exchange_count"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="60px"
+                    android:text="@string/str_gold_amount"
+                    android:textColor="@color/color_font_black_light"
+                    android:textSize="@dimen/font_large"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_exchange_divider"
+                style="@style/divider_style_horizontal"/>
+
+
+            <LinearLayout
+                android:id="@+id/ll_star_exchange_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/elevation_normal"
+                android:orientation="vertical"
+                android:translationZ="@dimen/translationZ_normal">
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

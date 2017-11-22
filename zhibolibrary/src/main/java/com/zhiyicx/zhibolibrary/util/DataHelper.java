@@ -20,6 +20,8 @@ public class DataHelper {
     private static SharedPreferences mSharedPreferences;
     public static final String SP_NAME = "ablib_config";
     public static final String USER_INFO = "ablib_userinfo";
+    public static final String USER_PERMISSION = "ablib_user_permission";
+    public static final String USER_TICKET= "ablib_user_ticket";
     public static final String CONFIG_NAME = "ablib_config";
     public static final String API_VERSION = "ablib_apiVersion";
     public static final String CACHE_FILE_PATH = "/mnt/sdcard/ablib_cache";

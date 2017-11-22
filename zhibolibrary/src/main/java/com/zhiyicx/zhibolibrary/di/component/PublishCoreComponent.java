@@ -3,7 +3,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.PublishCoreModule;
 import com.zhiyicx.zhibolibrary.di.module.UserHomeModule;
-import com.zhiyicx.zhibolibrary.ui.fragment.PublishCoreFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLPublishCoreFragment;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = {PublishCoreModule.class,UserHomeModule.class}, dependencies = {ClientComponent.class})
 public interface PublishCoreComponent {
-    void inject(PublishCoreFragment fragment);
+    void inject(ZBLPublishCoreFragment fragment);
 }

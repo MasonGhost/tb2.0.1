@@ -41,7 +41,7 @@
                     android:layout_width="@dimen/zhibo_image_size"
                     android:layout_height="match_parent"
                     android:paddingLeft="0dp"
-                    android:src="@mipmap/pic_touxiang_150" />
+                    android:src="@mipmap/default_user" />
 
                 <ImageView
                     android:id="@+id/iv_gift_verified3"
@@ -65,7 +65,7 @@
                     android:id="@+id/tv_name3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/name"
                     android:textSize="11sp" />
 
@@ -73,7 +73,7 @@
                     android:id="@+id/tv_des3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
 
@@ -135,7 +135,7 @@
                     android:layout_width="@dimen/zhibo_image_size"
                     android:layout_height="match_parent"
                     android:paddingLeft="0dp"
-                    android:src="@mipmap/pic_touxiang_150" />
+                    android:src="@mipmap/default_user" />
 
                 <ImageView
                     android:id="@+id/iv_gift_verified2"
@@ -159,7 +159,7 @@
                     android:id="@+id/tv_name2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/name"
                     android:textSize="11sp" />
 
@@ -167,7 +167,7 @@
                     android:id="@+id/tv_des2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
             </com.zhy.autolayout.AutoLinearLayout>
@@ -227,7 +227,7 @@
                     android:layout_width="@dimen/zhibo_image_size"
                     android:layout_height="match_parent"
                     android:paddingLeft="0dp"
-                    android:src="@mipmap/pic_touxiang_150" />
+                    android:src="@mipmap/default_user" />
 
                 <ImageView
                     android:id="@+id/iv_gift_verified1"
@@ -250,7 +250,7 @@
                     android:id="@+id/tv_name1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/name"
                     android:textSize="11sp" />
 
@@ -258,7 +258,7 @@
                     android:id="@+id/tv_des1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/pic_touxiang_150"
+                    android:src="@mipmap/default_user"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
 

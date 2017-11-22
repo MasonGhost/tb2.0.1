@@ -19,7 +19,7 @@
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_marginLeft="25px"
-            android:src="@mipmap/pic_touxiang_150"/>
+            android:src="@mipmap/default_user"/>
 
         <ImageView
             android:id="@+id/iv_ranking_item_verified"

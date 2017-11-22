@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.RankingModel;
@@ -18,8 +19,6 @@ import com.zhiyicx.zhibolibrary.ui.view.RankingView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -30,7 +29,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by jess on 16/4/24.
+ * Created by jungle on 16/4/24.
  */
 @ActivityScope
 public class RankingPresenter extends ListBasePresenter<SearchResult, RankingModel, RankingView> {
@@ -45,6 +44,12 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
     }
 
     public void getList(final boolean isMore) {
+        if (mAdapter != null) {
+            if (!isMore)
+                mAdapter.isShowFooter(false);
+            else
+                mAdapter.isShowFooter(true);
+        }
         prepare(isMore);//加载列表准备
         mSubscription = mModel.getRanking(
 
@@ -77,28 +82,12 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
                         if (!isMore) {//隐藏loading
                             mRootView.hideRefreshing();
                             loadForNetBad();
-                        }
-                        else {
+                        } else {
                             mRootView.hideLoadMore();
                             mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
                         }
                     }
                 });
-        Map<String, Object> params = new HashMap<>();
-//        ZBCloudApiClient.getInstance().sendCloudApiRequest("ZBCloud_Presenter_TopList", params, new ZBCloudApiTCallback<List<UserInfo>>() {
-//            @Override
-//            public void onResponse(ZBBaseJson<List<UserInfo>> response) {
-//                List<UserInfo> userInfos = response.data;
-//                System.out.println("userInfos = " + userInfos.toString());
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable throwable) {
-//
-//            }
-//        });
-
 
     }
 
@@ -116,48 +105,58 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
             if (usid.length() > 0)
                 usid = usid.substring(0, usid.length() - 1);
             if (usid.length() > 0) {
-                mUserinfoSubscription=  mModel.getUsidInfo(usid, "")
+                mUserinfoSubscription = mModel.getUsidInfo(usid, "")
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                    @Override
-                    public void call(BaseJson<UserInfo[]> baseJson) {
+                            @Override
+                            public void call(BaseJson<UserInfo[]> baseJson) {
+                                if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
 
+                                    for (int i = 0; i < baseJson.data.length; i++) {
+                                        baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                        mApiList.data[i].user = baseJson.data[i];
+                                    }
+                                    dealRefreshLayout(isMore);
 
-                        for (int i = 0; i < baseJson.data.length; i++) {
-                            baseJson.data[i].gold = mApiList.data[i].user.gold;
-                            mApiList.data[i].user = baseJson.data[i];
-                        }
-                        dealRefreshLayout(isMore);
+                                    refresh(mApiList, isMore);//刷新数据
+                                } else {
+                                    errorDeal(isMore);
+                                }
+                            }
 
-                        refresh(mApiList, isMore);//刷新数据
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        dealRefreshLayout(isMore);
-                        mRootView.showNetBadPH();
-                    }
-                });
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                dealRefreshLayout(isMore);
+                                mRootView.showNetBadPH();
+                            }
+                        });
 
-            }else {
+            } else {
                 dealRefreshLayout(isMore);
                 refresh(mApiList, isMore);//刷新数据
             }
 
 
-        }
-        else {
+        } else {
             mRootView.showMessage(apiList.message);
         }
 
     }
-
+    private void errorDeal(boolean isMore){
+        if (!isMore) {//隐藏loading
+            mRootView.hideRefreshing();
+            mRootView.hidePlaceHolder();
+        }
+        else {
+            mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+        }
+    }
     private void dealRefreshLayout(boolean isMore) {
         if (!isMore) {
             mRootView.hideRefreshing();
-        }
-        else {
+        } else {
             mRootView.hideLoadMore();
         }
     }
@@ -182,11 +181,11 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
      */
     private void watchUser(SearchResult data) {
         // TODO: 16/10/10 跳转个人主页
-        Intent intent = new Intent(ZhiboApplication.INTNET_ACTION_USERHOMEACTIVITY);
+        Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("user_info", data);
+        bundle.putInt("uid", Integer.parseInt(data.user.uid));
         intent.putExtras(bundle);
-        UiUtils.startActivity(intent);
+        mRootView.launchActivity(intent);
     }
 
 
@@ -205,10 +204,8 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
     @Override
     public void nonePrompt(boolean isMore) {
         if (!isMore) {
-//            mRootView.showMessage("排行榜还没有人哦,赶快努力吧~");
             mRootView.showPlaceHolder();
-        }
-        else {
+        } else {
             mRootView.showMessage(UiUtils.getString("str_load_more_prompt"));
         }
     }

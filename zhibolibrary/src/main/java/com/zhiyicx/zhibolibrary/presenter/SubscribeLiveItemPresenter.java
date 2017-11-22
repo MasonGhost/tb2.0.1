@@ -16,13 +16,13 @@ import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLLivePlayActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.FollowStreamListAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.LiveListAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.MoreAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.MoreLinearAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.VideoListAdapter;
-import com.zhiyicx.zhibolibrary.ui.fragment.LiveItemFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLLiveItemFragment;
 import com.zhiyicx.zhibolibrary.ui.view.LiveItemView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 
@@ -87,7 +87,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
             getUserList(isMore);
             return;
         }
-        if (ZhiboApplication.userInfo == null) ZhiboApplication.getUserInfo();//此处解决经常报空的问题
+        if (ZhiboApplication.getUserInfo() == null) ZhiboApplication.getUserInfo();//此处解决经常报空的问题
         if (mRootView.isFilter()) {//筛选
             filter(isMore);
         }
@@ -215,7 +215,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
         if (mListDatas != null && mListDatas.size() > 0) {
             //如果列表有数据则清空
             mListDatas.clear();
-            if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+            if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
                 mLinearAdapter.notifyDataSetChanged();
             else
                 mAdapter.notifyDataSetChanged();//通知页面更新数据
@@ -351,7 +351,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
             mRootView.hideRefreshing();
         }
         ++mPage;
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
             mLinearAdapter.isShowFooter(true);
         else
             mAdapter.isShowFooter(true);
@@ -359,7 +359,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
             hideMoreLoading();
             if (!isMore) {//如果是上拉刷新，没有数据则清理以前的数据
                 mListDatas.clear();
-                if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
                     mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
                 else
                     mAdapter.notifyDataSetChanged();//通知页面更新数据
@@ -397,14 +397,14 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
         for (SearchResult data : ApiList.data) {//添加数据
             mListDatas.add(data);
         }
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
             mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
         else
             mAdapter.notifyDataSetChanged();//通知页面更新数据
     }
 
     private void hideMoreLoading() {
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.isShowFooter(false);
             mLinearAdapter.notifyDataSetChanged();
         }
@@ -425,12 +425,12 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
                 mRootView.setAdapter(mAdapter);
             }
             else {//直播列表的adapter
-                if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
                     mLinearAdapter = new FollowStreamListAdapter(mListDatas);
                     mRootView.setMoreLineAdapter(mLinearAdapter);
                 }
                 else {
-                    mAdapter = new LiveListAdapter(mListDatas);
+                    mAdapter = new LiveListAdapter(mListDatas,mRootView.isNeedShowUserInfo());
                     mRootView.setAdapter(mAdapter);
                 }
             }
@@ -442,7 +442,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
      * 初始化Item点击事件
      */
     private void initItemListener() {
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.setOnItemClickListener(new MoreLinearAdapter.OnRecyclerViewItemClickListener<SearchResult>() {
                 @Override
                 public void onItemClick(View view, SearchResult data) {
@@ -513,7 +513,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
     }
 
     private void startVideo(String vid, UserInfo userInfo) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", userInfo);
         bundle.putString("vid", vid);
@@ -524,7 +524,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
     }
 
     private void startPlay(SearchResult mData) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", mData);
         bundle.putBoolean("isVideo", false);
@@ -539,7 +539,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
      * @param http 播放地址
      */
     private void launchVideo(String http, UserInfo userInfo) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("url", http);//加密streamid
         bundle.putSerializable("userInfo", userInfo);
@@ -555,7 +555,7 @@ public class SubscribeLiveItemPresenter extends BasePresenter<LiveItemModel, Liv
      * @param http 播放地址
      */
     private void launchVideo(String http) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         intent.putExtra("url", http);//加密streamid
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", mData);

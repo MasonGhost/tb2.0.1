@@ -12,8 +12,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_live"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
             android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -22,8 +22,9 @@
 
     </com.zhiyicx.zhibolibrary.ui.components.refresh.RefreshLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/iv_live_item_placeholder"
+        android:textColor="@color/StormDust"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

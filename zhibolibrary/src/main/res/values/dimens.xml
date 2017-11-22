@@ -10,6 +10,7 @@
     <dimen name="font_tiny">16px</dimen>
     <dimen name="font_huge">17sp</dimen>
     <dimen name="font_huge_add">23sp</dimen>
+    <dimen name="size_big">18sp</dimen>
     <!--字体大小sp-->
     <dimen name="font_normal_sp">12sp</dimen>
     <dimen name="font_large_sp">14sp</dimen>
@@ -39,7 +40,7 @@
     <!--view高度-->
     <dimen name="edit_height_tall">90px</dimen>
     <dimen name="textview_height_tall">64px</dimen>
-    <dimen name="divider_height">1px</dimen>
+    <dimen name="divider_height">0.5dp</dimen>
     <dimen name="button_big_height">96px</dimen>
     <dimen name="button_big_width">700px</dimen>
     <dimen name="toolview_height">96px</dimen>
@@ -63,10 +64,10 @@
 
 
     <!--z轴-->
-    <dimen name="elevation_normal">2px</dimen>
-    <dimen name="elevation_huge">10px</dimen>
-    <dimen name="translationZ_normal">5px</dimen>
-    <dimen name="translationZ_huge">15px</dimen>
+    <dimen name="elevation_normal">1px</dimen>
+    <dimen name="elevation_huge">1px</dimen>
+    <dimen name="translationZ_normal">1px</dimen>
+    <dimen name="translationZ_huge">1px</dimen>
     <!--sweetsheet-->
     <dimen name="indicator_width">12dp</dimen>
     <dimen name="indicator_height">2dp</dimen>
@@ -85,5 +86,7 @@
     <dimen name="follow_button_textsize">10sp</dimen>
     <dimen name="follow_button_with">120px</dimen>
     <dimen name="follow_button_height">50px</dimen>
-
+    <dimen name="header_width_hight">32dp</dimen>
+    <dimen name="video_item_height">200dp</dimen>
+    <dimen name="video_item_spaceing">8dp</dimen>
 </resources>

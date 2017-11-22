@@ -2,7 +2,7 @@ package com.zhiyicx.zhibolibrary.di.component;
 
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.di.module.LiveItemModule;
-import com.zhiyicx.zhibolibrary.ui.fragment.SubscribeLiveFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLSubscribeLiveFragment;
 
 import dagger.Component;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = LiveItemModule.class, dependencies = ClientComponent.class)
 public interface SubscribeComponent {
-    void inject(SubscribeLiveFragment fragment);
+    void inject(ZBLSubscribeLiveFragment fragment);
 }

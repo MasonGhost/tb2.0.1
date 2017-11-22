@@ -8,10 +8,10 @@ import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.HomeModel;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
-import com.zhiyicx.zhibolibrary.ui.activity.PublishLiveActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLPublishLiveActivity;
 import com.zhiyicx.zhibolibrary.ui.common.ZBLBaseFragment;
-import com.zhiyicx.zhibolibrary.ui.fragment.LiveListFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLLiveListFragment;
 import com.zhiyicx.zhibolibrary.ui.view.HomeView;
 import com.zhiyicx.zhibolibrary.util.KnifeUtil;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
  * Created by zhiyicx on 2016/3/16.
  */
 @ActivityScope
-public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
+public class  HomePresenter extends BasePresenter<HomeModel, HomeView> {
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -48,11 +48,11 @@ public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
      */
     public List<ZBLBaseFragment> getFragments() {
         List<ZBLBaseFragment> fragmentList = new ArrayList<>();//将主页的4个分页加入集合展示
-        fragmentList.add(new LiveListFragment());
-//        fragmentList.add(new ReplayFragment());
+        fragmentList.add(new ZBLLiveListFragment());
+//        fragmentList.add(new ZBLReplayFragment());
 //        fragmentList.add(new MessageFragment());
 //        fragmentList.add(new MyFragment());
-//        fragmentList.add(new LiveListFragment());
+//        fragmentList.add(new ZBLLiveListFragment());
         return fragmentList;
     }
 
@@ -70,7 +70,7 @@ public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
 
             @Override
             public void onSuccess() {
-                Intent intent = new Intent(UiUtils.getContext(), PublishLiveActivity.class);
+                Intent intent = new Intent(UiUtils.getContext(), ZBLPublishLiveActivity.class);
                 mRootView.launchLiveRoom(intent);
                 mRootView.hideLoading();
             }
@@ -137,7 +137,7 @@ public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
      * @param endStreamJson
      */
     private void launchEndStreamActivity(ZBEndStreamJson endStreamJson, UserInfo userInfo) {
-        Intent intent = new Intent(UiUtils.getContext(), EndStreamingActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLEndStreamingActivity.class);
         intent.putExtra("isAudience", false);//是否为观众
         intent.putExtra("isException", endStreamJson.isException);//是异常结束
         Bundle bundle = new Bundle();

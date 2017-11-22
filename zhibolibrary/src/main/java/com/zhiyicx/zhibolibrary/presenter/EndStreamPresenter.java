@@ -9,7 +9,6 @@ import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
-import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
@@ -22,12 +21,13 @@ import com.zhiyicx.zhibolibrary.model.entity.FollowInfo;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.EndStreamingActivity;
-import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLLivePlayActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.DefaultAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.RecommendListAdapter;
 import com.zhiyicx.zhibolibrary.ui.view.EndStreamView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
+import com.zhiyicx.zhibosdk.model.api.ZBApi;
 import com.zhiyicx.zhibosdk.model.entity.ZBEndStreamJson;
 
 import java.util.ArrayList;
@@ -44,18 +44,20 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/4/5.
  */
 @ActivityScope
-public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView> implements OnShareCallbackListener {
+public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView>  implements OnShareCallbackListener {
     private ArrayList<SearchResult> mSearchResults;
     private RecommendListAdapter mAdapter;
     private Subscription mQuerySubscribe;
     private String mUserId;
-    private SharePolicy mSharePolicy;
+    private UmengSharePolicyImpl mSharePolicy;
     private UserInfo mPresenterInfo;
 
     @Inject
     public EndStreamPresenter(EndStreamModel model, EndStreamView rootView) {
         super(model, rootView);
         this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
+        mSharePolicy.setOnShareCallbackListener(this);
+        ZBApi.ZHIBO_DOMAIN="dd";
     }
 
 
@@ -82,7 +84,9 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
             ZBEndStreamJson.InCome income = (ZBEndStreamJson.InCome) bundle.getSerializable("income");
             mPresenterInfo = (UserInfo) bundle.getSerializable("presenter");
             //因为重连失败弹出直播间显示异常提示
-            if (intent.getBooleanExtra("isException", false)) mRootView.showExceptionPrompt(true);
+            if (intent.getBooleanExtra("isException", false)) {
+                mRootView.showExceptionPrompt(true);
+            }
             mRootView.setFans(income.view_count + "");
             mRootView.setStar(income.zan_count + "");
             mRootView.setGold(income.gold + "");
@@ -95,7 +99,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 分享朋友圈
      * @param endStreamingActivity
      */
-    public void shareMoment(EndStreamingActivity endStreamingActivity) {
+    public void shareMoment(ZBLEndStreamingActivity endStreamingActivity) {
         mSharePolicy.shareMoment(endStreamingActivity,this);
     }
 
@@ -104,7 +108,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 分享微信
      * @param endStreamingActivity
      */
-    public void shareWechat(EndStreamingActivity endStreamingActivity) {
+    public void shareWechat(ZBLEndStreamingActivity endStreamingActivity) {
         mSharePolicy.shareWechat(endStreamingActivity,this);
     }
 
@@ -112,7 +116,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 分享微博
      * @param endStreamingActivity
      */
-    public void shareWeibo(EndStreamingActivity endStreamingActivity) {
+    public void shareWeibo(ZBLEndStreamingActivity endStreamingActivity) {
         mSharePolicy.shareWeibo(endStreamingActivity,this);
 
     }
@@ -121,7 +125,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 分享qq
      * @param endStreamingActivity
      */
-    public void shareQQ(EndStreamingActivity endStreamingActivity) {
+    public void shareQQ(ZBLEndStreamingActivity endStreamingActivity) {
         mSharePolicy.shareQQ(endStreamingActivity,this);
     }
 
@@ -129,7 +133,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 分享qq空间
      * @param endStreamingActivity
      */
-    public void shareZone(EndStreamingActivity endStreamingActivity) {
+    public void shareZone(ZBLEndStreamingActivity endStreamingActivity) {
         mSharePolicy.shareZone(endStreamingActivity,this);
     }
 
@@ -172,9 +176,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 关注用户
      */
     public void follow() {
-        mModel.followUser(UserService.STATUS_FOLLOW + "", mUserId
-                , ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey)
+        mModel.followUser(UserService.STATUS_FOLLOW + "", mUserId)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -210,13 +212,12 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
      * 查询关注状态
      */
     public void queryFollow() {
-        if (mUserId == null || ZhiboApplication.userInfo == null) {
+        if (mUserId == null || ZhiboApplication.getUserInfo() == null) {
             return;
 
         }
         mQuerySubscribe = mModel.followUser(UserService.STATUS_FOLLOW_QUERY + "", mUserId
-                , ZhiboApplication.userInfo.auth_accesskey
-                , ZhiboApplication.userInfo.auth_secretkey)
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<FollowInfo>>() {
@@ -253,7 +254,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
 
 
     private void startPlay(SearchResult data) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", data);
         bundle.putBoolean("isVideo", false);
@@ -278,6 +279,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
         super.onDestroy();
         unSubscribe(mQuerySubscribe);//解除订阅
     }
+
 
     @Override
     public void onStart(Share share) {

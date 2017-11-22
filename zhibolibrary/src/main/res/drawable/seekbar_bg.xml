@@ -13,7 +13,7 @@
         >
         <clip>
             <shape>
-                <solid android:color="#47b5da"/>
+                <solid android:color="@color/title_blue"/>
             </shape>
         </clip>
     </item>

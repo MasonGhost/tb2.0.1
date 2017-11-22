@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.util.Anim;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -183,9 +184,15 @@ public abstract class ZBLBaseActivity extends AutoLayoutActivity {
                         View view = ZBLBaseActivity.this.getWindow().getDecorView().findViewById(android.R.id.content);
                         Snackbar.make(view, text, isLong ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_SHORT).show();
                         break;
+                        default:
                 }
             }
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
+    }
 }

@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name = "UserInfoItemView">
-        <attr name = "name" format = "string" />
-        <attr name = "action" format = "string" />
-        <attr name = "image" format = "reference" />
-        <attr name = "arrow" format = "reference" />
-        <attr name = "divide" format = "boolean" />
-        <attr name = "divide_margin" format = "integer" />
-        <attr name = "textColor" format = "reference" />
-        <attr name = "subTextColor" format = "reference" />
-    </declare-styleable>
 
- <declare-styleable name = "ExchangeItemView">
-        <attr name = "exchange_title" format = "string" />
-        <attr name = "exchange_subtitle" format = "string" />
-        <attr name = "exchange_icon1" format = "reference" />
-        <attr name = "exchange_icon2" format = "reference" />
-        <attr name = "exchange_cleanDivider" format = "boolean" />
-    </declare-styleable>
+
     <declare-styleable name="FreeGrowUpParentRelativeLayout">
 
         <attr name="offset" format="dimension|reference"/>

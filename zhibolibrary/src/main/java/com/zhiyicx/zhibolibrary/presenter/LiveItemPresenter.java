@@ -16,13 +16,13 @@ import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
-import com.zhiyicx.zhibolibrary.ui.activity.LivePlayActivity;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLLivePlayActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.FollowStreamListAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.LiveListAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.MoreAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.MoreLinearAdapter;
 import com.zhiyicx.zhibolibrary.ui.adapter.VideoListAdapter;
-import com.zhiyicx.zhibolibrary.ui.fragment.LiveItemFragment;
+import com.zhiyicx.zhibolibrary.ui.fragment.ZBLLiveItemFragment;
 import com.zhiyicx.zhibolibrary.ui.view.LiveItemView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 
@@ -92,7 +92,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
             getUserList(isMore);
             return;
         }
-        if (ZhiboApplication.userInfo == null) ZhiboApplication.getUserInfo();//此处解决经常报空的问题
+        if (ZhiboApplication.getUserInfo() == null) ZhiboApplication.getUserInfo();//此处解决经常报空的问题
         if (mRootView.isFilter()) {//筛选
             filter(isMore);
         }
@@ -143,13 +143,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                             mRootView.showMessage(throwable.getMessage());
                         }
                         mRootView.setIsFilter(false);
-                        if (!isMore) {//隐藏loading
-                            mRootView.hideRefreshing();
-                            loadForNetBad();
-                        }
-                        else {
-                            mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
-                        }
+                        errorDeal(isMore);
                     }
                 });
     }
@@ -183,12 +177,15 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                         }
 
 
+                    }else{
+                        errorDeal(isMore);
                     }
                 }
             }, new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
                     throwable.printStackTrace();
+                    errorDeal(isMore);
                 }
             });
         }
@@ -204,7 +201,15 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         }
 
     }
-
+    private void errorDeal(boolean isMore){
+        if (!isMore) {//隐藏loading
+            mRootView.hideRefreshing();
+            refresh(null,isMore);
+        }
+        else {
+            mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
+        }
+    }
 
     /**
      * 加载时遇到网络状况不佳
@@ -213,7 +218,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         if (mListDatas != null && mListDatas.size() > 0) {
             //如果列表有数据则清空
             mListDatas.clear();
-            if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+            if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
                 mLinearAdapter.notifyDataSetChanged();
             else
                 mAdapter.notifyDataSetChanged();//通知页面更新数据
@@ -282,6 +287,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                         }
                         else {
                             mRootView.showMessage(ApiList.message);
+                            mRootView.hideRefreshing();
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -354,7 +360,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
 
         }
         ++mPage;
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.isShowFooter(true);
         }
         else
@@ -365,13 +371,13 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                 mListDatas.clear();
                 mStreamListDatas.clear();
                 mNotStreamListDatas.clear();
-                if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
                     mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
                 else
                     mAdapter.notifyDataSetChanged();//通知页面更新数据
             }
             if (!isMore) {//上拉刷新为空提示用户
-                if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
 //                    mRootView.showMessage(ApiList.message + "~");
                     mRootView.showNotFollowPH();
                 }
@@ -402,7 +408,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                 hideMoreLoading();
             }
         }
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             /**
              * 处理直播排序数据，在直播的排在前面
              */
@@ -421,14 +427,14 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                 mListDatas.add(data);
             }
         }
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW))
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
             mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
         else
             mAdapter.notifyDataSetChanged();//通知页面更新数据
     }
 
     private void hideMoreLoading() {
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.isShowFooter(false);
             mLinearAdapter.notifyDataSetChanged();
         }
@@ -449,12 +455,12 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                 mRootView.setAdapter(mAdapter);
             }
             else {//直播列表的adapter
-                if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
                     mLinearAdapter = new FollowStreamListAdapter(mListDatas);
                     mRootView.setMoreLineAdapter(mLinearAdapter);
                 }
                 else {
-                    mAdapter = new LiveListAdapter(mListDatas);
+                    mAdapter = new LiveListAdapter(mListDatas,mRootView.isNeedShowUserInfo());
                     mRootView.setAdapter(mAdapter);
                 }
             }
@@ -466,7 +472,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
      * 初始化Item点击事件
      */
     private void initItemListener() {
-        if (mRootView.getOrder().equals(LiveItemFragment.TYPE_FOLLOW)) {
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.setOnItemClickListener(new MoreLinearAdapter.OnRecyclerViewItemClickListener<SearchResult>() {
                 @Override
                 public void onItemClick(View view, SearchResult data) {
@@ -536,7 +542,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
     }
 
     private void startVideo(String vid, UserInfo userInfo) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", userInfo);
         bundle.putString("vid", vid);
@@ -547,7 +553,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
     }
 
     private void startPlay(SearchResult mData) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", mData);
         bundle.putBoolean("isVideo", false);
@@ -562,7 +568,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
      * @param http 播放地址
      */
     private void launchVideo(String http, UserInfo userInfo) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("url", http);//加密streamid
         bundle.putSerializable("userInfo", userInfo);
@@ -578,7 +584,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
      * @param http 播放地址
      */
     private void launchVideo(String http) {
-        Intent intent = new Intent(UiUtils.getContext(), LivePlayActivity.class);
+        Intent intent = new Intent(UiUtils.getContext(), ZBLLivePlayActivity.class);
         intent.putExtra("url", http);//加密streamid
         Bundle bundle = new Bundle();
         bundle.putSerializable("data", mData);

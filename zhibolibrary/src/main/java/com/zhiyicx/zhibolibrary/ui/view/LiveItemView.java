@@ -82,6 +82,12 @@ public interface LiveItemView extends BaseView{
     String getUsid();
 
     /**
+     * 列表中是否需要显示用户头像名字等信息;
+     * @return
+     */
+    boolean isNeedShowUserInfo();
+
+    /**
      * 设置uid
      */
     void setUid(String uid);

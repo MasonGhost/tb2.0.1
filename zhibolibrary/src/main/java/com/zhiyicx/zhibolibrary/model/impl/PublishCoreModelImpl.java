@@ -3,6 +3,7 @@ package com.zhiyicx.zhibolibrary.model.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.zhiyicx.imsdk.core.ImService;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.model.PublishCoreModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.service.LiveService;
@@ -10,6 +11,7 @@ import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
+import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;
@@ -20,6 +22,7 @@ import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.FormBody;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -46,10 +49,11 @@ public class PublishCoreModelImpl implements PublishCoreModel {
 
 
 
-        if (presenter)
+        if (presenter) {
             ZBStreamingClient.getInstance().sendTextMsg(text);
-        else
+        } else {
             ZBPlayClient.getInstance().sendTextMsg(text);
+        }
     }
 
     @Override
@@ -67,22 +71,30 @@ public class PublishCoreModelImpl implements PublishCoreModel {
         ZBPlayClient.getInstance().sendAttention();
     }
 
+    /**
+     * 通过uisd获取用户信息
+     *
+     * @return
+     */
     @Override
-    public Observable<BaseJson<UserInfo[]>> getUserInfo(String user_id, String file,
-                                                        String accessKey,
-                                                        String secretKey) {
-        return mUserService.getUserInfo(ZBLApi.API_GET_USER_INFO, user_id, file, accessKey, secretKey);
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("api", ZBLApi.API_GET_USER_INFO);
+        if(filed!=null) {
+            builder.add("filed", filed);
+        }
+        getPermissionData(usid, builder);
+        FormBody formBody = builder.build();
+        return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
+
     }
-
-
-    @Override
-    public Observable<BaseJson<UserInfo[]>> getUssidInfo(String user_id, String file,
-                                                         String accessKey,
-                                                         String secretKey) {
-        return mUserService.getUsIdInfo(ZBLApi.API_GET_USID_INFO, user_id, file, accessKey, secretKey);
+    private void getPermissionData(String usid, FormBody.Builder builder) {
+        builder.add("usid", usid);
+        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+        for (PermissionData data : permissionDatas) {
+            builder.add(data.auth_key, data.auth_value);
+        }
     }
-
-
     @Override
     public Observable<BaseJson<SearchResult[]>> getGiftRank(String usid, int page) {
         Map<String, Object> map = new HashMap<>();

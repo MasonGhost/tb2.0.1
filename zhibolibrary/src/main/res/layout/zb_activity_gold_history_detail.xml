@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/color_divider"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.zhiyicx.zhibolibrary.ui.components.AutoToolbar
+        android:id="@+id/toolbar"
+        style="@style/style_toolbar"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_gold_history_back"
+            style="@style/style_back_container">
+
+            <ImageView style="@style/style_back_button"
+                android:src="@mipmap/img_back"
+
+                />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/style_toolbar_title"
+            android:textColor="@color/black"
+            android:layout_gravity="center" />
+    </com.zhiyicx.zhibolibrary.ui.components.AutoToolbar>
+
+    <View
+        android:id="@+id/line"
+        style="@style/divider_style_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="32dp">
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ico_right" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="交易成功"
+            android:textColor="@color/color_gray_light"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingBottom="30dp"
+        android:paddingTop="20dp"
+        android:text="+200.0"
+        android:textColor="@color/color_font_black_light"
+        android:textSize="36sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="18dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/deal_info"
+            android:textColor="@color/color_font_black_light"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_deal_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="jfdsajgkldfajgkldfjjfdsajgkldfajgkldfjjfdsajgkldfajgkldfjjfdsajgkldfajgkldfjjfdsajgkldfajgkldfj"
+            android:textColor="@color/color_gray_light"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="18dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/ctime"
+            android:textColor="@color/color_font_black_light"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_ctime"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="2016/15/12  12:03"
+            android:textColor="@color/color_gray_light"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
