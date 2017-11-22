@@ -287,7 +287,11 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         showMessage(getString(R.string.permisson_refused_nerver_ask));
                     }
                 });
-        mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        try {
+            mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        } catch (NullPointerException e) {
+            mAppRule.setVisibility(View.GONE);
+        }
         mAppRule.setText(getString(R.string.app_rule_register, getString(R.string.app_name)));
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
