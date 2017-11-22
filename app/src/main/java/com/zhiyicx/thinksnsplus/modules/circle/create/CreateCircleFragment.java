@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @Author Jliuer
@@ -24,6 +25,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected int getBodyLayoutId() {
-        return 0;
+        return R.layout.fragment_create_circle;
     }
 }

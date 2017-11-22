@@ -2,22 +2,18 @@
 <com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
-
-
+    android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/bgColor">
 
         <LinearLayout
             android:id="@+id/ll_container"
@@ -43,10 +39,10 @@
 
                     <ImageView
                         android:id="@+id/iv_head_icon"
-                        android:scaleType="centerCrop"
                         android:layout_width="@dimen/headpic_for_list"
                         android:layout_height="@dimen/headpic_for_list"
                         android:layout_gravity="center_vertical"
+                        android:scaleType="centerCrop"
                         android:src="@mipmap/pic_default_secret"/>
                 </LinearLayout>
 
@@ -165,6 +161,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
+
                     <com.zhy.view.flowlayout.TagFlowLayout
                         android:id="@+id/fl_tags"
                         android:layout_width="match_parent"
@@ -173,6 +170,7 @@
                         android:paddingBottom="@dimen/spacing_normal"
                         android:paddingTop="@dimen/spacing_normal"
                         app:max_select="0"/>
+
                     <TextView
                         android:id="@+id/tv_tag_hint"
                         android:layout_width="match_parent"
@@ -272,18 +270,18 @@
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
 
             <LinearLayout
-                android:gravity="center_vertical"
                 android:id="@+id/ll_synchro"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_weight="1"
                     android:text="@string/edit_circle_synchronization"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content_assist"/>
@@ -299,18 +297,18 @@
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
 
             <LinearLayout
-                android:gravity="center_vertical"
                 android:id="@+id/ll_block"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_weight="1"
                     android:text="@string/edit_circle_block"
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content_assist"/>
@@ -326,59 +324,83 @@
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
 
             <LinearLayout
-                android:gravity="center_vertical"
                 android:id="@+id/ll_charge"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <CheckBox
-                    android:layout_marginLeft="@dimen/spacing_mid"
-                    android:text="@string/edit_circle_charge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_charge"/>
 
                 <EditText
-                    android:hint="xxss"
-                    android:gravity="right"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:hint="xxss"/>
 
                 <TextView
-                    android:text="@string/gold"
-                    android:layout_marginRight="@dimen/spacing_mid"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:text="@string/gold"/>
+
             </LinearLayout>
 
             <include
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
 
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:background="@color/white"
+                android:text="@string/edit_circle_free"/>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/full_button_height"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:text="@string/edit_circle_join"/>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+
             <LinearLayout
-                android:gravity="center_vertical"
-                android:id="@+id/ll_free"
+                android:id="@+id/ll_notice"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <CheckBox
-                    android:layout_marginLeft="@dimen/spacing_mid"
-                    android:text="@string/edit_circle_free"
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:text="@string/edit_circle_notice"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"/>
 
-
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <TextView
-                android:text="@string/gold"
-                android:layout_marginRight="@dimen/spacing_mid"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="@dimen/full_button_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:text="@string/edit_circle_rule"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -62,8 +62,8 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.circle),
-                getString(R.string.post));
+        return Arrays.asList(getString(R.string.chanel),
+                getString(R.string.chanel));
     }
 
     @Override

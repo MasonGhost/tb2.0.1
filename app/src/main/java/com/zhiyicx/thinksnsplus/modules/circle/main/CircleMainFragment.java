@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
@@ -19,7 +20,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
  * @Description
  */
 public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, GroupInfoBean>
-        implements CircleMainContract.View,BaseCircleItem.CircleItemItemEvent {
+        implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent {
 
     private CircleMainHeader mCircleMainHeader;
 
@@ -51,6 +52,17 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     public static CircleMainFragment newInstance() {
         CircleMainFragment circleMainFragment = new CircleMainFragment();
         return circleMainFragment;
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_createcircle;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
     }
 
     @Override

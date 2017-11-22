@@ -7,7 +7,7 @@ public class CreateCircleActivity extends TSActivity<CreateCirclePresenter, Crea
 
     @Override
     protected CreateCircleFragment getFragment() {
-        return null;
+        return new CreateCircleFragment();
     }
 
     @Override
