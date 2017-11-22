@@ -37,7 +37,7 @@
 
                 <EditText
                     android:id="@+id/et_top_up_edit"
-                    style="@style/style_edit"
+                    style="@style/zb_style_edit"
                     android:textColorHint="@color/gray"
                     android:inputType="text"
                     android:singleLine="true"

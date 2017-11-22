@@ -436,7 +436,7 @@
 
                 <EditText
                     android:id="@+id/et_publish_core"
-                    style="@style/style_edit"
+                    style="@style/zb_style_edit"
                     android:layout_width="510px"
                     android:layout_height="70px"
                     android:layout_marginLeft="15px"

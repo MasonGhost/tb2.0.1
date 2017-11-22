@@ -57,7 +57,7 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="style_edit">
+    <style name="zb_style_edit">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
@@ -134,12 +134,12 @@
     </style>
 
 
-    <style name="style_small_text">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/font_large</item>
-        <item name="android:textColor">@color/color_font_black_light</item>
-    </style>
+    <!--<style name="style_small_text">-->
+        <!--<item name="android:layout_width">wrap_content</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:textSize">@dimen/font_large</item>-->
+        <!--<item name="android:textColor">@color/color_font_black_light</item>-->
+    <!--</style>-->
 
     <style name="style_back_container">
         <item name="android:layout_width">wrap_content</item>
