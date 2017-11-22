@@ -134,8 +134,7 @@ public class MessageRepository implements MessageContract.Repository {
                 //去除没有聊过天的数据
                 .map(listBaseJson -> {
                     if (!listBaseJson.isEmpty()) {
-                        int size = listBaseJson.size();
-                        for (int i = 0; i < size; i++) {
+                        for (int i = 0; i < listBaseJson.size(); i++) {
                             if (listBaseJson.get(i).getConversation().getLast_message() == null || TextUtils.isEmpty(listBaseJson.get(i)
                                     .getConversation().getLast_message().getTxt())) {
                                 listBaseJson.remove(i);
@@ -144,9 +143,7 @@ public class MessageRepository implements MessageContract.Repository {
                     }
                     return listBaseJson;
                 })
-                .
-
-                        observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread());
 
     }
 
