@@ -224,7 +224,7 @@
 
             <Button
                 android:id="@+id/bt_publish_start"
-                style="@style/style_login_button"
+                style="@style/zb_style_login_button"
                 android:layout_width="450px"
                 android:layout_height="80px"
 

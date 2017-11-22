@@ -81,7 +81,7 @@
     </style>
 
 
-    <style name="style_login_button">
+    <style name="zb_style_login_button">
         <item name="android:layout_width">@dimen/button_big_width</item>
         <item name="android:layout_height">@dimen/button_big_height</item>
         <item name="android:layout_gravity">center</item>
