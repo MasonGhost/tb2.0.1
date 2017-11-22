@@ -58,6 +58,22 @@
             />
 
         <TextView
+            android:id="@+id/tv_toolbar_right_left"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tv_toolbar_right"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:drawablePadding="@dimen/spacing_small"
+            android:paddingLeft="@dimen/toolbar_padding_left"
+            android:textColor="@color/selector_theme_color_toolbar_text_color"
+            android:textSize="@dimen/toolbar_right_text_size"
+            tools:text="右边"
+            />
+
+        <TextView
             android:id="@+id/tv_toolbar_right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

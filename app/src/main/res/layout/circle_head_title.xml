@@ -2,10 +2,19 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/title_layout"
+    android:id="@+id/circle_title_layout"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/toolbar_height"
     app:layout_collapseMode="pin">
+
+    <ImageView
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:id="@+id/iv_refresh"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/frame_loading_grey"/>
 
     <LinearLayout
         android:id="@+id/title_center_layout"
@@ -14,7 +23,6 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="horizontal">
-
 
         <TextView
             android:id="@+id/title_uc_title"

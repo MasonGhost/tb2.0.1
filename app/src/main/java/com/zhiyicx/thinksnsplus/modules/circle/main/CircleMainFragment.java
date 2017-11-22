@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
@@ -99,6 +100,6 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void toCircleDetail(GroupInfoBean groupInfoBean) {
-        startActivity(new Intent(getActivity(), MarkdownActivity.class));
+        startActivity(new Intent(getActivity(), CircleDetailActivity.class));
     }
 }

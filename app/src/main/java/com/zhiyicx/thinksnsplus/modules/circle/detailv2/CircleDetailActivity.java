@@ -1,20 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class CircleDetailActivity extends TSActivity {
+/**
+ * @author Jliuer
+ * @Date 17/11/22 14:49
+ * @Email Jliuer@aliyun.com
+ * @Description 
+ */
+public class CircleDetailActivity extends TSActivity<CircleDetailPresenter, CircleDetailFragment> {
 
     @Override
-    protected Fragment getFragment() {
-        return null;
+    protected CircleDetailFragment getFragment() {
+        return new CircleDetailFragment();
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerCircleDetailComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .circleDetailPresenterModule(new CircleDetailPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

@@ -6,33 +6,23 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:fitsSystemWindows="false">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#cccccc"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:fitsSystemWindows="false">
+            android:background="#cccccc">
 
             <android.support.design.widget.AppBarLayout
-                android:id="@+id/appbar_layout"
+                android:id="@+id/circle_appbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#aaaaaa"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:fitsSystemWindows="false"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:elevation="0dp"
                 app:layout_behavior="@string/appbar_overscroll_behavior">
@@ -43,7 +33,6 @@
                     android:layout_height="match_parent"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:fitsSystemWindows="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                     <include layout="@layout/circle_head_bg"/>
@@ -58,12 +47,11 @@
                         android:background="@android:color/white"
                         android:tag="toolbar"
                         app:layout_collapseMode="pin"
-                        app:popupTheme="@style/Widget.AppCompat.Toolbar" />
+                        app:popupTheme="@style/Widget.AppCompat.Toolbar"/>
 
                     <include layout="@layout/circle_head_title"/>
 
                 </android.support.design.widget.CollapsingToolbarLayout>
-
 
 
             </android.support.design.widget.AppBarLayout>

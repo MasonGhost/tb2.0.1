@@ -8,7 +8,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,7 +25,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private static final String TAG_TOOLBAR = "toolbar";
     private static final String TAG_MIDDLE = "middle";
     private static final String TAG_STOP = "stop";
-    private static final float TARGET_HEIGHT = 1500;
+    private static final float TARGET_HEIGHT = 1000;
     private View mTargetView;
     private int mParentHeight;
     private int mTargetViewHeight;
@@ -41,7 +40,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private int mFirstTop;
     private boolean isRecovering = false;//是否正在自动回弹中
 
-    private final float MAX_REFRESH_LIMIT = 0.3f;//达到这个下拉临界值就开始刷新动画
+    private final float MAX_REFRESH_LIMIT = 0.2f;//达到这个下拉临界值就开始刷新动画
 
     public AppBarLayoutOverScrollViewBehavior() {
     }
@@ -56,10 +55,10 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         boolean handled = super.onLayoutChild(parent, abl, layoutDirection);
 
         if (mToolBar == null) {
-            mToolBar =(Toolbar) parent.findViewWithTag(TAG_TOOLBAR);
+            mToolBar = (Toolbar) parent.findViewWithTag(TAG_TOOLBAR);
         }
         if (middleLayout == null) {
-            middleLayout =(ViewGroup) parent.findViewWithTag(TAG_MIDDLE);
+            middleLayout = (ViewGroup) parent.findViewWithTag(TAG_MIDDLE);
         }
         // 需要在调用过super.onLayoutChild()方法之后获取
         if (mTargetView == null) {
@@ -68,13 +67,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
                 initial(abl);
             }
         }
-        abl.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public final void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                mToolBar.setAlpha(Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange()));
-            }
-
-        });
+        abl.addOnOffsetChangedListener((appBarLayout, i) -> mToolBar.setAlpha(Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange())));
         return handled;
     }
 
@@ -130,10 +123,9 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         mLastBottom = mParentHeight + (int) (mTargetViewHeight / 2 * (mLastScale - 1));
         abl.setBottom(mLastBottom);
         target.setScrollY(0);
-        Log.d("scale::", "" + mLastScale);
 
         float top = mFirstTop * mLastScale;
-        middleLayout.setTop((int) top);
+        middleLayout.setTranslationY(top - mFirstTop);
 
         if (onProgressChangeListener != null) {
             float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
@@ -168,24 +160,15 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
             if (isAnimate) {
                 ValueAnimator anim = ValueAnimator.ofFloat(mLastScale, 1f).setDuration(200);
                 anim.addUpdateListener(
-                        new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                float value = (float) animation.getAnimatedValue();
-                                ViewCompat.setScaleX(mTargetView, value);
-                                ViewCompat.setScaleY(mTargetView, value);
-                                int ablBottom = (int) (mLastBottom - (mLastBottom - mParentHeight) * animation.getAnimatedFraction());
-                                abl.setBottom(ablBottom);
+                        animation -> {
+                            float value = (float) animation.getAnimatedValue();
+                            ViewCompat.setScaleX(mTargetView, value);
+                            ViewCompat.setScaleY(mTargetView, value);
+                            int ablBottom = (int) (mLastBottom - (mLastBottom - mParentHeight) * animation.getAnimatedFraction());
+                            abl.setBottom(ablBottom);
 
-                                float top = mFirstTop * value;
-
-                                middleLayout.setTop((int) top);
-
-                                if (onProgressChangeListener != null) {
-                                    float progress = Math.min((value - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
-                                    onProgressChangeListener.onProgressChange(progress, true);
-                                }
-                            }
+                            float top = mFirstTop * value;
+                            middleLayout.setTranslationY(top - mFirstTop);
                         }
                 );
                 anim.addListener(new Animator.AnimatorListener() {
@@ -211,15 +194,10 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
                 ViewCompat.setScaleX(mTargetView, 1f);
                 ViewCompat.setScaleY(mTargetView, 1f);
                 abl.setBottom(mParentHeight);
-                middleLayout.setTop(mFirstTop);
+                middleLayout.setTranslationY(0);
                 isRecovering = false;
-
-                if (onProgressChangeListener != null) {
-                    onProgressChangeListener.onProgressChange(0, true);
-                }
             }
         }
     }
-
 
 }
