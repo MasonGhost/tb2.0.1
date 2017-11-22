@@ -191,8 +191,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,R.id.bt_my_live})
-            R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -225,7 +223,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_personal_page:
                 PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
-            /**
+            /*
              * 我的投稿
              */
             case R.id.bt_my_info:

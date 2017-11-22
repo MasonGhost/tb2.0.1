@@ -10,6 +10,11 @@ android {
         targetSdkVersion gConfig["targetSdkVersion"]
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
