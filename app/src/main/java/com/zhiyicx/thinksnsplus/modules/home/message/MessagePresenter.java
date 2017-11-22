@@ -256,8 +256,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    int size = mRootView.getListDatas().size();
-                    for (int i = 0; i < size; i++) {
+                    for (int i = 0; i < mRootView.getListDatas().size(); i++) {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
                                 .getCid());
                         if (message != null) {
@@ -265,6 +264,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
                             mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
                                     .getListDatas().get(i).getConversation().getCid()));
+                        } else {
+                            mRootView.getListDatas().remove(i);
                         }
                     }
                     checkBottomMessageTip();
@@ -479,13 +480,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
 
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
-        if (message != null) {
-            messageItemBean.getConversation().setLast_message(message);
-            messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
-            mRootView.getListDatas().add(0, messageItemBean);
-            mRootView.refreshData();
-        }
+        mRootView.getListDatas().add(0, messageItemBean);
+        mRootView.refreshData();
 
     }
 
