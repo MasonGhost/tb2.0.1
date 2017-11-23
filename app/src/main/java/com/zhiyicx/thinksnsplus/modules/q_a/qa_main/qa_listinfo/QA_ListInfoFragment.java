@@ -169,6 +169,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             }
 
             @Override
+            protected boolean isTourist() {
+                return mPresenter.handleTouristControl();
+            }
+
+            @Override
             protected int getRatio() {
                 return mPresenter.getRatio();
             }
@@ -177,7 +182,9 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (position < 0) return;
+                if (mPresenter.handleTouristControl() || position < 0) {
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
                 QAListInfoBean listInfoBean = mListDatas.get(position);
@@ -239,14 +246,14 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
                                 .string.buy_pay_member),
-                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(),mPresenter.getRatio())
-                        ,mPresenter.getGoldName()))
+                        PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getOnlookQuestion(), mPresenter.getRatio())
+                        , mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.qa_pay_for_watch))
                 .buildTitleStr(getString(R.string.qa_pay_for_watch))
                 .buildItem1Str(getString(R.string.buy_pay_in_payment))
                 .buildItem2Str(getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig()
-                        .getOnlookQuestion(),mPresenter.getRatio())))
+                        .getOnlookQuestion(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payForOnlook(answer_id, pisotion);
                     mPayWatchPopWindow.hide();

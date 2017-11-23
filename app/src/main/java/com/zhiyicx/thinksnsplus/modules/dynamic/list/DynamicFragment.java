@@ -839,7 +839,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item5ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
-                    mDeletCommentPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);

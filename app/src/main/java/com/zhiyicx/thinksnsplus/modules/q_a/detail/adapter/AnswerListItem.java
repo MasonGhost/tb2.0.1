@@ -173,7 +173,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(isOnlook && isInvited ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isOnlook && isInvited && !isMine ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string
@@ -223,7 +223,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         Link followCountLink = new Link(context.getString(R.string
                 .qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor
                 (context, R.color
-                .normal_for_assist_text))
+                        .normal_for_assist_text))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(context, R.color
                         .general_for_hint))
                 .setHighlightAlpha(.8f)

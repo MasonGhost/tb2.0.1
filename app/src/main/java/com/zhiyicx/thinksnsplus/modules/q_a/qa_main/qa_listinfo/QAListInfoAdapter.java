@@ -56,7 +56,6 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private SpanTextClickable.SpanTextClickListener mSpanTextClickListener;
 
-
     public QAListInfoAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
         super(context, layoutId, datas);
     }
@@ -142,6 +141,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             RxView.clicks(contentView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
+                        if (isTourist()) {
+                            return;
+                        }
                         if (!infoBean.getAnswer().getCould() && mSpanTextClickListener != null) {
                             mSpanTextClickListener.onSpanClick(infoBean.getAnswer().getId(), position);
                             return;
@@ -200,6 +202,10 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     protected int getExcellentTag(boolean isExcellent) {
         return 0;
+    }
+
+    protected boolean isTourist() {
+        return false;
     }
 
     protected int getRatio() {
