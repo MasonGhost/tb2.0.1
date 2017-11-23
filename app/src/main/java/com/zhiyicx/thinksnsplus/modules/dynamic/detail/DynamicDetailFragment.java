@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -177,19 +179,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected void initView(View rootView) {
         super.initView(rootView);
         mSystemConfigBean = mPresenter.getSystemConfigBean();
-        initToolbar();
         //initToolbarTopBlankHeight();
         initBottomToolUI();
         initBottomToolListener();
         initHeaderView();
         initListener();
-//        setOverScroll(false, false);
-    }
-
-    private void initToolbar() {
-//        mTvToolbarCenter.setFocusableInTouchMode(true);
-//        mTvToolbarCenter.requestFocus();// 抢占焦点
-        //mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     /**
@@ -438,8 +432,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         updateReward();
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
-        if (mIsLookMore) {
-            mRvList.scrollToPosition(1);
+        if (mIsLookMore && getListDatas().size() >= DynamicListCommentView.SHOW_MORE_COMMENT_SIZE_LIMIT) {
+            mRvList.post(() -> ((LinearLayoutManager)layoutManager).scrollToPositionWithOffset(0,-mDynamicDetailHeader.scrollCommentToTop()));
         }
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
         long user_id = mDynamicBean.getUser_id();
@@ -450,12 +444,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mTvToolbarRight.setVisibility(View.VISIBLE);
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
+
     }
 
     @Override
     public void updateReward() {
-        if (mDynamicBean.getReward() != null&& !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
-            mDynamicBean.getReward().setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mDynamicBean.getReward().getAmount()), mPresenter.getRatio()));
+        if (mDynamicBean.getReward() != null && !TextUtils.isEmpty(mDynamicBean.getReward().getAmount())) {
+            mDynamicBean.getReward().setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mDynamicBean.getReward().getAmount()),
+                    mPresenter.getRatio()));
         }
         mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(),
                 RewardType.DYNAMIC, mPresenter.getGoldName());
@@ -543,7 +539,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
         if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
-            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
+                    null);
         } else if (userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
         } else {

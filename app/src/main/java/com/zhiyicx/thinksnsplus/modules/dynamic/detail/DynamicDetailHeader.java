@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -70,6 +72,9 @@ public class DynamicDetailHeader {
     private int picWidth;
     private Bitmap sharBitmap;
 
+    private LinearLayout mLlAdvert;
+    private View mRewardView;
+
     private OnImageClickLisenter mOnImageClickLisenter;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
@@ -96,6 +101,8 @@ public class DynamicDetailHeader {
 //                (R.dimen.spacing_normal) * 2;
         picWidth = screenWidth;
         mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
+        mLlAdvert = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_advert);
+        mRewardView = mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
@@ -374,7 +381,7 @@ public class DynamicDetailHeader {
                             .build())
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))
-                    .setHighlightAlpha(.8f)
+                    .setHighlightAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         LogUtils.d(clickedText);
                         Intent intent = new Intent();
@@ -390,6 +397,10 @@ public class DynamicDetailHeader {
             links.add(commentNameLink);
         }
         return links;
+    }
+
+    public int scrollCommentToTop() {
+        return mRewardView.getBottom();
     }
 
     public interface OnImageClickLisenter {
