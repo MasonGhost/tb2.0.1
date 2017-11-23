@@ -147,4 +147,23 @@ public class AnswerDraftBean extends BaseDraftBean implements Parcelable {
             return new AnswerDraftBean[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AnswerDraftBean that = (AnswerDraftBean) o;
+
+        return mark != null ? mark.equals(that.mark) : that.mark == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mark != null ? mark.hashCode() : 0;
+    }
 }

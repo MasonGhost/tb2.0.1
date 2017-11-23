@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -71,8 +72,9 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
     }
 
     @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
+    public void onResume() {
+        super.onResume();
+        requestNetData(0L, false);
     }
 
     @Override
