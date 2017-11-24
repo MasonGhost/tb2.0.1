@@ -124,7 +124,7 @@ public class ZBInitConfigManager {
                         if (json.code.equals(ZBApi.REQUEST_SUCESS)) {//请求成功
                             mDomain = json.data;//更新域名
                             ZBApi.USENOW_DOMAIN = mDomain;
-
+                            System.out.println("mDomain = " + mDomain);
                             return mSplashModel.getConfig(hexTime, token, "");
                         }
                         else {//请求失败
@@ -140,6 +140,7 @@ public class ZBInitConfigManager {
                     public void call(ZBBaseJson<ZBApiConfig> json) {
                         if (json == null) return;
                         if (json.code.equals(ZBApi.REQUEST_SUCESS)) {
+                            System.out.println("mDomain 2 = " + mDomain);
                             json.data.zhibo_domain = mDomain;//设置域名
                             ZBDataHelper.saveDeviceData(context, ZBDataHelper.CONFIG_NAME, json.data);//保存到本地
                             mSplashModel.setConfig(json.data);//保存到内存

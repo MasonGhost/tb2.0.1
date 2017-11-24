@@ -15,7 +15,7 @@ public class ZBLApi {
 
     public static String CONFIG_BASE_DOMAIN = "";
     // 应用服务器对接直播服务器的协议地址：更具需求修改
-    public static String CONFIG_EXTRAL_URL = "/api/v2/live";
+    public static String CONFIG_EXTRAL_URL = "api/v2/live";
 
     public final static String EXTRAL_URL = "/api";
     //域名

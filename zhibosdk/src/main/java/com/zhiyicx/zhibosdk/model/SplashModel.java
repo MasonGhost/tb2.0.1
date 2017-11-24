@@ -47,9 +47,9 @@ public interface SplashModel {
      *
      * @return
      */
-    Observable<ZBBaseJson<ZBApiConfig>> getConfig(String hextime,
-                                                  String token,
-                                                  String name);
+    Observable getConfig(String hextime,
+                         String token,
+                         String name);
 
 
     /**

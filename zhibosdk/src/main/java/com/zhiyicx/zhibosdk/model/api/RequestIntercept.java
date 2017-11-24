@@ -26,6 +26,8 @@ import static android.content.ContentValues.TAG;
  * Created by jess on 7/1/16.
  */
 public class RequestIntercept implements Interceptor {
+    private static final String TAG = "zb_sdk_intercept";
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -42,7 +44,7 @@ public class RequestIntercept implements Interceptor {
         String method = request.method();
         logUrl = URLDecoder.decode(logUrl, "utf-8");
         try {
-            LogUtils.debugInfo(String.format("Sending " + method + " Request %s on %n formdata --->  %s%n Connection ---> %s%n Headers ---> %s",
+            LogUtils.debugInfo(TAG,String.format("Sending " + method + " Request %s on %n formdata --->  %s%n Connection ---> %s%n Headers ---> %s",
                     logUrl
                     , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
                     , chain.connection()
@@ -71,8 +73,19 @@ public class RequestIntercept implements Interceptor {
             long t1 = System.nanoTime();
             long t2 = System.nanoTime();
             //打印响应时间
-            LogUtils.debugInfo(TAG, String.format("Received response code %d in %.1fms%n%s", originalResponse.code(), (t2 - t1) / 1e6d, originalResponse.headers()));
+            LogUtils.debugInfo(TAG, String.format("Received response code %d in %.1fms%n%s", originalResponse.code(), (t2 - t1) / 1e6d,
+                    originalResponse.headers()));
 
+
+            //获取content的压缩类型
+            String encoding = originalResponse
+                    .headers()
+                    .get("Content-Encoding");
+
+            Buffer clone = buffer.clone();
+            String bodyString = CommonUtils.praseBodyString(responseBody, encoding, clone);
+            // 打印返回的json结果
+            LogUtils.debugInfo(TAG, bodyString);
 
         } catch (IllegalStateException e) {
             // this method "throws IOException" anyway so we will not get a crash.

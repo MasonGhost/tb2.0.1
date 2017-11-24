@@ -125,6 +125,7 @@ public class ZBUpdateService extends BaseService {
                     public void call(ZBBaseJson<ZBApiConfig> json) {
                         if (json.code.equals(ZBApi.REQUEST_SUCESS)) {
                             ZBApiConfig config = ZBDataHelper.getDeviceData(getApplicationContext(), ZBDataHelper.CONFIG_NAME);
+
                             json.data.zhibo_domain = config.zhibo_domain;
                             ZBDataHelper.saveDeviceData(getApplicationContext(), ZBDataHelper.CONFIG_NAME, json.data);//保存到本地
                             String filter_wrod_version = ZBDataHelper.getStringSF(getApplicationContext(), ZBDataHelper.FILTER_WORD_VERSION);

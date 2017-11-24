@@ -32,7 +32,7 @@ public class ZBSmartLiveSDK {
      * @param apiVersion
      */
     public static void init(Application application,String rootDomain, String apiVersion) {
-        ZBApi.ZHIBO_DOMAIN = rootDomain+ZBApi.BASE_API;
+        ZBApi.ZHIBO_DOMAIN = rootDomain;
         ZBApi.ZHIBO_DOMAIN_VERSION = apiVersion;
         setClientComponent(application);
         /**

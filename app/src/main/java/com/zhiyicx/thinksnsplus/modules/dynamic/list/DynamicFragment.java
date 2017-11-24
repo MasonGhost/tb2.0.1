@@ -173,7 +173,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return false;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();

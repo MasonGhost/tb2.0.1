@@ -100,6 +100,7 @@ public class SplashModelImpl implements SplashModel {
             ZBApi.ZBAPICONFIG = config;
 
         if (config.zhibo_domain != null) {
+            System.out.println("config.zhibo_domain = " + config.zhibo_domain);
             ZBApi.USENOW_DOMAIN = config.zhibo_domain;
         }
 
@@ -145,7 +146,7 @@ public class SplashModelImpl implements SplashModel {
      */
     @Override
     public Observable<ZBBaseJson<String>> getNewDomain(String api_version, String token, String hexTime) {
-        return mCommonService.getDomain(ZBApi.ZHIBO_DOMAIN, ZBApi.API_GET_API_DOMAIN, hexTime, token, api_version);
+        return mCommonService.getDomain(ZBApi.ZHIBO_DOMAIN+ ZBApi.BASE_API, ZBApi.API_GET_API_DOMAIN, hexTime, token, api_version);
     }
 
     /**
