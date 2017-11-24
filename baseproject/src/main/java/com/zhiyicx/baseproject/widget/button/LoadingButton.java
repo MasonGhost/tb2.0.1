@@ -114,5 +114,7 @@ public class LoadingButton extends FrameLayout {
         }
     }
 
-
+    public AnimationDrawable getAnimationDrawable() {
+        return mAnimationDrawable;
+    }
 }
