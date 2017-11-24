@@ -15,15 +15,14 @@ import java.util.List;
 public class ZBApi {
     public final static String BASE_API = "/api";
 
-    //智播服务器根域名
-
+    //配置的直播服务器根域名，获取 api domain 和 config
     public static String ZHIBO_DOMAIN = "http://test.zhibocloud.cn";
 
     //智播服务器更域名版本号
 
     public static String ZHIBO_DOMAIN_VERSION = "1.0";
 
-    //域名
+    //域名(服务器分配的域名)
     public static String USENOW_DOMAIN =ZHIBO_DOMAIN;
 
 

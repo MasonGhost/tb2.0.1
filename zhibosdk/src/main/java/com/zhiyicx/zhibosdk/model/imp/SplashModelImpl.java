@@ -100,7 +100,6 @@ public class SplashModelImpl implements SplashModel {
             ZBApi.ZBAPICONFIG = config;
 
         if (config.zhibo_domain != null) {
-            System.out.println("config.zhibo_domain = " + config.zhibo_domain);
             ZBApi.USENOW_DOMAIN = config.zhibo_domain;
         }
 

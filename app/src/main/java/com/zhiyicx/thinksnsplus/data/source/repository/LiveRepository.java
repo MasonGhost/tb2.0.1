@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.MAX_RETRY_COUNTS;
@@ -47,6 +48,15 @@ public class LiveRepository implements ILiveRepository {
         return mLiveClient.getLiveTicket()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        if(s.startsWith("\"")){
+                            s=s.replace("\"","");
+                        }
+                        return s;
+                    }
+                });
     }
 }

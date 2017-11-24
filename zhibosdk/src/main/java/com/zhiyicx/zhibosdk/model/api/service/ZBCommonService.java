@@ -34,7 +34,7 @@ public interface ZBCommonService<T> {
      */
     @FormUrlEncoded
     @POST
-    Observable<ZBBaseJson<ZBUserAuth>> getUserAuthByTicket(@Url String url,@Field("api") String api, @Field("ticket") String ticket
+    Observable<ZBBaseJson<ZBUserAuth>>  getUserAuthByTicket(@Url String url,@Field("api") String api, @Field("ticket") String ticket
     );
 
 
