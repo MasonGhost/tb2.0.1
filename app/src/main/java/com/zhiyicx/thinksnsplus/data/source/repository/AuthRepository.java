@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 
 import java.util.Map;
 
@@ -108,6 +109,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
         AppApplication.setmCurrentLoginAuth(authBean);
+        ZhiboApplication.setToken(authBean.getToken());
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN, authBean);
     }
 

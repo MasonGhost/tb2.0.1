@@ -90,10 +90,10 @@ public class PublishCoreModelImpl implements PublishCoreModel {
     }
     private void getPermissionData(String usid, FormBody.Builder builder) {
         builder.add("usid", usid);
-        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
     }
     @Override
     public Observable<BaseJson<SearchResult[]>> getGiftRank(String usid, int page) {

@@ -107,30 +107,33 @@ public class ConfigManager implements IConfigManager {
                          */
                         ZBLApi.sZBApiConfig = zbApiConfig;
                         if (DataHelper.getDeviceData(DataHelper.USER_TICKET, UiUtils.getContext()) != null && DataHelper.getDeviceData(DataHelper.USER_TICKET, UiUtils.getContext()).equals(ticket) && (PermissionData[]) DataHelper.getDeviceData(DataHelper.USER_PERMISSION, UiUtils.getContext()) != null) {
-                            ZhiboApplication.setPermissionDatas((PermissionData[]) DataHelper.getDeviceData(DataHelper.USER_PERMISSION, UiUtils.getContext()));
+//                            ZhiboApplication.setPermissionDatas((PermissionData[]) DataHelper.getDeviceData(DataHelper.USER_PERMISSION, UiUtils.getContext()));
                             getUserInfoByUsid(callback);
                         } else {
-                            mConfigManagerModel.getPermissionData(ticket)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(Schedulers.io()).subscribe(new Action1<BaseJson<PermissionData[]>>() {
-                                @Override
-                                public void call(BaseJson<PermissionData[]> baseJson) {
-                                    if (baseJson.isSuccess()) {
-                                        ZhiboApplication.setPermissionDatas(baseJson.data);
-                                        DataHelper.saveDeviceData(DataHelper.USER_TICKET, ticket, UiUtils.getContext());
-                                        getUserInfoByUsid(callback);
-                                    } else if (callback != null) {
-                                        callback.onFail(baseJson.code, baseJson.message);
-                                    }
-                                }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    if (callback != null) {
-                                        callback.onError(throwable);
-                                    }
-                                }
-                            });
+//                            mConfigManagerModel.getPermissionData(ticket)
+//                                    .subscribeOn(Schedulers.io())
+//                                    .observeOn(Schedulers.io()).subscribe(new Action1<BaseJson<PermissionData[]>>() {
+//                                @Override
+//                                public void call(BaseJson<PermissionData[]> baseJson) {
+//                                    if (baseJson.isSuccess()) {
+//                                        ZhiboApplication.setPermissionDatas(baseJson.data);
+//                                        DataHelper.saveDeviceData(DataHelper.USER_TICKET, ticket, UiUtils.getContext());
+//                                        getUserInfoByUsid(callback);
+//                                    } else if (callback != null) {
+//                                        callback.onFail(baseJson.code, baseJson.message);
+//                                    }
+//                                }
+//                            }, new Action1<Throwable>() {
+//                                @Override
+//                                public void call(Throwable throwable) {
+//                                    if (callback != null) {
+//                                        callback.onError(throwable);
+//                                    }
+//                                }
+//                            });
+                                DataHelper.saveDeviceData(DataHelper.USER_TICKET, ticket, UiUtils.getContext());
+                                getUserInfoByUsid(callback);
+
                         }
                     }
 
@@ -158,7 +161,9 @@ public class ConfigManager implements IConfigManager {
      */
     @Override
     public void updateMyInfo(final OnCommonCallbackListener callback) throws IllegalAccessException {
-        if (ZBInitConfigManager.getUserAuth(UiUtils.getContext()).getUsid() == null || ZhiboApplication.getPermissionDatas() == null) {
+        if (ZBInitConfigManager.getUserAuth(UiUtils.getContext()).getUsid() == null
+//                || ZhiboApplication.getPermissionDatas() == null
+                ) {
             throw new IllegalAccessException("请确保调用ConfigManager.getInstance(context).init(rootDomain,ticket,callback)调用成功!");
         }
         getUserInfoByUsid(callback);

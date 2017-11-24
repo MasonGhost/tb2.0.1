@@ -58,10 +58,10 @@ public class StarExchangeModelImpl implements StarExchangeModel {
         builder.add("type", type+"");
         builder.add("token", token);
         builder.add("hextime", hextime);
-        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
         FormBody formBody = builder.build();
         return mService.getPreToken(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
     }
@@ -76,10 +76,10 @@ public class StarExchangeModelImpl implements StarExchangeModel {
         builder.add("gift_code", giftCode);
         if(params!=null)
         builder.add("params",params);
-        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
         FormBody formBody = builder.build();
         return mService.createOrder(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
     }
@@ -91,10 +91,10 @@ public class StarExchangeModelImpl implements StarExchangeModel {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("api", ZBLApi.API_GET_TRADE_STATUS);
         builder.add("trade_order", tradeOrder);
-        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
         FormBody formBody = builder.build();
         return mService.getOrderStatus(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
     }

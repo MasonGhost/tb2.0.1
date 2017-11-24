@@ -49,6 +49,16 @@ public class ZhiboApplication  {
     public static SensitivewordFilter filter;
     public static UserInfo userInfo;
 
+    private static String sToken;
+
+    public static String getToken() {
+        return sToken;
+    }
+
+    public static void setToken(String token) {
+        sToken = token;
+    }
+
     public static UserInfo getUserInfo() {
         if (userInfo == null) {
             userInfo = DataHelper.getDeviceData(DataHelper.USER_INFO, mContext);
@@ -60,15 +70,15 @@ public class ZhiboApplication  {
         ZhiboApplication.userInfo = userInfo;
         DataHelper.saveDeviceData(DataHelper.USER_INFO, userInfo, mContext);
     }
-    public static PermissionData[] getPermissionDatas() {
-        return sPermissionDatas;
-    }
+//    public static PermissionData[] getPermissionDatas() {
+//        return sPermissionDatas;
+//    }
 
-    public static void setPermissionDatas(PermissionData[] permissionDatas) {
-        sPermissionDatas = permissionDatas;
-    }
+//    public static void setPermissionDatas(PermissionData[] permissionDatas) {
+//        sPermissionDatas = permissionDatas;
+//    }
 
-    public static PermissionData[] sPermissionDatas;
+//    public static PermissionData[] sPermissionDatas;
 
 
     public static void init(Application application) {

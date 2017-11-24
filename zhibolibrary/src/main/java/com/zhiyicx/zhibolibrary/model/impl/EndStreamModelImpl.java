@@ -67,10 +67,10 @@ public class EndStreamModelImpl implements EndStreamModel {
 
     private void getPermissionData(String usid, FormBody.Builder builder) {
         builder.add("usid", usid);
-        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
     }
 
     /**

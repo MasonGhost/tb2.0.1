@@ -202,10 +202,10 @@ public class LiveItemModelImpl implements LiveItemModel {
 
     private void getPerssionData(FormBody.Builder builder,String usid) {
         builder.add("usid", usid);
-        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
     }
 
     @Override

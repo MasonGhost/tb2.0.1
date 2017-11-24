@@ -30,10 +30,10 @@ public class GoldHistoryModelImpl implements GoldHistoryModel {
         builder.add("type", type);
         builder.add("limit", PAGESIZE+"");
         builder.add("page", page + "");
-        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
 
         FormBody formBody = builder.build();
         return mService.getGoldList(ZBLApi.CONFIG_BASE_DOMAIN, formBody);

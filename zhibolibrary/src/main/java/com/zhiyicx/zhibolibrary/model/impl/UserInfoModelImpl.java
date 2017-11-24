@@ -45,10 +45,10 @@ public class UserInfoModelImpl implements UserInfoModel {
         builder.add("api", ZBLApi.API_GET_USER_INFO);
         builder.add("usid", usid);
         builder.add("filed", filed);
-        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
-        for (PermissionData data : permissionDatas) {
-            builder.add(data.auth_key, data.auth_value);
-        }
+//        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
+//        for (PermissionData data : permissionDatas) {
+//            builder.add(data.auth_key, data.auth_value);
+//        }
         FormBody formBody = builder.build();
         return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
 

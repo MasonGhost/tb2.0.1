@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.model.api;
 
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
 
 import org.json.JSONException;
@@ -28,12 +29,16 @@ public class RequestIntercept implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-
+        if (ZhiboApplication.getToken() != null) {
+            request = chain.request().newBuilder()
+                    .header("Accept", "application/json")
+                    .header("Authorization", " Bearer " + ZhiboApplication.getToken() )
+                    .build();
+        }
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
             request.body().writeTo(requestbuffer);
-        }
-        else {
+        } else {
             LogUtils.warnInfo("request.body() == null");
         }
 
@@ -80,7 +85,7 @@ public class RequestIntercept implements Interceptor {
                 if (object.has("message")) {
                     message = object.getString("message");
                 }
-                if ( System.currentTimeMillis() - last_iglletime > INTERCEPTTIME) {
+                if (System.currentTimeMillis() - last_iglletime > INTERCEPTTIME) {
 //                    Observable.just(1).observeOn(AndroidSchedulers.mainThread())
 //                            .subscribe(new Action1<Integer>() {
 //                                @Override
