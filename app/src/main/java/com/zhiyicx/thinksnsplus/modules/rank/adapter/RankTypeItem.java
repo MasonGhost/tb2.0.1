@@ -69,7 +69,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
                 break;
             case RankTypeConfig.RANK_USER_QUESTION_LIKE:
                 format = mContext.getString(R.string.rank_type_answer_dig_count);
-                count=userInfoBean.getExtra().getQuestions_count();
+                count=userInfoBean.getExtra().getCount();
 
                 break;
             case RankTypeConfig.RANK_QUESTION_DAY:
