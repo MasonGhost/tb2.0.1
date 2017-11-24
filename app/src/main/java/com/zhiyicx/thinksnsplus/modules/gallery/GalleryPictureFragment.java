@@ -339,7 +339,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0, ImageZipConfig.IMAGE_70_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
                     .thumbnail(thumbnailBuilder)
-                    .override(w, h)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.shape_default_image)
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -369,7 +368,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
                                             ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .override(w, h)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean
@@ -382,6 +380,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                 ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
                                                 params.width = w;
                                                 params.height = h;
+                                                if (params.height * params.width == 0) {
+                                                    params.width = params.height = 100;
+                                                }
                                                 mIvPager.setLayoutParams(params);
                                                 mIvPager.setImageResource(R.drawable.shape_default_image);
                                             }
