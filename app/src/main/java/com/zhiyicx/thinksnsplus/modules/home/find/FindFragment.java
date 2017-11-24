@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -22,6 +23,11 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActiv
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.zhibolibrary.manager.ConfigManager;
+import com.zhiyicx.zhibolibrary.manager.soupport.IConfigManager;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLHomeActivity;
+import com.zhiyicx.zhibolibrary.util.UiUtils;
+import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 
 import javax.inject.Inject;
 
@@ -184,6 +190,36 @@ public class FindFragment extends TSFragment {
                 break;
 //            直播
             case R.id.find_live:
+                if (!mAuthRepository.isTourist()) {
+
+                    //直播初始化
+                    IConfigManager configManager = ConfigManager.getInstance(UiUtils.getContext());
+                    // 域名为当前应用的域名
+                    configManager.init(ApiConfig.APP_DOMAIN, AppApplication.getmCurrentLoginAuth().getLiveTicket(), new
+                            OnCommonCallbackListener() {
+                        @Override
+                        public void onSuccess() {
+                            Intent intent=new Intent(getContext(),ZBLHomeActivity.class);
+                            startActivity(intent);
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            throwable.printStackTrace();
+                            showSnackErrorMessage(getString(R.string.err_net_not_work));
+                        }
+
+                        @Override
+                        public void onFail(String code, String message) {
+                            showSnackErrorMessage(message);
+
+                        }
+                    });
+                } else {
+                    showLoginPop();
+                }
+
                 break;
             default:
                 break;

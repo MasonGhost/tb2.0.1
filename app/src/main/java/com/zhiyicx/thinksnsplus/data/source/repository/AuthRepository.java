@@ -57,9 +57,12 @@ import rx.schedulers.Schedulers;
  */
 
 public class AuthRepository implements IAuthRepository {
-    public static final int MAX_RETRY_COUNTS = 2;//重试次数
-    public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
+    static final int MAX_RETRY_COUNTS = 2;//重试次数
+    static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
+
+    @Inject
+    LiveRepository mLiveRepository;
 
     @Inject
     Application mContext;
@@ -137,13 +140,22 @@ public class AuthRepository implements IAuthRepository {
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(authBean1 -> {
+                   saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
                         // 获取了最新的token，将这些信息保存起来
                         saveAuthBean(data);
                         // 刷新im信息
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.GET_IM_INFO));
                     }
 
                     @Override
@@ -226,7 +238,7 @@ public class AuthRepository implements IAuthRepository {
         }
     }
 
-    UMAuthListener umAuthListener = new UMAuthListener() {
+    private UMAuthListener umAuthListener = new UMAuthListener() {
         @Override
         public void onStart(SHARE_MEDIA share_media) {
 

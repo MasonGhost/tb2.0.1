@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.LiveRepository;
 
 import javax.inject.Inject;
 
@@ -25,6 +26,8 @@ import rx.functions.Action0;
 public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract.Repository, InitPasswordContract.View>
         implements InitPasswordContract.Presenter {
 
+    @Inject
+    LiveRepository mLiveRepository;
     @Inject
     ChangePasswordRepository mChangePasswordRepository;
     @Inject

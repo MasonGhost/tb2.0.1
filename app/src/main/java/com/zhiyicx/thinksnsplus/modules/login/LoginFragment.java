@@ -310,6 +310,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             }
         }else {
             mToolbarRight.setEnabled(true);
+            mBtLoginLogin.setEnabled(true);
             mFlPlaceholder.setVisibility(View.GONE);
         }
     }

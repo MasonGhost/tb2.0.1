@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.LiveRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -30,6 +31,8 @@ import rx.Subscription;
 public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountContract.Repository, CompleteAccountContract.View>
         implements CompleteAccountContract.Presenter {
 
+    @Inject
+    LiveRepository mLiveRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -84,6 +87,16 @@ public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountCo
     private void register(final ThridInfoBean thridInfoBean, final String name, boolean isCheck) {
         Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), name,
                 isCheck)
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                if (!isCheck) {
+                                    authBean1.setLiveTicket(s);
+                                }
+                                return authBean1;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {

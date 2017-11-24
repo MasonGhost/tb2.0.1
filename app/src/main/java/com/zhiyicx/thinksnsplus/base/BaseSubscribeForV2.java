@@ -49,6 +49,8 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                     message = ConvertUtils.praseErrorMessage(bodyString);
                     if (!TextUtils.isEmpty(message)) {
                         onFailure(message, ((HttpException) e).code());
+                    }else {
+                        onFailure("", ((HttpException) e).code());
                     }
                 } else {
                     handleError(e);

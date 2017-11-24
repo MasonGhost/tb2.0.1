@@ -57,7 +57,6 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
         super(model, rootView);
         this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
-        ZBApi.ZHIBO_DOMAIN="dd";
     }
 
 

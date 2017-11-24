@@ -7,6 +7,7 @@ import com.zhiyicx.zhibosdk.model.entity.ZBApiPlay;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -14,8 +15,8 @@ import rx.Observable;
  */
 public interface VideoService {
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBApiPlay> getVideoUrl(@Field("api") String api, @Field("ak") String ak,
+    @POST
+    Observable<ZBApiPlay> getVideoUrl(@Url String url,@Field("api") String api, @Field("ak") String ak,
                                       @Field("vid") String vid);
 
 

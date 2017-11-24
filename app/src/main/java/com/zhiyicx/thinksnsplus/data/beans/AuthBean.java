@@ -55,7 +55,18 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     private long user_id;
     private UserInfoBean user;
 
+    private String liveTicket;
+
     private long token_request_time = System.currentTimeMillis(); // 请求 token 的当前时间
+
+
+    public String getLiveTicket() {
+        return liveTicket;
+    }
+
+    public void setLiveTicket(String liveTicket) {
+        this.liveTicket = liveTicket;
+    }
 
     public long getUser_id() {
         if (user != null) {

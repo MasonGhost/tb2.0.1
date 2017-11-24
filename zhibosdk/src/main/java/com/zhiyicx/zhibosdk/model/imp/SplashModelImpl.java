@@ -41,14 +41,15 @@ public class SplashModelImpl implements SplashModel {
     public Observable<ZBBaseJson<ZBApiConfig>> getConfig(String hextime,
                                                          String token,
                                                          String name) {
-        return mCommonService.getConfig(ZBApi.API_GET_CONFIG, hextime, token, name)
+        return mCommonService.getConfig(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_GET_CONFIG, hextime, token, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public void downloadFilterWord(final Context context, String hextime, String token, String name, final String filter_word_version, final OnFilterWordsConfigCallback callback) {
-        mCommonService.downLoadFilterWord(ZBApi.API_GET_CONFIG, hextime, token, name)
+    public void downloadFilterWord(final Context context, String hextime, String token, String name, final String filter_word_version, final
+    OnFilterWordsConfigCallback callback) {
+        mCommonService.downLoadFilterWord(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API,ZBApi.API_GET_CONFIG, hextime, token, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<ResponseBody, String>() {
@@ -62,8 +63,7 @@ public class SplashModelImpl implements SplashModel {
                             if (callback != null) {
                                 result = FileUtils.readFile(ZBDataHelper.FILTER_WORD_UNZIP);
                             }
-                        }
-                        else {
+                        } else {
                             if (callback != null)
                                 callback.onFail("-1", "获取敏感词失败！");
                         }
@@ -119,7 +119,7 @@ public class SplashModelImpl implements SplashModel {
 
     @Override
     public Observable<ZBBaseJson<ZBUserAuth>> vertifyToken(String ticket) {
-        return mCommonService.getUserAuthByTicket(ZBApi.API_GET_TICKET, ticket);
+        return mCommonService.getUserAuthByTicket(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API,ZBApi.API_GET_TICKET, ticket);
     }
 
     /**
@@ -134,6 +134,7 @@ public class SplashModelImpl implements SplashModel {
     public Observable<ZBBaseJson<String>> getDomain(String appId, String token, String hexTime) {
         return mCommonService.getApi(ZBApi.ZHIBO_DOMAIN + ZBApi.API_GET_API, appId, token, hexTime);
     }
+
     /**
      * 获取应用验证域名
      *
@@ -144,8 +145,9 @@ public class SplashModelImpl implements SplashModel {
      */
     @Override
     public Observable<ZBBaseJson<String>> getNewDomain(String api_version, String token, String hexTime) {
-        return mCommonService.getDomain(ZBApi.ZHIBO_DOMAIN ,ZBApi.API_GET_API_DOMAIN, hexTime,token ,api_version);
+        return mCommonService.getDomain(ZBApi.ZHIBO_DOMAIN, ZBApi.API_GET_API_DOMAIN, hexTime, token, api_version);
     }
+
     /**
      * 查看api版本号
      *
@@ -155,6 +157,6 @@ public class SplashModelImpl implements SplashModel {
      */
     @Override
     public Observable<ZBBaseJson<String>> getApiVersion(String hextime, String token) {
-        return mCommonService.getApiVersion(ZBApi.API_GET_APIVERSION, hextime, token);
+        return mCommonService.getApiVersion(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API,ZBApi.API_GET_APIVERSION, hextime, token);
     }
 }

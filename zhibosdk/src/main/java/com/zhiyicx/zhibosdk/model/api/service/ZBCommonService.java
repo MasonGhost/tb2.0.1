@@ -33,8 +33,8 @@ public interface ZBCommonService<T> {
      * @return
      */
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBBaseJson<ZBUserAuth>> getUserAuthByTicket(@Field("api") String api, @Field("ticket") String ticket
+    @POST
+    Observable<ZBBaseJson<ZBUserAuth>> getUserAuthByTicket(@Url String url,@Field("api") String api, @Field("ticket") String ticket
     );
 
 
@@ -87,8 +87,8 @@ public interface ZBCommonService<T> {
      */
 
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBBaseJson<ZBApiConfig>> getConfig(@Field("api") String api, @Field("hextime") String hextime,
+    @POST
+    Observable<ZBBaseJson<ZBApiConfig>> getConfig(@Url String url,@Field("api") String api, @Field("hextime") String hextime,
                                                   @Field("token") String token,
                                                   @Field("name") String name);
 
@@ -99,8 +99,8 @@ public interface ZBCommonService<T> {
      * @return
      */
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBBaseJson<String>> getApiVersion(@Field("api") String api,
+    @POST
+    Observable<ZBBaseJson<String>> getApiVersion(@Url String url,@Field("api") String api,
                                                  @Field("hextime") String hextime,
                                                  @Field("token") String token);
 
@@ -111,8 +111,9 @@ public interface ZBCommonService<T> {
      * @return
      */
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<JsonObject> getCommonApi(
+    @POST
+    Observable<JsonObject> getCommonApi(@Url
+    String url,
             @FieldMap Map<String, Object> fields);
 
     /**
@@ -127,8 +128,8 @@ public interface ZBCommonService<T> {
 
     @FormUrlEncoded
     @Streaming
-    @POST(ZBApi.BASE_API)
-    Observable<ResponseBody> downLoadFilterWord(@Field("api") String api, @Field("hextime") String hextime,
+    @POST
+    Observable<ResponseBody> downLoadFilterWord(@Url String url,@Field("api") String api, @Field("hextime") String hextime,
                                                 @Field("token") String token,
                                                 @Field("name") String name);
 

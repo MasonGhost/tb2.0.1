@@ -65,6 +65,7 @@ public class ReconnectPolicyImpl implements ReconnetPolicy {
                                 return Observable.timer(7, TimeUnit.SECONDS);
                             case 4:
                                 return Observable.timer(10, TimeUnit.SECONDS);
+                            default:
                         }
                         return null;
                     }
@@ -122,7 +123,7 @@ public class ReconnectPolicyImpl implements ReconnetPolicy {
         if (isReconnecting) {//重连正在执行的时候
             LogUtils.errroInfo("ReconnectPolicyImpl", "success---------");
             isReconnect = true;
-            isReconnecting=false;
+            isReconnecting = false;
         }
     }
 

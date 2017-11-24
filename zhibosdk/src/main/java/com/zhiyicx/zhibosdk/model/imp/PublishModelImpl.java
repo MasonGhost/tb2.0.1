@@ -28,32 +28,33 @@ import rx.Observable;
  */
 public class PublishModelImpl implements PublishModel {
     private LiveService mService;
+
     public PublishModelImpl(ZBServiceManager manager) {
         mService = manager.getLiveService();//初始化服务
     }
 
     @Override
     public Observable<ZBApiStream> createStream(String ak) {
-        return mService.createStream(ZBApi.API_CREATE_STREAM,ak);
+        return mService.createStream(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_CREATE_STREAM, ak);
     }
 
     @Override
     public Observable<ZBCheckStreamPullJson> checkStream(String ak, String id) {
-        return mService.checkStream(ZBApi.API_CHECK_STREAM,ak, id);
+        return mService.checkStream(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_CHECK_STREAM, ak, id);
     }
 
     @Override
     public Observable<ZBApiJson> startStream(String ak, String title, String location) {
-        return mService.startStream(ZBApi.API_START_STREAM,ak, title, location);
+        return mService.startStream(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_START_STREAM, ak, title, location);
     }
 
     @Override
     public Observable<ZBEndStreamJson> endStream(String ak, String id) {
-        return mService.endStream(ZBApi.API_END_STREAM,ak, id);
+        return mService.endStream(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_END_STREAM, ak, id);
     }
 
     @Override
-    public Observable<ZBBaseJson<ZBIconInfo[]>> upload(String ak,String thumb,  File icon) {
+    public Observable<ZBBaseJson<ZBIconInfo[]>> upload(String ak, String thumb, File icon) {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.addFormDataPart("api", ZBApi.API_UPLOAD_STREAM);
         builder.addFormDataPart("ak", ak);
@@ -61,7 +62,7 @@ public class PublishModelImpl implements PublishModel {
         builder.addFormDataPart("cover", icon.getName(), body);
         builder.setType(MultipartBody.FORM);//设置类型
         MultipartBody multipartBody = builder.build();
-        return mService.upload(multipartBody);
+        return mService.upload(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, multipartBody);
 
     }
 
@@ -84,23 +85,25 @@ public class PublishModelImpl implements PublishModel {
 
     /**
      * 主播禁言
+     *
      * @param cid
      * @param time
      * @return
      */
     @Override
     public Observable<ZBApiJson> imDisable(String usid, int cid, long time, String ak) {
-        return mService.imDisable(ZBApi.API_SHUTUP,ak, usid, cid, time);
+        return mService.imDisable(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_SHUTUP, ak, usid, cid, time);
     }
 
     /**
      * 主播解除禁言
+     *
      * @param cid
      * @return
      */
     @Override
     public Observable<ZBApiJson> imEnable(String usid, int cid, String ak) {
-        return mService.imEnable(ZBApi.API_SHUTUP_RESET,ak, usid, cid);
+        return mService.imEnable(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API, ZBApi.API_SHUTUP_RESET, ak, usid, cid);
     }
 
 }

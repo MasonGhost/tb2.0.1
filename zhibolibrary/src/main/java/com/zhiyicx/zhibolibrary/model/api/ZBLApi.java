@@ -8,12 +8,14 @@ import com.zhiyicx.zhibosdk.model.entity.ZBApiConfig;
  * Created by zhiyicx on 2016/3/14.
  */
 public class ZBLApi {
-
+    // 直播服务器地址，更具自己的修改
     public static final String ZHIBO_BASE_URL = "http://zts.zhibocloud.cn";
+    // 版本号，更具需要修改
     public static final String ZHIBO_BASE_VERSION = "1.0";
 
     public static String CONFIG_BASE_DOMAIN = "";
-    public static String CONFIG_EXTRAL_URL = "/ts4/live.php";
+    // 应用服务器对接直播服务器的协议地址：更具需求修改
+    public static String CONFIG_EXTRAL_URL = "/api/v2/live";
 
     public final static String EXTRAL_URL = "/api";
     //域名
@@ -65,6 +67,7 @@ public class ZBLApi {
      * 用户搜索
      */
     public static final String API_USER_SEARCH = "ZB_User_Search";
+
     /**
      * 通过票据获取权限信息
      */

@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.LiveRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
@@ -32,6 +33,8 @@ import rx.Subscription;
 public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContract.Repository, BindOldAccountContract.View>
         implements BindOldAccountContract.Presenter {
 
+    @Inject
+    LiveRepository mLiveRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -53,6 +56,11 @@ public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContrac
     public void bindAccount(ThridInfoBean thridInfoBean, String login, String password) {
         mRootView.setLogining();
         Subscription subscribe = mUserInfoRepository.bindWithInput(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), login, password)
+                .flatMap(authBean1 -> mLiveRepository.getLiveTicket()
+                        .map(s -> {
+                            authBean1.setLiveTicket(s);
+                            return authBean1;
+                        }))
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
@@ -92,6 +100,7 @@ public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContrac
     }
 
     private void handleIMLogin() {
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
+                .GET_IM_INFO));
     }
 }

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.remote.LiveClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
@@ -22,6 +23,9 @@ import rx.schedulers.Schedulers;
 
 public class RegisterRepository extends VertifyCodeRepository implements RegisterContract.Repository {
     private RegisterClient mRegisterClient;
+
+    @Inject
+    LiveRepository mLiveRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -38,36 +42,43 @@ public class RegisterRepository extends VertifyCodeRepository implements Registe
     public Observable<AuthBean> registerByPhone(String phone, String name, String vertifyCode, String password) {
         return mRegisterClient.register(phone, null, name, password, RegisterClient.REGITER_TYPE_SMS, vertifyCode)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<AuthBean, Observable<AuthBean>>() {
-                    @Override
-                    public Observable<AuthBean> call(AuthBean authBean) {
-                        mAuthRepository.saveAuthBean(authBean);
-                        return mUserInfoRepository.getCurrentLoginUserInfo()
-                                .map(userInfoBean -> {
-                                    authBean.setUser(userInfoBean);
-                                    authBean.setUser_id(userInfoBean.getUser_id());
-                                    return authBean;
-                                });
-                    }
-                });
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
+                .flatMap(authBean -> mUserInfoRepository.getCurrentLoginUserInfo()
+                        .map(userInfoBean -> {
+                            authBean.setUser(userInfoBean);
+                            authBean.setUser_id(userInfoBean.getUser_id());
+                            mAuthRepository.saveAuthBean(authBean);
+                            return authBean;
+                        }));
     }
 
     @Override
     public Observable<AuthBean> registerByEmail(String email, String name, String vertifyCode, String password) {
         return mRegisterClient.register(null, email, name, password, RegisterClient.REGITER_TYPE_EMAIL, vertifyCode)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<AuthBean, Observable<AuthBean>>() {
-                    @Override
-                    public Observable<AuthBean> call(AuthBean authBean) {
-                        mAuthRepository.saveAuthBean(authBean);
-                        return mUserInfoRepository.getCurrentLoginUserInfo()
-                                .map(userInfoBean -> {
-                                    authBean.setUser(userInfoBean);
-                                    authBean.setUser_id(userInfoBean.getUser_id());
-                                    return authBean;
-                                });
-                    }
-                });
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
+                .flatMap(authBean -> mUserInfoRepository.getCurrentLoginUserInfo()
+                        .map(userInfoBean -> {
+                            authBean.setUser(userInfoBean);
+                            authBean.setUser_id(userInfoBean.getUser_id());
+                            mAuthRepository.saveAuthBean(authBean);
+                            return authBean;
+                        }));
     }
+
 
 }

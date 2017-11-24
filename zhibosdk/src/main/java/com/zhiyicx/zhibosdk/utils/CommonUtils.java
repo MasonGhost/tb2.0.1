@@ -1,6 +1,16 @@
 package com.zhiyicx.zhibosdk.utils;
 
+import com.zhiyicx.imsdk.utils.ZipHelper;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
+
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+import retrofit2.Response;
 
 /**
  * Created by jungle on 16/7/12.
@@ -50,6 +60,50 @@ public class CommonUtils {
         // 发现有问题了，怎么办呢?
         int number = (int) (Math.random() * (end - start + 1)) + start;//可以自行记住（end-start+1)就是获取任意随机数的范围
         return number;
+    }
+
+    /**
+     * 获取网络返回数据体内容
+     *
+     * @param response 返回体
+     * @return
+     */
+    public static String getResponseBodyString(Response response) throws IOException {
+        ResponseBody responseBody = response.errorBody();
+        BufferedSource source = responseBody.source();
+        source.request(Long.MAX_VALUE); // Buffer the entire body.
+        Buffer buffer = source.buffer();
+        //获取content的压缩类型
+        String encoding = response
+                .headers()
+                .get("Content-Encoding");
+        Buffer clone = buffer.clone();
+        return praseBodyString(responseBody, encoding, clone);
+    }
+
+    /**
+     * 解析返回体数据内容
+     *
+     * @param responseBody 返回体
+     * @param encoding     编码
+     * @param clone        数据
+     * @return
+     */
+    public static String praseBodyString(ResponseBody responseBody, String encoding, Buffer clone) {
+        String bodyString;//解析response content
+        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {//content使用gzip压缩
+            bodyString = ZipHelper.decompressForGzip(clone.readByteArray());//解压
+        } else if (encoding != null && encoding.equalsIgnoreCase("zlib")) {//content使用zlib压缩
+            bodyString = ZipHelper.decompressToStringForZlib(clone.readByteArray());//解压
+        } else {//content没有被压缩
+            Charset charset = Charset.forName("UTF-8");
+            MediaType contentType = responseBody.contentType();
+            if (contentType != null) {
+                charset = contentType.charset(charset);
+            }
+            bodyString = clone.readString(charset);
+        }
+        return bodyString;
     }
 
 }

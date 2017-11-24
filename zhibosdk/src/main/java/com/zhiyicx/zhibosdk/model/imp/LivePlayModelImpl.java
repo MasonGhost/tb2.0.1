@@ -35,7 +35,7 @@ public class LivePlayModelImpl implements LivePlayModel {
      */
     @Override
     public Observable<ZBApiPlay> getPlayUrl(String ak, String uid, String id) {
-        return mLiveService.getPlayUrl(ZBApi.API_GET_PLAYURL,ak
+        return mLiveService.getPlayUrl(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API,ZBApi.API_GET_PLAYURL,ak
                 , uid, id);
     }
 
@@ -47,7 +47,7 @@ public class LivePlayModelImpl implements LivePlayModel {
      */
     @Override
     public Observable<ZBApiPlay> getVideoUrl(String ak, String vid) {
-        return mVideoService.getVideoUrl(ZBApi.API_GET_VIDEOURL,ak,vid);
+        return mVideoService.getVideoUrl(ZBApi.USENOW_DOMAIN + ZBApi.BASE_API,ZBApi.API_GET_VIDEOURL,ak,vid);
     }
 
     /**

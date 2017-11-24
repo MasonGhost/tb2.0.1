@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.LiveClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
@@ -173,4 +174,15 @@ public class ServiceModule {
         return retrofit.create(RankClient.class);
     }
 
+    /**
+     * 直播相关
+     *
+     * @param retrofit
+     * @return
+     */
+    @Singleton
+    @Provides
+    LiveClient provideLiveClient(Retrofit retrofit) {
+        return retrofit.create(LiveClient.class);
+    }
 }

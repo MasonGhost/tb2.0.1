@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.LiveRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     @Inject
     AuthRepository mAuthRepository;
 
+    @Inject
+    LiveRepository mLiveRepository;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -176,6 +179,14 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.registerByPhone(phone, name, vertifyCode, password)
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
@@ -222,6 +233,14 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.registerByEmail(email, name, verifyCode, password)
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {

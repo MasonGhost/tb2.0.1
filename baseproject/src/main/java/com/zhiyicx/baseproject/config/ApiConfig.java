@@ -215,7 +215,6 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
 
-
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds";
@@ -609,4 +608,12 @@ public class ApiConfig {
     // 资讯排行
     public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + "/news/ranks";
     /*资讯 end*/
+
+    /**
+     * 直播相关
+     */
+    /* 获取直播票据 */
+    public static final String APP_PATH_LIVE_GET_TICKET = "api/" + API_VERSION_2 + "/live/ticket";
+
 }
+

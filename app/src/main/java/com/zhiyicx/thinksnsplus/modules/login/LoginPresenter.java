@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.LiveRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -37,6 +38,8 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETE
 @FragmentScoped
 public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
 
+    @Inject
+    LiveRepository mLiveRepository;
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -70,6 +73,14 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
                 .map((Func1<AuthBean, Boolean>) data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转
@@ -127,6 +138,14 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 
         mUserInfoRepository.checkThridIsRegitser(provider, access_token)
                 .observeOn(Schedulers.io())
+                .flatMap(authBean1 -> {
+                    mAuthRepository.saveAuthBean(authBean1);// 保存auth信息
+                    return mLiveRepository.getLiveTicket()
+                            .map(s -> {
+                                authBean1.setLiveTicket(s);
+                                return authBean1;
+                            });
+                })
                 .map((Func1<AuthBean, Boolean>) data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转

@@ -72,6 +72,13 @@ public class ClientModule {
     private Retrofit configureRetrofit(Retrofit.Builder builder, OkHttpClient client) {
         return builder
                 .baseUrl(HttpUrl.parse(ZBApi.USENOW_DOMAIN))//域名
+//                .baseUrl(new BaseUrl() {
+//                    @Override
+//                    public HttpUrl url() {
+//                        return HttpUrl.parse(ZBApi.USENOW_DOMAIN);
+//                    }
+//                })//域名
+
                 .client(client)//设置okhttp
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//使用rxjava
                 .addConverterFactory(GsonConverterFactory.create())//使用Gson

@@ -1,7 +1,14 @@
 package com.zhiyicx.zhibosdk.utils;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import okhttp3.RequestBody;
+import okio.Buffer;
 
 /**
  * Created by jungle on 16/5/20.
@@ -84,5 +91,6 @@ public class LogUtils {
     public static void debugLongInfo(String str) {
         debugLongInfo(TAG, str);
     }
+
 
 }

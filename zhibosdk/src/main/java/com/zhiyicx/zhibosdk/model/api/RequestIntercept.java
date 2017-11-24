@@ -1,18 +1,25 @@
 package com.zhiyicx.zhibosdk.model.api;
 
+import android.support.annotation.NonNull;
+
+import com.zhiyicx.zhibosdk.utils.CommonUtils;
 import com.zhiyicx.zhibosdk.utils.LogUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -23,25 +30,6 @@ public class RequestIntercept implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        Request.Builder builder = request.newBuilder();
-
-        HttpUrl newBaseUrl = HttpUrl.parse(ZBApi.API_GET_DOMAIN);
-
-        //从request中获取原有的HttpUrl实例oldHttpUrl
-        HttpUrl oldHttpUrl = request.url();
-        //重建新的HttpUrl，修改需要修改的url部分
-        HttpUrl newFullUrl = oldHttpUrl
-                .newBuilder()
-                .scheme(newBaseUrl.scheme())
-                .host(newBaseUrl.host())
-                .port(newBaseUrl.port())
-                .build();
-
-        //重建这个request，通过builder.url(newFullUrl).build()；
-        //然后返回一个response至此结束修改
-        Response originalResponse = chain.proceed(builder.url(newFullUrl).build());
-
-
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
             request.body().writeTo(requestbuffer);
@@ -49,10 +37,26 @@ public class RequestIntercept implements Interceptor {
             LogUtils.errroInfo("request.body() == null");
         }
 
+        //打印url信息
+        String logUrl = request.url() + "";
+        String method = request.method();
+        logUrl = URLDecoder.decode(logUrl, "utf-8");
+        try {
+            LogUtils.debugInfo(String.format("Sending " + method + " Request %s on %n formdata --->  %s%n Connection ---> %s%n Headers ---> %s",
+                    logUrl
+                    , request.body() != null ? parseParams(request.body(), requestbuffer) : "null"
+                    , chain.connection()
+                    , request.headers()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        Response originalResponse;
         Buffer buffer;
         Charset charset;
         try {
-//            originalResponse = chain.proceed(request);
+            originalResponse = chain.proceed(request);
             //打赢响应时间
             //读取服务器返回的结果
             ResponseBody responseBody = originalResponse.body();
@@ -64,21 +68,25 @@ public class RequestIntercept implements Interceptor {
             if (contentType != null) {
                 charset = contentType.charset(charset);
             }
+            long t1 = System.nanoTime();
+            long t2 = System.nanoTime();
+            //打印响应时间
+            LogUtils.debugInfo(TAG, String.format("Received response code %d in %.1fms%n%s", originalResponse.code(), (t2 - t1) / 1e6d, originalResponse.headers()));
+
+
         } catch (IllegalStateException e) {
             // this method "throws IOException" anyway so we will not get a crash.
             throw new IOException(e);
         }
         return originalResponse;
-
-
     }
 
-    public String JSONTokener(String in) {
-        // consume an optional byte order mark (BOM) if it exists
-        if (in != null && in.startsWith("\ufeff")) {
-            in = in.substring(1);
+    @NonNull
+    public static String parseParams(RequestBody body, Buffer requestbuffer) throws UnsupportedEncodingException {
+        if (body.contentType() != null && !body.contentType().toString().contains("multipart")) {
+            return URLDecoder.decode(requestbuffer.readUtf8(), "UTF-8");
         }
-        return in;
+        return "multipart";
     }
 
 }
