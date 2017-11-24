@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -16,11 +19,11 @@ import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -47,12 +50,14 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     private QuestionDetailContract.Presenter mPresenter;
     private OnGoToWatchClickListener mListener;
     private QAListInfoBean mQaListInfoBean;
+    private Context mContext;
     protected TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
 
     public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter, @NotNull
-            QAListInfoBean qaListInfoBean) {
+            QAListInfoBean qaListInfoBean, Context context) {
         mQaListInfoBean = qaListInfoBean;
         this.mPresenter = mPresenter;
+        mContext = context;
     }
 
     @Override
@@ -122,6 +127,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
         String content = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean
                 .getBody());
+        content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
         TextView contentView = holder.getView(R.id.tv_content);
 
         if (!canNotLook) {
@@ -133,6 +139,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .maxLines(contentView.getResources().getInteger(R.integer
                             .dynamic_list_content_show_lines))
                     .onSpanTextClickListener(mOnSpanTextClickListener)
+                    .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(answerInfoBean,
+                            contentView.getText().toString()), false))
                     .disPlayText(true)
                     .build();
         } else {
@@ -145,6 +153,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .maxLines(contentView.getResources().getInteger(R.integer
                             .dynamic_list_content_show_lines))
                     .onSpanTextClickListener(mOnSpanTextClickListener)
+                    .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(answerInfoBean,
+                            contentView.getText().toString()), false))
                     .amount(10)
                     .disPlayText(false)
                     .build();
@@ -229,6 +239,36 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(followCountLink);
+        return links;
+    }
+
+    protected List<Link> setLiknks(final AnswerInfoBean answerInfoBean, String content) {
+        List<Link> links = new ArrayList<>();
+        if (content.contains(Link.DEFAULT_NET_SITE)) {
+            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+                    .setTextColor(ContextCompat.getColor(mContext, R.color
+                            .themeColor))
+                    .setLinkMetadata(LinkMetadata.builder()
+                            .putString(LinkMetadata.METADATA_KEY_COTENT, answerInfoBean.getBody())
+                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
+                            .build())
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                            .general_for_hint))
+                    .setHighlightAlpha(.8f)
+                    .setOnClickListener((clickedText, linkMetadata) -> {
+                        LogUtils.d(clickedText);
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(clickedText);
+                        intent.setData(content_url);
+                        mContext.startActivity(intent);
+                    })
+                    .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                    })
+                    .setUnderlined(false);
+            links.add(commentNameLink);
+        }
         return links;
     }
 }

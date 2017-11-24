@@ -112,11 +112,7 @@ public class JavaTest {
 
     @Test
     public void testInt() {
-        String test = "https://m.baidu.com/?from=1014254f#iact=wiseindex%2Ftabs%2Fnews%2Factivity%2Fnewsdetail%3D%257B%2522linkData%2522%253A%257B" +
-                "%2522name%2522%253A%2522iframe%252Fmib-iframe%2522%252C%2522id%2522%253A%2522feed%2522%252C%2522index%2522%253A0%252C%2522url%2522" +
-                "%253A%2522https%253A%252F%252Ffeed.baidu" +
-                ".com%252Ffeed%252Fdata%252Fwise%252Flandingpage%253Fs_type%253Dnews%2526dsp%253Dwise%2526nid%253D9385399617810917542%2526n_type" +
-                "%253D0%2526p_from%253D-1%2526innerIframe%253D1%2522%252C%2522title%2522%253Anull%257D%257D";
+        String test = "<https://www.baidu.com> 我来测试一下哟";
         System.out.println(test.matches(MarkdownConfig.NETSITE_FORMAT_));
 //        Matcher matcher=
         System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
