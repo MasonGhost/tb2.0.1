@@ -307,7 +307,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         final int w, h;
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
-
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
         // 本地图片
