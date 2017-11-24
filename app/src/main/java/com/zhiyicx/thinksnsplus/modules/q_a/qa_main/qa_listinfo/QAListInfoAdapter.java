@@ -67,23 +67,14 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         titleView.setText(infoBean.getSubject());
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyNormal(infoBean.getCreated_at()));
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
-                , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
+                , infoBean.getWatchers_count(), infoBean.getAnswers_count())+"  ·  ");
         double rewardMoney = PayConfig.realCurrency2GameCurrency(infoBean.getAmount(), getRatio());
-        if (rewardMoney > 9999) {
-
-            String rewardstr = String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward_str)
-                    , "<" + ConvertUtils.numberConvert((int) rewardMoney) + ">");
-            CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("<>")
-                    .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
-                    .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
-                    .format();
-            ((TextView) holder.getView(R.id.item_info_reward)).setText(chars);
-        } else {
-            holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
-                    , rewardMoney));
-            ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
-
-        }
+        String rewardstr ="<" +  rewardMoney + ">";
+        CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(mContext, R.color.withdrawals_item_enable))
+                .outerColor(ContextCompat.getColor(mContext, R.color.general_for_hint))
+                .format();
+        ((TextView) holder.getView(R.id.item_info_reward)).setText(chars);
         holder.setVisible(R.id.item_info_reward, infoBean.getAmount() > 0 ? View.VISIBLE : View.GONE);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         RelativeLayout contentView = holder.getView(R.id.rl_hotcomment_container);
