@@ -278,6 +278,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 case MSG_REFRESHGOLD:
                     updatedGold();
                     break;
+                    default:
             }
         }
     };
@@ -294,6 +295,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 case RECIECED_GIFT:
                     showGift();
                     break;
+                    default:
 
             }
 
@@ -1150,7 +1152,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             mPresenter.getRecomList(presenterUser.uid);
         }
         else {//主播直播页面
-            if (mPublishView.isSelfClose()) return;
+            if (mPublishView.isSelfClose()) {
+                return;
+            }
             getEndStream().isException = true;
             Bundle bundle = new Bundle();
             bundle.putSerializable("endStream", getEndStream());
@@ -1374,7 +1378,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void showPresenterInfo(final UserInfo userInfotmp, final boolean isPresenter) {
 
-        if (userInfotmp == null) return;
+        if (userInfotmp == null) {
+            return;
+        }
         if (mUserInfoPopView == null) {
             mUserInfoPopView = LayoutInflater.from(getActivity()).inflate(R.layout.zb_pop_userinfo, null);
         }

@@ -729,8 +729,10 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
             public boolean onReConnect() {
                 boolean b = reconnectOfShutdown(true);//重新连接
                 LogUtils.debugInfo(TAG, "reconnect is " + b + "//" + currentStatus);
-                if (b && mOnReconnetListener != null)
+                if (b && mOnReconnetListener != null) {
+                    LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
                     mOnReconnetListener.reconnectScuccess();
+                }
                 return b;
             }
 
@@ -1076,8 +1078,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
     @Override
     public void onResume() {
-        if (mCameraStreamingManager != null)
+        if (mCameraStreamingManager != null) {
             mCameraStreamingManager.resume();
+        }
     }
 
     @Override
@@ -1129,7 +1132,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
     private void creatAndCheckStrem(final OncheckSteamStatusListener l) {
         final ZBUserAuth userAuth = getUserAuth();
-        if (userAuth == null) return;
+        if (userAuth == null) {
+            return;
+        }
 
         //创建直播间
         mModel.createStream(userAuth.getAk())
@@ -1137,8 +1142,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        if (l != null)
+                        if (l != null) {
                             l.onStartCheck();
+                        }
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -1155,8 +1161,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
                             return apiStream.data.id;
                         } else {
-                            if (l != null)
+                            if (l != null) {
                                 l.onFial(apiStream.code, apiStream.message);
+                            }
                         }
                         return null;
                     }
@@ -1169,8 +1176,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                                 @Override
                                 public void call(rx.Subscriber<? super ZBCheckStreamPullJson> subscriber) {
                                     subscriber.onNext(null);//继续返回空
-                                    if (l != null)
+                                    if (l != null) {
                                         l.onFial("-1", "请求失败");
+                                    }
 
                                 }
                             });
@@ -1184,32 +1192,37 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                     @Override
                     public void call(ZBCheckStreamPullJson json) {
                         if (json == null) {//请求创建房间时没成功，在这里处理
-                            if (l != null)
+                            if (l != null) {
                                 l.onFial("-1", "请求失败");
+                            }
                         } else {
                             if (json.code.equals(ZBApi.REQUEST_SUCESS)) {//效验成功
                                 //跳转到直播间页面
                                 if (json.data.code != null && json.data.code.equals(ZBApi.REQUEST_LIMIT_PLAY)) {//禁播状态提示用户
-                                    if (l != null)
+                                    if (l != null) {
                                         l.onDisable(json.data.time);
+                                    }
                                     return;
                                 }
                                 mStream = json.data.stream;
                                 mChatRoomClient = new ChatRoomClient(mImInfo.cid, userAuth.getUsid(), mContext);
                                 initImlistener();
-                                if (l != null)
+                                if (l != null) {
                                     l.onSuccess();
+                                }
                             } else {//效验失败
-                                if (l != null)
+                                if (l != null) {
                                     l.onFial(json.code, json.message);
+                                }
                             }
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if (l != null)
+                        if (l != null) {
                             l.onError(throwable);
+                        }
                     }
                 });
 
@@ -1250,20 +1263,23 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                             mImInfo.cid = 0;
                             mStreamId = null;
                             mStream = null;
-                            if (l != null)
+                            if (l != null) {
                                 l.onSuccess(endStreamJson);
+                            }
 
                         } else {
-                            if (l != null)
+                            if (l != null) {
                                 l.onFial(endStreamJson.code, endStreamJson.message);
+                            }
                             LogUtils.errroInfo(TAG, endStreamJson.message);
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if (l != null)
+                        if (l != null) {
                             l.onError(throwable);
+                        }
                     }
                 });
     }
@@ -1278,11 +1294,16 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     @Override
     public void imDisable(String usid, int time, final OnCommonCallbackListener l) {
         final ZBUserAuth userAuth = getUserAuth();
-        if (userAuth == null) return;
-        if (time < 0) throw new IllegalArgumentException("time must >=0 !");
+        if (userAuth == null) {
+            return;
+        }
+        if (time < 0) {
+            throw new IllegalArgumentException("time must >=0 !");
+        }
         long tmpTime = time;
-        if (time > 0)
+        if (time > 0) {
             tmpTime = System.currentTimeMillis() / 1000 + time * 60;
+        }
         mModel.imDisable(usid, mImInfo.cid, tmpTime, userAuth.getAk()
         ).subscribeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -1315,7 +1336,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     @Override
     public void imEnable(String usid, final OnCommonCallbackListener l) {
         final ZBUserAuth userAuth = getUserAuth();
-        if (userAuth == null) return;
+        if (userAuth == null) {
+            return;
+        }
         mModel.imEnable(usid, mImInfo.cid, userAuth.getAk()
         ).subscribeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -1353,8 +1376,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
         @Override
         public void run() {
-            if (mChatRoomClient != null)
+            if (mChatRoomClient != null) {
                 mChatRoomClient.mc();
+            }
         }
     }
 

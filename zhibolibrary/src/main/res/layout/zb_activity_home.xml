@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:src="@mipmap/ico_search"/>
+                    android:src="@mipmap/ic_weiba_search"/>
 
                 <TextView
                     android:id="@+id/tv_home_my"

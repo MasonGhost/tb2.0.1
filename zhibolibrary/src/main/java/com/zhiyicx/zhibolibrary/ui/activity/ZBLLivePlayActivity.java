@@ -185,9 +185,12 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mPresenter.isPlay())//开始播放了
+                {
                     mZBPlayClient.reconnect();
-                else//还没开始播放
+                } else//还没开始播放
+                {
                     mPresenter.showPlay();
+                }
             }
         });
         builder.setPositiveButton(getString(R.string.str_retire), new DialogInterface.OnClickListener() {
@@ -315,7 +318,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     public void killMyself() {
         mPublishCoreView.hidekeyboard();//隐藏软键盘
-        if (mediaController != null) mediaController.setEnabled(false);//回收
+        if (mediaController != null) {
+            mediaController.setEnabled(false);//回收
+        }
         finish();
         this.overridePendingTransition(R.anim.animate_null, R.anim.slide_out_from_right);//动画
     }
@@ -523,7 +528,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     public void showWarn() {
         try {
-            if (!mOptionDialog.isShowing()) mOptionDialog.show();
+            if (!mOptionDialog.isShowing()) {
+                mOptionDialog.show();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -550,8 +557,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
         }
         mediaController = null;
         if (mOptionDialog != null) {
-            if (mOptionDialog.isShowing())
+            if (mOptionDialog.isShowing()) {
                 mOptionDialog.dismiss();
+            }
             mOptionDialog = null;
         }
 
