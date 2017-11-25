@@ -61,10 +61,11 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
         mPresenter.obtainToken();//获得用于交易的token
         updatedGold();//刷新金币信息
         updateStar();//刷新赞的信息
-        if (ZBLApi.EXCHANGE_TYPE_LIST == null || ZBLApi.EXCHANGE_TYPE_LIST.zan_list == null)
+        if (ZBLApi.EXCHANGE_TYPE_LIST == null || ZBLApi.EXCHANGE_TYPE_LIST.zan_list == null) {
             mPresenter.getConfig();
-        else
+        } else {
             initRegular();
+        }
         initDialog();
     }
 

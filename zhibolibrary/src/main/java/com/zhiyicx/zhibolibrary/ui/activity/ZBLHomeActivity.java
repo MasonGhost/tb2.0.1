@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.ui.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
@@ -8,6 +9,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
@@ -23,9 +25,13 @@ import com.zhiyicx.zhibolibrary.ui.view.HomeView;
 import com.zhiyicx.zhibolibrary.util.Anim;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 import com.zhiyicx.zhibosdk.manage.ZBInitConfigManager;
+
 import java.util.List;
+
 import javax.inject.Inject;
 
+
+import rx.functions.Action1;
 
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_CONTENT;
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_TITLE;
@@ -126,8 +132,8 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
          */
         ShareContent shareContent = new ShareContent();
         ZhiboApplication.setShareContent(shareContent);
-        shareContent.setTitle( SHARE_TITLE);
-        shareContent.setContent( SHARE_CONTENT);
+        shareContent.setTitle(SHARE_TITLE);
+        shareContent.setContent(SHARE_CONTENT);
         shareContent.setUrl(ZBInitConfigManager.getZBCloundDomain() + SHARE_URL);
     }
 
@@ -158,22 +164,35 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
         if (v.getId() == R.id.bt_home_live) {//直播列表页面
             mFragmentList.get(0).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(0, false);
-        }
-        else if (v.getId() == R.id.bt_home_replay) {
+        } else if (v.getId() == R.id.bt_home_replay) {
             //回放页面
             mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(1, false);
-        }
-        else if (v.getId() == R.id.bt_home_add) {
+        } else if (v.getId() == R.id.bt_home_add) {
 //初始化直播间
-            mPresenter.initStream();
-        }
-        else if (v.getId() == R.id.bt_home_message) {
+            // 添加相机权限设置
+            mRxPermissions
+                    .requestEach(Manifest.permission.CAMERA)
+                    .subscribe(new Action1<Permission>() {
+                        @Override
+                        public void call(Permission permission) {
+                            if (permission.granted) {
+                                // 权限被允许
+                                mPresenter.initStream();
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 权限没有被彻底禁止
+                            } else {
+                                // 权限被彻底禁止
+                                UiUtils.SnackbarText(getString(R.string.use_camea_permisson_tip));
+                            }
+                        }
+                    });
+
+        } else if (v.getId() == R.id.bt_home_message) {
 //消息页面
             mFragmentList.get(2).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(2, false);
-        }
-        else if (v.getId() == R.id.bt_home_my) {
+        } else if (v.getId() == R.id.bt_home_my) {
             startActivity(new Intent(UiUtils.getContext(), ZBLSearchActivity.class));//跳转到搜索页面
             overridePendingTransition(R.anim.vote_slide_in_from_left, R.anim.animate_null);//动画
         }
