@@ -381,7 +381,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                                 params.width = w;
                                                 params.height = h;
                                                 if (params.height * params.width == 0) {
-                                                    params.width = params.height = 100;
+                                                    params.width = params.height = 300;
                                                 }
                                                 mIvPager.setLayoutParams(params);
                                                 mIvPager.setImageResource(R.drawable.shape_default_image);
