@@ -61,7 +61,7 @@ public class LivePlayModelImpl implements LivePlayModel {
      */
     @Override
     public Observable<ZBBaseJson<String>> sendGift( String ak, String usid, String gift_code, String count) {
-        return mGoldService.sendGift(ZBApi.API_SEND_GIFT,ak,usid,gift_code,count);
+        return mGoldService.sendGift(ZBApi.USENOW_DOMAIN+ZBApi.BASE_API,ZBApi.API_SEND_GIFT,ak,usid,gift_code,count);
     }
 
     /**
@@ -74,6 +74,6 @@ public class LivePlayModelImpl implements LivePlayModel {
      */
     @Override
     public Observable<ZBBaseJson<String>> sendZan( String ak, String usid, String count) {
-        return mGoldService.sendZan(ZBApi.API_SEND_ZAN,ak,usid,count);
+        return mGoldService.sendZan(ZBApi.USENOW_DOMAIN+ZBApi.BASE_API,ZBApi.API_SEND_ZAN,ak,usid,count);
     }
 }

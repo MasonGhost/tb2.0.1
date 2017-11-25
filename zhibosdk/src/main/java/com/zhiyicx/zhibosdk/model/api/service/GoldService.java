@@ -6,6 +6,7 @@ import com.zhiyicx.zhibosdk.model.entity.ZBBaseJson;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -15,14 +16,14 @@ public interface GoldService {
 
 
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBBaseJson<String>> sendGift(@Field("api") String api,@Field("ak") String ak,
-                                                 @Field("usid") String usid,
-                                                 @Field("gift_code") String gift_code,   @Field("count") String count);
+    @POST
+    Observable<ZBBaseJson<String>> sendGift(@Url String url,@Field("api") String api, @Field("ak") String ak,
+                                            @Field("usid") String usid,
+                                            @Field("gift_code") String gift_code, @Field("count") String count);
 
     @FormUrlEncoded
-    @POST(ZBApi.BASE_API)
-    Observable<ZBBaseJson<String>> sendZan(@Field("api") String api,@Field("ak") String ak,
+    @POST
+    Observable<ZBBaseJson<String>> sendZan(@Url String url,@Field("api") String api,@Field("ak") String ak,
                                            @Field("usid") String usid,
                                              @Field("count") String count);
 
