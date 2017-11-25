@@ -67,6 +67,12 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     private AdapterViewPager mAdapter;
     private ProgressDialog mLoading;
 
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     @Override
     protected void initView() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
@@ -169,6 +175,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
             mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(1, false);
         } else if (v.getId() == R.id.bt_home_add) {
+//            mPresenter.initStream();
 //初始化直播间
             // 添加相机权限设置
             mRxPermissions
