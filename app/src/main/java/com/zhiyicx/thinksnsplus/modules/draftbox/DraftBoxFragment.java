@@ -67,6 +67,11 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean isRefreshEnable() {
         return true;
     }

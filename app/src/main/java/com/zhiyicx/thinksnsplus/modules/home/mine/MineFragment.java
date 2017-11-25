@@ -250,6 +250,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 break;
+             /*
+              草稿箱
+              */
             case R.id.bt_draft_box:
                 startActivity(new Intent(getActivity(), DraftBoxActivity.class));
                 break;
