@@ -45,10 +45,11 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
 
     public void getList(final boolean isMore) {
         if (mAdapter != null) {
-            if (!isMore)
+            if (!isMore) {
                 mAdapter.isShowFooter(false);
-            else
+            } else {
                 mAdapter.isShowFooter(true);
+            }
         }
         prepare(isMore);//加载列表准备
         mSubscription = mModel.getRanking(
@@ -102,8 +103,9 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
                 usid += searchResult.user.usid + ",";
             }
 
-            if (usid.length() > 0)
+            if (usid.length() > 0) {
                 usid = usid.substring(0, usid.length() - 1);
+            }
             if (usid.length() > 0) {
                 mUserinfoSubscription = mModel.getUsidInfo(usid, "")
                         .subscribeOn(Schedulers.io())
@@ -183,7 +185,7 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
         // TODO: 16/10/10 跳转个人主页
         Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
-        bundle.putInt("uid", Integer.parseInt(data.user.uid));
+        bundle.putString("user_id", data.user.uid);
         intent.putExtras(bundle);
         mRootView.launchActivity(intent);
     }

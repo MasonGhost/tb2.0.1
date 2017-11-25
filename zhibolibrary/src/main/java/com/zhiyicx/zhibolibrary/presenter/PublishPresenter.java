@@ -168,7 +168,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     @Inject
     public PublishPresenter(PublishModel model, PublishView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment) rootView).getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl( rootView.getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
         initSensitiveWordFilter();
         myInfo = ZhiboApplication.getUserInfo();

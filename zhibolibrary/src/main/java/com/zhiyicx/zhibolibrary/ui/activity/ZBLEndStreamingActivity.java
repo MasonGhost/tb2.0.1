@@ -1,6 +1,7 @@
 package com.zhiyicx.zhibolibrary.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -270,6 +271,11 @@ public class ZBLEndStreamingActivity extends ZBLBaseActivity implements EndStrea
     @Override
     public void showExceptionPrompt(boolean isVisable) {
         mExceptionLL.setVisibility(isVisable ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     @Override

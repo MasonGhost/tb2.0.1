@@ -52,11 +52,11 @@
             android:name="com.zhiyicx.zhibolibrary.ui.activity.ZBLGoldHistoryDetailActivity"
             android:label="@string/use_dtail"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name="com.thinksns.sociax.t4.android.Live.ActivityLive"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/ZBlibraryAppTheme"></activity>
+        <!--<activity-->
+            <!--android:name="com.thinksns.sociax.t4.android.Live.ActivityLive"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/ZBlibraryAppTheme"></activity>-->
         <!-- 网络监听广播 -->
         <receiver
             android:name="com.zhiyicx.zhibolibrary.app.receiver.NetChangeReceiver"
@@ -79,5 +79,12 @@
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
+        <!-- autolayout -->
+        <meta-data
+            android:name="design_width"
+            android:value="750"/>
+        <meta-data
+            android:name="design_height"
+            android:value="1334"/>
     </application>
 </manifest>

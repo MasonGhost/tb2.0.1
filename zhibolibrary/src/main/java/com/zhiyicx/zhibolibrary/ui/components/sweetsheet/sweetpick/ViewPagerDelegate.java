@@ -135,7 +135,8 @@ public class ViewPagerDelegate extends Delegate {
     }
 
 
-    protected void setMenuList(  List<MenuEntity> menuEntities) {
+    @Override
+    protected void setMenuList(List<MenuEntity> menuEntities) {
 
         mMenuEntities=menuEntities;
         mMenuListViewHandlers = new ArrayList<>();
@@ -194,7 +195,10 @@ public class ViewPagerDelegate extends Delegate {
 
 
     private void selectPosition(int position) {
-        mMenuListViewHandler = (MenuListViewHandler) mMenuListViewHandlers.get(position);
+        if(mMenuListViewHandlers.isEmpty()){
+            return;
+        }
+        mMenuListViewHandler = mMenuListViewHandlers.get(position);
     }
 
 

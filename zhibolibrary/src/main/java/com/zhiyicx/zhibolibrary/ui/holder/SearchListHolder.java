@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.ui.holder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -74,11 +75,9 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
         mData = data;
         if (data.stream != null) {
             type = SearchTabPresenter.SEARCH_STREAM;
-        }
-        else if (data.video != null) {
+        } else if (data.video != null) {
             type = SearchTabPresenter.SEARCH_VIDEO;
-        }
-        else {
+        } else {
             type = SearchTabPresenter.SEARCH_USER;
         }
         setUserInfo(data);
@@ -114,8 +113,7 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
                         if ((currentTime - mTime) < UserService.FOLLOW_SPACING_TIME) {
                             showMessage(UiUtils.getString("str_frequently_follow_prompt"));
                             break;
-                        }
-                        else {
+                        } else {
                             mTime = System.currentTimeMillis();
                         }
                         mPresenter.follow(UserHomePresenter.isFollow(!isFollow));
@@ -213,7 +211,8 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
                 UiUtils.glideWrap(data.video.video_icon.getOrigin())
                         .placeholder(R.mipmap.pic_photo_140)
                         .into(mIconIV);
-                mSubheadTV.setText(TextUtils.isEmpty(data.video.video_location) ? UiUtils.getString("str_default_location") : data.video.video_location
+                mSubheadTV.setText(TextUtils.isEmpty(data.video.video_location) ? UiUtils.getString("str_default_location") : data.video
+                        .video_location
                 );
                 mFansTV.setText("" + data.video.replay_count);
                 break;
@@ -235,8 +234,7 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
             mButton.setNameColor(UiUtils.getColor(R.color.white));
             mButton.setBackgroundResource(R.drawable.shape_stroke_corner_disable);
             mButton.setNameLeftDrawable(R.mipmap.ico_added_gz);
-        }
-        else {
+        } else {
             mButton.setName(UiUtils.getString("str_follow"));
             mButton.setBackgroundResource(R.drawable.shape_stroke_corner);
             mButton.setNameColor(UiUtils.getColor(R.color.color_blue_button));
@@ -258,6 +256,16 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
     @Override
     public boolean getFollow() {
         return isFollow;
+    }
+
+    @Override
+    public Activity getCurrentActivity() {
+        if (mIconIV != null && mIconIV.getContext() instanceof Activity) {
+            return (Activity) mIconIV.getContext();
+
+        } else {
+            return null;
+        }
     }
 
 

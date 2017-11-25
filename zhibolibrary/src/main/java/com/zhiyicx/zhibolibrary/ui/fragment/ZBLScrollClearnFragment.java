@@ -18,11 +18,9 @@ import java.util.List;
 
 public class ZBLScrollClearnFragment extends ZBLBaseFragment {
     private static final String ARG_PARAM1 = "currentView";
-    private static final String ARG_PARAM2 = "publishCoreView";
     ViewPager vpContainer;
     private AdapterViewPager mAdapter;
     private List<ZBLBaseFragment> mFragmentList;
-    PublishCoreView publishCoreView;
     public ZBLScrollClearnFragment() {
         // Required empty public constructor
     }

@@ -246,6 +246,11 @@
             android:name=".modules.personal_center.PersonalCenterActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <!-- 查看头像页 -->
         <activity
@@ -576,6 +581,13 @@
         </activity>
         <activity android:name=".modules.register.rule.UserRuleActivity">
         </activity>
+        <!-- autolayout -->
+        <meta-data
+            android:name="design_width"
+            android:value="750"/>
+        <meta-data
+            android:name="design_height"
+            android:value="1334"/>
     </application>
 
 </manifest>

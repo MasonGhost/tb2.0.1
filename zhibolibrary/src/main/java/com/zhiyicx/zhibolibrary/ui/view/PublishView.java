@@ -1,5 +1,7 @@
 package com.zhiyicx.zhibolibrary.ui.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -175,4 +177,5 @@ public interface PublishView extends BaseView {
 
     FilterManager getFilterManager();
 
+    Activity getActivity();
 }

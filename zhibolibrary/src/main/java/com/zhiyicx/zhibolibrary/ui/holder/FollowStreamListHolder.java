@@ -98,7 +98,7 @@ public class FollowStreamListHolder extends ZBLBaseHolder<SearchResult> implemen
         //
         Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("user_info", data);
+        bundle.putString("user_id", data.user.uid);
         intent.putExtras(bundle);
         UiUtils.startActivity(intent);
     }

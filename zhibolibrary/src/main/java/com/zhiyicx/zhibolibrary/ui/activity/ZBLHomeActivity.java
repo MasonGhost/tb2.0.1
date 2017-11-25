@@ -141,7 +141,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     //初始化viewpager
     private void initViewPager() {
         //设置缓存的个数
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(3);
         mAdapter = new AdapterViewPager(getSupportFragmentManager());
         mFragmentList = mPresenter.getFragments();
         mAdapter.bindData(mFragmentList);//将List设置给adapter
@@ -245,11 +245,11 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
 
     private void changeNavigationButton(int position) {
         mLiveIV.setImageResource(position == 0 ? R.mipmap.ic_bottom_live_blue : R.mipmap.ic_bottom_live_grey);
-        mLiveTV.setTextColor(position == 0 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("gray"));
+        mLiveTV.setTextColor(position == 0 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
         mReplayIV.setImageResource(position == 1 ? R.mipmap.ic_bottom_replay_blue : R.mipmap.ic_bottom_replay_grey);
-        mReplayTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("gray"));
+        mReplayTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
         mMessageIV.setImageResource(position == 2 ? R.mipmap.ic_bottom_chat_blue : R.mipmap.ic_bottom_chat_grey);
-        mMessageTV.setTextColor(position == 2 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("gray"));
+        mMessageTV.setTextColor(position == 2 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
 //        mMyIV.setImageResource(position == 1 ? R.mipmap.ico_bottom_myself_blue : R.mipmap.ico_bottom_myself_grey);
 //        mMyTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("gray"));
     }

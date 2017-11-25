@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.ui.holder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -138,6 +139,16 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
         return isFollow;
     }
 
+    @Override
+    public Activity getCurrentActivity() {
+        if (ivRankGoldItemIcon != null && ivRankGoldItemIcon.getContext() instanceof Activity) {
+            return (Activity) ivRankGoldItemIcon.getContext();
+
+        } else {
+            return null;
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -164,7 +175,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
             //跳转到个人主页
             Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("user_info", mData);
+            bundle.putString("user_id", mData.user.uid);
             intent.putExtras(bundle);
             UiUtils.startActivity(intent);
         }

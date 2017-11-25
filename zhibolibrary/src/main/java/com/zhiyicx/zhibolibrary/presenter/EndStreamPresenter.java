@@ -55,7 +55,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
     @Inject
     public EndStreamPresenter(EndStreamModel model, EndStreamView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl(rootView.getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
     }
 

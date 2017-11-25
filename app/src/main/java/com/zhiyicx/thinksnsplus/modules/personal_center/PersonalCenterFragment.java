@@ -113,6 +113,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         PhotoSelectorImpl.IPhotoBackListener, TextViewUtils.OnSpanTextClickListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
+    public static final String PERSONAL_CENTER_USER_ID = "user_id";
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -366,8 +367,16 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected void initData() {
         mUserInfoBean = getArguments().getParcelable(PERSONAL_CENTER_DATA);
+
         if (mUserInfoBean != null) {
             requestData();
+        } else if (!TextUtils.isEmpty(getArguments().getString(PERSONAL_CENTER_USER_ID))) {
+            try {
+                mUserInfoBean=new UserInfoBean();
+                mUserInfoBean.setUser_id(Long.valueOf(getArguments().getString(PERSONAL_CENTER_USER_ID)));
+                requestData();
+            }catch (Exception e){}
+
         }
         super.initData();
         // 支持魅族手机首页状太栏文字白色问题

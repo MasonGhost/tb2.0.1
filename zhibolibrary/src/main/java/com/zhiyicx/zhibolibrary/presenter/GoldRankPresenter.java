@@ -181,7 +181,7 @@ public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankM
         // TODO: 16/10/10 跳转到用户信息
         Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_UESRINFO);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("user_info", data);
+        bundle.putString("user_id", data.user.uid);
         intent.putExtras(bundle);
         UiUtils.startActivity(intent);
     }

@@ -1,5 +1,8 @@
 package com.zhiyicx.zhibolibrary.ui.view;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
 import com.zhiyicx.imsdk.entity.Message;
@@ -217,4 +220,5 @@ public interface PublishCoreView<T> extends BaseView {
 
     UserInfo getPresenterInfo();
 
+    Activity getCurrentActivity();
 }

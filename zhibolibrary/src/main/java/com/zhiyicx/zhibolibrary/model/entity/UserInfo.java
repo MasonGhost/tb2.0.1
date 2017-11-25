@@ -1,6 +1,5 @@
 package com.zhiyicx.zhibolibrary.model.entity;
 
-import com.zhiyicx.common.thridmanager.share.*;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 
 import java.io.Serializable;
@@ -10,9 +9,13 @@ import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.STR_SHARE_NAME;
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.STR_SHARE_USID;
 
 /**
- * Created by zhiyicx on 2016/3/15.
+ *
+ * @author zhiyicx
+ * @date 2016/3/15
  */
 public class UserInfo implements Serializable {
+    private static final long serialVersionUID = 636871008;
+
     public String password;
     public String uid;
     public String usid;
@@ -111,10 +114,11 @@ public class UserInfo implements Serializable {
             shareContent.setUrl(ZhiboApplication.getShareContent().getUrl());
             shareContent.setUrl(shareContent.getUrl().replace(STR_SHARE_USID, userInfo.usid));
         }
-        if (userInfo.usid.equals(ZhiboApplication.getUserInfo().usid))
+        if (userInfo.usid.equals(ZhiboApplication.getUserInfo().usid)) {
             shareContent.setContent(STR_SHARE_ME + ZhiboApplication.getShareContent().getContent());
-        else
+        } else {
             shareContent.setContent(userInfo.uname + ZhiboApplication.getShareContent().getContent());
+        }
         shareContent.setImage(userInfo.avatar.origin);
 
         return shareContent;

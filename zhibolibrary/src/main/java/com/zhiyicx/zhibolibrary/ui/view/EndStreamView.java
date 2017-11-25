@@ -1,6 +1,9 @@
 package com.zhiyicx.zhibolibrary.ui.view;
 
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.zhiyicx.zhibolibrary.ui.adapter.DefaultAdapter;
 
 /**
@@ -86,4 +89,6 @@ public interface EndStreamView extends BaseView {
      * 显示因为网络连接异常弹出直播的提示
      */
     void showExceptionPrompt(boolean isVisable);
+
+    Activity getActivity();
 }

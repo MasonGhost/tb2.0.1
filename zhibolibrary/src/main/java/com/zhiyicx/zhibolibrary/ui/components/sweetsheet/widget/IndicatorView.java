@@ -22,12 +22,11 @@ import java.util.List;
  * @version 1.0
  * @date 2015/8/5.
  * @github: https://github.com/zzz40500
- *
  */
-public class IndicatorView extends LinearLayout implements ViewPager.OnPageChangeListener,CircleRevealHelper.CircleRevealEnable {
+public class IndicatorView extends LinearLayout implements ViewPager.OnPageChangeListener, CircleRevealHelper.CircleRevealEnable {
 
     private ViewPager mViewPager;
-    private int mPreSelectPosition=-1;
+    private int mPreSelectPosition = -1;
     private List<View> mIndicators = new ArrayList<>();
     private CircleRevealHelper mCircleRevealHelper;
 
@@ -44,7 +43,6 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
     }
 
 
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public IndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -59,10 +57,11 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
         init();
 
     }
+
     private void init() {
         setOrientation(LinearLayout.HORIZONTAL);
 
-        mCircleRevealHelper=new CircleRevealHelper(this);
+        mCircleRevealHelper = new CircleRevealHelper(this);
     }
 
 
@@ -88,13 +87,16 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
     }
 
     private void setSelect(int i) {
+        if (mIndicators.isEmpty()) {
+            return;
+        }
         View view = mIndicators.get(i);
         view.setSelected(true);
-        if(mPreSelectPosition != -1){
+        if (mPreSelectPosition != -1) {
             mIndicators.get(mPreSelectPosition).
-            setSelected(false);
+                    setSelected(false);
         }
-        mPreSelectPosition=i;
+        mPreSelectPosition = i;
     }
 
     private void addIndicationView() {
@@ -121,7 +123,7 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
 
     @Override
     public void onPageSelected(int position) {
-        setSelect( position);
+        setSelect(position);
     }
 
     @Override
@@ -129,25 +131,25 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
 
     }
 
-    public void alphaShow(boolean isAnimation){
+    public void alphaShow(boolean isAnimation) {
 
-        if(isAnimation) {
+        if (isAnimation) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, "alpha", 0, 1);
             objectAnimator.setDuration(300);
             objectAnimator.start();
-        }else{
-            ViewHelper.setAlpha(this,1);
+        } else {
+            ViewHelper.setAlpha(this, 1);
         }
     }
 
 
-    public void alphaDismiss(boolean isAnimation){
-        if(isAnimation) {
+    public void alphaDismiss(boolean isAnimation) {
+        if (isAnimation) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, "alpha", 1, 0);
             objectAnimator.setDuration(300);
             objectAnimator.start();
-        }else{
-            ViewHelper.setAlpha(this,0);
+        } else {
+            ViewHelper.setAlpha(this, 0);
         }
     }
 
@@ -163,12 +165,12 @@ public class IndicatorView extends LinearLayout implements ViewPager.OnPageChang
 
     @Override
     public void circularReveal(int centerX, int centerY, float startRadius, float endRadius, long duration, Interpolator interpolator) {
-        mCircleRevealHelper.circularReveal(centerX,centerY,startRadius,endRadius,duration,interpolator);
+        mCircleRevealHelper.circularReveal(centerX, centerY, startRadius, endRadius, duration, interpolator);
     }
 
     @Override
     public void circularReveal(int centerX, int centerY, float startRadius, float endRadius) {
-        mCircleRevealHelper.circularReveal(centerX,centerY,startRadius,endRadius);
+        mCircleRevealHelper.circularReveal(centerX, centerY, startRadius, endRadius);
     }
 
 }

@@ -42,7 +42,7 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     @Inject
     public UserHomePresenter(UserHomeModel model, UserHomeView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(((Fragment)rootView).getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl(rootView.getCurrentActivity());
         mSharePolicy.setOnShareCallbackListener(this);
     }
 

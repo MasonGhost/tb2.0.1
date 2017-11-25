@@ -1,6 +1,9 @@
 package com.zhiyicx.zhibolibrary.ui.view;
 
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 
 /**
@@ -33,4 +36,5 @@ public interface UserHomeView extends BaseView {
     boolean getFollow();
 
 
+    Activity getCurrentActivity();
 }

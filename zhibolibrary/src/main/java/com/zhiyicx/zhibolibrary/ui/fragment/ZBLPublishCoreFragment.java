@@ -1,6 +1,7 @@
 package com.zhiyicx.zhibolibrary.ui.fragment;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1325,6 +1326,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         return presenterUser;
     }
 
+    @Override
+    public Activity getCurrentActivity() {
+        return getActivity();
+    }
+
     private void disableMsg() {
         if (isBanneded) return;
         hidekeyboard();//隐藏软键盘
@@ -2288,6 +2294,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             mFilterPop.show();
         }
     }
+
 }
 
 

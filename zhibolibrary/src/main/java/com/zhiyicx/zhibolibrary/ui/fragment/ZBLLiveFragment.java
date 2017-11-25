@@ -93,7 +93,7 @@ public abstract class ZBLLiveFragment extends ZBLBaseFragment implements LiveVie
     //初始化viewpager
     private void initViewPager() {
         //设置缓存的个数
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(2);
         mAdapter = new AdapterViewPager(getFragmentManager());
         mFragmentList = getFragements();
         mLiveFragmentList = new ArrayList<>();//赋值给新集合做其他操作
@@ -150,9 +150,9 @@ public abstract class ZBLLiveFragment extends ZBLBaseFragment implements LiveVie
      * @param position
      */
     public void setTabColor(int position) {
-        mSubscribeTV.setTextColor(position == 0 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
-        mHotTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
-        mNewTV.setTextColor(position == 2 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
+        mSubscribeTV.setTextColor(position == 0 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("black"));
+        mHotTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("black"));
+        mNewTV.setTextColor(position == 2 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("black"));
     }
 
     @Override

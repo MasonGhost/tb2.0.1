@@ -111,24 +111,26 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
 
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             private int lastVisibleItem;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (getOrder().equals(TYPE_FOLLOW))
+                if (getOrder().equals(TYPE_FOLLOW)) {
                     lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
-                else
+                } else {
                     lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+                }
             }
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (mRefreshLayout != null && mRefreshLayout.getCurrentRefreshStatus() == RefreshLayout.RefreshStatus.REFRESHING)
+                if (mRefreshLayout != null && mRefreshLayout.getCurrentRefreshStatus() == RefreshLayout.RefreshStatus.REFRESHING) {
                     return;
+                }
                 if (getOrder().equals(TYPE_FOLLOW)) {
                     MoreLinearAdapter adapter = (MoreLinearAdapter) recyclerView.getAdapter();
                     if (adapter == null) {
@@ -315,6 +317,7 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
      *
      * @return
      */
+    @Override
     public abstract String getOrder();
 
     public abstract int getLayout();
@@ -324,6 +327,7 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
      *
      * @return
      */
+    @Override
     public String getVideoOreder() {
         return "";
     }
@@ -333,10 +337,12 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
      *
      * @return
      */
+    @Override
     public boolean isFilter() {
         return isFilter;
     }
 
+    @Override
     public void setIsFilter(boolean isFilter) {
         this.isFilter = isFilter;
     }

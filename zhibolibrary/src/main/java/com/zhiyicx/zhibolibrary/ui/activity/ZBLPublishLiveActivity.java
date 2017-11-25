@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.ui.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -681,6 +682,11 @@ public class ZBLPublishLiveActivity extends ZBLBaseActivity implements PublishVi
         else if (view.getId() == R.id.bt_publish_close) {
             showWarnDialog();
         }
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }
 

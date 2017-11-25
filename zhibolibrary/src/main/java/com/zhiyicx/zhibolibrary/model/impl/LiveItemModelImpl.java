@@ -119,13 +119,15 @@ public class LiveItemModelImpl implements LiveItemModel {
                             tmp.data = json.data;
                             String usids = "";
                             for (SearchResult value : tmp.data) {
-                                if (value.user != null)
+                                if (value.user != null) {
                                     usids += value.user.usid + ",";
-                                else
+                                } else {
                                     usids += "zb_user_0" + ",";
+                                }
                             }
-                            if (usids.length() > 0)
+                            if (usids.length() > 0) {
                                 usids = usids.substring(0, usids.length() - 1);
+                            }
 
                             Map<String, Object> params = new HashMap<String, Object>();
                             params.put("usid", usids);
