@@ -1239,6 +1239,8 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
     @Override
     public void closePlay(final OnCloseStatusListener l) {
+        LogUtils.errroInfo("closePlay--------------------！");
+
         mModel.endStream(ZBContants.getmUserAuth(CommonUtils.MD5encode(ZBApi.getContantsSeckret())).getAk(),//结束流
 
                 mStreamId).subscribeOn(Schedulers.io())

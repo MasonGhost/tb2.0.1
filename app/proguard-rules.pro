@@ -190,6 +190,8 @@ public static final int *;
 -keep interface okhttp3.** { *; }
 -dontwarn com.squareup.okhttp.**
 
+################# 七牛 ##########
+-keep class com.qiniu.pili.droid.streaming.** { *; }
 
 ################androidEventBus###############
 -keep class org.simple.** { *; }

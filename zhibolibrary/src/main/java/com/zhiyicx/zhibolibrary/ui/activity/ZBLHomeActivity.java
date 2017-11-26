@@ -179,7 +179,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
 //初始化直播间
             // 添加相机权限设置
             mRxPermissions
-                    .requestEach(Manifest.permission.CAMERA)
+                    .requestEach(Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO)
                     .subscribe(new Action1<Permission>() {
                         @Override
                         public void call(Permission permission) {

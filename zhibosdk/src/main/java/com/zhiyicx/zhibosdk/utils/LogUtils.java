@@ -19,7 +19,7 @@ import okio.Buffer;
 public class LogUtils {
     private static final String TAG = "zhiboSDK";
 
-    private final static boolean isLog = true;
+    private final static boolean isLog = false;
 
     public static void debugInfo(String tag, String msg) {
         if (!isLog || TextUtils.isEmpty(msg)) return;
