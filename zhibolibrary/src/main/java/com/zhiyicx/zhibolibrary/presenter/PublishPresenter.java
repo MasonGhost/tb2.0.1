@@ -794,7 +794,10 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
 
 
     public void onPause() {
-        ZBStreamingClient.getInstance().onPause();
+        /*直播过程中分享面板弹出不暂停直播 7.4.2017 lei13*/
+        if (!mSharePolicy.isShowing()) {
+            ZBStreamingClient.getInstance().onPause();
+        }
     }
 
     public void isBackGround(boolean isBackGround) {

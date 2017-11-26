@@ -45,4 +45,8 @@ public interface SharePolicy {
      * @param shareContent
      */
     void setShareContent(ShareContent shareContent);
+    /**
+     * 针对自定义弹窗有效（有参数的showShare方法）
+     */
+    boolean isShowing();
 }

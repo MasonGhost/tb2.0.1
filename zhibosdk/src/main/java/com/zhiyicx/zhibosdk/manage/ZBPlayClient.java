@@ -178,7 +178,6 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
 
     private void initReconnectHandler() {
         mHandler = new Handler(mContext.getMainLooper()) {
-
             @Override
             public void handleMessage(android.os.Message msg) {
 

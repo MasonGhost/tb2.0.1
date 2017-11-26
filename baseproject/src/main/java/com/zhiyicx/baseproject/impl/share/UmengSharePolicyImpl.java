@@ -119,6 +119,12 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
         mShareContent = shareContent;
     }
 
+    @Override
+    public boolean isShowing() {
+        return mRecyclerViewPopupWindow == null ? false :mRecyclerViewPopupWindow.isShowing();
+
+    }
+
     /**
      * 微信朋友分享
      */

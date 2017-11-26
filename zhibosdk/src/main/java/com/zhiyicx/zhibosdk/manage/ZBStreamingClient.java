@@ -493,8 +493,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                 .setBuiltInFaceBeautyEnabled(false)
                 .setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY)
                 .setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(0.8f, 0.6f, 0.8f))
-                .setContinuousFocusModeEnabled(true) // 取消自动对焦
-//                .setFocusMode(CameraStreamingSetting.FOCUS_MODE_AUTO)// 使用手动对焦
+                .setContinuousFocusModeEnabled(true)
                 .setCameraPrvSizeLevel(CameraStreamingSetting.PREVIEW_SIZE_LEVEL.LARGE)
                 .setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9)
                 .setResetTouchFocusDelayInMs(3000); // 单位毫秒
@@ -518,7 +517,6 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 //        });
         mCameraStreamingManager.setStreamStatusCallback(streamStatusCallback);
         mCameraStreamingManager.setStreamingStateListener(new StreamingStateChangedListener() {
-
 
             @Override
             public void onStateChanged(StreamingState streamingState, Object o) {//回调
@@ -600,9 +598,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
         mCameraStreamingManager.setStreamingPreviewCallback(new StreamingPreviewCallback() {
 
             @Override
-            public boolean onPreviewFrame(byte[] bytes, int i, int i1) {
+            public boolean onPreviewFrame(byte[] var1, int var2, int var3, int var4, int var5, long var6) {
                 if (mZBStreamingPreviewListener != null)
-                    return mZBStreamingPreviewListener.onPreviewFrame(bytes, i, i1);
+                    return mZBStreamingPreviewListener.onPreviewFrame(var1, var2, var3);
                 return false;
             }
         });
@@ -691,6 +689,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
      */
     @Override
     public void reconnect() {
+        LogUtils.debugInfo(TAG, "isStreaming....."+isStreaming);
         if (isStreaming) mReconnetPolicy.shutDown();//拉流开始后才开始重连
     }
 

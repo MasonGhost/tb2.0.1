@@ -22,6 +22,15 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false"/>
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动-->
     <application
@@ -602,6 +611,11 @@
         <meta-data
             android:name="design_height"
             android:value="1334"/>
+        <!--升级七牛 V2.2.2，增加注册SDK内置 Activity 8.11.2017-->
+        <activity
+            android:name="com.qiniu.pili.droid.streaming.screen.ScreenCaptureRequestActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
     </application>
 
 </manifest>

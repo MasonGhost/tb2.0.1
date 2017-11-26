@@ -185,12 +185,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mPresenter.isPlay())//开始播放了
-                {
                     mZBPlayClient.reconnect();
-                } else//还没开始播放
-                {
+                else//还没开始播放
                     mPresenter.showPlay();
-                }
             }
         });
         builder.setPositiveButton(getString(R.string.str_retire), new DialogInterface.OnClickListener() {
