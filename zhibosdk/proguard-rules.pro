@@ -14,6 +14,14 @@
 -optimizations !code/simplification/artithmetic,!field/*,!class/merging/*
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+
+
+################# 七牛 ##########
+-keep class com.qiniu.pili.droid.streaming.** { *; }
+################OLD IM###############
+-keep class com.zhiyicx.old.imsdk.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.old.imsdk.** { *; }
+
 #推流
 -keep class com.pili.pldroid.** { *; }
 -keep interface com.pili.pldroid.** { *; }

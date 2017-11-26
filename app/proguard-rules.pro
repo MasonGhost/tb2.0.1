@@ -85,6 +85,13 @@ public static final int *;
 
 -keep class com.davemorrissey.labs.subscaleview.** { *; } #实体类不参与混淆
 -keep interface com.davemorrissey.labs.subscaleview.** { *; }
+
+
+################OLD IM###############
+-keep class com.zhiyicx.old.imsdk.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.old.imsdk.** { *; }
+
+
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
@@ -192,6 +199,46 @@ public static final int *;
 
 ################# 七牛 ##########
 -keep class com.qiniu.pili.droid.streaming.** { *; }
+
+#推流
+-keep class com.pili.pldroid.** { *; }
+-keep interface com.pili.pldroid.** { *; }
+-keep class com.qiniu.pili.droid.**{*;}
+-keep interface com.qiniu.pili.droid.**{*;}
+#播放器
+-keep class com.pili.pldroid.player.** { *; }
+-keep class tv.danmaku.ijk.media.player.** {*;}
+-keep class com.pili.pldroid.** {*;}
+
+-keep interface com.qiniu.pili.** {*;}
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keep public class com.zhiyicx.zhibo.R$*{
+public static final int *;
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+#####投票#####
+-keep class com.zhiyicx.votesdk.entity.** { *; }
+-keep interface com.zhiyicx.votesdk.listener.** { *; }
+-keep class com.zhiyicx.votesdk.listener.** { *; }
+-keep class com.zhiyicx.votesdk.utils.** { *; }
+
+-keep interface com.zhiyicx.votesdk.policy.** { *; }
+-keep class android.content.Context
+-keep abstract class com.zhiyicx.votesdk.policy.** { *; }
+-keepattributes InnerClasses
+-keep class com.zhiyicx.votesdk.manage.**{
+ public static <fields>;
+ public <methods>;
+}
+-keep interface com.zhiyicx.votesdk.ui.**{*;}
+-keep class com.zhiyicx.votesdk.ui.**{*;}
+
+
 
 ################androidEventBus###############
 -keep class org.simple.** { *; }
@@ -480,3 +527,318 @@ public static java.lang.String TABLENAME;
 }
 #----------------------------------------------------------------------------
 #--
+
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-ignorewarnings
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontpreverify
+-verbose
+-printmapping proguardMapping.txt
+-optimizations !code/simplification/cast,!field/*,!class/merging/*
+-keepattributes *Annotation*,InnerClasses
+-keepattributes Signature
+-keepattributes EnclosingMethod
+-keepattributes SourceFile,LineNumberTable
+#-libraryjars libs/umeng_sdk.jar
+#-dontwarn com.umeng.analytics.MobclickAgent.**
+#-keep class com.umeng.analytics.MobclickAgent.** { *; }
+#-keep public class * extends com.umeng.analytics.MobclickAgent.**
+-keep class com.google.zxing.**
+
+
+#-libraryjars libs/android-support-v4.jar
+-dontwarn android.support.v4.**
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.app.** { *; }
+-keep public class * extends android.support.v4.**
+-keep public class * extends android.app.Fragment
+
+#-libraryjars libs/androidsdk.jar
+#-libraryjars libs/androidsdkcomponent.jar
+#-libraryjars libs/locSDK_3.3.jar
+#-libraryjars libs/open_sdk.jar
+#-libraryjars libs/pushservice-2.1.2.jar
+#-libraryjars libs/weibo.sdk.android.sso.jar
+#-libraryjars libs/commons-httpclient-3.0.1.jar
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.view.View
+-keep public class com.android.vending.licensing.ILicensingService
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keepclassmembers class * {
+   public <init>(org.json.JSONObject);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keep public class com.zhishisoft.sociax.android.R$*{
+ public static final int *;
+}
+
+-keep public class com.tencent.weibo.sdk.android.component.R$*{
+ public static final int *;
+}
+
+
+#keep third jar
+
+-dontwarn com.tencent.weibo.sdk.android.component.**
+-dontwarn org.apache.commons.httpclient.**
+-dontwarn android.net.http.**
+
+
+-keep class com.baidu.android.pushservice.** {*;}
+-keep class com.baidu.android.common.** {*;}
+-keep class com.baidu.location.** {*;}
+-keep class com.baidu.mapapi.** {*;}
+-keep class com.tencent.weibo.sdk.android.** {*;}
+-keep class com.tencent.weibo.sdk.android.component.** {*;}
+-keep class com.tencent.weibo.sdk.android.api.** {*;}
+-keep class com.tencent.tauth.** {*;}
+-keep class org.apache.commons.httpclient.** {*;}
+-keep class org.apache.commons.httpclient.methods.** {*;}
+-keep class org.apache.http.entity.mime.** {*;}
+-keep class android.support.v4.** {*;}
+-keep class android.net.http.** {*;}
+-keep class com.weibo.sdk.android.** {*;}
+-keep class com.sina.sso.** {*;}
+
+#EventBus混淆
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+#推流
+-keep class com.pili.pldroid.** { *; }
+-keep interface com.pili.pldroid.** { *; }
+-keep class com.qiniu.pili.droid.**{*;}
+-keep interface com.qiniu.pili.droid.**{*;}
+#播放器
+-keep class com.pili.pldroid.player.** { *; }
+-keep class tv.danmaku.ijk.media.player.** {*;}
+-keep class com.pili.pldroid.** {*;}
+
+-keep interface com.qiniu.pili.** {*;}
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keep public class com.zhiyicx.zhibo.R$*{
+public static final int *;
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+#####投票#####
+-keep class com.zhiyicx.votesdk.entity.** { *; }
+-keep interface com.zhiyicx.votesdk.listener.** { *; }
+-keep class com.zhiyicx.votesdk.listener.** { *; }
+-keep class com.zhiyicx.votesdk.utils.** { *; }
+
+-keep interface com.zhiyicx.votesdk.policy.** { *; }
+-keep class android.content.Context
+-keep abstract class com.zhiyicx.votesdk.policy.** { *; }
+-keepattributes InnerClasses
+-keep class com.zhiyicx.votesdk.manage.**{
+ public static <fields>;
+ public <methods>;
+}
+-keep interface com.zhiyicx.votesdk.ui.**{*;}
+-keep class com.zhiyicx.votesdk.ui.**{*;}
+
+
+################common###############
+-keep class com.zhiyicx.zhibo.model.entity.** { *; } #实体类不参与混淆
+-keep class com.zhiyicx.zhibo.ui.components.** { *; } #自定义控件不参与混淆
+
+-keep class com.zhiyicx.zhibosdk.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.zhibosdk.** { *; } #实体类不参与混淆
+-keep class com.zhiyicx.old.imsdk.** { *; } #实体类不参与混淆
+-keep interface com.zhiyicx.old.imsdk.** { *; } #实体类不参与混淆
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+-keep class com.zhiyicx.zhibolibrary.manager.**{
+ public static <fields>;
+ public <methods>;
+}
+-keep class com.zhiyicx.zhibolibrary.model.entity.**{*;}
+-keep class com.zhiyicx.zhibolibrary.util.**{*;}
+-keep class com.zhiyicx.zhibolibrary.model.api.ZBLApi
+-keep interface com.zhiyicx.zhibolibrary.model.**{*;}
+-keepnames class * implements java.io.Serializable
+-keepattributes Signature
+-keep class **.R$* {*;}
+-ignorewarnings
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+
+
+################support###############
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }
+
+
+################alipay###############
+
+-keep class com.alipay.android.app.IAlixPay{*;}
+-keep class com.alipay.android.app.IAlixPay$Stub{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
+-keep class com.alipay.sdk.app.PayTask{ public *;}
+-keep class com.alipay.sdk.app.AuthTask{ public *;}
+
+################retrofit###############
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+################butterknife###############
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+   @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+ @butterknife.* <methods>;
+}
+
+
+################gson###############
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.sunloto.shandong.bean.** { *; }
+-keep class com.google.gson.** { *; }
+################umeng###############
+-keep class com.umeng.** { *; }
+-keep public class * extends com.umeng.**
+
+
+
+################okhttp###############
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn com.squareup.okhttp.**
+
+
+################autolayout###############
+-keep class com.zhy.autolayout.** { *; }
+-keep interface com.zhy.autolayout.** { *; }
+
+
+
+
+################Rxjava and RxAndroid###############
+-dontwarn org.mockito.**
+-dontwarn org.junit.**
+-dontwarn org.robolectric.**
+
+-keep class rx.** { *; }
+-keep interface rx.** { *; }
+
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-dontwarn okio.**
+-keep interface com.squareup.okhttp.** { *; }
+-dontwarn com.squareup.okhttp.**
+
+-dontwarn rx.**
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+-keep class sun.misc.Unsafe { *; }
+
+-dontwarn java.lang.invoke.*
+
+-keep class rx.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class rx.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    long producerNode;
+    long consumerNode;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-dontwarn rx.internal.util.unsafe.**
+
+################carousellayoutmanager###############
+-keep class com.azoft.carousellayoutmanager.** { *; }
+-keep interface com.azoft.carousellayoutmanager.** { *; }
+
+
+#==================gson && protobuf==========================
+
+-keep class com.google.protobuf.** {*;}
+#jpush end >>>>>>
