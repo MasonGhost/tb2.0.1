@@ -5,11 +5,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageExt;
-import com.zhiyicx.votesdk.entity.OptionDetail;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.votesdk.entity.VoteInfo;
-import com.zhiyicx.votesdk.listener.OnPresenterListener;
 import com.zhiyicx.votesdk.listener.PresenterListener;
 import com.zhiyicx.votesdk.manage.VoteManager;
 import com.zhiyicx.votesdk.policy.PresenterPolicy;
@@ -19,7 +16,6 @@ import com.zhiyicx.zhibosdk.manage.ZBStreamingClient;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 类说明：
@@ -48,14 +44,16 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.queryLastVoteInfo("", new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryLastSuccess(info);
+                }
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryLastFailure(code, msg);
+                }
             }
         });
     }
@@ -70,14 +68,16 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.queryNewestVoteInfo(vote_id, new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryNewestSuccess(info);
+                }
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryNewestFailure(code, msg);
+                }
             }
         });
     }
@@ -97,16 +97,18 @@ public class PresenterPolicyImpl implements PresenterPolicy {
             public void onSuccess(VoteInfo info) {
                 Log.v(TAG, "voteCreate onSuccess" + String.valueOf(listener));
                 createTime = info.getCreate_time();
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteCreateSuccess(info);
+                }
                 sendVoteCreateMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
                 Log.v(TAG, "P---voteCreate.onFailure." + msg);
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteCreateFailure(code, msg);
+                }
             }
         });
     }
@@ -126,16 +128,18 @@ public class PresenterPolicyImpl implements PresenterPolicy {
             public void onSuccess(VoteInfo info) {
                 Log.v(TAG, "voteCreate onSuccess" + String.valueOf(listener));
                 createTime = info.getCreate_time();
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteCreateSuccess(info);
+                }
                 sendVoteCreateMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
                 Log.v(TAG, "P---voteCreate onFailure");
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteCreateFailure(code, msg);
+                }
             }
         });
     }
@@ -151,15 +155,17 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.votePause(vote_id, new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVotePauseSuccess(info);
+                }
                 sendVotePauseMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVotePauseFailure(code, msg);
+                }
             }
         });
     }
@@ -174,15 +180,17 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.voteStop(vote_id, new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteStopSuccess(info);
+                }
                 sendVoteStopMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteStopFailure(code, msg);
+                }
             }
         });
 
@@ -198,15 +206,17 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.voteRestart(vote_id, new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteTimeResetSuccess(info);
+                }
                 sendVoteRestartMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteRestartFailure(code, msg);
+                }
             }
         });
     }
@@ -222,15 +232,17 @@ public class PresenterPolicyImpl implements PresenterPolicy {
         NetUtils.updateVoteTime(vote_id, time, new ZBCallBack(new VoteInfo()) {
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteTimeResetSuccess(info);
+                }
                 sendVoteResetTimeMessage(info);
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteTimeResetFailure(code, msg);
+                }
             }
         });
     }
@@ -250,7 +262,9 @@ public class PresenterPolicyImpl implements PresenterPolicy {
     @Override
     public void receiveVoteMessage(Message msg) {
         Log.v(TAG, "P--- receiveVoteMessage " + String.valueOf(msg));
-        if (info == null) info = new VoteInfo();
+        if (info == null) {
+            info = new VoteInfo();
+        }
         if (listener != null) {
             VoteInfo receive = gson.fromJson(gson.toJson(msg.ext.custom), VoteInfo.class);
             if (TextUtils.isEmpty(createTime)) {

@@ -1,0 +1,70 @@
+apply plugin: 'com.android.library'
+//apply plugin: 'jacoco' //测试报告
+//apply from: "$rootDir/jacocoCoverage.gradle"
+
+//jacoco {
+//    toolVersion = "0.7.8"
+//    reportsDir = file("$buildDir/customJacocoReportDir")
+//}
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
+
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
+        // if true, only report errors.
+//        ignoreWarnings true
+    }
+    /**
+     * 保证 testDebug 执行完成后会执行 testRelease
+     * ｛@Link http://g.co/androidstudio/not-mocked｝
+     *
+     */
+    testOptions {
+        unitTests.all {
+            // All the usual Gradle options.
+            jvmArgs '-XX:MaxPermSize=256m'
+            // resolve "Method ... not mocked."
+        }
+        unitTests.returnDefaultValues = true
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile files('libs/jackson-core-asl-1.9.7.jar')
+    compile files('libs/jackson-mapper-asl-1.9.7.jar')
+    compile files('libs/javassist-3.18.0-GA.jar')
+    compile files('libs/json-simple-1.1.1.jar')
+    compile files('libs/msgpack-0.6.12.jar')
+}

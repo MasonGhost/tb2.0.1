@@ -3,9 +3,9 @@ package com.zhiyicx.zhibolibrary.ui.view;
 import android.app.Activity;
 import android.content.Context;
 
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;

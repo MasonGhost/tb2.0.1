@@ -55,7 +55,7 @@ dependencies {
     compile dataDependences.dagger
     annotationProcessor dataDependences.daggerCompiler
     provided dataDependences.javaxAnnotation
-    compile project(':imsdk')
+    compile project(':oldimsdk')
 
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'

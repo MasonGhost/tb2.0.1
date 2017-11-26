@@ -4,8 +4,8 @@ package com.zhiyicx.zhibosdk.di.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.imsdk.core.autobahn.WebSocket;
-import com.zhiyicx.imsdk.core.autobahn.WebSocketConnection;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.WebSocket;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.WebSocketConnection;
 import com.zhiyicx.zhibosdk.model.api.RequestIntercept;
 import com.zhiyicx.zhibosdk.model.api.ZBApi;
 import com.zhiyicx.zhibosdk.utils.ZBDataHelper;

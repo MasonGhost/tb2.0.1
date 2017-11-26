@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.votesdk.entity.OptionDetail;
 import com.zhiyicx.votesdk.entity.VoteInfo;
 import com.zhiyicx.votesdk.listener.AudienceListener;
@@ -59,8 +59,9 @@ public class AudiencePolicyImpl implements AudiencePolicy {
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onVoteFailure(code, msg);
+                }
             }
         });
     }
@@ -77,14 +78,16 @@ public class AudiencePolicyImpl implements AudiencePolicy {
             @Override
             public void onSuccess(VoteInfo info) {
                 createTime = info.getCreate_time();
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryLastSuccess(info);
+                }
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryLastFailure(code, msg);
+                }
             }
         });
     }
@@ -101,14 +104,16 @@ public class AudiencePolicyImpl implements AudiencePolicy {
 
             @Override
             public void onSuccess(VoteInfo info) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryNewestSuccess(info);
+                }
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onQueryNewestFailure(code, msg);
+                }
             }
         });
     }
@@ -136,7 +141,9 @@ public class AudiencePolicyImpl implements AudiencePolicy {
      */
     @Override
     public void receiveAudienceMessage(Message msg) {
-        if (info == null) info = new VoteInfo();
+        if (info == null) {
+            info = new VoteInfo();
+        }
         if (listener != null) {
             VoteInfo receive = gson.fromJson(gson.toJson(msg.ext.custom), VoteInfo.class);
             if (TextUtils.isEmpty(createTime)) {

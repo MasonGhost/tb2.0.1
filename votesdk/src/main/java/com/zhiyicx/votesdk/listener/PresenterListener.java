@@ -1,6 +1,6 @@
 package com.zhiyicx.votesdk.listener;
 
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.votesdk.entity.OptionDetail;
 import com.zhiyicx.votesdk.entity.VoteInfo;
 import com.zhiyicx.votesdk.entity.VoteOption;

@@ -1,7 +1,7 @@
 package com.zhiyicx.zhibolibrary.model.api.service;
 
 
-import com.zhiyicx.imsdk.core.ImService;
+import com.zhiyicx.old.imsdk.service.ImService;
 
 /**
  * Created by zhiyicx on 2016/3/30.

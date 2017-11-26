@@ -581,6 +581,20 @@
         </activity>
         <activity android:name=".modules.register.rule.UserRuleActivity">
         </activity>
+
+        <!-- IM服务 -->
+        <service android:name="com.zhiyicx.old.imsdk.service.SocketService"/>
+        <!-- 更新服务 -->
+        <service android:name="com.zhiyicx.zhibosdk.service.ZBUpdateService"/>
+        <!-- 网络监听广播 -->
+        <receiver
+            android:name="com.zhiyicx.old.imsdk.receiver.NetChangeReceiver"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+            </intent-filter>
+        </receiver>
         <!-- autolayout -->
         <meta-data
             android:name="design_width"

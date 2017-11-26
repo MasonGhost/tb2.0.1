@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibolibrary.model.entity;
 
-import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Conversation;
 
 import java.io.Serializable;
 

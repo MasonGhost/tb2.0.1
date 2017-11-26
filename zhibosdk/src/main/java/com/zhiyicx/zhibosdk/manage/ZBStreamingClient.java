@@ -21,18 +21,16 @@ import com.qiniu.pili.droid.streaming.StreamingStateChangedListener;
 import com.qiniu.pili.droid.streaming.SurfaceTextureCallback;
 import com.qiniu.pili.droid.streaming.WatermarkSetting;
 import com.qiniu.pili.droid.streaming.widget.AspectFrameLayout;
-import com.zhiyicx.imsdk.core.ErroCode;
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.entity.AuthData;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.MessageType;
-import com.zhiyicx.imsdk.manage.ChatRoomClient;
-import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
-import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
-import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
-import com.zhiyicx.imsdk.service.SocketService;
+import com.zhiyicx.old.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.old.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.MessageType;
+import com.zhiyicx.old.imsdk.manage.ChatRoomClient;
+import com.zhiyicx.old.imsdk.manage.listener.ImMsgReceveListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImStatusListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.old.imsdk.service.SocketService;
 import com.zhiyicx.zhibosdk.ZBSmartLiveSDK;
 import com.zhiyicx.zhibosdk.di.component.DaggerZBStreamingClientComponent;
 import com.zhiyicx.zhibosdk.di.module.ZBStremingModule;
@@ -117,7 +115,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     private boolean isStart;
 
     private Status currentStatus = Status.normal;
-    private final int maxFps = 25;
+    private final int maxFps = 30;
     private final int checkTime = 15 * 1000;
     private int weakTimes;
     private int BadTimes;
@@ -187,7 +185,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     }
 
     @Override
-    public void onMessageReceived(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageReceived(com.zhiyicx.old.imsdk.entity.Message message) {
         if (message.cid != mImInfo.cid) return;//丢去不是当前房间的消息
         if (message.ext != null) {
             switch (message.ext.customID) {
@@ -237,20 +235,20 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     }
 
     @Override
-    public void onMessageACKReceived(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageACKReceived(com.zhiyicx.old.imsdk.entity.Message message) {
 
         switch (message.err) {
             /**
              * 成功
              */
-            case ErroCode.SUCCESS_CODE:
+            case SocketService.SUCCESS_CODE:
                 if (mOnImListener == null) return;
                 mOnImListener.onMessageACK(message);
                 break;
             /**
              * 被禁言
              */
-            case ErroCode.CHATROOM_BANNED_WORDS:
+            case SocketService.CHATROOM_BANNED_WORDS:
                 // TODO: 16/5/30 被禁言后的操作
                 if (mOnImListener == null) return;
                 mOnImListener.onBanned(message.expire);
@@ -258,9 +256,9 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
             /**
              * 消息发送失败重新加入聊天室
              */
-            case ErroCode.CHATROOM_SEND_MESSAGE_FAILED:
+            case SocketService.CHATROOM_SEND_MESSAGE_FAILED:
 
-            case ErroCode.CHATROOM_NOT_JOIN_ROOM:
+            case SocketService.CHATROOM_NOT_JOIN_ROOM:
 
                 if (mChatRoomClient != null && mImInfo.cid != 0)
                     mChatRoomClient.joinRoom();
@@ -276,7 +274,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
         if (chatRoomContainer.mChatRooms.get(0).cid != mImInfo.cid)
             return;//丢去不是当前房间的消息
-        if (chatRoomContainer.err == ErroCode.SUCCESS_CODE) {//没有发生错误
+        if (chatRoomContainer.err == SocketService.SUCCESS_CODE) {//没有发生错误
             if (mOnImListener != null)
                 mOnImListener.onJoinRoomSuccessed();
             if (chatRoomContainer.mChatRooms.get(0).expire != -1) {//被禁言
@@ -292,7 +290,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
         if (chatRoomContainer.mChatRooms.get(0).cid != mImInfo.cid)
             return;//丢去不是当前房间的消息
-        if (chatRoomContainer.err == ErroCode.SUCCESS_CODE) {//没有发生错误
+        if (chatRoomContainer.err == SocketService.SUCCESS_CODE) {//没有发生错误
 
         } else {
             LogUtils.debugInfo(TAG, chatRoomContainer.err + "");
@@ -311,16 +309,6 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
     }
 
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-
-    @Override
-    public void onAuthSuccess(AuthData authData) {
-
-    }
 
     @Override
     public void onConnected() {
@@ -375,7 +363,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     }
 
     @Override
-    public void sendMessage(com.zhiyicx.imsdk.entity.Message message) {
+    public void sendMessage(com.zhiyicx.old.imsdk.entity.Message message) {
         if (mChatRoomClient != null)
             mChatRoomClient.sendMessage(message);
     }
@@ -387,7 +375,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     }
 
     @Override
-    public void onMessageTimeout(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageTimeout(com.zhiyicx.old.imsdk.entity.Message message) {
         if (mOnIMMessageTimeOutListener != null)
             mOnIMMessageTimeOutListener.onMessageTimeout(message);
     }
@@ -489,7 +477,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
         videoQuality = StreamingProfile.VIDEO_QUALITY_MEDIUM2;//视频质量
         audioQuality = StreamingProfile.AUDIO_QUALITY_MEDIUM2;
-        encodingLevel = StreamingProfile.VIDEO_ENCODING_HEIGHT_480;
+        encodingLevel = StreamingProfile.VIDEO_ENCODING_HEIGHT_720;
 
         mProfile.setVideoQuality(videoQuality)//流信息
                 .setAudioQuality(audioQuality)
@@ -505,8 +493,8 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                 .setBuiltInFaceBeautyEnabled(false)
                 .setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY)
                 .setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(0.8f, 0.6f, 0.8f))
-                .setContinuousFocusModeEnabled(false) // 取消自动对焦
-                .setFocusMode(CameraStreamingSetting.FOCUS_MODE_AUTO)// 使用手动对焦
+                .setContinuousFocusModeEnabled(true) // 取消自动对焦
+//                .setFocusMode(CameraStreamingSetting.FOCUS_MODE_AUTO)// 使用手动对焦
                 .setCameraPrvSizeLevel(CameraStreamingSetting.PREVIEW_SIZE_LEVEL.LARGE)
                 .setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9)
                 .setResetTouchFocusDelayInMs(3000); // 单位毫秒
@@ -585,6 +573,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                         break;
                     case AUDIO_RECORDING_FAIL:
                         break;
+                        default:
                 }
             }
 

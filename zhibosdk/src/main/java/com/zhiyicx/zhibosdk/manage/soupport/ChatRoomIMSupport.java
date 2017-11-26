@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibosdk.manage.soupport;
 
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 import com.zhiyicx.zhibosdk.model.entity.ZBApiImInfo;
 

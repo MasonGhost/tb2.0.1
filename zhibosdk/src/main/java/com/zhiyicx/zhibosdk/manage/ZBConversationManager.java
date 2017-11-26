@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Conversation;
 import com.zhiyicx.zhibosdk.manage.listener.ZBCloudApiCallback;
 import com.zhiyicx.zhibosdk.manage.soupport.ConversationManagerSoupport;
 import com.zhiyicx.zhibosdk.model.api.ZBApi;

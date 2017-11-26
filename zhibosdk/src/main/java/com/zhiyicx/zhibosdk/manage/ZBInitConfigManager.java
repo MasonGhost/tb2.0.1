@@ -9,8 +9,8 @@ import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.manage.ZBIMClient;
+import com.zhiyicx.old.imsdk.entity.IMConfig;
+import com.zhiyicx.old.imsdk.manage.ZBIMClient;
 import com.zhiyicx.zhibosdk.ZBSmartLiveSDK;
 import com.zhiyicx.zhibosdk.di.component.DaggerZBInitConfigManagerComponent;
 import com.zhiyicx.zhibosdk.di.module.SplashModule;

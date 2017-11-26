@@ -5,8 +5,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.old.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.MessageType;
 import com.zhiyicx.votesdk.listener.AudienceListener;
 import com.zhiyicx.votesdk.listener.PresenterListener;
 import com.zhiyicx.votesdk.policy.AudiencePolicy;
@@ -61,8 +61,9 @@ public class VoteManager {
      * 创建投票
      */
     public void createVote(String title, Map<String, String> options, int time) {
-        if (null == options || options.size() < 2)
+        if (null == options || options.size() < 2) {
             throw new NullPointerException("the options can't be null and option.size should be >= 2");
+        }
         if (mPresenterPolicy != null && null != options) {
             mPresenterPolicy.voteCreate(title, time, options);
         }
@@ -72,8 +73,9 @@ public class VoteManager {
      * 创建投票
      */
     public void createVote(String title, List<String> options, int time) {
-        if (null == options || options.size() < 2)
+        if (null == options || options.size() < 2) {
             throw new NullPointerException("the options can't be null and option.size should be >= 2");
+        }
         if (mPresenterPolicy != null && null != options) {
             mPresenterPolicy.voteCreate(title, time, options);
         }
@@ -83,9 +85,9 @@ public class VoteManager {
      * 查询最近一次的投票场景信息
      */
     public void queryLatestVote() {
-        if (TYPE_PRESENTER == type && mPresenterPolicy != null)
+        if (TYPE_PRESENTER == type && mPresenterPolicy != null) {
             mPresenterPolicy.voteQueryLatest();
-        else if (TYPE_AUDIENCE == type && mAudiencePolicy != null) {
+        } else if (TYPE_AUDIENCE == type && mAudiencePolicy != null) {
             mAudiencePolicy.voteQueryLatest(mPresenterUsid);
         }
     }
@@ -94,12 +96,14 @@ public class VoteManager {
      * 获得投票进行时最新数据
      */
     public void queryNewstVote(String vote_id) {
-        if (TextUtils.isEmpty(vote_id))
+        if (TextUtils.isEmpty(vote_id)) {
             throw new NullPointerException("the vote_id can't be null");
-        if (TYPE_PRESENTER == type && mPresenterPolicy != null)
+        }
+        if (TYPE_PRESENTER == type && mPresenterPolicy != null) {
             mPresenterPolicy.voteQueryNewst(vote_id);
-        else if (TYPE_AUDIENCE == type && mAudiencePolicy != null)
+        } else if (TYPE_AUDIENCE == type && mAudiencePolicy != null) {
             mAudiencePolicy.voteQueryNewst(vote_id);
+        }
     }
 
 
@@ -107,8 +111,9 @@ public class VoteManager {
      * 临时暂停投票
      */
     public void votePause(String vote_id) {
-        if (TextUtils.isEmpty(vote_id))
+        if (TextUtils.isEmpty(vote_id)) {
             throw new NullPointerException("the vote_id can't be null");
+        }
         mPresenterPolicy.votePause(vote_id);
     }
 
@@ -116,42 +121,51 @@ public class VoteManager {
      * 结束投票
      */
     public void voteStop(String vote_id) {
-        if (TextUtils.isEmpty(vote_id))
+        if (TextUtils.isEmpty(vote_id)) {
             throw new NullPointerException("the vote_id can't be null");
-        if (mPresenterPolicy != null)
+        }
+        if (mPresenterPolicy != null) {
             mPresenterPolicy.voteStop(vote_id);
+        }
     }
 
     /**
      * 恢复暂停的投票
      */
     public void voteRestart(String vote_id) {
-        if (TextUtils.isEmpty(vote_id))
+        if (TextUtils.isEmpty(vote_id)) {
             throw new NullPointerException("the vote_id can't be null");
-        if (mPresenterPolicy != null)
+        }
+        if (mPresenterPolicy != null) {
             mPresenterPolicy.voteRestart(vote_id);
+        }
     }
 
     /**
      * 重新设置投票时间
      */
     public void resetVoteTime(String vote_id, int time) {
-        if (TextUtils.isEmpty(vote_id))
+        if (TextUtils.isEmpty(vote_id)) {
             throw new NullPointerException("the vote_id can't be null");
-        if (time < 0)
+        }
+        if (time < 0) {
             throw new IllegalArgumentException("the time must be >= 0");
-        if (mPresenterPolicy != null)
+        }
+        if (mPresenterPolicy != null) {
             mPresenterPolicy.resetVoteTime(vote_id, time);
+        }
     }
 
     /**
      * 观众开始投票
      */
     public void sendPoll(String vote_id, String optionKey, String gift_code, int goldCount) {
-        if (TextUtils.isEmpty(vote_id) || TextUtils.isEmpty(optionKey) || goldCount <= 0)
+        if (TextUtils.isEmpty(vote_id) || TextUtils.isEmpty(optionKey) || goldCount <= 0) {
             throw new IllegalArgumentException("the vote_id or optionKey can't be null,or the votecount can't be <=0");
-        if (mAudiencePolicy != null)
+        }
+        if (mAudiencePolicy != null) {
             mAudiencePolicy.votePoll(vote_id, optionKey, gift_code, goldCount);
+        }
     }
 
     //收到消息
@@ -163,15 +177,17 @@ public class VoteManager {
                 case MESSAGE_VOTE_RESET:
                 case MESSAGE_VOTE_STOP:
                 case MESSAGE_VOTE_RESTART:
-                    if (mAudiencePolicy != null)
+                    if (mAudiencePolicy != null) {
                         mAudiencePolicy.receivePresenterMessage(msg);
+                    }
                     break;
                 case MESSAGE_VOTE_RECEIVED:
                     if (mAudiencePolicy != null) {
                         mAudiencePolicy.receiveAudienceMessage(msg);
                     }
-                    if (mPresenterPolicy != null)
+                    if (mPresenterPolicy != null) {
                         mPresenterPolicy.receiveVoteMessage(msg);
+                    }
                     break;
             }
         }
@@ -191,12 +207,14 @@ public class VoteManager {
                 case MESSAGE_VOTE_RESET:
                 case MESSAGE_VOTE_STOP:
                 case MESSAGE_VOTE_RESTART:
-                    if (mPresenterPolicy != null)
+                    if (mPresenterPolicy != null) {
                         mPresenterPolicy.receiveTimeOutMessage(msg);
+                    }
                     break;
                 case MESSAGE_VOTE_RECEIVED:
-                    if (mAudiencePolicy != null)
+                    if (mAudiencePolicy != null) {
                         mAudiencePolicy.receiveTimeOutMessage(msg);
+                    }
                     break;
             }
         }

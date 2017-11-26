@@ -1,7 +1,7 @@
 package com.zhiyicx.zhibosdk.manage.soupport;
 
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Message;
 import com.zhiyicx.zhibosdk.manage.listener.OnChatCreateListener;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibosdk.manage.listener;
 
-import com.zhiyicx.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Conversation;
 
 /**
  * Created by jungle on 16/8/22.

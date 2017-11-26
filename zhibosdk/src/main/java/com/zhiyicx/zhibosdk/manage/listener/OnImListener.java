@@ -1,7 +1,7 @@
 package com.zhiyicx.zhibosdk.manage.listener;
 
-import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
-import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.old.imsdk.entity.Message;
 
 /**
  * Created by jungle on 16/7/15.

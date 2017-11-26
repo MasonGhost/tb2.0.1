@@ -2,8 +2,7 @@ package com.zhiyicx.zhibolibrary.model.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.zhiyicx.imsdk.core.ImService;
-import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.old.imsdk.service.ImService;
 import com.zhiyicx.zhibolibrary.model.PublishCoreModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.service.LiveService;
@@ -11,7 +10,6 @@ import com.zhiyicx.zhibolibrary.model.api.service.ServiceManager;
 import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.ApiList;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
-import com.zhiyicx.zhibolibrary.model.entity.PermissionData;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
 import com.zhiyicx.zhibosdk.manage.ZBCloudApiClient;

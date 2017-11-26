@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zhiyicx.imsdk.entity.MessageType;
+import com.zhiyicx.old.imsdk.entity.MessageType;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.model.entity.UserMessage;
 import com.zhiyicx.zhibolibrary.ui.holder.ZBLBaseHolder;
@@ -153,9 +153,9 @@ public abstract class MuiltListAdapter<T> extends RecyclerView.Adapter<ZBLBaseHo
 
                 return TYPE_ITEM_TEXT;
             case MessageType.MESSAGE_TYPE_CUSTOM_ENAABLE:
-                if (((UserMessage) mInfos.get(position)).msg.ext.customID == MessageType.MESSAGE_CUSTOM_ID_FLLOW)
+                if (((UserMessage) mInfos.get(position)).msg.ext.customID == MessageType.MESSAGE_CUSTOM_ID_FLLOW) {
                     return TYPE_ITEM_FLLOW;
-                else {
+                } else {
                     return TYPE_ITEM_TIP;
                 }
             default:

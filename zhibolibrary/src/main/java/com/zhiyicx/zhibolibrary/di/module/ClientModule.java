@@ -1,7 +1,7 @@
 package com.zhiyicx.zhibolibrary.di.module;
 
-import com.zhiyicx.imsdk.core.autobahn.WebSocket;
-import com.zhiyicx.imsdk.core.autobahn.WebSocketConnection;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.WebSocket;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.WebSocketConnection;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.RequestIntercept;
 import com.zhiyicx.zhibolibrary.util.DataHelper;

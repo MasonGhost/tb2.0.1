@@ -4,17 +4,16 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.db.dao.MessageDao;
-import com.zhiyicx.imsdk.entity.AuthData;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageExt;
-import com.zhiyicx.imsdk.manage.ChatClient;
-import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
-import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
-import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.old.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.old.imsdk.db.dao.MessageDao;
+import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.old.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.MessageExt;
+import com.zhiyicx.old.imsdk.manage.ChatClient;
+import com.zhiyicx.old.imsdk.manage.listener.ImMsgReceveListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImStatusListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.zhibosdk.manage.listener.OnChatCreateListener;
 import com.zhiyicx.zhibosdk.manage.soupport.ChatSoupport;
 import com.zhiyicx.zhibosdk.model.api.ZBApi;
@@ -58,7 +57,7 @@ public class ZBChatClient implements ChatSoupport, ImMsgReceveListener, ImStatus
 
     private ZBChatClient(Context context) {
         this.mContext = context.getApplicationContext();
-        mChatClient = ChatClient.getInstance(mContext);
+        mChatClient = new ChatClient(mContext);
         mChatClient.setImStatusListener(this);
         mChatClient.setImMsgReceveListener(this);
         mChatClient.setImTimeoutListener(this);
@@ -145,12 +144,12 @@ public class ZBChatClient implements ChatSoupport, ImMsgReceveListener, ImStatus
 
     @Override
     public void sendTextMsg(String text, int cid, String usid, int msgid) {
-        mChatClient.sendTextMsg(text, cid, usid);
+        mChatClient.sendTextMsg(text, cid, usid,msgid);
     }
 
     @Override
     public void sendCustomMessage(boolean isEnable, Map jsonstr, int cid, String usid, int customId, int msgid) {
-        mChatClient.sendMessage(isEnable, jsonstr, cid, usid, customId);
+        mChatClient.sendMessage(isEnable, jsonstr, cid, usid, customId,msgid);
     }
 
     @Override
@@ -170,90 +169,92 @@ public class ZBChatClient implements ChatSoupport, ImMsgReceveListener, ImStatus
 
     @Override
     public void onMessageReceived(Message message) {
-        if (mImMsgReceveListener != null)
+        if (mImMsgReceveListener != null) {
             mImMsgReceveListener.onMessageReceived(message);
+        }
 
     }
 
     @Override
     public void onMessageACKReceived(Message message) {
-        if (mImMsgReceveListener != null)
+        if (mImMsgReceveListener != null) {
             mImMsgReceveListener.onMessageACKReceived(message);
+        }
 
     }
 
     @Override
     public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
-        if (mImMsgReceveListener != null)
+        if (mImMsgReceveListener != null) {
             mImMsgReceveListener.onConversationJoinACKReceived(chatRoomContainer);
+        }
 
     }
 
     @Override
     public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
-        if (mImMsgReceveListener != null)
+        if (mImMsgReceveListener != null) {
             mImMsgReceveListener.onConversationLeaveACKReceived(chatRoomContainer);
+        }
 
     }
 
     @Override
     public void onConversationMCACKReceived(List<Conversation> conversations) {
-        if (mImMsgReceveListener != null)
+        if (mImMsgReceveListener != null) {
             mImMsgReceveListener.onConversationMCACKReceived(conversations);
-    }
-
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-    @Override
-    public void onAuthSuccess(AuthData authData) {
-
+        }
     }
 
     @Override
     public void onConnected() {
-        if (mImStatusListener != null)
+        if (mImStatusListener != null) {
             mImStatusListener.onConnected();
+        }
 
     }
 
     @Override
     public void onDisconnect(int code, String reason) {
-        if (mImStatusListener != null)
+        if (mImStatusListener != null) {
             mImStatusListener.onDisconnect(code, reason);
+        }
     }
 
     @Override
     public void onError(Exception error) {
-        if (mImStatusListener != null)
+        if (mImStatusListener != null) {
             mImStatusListener.onError(error);
+        }
     }
 
     @Override
     public void onMessageTimeout(Message message) {
-        if (mImTimeoutListener != null)
+        if (mImTimeoutListener != null) {
             mImTimeoutListener.onMessageTimeout(message);
+        }
     }
 
     @Override
     public void onConversationJoinTimeout(int roomId) {
-        if (mImTimeoutListener != null)
+        if (mImTimeoutListener != null) {
             mImTimeoutListener.onConversationJoinTimeout(roomId);
+        }
     }
 
     @Override
     public void onConversationLeaveTimeout(int roomId) {
-        if (mImTimeoutListener != null)
+        if (mImTimeoutListener != null) {
             mImTimeoutListener.onConversationLeaveTimeout(roomId);
+        }
     }
 
     @Override
     public void onConversationMcTimeout(List<Integer> roomIds) {
 
-        if (mImTimeoutListener != null)
+        if (mImTimeoutListener != null) {
             mImTimeoutListener.onConversationMcTimeout(roomIds);
+        }
     }
 
     private List<Conversation> findConversations(int page) {
@@ -298,20 +299,23 @@ public class ZBChatClient implements ChatSoupport, ImMsgReceveListener, ImStatus
                             l.onSuccess(conversation);
                         }
                     } else {
-                        if (l != null)
+                        if (l != null) {
                             l.onFail(jsonObject.get("code").toString(), jsonObject.get("message").toString());
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if (l != null)
+                    if (l != null) {
                         l.onError(e);
+                    }
                 }
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                if (l != null)
+                if (l != null) {
                     l.onError(throwable);
+                }
             }
         });
     }
@@ -341,21 +345,24 @@ public class ZBChatClient implements ChatSoupport, ImMsgReceveListener, ImStatus
                         }
 
                     } else {
-                        if (l != null)
+                        if (l != null) {
                             l.onFail(jsonObject.get("code").toString(), jsonObject.get("message").toString());
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    if (l != null)
+                    if (l != null) {
                         l.onError(e);
+                    }
                 }
 
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                if (l != null)
+                if (l != null) {
                     l.onError(throwable);
+                }
             }
         });
     }

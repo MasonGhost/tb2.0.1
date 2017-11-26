@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibosdk.manage.soupport;
 
-import com.zhiyicx.imsdk.entity.MessageExt;
+import com.zhiyicx.old.imsdk.entity.MessageExt;
 
 import java.util.Map;
 

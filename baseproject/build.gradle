@@ -92,7 +92,6 @@ dependencies {
     annotationProcessor dataDependences.daggerCompiler
     // Project
     compile project(':common')
-    compile project(':imsdk')
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
     compile project(':pickerview')

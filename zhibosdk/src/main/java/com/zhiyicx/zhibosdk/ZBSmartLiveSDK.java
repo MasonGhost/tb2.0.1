@@ -3,7 +3,7 @@ package com.zhiyicx.zhibosdk;
 import android.app.Application;
 
 import com.qiniu.pili.droid.streaming.StreamingEnv;
-import com.zhiyicx.imsdk.manage.ZBIMSDK;
+import com.zhiyicx.old.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.zhibosdk.di.component.ClientComponent;
 import com.zhiyicx.zhibosdk.di.component.DaggerClientComponent;
 import com.zhiyicx.zhibosdk.di.module.ClientModule;

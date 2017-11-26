@@ -1,6 +1,6 @@
 package com.zhiyicx.zhibosdk.utils;
 
-import com.zhiyicx.imsdk.utils.ZipHelper;
+import com.zhiyicx.old.imsdk.utils.ZipHelper;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

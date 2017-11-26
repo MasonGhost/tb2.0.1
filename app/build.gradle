@@ -212,4 +212,5 @@ dependencies {
     compile dataDependences.flowlayout
     //    compile dataDependences.contacts
     compile dataDependences.update
+    compile project(':imsdk')
 }

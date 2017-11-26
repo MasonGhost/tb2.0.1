@@ -2,23 +2,21 @@ package com.zhiyicx.zhibosdk.manage;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.zhiyicx.imsdk.core.ErroCode;
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
-import com.zhiyicx.imsdk.entity.AuthData;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
-import com.zhiyicx.imsdk.entity.Conversation;
-import com.zhiyicx.imsdk.entity.MessageType;
-import com.zhiyicx.imsdk.manage.ChatRoomClient;
-import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
-import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
-import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
-import com.zhiyicx.imsdk.service.SocketService;
+import com.zhiyicx.old.imsdk.db.dao.ConversationDao;
+import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.old.imsdk.entity.Conversation;
+import com.zhiyicx.old.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.MessageType;
+import com.zhiyicx.old.imsdk.manage.ChatRoomClient;
+import com.zhiyicx.old.imsdk.manage.listener.ImMsgReceveListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImStatusListener;
+import com.zhiyicx.old.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.old.imsdk.service.SocketService;
 import com.zhiyicx.zhibosdk.ZBSmartLiveSDK;
 import com.zhiyicx.zhibosdk.di.component.DaggerZBPlayClientComponent;
 import com.zhiyicx.zhibosdk.di.module.ZBPlayModule;
@@ -180,8 +178,9 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
 
     private void initReconnectHandler() {
         mHandler = new Handler(mContext.getMainLooper()) {
+
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(android.os.Message msg) {
 
                 super.handleMessage(msg);
                 switch (msg.what) {
@@ -713,7 +712,7 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     }
 
     @Override
-    public void sendMessage(com.zhiyicx.imsdk.entity.Message message) {
+    public void sendMessage(Message message) {
         if (mChatRoomClient != null)
             mChatRoomClient.sendMessage(message);
     }
@@ -732,7 +731,7 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     }
 
     @Override
-    public void onMessageReceived(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageReceived(Message message) {
         if (message.cid != mImInfo.cid) return;//丢去不是当前房间的消息
 
 
@@ -790,20 +789,20 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     }
 
     @Override
-    public void onMessageACKReceived(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageACKReceived(Message message) {
 
         switch (message.err) {
             /**
              * 成功
              */
-            case ErroCode.SUCCESS_CODE:
+            case SocketService.SUCCESS_CODE:
                 if (mOnImListener == null) return;
                 mOnImListener.onMessageACK(message);
                 break;
             /**
              * 被禁言
              */
-            case ErroCode.CHATROOM_BANNED_WORDS:
+            case SocketService.CHATROOM_BANNED_WORDS:
                 // TODO: 16/5/30 被禁言后的操作
                 if (mOnImListener == null) return;
                 mOnImListener.onBanned(message.expire);
@@ -811,8 +810,8 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
             /**
              * 消息发送失败重新加入聊天室
              */
-            case ErroCode.CHATROOM_SEND_MESSAGE_FAILED:
-            case ErroCode.CHATROOM_NOT_JOIN_ROOM:
+            case SocketService.CHATROOM_SEND_MESSAGE_FAILED:
+            case SocketService.CHATROOM_NOT_JOIN_ROOM:
                 if (mChatRoomClient != null && mImInfo.cid != 0)
                     mChatRoomClient.joinRoom();
             default:
@@ -827,7 +826,7 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
         if (chatRoomContainer.mChatRooms.get(0).cid != mImInfo.cid)
             return;//丢去不是当前房间的消息
-        if (chatRoomContainer.err == ErroCode.SUCCESS_CODE) {//没有发生错误
+        if (chatRoomContainer.err == SocketService.SUCCESS_CODE) {//没有发生错误
 //            mRootView.joinedChatroom(chatRoomContainer);
             if (chatRoomContainer.mChatRooms.get(0).expire != -1) {//被禁言
                 if (mOnImListener != null)
@@ -844,7 +843,7 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
         if (chatRoomContainer.mChatRooms.get(0).cid != mImInfo.cid)
             return;//丢去不是当前房间的消息
-        if (chatRoomContainer.err == ErroCode.SUCCESS_CODE) {//没有发生错误
+        if (chatRoomContainer.err == SocketService.SUCCESS_CODE) {//没有发生错误
 //            mRootView.leavedChatroom(chatRoomContainer);
 
         }
@@ -857,16 +856,6 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     public void onConversationMCACKReceived(List<Conversation> conversations) {
         if (conversations.get(0).getCid() != mImInfo.cid)
             return;//丢去不是当前房间的消息
-
-    }
-
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-    @Override
-    public void onAuthSuccess(AuthData authData) {
 
     }
 
@@ -892,7 +881,7 @@ public class ZBPlayClient implements PlayClientSupport, ImMsgReceveListener, ImS
     }
 
     @Override
-    public void onMessageTimeout(com.zhiyicx.imsdk.entity.Message message) {
+    public void onMessageTimeout(com.zhiyicx.old.imsdk.entity.Message message) {
         if (mOnIMMessageTimeOutListener != null)
             mOnIMMessageTimeOutListener.onMessageTimeout(message);
     }

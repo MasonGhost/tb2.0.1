@@ -37,14 +37,14 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.jess.camerafilters.base.FilterManager;
 import com.jess.camerafilters.entity.FilterInfo;
-import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
-import com.zhiyicx.imsdk.entity.ChatRoomContainer;
-import com.zhiyicx.imsdk.entity.ChatRoomDataCount;
-import com.zhiyicx.imsdk.entity.GiftMessage;
-import com.zhiyicx.imsdk.entity.Message;
-import com.zhiyicx.imsdk.entity.MessageExt;
-import com.zhiyicx.imsdk.entity.MessageType;
-import com.zhiyicx.imsdk.entity.Zan;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.DataDealUitls;
+import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
+import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
+import com.zhiyicx.old.imsdk.entity.GiftMessage;
+import com.zhiyicx.old.imsdk.entity.Message;
+import com.zhiyicx.old.imsdk.entity.MessageExt;
+import com.zhiyicx.old.imsdk.entity.MessageType;
+import com.zhiyicx.old.imsdk.entity.Zan;
 import com.zhiyicx.votesdk.entity.OptionDetail;
 import com.zhiyicx.votesdk.entity.VoteInfo;
 import com.zhiyicx.votesdk.entity.VoteOption;
@@ -685,10 +685,12 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         if (currentView == PUBLISH_VIEW) {//主播直播页面
 
-            if (mGiftButton != null)
+            if (mGiftButton != null) {
                 mGiftButton.setVisibility(View.GONE);
-            if (mGiftSendButton != null)
+            }
+            if (mGiftSendButton != null) {
                 mGiftSendButton.setImageResource(R.mipmap.ico_live_share);
+            }
 
             rlPublishCorePresenterInfo.setVisibility(View.GONE);
             ivCamearChange.setVisibility(View.VISIBLE);
@@ -718,8 +720,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 });
             }
 
-            if (mPollIb != null)
+            if (mPollIb != null) {
                 mPollIb.setVisibility(View.VISIBLE);
+            }
             if (mFilterNameTv != null) {
                 AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(AutoRelativeLayout.LayoutParams.WRAP_CONTENT, AutoRelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.addRule(AutoRelativeLayout.CENTER_HORIZONTAL);
@@ -798,8 +801,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     flag = false;
                     return true;
                 }
-                else
+                else {
                     return false;
+                }
             }
         });
 
@@ -829,13 +833,15 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * 显示主播头像和名字
      */
     private void showPresenterInfo() {
-        if (presenterUser.avatar != null)
+        if (presenterUser.avatar != null) {
             UiUtils.glideDisplayWithTrasform(presenterUser.avatar.origin, ivPresenterHeadpic, new GlideCircleTrasform(UiUtils.getContext()));
+        }
         tvPresenterName.setText(presenterUser.uname);
-        if (!TextUtils.isEmpty(presenterUser.location))
+        if (!TextUtils.isEmpty(presenterUser.location)) {
             tvPresenterEnglishname.setText(presenterUser.location);
-        else
+        } else {
             tvPresenterEnglishname.setText("火星");
+        }
         ivPresenteVerified.setVisibility(presenterUser.is_verified == 1 ? View.VISIBLE : View.GONE);
 
     }
@@ -870,7 +876,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * 设置输入法右下角按钮响应事件
      */
     private void setEditorActiongListener() {
-        if (mEditText != null)
+        if (mEditText != null) {
             mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int i, KeyEvent event) {
@@ -883,6 +889,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     return false;
                 }
             });
+        }
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -896,10 +903,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s))
+                if (TextUtils.isEmpty(s)) {
                     mSendBT.setEnabled(false);
-                else
+                } else {
                     mSendBT.setEnabled(true);
+                }
             }
         });
     }
@@ -929,7 +937,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (gift == null) return;
+            if (gift == null) {
+                return;
+            }
             if (llGitf1.getVisibility() != View.VISIBLE) {
                 UiUtils.glideDisplayWithTrasform(userInfo.avatar.getOrigin(), ivHeadpic1, new GlideCircleTrasform(UiUtils.getContext()));
 
@@ -947,15 +957,16 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 mEndStreamJson.data.gold += gift.gold;
                 Anim.showGiftAnimate(llGitf1, tvVoteKey1, getActivity());
                 llGitf1.setVisibility(View.VISIBLE);
-                if (!TextUtils.isEmpty(DataHelper.getStringSF(gift.image, getActivity().getApplicationContext())))
+                if (!TextUtils.isEmpty(DataHelper.getStringSF(gift.image, getActivity().getApplicationContext()))) {
                     try {
                         ivGift1.setImageBitmap(UiUtils.getLoacalBitmap(gift.image));
                     } catch (Exception e) {
                         e.printStackTrace();
                         UiUtils.glideWrap(gift.image).into(ivGift1);
                     }
-                else
+                } else {
                     UiUtils.glideWrap(gift.image).into(ivGift1);
+                }
 
                 if (isVote &&  null != detail) {
                     tvVoteKey1.setVisibility(View.VISIBLE);
@@ -1015,15 +1026,16 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 mEndStreamJson.data.gold += gift.gold;
                 Anim.showGiftAnimate(llGitf3, tvVoteKey3, getActivity());
                 llGitf3.setVisibility(View.VISIBLE);
-                if (!TextUtils.isEmpty(DataHelper.getStringSF(gift.image, getActivity().getApplicationContext())))
+                if (!TextUtils.isEmpty(DataHelper.getStringSF(gift.image, getActivity().getApplicationContext()))) {
                     try {
                         ivGift3.setImageBitmap(UiUtils.getLoacalBitmap(gift.image));
                     } catch (Exception e) {
                         e.printStackTrace();
                         UiUtils.glideWrap(gift.image).into(ivGift3);
                     }
-                else
+                } else {
                     UiUtils.glideWrap(gift.image).into(ivGift3);
+                }
                 if (isVote &&  null != detail) {
                     tvVoteKey3.setVisibility(View.VISIBLE);
                     tvVoteKey3.setText("投" + detail.getVote_key());
@@ -1182,8 +1194,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     @Override
     public void updatedGold() {
-        if (vpd != null)
+        if (vpd != null) {
             vpd.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
+        }
     }
 
     @Override
@@ -1312,8 +1325,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
     @Override
     public void dimissImDisablePop() {
-        if (BottomPop != null && BottomPop.isShowing())
+        if (BottomPop != null && BottomPop.isShowing()) {
             BottomPop.dismiss();
+        }
     }
 
     @Override
@@ -1336,7 +1350,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     }
 
     private void disableMsg() {
-        if (isBanneded) return;
+        if (isBanneded) {
+            return;
+        }
         hidekeyboard();//隐藏软键盘
         ibPublishCoreKeyboard.setEnabled(false);
         showDisableSendMsgDialog();
@@ -1815,8 +1831,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         mHandler = null;
         CustomPopupWindow.dismissPop(BottomPop);
         DeviceUtils.fixInputMethodManagerLeak(getActivity().getApplicationContext());
-        if (mLoading != null && mLoading.isShowing())
+        if (mLoading != null && mLoading.isShowing()) {
             mLoading.dismiss();
+        }
     }
 
     @Override
@@ -2019,8 +2036,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     lastposiotn = -1;
 
                 }
-                if (null != mVoteOptionPop)
+                if (null != mVoteOptionPop) {
                     mVoteOptionPop.show(mRootView);
+                }
             }
         });
 
@@ -2085,8 +2103,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             Log.v("taglei", "fragment-- OnPresenterListener receiveAudienceVote" + String.valueOf(info));
             message.is_del = true;
             mEndStreamJson.data.gold += detail.getGold();
-            if (onView != null)
+            if (onView != null) {
                 onView.refreshOptionItemValue(info);
+            }
             if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
                 mMessages.add(message);
             }
@@ -2176,8 +2195,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             }
 
 
-            if (onView != null)
+            if (onView != null) {
                 onView.refreshOptionItemValue(info);
+            }
         }
 
         @Override

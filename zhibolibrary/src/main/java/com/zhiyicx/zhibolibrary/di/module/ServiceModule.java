@@ -1,7 +1,7 @@
 package com.zhiyicx.zhibolibrary.di.module;
 
-import com.zhiyicx.imsdk.core.ImService;
-import com.zhiyicx.imsdk.core.autobahn.WebSocket;
+import com.zhiyicx.old.imsdk.de.tavendo.autobahn.WebSocket;
+import com.zhiyicx.old.imsdk.service.ImService;
 import com.zhiyicx.zhibolibrary.model.api.service.CommonService;
 import com.zhiyicx.zhibolibrary.model.api.service.GoldService;
 import com.zhiyicx.zhibolibrary.model.api.service.LiveService;
