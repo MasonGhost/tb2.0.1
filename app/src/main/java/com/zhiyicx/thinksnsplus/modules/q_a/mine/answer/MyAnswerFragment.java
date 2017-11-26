@@ -54,7 +54,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        MyAnswerAdapter answerAdapter = new MyAnswerAdapter(getContext(), mListDatas, mAnswerPresenter);
+        MyAnswerAdapterV2 answerAdapter = new MyAnswerAdapterV2(getContext(), mListDatas, mAnswerPresenter);
         answerAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -68,6 +68,8 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
                     startActivity(intent);
                 }
             }
+
+
 
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {

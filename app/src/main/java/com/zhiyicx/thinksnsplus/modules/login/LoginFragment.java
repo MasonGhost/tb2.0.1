@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.login;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -102,6 +103,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private AccountAdapter mAccountAdapter;
 
     UmengSharePolicyImpl mUmengSharePolicy;
+
+    AnimationDrawable mLoginAnimationDrawable;
 
     public static LoginFragment newInstance(boolean isTourist) {
         LoginFragment fragment = new LoginFragment();
@@ -299,8 +302,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void setLoginState(boolean loginState) {
 
-        mBtLoginLogin.handleAnimation(false);
         if (loginState) {
+            mLoginAnimationDrawable = mBtLoginLogin.getAnimationDrawable();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
             if (mIsToourist) {
                 getActivity().setResult(RESULT_OK);
@@ -308,10 +311,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             } else {
                 goHome();
             }
-        }else {
+        } else {
+            // 失败立马停止，成功的话 ondestroy 中处理
+            mBtLoginLogin.handleAnimation(false);
             mToolbarRight.setEnabled(true);
             mBtLoginLogin.setEnabled(true);
             mFlPlaceholder.setVisibility(View.GONE);
+            mBtLoginLogin.setEnabled(true);
         }
     }
 
@@ -483,4 +489,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         startActivity(intent);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mLoginAnimationDrawable != null && mLoginAnimationDrawable.isRunning()) {
+            mLoginAnimationDrawable.stop();
+        }
+    }
 }

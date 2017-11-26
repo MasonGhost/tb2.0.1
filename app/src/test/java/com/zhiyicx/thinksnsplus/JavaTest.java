@@ -1506,6 +1506,41 @@ public class JavaTest {
         Assert.assertTrue(res < 0);
     }
 
+
+    /**
+     * 测试 List 删除
+     */
+    @Test
+    public void testListRemove() {
+
+        List<Integer> datas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            datas.add(i);
+        }
+//  错误的
+//        int size=datas.size();
+//        for (int i = 0; i < size; i++) {
+//            if (datas.get(i) % 3 == 0) {
+//                datas.remove(datas.get(i));
+//            }
+//        }
+//
+
+        for (int i = 0; i < datas.size(); i++) {
+            if (datas.get(i) % 3 == 0) {
+                datas.remove(datas.get(i));
+            }
+        }
+        for (Integer data : datas) {
+            System.out.println("data = " + data);
+        }
+//        错误的
+//        for (Integer data : datas) {
+//            if(data%3==0){
+//                datas.remove(data);
+//            }
+//        }
+    }
     /**
      * 正则替换 markdown <>
      */

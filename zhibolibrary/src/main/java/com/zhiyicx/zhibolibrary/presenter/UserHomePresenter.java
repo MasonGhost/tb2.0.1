@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.UserHomeModel;
@@ -42,15 +43,13 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     @Inject
     public UserHomePresenter(UserHomeModel model, UserHomeView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl(rootView.getCurrentActivity());
-        mSharePolicy.setOnShareCallbackListener(this);
     }
 
     public void follow(String action) {
         mUserInfo = mRootView.getUserInfo();
         //设置关注按钮状态
         mfollowSubscription = mModel.followUser(action, mUserInfo.user.usid
-               )
+        )
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -69,8 +68,7 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
                     public void call(BaseJson<FollowInfo> json) {
                         if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.setFollow(isFollow(json.data.is_follow));//设置关注按钮状态
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(json.message);
                         }
                     }
@@ -90,7 +88,7 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
     public void queryFollow() {
         mUserInfo = mRootView.getUserInfo();
         mQuerySubscribe = mModel.followUser(UserService.STATUS_FOLLOW_QUERY + "", mUserInfo.user.usid
-               )
+        )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<FollowInfo>>() {
@@ -98,8 +96,7 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
                     public void call(BaseJson<FollowInfo> json) {
                         if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.setFollow(isFollow(json.data.is_follow));
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(json.message);
                         }
                     }
@@ -148,6 +145,8 @@ public class UserHomePresenter extends BasePresenter<UserHomeModel, UserHomeView
      * 分享
      */
     public void showshare(UserInfo presenterUser, Activity context) {
+        this.mSharePolicy = new UmengSharePolicyImpl(context);
+        mSharePolicy.setOnShareCallbackListener(this);
         mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
         mSharePolicy.showShare(context);
     }

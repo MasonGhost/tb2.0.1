@@ -258,16 +258,6 @@ public class SearchListHolder extends ZBLBaseHolder<SearchResult> implements Use
         return isFollow;
     }
 
-    @Override
-    public Activity getCurrentActivity() {
-        if (mIconIV != null && mIconIV.getContext() instanceof Activity) {
-            return (Activity) mIconIV.getContext();
-
-        } else {
-            return null;
-        }
-    }
-
 
     @Override
     public void showLoading() {

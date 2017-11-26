@@ -228,7 +228,7 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_zhibo"
                 app:leftText="@string/mine_live"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
             <!--排行榜-->

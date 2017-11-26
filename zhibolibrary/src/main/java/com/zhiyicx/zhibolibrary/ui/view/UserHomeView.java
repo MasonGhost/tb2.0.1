@@ -35,6 +35,4 @@ public interface UserHomeView extends BaseView {
      */
     boolean getFollow();
 
-
-    Activity getCurrentActivity();
 }

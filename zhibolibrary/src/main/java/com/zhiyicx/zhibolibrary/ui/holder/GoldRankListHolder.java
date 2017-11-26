@@ -139,16 +139,6 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
         return isFollow;
     }
 
-    @Override
-    public Activity getCurrentActivity() {
-        if (ivRankGoldItemIcon != null && ivRankGoldItemIcon.getContext() instanceof Activity) {
-            return (Activity) ivRankGoldItemIcon.getContext();
-
-        } else {
-            return null;
-        }
-    }
-
 
     @Override
     public void onClick(View v) {
