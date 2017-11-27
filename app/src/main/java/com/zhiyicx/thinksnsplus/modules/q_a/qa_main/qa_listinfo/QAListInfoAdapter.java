@@ -151,7 +151,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             contentTextView.setOnClickListener(v -> contentView.performClick());
             content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
             makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);
-            ConvertUtils.stringLinkConvert(contentTextView, setLinks(infoBean.getAnswer().getBody(), content));
+            ConvertUtils.stringLinkConvert(contentTextView, setLinks(infoBean.getAnswer().getBody(), content),false);
         }
 
     }
