@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 
 import java.util.ArrayList;
@@ -60,12 +61,18 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     }
 
     @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        mTitle.add("test");
-        mFragmentList.add(CircleListFragment.newInstance(RECOMMEND_INFO));
+    public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
+        for (CircleTypeBean circleTypeBean:circleTypeList){
+            mTitle.add(circleTypeBean.getName());
+            mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId()+""));
+        }
         mTsvToolbar.notifyDataSetChanged(mTitle);
         tsViewPagerAdapter.bindData(mFragmentList,mTitle.toArray(new String[]{}));
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
     }
 
     @Override
@@ -82,6 +89,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar = (TabSelectView) rootView.findViewById(com.zhiyicx.baseproject.R.id.tsv_toolbar);
         mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
         mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
@@ -96,6 +104,6 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected void initData() {
-
+        mPresenter.getCategroiesList(0,0);
     }
 }

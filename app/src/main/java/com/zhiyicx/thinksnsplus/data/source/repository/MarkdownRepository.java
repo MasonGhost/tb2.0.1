@@ -5,7 +5,6 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownContract;
 
 import javax.inject.Inject;
@@ -16,16 +15,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/08/07/9:56
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownRepository implements MarkdownContract.Repository {
+public class MarkdownRepository extends BaseCircleRepository implements MarkdownContract.Repository {
     private InfoMainClient mInfoMainClient;
 
     @Inject
     public MarkdownRepository(ServiceManager serviceManager) {
+        super(serviceManager);
         mInfoMainClient = serviceManager.getInfoMainClient();
     }
 

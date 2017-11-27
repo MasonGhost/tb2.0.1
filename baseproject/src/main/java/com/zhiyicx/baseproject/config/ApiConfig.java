@@ -438,6 +438,12 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}";// 删除圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d";// 删除圈子动态
 
+    // 2017年11月27日16:51:15 圈子在这里翻开了崭新的篇章
+    /**
+     * 获取圈子分类
+     */
+    public static final String APP_PATH_GET_CIRCLE_CATEGROIES = "api/" + API_VERSION_2 + "/plus-group/categories";
+
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
