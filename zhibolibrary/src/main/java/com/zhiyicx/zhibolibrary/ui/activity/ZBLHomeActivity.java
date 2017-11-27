@@ -44,21 +44,6 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
 
 
     NoPullViewPager mViewPager;
-    ImageView mLiveIV;
-    ImageView mReplayIV;
-    ImageView mMessageIV;
-
-    ImageView mMyIV;
-    TextView mLiveTV;
-
-    TextView mReplayTV;
-
-    TextView mMessageTV;
-
-    TextView mMyTV;
-
-    View tabHome;
-
 
     @Inject
     HomePresenter mPresenter;
@@ -77,29 +62,12 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     protected void initView() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         setContentView(R.layout.zb_activity_home);
-
         findView();
-
-
     }
 
     private void findView() {
         mViewPager = (NoPullViewPager) findViewById(R.id.vp_home);
-
-        mLiveIV = (ImageView) findViewById(R.id.iv_home_live);
-        findViewById(R.id.bt_home_live).setOnClickListener(this);
-        mReplayIV = (ImageView) findViewById(R.id.iv_home_replay);
-        findViewById(R.id.bt_home_replay).setOnClickListener(this);
-        mMessageIV = (ImageView) findViewById(R.id.iv_home_message);
-        findViewById(R.id.bt_home_message).setOnClickListener(this);
-        mMyIV = (ImageView) findViewById(R.id.iv_home_my);
-        findViewById(R.id.bt_home_my).setOnClickListener(this);
         findViewById(R.id.bt_home_add).setOnClickListener(this);
-        mLiveTV = (TextView) findViewById(R.id.tv_home_live);
-        mReplayTV = (TextView) findViewById(R.id.tv_home_replay);
-        mMessageTV = (TextView) findViewById(R.id.tv_home_message);
-        mMyTV = (TextView) findViewById(R.id.tv_home_my);
-        tabHome = findViewById(R.id.ll_home);
     }
 
 
@@ -167,14 +135,11 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
         if (mFragmentList == null) {
             return;
         }
-        if (v.getId() == R.id.bt_home_live) {//直播列表页面
-            mFragmentList.get(0).setData();//加载当前页，并跳转当当前页
-            mViewPager.setCurrentItem(0, false);
-        } else if (v.getId() == R.id.bt_home_replay) {
-            //回放页面
-            mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
-            mViewPager.setCurrentItem(1, false);
-        } else if (v.getId() == R.id.bt_home_add) {
+//        if (v.getId() == R.id.bt_home_live) {//直播列表页面
+//            mFragmentList.get(0).setData();//加载当前页，并跳转当当前页
+//            mViewPager.setCurrentItem(0, false);
+//        } else
+        if (v.getId() == R.id.bt_home_add) {
             //初始化直播间
             // 添加相机权限设置
             mRxPermissions
@@ -192,13 +157,6 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
                         }
                     });
 
-        } else if (v.getId() == R.id.bt_home_message) {
-//消息页面
-            mFragmentList.get(2).setData();//加载当前页，并跳转当当前页
-            mViewPager.setCurrentItem(2, false);
-        } else if (v.getId() == R.id.bt_home_my) {
-            startActivity(new Intent(UiUtils.getContext(), ZBLSearchActivity.class));//跳转到搜索页面
-            overridePendingTransition(R.anim.vote_slide_in_from_left, R.anim.animate_null);//动画
         }
 
 
@@ -263,23 +221,12 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     @Override
     public void onPageSelected(int position) {
         hideChildFilter();
-        changeNavigationButton(position);//改变导航栏按钮的状态
     }
 
-    private void changeNavigationButton(int position) {
-        mLiveIV.setImageResource(position == 0 ? R.mipmap.ic_bottom_live_blue : R.mipmap.ic_bottom_live_grey);
-        mLiveTV.setTextColor(position == 0 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
-        mReplayIV.setImageResource(position == 1 ? R.mipmap.ic_bottom_replay_blue : R.mipmap.ic_bottom_replay_grey);
-        mReplayTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
-        mMessageIV.setImageResource(position == 2 ? R.mipmap.ic_bottom_chat_blue : R.mipmap.ic_bottom_chat_grey);
-        mMessageTV.setTextColor(position == 2 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("white"));
-//        mMyIV.setImageResource(position == 1 ? R.mipmap.ico_bottom_myself_blue : R.mipmap.ico_bottom_myself_grey);
-//        mMyTV.setTextColor(position == 1 ? UiUtils.getColor("color_blue_button") : UiUtils.getColor("gray"));
-    }
 
     private void hideChildFilter() {
         mFragmentList.get(0).setData(true);//隐藏筛选页面
-        mFragmentList.get(1).setData(true);
+//        mFragmentList.get(1).setData(true);
     }
 
     @Override

@@ -43,7 +43,7 @@
     <dimen name="divider_height">0.5dp</dimen>
     <dimen name="button_big_height">96px</dimen>
     <dimen name="button_big_width">700px</dimen>
-    <dimen name="toolview_height">96px</dimen>
+    <dimen name="toolview_height">98px</dimen>
     <dimen name="toolview_and_statubar_height">146px</dimen>
     <dimen name="loading_height">50px</dimen>
     <dimen name="back_height">35px</dimen>

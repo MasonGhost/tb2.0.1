@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.presenter.LivePresenter;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLSearchActivity;
 import com.zhiyicx.zhibolibrary.ui.adapter.AdapterViewPager;
 import com.zhiyicx.zhibolibrary.ui.common.ZBLBaseFragment;
 import com.zhiyicx.zhibolibrary.ui.view.LiveView;
@@ -66,6 +67,7 @@ public abstract class ZBLLiveFragment extends ZBLBaseFragment implements LiveVie
         mSubscribeTV.setOnClickListener(this);
         mNewTV = (TextView) mRootView.findViewById(R.id.tv_live_news_tab);
         mNewTV.setOnClickListener(this);
+        mRootView.findViewById(R.id.tv_live_back).setOnClickListener(this);
         mRootView.findViewById(R.id.tv_live_search).setOnClickListener(this);
         mFilterTV = (ImageView) mRootView.findViewById(R.id.tv_live_filter);
         mFilterTV.setOnClickListener(this);
@@ -122,8 +124,11 @@ public abstract class ZBLLiveFragment extends ZBLBaseFragment implements LiveVie
             //加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(2);
         }
-        else if (v.getId() == R.id.tv_live_search) {
+        else if (v.getId() == R.id.tv_live_back) {
             getActivity().onBackPressed();
+        }else if (v.getId() == R.id.tv_live_search) {
+            startActivity(new Intent(UiUtils.getContext(), ZBLSearchActivity.class));//跳转到搜索页面
+            getActivity().overridePendingTransition(R.anim.vote_slide_in_from_left, R.anim.animate_null);//动画
         }
         else if (v.getId() == R.id.tv_live_filter) {
             if (!mLiveFragmentList.get(mViewPager.getCurrentItem()).isFilter()) {

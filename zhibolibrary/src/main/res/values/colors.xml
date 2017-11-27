@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="bbblack">#bb000000</color>
-    <color name="title_blue">#0096E6</color>
+    <color name="title_blue">@color/themeColor</color>
     <color name="test">#fb667d</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -68,13 +68,13 @@
     <color name="slider_color_normal">#ffa6a6a6</color>
     <color name="slider_color">#ff969696</color>
     <color name="name">#64d7fe</color>
-    <color name="color_loading">#1691d9</color>
+    <color name="color_loading">@color/themeColor</color>
     <color name="color_dot">#ea2000</color>
-    <color name="blue">#ff0f81d9</color>
-    <color name="tab_selected_text_color">@color/blue</color>
+    <color name="blue">@color/themeColor</color>
+    <color name="tab_selected_text_color">@color/themeColor</color>
     <dimen name="indicatorHeight">2dp</dimen>
     <!--选项卡游标颜色-->
-    <color name="tab_indicator_color">@color/blue</color>
+    <color name="tab_indicator_color">@color/themeColor</color>
     <!--选项卡游标高度-->
     <dimen name="tab_indicator_height">@dimen/indicatorHeight</dimen>
     <!--公共按钮高度-->
