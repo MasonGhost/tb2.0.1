@@ -75,6 +75,8 @@
     <!--#########################################      viewpager的tab切换相关      ################################-->
     <!--tab的间距,单位dp-->
     <integer name="tab_margin">20</integer>
+    <!--tab的间距,单位dp-->
+    <integer name="tab_right_margin">50</integer>
     <!--tab的指示器边缘和文字边缘的距离，单位dp-->
     <integer name="tab_padding">7</integer>
     <!--tab的指示器高度，单位dp-->

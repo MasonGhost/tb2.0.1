@@ -78,7 +78,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     ImageView mFragmentInfocontainerChange;
     @BindView(R.id.fragment_infocontainer_content)
     ViewPager mFragmentInfocontainerContent;
-    private TextView mTvRightTwo;
 
     public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
@@ -215,6 +214,20 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         return true;
     }
 
+    @Override
+    protected int setRightLeftImg() {
+        return R.mipmap.ico_search;
+    }
+
+    @Override
+    protected void setRightLeftClick() {
+        super.setRightLeftClick();
+        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+            return;
+        }
+        startActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
     @OnClick(R.id.fragment_infocontainer_change)
     public void onClick() {
         if (mPresenter.handleTouristControl()) {
@@ -249,27 +262,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setPresenter(InfoMainContract.InfoContainerPresenter infoContainerPresenter) {
         mPresenter = infoContainerPresenter;
-    }
-
-    @Override
-    protected int getToolBarLayoutId() {
-        return R.layout.toolbar_right_two_img;
-    }
-
-    @Override
-    protected void initDefaultToolBar(View toolBarContainer) {
-        super.initDefaultToolBar(toolBarContainer);
-        mTvRightTwo = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_two);
-        mTvRightTwo.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_search), null, null, null);
-        RxView.clicks(mTvRightTwo)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(aVoid -> {
-                    if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
-                        return;
-                    }
-                    startActivity(new Intent(getActivity(), SearchActivity.class));
-                });
     }
 
     private void initPopWindow() {

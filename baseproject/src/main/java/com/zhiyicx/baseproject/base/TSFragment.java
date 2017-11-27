@@ -713,7 +713,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected void setToolBarRightImage(int resImg) {
         mToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
-        mToolbarRightLeft.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), resImg), null);
     }
 
     protected void setToolBarRightLeftImage(int resImg) {

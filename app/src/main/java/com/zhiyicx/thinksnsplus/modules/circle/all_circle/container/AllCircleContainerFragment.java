@@ -1,8 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.View;
 
+import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 
@@ -19,7 +23,6 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         implements AllCircleContainerContract.View {
 
     private List<String> mTitle;
-    private List<Fragment> mFragments;
     public static final String RECOMMEND_INFO = "-1";
 
     @Override
@@ -57,18 +60,42 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     }
 
     @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mTitle.add("test");
+        mFragmentList.add(CircleListFragment.newInstance(RECOMMEND_INFO));
+        mTsvToolbar.notifyDataSetChanged(mTitle);
+        tsViewPagerAdapter.bindData(mFragmentList,mTitle.toArray(new String[]{}));
+    }
+
+    @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
-            mFragments = new ArrayList<>();
-            mFragments.add(CircleListFragment.newInstance(RECOMMEND_INFO));
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(CircleListFragment.newInstance(RECOMMEND_INFO));
         }
-        return mFragments;
+        return mFragmentList;
+    }
+
+    @Override
+    protected void initViewPager(View rootView) {
+        mTsvToolbar = (TabSelectView) rootView.findViewById(com.zhiyicx.baseproject.R.id.tsv_toolbar);
+        mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
+        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.showDivider(false);
+        mTsvToolbar.setIndicatorMatchWidth(true);
+        mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
+        mVpFragment.setOffscreenPageLimit(getOffsetPage());
+        tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
+        tsViewPagerAdapter.bindData(initFragments());
+        mVpFragment.setAdapter(tsViewPagerAdapter);
+        mTsvToolbar.setAdjustMode(isAdjustMode());
+        mTsvToolbar.initTabView(mVpFragment, initTitles());
+        mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
     }
 
     @Override
     protected void initData() {
-        mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow,R.color.white);
-        mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.setAdjustMode(false);
+
     }
 }
