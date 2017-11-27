@@ -26,11 +26,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.ERROR_CODE_ILLEGAL_TICKET;
+
 /**
  * Created by zhiyicx on 2016/3/16.
  */
 @ActivityScope
-public class  HomePresenter extends BasePresenter<HomeModel, HomeView> {
+public class HomePresenter extends BasePresenter<HomeModel, HomeView> {
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -61,7 +63,6 @@ public class  HomePresenter extends BasePresenter<HomeModel, HomeView> {
      * 初始化流信息
      */
     public void initStream() {
-
         ZBStreamingClient.checkStrem(new OncheckSteamStatusListener() {
             @Override
             public void onStartCheck() {
@@ -84,8 +85,13 @@ public class  HomePresenter extends BasePresenter<HomeModel, HomeView> {
 
             @Override
             public void onFial(String code, String message) {
-                mRootView.showMessage(message);
+                if (ERROR_CODE_ILLEGAL_TICKET.equals(code)) {
+                    mRootView.showMessage(UiUtils.getString(R.string.ticket_illegal_tip));
+                } else {
+                    mRootView.showMessage(message);
+                }
                 mRootView.hideLoading();
+
             }
 
             @Override

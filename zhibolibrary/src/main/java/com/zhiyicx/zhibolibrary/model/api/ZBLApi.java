@@ -21,7 +21,7 @@ public class ZBLApi {
     //域名
     public final static String BASE_URL = "http://custom.zhibocloud.cn";
     //数据分页参数
-    public static String VAR_PAGE = "p";
+    public static String VAR_PAGE = "page";
     public static ZBApiConfig sZBApiConfig;//礼物、搜索配置等
     public static StarExchangeList EXCHANGE_TYPE_LIST;//金币兑换配置
     public static final String STR_SHARE_NAME = "[uname]";
@@ -146,6 +146,13 @@ public class ZBLApi {
      * 获取配置
      */
     public static final String API_GET_CONFIG = "ZB_Config_Get";
+
+
+    /**
+     * 错误码
+     */
+
+    public static final String ERROR_CODE_ILLEGAL_TICKET = "10401";
 
 
 }

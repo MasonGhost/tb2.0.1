@@ -12,7 +12,7 @@ import android.util.Log;
 public class LogUtils {
     private static final String TAG = "ZBIMSDK";
 
-    private final static boolean isLog = false;
+    private final static boolean isLog = true;
 
     public static void debugInfo(String tag, String msg) {
         if (!isLog || TextUtils.isEmpty(msg)) return;

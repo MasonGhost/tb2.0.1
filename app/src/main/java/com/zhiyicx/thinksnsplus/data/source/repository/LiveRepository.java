@@ -49,14 +49,11 @@ public class LiveRepository implements ILiveRepository {
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        if(s.startsWith("\"")){
-                            s=s.replace("\"","");
-                        }
-                        return s;
+                .map(s -> {
+                    if(s.startsWith("\"")){
+                        s=s.replace("\"","");
                     }
+                    return s;
                 });
     }
 }

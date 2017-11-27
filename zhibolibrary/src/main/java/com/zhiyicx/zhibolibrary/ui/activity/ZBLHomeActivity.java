@@ -175,19 +175,16 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
             mFragmentList.get(1).setData();//加载当前页，并跳转当当前页
             mViewPager.setCurrentItem(1, false);
         } else if (v.getId() == R.id.bt_home_add) {
-//            mPresenter.initStream();
-//初始化直播间
+            //初始化直播间
             // 添加相机权限设置
             mRxPermissions
-                    .requestEach(Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO)
-                    .subscribe(new Action1<Permission>() {
+                    .request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                    .subscribe(new Action1<Boolean>() {
                         @Override
-                        public void call(Permission permission) {
-                            if (permission.granted) {
+                        public void call(Boolean permission) {
+                            if (permission) {
                                 // 权限被允许
                                 mPresenter.initStream();
-                            } else if (permission.shouldShowRequestPermissionRationale) {
-                                // 权限没有被彻底禁止
                             } else {
                                 // 权限被彻底禁止
                                 UiUtils.SnackbarText(getString(R.string.use_camea_permisson_tip));

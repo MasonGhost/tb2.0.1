@@ -23,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/toolview_height"
-        android:background="@color/white"
         android:orientation="vertical"
         android:paddingBottom="40px"
         android:paddingLeft="60px"
@@ -113,9 +112,10 @@
         android:id="@+id/toolbar"
         style="@style/style_toolbar"
         android:layout_height="@dimen/toolview_height"
-        android:background="@color/color_top_navigate">
+        android:background="@color/white">
 
         <com.zhy.autolayout.AutoLinearLayout
+            android:id="@+id/ll_tab"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
@@ -129,14 +129,14 @@
                 android:layout_marginLeft="15px"
                 android:layout_marginRight="15px"
                 android:text="@string/str_subscribe"
-                android:textColor="@color/color_blue_button" />
+                android:textColor="@color/color_blue_button"/>
 
             <TextView
                 android:id="@+id/tv_live_hot_tab"
                 style="@style/style_live_tab"
                 android:layout_marginLeft="15px"
                 android:layout_marginRight="15px"
-                android:text="@string/str_hot" />
+                android:text="@string/str_hot"/>
 
 
             <TextView
@@ -144,29 +144,34 @@
                 style="@style/style_live_tab"
                 android:layout_marginLeft="15px"
                 android:layout_marginRight="15px"
-                android:text="@string/str_new" />
+                android:text="@string/str_new"/>
         </com.zhy.autolayout.AutoLinearLayout>
 
         <ImageView
             android:id="@+id/tv_live_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_centerVertical="true"
             android:paddingLeft="30px"
             android:paddingRight="30px"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ico_back_white" />
+            android:src="@mipmap/topbar_back"/>
 
         <ImageView
             android:id="@+id/tv_live_filter"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:paddingLeft="10px"
-            android:layout_marginRight="30px"
-            android:visibility="invisible"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_top_screening_white" />
+            android:layout_marginRight="30px"
+            android:paddingLeft="10px"
+            android:src="@mipmap/ic_top_screening_white"
+            android:visibility="invisible"/>
 
+        <View
+            style="@style/divider_style_horizontal"
+            android:layout_height="@dimen/spacing_big_line"
+            android:layout_below="@+id/ll_tab"
+            />
 
     </com.zhy.autolayout.AutoRelativeLayout>
 </com.zhy.autolayout.AutoFrameLayout>

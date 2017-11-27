@@ -29,6 +29,7 @@ import com.zhiyicx.zhibolibrary.util.UiUtils;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -157,34 +158,50 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         if (usids.length() > 0)
             usids = usids.substring(0, usids.length() - 1);
         if (usids.length() > 0) {
-            mUsidSubscription = mModel.getUsidInfo(usids, "").observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>
-                    () {
-                @Override
-                public void call(BaseJson<UserInfo[]> baseJson) {
-                    if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                        UserInfo[] userInfos = baseJson.data;
-                        for (int i = 0; i < mApiList.data.length; i++) {
-                            mApiList.data[i].user = userInfos[i];
-                        }
-                        refresh(mApiList, isMore);//刷新数据
-                        if (mCurrentPage == VIDEO_PAGE) {//区分处理两个子类的筛选按钮
-                            EventBus.getDefault().post(true, "set_filter_satus_replay");
-                        } else {
-                            EventBus.getDefault().post(true, "set_filter_satus_live");
-                        }
+            mUsidSubscription = mModel.getUsidInfo(usids, "")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new Func1<BaseJson<UserInfo[]>, ApiList>() {
+                        @Override
+                        public ApiList call(BaseJson<UserInfo[]> baseJson) {
+                            if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                                UserInfo[] userInfos = baseJson.data;
+                                HashMap<String, UserInfo> userInfoHashMap = new HashMap<>();
+                                if (userInfos != null && userInfos.length > 0) {
+                                    for (int i = 0; i < mApiList.data.length; i++) {
+                                        userInfoHashMap.put(userInfos[i].usid, userInfos[i]);
+                                    }
+                                    for (SearchResult datum : mApiList.data) {
+                                        datum.user = userInfoHashMap.get(datum.user.usid);
+                                    }
+                                }
+                            } else {
+                                return null;
+                            }
 
-
-                    } else {
-                        errorDeal(isMore);
-                    }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    throwable.printStackTrace();
-                    errorDeal(isMore);
-                }
-            });
+                            return mApiList;
+                        }
+                    })
+                    .subscribe(new Action1<ApiList>() {
+                        @Override
+                        public void call(ApiList data) {
+                            if (data != null) {
+                                refresh(data, isMore);//刷新数据
+                                if (mCurrentPage == VIDEO_PAGE) {//区分处理两个子类的筛选按钮
+                                    EventBus.getDefault().post(true, "set_filter_satus_replay");
+                                } else {
+                                    EventBus.getDefault().post(true, "set_filter_satus_live");
+                                }
+                            } else {
+                                errorDeal(isMore);
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            errorDeal(isMore);
+                        }
+                    });
         } else {
             refresh(mApiList, isMore);//刷新数据
             if (mCurrentPage == VIDEO_PAGE) {//区分处理两个子类的筛选按钮
@@ -313,26 +330,45 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         }
         if (usids.length() > 0) {
 
-            mUsidSubscription = mModel.getUsidInfo(usids, "").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                @Override
-                public void call(BaseJson<UserInfo[]> baseJson) {
-                    if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                        UserInfo[] userInfos = baseJson.data;
-                        if (userInfos != null && userInfos.length > 0) {
-                            for (int i = 0; i < mApiList.data.length; i++) {
-                                mApiList.data[i].user = userInfos[i];
+            mUsidSubscription = mModel.getUsidInfo(usids, "")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new Func1<BaseJson<UserInfo[]>, ApiList>() {
+                        @Override
+                        public ApiList call(BaseJson<UserInfo[]> baseJson) {
+                            if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                                UserInfo[] userInfos = baseJson.data;
+                                HashMap<String, UserInfo> userInfoHashMap = new HashMap<>();
+                                if (userInfos != null && userInfos.length > 0) {
+                                    for (int i = 0; i < mApiList.data.length; i++) {
+                                        userInfoHashMap.put(userInfos[i].usid, userInfos[i]);
+                                    }
+                                    for (SearchResult datum : mApiList.data) {
+                                        datum.user = userInfoHashMap.get(datum.user.usid);
+                                    }
+                                }
+                            } else {
+                                return null;
+                            }
+
+                            return mApiList;
+                        }
+                    })
+                    .subscribe(new Action1<ApiList>() {
+                        @Override
+                        public void call(ApiList data) {
+                            if (data != null) {
+                                refresh(mApiList, isMore);//刷新数据
+                            } else {
+
                             }
                         }
-                        refresh(mApiList, isMore);//刷新数据
-
-                    }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            });
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
         } else {
 
             refresh(mApiList, isMore);//刷新数据

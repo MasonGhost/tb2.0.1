@@ -49,6 +49,7 @@
             android:name="com.zhiyicx.zhibolibrary.ui.activity.ZBLEndStreamingActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppThemeNoTittleAndBlackStatus"/>
         <activity
             android:name="com.zhiyicx.zhibolibrary.ui.activity.ZBLSearchActivity"
@@ -93,12 +94,12 @@
             </intent-filter>
         </receiver>
         <!-- IM服务 -->
-        <service android:name="com.zhiyicx.imsdk.service.SocketService"/>
+        <service android:name="com.zhiyicx.old.imsdk.service.SocketService"/>
         <!-- 更新服务 -->
         <service android:name="com.zhiyicx.zhibosdk.service.ZBUpdateService"/>
         <!-- 网络监听广播 -->
         <receiver
-            android:name="com.zhiyicx.imsdk.receiver.NetChangeReceiver"
+            android:name="com.zhiyicx.old.imsdk.receiver.NetChangeReceiver"
             android:label="NetworkConnection">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>

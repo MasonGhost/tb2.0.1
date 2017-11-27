@@ -1,14 +1,7 @@
 package com.zhiyicx.zhibosdk.utils;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
-import okhttp3.RequestBody;
-import okio.Buffer;
 
 /**
  * Created by jungle on 16/5/20.
@@ -19,7 +12,7 @@ import okio.Buffer;
 public class LogUtils {
     private static final String TAG = "zhiboSDK";
 
-    private final static boolean isLog = false;
+    private final static boolean isLog = true;
 
     public static void debugInfo(String tag, String msg) {
         if (!isLog || TextUtils.isEmpty(msg)) return;

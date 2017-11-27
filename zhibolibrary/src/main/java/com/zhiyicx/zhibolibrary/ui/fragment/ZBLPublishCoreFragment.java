@@ -189,7 +189,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     TextView tvVoteKey1;
     TextView tvVoteKey2;
     TextView tvVoteKey3;
-    //  private String mSendMessage;
 
     ImageView mFilterIV;
     ImageButton mGiftButton;
@@ -243,7 +242,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private final static long DELAY_SHOW_TIME = 30;//ui刷新延迟时间
     private final static long DELAY_ZAN_TIME = 100;//点赞的间隔时间
     private long last_zan_click_time;
-    private long last_receive_vote_time;
 
     private SearchResult data;//主播信息
     private UserInfo presenterUser;//主播信息
@@ -260,6 +258,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     ServiceManager mManager;
     private CommonPopupWindow mFilterPop;//滤镜选择器，暂时隐藏
     private int mFilterIndex = 0;
+    private int mInutLimitHeight;
 
 
     public static ZBLPublishCoreFragment newInstance(int currentView) {
@@ -338,6 +337,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     @Override
     protected View initView() {
+        mInutLimitHeight = (int) (DeviceUtils.getScreenHeight(getContext()) / 3);
         this.currentView = getArguments().getInt("currentView", 0);//当前要显示的页面,当前页面可以复用,用来区分主播直播页面和用户直播页面;
         newsLayout = UiUtils.inflate(R.layout.zb_fragment_publish_core);
         mFavorLayout = (FavorLayout) newsLayout.findViewById(R.id.fl_publish_core);
@@ -474,63 +474,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         mLoading = new ProgressDialog(getActivity());
         mLoading.setMessage(UiUtils.getString(R.string.str_loading));
         mLoading.setCanceledOnTouchOutside(false);
-
-//        mFilterPop = CommonPopupWindow
-//                .builder()
-//                .contentView(CommonPopupWindow.inflateView(getActivity(), R.layout.zb_pop_filter_list))
-//                .customListener(new CommonPopupWindow.CustomPopupWindowListener() {
-//                    @Override
-//                    public void initPopupView(View contentView) {
-//                        View.OnClickListener onClickListener = new View.OnClickListener() {
-//
-//                            @Override
-//                            public void onClick(View v) {
-//                                mFilterPop.dismiss();
-//                            }
-//                        };
-//                        contentView.setOnClickListener(onClickListener);
-//                        contentView.findViewById(R.id.iv_pop_down).setOnClickListener(onClickListener);
-//
-//                        RecyclerView recyclerView = UiUtils.findViewByName(contentView, "rv_pop_filter");
-//                        RecyclerView.LayoutManager manager =
-//                                new LinearLayoutManager(UiUtils.getContext()
-//                                        , LinearLayoutManager.HORIZONTAL, false);
-//                        recyclerView.setLayoutManager(manager);
-//                        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-//                        recyclerView.setHasFixedSize(true);
-//                        recyclerView.setItemAnimator(new DefaultItemAnimator());//设置动画
-//                        final List<FilterMessage> list = new ArrayList<FilterMessage>();
-//                        list.add(new FilterMessage("自然", true));
-//                        list.add(new FilterMessage("马赛克", false));
-//                        list.add(new FilterMessage("清新", false));
-//                        list.add(new FilterMessage("英伦", false));
-//                        list.add(new FilterMessage("日系", false));
-//                        list.add(new FilterMessage("欧美", false));
-//                        list.add(new FilterMessage("复古", false));
-//                        list.add(new FilterMessage("简约", false));
-//                        list.add(new FilterMessage("高冷", false));
-//                        final FilterAdapter adapter = new FilterAdapter(list);
-//                        recyclerView.setAdapter(adapter);
-//                        adapter.setOnItemClickListener(new DefaultAdapter.OnRecyclerViewItemClickListener() {
-//                            @Override
-//                            public void onItemClick(View view, Object data) {
-//                                int position = list.indexOf(data);
-//                                ((PublishView) getActivity()).getFilterManager()
-//                                        .changeFilter(new FilterInfo(false, position + 1));
-//                                for (int i = 0; i < list.size(); i++) {
-//                                    if (i == position) {
-//                                        list.get(i).isClick = true;
-//                                    } else {
-//                                        list.get(i).isClick = false;
-//                                    }
-//                                }
-//                                adapter.notifyDataSetChanged();
-//                            }
-//                        });
-//
-//                    }
-//                }).animationStyle(R.style.translate_animstyle)
-//                .build();
     }
 
 
@@ -1625,8 +1568,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 root.getWindowVisibleDisplayFrame(rect);
                 //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
                 int rootInvisibleHeight = root.getRootView().getHeight() - rect.bottom;
-                //若不可视区域高度大于100，则键盘显示
-                if (rootInvisibleHeight > 180) {
+                //若不可视区域高度大于屏幕 1/3，则键盘显示
+                if (rootInvisibleHeight > mInutLimitHeight) {
                     flag = true;
 //                    scrollToView.layout(0, rect.bottom - scrollToView.getHeight() - rect.top, scrollToView.getWidth(), rect.bottom - rect.top);
                     showInput();//显示输入框

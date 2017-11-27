@@ -50,11 +50,16 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by jungle on 16/7/6.
  */
 public class SocketService extends BaseService implements ImService.ImListener {
-    private final String TAG = "old"+this.getClass().getSimpleName();
+    private final String TAG = "old" + this.getClass().getSimpleName();
 
     public static final int TAG_IM_LOGIN = 10000;//登录im
     public static final int TAG_IM_LOGINOUT = 10001;//断开im
@@ -158,6 +163,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private Map<Integer, TimeOutTask> timeTasks = new HashMap<>();
 
     private Map<Integer, EventContainer> mEventContainerCache = new HashMap<>();
+    private Subscription mSubscription;
 
     private Runnable heartBeatRunnable = new Runnable() {
 
@@ -184,12 +190,10 @@ public class SocketService extends BaseService implements ImService.ImListener {
                             resetTime();
                             mService.ping();
                             LogUtils.debugInfo(TAG, "----------ping-------");
-                        }
-                        else {
+                        } else {
                             socketReconnect();
                         }
-                    }
-                    else {
+                    } else {
                         //防止cpu占用过高
                         try {
                             Thread.sleep(4000);
@@ -222,8 +226,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 default:
                     break;
             }
-        }
-        else {
+        } else {
             switch (DeviceUtils.getNetworkType(mContext)) {
                 case DeviceUtils.NETTYPE_WIFI:
                     HEART_BEAT_RATE = HEART_BEAT_RATE_LOW;
@@ -325,7 +328,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         mContext = getApplicationContext();
         mService = new ImService();
         initSocketListener();
-        LogUtils.debugInfo(TAG,"---init---");
+        LogUtils.debugInfo(TAG, "---init---");
     }
 
     /**
@@ -342,7 +345,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private void login(IMConfig imConfig) {
-        LogUtils.debugInfo("----imlogin----------------"+imConfig.toString());
+        LogUtils.debugInfo("----imlogin----------------" + imConfig.toString());
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -384,6 +387,10 @@ public class SocketService extends BaseService implements ImService.ImListener {
         exit = true;
 
         unregisterReceiver(mSocketRetryReceiver);
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
+
     }
 
     @Override
@@ -419,12 +426,46 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     @Override
     public void onMessage(byte[] data) {
-        responseTime();
-        checkDataType(data);
+        mSubscription = rx.Observable.just(data)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<byte[]>() {
+                    @Override
+                    public void call(byte[] bytes) {
+                        responseTime();
+                        checkDataType(bytes);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
-    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE, mode = ThreadMode.ASYNC)
+    @Subscriber(tag = EVENT_SOCKET_DEAL_MESSAGE)
     public void dealMessage(Bundle bundle) {
+        Observable.just(bundle)
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Bundle>() {
+                    @Override
+                    public void call(Bundle bundle) {
+                        dealSendMessage(bundle);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
+    }
+
+    /**
+     * 处理发送调用消息
+     *
+     * @param bundle
+     */
+    private void dealSendMessage(Bundle bundle) {
         if (bundle == null) return;
         try {
             switch (bundle.getInt(EVENT_SOCKET_TAG)) {
@@ -470,19 +511,22 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 查询会话消息
                  */
                 case TAG_IM_MC:
-                    mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString(BUNDLE_CONVERSATION_FIELD));
+                    mc((List<Integer>) bundle.getSerializable(BUNDLE_ROOMIDS), bundle.getInt(BUNDLE_MSG_ID), bundle.getString
+                            (BUNDLE_CONVERSATION_FIELD));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_PLUCK:
-                    sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt(BUNDLE_MSG_ID));
+                    sendPluckMessage(bundle.getInt(BUNDLE_ROOMID), (List<Integer>) bundle.getSerializable(BUNDLE_MSG_SEQ), bundle.getInt
+                            (BUNDLE_MSG_ID));
                     break;
                 /**
                  * 通过消息序号同步消息
                  */
                 case TAG_IM_SYNC:
-                    sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt(BUNDLE_MSG_ID));
+                    sendSyncMessage(bundle.getInt(BUNDLE_ROOMID), bundle.getInt(BUNDLE_MSG_GT), bundle.getInt(BUNDLE_MSG_LT, 0), bundle.getInt
+                            (BUNDLE_MSG_ID));
                     break;
 
 
@@ -492,7 +536,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -515,6 +558,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 mService.sendMsgpackData(messageContainer);
 
                 break;
+            default:
         }
 
 
@@ -704,7 +748,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param data
      * @param eventContainer
      * @return
-     *
      * @throws JSONException
      * @throws NullPointerException
      */
@@ -974,8 +1017,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             eventContainer.mChatRoomContainer.err = joinack.getInt("err");
             chatrooms.add(new ChatRoom(joinack.getInt("cid")));
             eventContainer.mChatRoomContainer.mChatRooms = chatrooms;
-        }
-        else {
+        } else {
 //            ["convr.join", {"cid":4,"time":1472119730}, 1]
             int mc = 0;
             long expire = -1L;
@@ -1001,14 +1043,12 @@ public class SocketService extends BaseService implements ImService.ImListener {
                 eventContainer.mChatRoomContainer.err = leaveack.getInt("err");
                 chatrooms.add(new ChatRoom(leaveack.getInt("cid")));
                 eventContainer.mChatRoomContainer.mChatRooms = chatrooms;
-            }
-            else {
+            } else {
 
                 int cid = 0;
                 if (leaveack.has("cid")) {
                     cid = leaveack.getInt("cid");
-                }
-                else {
+                } else {
                     String cidstr = leaveack.toString().replace("{", "");
                     cid = Integer.valueOf(cidstr.replace("}", ""));
                 }
@@ -1171,8 +1211,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             if (dst1.size() >= 3) {
                 messageContainer = cancleTimeoutListen(dst1.get(2).toString());
                 System.out.println("messageContainer = " + messageContainer);
-            }
-            else
+            } else
                 messageContainer = cancleTimeoutListen(0 + "");
             switch (eventContainer.mEvent) {
                 /**
@@ -1246,7 +1285,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
     }
 
     private void InsertSendMessage2DB(EventContainer eventContainer, MessageContainer messageContainer) {
-        if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null & eventContainer.mMessageContainer.msg != null) {
+        if (messageContainer != null && messageContainer.msg != null && eventContainer != null && eventContainer.mMessageContainer != null &
+                eventContainer.mMessageContainer.msg != null) {
             messageContainer.msg.mid = eventContainer.mMessageContainer.msg.mid;
             messageContainer.msg.seq = eventContainer.mMessageContainer.msg.seq;
             eventContainer.mMessageContainer.msg = messageContainer.msg;
@@ -1352,9 +1392,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private boolean checkDuplicateMessages(EventContainer eventContainer) {
         System.out.println("eventContainer = " + eventContainer.toString());
-        if ((eventContainer.mEvent.equals(ImService.MSG) || eventContainer.mEvent.equals(ImService.MSG_ACK)) && eventContainer.mMessageContainer != null && eventContainer.mMessageContainer.msg != null) {
+        if ((eventContainer.mEvent.equals(ImService.MSG) || eventContainer.mEvent.equals(ImService.MSG_ACK)) && eventContainer.mMessageContainer !=
+                null && eventContainer.mMessageContainer.msg != null) {
             if (!MessageDao.getInstance(getApplicationContext()).hasMessage(eventContainer.mMessageContainer.msg.mid)) {
-                Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer.mMessageContainer.msg.cid);
+                Conversation conversation = ConversationDao.getInstance(getApplicationContext()).getConversationByCid(eventContainer
+                        .mMessageContainer.msg.cid);
                 if (conversation == null) {//创建本地对话信息
 //                    Conversation newConversation = new Conversation();
 //                    conversation.setCid(eventContainer.mMessageContainer.msg.cid);
@@ -1367,8 +1409,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                      */
                     mService.sendGetConversatonInfo(eventContainer.mMessageContainer.msg.cid, "");
                     return true;
-                }
-                else {
+                } else {
                     if (conversation.getType() != Conversation.CONVERSATION_TYPE_CHAROOM)
                         MessageDao.getInstance(getApplicationContext()).insertMessage(eventContainer.mMessageContainer.msg);
                 }
@@ -1511,8 +1552,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     mService.disconnect();
                     isDisconnecting = true;
                 }
-            }
-            else {
+            } else {
                 LogUtils.debugInfo(TAG, "----------socketReconnect------");
                 changeHeartBeatRateByReconnect();
                 mService.connect();

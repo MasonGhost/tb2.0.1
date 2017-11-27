@@ -137,4 +137,5 @@
     <string name="deal_accout">交易账号</string>
     <string name="ctime">交易时间</string>
     <string name="use_camea_permisson_tip">相机权限已被禁用，请前往\"设置\"中进行修改，允许使用相机</string>
+    <string name="ticket_illegal_tip">直播权限失效，请重新登录后使用!</string>
 </resources>

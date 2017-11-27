@@ -578,6 +578,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
         unSubscribe(mRecomListSubscription);
         unSubscribe(mVoteSenderSubscirption);
         unSubscribe(mUserinfoSubscription);
+        if(mSharePolicy!=null) {
+            mSharePolicy.setOnShareCallbackListener(null);
+            mSharePolicy = null;
+        }
 
     }
 
@@ -692,7 +696,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     @Override
     public void onMessageACK(Message message) {
-       LogUtils.d("---------message = " + message.toString());
+       LogUtils.d("----ACK-----message = " + message.toString());
         if (message.type == MessageType.MESSAGE_TYPE_TEXT) {
             mRootView.addSelfChat(true, message);
         }
