@@ -47,7 +47,7 @@ public class CircleListItem extends BaseCircleItem {
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_channel_list;
+        return R.layout.item_circle_list;
     }
 
     @Override
@@ -59,18 +59,18 @@ public class CircleListItem extends BaseCircleItem {
     public void convert(ViewHolder holder, GroupInfoBean groupInfoBean, GroupInfoBean lastT, int position, int itemCounts) {
 
         // 封面
-        ImageView circleCover = holder.getView(R.id.iv_channel_cover);
+        ImageView circleCover = holder.getView(R.id.iv_circle_cover);
 
         // 名字
-        TextView circleName = holder.getView(R.id.tv_channel_name);
+        TextView circleName = holder.getView(R.id.tv_circle_name);
 
         // 帖子数量
-        TextView circleFeedCount = holder.getView(R.id.tv_channel_feed_count);
+        TextView circleFeedCount = holder.getView(R.id.tv_circle_feed_count);
 
         // 成员数量
-        TextView circleMemberCount = holder.getView(R.id.tv_channel_follow_count);
+        TextView circleMemberCount = holder.getView(R.id.tv_circle_follow_count);
 
-        CheckBox circleSubscribe = holder.getView(R.id.tv_channel_subscrib);
+        CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
 
         Context context = circleSubscribe.getContext();
 
@@ -113,7 +113,7 @@ public class CircleListItem extends BaseCircleItem {
         circleName.setText(groupInfoBean.getTitle());
         // 设置分享人数
         String feedCountNumber = ConvertUtils.numberConvert(groupInfoBean.getPosts_count());
-        String feedContent = context.getString(R.string.channel_share) + " " + "<" + feedCountNumber + ">";
+        String feedContent = context.getString(R.string.circle_post) + " " + "<" + feedCountNumber + ">";
         CharSequence feedString = ColorPhrase.from(feedContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
@@ -121,7 +121,7 @@ public class CircleListItem extends BaseCircleItem {
         circleFeedCount.setText(feedString);
         // 设置订阅人数
         String followCountNumber = ConvertUtils.numberConvert(groupInfoBean.getMembers_count());
-        String followContent = context.getString(R.string.channel_follow) + " " + "<" + followCountNumber + ">";
+        String followContent = context.getString(R.string.circle_member) + " " + "<" + followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
@@ -147,7 +147,7 @@ public class CircleListItem extends BaseCircleItem {
                     }
                     mCircleItemItemEvent.toCircleDetail(groupInfoBean);
                 });
-        RxView.clicks(holder.getView(R.id.iv_channel_cover))
+        RxView.clicks(holder.getView(R.id.iv_circle_cover))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
 

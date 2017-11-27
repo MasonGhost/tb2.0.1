@@ -10,9 +10,10 @@
     <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/tv_circle_type"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/full_button_height"
+        android:layout_height="@dimen/spacing_bigger_large_35"
         app:dividerRightMargin="@dimen/spacing_normal"
         app:leftText="@string/information"
+        app:showLine="false"
         app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
 </LinearLayout>

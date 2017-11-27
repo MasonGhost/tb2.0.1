@@ -48,8 +48,8 @@ public class CombinationButton extends FrameLayout {
         int rightTextColor = array.getColor(R.styleable.combinationBtn_rightTextColor, -1);
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
         int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
-        float leftTextSize = array.getDimension(R.styleable.combinationBtn_leftTextSize, 0);
-        float rightTextSize = array.getDimension(R.styleable.combinationBtn_rightTextSize, 0);
+        float leftTextSize = array.getDimension(R.styleable.combinationBtn_leftTextSize, 14);
+        float rightTextSize = array.getDimension(R.styleable.combinationBtn_rightTextSize, 13);
         int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
         int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context, 10));
         array.recycle();
@@ -73,6 +73,8 @@ public class CombinationButton extends FrameLayout {
             mCombinedButtonImgLeft.setImageDrawable(leftImage);
         }
         mCombinedButtonImgRight.setImageDrawable(rightImage);
+        mCombinedButtonLeftText.setTextSize(leftTextSize);
+        mCombinedButtonRightText.setTextSize(rightTextSize);
         if (showLine) {
             mVLine.setVisibility(VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mVLine.getLayoutParams();

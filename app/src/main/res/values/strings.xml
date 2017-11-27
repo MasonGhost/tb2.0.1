@@ -248,6 +248,8 @@
     <string name="group_joined">已加入</string>
     <string name="group_mine">我的圈子</string>
     <string name="group_count">%d个兴趣小组，等待你的加入！</string>
+    <string name="circle_post">帖子</string>
+    <string name="circle_member">成员</string>
 
     <string name="appbar_overscroll_behavior">com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -266,6 +268,7 @@
     <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
+
 
 
 

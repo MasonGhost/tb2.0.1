@@ -68,5 +68,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected void initData() {
         mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow,R.color.white);
+        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.setAdjustMode(false);
     }
 }

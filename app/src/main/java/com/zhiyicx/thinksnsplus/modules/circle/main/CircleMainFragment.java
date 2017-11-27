@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/14/11:28
  * @Email Jliuer@aliyun.com
  * @Description
