@@ -194,7 +194,7 @@ var RE = {
 	},
 	changeWords: function changeWords() {
         var _self = this;
-        var content = _self.cache.editor.innerHTML.replace(/<div\sclass="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
+        var content = _self.cache.editor.innerHTML.replace(/<div class="block">[\s\S]*<\/div>/ig, '', '').trim();
         return content;
     },
 	saveRange: function saveRange() {
