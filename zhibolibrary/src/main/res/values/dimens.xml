@@ -87,6 +87,6 @@
     <dimen name="follow_button_with">120px</dimen>
     <dimen name="follow_button_height">50px</dimen>
     <dimen name="header_width_hight">32dp</dimen>
-    <dimen name="video_item_height">200dp</dimen>
+    <dimen name="video_item_height">170dp</dimen>
     <dimen name="video_item_spaceing">8dp</dimen>
 </resources>

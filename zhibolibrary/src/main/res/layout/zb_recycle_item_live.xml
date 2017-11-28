@@ -63,45 +63,45 @@
             android:textSize="15sp"
             tool:text="望利鸟在成功给接口给大家送顾客"/>
 
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="48dp"-->
-            <!--android:layout_below="@+id/iv_live_item_cover"-->
-            <!--&gt;-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/iv_live_item_cover"
+            >
 
-            <!--<TextView-->
-                <!--android:id="@+id/tv_live_item_user_name"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="57dp"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:textColor="@color/black"-->
-                <!--android:textSize="13sp"-->
-                <!--tool:text="小妹妹"/>-->
+            <TextView
+                android:id="@+id/tv_live_item_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="57dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                tool:text="小妹妹"/>
 
-        <!--</RelativeLayout>-->
+        </RelativeLayout>
 
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_live_item_user_icon"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_alignBottom="@+id/iv_live_item_cover"-->
-            <!--android:layout_marginBottom="-32dp"-->
-            <!--android:layout_marginLeft="12dp"-->
+        <ImageView
+            android:id="@+id/iv_live_item_user_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/iv_live_item_cover"
+            android:layout_marginBottom="-32dp"
+            android:layout_marginLeft="12dp"
 
-            <!--android:src="@mipmap/pic_touxiang_150"/>-->
+            android:src="@mipmap/pic_default_woman"/>
 
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_live_item_verified"-->
-            <!--android:layout_width="10dp"-->
-            <!--android:layout_height="10dp"-->
-            <!--android:layout_alignBottom="@+id/iv_live_item_user_icon"-->
-            <!--android:layout_alignRight="@+id/iv_live_item_user_icon"-->
-            <!--android:layout_marginRight="5px"-->
-            <!--android:layout_marginBottom="3px"-->
-            <!--android:background="@mipmap/ico_certified_02"-->
-            <!--android:visibility="gone"-->
-            <!--/>-->
+        <ImageView
+            android:id="@+id/iv_live_item_verified"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignBottom="@+id/iv_live_item_user_icon"
+            android:layout_alignRight="@+id/iv_live_item_user_icon"
+            android:layout_marginRight="5px"
+            android:layout_marginBottom="3px"
+            android:background="@mipmap/ico_certified_02"
+            android:visibility="gone"
+            />
 
         <ImageView
             android:id="@+id/iv_live_item_location"

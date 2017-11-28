@@ -121,6 +121,10 @@ public class AuthRepository implements IAuthRepository {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             AppApplication.setmCurrentLoginAuth(SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
         }
+        if (AppApplication.getmCurrentLoginAuth() != null) {
+            ZhiboApplication.setToken(AppApplication.getmCurrentLoginAuth().getToken());
+
+        }
         return AppApplication.getmCurrentLoginAuth();
     }
 
@@ -146,7 +150,7 @@ public class AuthRepository implements IAuthRepository {
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(authBean1 -> {
-                   saveAuthBean(authBean1);// 保存auth信息
+                    saveAuthBean(authBean1);// 保存auth信息
                     return mLiveRepository.getLiveTicket()
                             .map(s -> {
                                 authBean1.setLiveTicket(s);

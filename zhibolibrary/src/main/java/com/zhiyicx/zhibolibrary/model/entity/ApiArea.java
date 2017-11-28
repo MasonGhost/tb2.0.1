@@ -19,4 +19,9 @@ public class ApiArea {
     public String getAreaId() {
         return area_id;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

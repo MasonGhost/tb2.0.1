@@ -92,7 +92,9 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
             getUserList(isMore);
             return;
         }
-        if (ZhiboApplication.getUserInfo() == null) ZhiboApplication.getUserInfo();//此处解决经常报空的问题
+        if (ZhiboApplication.getUserInfo() == null) {
+            ZhiboApplication.getUserInfo();//此处解决经常报空的问题
+        }
         if (mRootView.isFilter()) {//筛选
             filter(isMore);
         } else {//不筛选
@@ -155,8 +157,9 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         for (SearchResult data : mApiList.data) {
             usids += data.user.usid + ",";
         }
-        if (usids.length() > 0)
+        if (usids.length() > 0) {
             usids = usids.substring(0, usids.length() - 1);
+        }
         if (usids.length() > 0) {
             mUsidSubscription = mModel.getUsidInfo(usids, "")
                     .observeOn(AndroidSchedulers.mainThread())
@@ -230,10 +233,11 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         if (mListDatas != null && mListDatas.size() > 0) {
             //如果列表有数据则清空
             mListDatas.clear();
-            if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
+            if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
                 mLinearAdapter.notifyDataSetChanged();
-            else
+            } else {
                 mAdapter.notifyDataSetChanged();//通知页面更新数据
+            }
         }
         mRootView.showNetBadPH();
 
@@ -393,18 +397,20 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
         ++mPage;
         if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.isShowFooter(true);
-        } else
+        } else {
             mAdapter.isShowFooter(true);
+        }
         if (ApiList == null || ApiList.data == null || ApiList.data.length == 0) {//没有数据
             hideMoreLoading();
             if (!isMore) {//如果是上拉刷新，没有数据则清理以前的数据
                 mListDatas.clear();
                 mStreamListDatas.clear();
                 mNotStreamListDatas.clear();
-                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
+                if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
                     mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
-                else
+                } else {
                     mAdapter.notifyDataSetChanged();//通知页面更新数据
+                }
             }
             if (!isMore) {//上拉刷新为空提示用户
                 if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
@@ -440,10 +446,11 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
              * 处理直播排序数据，在直播的排在前面
              */
             for (SearchResult data : ApiList.data) {//添加数据
-                if (data.stream != null)
+                if (data.stream != null) {
                     mStreamListDatas.add(data);//在直播
-                else
+                } else {
                     mNotStreamListDatas.add(data);
+                }
             }
             mListDatas.clear();
             mListDatas.addAll(mStreamListDatas);
@@ -453,10 +460,11 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                 mListDatas.add(data);
             }
         }
-        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW))
+        if (mRootView.getOrder().equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
             mLinearAdapter.notifyDataSetChanged();//通知页面更新数据
-        else
+        } else {
             mAdapter.notifyDataSetChanged();//通知页面更新数据
+        }
     }
 
     private void hideMoreLoading() {

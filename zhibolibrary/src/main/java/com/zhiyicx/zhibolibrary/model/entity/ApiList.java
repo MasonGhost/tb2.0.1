@@ -1,6 +1,7 @@
 package com.zhiyicx.zhibolibrary.model.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Created by zhiyicx on 2016/3/29.
@@ -16,4 +17,5 @@ public class ApiList implements Serializable {
 
     public ApiList() {
     }
+
 }

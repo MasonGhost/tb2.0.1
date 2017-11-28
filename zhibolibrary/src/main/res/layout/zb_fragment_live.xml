@@ -153,8 +153,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:paddingLeft="30px"
-            android:paddingRight="30px"
+            android:paddingLeft="26px"
+            android:paddingRight="26px"
             android:src="@mipmap/topbar_back"/>
 
         <ImageView
