@@ -250,12 +250,15 @@
     <string name="group_count">%d个兴趣小组，等待你的加入！</string>
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
+    <string name="create">创建</string>
+    <string name="create_circle">创建圈子</string>
+    <string name="create_circle_notice">选填</string>
 
     <string name="appbar_overscroll_behavior">com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="change_circle_head_icon">更改圈子头像</string>
+    <string name="change_circle_head_icon">上传圈子头像</string>
     <string name="circle_name">圈名</string>
     <string name="circle_type">分类</string>
     <string name="edit_circle_name">设置圈名</string>

@@ -22,6 +22,7 @@ public interface AllCircleContainerContract {
 
     interface Presenter extends IBaseTouristPresenter {
         void getCategroiesList(int limit, int offet);
+        List<CircleTypeBean> getCircleTypesFormLocal();
     }
 
     interface Repository extends IBaseCircleRepository {

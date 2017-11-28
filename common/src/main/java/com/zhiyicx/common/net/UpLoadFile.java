@@ -150,6 +150,10 @@ public class UpLoadFile {
         return upLoadFileAndParams(filePathList, null);
     }
 
+    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList,Map<String, Object> params) {
+        return upLoadFileAndParams(filePathList, params);
+    }
+
     public static List<MultipartBody.Part> upLoadFileAndProgress(Map<String, String> filePathList,ProgressRequestBody.ProgressRequestListener listener) {
         return upLoadFileAndProgress(filePathList, null,listener);
     }

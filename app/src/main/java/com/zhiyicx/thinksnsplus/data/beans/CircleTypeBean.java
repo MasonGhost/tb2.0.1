@@ -4,14 +4,22 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author Jliuer
  * @Date 2017/11/27/16:56
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class CircleTypeBean extends BaseListBean {
 
+    @Id
+    @Unique
     private Long id;
     private long sort_by;
     private String name;
@@ -83,6 +91,16 @@ public class CircleTypeBean extends BaseListBean {
         this.name = in.readString();
         this.created_at = in.readString();
         this.updated_at = in.readString();
+    }
+
+    @Generated(hash = 670162041)
+    public CircleTypeBean(Long id, long sort_by, String name, String created_at,
+            String updated_at) {
+        this.id = id;
+        this.sort_by = sort_by;
+        this.name = name;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public static final Creator<CircleTypeBean> CREATOR = new Creator<CircleTypeBean>() {

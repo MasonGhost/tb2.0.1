@@ -36,7 +36,7 @@ import butterknife.BindView;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/07/25/11:27
  * @Email Jliuer@aliyun.com
  * @Description

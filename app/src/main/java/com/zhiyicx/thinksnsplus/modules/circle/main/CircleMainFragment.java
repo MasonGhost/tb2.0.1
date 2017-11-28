@@ -62,7 +62,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected int setRightLeftImg() {
-        return R.mipmap.search_icon_search;
+        return R.mipmap.ico_search;
     }
 
     @Override

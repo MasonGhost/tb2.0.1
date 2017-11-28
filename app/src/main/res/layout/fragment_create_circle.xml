@@ -32,18 +32,18 @@
 
                 <LinearLayout
                     android:id="@+id/ll_head_icon_container"
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid">
 
                     <ImageView
                         android:id="@+id/iv_head_icon"
-                        android:layout_width="@dimen/headpic_for_list"
-                        android:layout_height="@dimen/headpic_for_list"
+                        android:layout_width="@dimen/create_circle_head_width"
+                        android:layout_height="@dimen/create_circle_head_width"
                         android:layout_gravity="center_vertical"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/pic_default_secret"/>
+                        android:src="@mipmap/npc"/>
                 </LinearLayout>
 
                 <TextView
@@ -53,7 +53,7 @@
                     android:layout_toRightOf="@id/ll_head_icon_container"
                     android:text="@string/change_circle_head_icon"
                     android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -69,22 +69,22 @@
             <!--修改圈名-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/userinfo_btn_height"
+                android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:text="@string/circle_name"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                    android:id="@+id/et_user_name"
+                    android:id="@+id/et_circle_name"
                     style="@style/style_edit_cursor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -95,31 +95,31 @@
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
             </LinearLayout>
 
             <include
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--分类-->
             <LinearLayout
-                android:id="@+id/ll_sex_container"
+                android:id="@+id/ll_type_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/userinfo_btn_height"
+                android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:text="@string/circle_type"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <TextView
-                    android:id="@+id/tv_sex"
+                    android:id="@+id/tv_circle_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -127,7 +127,7 @@
                     android:text=""
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -145,17 +145,17 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:gravity="center_vertical"
-                android:minHeight="@dimen/userinfo_btn_height"
+                android:minHeight="@dimen/create_circle_button_height"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:text="@string/tag"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <FrameLayout
                     android:layout_width="0dp"
@@ -177,9 +177,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/select_tag"
                         android:text=""
-                        android:textColor="@color/important_for_content"
+                        android:textColor="@color/general_for_hint"
                         android:textColorHint="@color/general_for_hint"
-                        android:textSize="@dimen/size_sub_title"
+                        android:textSize="@dimen/size_content"
                         android:visibility="visible"/>
                 </FrameLayout>
 
@@ -197,19 +197,19 @@
             <LinearLayout
                 android:id="@+id/ll_location_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/userinfo_btn_height"
+                android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:text="@string/edit_circle_location"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -220,7 +220,7 @@
                     android:text=""
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -237,11 +237,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:minHeight="@dimen/userinfo_btn_height"
+                android:minHeight="@dimen/create_circle_button_height"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
@@ -249,7 +249,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/introduce"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textSize="@dimen/size_content"/>
                 <!--简介编辑框-->
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/et_circle_introduce"
@@ -272,7 +272,8 @@
             <LinearLayout
                 android:id="@+id/ll_synchro"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="@dimen/create_circle_button_height"
+                android:layout_marginTop="@dimen/spacing_mid"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -284,7 +285,7 @@
                     android:layout_weight="1"
                     android:text="@string/edit_circle_synchronization"
                     android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/wc_synchro"
@@ -294,12 +295,12 @@
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+                layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
                 android:id="@+id/ll_block"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -311,7 +312,7 @@
                     android:layout_weight="1"
                     android:text="@string/edit_circle_block"
                     android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"/>
+                    android:textSize="@dimen/size_content"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/wc_block"
@@ -321,86 +322,117 @@
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+                layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
                 android:id="@+id/ll_charge"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/cb_toll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_mid"
-                    android:text="@string/edit_circle_charge"/>
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:text="@string/edit_circle_charge"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"/>
 
                 <EditText
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:hint="xxss"/>
+                    style="@style/style_dynamic_editext"
+                    android:maxLength="@integer/money_input_max_size"
+                    android:textColor="@color/important_for_content"
+                    android:textColorHint="@color/general_for_hint"
+                    android:textSize="@dimen/size_content"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/spacing_mid"
-                    android:text="@string/gold"/>
+                    android:text="@string/gold"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"/>
 
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+                layout="@layout/include_horizontal_divider_light"/>
 
-            <CheckBox
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
-                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:text="@string/edit_circle_free"/>
+                android:gravity="center_vertical">
+
+                <CheckBox
+                    android:id="@+id/cb_free"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/create_circle_button_height"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:background="@color/white"
+                    android:text="@string/edit_circle_free"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"/>
+            </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+                layout="@layout/include_horizontal_divider_light"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="@dimen/create_circle_ps_height"
+                android:layout_marginTop="@dimen/spacing_small"
                 android:paddingLeft="@dimen/spacing_mid"
-                android:text="@string/edit_circle_join"/>
+                android:text="@string/edit_circle_join"
+                android:textColor="@color/general_for_loading_more"
+                android:textSize="@dimen/size_note_assist"/>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+                layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
                 android:id="@+id/ll_notice"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/create_circle_button_height"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:text="@string/edit_circle_notice"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_assist"/>
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content"/>
 
-                <EditText
+                <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+                    android:id="@+id/tv_notice"
+                    style="@style/style_edit_cursor"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_weight="1"
+                    android:paddingBottom="@dimen/spacing_mid"
+                    android:paddingTop="@dimen/introduce_padding_top"
+                    android:visibility="visible"
+                    app:hintContent="@string/edit_introduce"
+                    app:limitSize="@integer/introduce_input_max_size"
+                    app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/full_button_height"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
-                android:text="@string/edit_circle_rule"/>
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="@string/edit_circle_rule"
+                android:textColor="@color/general_for_loading_more"
+                android:textSize="@dimen/size_note_assist"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

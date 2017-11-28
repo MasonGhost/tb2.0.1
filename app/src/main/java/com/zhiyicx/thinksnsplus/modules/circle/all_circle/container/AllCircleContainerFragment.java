@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected int setRightLeftImg() {
-        return R.mipmap.search_icon_search;
+        return R.mipmap.ico_search;
     }
 
     @Override
@@ -73,6 +75,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
     }
 
     @Override
