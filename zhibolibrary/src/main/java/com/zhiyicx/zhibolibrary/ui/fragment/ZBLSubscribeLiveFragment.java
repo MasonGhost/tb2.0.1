@@ -28,7 +28,7 @@ public class ZBLSubscribeLiveFragment extends ZBLLiveItemFragment {
 
     @Override
     public int getLayout() {
-        return R.layout.zb_fragment_live_item;
+        return R.layout.zb_fragment_live_subscribe_item;
     }
 
 }

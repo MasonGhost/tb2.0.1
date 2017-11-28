@@ -12,11 +12,10 @@
 
     <TextView
         android:id="@+id/bt_home_add"
-        android:layout_width="95px"
-        android:layout_height="95px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="@dimen/spacing_big_large"
-        android:background="@mipmap/channel_btn_suspension"
-        android:textSize="80px"/>
+        android:background="@mipmap/channel_btn_suspension"/>
 </RelativeLayout>
