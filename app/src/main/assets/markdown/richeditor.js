@@ -158,6 +158,7 @@ var RE = {
 		_self.cache.editor.addEventListener('input', function () {
 			AndroidInterface.staticWords(_self.staticWords());
 			AndroidInterface.setHtmlContent(_self.getHtml());
+			AndroidInterface.changeWords(_self.changeWords());
 		}, false);
 	},
 	initCache: function initCache() {
@@ -191,6 +192,11 @@ var RE = {
 		var content = _self.cache.editor.innerHTML.replace(/<div\sclass="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
 		return content.length;
 	},
+	changeWords: function changeWords() {
+        var _self = this;
+        var content = _self.cache.editor.innerHTML.replace(/<div\sclass="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
+        return content;
+    },
 	saveRange: function saveRange() {
 		//保存节点位置
 		var _self = this;

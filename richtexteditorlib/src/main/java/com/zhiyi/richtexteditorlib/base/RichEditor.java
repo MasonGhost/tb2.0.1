@@ -474,7 +474,14 @@ public abstract class RichEditor extends WebView {
             mContentLength = num;
             if(mOnTextLengthChangeListener != null) {
                 mOnTextLengthChangeListener.onTextLengthChange(num);
+                LogUtils.d("wordsLenght:::"+num);
             }
         }
+
+        @JavascriptInterface
+        public void changeWords(String words){
+            LogUtils.d("changeWords:::"+words);
+        }
+
     }
 }

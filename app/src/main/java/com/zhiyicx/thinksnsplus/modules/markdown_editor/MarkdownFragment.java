@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -50,6 +51,17 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     public static MarkdownFragment newInstance() {
         return new MarkdownFragment();
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.publish);
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        LogUtils.d(mRichTextView.getHtml());
     }
 
     @Override

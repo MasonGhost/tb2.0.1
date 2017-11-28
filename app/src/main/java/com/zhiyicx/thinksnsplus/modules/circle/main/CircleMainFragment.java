@@ -72,6 +72,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected void setRightLeftClick() {
+        super.setRightLeftClick();
+        startActivity(new Intent(getActivity(), MarkdownActivity.class));
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         for (int i = 0; i < 12; i++) {
             GroupInfoBean groupInfoBean = new GroupInfoBean();

@@ -18,10 +18,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import javax.inject.Inject;
@@ -181,7 +179,6 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_rank:
 //                startActivity(new Intent(getActivity(), RankIndexActivity.class));
-//                startActivity(new Intent(getActivity(), MarkdownActivity.class));
                 startActivity(new Intent(getActivity(), CircleMainActivity.class));
                 break;
             default:
