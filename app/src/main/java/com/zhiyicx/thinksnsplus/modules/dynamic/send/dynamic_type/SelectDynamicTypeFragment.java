@@ -155,7 +155,6 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
                     && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
-                mPresenter.savePayTip(false);
             } else {
                 startActivity(new Intent(getActivity(), PublishInfoActivity.class));
             }
@@ -335,11 +334,12 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
-                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .backgroundAlpha(1f)
                     .with(getActivity())
                     .bottomClickListener(() -> mPayAlertPopWindow.hide())
                     .item6ClickListener(() -> {
                         mPayAlertPopWindow.hide();
+                        mPresenter.savePayTip(false);
                         startActivity(new Intent(getActivity(), PublishInfoActivity.class));
                     })
                     .build();

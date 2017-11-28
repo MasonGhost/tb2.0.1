@@ -29,9 +29,10 @@ public enum PayType {
             case "alipay":
                 result = ALIPAY.getAcount();
                 break;
-            case "wx":
+            case "wechat":
                 result = WX.getAcount();
                 break;
+            default:
         }
         return result;
     }

@@ -33,7 +33,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
 
-    private MyAnswerContract.Presenter mPresenter;
+    protected MyAnswerContract.Presenter mPresenter;
 
     public MyAnswerAdapter(Context context, List<AnswerInfoBean> data, MyAnswerContract.Presenter presenter) {
         super(context, R.layout.item_question_answer, data);
@@ -74,20 +74,13 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         RxView.clicks(tvLikeCount)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-//                    if (!answerInfoBean.getLiked()) {
-//                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
-//                    } else {
-//                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
-//                    }
                     mPresenter.handleLike(position, answerInfoBean);
-//                    // 修改UI
-//                    dealLikeUI(answerInfoBean, tvLikeCount);
                 });
         // 评论数量
         holder.setText(R.id.tv_comment_count, String.valueOf(answerInfoBean.getComments_count()));
     }
 
-    private void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount) {
+    protected void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount) {
         // 是否点赞
         Drawable unLike = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_normal);
         Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_high);

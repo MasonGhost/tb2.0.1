@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -202,6 +203,8 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             toll.setToll_money(0);// 付费金额
             toll.setToll_type_string("");// 付费类型
             toll.setPaid_node(0);// 付费节点
+            imageBean.setWidth(DeviceUtils.getScreenWidth(getContext()));
+            imageBean.setHeight(DeviceUtils.getScreenWidth(getContext())/4*3);
             imageBean.setToll(toll);
             imageBean.setStorage_id(mInfo.getData().getFiles().get(i));// 图片附件id
             imageBeanList.add(imageBean);

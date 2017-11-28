@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.container.DaggerInfoContainerComponent;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
@@ -28,6 +29,12 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
                         new InfoContainerPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        BaseFragment fragment = mContanierFragment;
+        fragment.onBackPressed();
     }
 
 }

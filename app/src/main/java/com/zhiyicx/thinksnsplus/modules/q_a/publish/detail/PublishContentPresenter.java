@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
@@ -41,6 +42,8 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     UpLoadRepository mUpLoadRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
     @Override
     protected boolean useEventBus() {
@@ -91,7 +94,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
                         EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
                         mRootView.showSnackMessage(mContext.getString(R.string.publish_success), Prompt.DONE);
-//                        mRootView.publishSuccess(data.getData());
+                        mRootView.publishSuccess(data.getData());
                     }
 
                     @Override
@@ -118,7 +121,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
                         mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
-//                        mRootView.updateSuccess();
+                        mRootView.updateSuccess();
                     }
 
                     @Override
@@ -145,7 +148,6 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
                         mRootView.showSnackMessage(mContext.getString(R.string.update_success), Prompt.DONE);
-//                        mRootView.updateSuccess();
                     }
 
                     @Override
@@ -167,12 +169,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     public void pareseBody(String body) {
 
         Subscription subscribe = Observable.just(body)
-                .flatMap(new Func1<String, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(String s) {
-                        return Observable.from(RegexUtils.cutStringByImgTag(s));
-                    }
-                })
+                .flatMap(s -> Observable.from(RegexUtils.cutStringByImgTag(s)))
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -212,7 +209,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void deleteAnswer(AnswerDraftBean answer) {
-
+        mRepository.deleteAnswer(answer);
     }
 
     @Override
