@@ -277,7 +277,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 case MSG_REFRESHGOLD:
                     updatedGold();
                     break;
-                    default:
+                default:
             }
         }
     };
@@ -294,7 +294,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 case RECIECED_GIFT:
                     showGift();
                     break;
-                    default:
+                default:
 
             }
 
@@ -420,8 +420,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             if (presenterUser == null) {
                 presenterUser = new UserInfo(new Icon());
             }
-        }
-        else {
+        } else {
             presenterUser = new UserInfo();
             if (data.user != null) {
                 presenterUser.uid = data.user.uid;
@@ -445,8 +444,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (currentView == 0) {//主播端
             mCid = ZBStreamingClient.getInstance().getPresenterImInfo().cid;
             initVoteManager(currentView, "");
-        }
-        else if (currentView == 1) {//观众端
+        } else if (currentView == 1) {//观众端
             mCid = ZBPlayClient.getInstance().getPresenterImInfo().cid;
             initVoteManager(currentView, presenterUser.usid);
 
@@ -541,8 +539,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         }
         if (isVote) {
             doVotePoll(meut, mVoteOptionPop.getVoteId(), mVoteOptionPop.getSelectOptionKey());
-        }
-        else {
+        } else {
             sendGiftSuccessAndShow();
 //        mPresenter.exchange(1, presenterUser.uid, meut.gift_code, GoldService.EXCHANGE_TYPE_GIFT);
         }
@@ -586,7 +583,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     goCharge();
 
                 }
-            }, UiUtils.getString(R.string.charge_title_tip), UiUtils.getString(R.string.charge_message_tip), UiUtils.getString(R.string.cancel), UiUtils.getString(R.string.str_top_up));
+            }, UiUtils.getString(R.string.charge_title_tip), UiUtils.getString(R.string.charge_message_tip), UiUtils.getString(R.string.cancel),
+                    UiUtils.getString(R.string.str_top_up));
         }
         mChargeDialog.show();
     }
@@ -667,7 +665,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 mPollIb.setVisibility(View.VISIBLE);
             }
             if (mFilterNameTv != null) {
-                AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(AutoRelativeLayout.LayoutParams.WRAP_CONTENT, AutoRelativeLayout.LayoutParams.WRAP_CONTENT);
+                AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(AutoRelativeLayout.LayoutParams.WRAP_CONTENT,
+                        AutoRelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.addRule(AutoRelativeLayout.CENTER_HORIZONTAL);
                 params.topMargin = (int) (UiUtils.getScreenHeidth() / 3);
                 mFilterNameTv.setLayoutParams(params);
@@ -675,8 +674,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 //            if (mPollIb != null)
 //                mPollIb.setVisibility(View.VISIBLE);
 
-        }
-        else if (currentView == LIVE_VIEW) {//用户直播页面
+        } else if (currentView == LIVE_VIEW) {//用户直播页面
             initLisenter();//点击屏幕,点赞动画
             showPresenterInfo();
         }
@@ -699,8 +697,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (e2.getRawX() - e1.getRawX() > 100) {
                     if (mFilterIndex <= 0) {
 
-                    }
-                    else {
+                    } else {
                         mFilterIndex--;
                         ((PublishView) getActivity()).getFilterManager()
                                 .changeFilter(new FilterInfo(false, mFilterIndex));
@@ -727,7 +724,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 try {
-                    ZBStreamingClient.getInstance().setFocusAreaIndicator((RotateLayout) (getActivity()).findViewById(R.id.focus_indicator_rotate_layout), R.id.focus_indicator);
+                    ZBStreamingClient.getInstance().setFocusAreaIndicator((RotateLayout) (getActivity()).findViewById(R.id
+                            .focus_indicator_rotate_layout), R.id.focus_indicator);
                     ZBStreamingClient.getInstance().doSingleTapUp((int) e.getX(), (int) e.getY());
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -743,8 +741,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     hidekeyboard();//隐藏软键盘
                     flag = false;
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -862,7 +859,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private void showGift() {
         if (!mMessages.isEmpty()) {
             Message tmp = mMessages.poll();
-            boolean isVote = (tmp.ext.customID==VoteManager.MESSAGE_VOTE_RECEIVED?true:false);//true:收到的投票
+            boolean isVote = (tmp.ext.customID == VoteManager.MESSAGE_VOTE_RECEIVED ? true : false);//true:收到的投票
             UserInfo userInfo = mUserMessageCach.get(tmp.ext.ZBUSID);
             ZBGift gift = null;
             OptionDetail detail = null;
@@ -871,8 +868,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (!isVote) {
                     GiftMessage giftMessage = gson.fromJson(tmp.ext.custom.toString(), GiftMessage.class);
                     gift = mGiftConfigCach.get(giftMessage.type);
-                }
-                else {
+                } else {
                     VoteInfo voteInfo = gson.fromJson(gson.toJson(tmp.ext.custom), VoteInfo.class);
                     detail = voteInfo.getVoteDetail();
                     gift = mGiftConfigCach.get(detail.getGift_code());
@@ -891,8 +887,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (!isVote) {
                     tvDes1.setText(getString(R.string.str_send_presenter) + gift.name);
                     tvGoldNums1.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     tvDes1.setText(gift.name);
                     tvGoldNums1.setVisibility(View.VISIBLE);
                 }
@@ -911,7 +906,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     UiUtils.glideWrap(gift.image).into(ivGift1);
                 }
 
-                if (isVote &&  null != detail) {
+                if (isVote && null != detail) {
                     tvVoteKey1.setVisibility(View.VISIBLE);
                     tvVoteKey1.setText("投" + detail.getVote_key());
                 }
@@ -925,8 +920,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (!isVote) {
                     tvGoldNums2.setVisibility(View.GONE);
                     tvDes2.setText(getString(R.string.str_send_presenter) + gift.name);
-                }
-                else {
+                } else {
                     tvGoldNums2.setVisibility(View.VISIBLE);
                     tvDes2.setText(gift.name);
                 }
@@ -946,7 +940,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     UiUtils.glideWrap(gift.image).into(ivGift2);
                 }
 
-                if (isVote &&  null != detail) {
+                if (isVote && null != detail) {
                     tvVoteKey2.setVisibility(View.VISIBLE);
                     tvVoteKey2.setText("投" + detail.getVote_key());
                 }
@@ -959,8 +953,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (!isVote) {
                     tvDes3.setText(getString(R.string.str_send_presenter) + gift.name);
                     tvGoldNums3.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     tvGoldNums3.setVisibility(View.VISIBLE);
                     tvDes3.setText(gift.name);
                 }
@@ -979,7 +972,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 } else {
                     UiUtils.glideWrap(gift.image).into(ivGift3);
                 }
-                if (isVote &&  null != detail) {
+                if (isVote && null != detail) {
                     tvVoteKey3.setVisibility(View.VISIBLE);
                     tvVoteKey3.setText("投" + detail.getVote_key());
                 }
@@ -1050,19 +1043,18 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         getEveryBodyInfo(tmp.msg);
 
     }
+
     private void getEveryBodyInfo(Message message) {
         if (mUserMessageCach.containsKey(message.ext.ZBUSID) && !TextUtils.isEmpty(mUserMessageCach.get(message.ext.ZBUSID).uid)) {
             mClickUserInfo = mUserMessageCach.get(message.ext.ZBUSID);//保存当前点击的用户
             showPresenterInfo(mUserMessageCach.get(message.ext.ZBUSID), false);
-        }
-        else {
+        } else {
 
             long currentTime = System.currentTimeMillis();//频繁请求提示
             if ((currentTime - mTime) < UserService.FOLLOW_SPACING_TIME) {
                 showMessage(UiUtils.getString("str_frequently_follow_prompt"));
                 return;
-            }
-            else {
+            } else {
                 mTime = System.currentTimeMillis();
             }
             mPresenter.getLocalUserInfo(message, "");
@@ -1105,8 +1097,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
              */
 
             mPresenter.getRecomList(presenterUser.uid);
-        }
-        else {//主播直播页面
+        } else {//主播直播页面
             if (mPublishView.isSelfClose()) {
                 return;
             }
@@ -1348,7 +1339,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                         @Override
                         public void initPopupView(View contentView) {
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_name)).setText(userInfotmp.uname);
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(TextUtils.isEmpty(userInfotmp.location) ? getString(R.string.str_default_location) : userInfotmp.location);
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(TextUtils.isEmpty(userInfotmp.location) ?
+                                    getString(R.string.str_default_location) : userInfotmp.location);
                             UiUtils.glideDisplayWithTrasform(userInfotmp.avatar.getOrigin()
                                     , (ImageView) contentView.findViewById(R.id.iv_userinfo_item_icon)
                                     , new GlideCircleTrasform(getActivity().getApplicationContext()));
@@ -1419,8 +1411,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                                 btAttention.setName(UiUtils.getString("str_cant_follow_self"));
                                 btAttention.setBackgroundResource(R.drawable.shape_follow_button_enable);
 
-                            }
-                            else {
+                            } else {
                                 btAttention.setVisibility(View.VISIBLE);
                                 btAttention.setNameSize(14);
                                 btAttention.setOnClickListener(new View.OnClickListener() {
@@ -1431,8 +1422,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                                         if ((currentTime - mTime) < UserService.FOLLOW_SPACING_TIME) {
                                             showMessage(UiUtils.getString("str_frequently_follow_prompt"));
                                             return;
-                                        }
-                                        else {
+                                        } else {
                                             mTime = System.currentTimeMillis();
                                         }
                                         mPopPresenter.follow(UserHomePresenter.isFollow(!(userInfotmp.is_follow == 1)));
@@ -1482,34 +1472,34 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 //                checkFollow(userInfos[0], false);
 //            }
 //            else {
-                switch (msg.type) {
-                    case MessageType.MESSAGE_TYPE_TEXT:
-                        /**
-                         * 刷新列表
-                         */
-                        addChat(userMessage1);
-                        break;
+            switch (msg.type) {
+                case MessageType.MESSAGE_TYPE_TEXT:
+                    /**
+                     * 刷新列表
+                     */
+                    addChat(userMessage1);
+                    break;
 
-                    case MessageType.MESSAGE_CUSTOM_ID_GIFT:
-                    case VoteManager.MESSAGE_VOTE_RECEIVED:
-                        mMessages.add(msg);
-                        break;
-                    case MessageType.MESSAGE_TYPE_CUSTOM_ENAABLE:
-                        switch (msg.ext.customID) {
-                            case MessageType.MESSAGE_CUSTOM_ID_GIFT:
-                                mMessages.add(msg);
+                case MessageType.MESSAGE_CUSTOM_ID_GIFT:
+                case VoteManager.MESSAGE_VOTE_RECEIVED:
+                    mMessages.add(msg);
+                    break;
+                case MessageType.MESSAGE_TYPE_CUSTOM_ENAABLE:
+                    switch (msg.ext.customID) {
+                        case MessageType.MESSAGE_CUSTOM_ID_GIFT:
+                            mMessages.add(msg);
 
-                                break;
-                            case MessageType.MESSAGE_CUSTOM_ID_FLLOW:
-                                userMessage1.msg.txt = getString(R.string.str_follow_presenter);
-                                addChat(userMessage1);
-                                break;
+                            break;
+                        case MessageType.MESSAGE_CUSTOM_ID_FLLOW:
+                            userMessage1.msg.txt = getString(R.string.str_follow_presenter);
+                            addChat(userMessage1);
+                            break;
 
-                        }
+                    }
 
-                        break;
-                }
+                    break;
             }
+        }
 
 
 //        }
@@ -1528,8 +1518,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 UserMessage userMessage = new UserMessage(ZhiboApplication.getUserInfo(), message);
                 addChat(userMessage);
                 mEditText.setText("");//清除聊天框
-            }
-            else {//发送失败
+            } else {//发送失败
                 showMessage("发送失败~");
             }
         } catch (Exception e) {
@@ -1549,7 +1538,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (!TextUtils.isEmpty(userMessage.msg.txt)) {
             mChatList.add(0, userMessage);
             mMessageAdapter.notifyDataSetChanged();
-//            mMessageRecyclerView.smoothScrollToPosition(0);
+            mMessageRecyclerView.scrollToPosition(0);
         }
     }
 
@@ -1573,8 +1562,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     flag = true;
 //                    scrollToView.layout(0, rect.bottom - scrollToView.getHeight() - rect.top, scrollToView.getWidth(), rect.bottom - rect.top);
                     showInput();//显示输入框
-                }
-                else {
+                } else {
                     //键盘隐藏
                     flag = false;
                     hideInput();//隐藏输入框
@@ -1669,8 +1657,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
             //addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID).mUserInfo, message));
             addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID), message));
-        }
-        else {
+        } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
         }
 
@@ -1689,8 +1676,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
          */
         if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
             mMessages.add(message);
-        }
-        else {
+        } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
         }
 
@@ -1736,8 +1722,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             message.txt = getString(R.string.str_follow_presenter);
             //  addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID).mUserInfo, message));
             addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID), message));
-        }
-        else {
+        } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
         }
 
@@ -1808,16 +1793,14 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 if (isFollow) {
                     tv_follows.setText(Integer.valueOf(tv_follows.getText().toString()) + 1 + "");
 
-                }
-                else {
+                } else {
 
                     tv_follows.setText(Integer.valueOf(tv_follows.getText().toString()) - 1 + "");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
 
             showPresenterInfo(mClickUserInfo, clickIsPresenter);
         }
@@ -1834,8 +1817,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             btAttention.setName(UiUtils.getString("str_already_follow"));
             btAttention.setNameLeftDrawable(R.mipmap.ico_added_gz);
             btAttention.setBackgroundResource(R.drawable.shape_follow_button_enable);
-        }
-        else {
+        } else {
             btAttention.setName(UiUtils.getString("str_follow"));
             btAttention.setNameLeftDrawable(null);
             btAttention.setBackgroundResource(R.drawable.shape_blue_solid);
@@ -1874,9 +1856,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (currentView == 0) {//主播
             initVoteCreatePop(currentUsid);
             mVoteManager = VoteManager.newBuilder().cid(mCid).userType(VoteManager.TYPE_PRESENTER).setListener(preseterListener).build();
-        }
-        else if (currentView == 1) {//观众
-            mVoteManager = VoteManager.newBuilder().cid(mCid).userType(VoteManager.TYPE_AUDIENCE).presenterUsid(usid).setListener(audienceListener).build();
+        } else if (currentView == 1) {//观众
+            mVoteManager = VoteManager.newBuilder().cid(mCid).userType(VoteManager.TYPE_AUDIENCE).presenterUsid(usid).setListener(audienceListener)
+                    .build();
         }
 
     }
@@ -1914,8 +1896,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     mGiftSheet.toggle();//弹出礼物框
                 }
             });
-        }
-        else {
+        } else {
             mVoteOptionPop.setVoteInfo(info);
         }
     }
@@ -1933,8 +1914,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         //0: 结束 1：投票中 2：投票暂停
         if (voteInfo.getStatus() == 0) {
             mVoteShowContainerRl.addView(new VoteEndView(getActivity(), voteInfo));
-        }
-        else {
+        } else {
             addVoteOnView(voteInfo);
         }
 
@@ -1943,8 +1923,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 mPollIb.setImageResource(R.mipmap.host_btn_vote_normal);
                 mPollIb.setEnabled(true);
 
-            }
-            else {
+            } else {
                 mPollIb.setImageResource(R.mipmap.host_btn_vote_unable);
                 mPollIb.setEnabled(false);
             }
@@ -1961,7 +1940,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         }
         onView = new VoteOnView(getActivity(), info);
         //onView.setUserType(type);
-        AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
+                .WRAP_CONTENT);
         params.leftMargin = UiUtils.dip2px(10);
         onView.setLayoutParams(params);
         onView.setOnVoteEndListener(new VoteOnView.OnVoteEndListener() {
@@ -2051,8 +2031,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             }
             if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
                 mMessages.add(message);
-            }
-            else {
+            } else {
                 mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
             }
         }
@@ -2095,7 +2074,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 }
                 MessageExt messageext = new MessageExt(ZhiboApplication.getUserInfo().uid, DataDealUitls.transBean2Map(voteInfo));
                 messageext.ZBUSID = ZhiboApplication.getUserInfo().uid;
-                messageext.customID=VoteManager.MESSAGE_VOTE_RECEIVED;
+                messageext.customID = VoteManager.MESSAGE_VOTE_RECEIVED;
                 Message msg = new Message();
                 msg.is_del = true;
                 msg.type = MessageType.MESSAGE_CUSTOM_ID_GIFT;
@@ -2132,8 +2111,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             if (mUserMessageCach.containsKey(msg.ext.ZBUSID)) {
                 msg.is_del = true;
                 mMessages.add(msg);
-            }
-            else {
+            } else {
                 mPresenter.getLocalUserInfo(msg, "uname,is_verified,avatar");
             }
 
@@ -2179,21 +2157,18 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
              */
             mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED
                     , InputMethodManager.HIDE_IMPLICIT_ONLY);//显示软键盘
-        }
-        else if (
+        } else if (
                 view.getId() == R.id.bt_publish_core_send) {
             /**
              * 点击发送按钮
              */
             mPresenter.sendTextmsg(mEditText.getText().toString().trim());
-        }
-        else if (view.getId() == R.id.rl_publish_core_presenter_info) {
+        } else if (view.getId() == R.id.rl_publish_core_presenter_info) {
             /**
              * 点击主播头像
              */
             mPresenter.getUserInfo(presenterUser.usid);
-        }
-        else if (view.getId() == R.id.ib_publish_core_gift_send) {
+        } else if (view.getId() == R.id.ib_publish_core_gift_send) {
             /**
              * 点击礼物图标
              */
@@ -2201,12 +2176,10 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             if (currentView == PUBLISH_VIEW) {//主播端
                 mPresenter.showshare(presenterUser, getActivity());
                 return;
-            }
-            else if (currentView == LIVE_VIEW) {//观众端
+            } else if (currentView == LIVE_VIEW) {//观众端
                 hidekeyboard();//隐藏软键盘
             }
-        }
-        else if (view.getId() == R.id.ib_publish_core_gift) {
+        } else if (view.getId() == R.id.ib_publish_core_gift) {
             /**
              * 弹出礼物匡
              */
@@ -2222,8 +2195,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             vpd.setSendBtText("送出");
             vpd.setSendBtEnable(false);
             mGiftSheet.toggle();
-        }
-        else if (view.getId() == R.id.rl_publish_core_present_giftrank) {
+        } else if (view.getId() == R.id.rl_publish_core_present_giftrank) {
             /**
              * 跳转到礼物排行榜
              */
@@ -2232,23 +2204,19 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             bundle.putString(ZBLGoldRankActivity.KEY_MUID, presenterUser.usid);
             to.putExtras(bundle);
             startActivity(to);
-        }
-        else if (view.getId() == R.id.ib_publish_core_share) {
+        } else if (view.getId() == R.id.ib_publish_core_share) {
             /**
              * 分享
              */
             mPresenter.showshare(presenterUser, getActivity());
-        }
-        else if (view.getId() == R.id.iv_camear_change) {
+        } else if (view.getId() == R.id.iv_camear_change) {
             /**
              * 切换摄像头
              */
             mPublishView.switchCamera();
-        }
-        else if (view.getId() == R.id.ib_publish_core_receive_list) {
+        } else if (view.getId() == R.id.ib_publish_core_receive_list) {
 
-        }
-        else if (view.getId() == R.id.ib_publish_core_poll) {
+        } else if (view.getId() == R.id.ib_publish_core_poll) {
             if (!mPresenter.isJoinedChatRoom()) {
                 UiUtils.SnackbarText("服务连接中，暂不能发起投票，请稍后再试");
                 return;
@@ -2257,9 +2225,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             {
                 voteCreatePop.show(mRootView);
             }
-        }
-
-        else if (view.getId() == R.id.ib_publish_core_filter) {
+        } else if (view.getId() == R.id.ib_publish_core_filter) {
             mFilterPop.show();
         }
     }
