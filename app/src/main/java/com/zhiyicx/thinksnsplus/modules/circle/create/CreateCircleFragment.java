@@ -18,7 +18,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.types.CircleTyepsActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
@@ -41,6 +41,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         implements CreateCircleContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     private static final int REQUST_CODE_AREA = 8000;
+    private static final int REQUST_CODE_CATEGORY = 5000;
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -133,7 +134,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 String loacaiton = LocationBean.getlocation(locationBean);
                 setCity(loacaiton);
             }
-
+        } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
+            
         }
 
     }
@@ -224,7 +226,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mPhotoPopupWindow.show();
                 break;
             case R.id.ll_type_container:
-                startActivity(new Intent(getActivity(), CircleTyepsActivity.class));
+                Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
+                startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
                 break;
             case R.id.ll_tag_container:
                 EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.CREATE_CIRCLE, null);

@@ -598,7 +598,7 @@
             android:name=".modules.circle.mine.container.MyCircleContainerActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".modules.circle.all_circle.types.CircleTyepsActivity"
+            android:name=".modules.circle.create.types.CircleTyepsActivity"
             android:screenOrientation="portrait"/>
     </application>
 

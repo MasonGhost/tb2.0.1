@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.all_circle.types;
+package com.zhiyicx.thinksnsplus.modules.circle.create.types;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,9 +48,8 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     @Inject
     AllCircleContainerPresenter mAllCircleContainerPresenter;
 
-    public static AddInfoCategoryFragment newInstance(Bundle bundle) {
-
-        AddInfoCategoryFragment fragment = new AddInfoCategoryFragment();
+    public static CircleTypesFragment newInstance(Bundle bundle) {
+        CircleTypesFragment fragment = new CircleTypesFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

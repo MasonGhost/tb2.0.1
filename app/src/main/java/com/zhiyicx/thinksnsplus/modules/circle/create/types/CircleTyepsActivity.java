@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.all_circle.types;
+package com.zhiyicx.thinksnsplus.modules.circle.create.types;
 
 import android.support.v4.app.Fragment;
 
@@ -13,7 +13,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 public class CircleTyepsActivity extends TSActivity {
     @Override
     protected Fragment getFragment() {
-        return new CircleTypesFragment();
+        return CircleTypesFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

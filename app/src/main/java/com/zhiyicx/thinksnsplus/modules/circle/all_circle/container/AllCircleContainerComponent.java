@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.types.CircleTypesFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 
 import dagger.Component;
 
