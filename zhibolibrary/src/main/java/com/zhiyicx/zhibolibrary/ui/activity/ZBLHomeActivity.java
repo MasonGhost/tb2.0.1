@@ -121,7 +121,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     //初始化viewpager
     private void initViewPager() {
         //设置缓存的个数
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(1);
         mAdapter = new AdapterViewPager(getSupportFragmentManager());
         mFragmentList = mPresenter.getFragments();
         mAdapter.bindData(mFragmentList);//将List设置给adapter

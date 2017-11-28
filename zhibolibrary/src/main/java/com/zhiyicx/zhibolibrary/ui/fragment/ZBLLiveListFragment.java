@@ -48,6 +48,6 @@ public class ZBLLiveListFragment extends ZBLLiveFragment {
     @Override
     public void setFilterSatus(boolean isFilter) {
         mFilterTV.setImageResource(isFilter ? R.mipmap.ic_top_screening_select
-                : R.mipmap.ic_top_screening_white);
+                : R.mipmap.ico_circle_screen);
     }
 }

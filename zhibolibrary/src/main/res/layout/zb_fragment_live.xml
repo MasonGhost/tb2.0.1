@@ -118,7 +118,7 @@
         <com.zhy.autolayout.AutoLinearLayout
             android:id="@+id/ll_tab"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="96px"
             android:layout_centerInParent="true"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -156,27 +156,32 @@
             android:paddingLeft="30px"
             android:paddingRight="30px"
             android:src="@mipmap/topbar_back"/>
+
         <ImageView
             android:id="@+id/tv_live_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="30px"
-            android:layout_toLeftOf="@+id/tv_live_filter"
-            android:paddingLeft="10px"
-            android:src="@mipmap/ic_weiba_search"
+            android:layout_alignParentTop="true"
+            android:paddingEnd="15px"
+            android:paddingLeft="15px"
+            android:layout_marginRight="15px"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ico_search"
             android:visibility="visible"/>
 
         <ImageView
             android:id="@+id/tv_live_filter"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="30px"
-            android:paddingLeft="10px"
-            android:src="@mipmap/ic_top_screening_white"
-            android:visibility="visible"/>
+            android:paddingLeft="15px"
+            android:paddingRight="15px"
+            android:paddingEnd="15px"
+            android:src="@mipmap/ico_circle_screen"
+            android:layout_toLeftOf="@+id/tv_live_search"
+            android:layout_toStartOf="@+id/tv_live_search"
+            android:visibility="invisible"/>
 
         <View
             style="@style/divider_style_horizontal"

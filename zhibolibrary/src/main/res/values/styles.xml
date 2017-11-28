@@ -122,7 +122,7 @@
     <style name="style_toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/toolview_height</item>
-        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:background">@color/white</item>
         <item name="android:elevation">@dimen/elevation_huge</item>
         <item name="android:translationZ">@dimen/translationZ_huge</item>
     </style>

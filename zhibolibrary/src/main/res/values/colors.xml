@@ -12,7 +12,7 @@
 
     <color name="white">#ffffff</color>
     <color name="white_gray">#55FFFFFF</color>
-    <color name="black">#000000</color>
+    <color name="black">@color/important_for_content</color>
     <color name="gray">#cccccc</color>
     <color name="color_light_gray">#999999</color>
     <color name="color_font_gray">#ebebeb</color>
