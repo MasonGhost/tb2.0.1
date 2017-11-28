@@ -385,10 +385,10 @@
     <string name="transaction_account">交易账户</string>
     <string name="transaction_time">交易时间</string>
     <string name="transaction_success">交易成功</string>
-    <string name="bill_doing">操作中</string>
+    <string name="bill_doing">审核中</string>
     <string name="bill_doing_fialed">操作失败</string>
     <string name="transaction_fail">交易失败</string>
-    <string name="transaction_doing">交易中&#8230;</string>
+    <string name="transaction_doing">审核中&#8230;</string>
 
     <!--意见反馈-->
     <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>
