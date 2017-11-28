@@ -418,7 +418,7 @@
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:layout_weight="1"
                     android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingTop="@dimen/introduce_padding_top"
+                    android:paddingTop="@dimen/spacing_large"
                     android:visibility="visible"
                     app:hintContent="@string/edit_introduce"
                     app:limitSize="@integer/introduce_input_max_size"

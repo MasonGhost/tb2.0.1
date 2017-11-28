@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
@@ -124,6 +125,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         return true;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initView(View rootView) {
         mPhotoSelector = DaggerPhotoSelectorImplComponent
@@ -131,6 +133,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
+
+        initListener();
 
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
@@ -214,6 +218,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                     mPhotoPopupWindow.hide();
                 })
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
+    }
+
+    private void initListener() {
+
     }
 
     /**
