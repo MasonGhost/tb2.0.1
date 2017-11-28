@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -17,5 +19,11 @@ public class CreateCircleActivity extends TSActivity<CreateCirclePresenter, Crea
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .createCirclePresenterModule(new CreateCirclePresenterModule(mContanierFragment))
                 .build().inject(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

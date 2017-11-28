@@ -37,7 +37,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
- * @Author Jungle68
+ * @uthor Jungle68
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
@@ -132,6 +132,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             case INFO_PUBLISH:
 
                 break;
+            case CREATE_CIRCLE:
+
+                break;
             default:
         }
 
@@ -175,6 +178,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             case INFO_PUBLISH:
                 mToolbarRight.setVisibility(View.INVISIBLE);
                 break;
+            case CREATE_CIRCLE:
+                mToolbarRight.setVisibility(View.INVISIBLE);
+                break;
             default:
         }
         updateChooseTip();
@@ -210,7 +216,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             case USER_EDIT:
                 break;
             case INFO_PUBLISH:
-
+                break;
+            case CREATE_CIRCLE:
                 break;
             default:
         }
@@ -259,6 +266,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                         .subscribe(aVoid -> {
                             switch (mFrom) {
                                 case INFO_PUBLISH:
+                                    deleteTagSuccess(position);
+                                    break;
+                                case CREATE_CIRCLE:
                                     deleteTagSuccess(position);
                                     break;
                                 case REGISTER:
@@ -363,6 +373,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         switch (mFrom) {
             case INFO_PUBLISH:
                 break;
+            case CREATE_CIRCLE:
+                break;
             case REGISTER:
             case USER_EDIT:
                 mChoosedTags.clear();
@@ -387,6 +399,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         }
         switch (mFrom) {
             case INFO_PUBLISH:
+                addTagSuccess(categoryPosition, tagPosition);
+                break;
+            case CREATE_CIRCLE:
                 addTagSuccess(categoryPosition, tagPosition);
                 break;
             case REGISTER:
@@ -447,13 +462,15 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     public void onBackPressed() {
         switch (mFrom) {
-
             case REGISTER:
                 break;
             case USER_EDIT:
                 setresult();
                 break;
             case INFO_PUBLISH:
+                setresult();
+                break;
+            case CREATE_CIRCLE:
                 setresult();
                 break;
             default:

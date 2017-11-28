@@ -263,7 +263,8 @@
     <string name="circle_type">分类</string>
     <string name="edit_circle_name">设置圈名</string>
     <string name="edit_circle_type">设置圈子类别</string>
-    <string name="edit_circle_location">位置</string>
+    <string name="edit_circle_location">设置圈子位置</string>
+    <string name="circle_location">位置</string>
     <string name="edit_circle_synchronization">帖子同步至动态</string>
     <string name="edit_circle_block">设置为封闭圈子</string>
     <string name="edit_circle_charge">收费入圈</string>

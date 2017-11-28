@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 
 import android.content.Intent;
 import android.support.v7.widget.SwitchCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -17,8 +19,12 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
@@ -26,6 +32,7 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -94,6 +101,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private String mCurrentShowLocation;
 
+    private UserInfoTagsAdapter mUserInfoTagsAdapter;
+    private List<UserTagBean> mUserTagBeens = new ArrayList<>();
+
     @Override
     protected String setRightTitle() {
         return getString(R.string.create);
@@ -121,6 +131,15 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
+
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
+        mFlTags.setAdapter(mUserInfoTagsAdapter);
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                jumpToEditUserTag();
+            }
+            return true;
+        });
     }
 
     @Override
@@ -135,14 +154,23 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 setCity(loacaiton);
             }
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
-            
+            CircleTypeBean circleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
+            mTvCircleType.setText(circleTypeBean.getName());
+        } else if (requestCode == TagFrom.CREATE_CIRCLE.id) {
+            ArrayList<UserTagBean> choosedTags = data.getExtras().getParcelableArrayList(EditUserTagFragment.BUNDLE_CHOOSED_TAGS);
+            mUserTagBeens.clear();
+            mUserTagBeens.addAll(choosedTags);
+            mUserInfoTagsAdapter.notifyDataChanged();
+            mTvTagHint.setVisibility(choosedTags.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
     }
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-
+        Glide.with(getActivity())
+                .load(photoList.get(0).getImgUrl())
+                .into(mIvHeadIcon);
     }
 
     @Override
@@ -218,6 +246,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mTvLocation.setText(city);//更新位置
     }
 
+    private void jumpToEditUserTag() {
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.CREATE_CIRCLE, (ArrayList<UserTagBean>) mUserTagBeens);
+    }
+
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container, R.id.ll_synchro, R.id.ll_block})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -230,7 +262,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
                 break;
             case R.id.ll_tag_container:
-                EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.CREATE_CIRCLE, null);
+                jumpToEditUserTag();
                 break;
             case R.id.ll_location_container:
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);

@@ -21,8 +21,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
- * @Describe
- * @Author Jungle68
+ * @Describea
+ * @author Jungle68
  * @Date 2017/7/10
  * @Contact master.jungle68@gmail.com
  */
@@ -65,8 +65,8 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
                             if (category.getTags() != null) {
 
                                 mUserTagBeanGreenDao.saveMultiData(category.getTags());
-
-                                if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {// 资讯投稿的标签
+                                // 资讯投稿 or 创建圈子的标签
+                                if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH || mRootView.getCurrentFrom() == TagFrom.CREATE_CIRCLE) {
                                     for (UserTagBean tag : category.getTags()) {
                                         if (mRootView.getChoosedTags().contains(tag)) {
                                             tag.setMine_has(true);
@@ -83,7 +83,8 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
                         mUserTagBeanGreenDao.saveMultiData(userTags);
                     }
                     mRootView.updateMineTagsFromNet(userTags);
-                    if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {// 资讯投稿的标签
+                    // 资讯投稿 or 创建圈子的标签
+                    if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH || mRootView.getCurrentFrom() == TagFrom.CREATE_CIRCLE) {
                         return categorys;
                     }
                     return mTagCategoryBeanGreenDao.getMultiDataFromCache();

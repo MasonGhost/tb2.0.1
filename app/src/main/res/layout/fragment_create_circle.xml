@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
-                    android:text="@string/edit_circle_location"
+                    android:text="@string/circle_location"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content"/>
 
@@ -216,7 +216,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/edit_circle_type"
+                    android:hint="@string/edit_circle_location"
                     android:text=""
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
