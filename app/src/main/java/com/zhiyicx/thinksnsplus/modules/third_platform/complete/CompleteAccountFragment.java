@@ -103,8 +103,11 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
                     showErrorTips("");
                     setConfirmEnable(!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString().trim()));
                 });
-
-        mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        try {
+            mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        } catch (NullPointerException e) {
+            mAppRule.setVisibility(View.GONE);
+        }
         mAppRule.setText(getString(R.string.app_rule, getString(R.string.app_name)));
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
