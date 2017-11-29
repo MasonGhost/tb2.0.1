@@ -49,14 +49,19 @@ public class VideoListHolder extends ZBLBaseHolder<SearchResult> {
         mShapeIV.setImageResource(R.mipmap.ico_people);
         mLocationIV.setVisibility(TextUtils.isEmpty(data.video.video_location) ? View.GONE : View.VISIBLE);
         mLocation.setText(data.video.video_location);
-        mVerified.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
         mUserCount.setText(data.video.replay_count + "");
         mTitle.setText(data.video.video_title);
-        if(data.user.avatar.getOrigin()!=null)
-            UiUtils.glideDisplayWithTrasform(data.user.avatar.getOrigin(), mIcon, new GlideCircleBoundTrasform(UiUtils.getContext()));
-        else
-            mIcon.setImageResource(R.mipmap.pic_default_woman);
-        if (data.video.video_icon.getOrigin() == null) showBlackCover();//如果地址位空显示黑色遮罩
+
+//        mVerified.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
+//
+//        if(data.user.avatar.getOrigin()!=null) {
+//            UiUtils.glideDisplayWithTrasform(data.user.avatar.getOrigin(), mIcon, new GlideCircleBoundTrasform(UiUtils.getContext()));
+//        } else {
+//            mIcon.setImageResource(R.mipmap.pic_default_woman);
+//        }
+        if (data.video.video_icon.getOrigin() == null) {
+            showBlackCover();//如果地址位空显示黑色遮罩
+        }
 
         UiUtils.glideWrap(data.video.video_icon.getOrigin())
                 .placeholder(R.mipmap.pic_photo_340)

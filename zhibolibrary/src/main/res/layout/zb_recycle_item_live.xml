@@ -64,6 +64,7 @@
             tool:text="望利鸟在成功给接口给大家送顾客"/>
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/iv_live_item_cover"
@@ -82,6 +83,7 @@
         </RelativeLayout>
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/iv_live_item_user_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"

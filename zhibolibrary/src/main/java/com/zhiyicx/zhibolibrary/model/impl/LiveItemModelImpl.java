@@ -77,8 +77,7 @@ public class LiveItemModelImpl implements LiveItemModel {
                             return new Gson().fromJson(jsonObject, ApiList.class);
                         }
                     });
-        }
-        else {//直播orrder和地址
+        } else {//直播orrder和地址
             map.put("order", order);
             //获取关注的直播列表,先获取关注信息，再获取播放状态信息
             if (order.equals(ZBLLiveItemFragment.TYPE_FOLLOW)) {
@@ -138,7 +137,8 @@ public class LiveItemModelImpl implements LiveItemModel {
                                         JSONObject js = new JSONObject(jsonObject.toString());
 
                                         if (js.getString("code").equals(ZBLApi.REQUEST_SUCESS)) {
-                                            List<StreamStatus> streamStatuslist = new Gson().fromJson(js.getJSONArray("data").toString(), new TypeToken<List<StreamStatus>>() {
+                                            List<StreamStatus> streamStatuslist = new Gson().fromJson(js.getJSONArray("data").toString(), new
+                                                    TypeToken<List<StreamStatus>>() {
                                             }.getType());
                                             if (streamStatuslist != null) {
                                                 for (int i = 0; i < streamStatuslist.size(); i++) {
@@ -155,8 +155,7 @@ public class LiveItemModelImpl implements LiveItemModel {
                                     return tmp;
                                 }
                             });
-                        }
-                        else
+                        } else
                             return Observable.just(tmp);
 
                     }
@@ -192,17 +191,17 @@ public class LiveItemModelImpl implements LiveItemModel {
      */
 
     @Override
-    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed ) {
+    public Observable<BaseJson<UserInfo[]>> getUsidInfo(final String usid, String filed) {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("api", ZBLApi.API_GET_USER_INFO);
         builder.add("filed", filed);
-        getPerssionData(builder,usid);
+        getPerssionData(builder, usid);
         FormBody formBody = builder.build();
         return mUserService.getUsIdInfobyFrom(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
 
     }
 
-    private void getPerssionData(FormBody.Builder builder,String usid) {
+    private void getPerssionData(FormBody.Builder builder, String usid) {
         builder.add("usid", usid);
 //        PermissionData[] permissionDatas= ZhiboApplication.getPermissionDatas();
 //        for (PermissionData data : permissionDatas) {
@@ -211,13 +210,13 @@ public class LiveItemModelImpl implements LiveItemModel {
     }
 
     @Override
-    public Observable<BaseJson<SearchResult[]>> getUserFollowList( String usid, String type, int page) {
+    public Observable<BaseJson<SearchResult[]>> getUserFollowList(String usid, String type, int page) {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("api", ZBLApi.API_GET_USER_LIST);
-        getPerssionData(builder,usid);
+        getPerssionData(builder, usid);
         builder.add("type", type);
         builder.add(ZBLApi.VAR_PAGE, page + "");
         FormBody formBody = builder.build();
-        return mUserService.getFollowList(ZBLApi.CONFIG_BASE_DOMAIN,formBody);
+        return mUserService.getFollowList(ZBLApi.CONFIG_BASE_DOMAIN, formBody);
     }
 }

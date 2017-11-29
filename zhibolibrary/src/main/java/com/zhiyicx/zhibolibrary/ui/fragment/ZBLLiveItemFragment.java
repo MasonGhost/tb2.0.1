@@ -47,9 +47,9 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
     @Inject
     LiveItemPresenter mPresenter;
 
-    private View mRootView;
+    protected View mRootView;
 
-    RefreshLayout mRefreshLayout;
+    protected RefreshLayout mRefreshLayout;
     RecyclerView mRecyclerView;
     protected TextView mPlaceHolder;
 
@@ -97,9 +97,8 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
             //创建默认的线性LayoutManager
             mLinearLayoutManager = new LinearLayoutManager(UiUtils.getContext());
             mRecyclerView.setLayoutManager(mLinearLayoutManager);
-            mRecyclerView.addItemDecoration(new SpaceItemLinearBaseDecoration(0,AutoUtils.getPercentWidthSize(2), 0, 0));//设置Item的间隔
-        }
-        else {
+            mRecyclerView.addItemDecoration(new SpaceItemLinearBaseDecoration(0, AutoUtils.getPercentWidthSize(2), 0, 0));//设置Item的间隔
+        } else {
 
             //创建默认的线性LayoutManager
             mLayoutManager = new GridLayoutManager(UiUtils.getContext(), 2);
@@ -143,8 +142,7 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
                         Log.w(TAG, "loading more data");
                         mPresenter.getList(true);
                     }
-                }
-                else {
+                } else {
                     MoreAdapter adapter = (MoreAdapter) recyclerView.getAdapter();
                     if (adapter == null) {
                         return;
@@ -384,4 +382,5 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
     public void setUsid(String usid) {
         this.mUsid = usid;
     }
+
 }

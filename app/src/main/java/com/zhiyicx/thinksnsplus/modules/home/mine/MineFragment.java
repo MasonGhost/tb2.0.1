@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -37,6 +38,8 @@ import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
+import com.zhiyicx.thinksnsplus.modules.live.mine.MineLiveActivity;
+import com.zhiyicx.thinksnsplus.modules.live.mine.MineLiveFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -47,9 +50,14 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.zhibolibrary.manager.ConfigManager;
+import com.zhiyicx.zhibolibrary.manager.soupport.IConfigManager;
 import com.zhiyicx.zhibolibrary.model.entity.Icon;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLHomeActivity;
 import com.zhiyicx.zhibolibrary.ui.activity.ZBLStarExchangeActivity;
+import com.zhiyicx.zhibolibrary.util.UiUtils;
+import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 
 import javax.inject.Inject;
 
@@ -295,21 +303,49 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             // 我的直播
             case R.id.bt_my_live:
 
-                UserInfo userInfo = ZhiboApplication.userInfo;
-                if (userInfo == null) {
-                    userInfo = new UserInfo();
-                }
-                userInfo.uid = String.valueOf(mUserInfoBean.getUser_id());
-                userInfo.sex = mUserInfoBean.getSex();
-                Icon avatar = new Icon();
-                avatar.origin = mUserInfoBean.getAvatar();
-                userInfo.avatar = avatar;
-                userInfo.location = mUserInfoBean.getLocation();
-                if (mUserInfoBean.getWallet() != null) {
-                    userInfo.gold = (int) mUserInfoBean.getWallet().getBalance();
-                }
-                ZhiboApplication.setUserInfo(userInfo);
-                startActivity(new Intent(getActivity(), ZBLStarExchangeActivity.class));
+                //直播初始化
+                IConfigManager configManager = ConfigManager.getInstance(UiUtils.getContext());
+                // 域名为当前应用的域名
+                configManager.init(ApiConfig.APP_DOMAIN, AppApplication.getmCurrentLoginAuth().getLiveTicket(), new
+                        OnCommonCallbackListener() {
+                            @Override
+                            public void onSuccess() {
+
+                                UserInfo userInfo = ZhiboApplication.userInfo;
+                                if (userInfo == null) {
+                                    userInfo = new UserInfo();
+                                }
+                                userInfo.uid = String.valueOf(mUserInfoBean.getUser_id());
+                                userInfo.sex = mUserInfoBean.getSex();
+                                Icon avatar = new Icon();
+                                avatar.origin = mUserInfoBean.getAvatar();
+                                userInfo.avatar = avatar;
+                                userInfo.location = mUserInfoBean.getLocation();
+                                if (mUserInfoBean.getWallet() != null) {
+                                    userInfo.gold = (int) mUserInfoBean.getWallet().getBalance();
+                                }
+                                ZhiboApplication.setUserInfo(userInfo);
+
+                                Intent intent = new Intent(getActivity(), MineLiveActivity.class);
+                                intent.putExtra(MineLiveFragment.BUNDLE_USID,userInfo.usid);
+                                startActivity(intent);
+
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
+                                showSnackErrorMessage(getString(R.string.err_net_not_work));
+                            }
+
+                            @Override
+                            public void onFail(String code, String message) {
+                                showSnackErrorMessage(message);
+
+                            }
+                        });
+
+
                 break;
             default:
         }
