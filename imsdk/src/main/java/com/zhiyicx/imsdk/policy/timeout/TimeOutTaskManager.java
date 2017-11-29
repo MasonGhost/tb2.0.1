@@ -37,18 +37,21 @@ public class TimeOutTaskManager {
      * @param timeOutTask
      */
     public void addTimeoutTask(TimeOutTask timeOutTask) {
-        mOutTaskHashMapCache.put(timeOutTask.getMessageContainer().msg.id, timeOutTask);
-        synchronized (mTimeOutTasks) {
-            // 增加任务
-            mTimeOutTasks.addLast(timeOutTask);
+        try {
+            mOutTaskHashMapCache.put(timeOutTask.getMessageContainer().msg.id, timeOutTask);
+            synchronized (mTimeOutTasks) {
+                // 增加任务
+                mTimeOutTasks.addLast(timeOutTask);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     public TimeOutTask getTimeoutTask() {
         synchronized (mTimeOutTasks) {
             if (mTimeOutTasks.size() > 0) {
-                return  mTimeOutTasks.removeFirst();
+                return mTimeOutTasks.removeFirst();
             }
         }
         return null;

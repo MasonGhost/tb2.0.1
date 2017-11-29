@@ -16,6 +16,7 @@ import com.azoft.carousellayoutmanager.CarouselLayoutManager;
 import com.azoft.carousellayoutmanager.CarouselZoomPostLayoutListener;
 import com.azoft.carousellayoutmanager.CenterScrollListener;
 import com.azoft.carousellayoutmanager.ItemTransformation;
+import com.bumptech.glide.Glide;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.component.DaggerEndStreamComponent;

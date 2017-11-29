@@ -19,6 +19,9 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Surface;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.jess.camerafilters.base.FilterManager;
 import com.jess.camerafilters.base.OnGlSurfaceShotListener;
 import com.jess.camerafilters.entity.FilterInfo;
@@ -416,8 +419,21 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareMoment(ZBLPublishLiveActivity publishLiveActivity) {
-        mSharePolicy.shareMoment(publishLiveActivity, this);
+    public void shareMoment(final ZBLPublishLiveActivity publishLiveActivity) {
+
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.shareMoment(publishLiveActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.shareMoment(publishLiveActivity, PublishPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
@@ -425,8 +441,21 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareWechat(ZBLPublishLiveActivity publishLiveActivity) {
-        mSharePolicy.shareWechat(publishLiveActivity, this);
+    public void shareWechat(final ZBLPublishLiveActivity publishLiveActivity) {
+
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.shareWechat(publishLiveActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.shareWechat(publishLiveActivity, PublishPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
@@ -434,8 +463,21 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareWeibo(ZBLPublishLiveActivity publishLiveActivity) {
-        mSharePolicy.shareWeibo(publishLiveActivity, this);
+    public void shareWeibo(final ZBLPublishLiveActivity publishLiveActivity) {
+
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.shareWeibo(publishLiveActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.shareWeibo(publishLiveActivity, PublishPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
@@ -443,8 +485,21 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareQQ(ZBLPublishLiveActivity publishLiveActivity) {
-        mSharePolicy.shareQQ(publishLiveActivity, this);
+    public void shareQQ(final ZBLPublishLiveActivity publishLiveActivity) {
+
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.shareQQ(publishLiveActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.shareQQ(publishLiveActivity, PublishPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
@@ -452,8 +507,20 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
      *
      * @param publishLiveActivity
      */
-    public void shareZone(ZBLPublishLiveActivity publishLiveActivity) {
-        mSharePolicy.shareZone(publishLiveActivity, this);
+    public void shareZone(final ZBLPublishLiveActivity publishLiveActivity) {
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.shareZone(publishLiveActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.shareZone(publishLiveActivity, PublishPresenter.this);
+
+                }
+            });
+        }
     }
 
 
@@ -786,6 +853,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         ZBStreamingClient.getInstance().onDestroy();
         unSubscribe(glsSubscrebtion);
         super.onDestroy();
+        if(mSharePolicy!=null){
+            mSharePolicy.setOnShareCallbackListener(null);
+        }
     }
 
     public void onResume() {

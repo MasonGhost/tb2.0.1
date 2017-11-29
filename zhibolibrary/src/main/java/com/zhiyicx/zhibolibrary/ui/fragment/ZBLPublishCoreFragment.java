@@ -118,7 +118,8 @@ import javax.inject.Inject;
 /**
  * Created by jess on 16/5/11.
  */
-public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCoreView, UserHomeView, View.OnClickListener {
+public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCoreView, UserHomeView, View.OnClickListener, ViewTreeObserver
+        .OnGlobalLayoutListener {
     private static final int COLUMN_NUMS = 4;
     private static final int RANK_SHOW_NUM = 3;
     private static final int RECIEVED_ZAN = 101;
@@ -259,6 +260,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private CommonPopupWindow mFilterPop;//滤镜选择器，暂时隐藏
     private int mFilterIndex = 0;
     private int mInutLimitHeight;
+    private int mCurrentRootInvisibleHeight;
 
 
     public static ZBLPublishCoreFragment newInstance(int currentView) {
@@ -1544,32 +1546,32 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * @param scrollToView 被键盘遮挡的scrollToView，滚动root,使scrollToView在root可视区域的底部
      */
     public void controlKeyboardLayout(final View root, final View scrollToView) {
-        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect rect = new Rect();
-                //获取root在窗体的可视区域
-                root.getWindowVisibleDisplayFrame(rect);
-                //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                int rootInvisibleHeight = root.getRootView().getHeight() - rect.bottom;
-                //若不可视区域高度大于屏幕 1/3，则键盘显示
-                if (rootInvisibleHeight > mInutLimitHeight) {
-                    flag = true;
-//                    scrollToView.layout(0, rect.bottom - scrollToView.getHeight() - rect.top, scrollToView.getWidth(), rect.bottom - rect.top);
-                    showInput();//显示输入框
-                } else {
-                    //键盘隐藏
-                    flag = false;
-                    hideInput();//隐藏输入框
-                }
-                System.out.println("rootInvisibleHeight = " + rootInvisibleHeight);
-                mMessageRecyclerView.scrollToPosition(0);
-
-            }
-        });
+        root.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
+    @Override
+    public void onGlobalLayout() {
+        Rect rect = new Rect();
+        //获取root在窗体的可视区域
+        mRoot.getWindowVisibleDisplayFrame(rect);
+        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+        int rootInvisibleHeight = mRoot.getRootView().getHeight() - rect.bottom;
+        if (rootInvisibleHeight != mCurrentRootInvisibleHeight) {
+            //若不可视区域高度大于屏幕 1/3，则键盘显示
+            if (rootInvisibleHeight > mInutLimitHeight) {
+                flag = true;
+                showInput();//显示输入框
+            } else {
+                //键盘隐藏
+                flag = false;
+                hideInput();//隐藏输入框
+            }
+            mMessageRecyclerView.scrollToPosition(0);
+            mCurrentRootInvisibleHeight = rootInvisibleHeight;
+            System.out.println("rootInvisibleHeight = " + rootInvisibleHeight);
+        }
+
+    }
 
     /**
      * 显示输入框
@@ -1760,6 +1762,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (mLoading != null && mLoading.isShowing()) {
             mLoading.dismiss();
         }
+        if (onView != null) {
+            onView.destoryTimeCounter();
+        }
+        mRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
     }
 
     @Override
@@ -2227,6 +2234,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             mFilterPop.show();
         }
     }
+
 
 }
 

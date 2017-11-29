@@ -1,14 +1,23 @@
 package com.zhiyicx.zhibolibrary.presenter;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
@@ -31,6 +40,7 @@ import com.zhiyicx.zhibosdk.model.api.ZBApi;
 import com.zhiyicx.zhibosdk.model.entity.ZBEndStreamJson;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -44,13 +54,14 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/4/5.
  */
 @ActivityScope
-public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView>  implements OnShareCallbackListener {
+public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamView> implements OnShareCallbackListener {
     private ArrayList<SearchResult> mSearchResults;
     private RecommendListAdapter mAdapter;
     private Subscription mQuerySubscribe;
     private String mUserId;
     private UmengSharePolicyImpl mSharePolicy;
     private UserInfo mPresenterInfo;
+    private ShareContent shareContent;
 
     @Inject
     public EndStreamPresenter(EndStreamModel model, EndStreamView rootView) {
@@ -76,8 +87,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
             initAudienceLayout();//初始化观众结束界面
 
 
-        }
-        else {//是主播
+        } else {//是主播
             mRootView.isAudience(false);
             Bundle bundle = intent.getExtras();
             ZBEndStreamJson.InCome income = (ZBEndStreamJson.InCome) bundle.getSerializable("income");
@@ -90,50 +100,139 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
             mRootView.setStar(income.zan_count + "");
             mRootView.setGold(income.gold + "");
         }
-        mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(mPresenterInfo));
+        setShareContent();
+    }
+
+    private void setShareContent() {
+        shareContent = new ShareContent();
+        shareContent.setTitle(mPresenterInfo.uname);
+        shareContent.setContent(TextUtils.isEmpty(mPresenterInfo.intro) ? UiUtils.getString(R.string.intro_default) : mPresenterInfo.intro);
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, mPresenterInfo.uid));
+        if (mPresenterInfo.avatar == null || mPresenterInfo.avatar.getOrigin() == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(UiUtils.getResources(), R.mipmap
+                    .pic_default_secret)));
+        } else {
+            shareContent.setImage(mPresenterInfo.avatar.getOrigin());
+        }
+        mSharePolicy.setShareContent(shareContent);
     }
 
 
     /**
      * 分享朋友圈
+     *
      * @param endStreamingActivity
      */
-    public void shareMoment(ZBLEndStreamingActivity endStreamingActivity) {
-        mSharePolicy.shareMoment(endStreamingActivity,this);
+    public void shareMoment(final ZBLEndStreamingActivity endStreamingActivity) {
+        // 友盟不支持重定向图片
+        if (shareContent == null || shareContent.getImage() == null) {
+            mSharePolicy.shareMoment(endStreamingActivity, this);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareMoment(endStreamingActivity, EndStreamPresenter.this);
+
+                }
+            });
+        }
+
     }
 
 
     /**
      * 分享微信
+     *
      * @param endStreamingActivity
      */
-    public void shareWechat(ZBLEndStreamingActivity endStreamingActivity) {
-        mSharePolicy.shareWechat(endStreamingActivity,this);
+    public void shareWechat(final ZBLEndStreamingActivity endStreamingActivity) {
+        if (shareContent == null || shareContent.getImage() == null) {
+            mSharePolicy.shareWechat(endStreamingActivity, this);
+
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareWechat(endStreamingActivity, EndStreamPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
      * 分享微博
+     *
      * @param endStreamingActivity
      */
-    public void shareWeibo(ZBLEndStreamingActivity endStreamingActivity) {
-        mSharePolicy.shareWeibo(endStreamingActivity,this);
+    public void shareWeibo(final ZBLEndStreamingActivity endStreamingActivity) {
+        if (shareContent == null || shareContent.getImage() == null) {
+            mSharePolicy.shareWeibo(endStreamingActivity, this);
 
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareWeibo(endStreamingActivity, EndStreamPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
      * 分享qq
+     *
      * @param endStreamingActivity
      */
-    public void shareQQ(ZBLEndStreamingActivity endStreamingActivity) {
-        mSharePolicy.shareQQ(endStreamingActivity,this);
+    public void shareQQ(final ZBLEndStreamingActivity endStreamingActivity) {
+        if (shareContent == null || shareContent.getImage() == null) {
+            mSharePolicy.shareQQ(endStreamingActivity, this);
+
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareQQ(endStreamingActivity, EndStreamPresenter.this);
+
+                }
+            });
+        }
     }
 
     /**
      * 分享qq空间
+     *
      * @param endStreamingActivity
      */
-    public void shareZone(ZBLEndStreamingActivity endStreamingActivity) {
-        mSharePolicy.shareZone(endStreamingActivity,this);
+    public void shareZone(final ZBLEndStreamingActivity endStreamingActivity) {
+        if (shareContent == null || shareContent.getImage() == null) {
+            mSharePolicy.shareZone(endStreamingActivity, this);
+
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    mSharePolicy.setShareContent(shareContent);
+                    mSharePolicy.shareZone(endStreamingActivity, EndStreamPresenter.this);
+
+                }
+            });
+        }
     }
 
     private void requestSearchResult(Bundle bundle) {
@@ -193,8 +292,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
                 if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                     mRootView.showMessage(UiUtils.getString("str_follow_success"));
                     mRootView.setFollowStatus(true);//更改关注按钮状态
-                }
-                else {
+                } else {
                     mRootView.showMessage(json.message);
                 }
             }
@@ -216,7 +314,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
 
         }
         mQuerySubscribe = mModel.followUser(UserService.STATUS_FOLLOW_QUERY + "", mUserId
-                )
+        )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BaseJson<FollowInfo>>() {
@@ -224,8 +322,7 @@ public class EndStreamPresenter extends BasePresenter<EndStreamModel, EndStreamV
                     public void call(BaseJson<FollowInfo> json) {
                         if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.setFollowStatus(isFollow(json.data.is_follow));//更改关注按钮状态
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(json.message);
                         }
                     }

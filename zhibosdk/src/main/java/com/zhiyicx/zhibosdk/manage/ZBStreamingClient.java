@@ -90,7 +90,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jungle on 16/7/5.
  * 推流配置 480p 最大 25 fps
- *
+ * <p>
  * com.zhiyicx.zhibo.manage
  * zhibo_android
  * email:335891510@qq.com
@@ -463,7 +463,8 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
     }
 
     @Override
-    public void initConfig(ZBAspectFrameLayout aspectFrameLayout, GLSurfaceView gLSurfaceView, WatermarkSetting watermarkSetting) throws JSONException, IllegalAccessException {
+    public void initConfig(ZBAspectFrameLayout aspectFrameLayout, GLSurfaceView gLSurfaceView, WatermarkSetting watermarkSetting) throws
+            JSONException, IllegalAccessException {
         if (mImInfo.cid == 0) {
             throw new IllegalAccessException("还没校验流信息，请先调用ZBStreamingClien.checkStrem()");
         }
@@ -571,7 +572,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                         break;
                     case AUDIO_RECORDING_FAIL:
                         break;
-                        default:
+                    default:
                 }
             }
 
@@ -689,7 +690,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
      */
     @Override
     public void reconnect() {
-        LogUtils.debugInfo(TAG, "isStreaming....."+isStreaming);
+        LogUtils.debugInfo(TAG, "isStreaming....." + isStreaming);
         if (isStreaming) mReconnetPolicy.shutDown();//拉流开始后才开始重连
     }
 
@@ -718,7 +719,7 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
                 boolean b = reconnectOfShutdown(true);//重新连接
                 LogUtils.debugInfo(TAG, "reconnect is " + b + "//" + currentStatus);
                 if (b && mOnReconnetListener != null) {
-                    LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
+                    LogUtils.debugInfo(TAG, " ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
                     mOnReconnetListener.reconnectScuccess();
                 }
                 return b;
@@ -1078,12 +1079,11 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
 
     @Override
     public void onDestroy() {
-
         mCameraStreamingManager.destroy();
         mReconnetPolicy.stop();
         mHandler.removeCallbacksAndMessages(null);//取消所有消息
         mHandler = null;
-        streamStatusCallback=null;
+        streamStatusCallback = null;
         if (mcTimer != null) {
             mcTimer.cancel();
             mcTimer = null;
@@ -1095,12 +1095,14 @@ public class ZBStreamingClient implements StreamingSoupport, ImMsgReceveListener
             mChatRoomClient.onDestroy();
         }
         ConversationDao.getInstance(mContext).delConversation(mImInfo.cid, Conversation.CONVERSATION_TYPE_CHAROOM);
-        sZBStreamingClient = null;
         try {
+            sZBStreamingClient = null;
+            mCameraStreamingManager = null;
             System.gc();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
