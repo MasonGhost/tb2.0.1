@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,8 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Repository, CircleMainContract.View> implements CircleMainContract.Presenter {
+public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Repository, CircleMainContract.View>
+        implements CircleMainContract.Presenter {
 
     @Inject
     public CircleMainPresenter(CircleMainContract.Repository repository, CircleMainContract.View rootView) {
@@ -33,7 +35,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<CircleInfo> data, boolean isLoadMore) {
         return false;
     }
 }

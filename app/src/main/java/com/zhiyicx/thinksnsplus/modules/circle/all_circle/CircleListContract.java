@@ -2,23 +2,32 @@ package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
+import java.util.List;
+
+import rx.Observable;
+
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/21/16:21
  * @Email Jliuer@aliyun.com
  * @Description
  */
 public interface CircleListContract {
 
-    interface View extends ITSListView<GroupInfoBean, Presenter> {
+    interface View extends ITSListView<CircleInfo, Presenter> {
+        long getCategoryId();
     }
 
-    interface Presenter extends ITSListPresenter<GroupInfoBean> {
+    interface Presenter extends ITSListPresenter<CircleInfo> {
+
     }
 
     interface Repository extends IBaseCircleRepository {
+        Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId);
     }
 }

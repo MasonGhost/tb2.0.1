@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 
@@ -9,7 +10,7 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public abstract class BaseCircleItem implements ItemViewDelegate<GroupInfoBean> {
+public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
 
     public BaseCircleItem() {
     }

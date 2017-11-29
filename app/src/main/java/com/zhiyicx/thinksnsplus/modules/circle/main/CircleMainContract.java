@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main;
 
-import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 /**
@@ -14,10 +12,10 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
  * @Description
  */
 public interface CircleMainContract {
-    interface View extends ITSListView<GroupInfoBean, Presenter> {
+    interface View extends ITSListView<CircleInfo, Presenter> {
     }
 
-    interface Presenter extends ITSListPresenter<GroupInfoBean> {
+    interface Presenter extends ITSListPresenter<CircleInfo> {
     }
 
     interface Repository extends IBaseCircleRepository {

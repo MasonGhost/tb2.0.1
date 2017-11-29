@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
@@ -20,7 +21,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, GroupInfoBean>
+public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, CircleInfo>
         implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent {
 
     private CircleMainHeader mCircleMainHeader;
@@ -80,10 +81,10 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected RecyclerView.Adapter getAdapter() {
         for (int i = 0; i < 12; i++) {
-            GroupInfoBean groupInfoBean = new GroupInfoBean();
+            CircleInfo groupInfoBean = new CircleInfo();
             groupInfoBean.setId((i == 0 || i == 6) ? -1 : i);
-            groupInfoBean.setTitle("我加入");
-            groupInfoBean.setIntro("查看更多");
+            groupInfoBean.setName("我加入");
+            groupInfoBean.setSummary("查看更多");
             mListDatas.add(groupInfoBean);
         }
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);

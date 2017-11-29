@@ -21,6 +21,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 
@@ -42,6 +43,16 @@ public interface CircleClient {
      */
     @GET(APP_PATH_GET_CIRCLE_CATEGROIES)
     Observable<List<CircleTypeBean>> getCategroiesList(@Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取圈子列表
+     * @param categoryId 圈子类别id
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLELIST)
+    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId,@Query("limit") int limit, @Query("offet") int offet);
 
     /**
      * 创建圈子

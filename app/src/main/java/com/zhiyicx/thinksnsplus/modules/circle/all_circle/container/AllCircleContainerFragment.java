@@ -26,7 +26,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         implements AllCircleContainerContract.View {
 
     private List<String> mTitle;
-    public static final String RECOMMEND_INFO = "-1";
+    public static final String RECOMMEND_INFO = "1";
 
     @Override
     protected boolean showToolBarDivider() {
@@ -64,12 +64,15 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
-        for (CircleTypeBean circleTypeBean:circleTypeList){
+        for (CircleTypeBean circleTypeBean : circleTypeList) {
+            if (RECOMMEND_INFO.equals(circleTypeBean.getId().intValue() + "")) {
+                continue;
+            }
             mTitle.add(circleTypeBean.getName());
-            mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId()+""));
+            mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId() + ""));
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
-        tsViewPagerAdapter.bindData(mFragmentList,mTitle.toArray(new String[]{}));
+        tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
     }
 
     @Override
@@ -107,6 +110,6 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected void initData() {
-        mPresenter.getCategroiesList(0,0);
+        mPresenter.getCategroiesList(0, 0);
     }
 }

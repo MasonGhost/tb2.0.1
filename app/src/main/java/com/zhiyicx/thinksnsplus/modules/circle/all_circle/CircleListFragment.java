@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -17,7 +17,7 @@ import javax.inject.Inject;
  * @email Jliuer@aliyun.com
  * @description
  */
-public class CircleListFragment extends TSListFragment<CircleListContract.Presenter, GroupInfoBean> implements CircleListContract.View {
+public class CircleListFragment extends TSListFragment<CircleListContract.Presenter, CircleInfo> implements CircleListContract.View {
 
     public static final String CIRCLE_TYPE = "circle_type";
 
@@ -43,14 +43,16 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
-    protected RecyclerView.Adapter getAdapter() {
-        for (int i = 0; i < 12; i++) {
-            GroupInfoBean groupInfoBean = new GroupInfoBean();
-            groupInfoBean.setId(1);
-            groupInfoBean.setTitle("我加入");
-            groupInfoBean.setIntro("查看更多");
-            mListDatas.add(groupInfoBean);
+    public long getCategoryId() {
+        try {
+            return Long.parseLong(getArguments().getString(CIRCLE_TYPE));
+        } catch (NumberFormatException e) {
+            return 0;
         }
+    }
+
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         adapter.addItemViewDelegate(new CircleListItem());
         return adapter;

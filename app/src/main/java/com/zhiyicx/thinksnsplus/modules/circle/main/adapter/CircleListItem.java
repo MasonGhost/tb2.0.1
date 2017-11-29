@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
@@ -51,12 +52,12 @@ public class CircleListItem extends BaseCircleItem {
     }
 
     @Override
-    public boolean isForViewType(GroupInfoBean item, int position) {
+    public boolean isForViewType(CircleInfo item, int position) {
         return item.getId() > 0;
     }
 
     @Override
-    public void convert(ViewHolder holder, GroupInfoBean groupInfoBean, GroupInfoBean lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, CircleInfo groupInfoBean, CircleInfo lastT, int position, int itemCounts) {
 
         // 封面
         ImageView circleCover = holder.getView(R.id.iv_circle_cover);
