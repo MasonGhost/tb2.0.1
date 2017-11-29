@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
@@ -41,7 +44,10 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
             if (contentLength > 0) {
                 progress = (float) ((double) bytesWritten / (double) contentLength) * 100;
             }
-            mRootView.onUploading(tagId, filePath, (int) progress);
+            if (progress == 100) {
+                return;
+            }
+            mRootView.onUploading(tagId, filePath, (int) progress, -1);
 
         })
                 .subscribeOn(Schedulers.io())
@@ -49,7 +55,7 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                 .subscribe(new BaseSubscribe<Integer>() {
                     @Override
                     protected void onSuccess(Integer data) {
-                        mRootView.onUploading(tagId, filePath, 100);
+                        mRootView.onUploading(tagId, filePath, 100, data);
                     }
 
                     @Override
@@ -70,8 +76,13 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
     }
 
     @Override
-    public void publishInfo(InfoPublishBean infoPublishBean) {
+    public void publishPost(PostPublishBean postPublishBean) {
+        mRepository.sendCirclePost(postPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<Object> data) {
 
+            }
+        });
     }
 
     @Override

@@ -156,9 +156,7 @@ var RE = {
 		}, false);
 
 		_self.cache.editor.addEventListener('input', function () {
-			AndroidInterface.staticWords(_self.staticWords());
 			AndroidInterface.setHtmlContent(_self.getHtml());
-			AndroidInterface.changeWords(_self.changeWords());
 		}, false);
 	},
 	initCache: function initCache() {
@@ -187,15 +185,21 @@ var RE = {
 		var _self = this;
 		return _self.cache.editor.innerHTML;
 	},
-	staticWords: function staticWords() {
+	noMarkdownWords: function noMarkdownWords() {
 		var _self = this;
-		var content = _self.cache.editor.innerHTML.replace(/<div\sclass="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
-		return content.length;
+		var content = _self.cache.editor.innerHTML.replace(/<div class="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
+        AndroidInterface.noMarkdownWords(content);
+		return content;
 	},
-	changeWords: function changeWords() {
+	markdownWords: function markdownWords() {
         var _self = this;
-        var content = _self.cache.editor.innerHTML.replace(/<div class="block">[\s\S]*<\/div>/ig, '', '').trim();
+        var content = _self.cache.editor.innerHTML.replace(/<div>|<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').trim();
+        AndroidInterface.markdownWords(content);
         return content;
+    },
+    resultWords: function resultWords() {
+        var _self = this;
+        AndroidInterface.resultWords(_self.markdownWords(),_self.noMarkdownWords());
     },
 	saveRange: function saveRange() {
 		//保存节点位置
@@ -258,7 +262,7 @@ var RE = {
 			window.location.href = CHANGE_SCHEME + encodeURI(name + '@_@' + href);
 		} else {
 			if (evt.which == 8) {
-				AndroidInterface.staticWords(_self.staticWords());
+				AndroidInterface.noMarkdownWords(_self.noMarkdownWords());
 			}
 			var items = [];
 			_self.commandSet.forEach(function (item) {
@@ -328,7 +332,7 @@ var RE = {
 			newWidth = width;
 			newHeight = height;
 		}
-		var image = '<div><br></div><div class="block">\n\t\t\t\t<div class="img-block"><div style="width: ' + newWidth + 'px" class="process">\n\t\t\t\t\t<div class="fill">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<img class="images" data-id="' + id + '" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px;" src="' + url + '"/>\n\t\t\t\t<div class="cover" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px"></div>\n\t\t\t\t<div class="delete">\n\t\t\t\t\t<img src="./reload.png">\n\t\t\t\t\t<div class="tips">\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5</div>\n\t\t\t\t</div></div>\n\t\t\t\t<input type="text" placeholder="\u8BF7\u8F93\u5165\u56FE\u7247\u540D\u5B57">\n\t\t\t</div><div><br></div>';
+		var image = '<div><br></div><div class="block">\n\t\t\t\t<div class="img-block"><div style="width: ' + newWidth + 'px" class="process">\n\t\t\t\t\t<div class="fill">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<img class="images" data-id="' + id + '" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px;" src="' + url + '"/>\n\t\t\t\t<div class="cover" style="width: ' + newWidth + 'px; height: ' + newHeight + 'px"></div>\n\t\t\t\t<div class="delete">\n\t\t\t\t\t<img class="error" src="./reload.png">\n\t\t\t\t\t<div class="tips">\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5</div>\n\t\t\t\t\t<div class="markdown"></div>\n\t\t\t\t</div></div>\n\t\t\t\t<input class="dec" type="text" placeholder="\u8BF7\u8F93\u5165\u56FE\u7247\u540D\u5B57">\n\t\t\t</div><div><br></div>';
 		_self.insertHtml(image);
 		var img = document.querySelector('img[data-id="' + id + '"]');
 		var imgBlock = img.parentNode;
@@ -342,15 +346,24 @@ var RE = {
 		}, false);
 		_self.imageCache.put(id, imgBlock.parentNode);
 	},
-	changeProcess: function changeProcess(id, process) {
+	changeProcess: function changeProcess(id, process,imageId) {
 		var _self = this;
 		var block = _self.imageCache.get(id);
 		var fill = block.querySelector('.fill');
 		fill.style.width = process + '%';
 		if (process == 100) {
 			var cover = block.querySelector('.cover');
+			var dec = block.querySelector('.dec');
+			var markdown = block.querySelector('.markdown');
 			var process = block.querySelector('.process');
 			var imgBlock = block.querySelector('.img-block');
+			dec.addEventListener('input', function () {
+                markdown.innerHTML="@!["+dec.value+"]("+imageId+")"
+            }, false);
+
+            if(markdown.innerHTML==""){
+                markdown.innerHTML="@![image]("+imageId+")"
+            }
 			imgBlock.removeChild(cover);
 			imgBlock.removeChild(process);
 		}

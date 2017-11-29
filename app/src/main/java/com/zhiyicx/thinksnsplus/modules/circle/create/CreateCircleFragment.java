@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -21,13 +22,12 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -152,10 +152,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
-            LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
-            if (locationBean != null) {
-                String loacaiton = LocationBean.getlocation(locationBean);
-                setCity(loacaiton);
+            PoiItem poiItem = data.getExtras().getParcelable(CircleLocationFragment.BUNDLE_DATA);
+            if (poiItem != null) {
+                mTvLocation.setText(poiItem.getTitle());//更新位置
             }
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             CircleTypeBean circleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
@@ -273,7 +272,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 jumpToEditUserTag();
                 break;
             case R.id.ll_location_container:
-                Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
+                Intent intent = new Intent(getActivity(), CircleLocationActivity.class);
                 startActivityForResult(intent, REQUST_CODE_AREA);
                 break;
             case R.id.ll_synchro:

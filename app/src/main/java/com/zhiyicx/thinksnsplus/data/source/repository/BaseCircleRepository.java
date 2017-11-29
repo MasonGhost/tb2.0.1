@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -43,6 +46,15 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<BaseJsonV2<CircleInfo>> createCircle(long categoryId, Map<String, Object> params, Map<String, String> filePathList) {
         return mCircleClient.createCircle(categoryId, UpLoadFile.upLoadFileAndParams(filePathList, params))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> sendCirclePost(PostPublishBean publishBean) {
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson()
+                .toJson(publishBean));
+        return mCircleClient.publishPost(publishBean.getCircle_id(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

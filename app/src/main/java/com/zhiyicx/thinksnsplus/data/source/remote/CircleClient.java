@@ -9,7 +9,9 @@ import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -20,6 +22,7 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 
 /**
  * @Author Jliuer
@@ -30,23 +33,34 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEG
 public interface CircleClient {
 
     /**
+     * @param limit 返回条数 默认为15
+     * @param offet 翻页偏移量
      * @author Jliuer
      * @Date 17/11/27 17:07
      * @Email Jliuer@aliyun.com
-     * @param limit 返回条数 默认为15
-     * @param offet 翻页偏移量
      * @Description 获取圈子分类
      */
     @GET(APP_PATH_GET_CIRCLE_CATEGROIES)
-    Observable<List<CircleTypeBean>> getCategroiesList(@Query("limit") int limit,@Query("offet") int offet);
+    Observable<List<CircleTypeBean>> getCategroiesList(@Query("limit") int limit, @Query("offet") int offet);
 
     /**
      * 创建圈子
+     *
      * @param categoryId 圈子类别id
-     * @param params 参数哟
+     * @param params     参数哟
      * @return 就是返回一个圈子
      */
     @POST(APP_PATH_CREATE_CIRCLE)
     @Multipart
-    Observable<BaseJsonV2<CircleInfo>> createCircle(@Path("category_id") long categoryId,@Part List<MultipartBody.Part> params);
+    Observable<BaseJsonV2<CircleInfo>> createCircle(@Path("category_id") long categoryId, @Part List<MultipartBody.Part> params);
+
+    /**
+     * 发帖
+     * @param circleId 圈子id
+     * @param body
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(APP_PATH_PUBLISH_POST)
+    Observable<BaseJsonV2<Object>> publishPost(@Path("circle_id") long circleId, @Body RequestBody body);
 }

@@ -47,12 +47,22 @@
             />
     </LinearLayout>
 
+    <TextView
+        android:background="@color/white"
+        android:id="@+id/tv_nolocation"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:textSize="@dimen/size_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/important_for_content"
+        android:text="@string/create_circle_nolocation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_head_width"/>
+
     <LinearLayout
 
         android:id="@+id/ll_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_normal"
         android:background="@color/white"
         android:orientation="horizontal">
 

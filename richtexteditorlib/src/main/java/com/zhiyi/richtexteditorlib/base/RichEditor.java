@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -36,6 +35,7 @@ public abstract class RichEditor extends WebView {
 
         //SUPERSCRIPT(1),//SUBSCRIPT(2),//UNDERLINE(3),
         private long typeCode;
+
         Type(long i) {
             typeCode = i;
         }
@@ -44,7 +44,7 @@ public abstract class RichEditor extends WebView {
             return typeCode;
         }
 
-        public boolean isMapTo(long id){
+        public boolean isMapTo(long id) {
             return typeCode == id;
         }
     }
@@ -57,11 +57,11 @@ public abstract class RichEditor extends WebView {
         void onStateChangeListener(String text, List<Type> types);
     }
 
-    public interface OnLinkClickListener{
+    public interface OnLinkClickListener {
         void onLinkClick(String linkName, String url);
     }
 
-    public interface OnFocusChangeListener{
+    public interface OnFocusChangeListener {
         void onFocusChange(boolean isFocus);
     }
 
@@ -69,12 +69,24 @@ public abstract class RichEditor extends WebView {
         void onAfterInitialLoad(boolean isReady);
     }
 
-    public interface OnImageClickListener{
+    public interface OnImageClickListener {
         void onImageClick(Long url);
     }
 
-    public interface OnTextLengthChangeListener{
+    public interface OnTextLengthChangeListener {
         void onTextLengthChange(long length);
+    }
+
+    public interface OnNoMarkdownWordChangeListener {
+        void onNoMarkdownWordChange(String noMarkdwon);
+    }
+
+    public interface OnMarkdownWordChangeListener {
+        void onMarkdownWordChange(String markdwon);
+    }
+
+    public interface OnMarkdownWordResultListener {
+        void onMarkdownWordResult(String markdwon, String noMarkdown);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -95,6 +107,10 @@ public abstract class RichEditor extends WebView {
     private OnImageClickListener mOnImageClickListener;
     private OnTextLengthChangeListener mOnTextLengthChangeListener;
 
+    private OnMarkdownWordChangeListener mOnMarkdownWordChangeListener;
+    private OnNoMarkdownWordChangeListener mOnNoMarkdownWordChangeListener;
+    private OnMarkdownWordResultListener mOnMarkdownWordResultListener;
+
 
     public RichEditor(Context context) {
         this(context, null);
@@ -104,14 +120,14 @@ public abstract class RichEditor extends WebView {
         this(context, attrs, android.R.attr.webViewStyle);
     }
 
-    @SuppressLint({"SetJavaScriptEnabled","addJavascriptInterface"})
+    @SuppressLint({"SetJavaScriptEnabled", "addJavascriptInterface"})
     public RichEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if(isInEditMode()) {
+        if (isInEditMode()) {
             return;
         }
-        
-        addJavascriptInterface(new Android4JsInterface(),"AndroidInterface");
+
+        addJavascriptInterface(new Android4JsInterface(), "AndroidInterface");
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
         setWebViewClient(createWebViewClient());
@@ -155,6 +171,18 @@ public abstract class RichEditor extends WebView {
         this.mOnImageClickListener = onImageClickListener;
     }
 
+    public void setOnMarkdownWordChangeListener(OnMarkdownWordChangeListener onMarkdownWordChangeListener) {
+        mOnMarkdownWordChangeListener = onMarkdownWordChangeListener;
+    }
+
+    public void setOnNoMarkdownWordChangeListener(OnNoMarkdownWordChangeListener onNoMarkdownWordChangeListener) {
+        mOnNoMarkdownWordChangeListener = onNoMarkdownWordChangeListener;
+    }
+
+    public void setOnMarkdownWordResultListener(OnMarkdownWordResultListener onMarkdownWordResultListener) {
+        mOnMarkdownWordResultListener = onMarkdownWordResultListener;
+    }
+
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
@@ -166,12 +194,12 @@ public abstract class RichEditor extends WebView {
         text = text.replaceFirst(LINK_CHANGE_SCHEME, "");
         String[] result = text.split("@_@");
         if (mOnLinkClickListener != null && result.length >= 2) {
-            mOnLinkClickListener.onLinkClick(result[0],result[1]);
+            mOnLinkClickListener.onLinkClick(result[0], result[1]);
         }
     }
 
-    private void imageClickCallBack(String url){
-        if(mOnImageClickListener != null) {
+    private void imageClickCallBack(String url) {
+        if (mOnImageClickListener != null) {
             mOnImageClickListener.onImageClick(Long.valueOf(url.replaceFirst(IMAGE_CLICK_SCHEME, "")));
         }
     }
@@ -223,14 +251,14 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.getHtml4Android()");
     }
 
-    public String getHtml(){
+    public String getHtml() {
         return mContents;
     }
 
-    public void load(){
-        LogUtils.d("load","before load");
+    public void load() {
+        LogUtils.d("load", "before load");
         loadUrl(SETUP_HTML);
-        LogUtils.d("load","after load");
+        LogUtils.d("load", "after load");
 
     }
 
@@ -289,7 +317,6 @@ public abstract class RichEditor extends WebView {
     }
 
 
-
     public void setItalic() {
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.exec('italic');");
@@ -302,30 +329,30 @@ public abstract class RichEditor extends WebView {
 
     public void setHeading(int heading, boolean b) {
         exec("javascript:RE.saveRange();");
-        if (b){
-            exec("javascript:RE.exec('h"+heading+"')");
-        }else {
+        if (b) {
+            exec("javascript:RE.exec('h" + heading + "')");
+        } else {
             exec("javascript:RE.exec('p')");
         }
     }
 
     public void setBlockquote(boolean b) {
         exec("javascript:RE.saveRange();");
-        if(b){
+        if (b) {
             exec("javascript:RE.exec('blockquote')");
-        }else {
+        } else {
             exec("javascript:RE.exec('p')");
         }
     }
 
-    public void insertImage(String url,Long id, long width ,long height) {
+    public void insertImage(String url, Long id, long width, long height) {
         exec("javascript:RE.saveRange();");
-        exec("javascript:RE.insertImage('" + url +"',"+ id + ", " + width + ","+ height + ");");
+        exec("javascript:RE.insertImage('" + url + "'," + id + ", " + width + "," + height + ");");
     }
 
-    public void deleteImageById(Long id){
+    public void deleteImageById(Long id) {
         exec("javascript:RE.saveRange();");
-        exec("javascript:RE.removeImage("+id+");");
+        exec("javascript:RE.removeImage(" + id + ");");
     }
 
     public void insertHr() {
@@ -349,16 +376,28 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.setTodo('" + ConvertUtils.getCurrentTime() + "');");
     }
 
-    public void setImageUploadProcess(long id,int process){
-        exec("javascript:RE.changeProcess("+ id +", "+ process +");");
+    public void setImageUploadProcess(long id, int process, int imageId) {
+        exec("javascript:RE.changeProcess(" + id + ", " + process + ", " + imageId + ");");
     }
 
-    public void setImageFailed(long id){
-        exec("javascript:RE.uploadFailure("+ id +");");
+    public void setImageFailed(long id) {
+        exec("javascript:RE.uploadFailure(" + id + ");");
     }
 
-    public void setImageReload(long id){
-        exec("javascript:RE.uploadReload("+ id +");");
+    public void setImageReload(long id) {
+        exec("javascript:RE.uploadReload(" + id + ");");
+    }
+
+    public void getNoMarkdownWords() {
+        exec("javascript:RE.noMarkdownWords();");
+    }
+
+    public void getMarkdownWords() {
+        exec("javascript:RE.markdownWords();");
+    }
+
+    public void getResultWords() {
+        exec("javascript:RE.resultWords();");
     }
 
     public void focusEditor() {
@@ -371,8 +410,7 @@ public abstract class RichEditor extends WebView {
 
     protected void exec(final String trigger) {
         if (isReady) {
-            load
-                    (trigger);
+            load(trigger);
         } else {
             postDelayed(new Runnable() {
                 @Override
@@ -391,7 +429,7 @@ public abstract class RichEditor extends WebView {
         }
     }
 
-    protected class EditorWebVIewClient2 extends WebChromeClient{
+    protected class EditorWebVIewClient2 extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
@@ -407,7 +445,7 @@ public abstract class RichEditor extends WebView {
         @Override
         public void onPageFinished(WebView view, String url) {
             isReady = url.equalsIgnoreCase(SETUP_HTML);
-            LogUtils.d("load","after onPageFinished");
+            LogUtils.d("load", "after onPageFinished");
 
             if (mLoadListener != null) {
                 mLoadListener.onAfterInitialLoad(isReady);
@@ -426,7 +464,7 @@ public abstract class RichEditor extends WebView {
                 return false;
             }
 
-            LogUtils.d("decode",decode);
+            LogUtils.d("decode", decode);
 
             if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
                 callback(decode);
@@ -435,12 +473,12 @@ public abstract class RichEditor extends WebView {
                 stateCheck(decode);
                 return true;
             }
-            if(TextUtils.indexOf(url,LINK_CHANGE_SCHEME) == 0){
+            if (TextUtils.indexOf(url, LINK_CHANGE_SCHEME) == 0) {
                 linkChangeCallBack(decode);
                 return true;
             }
 
-            if(TextUtils.indexOf(url,IMAGE_CLICK_SCHEME) == 0){
+            if (TextUtils.indexOf(url, IMAGE_CLICK_SCHEME) == 0) {
                 imageClickCallBack(decode);
                 return true;
             }
@@ -456,31 +494,41 @@ public abstract class RichEditor extends WebView {
 
     private class Android4JsInterface {
         @JavascriptInterface
-        public void setViewEnabled(boolean enabled){
-            if(mOnFocusChangeListener != null) {
+        public void setViewEnabled(boolean enabled) {
+            if (mOnFocusChangeListener != null) {
                 mOnFocusChangeListener.onFocusChange(enabled);
             }
         }
+
         @JavascriptInterface
-        public void setHtmlContent(String htmlContent){
+        public void setHtmlContent(String htmlContent) {
             mContents = htmlContent;
-            if(mTextChangeListener != null) {
+            if (mTextChangeListener != null) {
                 mTextChangeListener.onTextChange(htmlContent);
             }
         }
 
         @JavascriptInterface
-        public void staticWords(long num){
-            mContentLength = num;
-            if(mOnTextLengthChangeListener != null) {
-                mOnTextLengthChangeListener.onTextLengthChange(num);
-                LogUtils.d("wordsLenght:::"+num);
+        public void noMarkdownWords(String noMarkdownWords) {
+            if (mOnNoMarkdownWordChangeListener != null) {
+                mOnNoMarkdownWordChangeListener.onNoMarkdownWordChange(noMarkdownWords);
             }
+            LogUtils.d("noMarkdownWords:::" + noMarkdownWords);
         }
 
         @JavascriptInterface
-        public void changeWords(String words){
-            LogUtils.d("changeWords:::"+words);
+        public void markdownWords(String markdown) {
+            if (mOnMarkdownWordChangeListener != null) {
+                mOnMarkdownWordChangeListener.onMarkdownWordChange(markdown);
+            }
+            LogUtils.d("markdown:::" + markdown);
+        }
+
+        @JavascriptInterface
+        public void resultWords(String markdown, String noMarkdownWords) {
+            if (mOnMarkdownWordResultListener != null) {
+                mOnMarkdownWordResultListener.onMarkdownWordResult(markdown, noMarkdownWords);
+            }
         }
 
     }

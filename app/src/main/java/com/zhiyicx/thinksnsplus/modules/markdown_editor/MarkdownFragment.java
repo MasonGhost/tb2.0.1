@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyi.richtexteditorlib.SimpleRichEditor;
+import com.zhiyi.richtexteditorlib.base.RichEditor;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyi.richtexteditorlib.view.dialogs.PictureHandleDialog;
@@ -18,24 +19,25 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/17/13:21
  * @Email Jliuer@aliyun.com
  * @Description
  */
 public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements
-        SimpleRichEditor.OnEditorClickListener,
-        View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener, MarkdownContract.View {
+        SimpleRichEditor.OnEditorClickListener, View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener,
+        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
 
     @BindView(R.id.lu_bottom_menu)
     BottomMenu mBottomMenu;
@@ -49,6 +51,9 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
+    private PostPublishBean mPostPublishBean;
+    private List<Integer> mImages = new ArrayList();
+
     public static MarkdownFragment newInstance() {
         return new MarkdownFragment();
     }
@@ -61,7 +66,19 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        LogUtils.d(mRichTextView.getHtml());
+        mPostPublishBean = new PostPublishBean();
+        mRichTextView.getResultWords();
+    }
+
+    @Override
+    public void onMarkdownWordResult(String markdwon, String noMarkdown) {
+        mPostPublishBean.setBody(markdwon);
+        mPostPublishBean.setSummary(noMarkdown);
+        mPostPublishBean.setCircle_id(2);
+        mPostPublishBean.setSync_feed(0);
+        mPostPublishBean.setTitle("first");
+        mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
+        mPresenter.publishPost(mPostPublishBean);
     }
 
     @Override
@@ -85,6 +102,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
+        mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
     }
 
@@ -168,8 +186,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
-    public void onUploading(long id, String filePath, int progress) {
-        getActivity().runOnUiThread(() -> mRichTextView.setImageUploadProcess(id, progress));
+    public void onUploading(long id, String filePath, int progress, int imgeId) {
+        getActivity().runOnUiThread(() -> mRichTextView.setImageUploadProcess(id, progress, imgeId));
+        if (progress == 100) {
+            mImages.add(imgeId);
+        }
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create.location;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,15 +17,21 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Jliuer
@@ -33,10 +41,18 @@ import static android.app.Activity.RESULT_OK;
  */
 public class CircleLocationFragment extends TSListFragment implements AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
+    public static final String BUNDLE_DATA = "DATA";
+
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
+    @BindView(R.id.tv_nolocation)
+    TextView mTvNoLocation;
+    @BindView(R.id.tv_current_location)
+    TextView mTvCurrentLocation;
     @BindView(R.id.iv_animation)
     ImageView mIvAnimation;
+    @BindView(R.id.iv_location)
+    ImageView mIvLocation;
 
     /**
      * 声明 AMapLocationClientOption 对象
@@ -49,6 +65,8 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
 
     protected AnimationDrawable mAnimationDrawable;
     private String mCurrentLocation = "";
+
+    private List<PoiItem> mPoiItems = new ArrayList<>();
 
     @Override
     protected boolean showToolbar() {
@@ -102,7 +120,24 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return null;
+        mAdapter = new CommonAdapter<PoiItem>(getActivity(), R.layout.item_circle_location, mPoiItems) {
+            @Override
+            protected void convert(ViewHolder holder, PoiItem poiItem, int position) {
+                holder.setText(R.id.tv_location_name, poiItem.getTitle());
+                holder.setText(R.id.tv_location_address, poiItem.getSnippet());
+                RxView.clicks(holder.itemView)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(aVoid -> {
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(BUNDLE_DATA, poiItem);
+                            intent.putExtras(bundle);
+                            getActivity().setResult(RESULT_OK, intent);
+                            getActivity().finish();
+                        });
+            }
+        };
+        return mAdapter;
     }
 
     @Override
@@ -123,20 +158,35 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
                 search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 10000));
                 search.setOnPoiSearchListener(this);
                 search.searchPOIAsyn();
+                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() + " " + aMapLocation.getCity();
+                mTvCurrentLocation.setText(aMapLocation.getCity());
 
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 LogUtils.d("AmapError", "location Error, ErrCode:"
                         + aMapLocation.getErrorCode() + ", errInfo:"
                         + aMapLocation.getErrorInfo());
+                mTvCurrentLocation.setText(getString(R.string.wu));
             }
         }
+        handleAnimation(false);
+    }
+
+    @Override
+    protected void requestCacheData(Long maxId, boolean isLoadMore) {
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
     }
 
     @Override
     public void onPoiSearched(PoiResult result, int i) {
         PoiSearch.Query query = result.getQuery();
         ArrayList<PoiItem> pois = result.getPois();
+        mPoiItems.clear();
+        mPoiItems.addAll(pois);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
         for (PoiItem poi : pois) {
             String name = poi.getCityName();
             String snippet = poi.getSnippet();
@@ -205,12 +255,14 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
         }
         if (status) {
             if (!mAnimationDrawable.isRunning()) {
+                mIvLocation.setVisibility(View.GONE);
                 mIvAnimation.setVisibility(View.VISIBLE);
                 mAnimationDrawable.start();
             }
         } else {
             if (mAnimationDrawable.isRunning()) {
                 mAnimationDrawable.stop();
+                mIvLocation.setVisibility(View.VISIBLE);
                 mIvAnimation.setVisibility(View.GONE);
             }
         }

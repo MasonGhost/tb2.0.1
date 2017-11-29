@@ -253,6 +253,7 @@
     <string name="create">创建</string>
     <string name="create_circle">创建圈子</string>
     <string name="create_circle_notice">选填</string>
+    <string name="create_circle_nolocation">不显示位置</string>
 
     <string name="appbar_overscroll_behavior">com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -272,9 +273,6 @@
     <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
-
-
-
 
 
     <!--收藏-->
