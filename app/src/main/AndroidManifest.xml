@@ -243,6 +243,11 @@
         <activity
             android:name=".modules.wallet.WalletActivity"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".modules.wallet.rule.WalletRuleActivity"

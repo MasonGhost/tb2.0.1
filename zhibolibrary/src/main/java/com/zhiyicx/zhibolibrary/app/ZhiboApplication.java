@@ -31,6 +31,7 @@ import java.util.Set;
  */
 public class ZhiboApplication  {
     public static final String INTENT_ACTION_UESRINFO = "com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity";
+    public static final String INTENT_ACTION_RECHARGE = "com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity";
     public static final String INTNET_ACTION_USERHOMEACTIVITY = "com.zhiyicx.zhibo.UserHomeActivity";
     public static final String INTENT_ACTION_GOLDEEXCHANGEACTIVITY = "com.zhiyicx.zhibo.GoldExchangeActivity";
 
@@ -70,16 +71,6 @@ public class ZhiboApplication  {
         ZhiboApplication.userInfo = userInfo;
         DataHelper.saveDeviceData(DataHelper.USER_INFO, userInfo, mContext);
     }
-//    public static PermissionData[] getPermissionDatas() {
-//        return sPermissionDatas;
-//    }
-
-//    public static void setPermissionDatas(PermissionData[] permissionDatas) {
-//        sPermissionDatas = permissionDatas;
-//    }
-
-//    public static PermissionData[] sPermissionDatas;
-
 
     public static void init(Application application) {
         mContext = application;

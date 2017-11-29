@@ -46,6 +46,10 @@ import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationAc
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.zhibolibrary.model.entity.Icon;
+import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
+import com.zhiyicx.zhibolibrary.ui.activity.ZBLStarExchangeActivity;
 
 import javax.inject.Inject;
 
@@ -190,7 +194,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,R.id.bt_my_live})
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group, R.id.bt_my_live})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -291,6 +295,21 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             // 我的直播
             case R.id.bt_my_live:
 
+                UserInfo userInfo = ZhiboApplication.userInfo;
+                if (userInfo == null) {
+                    userInfo = new UserInfo();
+                }
+                userInfo.uid = String.valueOf(mUserInfoBean.getUser_id());
+                userInfo.sex = mUserInfoBean.getSex();
+                Icon avatar = new Icon();
+                avatar.origin = mUserInfoBean.getAvatar();
+                userInfo.avatar = avatar;
+                userInfo.location = mUserInfoBean.getLocation();
+                if (mUserInfoBean.getWallet() != null) {
+                    userInfo.gold = (int) mUserInfoBean.getWallet().getBalance();
+                }
+                ZhiboApplication.setUserInfo(userInfo);
+                startActivity(new Intent(getActivity(), ZBLStarExchangeActivity.class));
                 break;
             default:
         }

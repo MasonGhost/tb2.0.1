@@ -450,8 +450,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         }
         doQueryLatestVoteInfo();
-        LogUtils.warnInfo(TAG, "------------------>" + mCid);
-
         initRecycleView();
 
         initGiftsView();//发送的礼物
@@ -575,15 +573,16 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
             mChargeDialog = new AlertDialog.Builder(getActivity());
             UiUtils.getDialog(mChargeDialog, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    /**
-                     * 跳转充值
-                     */
-                    goCharge();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            /**
+                             * 跳转充值
+                             */
+                            goCharge();
 
-                }
-            }, UiUtils.getString(R.string.charge_title_tip), UiUtils.getString(R.string.charge_message_tip), UiUtils.getString(R.string.cancel),
+                        }
+                    }, UiUtils.getString(R.string.charge_title_tip), UiUtils.getString(R.string.charge_message_tip), UiUtils.getString(R.string
+                            .cancel),
                     UiUtils.getString(R.string.str_top_up));
         }
         mChargeDialog.show();
@@ -611,11 +610,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * 去充值页面
      */
     private void goCharge() {
-        //todo 去充值
-//        Intent to = new Intent(getActivity(), GoldExchangeActivity.class);
-//        startActivity(to);
-        showMessage(getString(R.string.str_please_wait));
-
+        Intent intent = new Intent(ZhiboApplication.INTENT_ACTION_RECHARGE);
+        UiUtils.startActivity(intent);
     }
 
     /**
@@ -1567,6 +1563,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     flag = false;
                     hideInput();//隐藏输入框
                 }
+                System.out.println("rootInvisibleHeight = " + rootInvisibleHeight);
+                mMessageRecyclerView.scrollToPosition(0);
+
             }
         });
     }
@@ -1693,7 +1692,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         mEndStreamJson.data.zan_count++;
         mZans.add(new ZanTag(new Gson().fromJson(message.getExt().custom.toString(), Zan.class).comment - 200, false));
-        System.out.println("------------recieve  zan------- = " + (new Gson().fromJson(message.getExt().custom.toString(), Zan.class).comment - 200));
     }
 
     /**
