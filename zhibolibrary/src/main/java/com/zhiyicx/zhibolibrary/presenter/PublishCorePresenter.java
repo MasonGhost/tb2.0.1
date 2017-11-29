@@ -2,10 +2,14 @@ package com.zhiyicx.zhibolibrary.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -547,7 +551,19 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     public void showshare(UserInfo presenterUser, Context context) {
         mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
-        mSharePolicy.showShare(((Fragment)mRootView).getActivity());
+
+        if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
+            mSharePolicy.showShare(((Fragment)mRootView).getActivity());
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mSharePolicy.getShareContent().setBitmap(resource);
+                    mSharePolicy.showShare(((Fragment)mRootView).getActivity());
+                }
+            });
+        }
     }
 
     /**
