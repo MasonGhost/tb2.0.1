@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -15,16 +16,20 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
@@ -132,7 +137,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
         // 最大高度是最大宽度的4/3 保持 宽高比 3：4
         mImageMaxHeight = mImageContainerWith * 4 / 3;
     }
-    
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.item_dynamic_list_zero_image;
@@ -152,7 +157,98 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
     @Override
     public void convert(ViewHolder holder, CirclePostListBean circlePostListBean, CirclePostListBean lastT, int position, int itemCounts) {
+        try {
 
+            ImageUtils.loadCircleUserHeadPic(circlePostListBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+
+            holder.setText(R.id.tv_name, circlePostListBean.getUserInfoBean().getName());
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
+                    .getCreated_at()));
+///            holder.setText(R.id.tv_title,circlePostListBean.getTitle());
+            holder.setVisible(R.id.tv_title, View.GONE);
+
+            String content = circlePostListBean.getSummary();
+            TextView contentView = holder.getView(R.id.tv_content);
+
+            try { // 置顶标识 ,防止没有置顶布局错误
+                // 待审核 也隐藏
+                TextView topFlagView = holder.getView(R.id.tv_top_flag);
+                topFlagView.setVisibility(View.GONE);
+            } catch (Exception e) {
+
+            }
+
+            if (TextUtils.isEmpty(content)) {
+                contentView.setVisibility(View.GONE);
+            } else {
+                content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+                contentView.setText(content);
+                ConvertUtils.stringLinkConvert(contentView, setLiknks(circlePostListBean, contentView.getText().toString()), false);
+                contentView.setVisibility(View.VISIBLE);
+            }
+            setUserInfoClick(holder.getView(R.id.iv_headpic), circlePostListBean);
+            setUserInfoClick(holder.getView(R.id.tv_name), circlePostListBean);
+
+            holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
+            // 分割线跟随工具栏显示隐藏
+            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+            if (showToolMenu) {
+                // 显示工具栏
+                DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean
+                        .getLikes_count()), circlePostListBean.hasLiked(), 0);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean
+                        .getComments_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean
+                                .getViews_count() == 0 ? 1 : circlePostListBean.getViews_count()),
+                        false, 2);// 浏览量没有 0
+                // 控制更多按钮的显示隐藏
+                dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
+                // 设置工具栏的点击事件
+                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                    }
+                });
+            }
+
+            holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
+            if (showReSendBtn) {
+                // 设置动态发送状态
+                if (circlePostListBean.getState() == DynamicBean.SEND_ERROR) {
+                    holder.setVisible(R.id.fl_tip, View.VISIBLE);
+                } else {
+                    holder.setVisible(R.id.fl_tip, View.GONE);
+                }
+                RxView.clicks(holder.getView(R.id.fl_tip))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
+                            }
+                        });
+            }
+
+            holder.setVisible(R.id.dcv_comment, View.GONE);
+            if (showCommentList) {
+                // 设置评论内容
+                CirclePostListCommentView comment = holder.getView(R.id.post_comment);
+                if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
+                    comment.setVisibility(View.GONE);
+                } else {
+                    comment.setVisibility(View.VISIBLE);
+                }
+
+                comment.setData(circlePostListBean);
+                comment.setOnCommentClickListener(mOnCommentClickListener);
+                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUserInfoClick(View view, final CirclePostListBean circlePostListBean) {
@@ -170,10 +266,10 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     /**
      * 设置 imageview 点击事件，以及显示
      *
-     * @param view        the target
+     * @param view               the target
      * @param circlePostListBean item data
-     * @param positon     image item position
-     * @param part        this part percent of imageContainer
+     * @param positon            image item position
+     * @param part               this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, FilterImageView view, final
     CirclePostListBean circlePostListBean, final int positon, int part) {
@@ -240,7 +336,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
      *
      * @param view
      * @param circlePostListBean
-     * @param part        比例，总大小的份数
+     * @param part               比例，总大小的份数
      * @return
      */
     protected int getProportion(ImageView view, CirclePostListBean circlePostListBean, int part) {

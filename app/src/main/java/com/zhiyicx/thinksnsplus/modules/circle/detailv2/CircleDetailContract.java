@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
@@ -21,6 +24,21 @@ public interface CircleDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
+        void reSendComment(CirclePostCommentBean commentBean, long feed_id);
+
+        int getCurrenPosiotnInDataList(Long id);
+
+        void deleteComment(CirclePostListBean circlePostListBean, int dynamicPositon, Long id, int commentPosition);
+
+        void sendComment(int currentPostion, long replyToUserId, String text);
+
+        void deleteDynamic(CirclePostListBean circlePostListBean, int position);
+
+        void shareDynamic(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
+
+        void handleLike(boolean b, long group_id, Long id, int dataPosition);
+
+        void handleCollect(CirclePostListBean circlePostListBean);
     }
 
     interface Repository extends IBaseCircleRepository {

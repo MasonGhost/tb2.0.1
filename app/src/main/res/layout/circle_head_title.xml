@@ -8,54 +8,54 @@
     app:layout_collapseMode="pin">
 
     <ImageView
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/spacing_mid"
         android:id="@+id/iv_refresh"
+        android:layout_toRightOf="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/frame_loading_grey"/>
-
-    <LinearLayout
-        android:id="@+id/title_center_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/title_uc_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20px"
-            android:paddingRight="15dp"
-            android:text="tym"
-            android:textColor="#333333"
-            android:textSize="28px"/>
-    </LinearLayout>
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:src="@drawable/frame_loading_grey"
+        android:visibility="gone"/>
 
 
     <ImageView
-        android:id="@+id/uc_setting_iv"
+        android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/uc_msg_iv"
-        android:paddingLeft="10dp"
-        android:paddingRight="8dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:src="@mipmap/topbar_back_white"/>
+
 
     <ImageView
-        android:id="@+id/uc_msg_iv"
+        android:id="@+id/iv_serach"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/iv_share"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:src="@mipmap/ico_search"/>
+
+    <ImageView
+        android:id="@+id/iv_share"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/iv_setting"
+        android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:src="@mipmap/topbar_share_white"/>
+
+    <ImageView
+        android:id="@+id/iv_setting"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:paddingLeft="10dp"
-        android:paddingRight="15dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:src="@mipmap/topbar_more_white"/>
 
 </RelativeLayout>

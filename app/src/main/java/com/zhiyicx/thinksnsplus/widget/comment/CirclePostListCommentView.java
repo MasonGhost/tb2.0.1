@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget.comment;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostListCommentView extends LinearLayout{
+public class CirclePostListCommentView extends LinearLayout {
 
     private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
 
@@ -58,7 +57,7 @@ public class CirclePostListCommentView extends LinearLayout{
 
     private void init() {
         setOrientation(VERTICAL);
-        LayoutInflater.from(getContext()).inflate(R.layout.view_group_dynamic_list_comment, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_circle_post_list_comment, this);
         mCirclePostNoPullRecyclerView = (CirclePostNoPullRecyclerView) findViewById(R.id.fl_comment);
         mMoreComment = (TextView) findViewById(R.id.tv_more_comment);
         setListener();

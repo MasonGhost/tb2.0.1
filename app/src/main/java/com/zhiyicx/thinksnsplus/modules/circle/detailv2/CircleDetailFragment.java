@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
@@ -13,23 +15,53 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.*;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
+
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/21/9:50
  * @Email Jliuer@aliyun.com
  * @Description
  */
 public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Presenter, CirclePostListBean>
-        implements CircleDetailContract.View {
+        implements CircleDetailContract.View, CirclePostListBaseItem.OnReSendClickListener,
+        CirclePostNoPullRecyclerView.OnCommentStateClickListener<CirclePostCommentBean>, CirclePostListCommentView.OnCommentClickListener,
+        CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
+        CirclePostListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
+        , PhotoSelectorImpl.IPhotoBackListener {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
@@ -37,10 +69,27 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     RelativeLayout mTitleContainerParent;
     @BindView(R.id.circle_appbar_layout)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.v_shadow)
+    View mVShadow;
+    @BindView(R.id.ilv_comment)
+    InputLimitView mIlvComment;
     @BindView(R.id.iv_refresh)
     ImageView mIvRefresh;
 
     private ActionBarDrawerToggle mToggle;
+
+    private ActionPopupWindow mDeletCommentPopWindow;
+    private ActionPopupWindow mDeletPostPopWindow;
+    private ActionPopupWindow mReSendCommentPopWindow;
+    private ActionPopupWindow mReSendPostPopWindow;
+
+    private ActionPopupWindow mOtherPostPopWindow;
+    private ActionPopupWindow mMyPostPopWindow;
+
+    private int mCurrentPostion;// 当前评论的动态位置
+    private long mReplyToUserId;// 被评论者的 id
+    private PhotoSelectorImpl mPhotoSelector;
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -73,6 +122,22 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return ITEM_SPACING;
+    }
+
+    @Override
+    protected void setLoadingViewHolderClick() {
+        super.setLoadingViewHolderClick();
+        mPresenter.requestNetData(0L, false);
+    }
+
+    @Override
     public long getCircleId() {
         return 2;
     }
@@ -85,8 +150,36 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem());
+        setAdapter(adapter, new CirclePostListItemForZeroImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForOneImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForTwoImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForThreeImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForFourImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForFiveImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForSixImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForSevenImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForEightImage(getContext()));
+        setAdapter(adapter, new CirclePostListItemForNineImage(getContext()));
+        CirclePostEmptyItem emptyItem = new CirclePostEmptyItem();
+        adapter.addItemViewDelegate(emptyItem);
+        adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
+        // 增加空数据，用于显示占位图
+        if (!isLoadMore && data.isEmpty() && getCircleId() >= 0) {
+            CirclePostListBean emptyData = new CirclePostListBean();
+            data.add(emptyData);
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    protected void initData() {
+        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        super.initData();
     }
 
     @Override
@@ -112,11 +205,355 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private void initToolBar() {
         if (!setUseStatusView()) {
             // toolBar 设置状态栏高度的 marginTop
-            int marginTop = DeviceUtils.getStatuBarHeight(getContext()) +
-                    getResources().getDimensionPixelSize(R.dimen.divider_line);
-            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + marginTop;
-            CollapsingToolbarLayout.LayoutParams layoutParams = new CollapsingToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-            mTitleContainerParent.setLayoutParams(layoutParams);
+//            int marginTop = DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+//            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + marginTop;
+//            CollapsingToolbarLayout.LayoutParams layoutParams = new CollapsingToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+//            mTitleContainerParent.setLayoutParams(layoutParams);
         }
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
+
+    @Override
+    public void onCommentStateClick(CirclePostCommentBean dynamicCommentBean, int position) {
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getId())).getId());
+        mReSendCommentPopWindow.show();
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    @Override
+    public void onMoreCommentClick(View view, CirclePostListBean dynamicBean) {
+        int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+        goPostDetail(position, true);
+    }
+
+    private void goPostDetail(int position, boolean b) {
+
+    }
+
+    @Override
+    public void onCommentUserInfoClick(UserInfoBean userInfoBean) {
+        onUserInfoClick(userInfoBean);
+    }
+
+    @Override
+    public void onCommentContentClick(CirclePostListBean dynamicBean, int position) {
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+        if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
+            mDeletCommentPopWindow.show();
+        } else {
+            showCommentView();
+            mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
+            String contentHint = getString(R.string.default_input_hint);
+            if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
+                contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
+            }
+            mIlvComment.setEtContentHint(contentHint);
+        }
+    }
+
+    private void showCommentView() {
+        // 评论
+        mIlvComment.setVisibility(View.VISIBLE);
+        mIlvComment.setSendButtonVisiable(true);
+        mIlvComment.getFocus();
+        mVShadow.setVisibility(View.VISIBLE);
+        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+    }
+
+    @Override
+    public void onSendClick(View v, String text) {
+        DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onImageClick(ViewHolder holder, CirclePostListBean circlePostListBean, int position) {
+        if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
+        List<CirclePostListBean.ImagesBean> task = circlePostListBean.getImages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<>();
+        for (int i = 0; i < task.size(); i++) {
+            int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
+            ImageView imageView = holder.getView(id);
+            ImageBean imageBean = new ImageBean();
+            imageBean.setStorage_id(task.get(i).getFile_id());
+            imageBean.setWidth(task.get(i).getWidth());
+            imageBean.setHeight(task.get(i).getHeight());
+            imageBeanList.add(imageBean);
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+            animationRectBeanArrayList.add(rect);
+        }
+
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+                animationRectBeanArrayList);
+    }
+
+    @Override
+    public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
+        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        mCurrentPostion = dataPosition;
+        boolean canNotDeal;
+        switch (viewPosition) { // 0 1 2 3 代表 view item 位置
+            // 喜欢
+            case 0:
+                // 还未发送成功的动态列表不查看详情
+                canNotDeal = (!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0;
+                if (canNotDeal) {
+                    return;
+                }
+                handleLike(dataPosition);
+                break;
+            // 评论
+            case 1:
+                canNotDeal = (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0;
+                if (canNotDeal) {
+                    return;
+                }
+                showCommentView();
+                mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+                mCurrentPostion = dataPosition;
+                mReplyToUserId = 0;// 0 代表评论动态
+                break;
+
+            case 2: // 浏览
+                onItemClick(null, null, (dataPosition + 1)); // 加上 header
+                break;
+
+            case 3: // 更多
+                Bitmap shareBitMap = null;
+                try {
+                    ImageView imageView = (ImageView) layoutManager.findViewByPosition
+                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
+                    shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
+                            .getDrawable(), R.mipmap.icon);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int user_id = mListDatas.get(dataPosition).getUser_id().intValue();
+                int current_id = (int) AppApplication.getMyUserIdWithdefault();
+                if (user_id == current_id) {
+                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
+                            .hasCollected(), shareBitMap);
+                    mMyPostPopWindow.show();
+                } else {
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
+                            .hasCollected(), shareBitMap);
+                    mOtherPostPopWindow.show();
+                }
+                break;
+            default:
+                onItemClick(null, null, (dataPosition + 1)); // 加上 header
+        }
+    }
+
+    @Override
+    public void onReSendClick(int position) {
+
+    }
+
+    /**
+     * 初始化重发评论选择弹框
+     */
+    private void initReSendCommentPopupWindow(final CirclePostCommentBean commentBean, final long feed_id) {
+        mReSendCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_resend_comment))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mReSendCommentPopWindow.hide();
+                    //mCurrentPostion, mReplyToUserId, text
+                    mPresenter.reSendComment(commentBean, feed_id);
+                })
+                .bottomClickListener(() -> mReSendCommentPopWindow.hide())
+                .build();
+    }
+
+    /**
+     * 初始化评论删除选择弹框
+     *
+     * @param circlePostListBean curent dynamic
+     * @param dynamicPositon     dynamic comment position
+     * @param commentPosition    current comment position
+     */
+    private void initDeletCommentPopWindow(final CirclePostListBean circlePostListBean, final int dynamicPositon, final int commentPosition) {
+        mDeletCommentPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    mPresenter.deleteComment(circlePostListBean, dynamicPositon, circlePostListBean.getComments().get(commentPosition).getId(), commentPosition);
+                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
+                .build();
+    }
+
+    /**
+     * 初始化我的动态操作弹窗
+     *
+     * @param circlePostListBean curent dynamic
+     * @param position           curent dynamic postion
+     */
+    private void initMyDynamicPopupWindow(final CirclePostListBean circlePostListBean, final int position, boolean isCollected,
+                                          final Bitmap shareBitMap) {
+        Long feed_id = circlePostListBean.getId();
+        boolean feedIdIsNull = feed_id == null || feed_id == 0;
+        mMyPostPopWindow = ActionPopupWindow.builder()
+                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item2ClickListener(() -> {// 收藏
+                    mMyPostPopWindow.hide();
+                    handleCollect(position);
+                    showBottomView(true);
+                })
+                .item3ClickListener(() -> {// 删除
+                    mMyPostPopWindow.hide();
+                    mPresenter.deleteDynamic(circlePostListBean, position);
+                    showBottomView(true);
+                })
+                .item1ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(circlePostListBean, shareBitMap);
+                    mMyPostPopWindow.hide();
+                })
+                .bottomClickListener(() -> {//取消
+                    mMyPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .build();
+    }
+
+    private void showBottomView(boolean isShow) {
+        if (isShow) {
+            mVShadow.setVisibility(View.GONE);
+            mIlvComment.setVisibility(View.GONE);
+            mIlvComment.clearFocus();
+            mIlvComment.setSendButtonVisiable(false);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        } else {
+            mVShadow.setVisibility(View.VISIBLE);
+            mIlvComment.setVisibility(View.VISIBLE);
+            mIlvComment.getFocus();
+            mIlvComment.setSendButtonVisiable(true);
+            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+    }
+
+    /**
+     * 喜欢
+     *
+     * @param dataPosition
+     */
+    private void handleLike(int dataPosition) {
+        // 先更新界面，再后台处理
+        mListDatas.get(dataPosition).setLiked(!mListDatas.get(dataPosition).hasLiked());
+        mListDatas.get(dataPosition).setLikes_count(!mListDatas.get(dataPosition).hasLiked() ?
+                mListDatas.get(dataPosition).getLikes_count() - 1 : mListDatas.get(dataPosition).getLikes_count() + 1);
+        refreshData(dataPosition);
+        mPresenter.handleLike(mListDatas.get(dataPosition).hasLiked(),
+                mListDatas.get(dataPosition).getGroup_id(), mListDatas.get(dataPosition).getId(), dataPosition);
+    }
+
+    /**
+     * 初始化他人动态操作选择弹框
+     *
+     * @param circlePostListBean curent dynamic
+     */
+    private void initOtherDynamicPopupWindow(final CirclePostListBean circlePostListBean, int position, boolean isCollected, final
+    Bitmap shareBitmap) {
+        mOtherPostPopWindow = ActionPopupWindow.builder()
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(R.string.dynamic_list_share_dynamic))
+//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item2ClickListener(() -> {// 收藏
+                    handleCollect(position);
+                    mOtherPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .item1ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(circlePostListBean, shareBitmap);
+                    mOtherPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .bottomClickListener(() -> {
+                    mOtherPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .build();
+    }
+
+    /**
+     * 收藏
+     *
+     * @param dataPosition
+     */
+    private void handleCollect(int dataPosition) {
+        // 先更新界面，再后台处理
+        mPresenter.handleCollect(mListDatas.get(dataPosition));
+        boolean is_collection = mListDatas.get(dataPosition).hasCollected();// 旧状态
+        mListDatas.get(dataPosition).setCollected(!is_collection);
+        refreshData(dataPosition);
+    }
+
+    protected void setAdapter(MultiItemTypeAdapter adapter, CirclePostListBaseItem circlePostListBaseItem) {
+        circlePostListBaseItem.setOnImageClickListener(this);
+        circlePostListBaseItem.setOnUserInfoClickListener(this);
+        circlePostListBaseItem.setOnMenuItemClickLisitener(this);
+        circlePostListBaseItem.setOnReSendClickListener(this);
+        circlePostListBaseItem.setOnMoreCommentClickListener(this);
+        circlePostListBaseItem.setOnCommentClickListener(this);
+        circlePostListBaseItem.setOnCommentStateClickListener(this);
+        adapter.addItemViewDelegate(circlePostListBaseItem);
     }
 }

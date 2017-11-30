@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class CirclePostListBean extends BaseListBean {
 
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
 
     /**
      * id : 88
@@ -50,6 +53,20 @@ public class CirclePostListBean extends BaseListBean {
     private UserInfoBean user;
     private List<ImagesBean> images;
     private List<CirclePostCommentBean> comments;
+    private int state = SEND_ING;
+
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public List<CirclePostCommentBean> getComments() {
         return comments;
@@ -123,7 +140,7 @@ public class CirclePostListBean extends BaseListBean {
         this.views_count = views_count;
     }
 
-    public boolean isLiked() {
+    public boolean hasLiked() {
         return liked;
     }
 
@@ -131,7 +148,7 @@ public class CirclePostListBean extends BaseListBean {
         this.liked = liked;
     }
 
-    public boolean isCollected() {
+    public boolean hasCollected() {
         return collected;
     }
 
@@ -294,15 +311,15 @@ public class CirclePostListBean extends BaseListBean {
             this.file_id = in.readInt();
         }
 
-        public static final Creator<GroupDynamicListBean.ImagesBean> CREATOR = new Creator<GroupDynamicListBean.ImagesBean>() {
+        public static final Creator<ImagesBean> CREATOR = new Creator<ImagesBean>() {
             @Override
-            public GroupDynamicListBean.ImagesBean createFromParcel(Parcel source) {
-                return new GroupDynamicListBean.ImagesBean(source);
+            public ImagesBean createFromParcel(Parcel source) {
+                return new ImagesBean(source);
             }
 
             @Override
-            public GroupDynamicListBean.ImagesBean[] newArray(int size) {
-                return new GroupDynamicListBean.ImagesBean[size];
+            public ImagesBean[] newArray(int size) {
+                return new ImagesBean[size];
             }
         };
     }
@@ -322,6 +339,7 @@ public class CirclePostListBean extends BaseListBean {
         dest.writeString(this.title);
         dest.writeString(this.summary);
         dest.writeInt(this.likes_count);
+        dest.writeInt(this.state);
         dest.writeInt(this.comments_count);
         dest.writeInt(this.views_count);
         dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
@@ -346,6 +364,7 @@ public class CirclePostListBean extends BaseListBean {
         this.likes_count = in.readInt();
         this.comments_count = in.readInt();
         this.views_count = in.readInt();
+        this.state = in.readInt();
         this.liked = in.readByte() != 0;
         this.collected = in.readByte() != 0;
         this.created_at = in.readString();

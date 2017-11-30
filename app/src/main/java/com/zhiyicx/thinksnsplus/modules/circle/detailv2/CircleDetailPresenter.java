@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
@@ -76,5 +78,53 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     @Override
     public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void reSendComment(CirclePostCommentBean commentBean, long feed_id) {
+
+    }
+
+    @Override
+    public void deleteComment(CirclePostListBean circlePostListBean, int dynamicPositon, Long id, int commentPosition) {
+
+    }
+
+    @Override
+    public void sendComment(int currentPostion, long replyToUserId, String text) {
+
+    }
+
+    @Override
+    public void deleteDynamic(CirclePostListBean circlePostListBean, int position) {
+
+    }
+
+    @Override
+    public void shareDynamic(CirclePostListBean circlePostListBean, Bitmap shareBitMap) {
+
+    }
+
+    @Override
+    public void handleLike(boolean b, long group_id, Long id, int dataPosition) {
+
+    }
+
+    @Override
+    public void handleCollect(CirclePostListBean circlePostListBean) {
+
+    }
+
+    @Override
+    public int getCurrenPosiotnInDataList(Long id) {
+        int position = -1;
+        int size = mRootView.getListDatas().size();
+        for (int i = 0; i < size; i++) {
+            if (id.intValue() == mRootView.getListDatas().get(i).getId()) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 }
