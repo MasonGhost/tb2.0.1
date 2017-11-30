@@ -64,6 +64,26 @@ public class ConvertUtils {
 
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+
+    /**
+     * 把包含" "、","的处理，获取最有一个字符串
+     *
+     * @param locaiton
+     * @return
+     */
+    public static String convertLocation(String locaiton) {
+        String[] result;
+        if (locaiton.contains(" ")) {
+            result = locaiton.split(" ");
+            locaiton = result[result.length - 1];
+        } else if (locaiton.contains("，")) {
+            result = locaiton.split("，");
+            locaiton = result[result.length - 1];
+        }
+
+        return locaiton;
+    }
+
     /**
      * 字符串转换，用于评论名字颜色与点击处理
      *
@@ -1071,11 +1091,12 @@ public class ConvertUtils {
 
     /**
      * emoji 所占的长度
+     *
      * @param emojiNUm emoji 个数
      * @return
      */
     public static int emojiStrLenght(int emojiNUm) {
-        return 2*emojiNUm;
+        return 2 * emojiNUm;
     }
 
     private static boolean isEmojiCharacter(char codePoint) {

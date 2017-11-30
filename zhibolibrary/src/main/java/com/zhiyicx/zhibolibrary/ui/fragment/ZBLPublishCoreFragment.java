@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.jess.camerafilters.base.FilterManager;
 import com.jess.camerafilters.entity.FilterInfo;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.old.imsdk.de.tavendo.autobahn.DataDealUitls;
 import com.zhiyicx.old.imsdk.entity.ChatRoomContainer;
 import com.zhiyicx.old.imsdk.entity.ChatRoomDataCount;
@@ -1337,8 +1338,14 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                         @Override
                         public void initPopupView(View contentView) {
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_name)).setText(userInfotmp.uname);
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(TextUtils.isEmpty(userInfotmp.location) ?
-                                    getString(R.string.str_default_location) : userInfotmp.location);
+                            String location;
+                            if (TextUtils.isEmpty(userInfotmp.location)) {
+                                location = getString(R.string.str_default_location);
+                            } else {
+                                location = ConvertUtils.convertLocation(userInfotmp.location);
+                            }
+
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(location);
                             UiUtils.glideDisplayWithTrasform(userInfotmp.avatar.getOrigin()
                                     , (ImageView) contentView.findViewById(R.id.iv_userinfo_item_icon)
                                     , new GlideCircleTrasform(getActivity().getApplicationContext()));
@@ -2195,7 +2202,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             if (lastposiotn != -1) {
                 list.get(lastposiotn).isChecked = false;
                 lastposiotn = -1;
-
             }
             vpd.setSendBtText("送出");
             vpd.setSendBtEnable(false);

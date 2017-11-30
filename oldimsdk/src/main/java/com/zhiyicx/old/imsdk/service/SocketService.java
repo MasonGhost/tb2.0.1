@@ -382,7 +382,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
         super.onDestroy();
         mService.disconnect();
         isDisconnecting = true;
-        timeOutTaskPool.setStop(true);
+        if (timeOutTaskPool != null) {
+            timeOutTaskPool.setStop(true);
+        }
         mService = null;
         exit = true;
 
