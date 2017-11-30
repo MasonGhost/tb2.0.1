@@ -1,9 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailContract;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Jliuer
@@ -16,5 +21,12 @@ public class CircleDetailRepository extends BaseCircleRepository implements Circ
     @Inject
     public CircleDetailRepository(ServiceManager serviceManager) {
         super(serviceManager);
+    }
+
+    @Override
+    public Observable<CircleInfoDetail> getCircleInfoDetail(long circleId) {
+        return mCircleClient.getCircleInfoDetail(circleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface IBaseCircleRepository {
     Observable<BaseJsonV2<CircleInfo>> createCircle(long categoryId, Map<String, Object> params, Map<String, String> filePathList);
 
     Observable<BaseJsonV2<Object>> sendCirclePost(PostPublishBean publishBean);
+
+    Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId);
 }

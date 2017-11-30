@@ -455,6 +455,11 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CIRCLELIST = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups ";
 
     /**
+     * 获取圈子详情
+     */
+    public static final String APP_PATH_GET_CIRCLEDETAIL = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";
+
+    /**
      * 圈子发帖
      */
     public static final String APP_PATH_PUBLISH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
@@ -462,7 +467,7 @@ public class ApiConfig {
     /**
      * 获取圈子下帖子列表
      */
-    public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{category_id}/posts";
+    public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）

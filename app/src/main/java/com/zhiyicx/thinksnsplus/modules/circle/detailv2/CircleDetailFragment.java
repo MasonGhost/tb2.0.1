@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -28,7 +28,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Presenter, GroupInfoBean>
+public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Presenter, CirclePostListBean>
         implements CircleDetailContract.View {
 
     @BindView(R.id.drawer_layout)
@@ -68,14 +68,22 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
+    public long getCircleId() {
+        return 2;
+    }
+
+    @Override
+    public void allDataReady(CircleZipBean circleZipBean) {
+        closeLoadingView();
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
-        for (int i = 0; i < 12; i++) {
-            GroupInfoBean groupInfoBean = new GroupInfoBean();
-            groupInfoBean.setId(1);
-            groupInfoBean.setTitle("我加入");
-            groupInfoBean.setIntro("查看更多");
-            mListDatas.add(groupInfoBean);
-        }
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         adapter.addItemViewDelegate(new CircleListItem());
         return adapter;

@@ -2,10 +2,11 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -15,14 +16,15 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 
 /**
@@ -46,13 +48,31 @@ public interface CircleClient {
 
     /**
      * 获取圈子列表
+     *
      * @param categoryId 圈子类别id
      * @param limit
      * @param offet
      * @return
      */
     @GET(APP_PATH_GET_CIRCLELIST)
-    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId,@Query("limit") int limit, @Query("offet") int offet);
+    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取圈子详情
+     * @param circleId
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLEDETAIL)
+    Observable<CircleInfoDetail> getCircleInfoDetail(@Path("circle_id") long circleId);
+
+    /**
+     * 获取圈子下帖子列表
+     * @param circleId
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_GET_POSTLIST)
+    Observable<List<CirclePostListBean>> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
 
     /**
      * 创建圈子
@@ -67,6 +87,7 @@ public interface CircleClient {
 
     /**
      * 发帖
+     *
      * @param circleId 圈子id
      * @param body
      * @return

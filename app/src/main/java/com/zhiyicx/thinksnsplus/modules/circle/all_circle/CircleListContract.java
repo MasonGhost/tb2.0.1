@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.PostListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 import java.util.List;

@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+
+import rx.Observable;
 
 /**
  * @author Jliuer
@@ -12,7 +15,15 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
  * @Description
  */
 public interface CircleDetailContract {
-    interface View extends ITSListView<GroupInfoBean,Presenter>{}
-    interface Presenter extends ITSListPresenter<GroupInfoBean>{}
-    interface Repository extends IBaseCircleRepository{}
+    interface View extends ITSListView<CirclePostListBean, Presenter> {
+        long getCircleId();
+        void allDataReady(CircleZipBean circleZipBean);
+    }
+
+    interface Presenter extends ITSListPresenter<CirclePostListBean> {
+    }
+
+    interface Repository extends IBaseCircleRepository {
+        Observable<CircleInfoDetail> getCircleInfoDetail(long circleId);
+    }
 }
