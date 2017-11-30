@@ -26,7 +26,7 @@ public class VideoListAdapter extends MoreAdapter<SearchResult> {
 
     @Override
     public int getLayoutId() {
-        return R.layout.zb_recycle_item_live;
+        return R.layout.zb_recycle_item_video;
     }
 
 
