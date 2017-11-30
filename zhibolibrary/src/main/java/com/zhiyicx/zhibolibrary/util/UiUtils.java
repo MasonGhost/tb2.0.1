@@ -1,5 +1,6 @@
 package com.zhiyicx.zhibolibrary.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -216,6 +217,7 @@ public class UiUtils {
      * @param string
      */
 
+    @SuppressLint("MyToastHelper")
     public static void makeText(String string) {
         if (mToast == null) {
             mToast = Toast.makeText(getContext(), string, Toast.LENGTH_SHORT);
@@ -456,7 +458,7 @@ public class UiUtils {
      * @param transformation
      */
     public static void glideDisplayWithTrasform(String url, ImageView imageView, BitmapTransformation transformation) {
-        Glide.with(getContext()).load(url)
+        Glide.with(imageView.getContext()).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
                 .centerCrop()

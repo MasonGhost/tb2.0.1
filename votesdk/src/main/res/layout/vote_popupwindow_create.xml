@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?><!--发起投票的弹窗-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/vote_pop_bg_000000"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:id="@+id/ll_contaner"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    >
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+
+        android:background="@color/vote_pop_bg_000000">
 
         <TextView
             android:layout_width="wrap_content"
@@ -15,7 +21,7 @@
             android:layout_centerInParent="true"
             android:text="@string/create_poll"
             android:textColor="@color/vote_pop_title_ffffff"
-            android:textSize="@dimen/vote_pop_title_16sp" />
+            android:textSize="@dimen/vote_pop_title_16sp"/>
 
         <TextView
             android:id="@+id/poll_cancel"
@@ -26,17 +32,18 @@
             android:layout_marginRight="20px"
             android:text="@string/cancel"
             android:textColor="@color/vote_pop_text_999999"
-            android:textSize="@dimen/vote_pop_cancel_14sp" />
+            android:textSize="@dimen/vote_pop_cancel_14sp"/>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#3c3c3c" />
+        android:background="#3c3c3c"/>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/vote_pop_bg_000000">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +61,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/select_poll_duration"
                 android:textColor="@color/vote_pop_text_999999"
-                android:textSize="@dimen/vote_pop_next_14sp" />
+                android:textSize="@dimen/vote_pop_next_14sp"/>
 
             <RadioGroup
                 android:id="@+id/rg_poll_duration"
@@ -67,30 +74,30 @@
                     android:id="@+id/rb_poll_duration1"
                     style="@style/style_poll_radiobutton"
                     android:layout_marginRight="10dp"
-                    android:text="15min" />
+                    android:text="15min"/>
 
                 <RadioButton
                     android:id="@+id/rb_poll_duration2"
                     style="@style/style_poll_radiobutton"
                     android:layout_marginRight="10dp"
-                    android:text="20min" />
+                    android:text="20min"/>
 
                 <RadioButton
                     android:id="@+id/rb_poll_duration3"
                     style="@style/style_poll_radiobutton"
                     android:layout_marginRight="10dp"
-                    android:text="20min" />
+                    android:text="20min"/>
 
                 <RadioButton
                     android:id="@+id/rb_poll_duration4"
                     style="@style/style_poll_radiobutton"
                     android:layout_marginRight="10dp"
-                    android:text="20min" />
+                    android:text="20min"/>
 
                 <RadioButton
                     android:id="@+id/rb_poll_duration5"
                     style="@style/style_poll_radiobutton"
-                    android:text="20min" />
+                    android:text="20min"/>
             </RadioGroup>
 
             <TextView
@@ -100,7 +107,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/set_poll_opts"
                 android:textColor="@color/vote_pop_text_999999"
-                android:textSize="@dimen/vote_pop_text_13sp" />
+                android:textSize="@dimen/vote_pop_text_13sp"/>
 
             <LinearLayout
                 android:id="@+id/poll_opt_container"
@@ -132,7 +139,7 @@
                 android:gravity="center"
                 android:text="@string/add_poll_opt"
                 android:textColor="@color/vote_pop_text_999999"
-                android:textSize="@dimen/vote_pop_text_13sp" />
+                android:textSize="@dimen/vote_pop_text_13sp"/>
 
             <Button
                 android:id="@+id/btn_poll_create_summit"
@@ -143,7 +150,7 @@
                 android:gravity="center"
                 android:text="@string/create_poll"
                 android:textColor="@color/vote_pop_text_ffffff"
-                android:textSize="@dimen/vote_pop_text_13sp" />
+                android:textSize="@dimen/vote_pop_text_13sp"/>
 
         </LinearLayout>
     </ScrollView>

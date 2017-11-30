@@ -139,7 +139,6 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
                             && lastVisibleItem + 1 == adapter.getItemCount()
                             && adapter.isShowFooter()) {
                         //加载更多
-                        Log.w(TAG, "loading more data");
                         mPresenter.getList(true);
                     }
                 } else {
@@ -151,13 +150,11 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
                             && lastVisibleItem + 1 == adapter.getItemCount()
                             && adapter.isShowFooter()) {
                         //加载更多
-                        Log.w(TAG, "loading more data");
                         mPresenter.getList(true);
                     }
                 }
             }
         });
-//        mRefreshLayout.setRefreshViewHolder(new MeiTuanRefreshViewHolder(this.getActivity().getApplicationContext(), false));
         mRefreshLayout.setRefreshViewHolder(new NormalRefreshViewHolder(getActivity().getApplicationContext(), false));
     }
 
@@ -166,7 +163,6 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
         if (!mFirst && mRefreshLayout != null) {
 
             mRefreshLayout.beginRefreshing();
-//                mPresenter.getList(false);//请求列表,最新数据,只能调用一次
 
         }
     }
@@ -226,24 +222,7 @@ public abstract class ZBLLiveItemFragment extends ZBLBaseFragment implements Liv
 
     }
 
-//    @Override
-//    public void showNotFollowPH() {
-//        mPlaceHolder.setVisibility(View.VISIBLE);
-//        mPlaceHolder.setBackgroundResource(R.mipmap.focus_pic_default);
-//    }
-//
-//    @Override
-//    public void shwoNothingPH() {
-//        mPlaceHolder.setVisibility(View.VISIBLE);
-//        mPlaceHolder.setBackgroundResource(R.mipmap.videolist_pic_default);
-//    }
-//
-//    @Override
-//    public void showFilterNothingPH() {
-//        mPlaceHolder.setVisibility(View.VISIBLE);
-//        mPlaceHolder.setBackgroundResource(R.mipmap.screening_pic_default);
-//    }
-//
+///
 //    @Override
 //    public void showNetBadPH() {
 //        mPlaceHolder.setVisibility(View.VISIBLE);

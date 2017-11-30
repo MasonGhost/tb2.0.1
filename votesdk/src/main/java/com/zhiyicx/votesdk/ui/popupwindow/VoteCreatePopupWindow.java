@@ -58,6 +58,8 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
     private Activity context;
     private LayoutInflater inflater;
     private int mCid;
+    private View mContentView;
+    private View mLlcontaner;
 
 
     public VoteCreatePopupWindow(Context context) {
@@ -130,6 +132,8 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
 
     private void initView() {
         View v = inflater.inflate(R.layout.vote_popupwindow_create, null);
+        mContentView=v;
+        mLlcontaner=v.findViewById(R.id.ll_contaner);
         mPollTimeGroup = (RadioGroup) v.findViewById(R.id.rg_poll_duration);
         mPollOptContainer = (LinearLayout) v.findViewById(R.id.poll_opt_container);
         optEdt1 = (VoteOptEdt) v.findViewById(R.id.ve_poll_opt1);
@@ -163,6 +167,7 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
         mTime3Rb.setOnClickListener(this);
         mTime4Rb.setOnClickListener(this);
         mTime5Rb.setOnClickListener(this);
+        mLlcontaner.setOnClickListener(this);
         optEdt1.addEditTextChangeListener(optionEditListener);
         optEdt2.addEditTextChangeListener(optionEditListener);
 
@@ -170,7 +175,7 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
 
     private void initPop() {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         setBackgroundDrawable(new ColorDrawable());
         setOutsideTouchable(true);
         //设置弹出窗体需要软键盘，
@@ -223,6 +228,8 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
                 i == R.id.rb_poll_duration3 || i == R.id.rb_poll_duration4 ||
                 i == R.id.rb_poll_duration5) {
             v.requestFocus();
+        }else if(i==R.id.ll_contaner){
+            dismiss();
         }
     }
 
@@ -247,7 +254,6 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
             VoteOptEdt optEdt = (VoteOptEdt) mPollOptContainer.getChildAt(i);
             if (!TextUtils.isEmpty(optEdt.getOptionText())) {
                 opts.put(optEdt.getOptSortText(), optEdt.getOptionText());
-                Log.v(TAG, "POP----" + optEdt.getOptSortText());
             }
         }
 
@@ -334,7 +340,7 @@ public class VoteCreatePopupWindow extends PopupWindow implements PopupWindow.On
         setWindowAlpha(0.9f);
         setFocusable(true);
 
-        showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+        showAtLocation(mContentView, Gravity.BOTTOM, 0, 0);
         update();
     }
 

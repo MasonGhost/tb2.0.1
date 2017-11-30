@@ -43,6 +43,8 @@ public class VotePollPopupWindow extends PopupWindow implements PopupWindow.OnDi
     private OnVoteOptionListener onVoteOptionListener;
     private Activity context;
     private LayoutInflater inflater;
+    private View mContentView;
+    private View mLlContainer;
 
     public void setOnVoteListener(OnVoteOptionListener listener) {
         onVoteOptionListener = listener;
@@ -106,6 +108,8 @@ public class VotePollPopupWindow extends PopupWindow implements PopupWindow.OnDi
         this.context = (Activity) context;
         inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.vote_popupwindow_poll, null, false);
+        mContentView = v;
+        mLlContainer = v.findViewById(R.id.ll_contaner);
         mCancelTv = (TextView) v.findViewById(R.id.do_poll_cancel);
         optContainer = (LinearLayout) v.findViewById(R.id.do_poll_opt_container);
         mCancelTv.setOnClickListener(this);
@@ -182,7 +186,7 @@ public class VotePollPopupWindow extends PopupWindow implements PopupWindow.OnDi
         setContentView(v);
         setFocusable(true);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         setBackgroundDrawable(new ColorDrawable());
         setOutsideTouchable(true);
         //设置弹出窗体需要软键盘，
@@ -218,7 +222,8 @@ public class VotePollPopupWindow extends PopupWindow implements PopupWindow.OnDi
     public void onClick(View v) {
         if (v.getId() == R.id.do_poll_cancel) {
             dismiss();
-
+        } else if (v.getId() == R.id.do_poll_cancel) {
+            dismiss();
         }
     }
 

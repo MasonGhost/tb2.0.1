@@ -56,24 +56,6 @@ public class ConfigManager implements IConfigManager {
                 .build()
                 .inject(this);
 
-        saveDefaultShareImage();
-
-    }
-
-    private void saveDefaultShareImage() {
-        Resources res = mContext.getResources();
-        BitmapDrawable d = (BitmapDrawable) res.getDrawable(R.mipmap.pic_photo_340);
-        Bitmap img = d.getBitmap();
-        DEFAULT_SHARE_IMAGE_PATH = mContext.getFilesDir() + File.separator + DEFAULT_SHARE_IMAGE_PATH;
-        try {
-            OutputStream os = new FileOutputStream(DEFAULT_SHARE_IMAGE_PATH);
-            img.compress(Bitmap.CompressFormat.PNG, 100, os);
-            os.close();
-        } catch (Exception e) {
-            Log.e("TAG", "", e);
-        } finally {
-            img.recycle();
-        }
     }
 
     public static ConfigManager getInstance(Context context) {
