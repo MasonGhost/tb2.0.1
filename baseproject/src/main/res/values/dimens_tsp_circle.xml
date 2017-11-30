@@ -9,4 +9,8 @@
     <dimen name="create_circle_ps_height">30dp</dimen>
     <!--创建圈子-位置-->
     <dimen name="create_circle_location">58dp</dimen>
+    <!--圈子详情顶部距离-->
+    <dimen name="circle_detail_header_magin">60dp</dimen>
+    <!--圈子详情头像宽度-->
+    <dimen name="circle_detail_head_iamge_height">66dp</dimen>
 </resources>

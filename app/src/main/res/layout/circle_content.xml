@@ -7,13 +7,10 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#cccccc"
+
+    <include
         android:tag="stop"
-        android:text="这里需要悬停"
-        android:textColor="#fff"/>
+        layout="@layout/item_personal_center_dynamic_count"/>
 
     <include layout="@layout/fragment_tslist"/>
 
