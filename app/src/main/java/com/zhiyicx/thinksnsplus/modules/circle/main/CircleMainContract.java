@@ -6,7 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/14/11:29
  * @Email Jliuer@aliyun.com
  * @Description

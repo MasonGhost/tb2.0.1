@@ -28,12 +28,12 @@ public class CircleTypeBeanGreenDaoImpl extends CommonCacheImpl<CircleTypeBean> 
 
     @Override
     public long saveSingleData(CircleTypeBean singleData) {
-        return mCircleTypeBeanWDao.insert(singleData);
+        return mCircleTypeBeanWDao.insertOrReplace(singleData);
     }
 
     @Override
     public void saveMultiData(List<CircleTypeBean> multiData) {
-        mCircleTypeBeanWDao.insertInTx(multiData);
+        mCircleTypeBeanWDao.insertOrReplaceInTx(multiData);
     }
 
     @Override

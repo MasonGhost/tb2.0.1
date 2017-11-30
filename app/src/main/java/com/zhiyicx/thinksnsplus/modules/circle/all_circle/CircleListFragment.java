@@ -30,6 +30,11 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return super.isNeedRefreshDataWhenComeIn();
+    }
+
+    @Override
     protected int setLeftImg() {
         return 0;
     }

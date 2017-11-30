@@ -36,11 +36,11 @@ public class CircleTypeItem extends BaseCircleItem {
     }
 
     @Override
-    public void convert(ViewHolder holder, CircleInfo groupInfoBean, GroupInfoBean lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, CircleInfo circleInfo, CircleInfo lastT, int position, int itemCounts) {
         CombinationButton button = holder.getView(R.id.tv_circle_type);
         button.setLeftTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
-        button.setLeftText(groupInfoBean.getTitle());
-        button.setRightText(groupInfoBean.getIntro());
+        button.setLeftText(circleInfo.getName());
+        button.setRightText(circleInfo.getSummary());
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -48,7 +48,7 @@ public class CircleTypeItem extends BaseCircleItem {
                     if (mCircleItemItemEvent == null) {
                         return;
                     }
-                    mCircleItemItemEvent.toAllCircle(groupInfoBean);
+                    mCircleItemItemEvent.toAllCircle(circleInfo);
                 });
     }
 }

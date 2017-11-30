@@ -7,7 +7,7 @@ import com.zhiyicx.thinksnsplus.base.InjectComponent;
 import dagger.Component;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/14/11:33
  * @Email Jliuer@aliyun.com
  * @Description

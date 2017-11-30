@@ -57,7 +57,7 @@ public class CircleListItem extends BaseCircleItem {
     }
 
     @Override
-    public void convert(ViewHolder holder, CircleInfo groupInfoBean, CircleInfo lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, CircleInfo circleInfo, CircleInfo lastT, int position, int itemCounts) {
 
         // 封面
         ImageView circleCover = holder.getView(R.id.iv_circle_cover);
@@ -76,44 +76,43 @@ public class CircleListItem extends BaseCircleItem {
         Context context = circleSubscribe.getContext();
 
         // 设置封面
-        GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
-        if (groupCoverBean == null) {
-            groupCoverBean = new GroupInfoBean.GroupCoverBean();
-        }
-        String[] size = groupCoverBean.getSize().split("x");
-        int width = 0;
-        int height = 0;
-        if (size.length > 0) {
-            try {
-                width = Integer.parseInt(size[0]);
-                height = Integer.parseInt(size[1]);
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        // 计算图片压缩比
-        int imageViewWidth = context.getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
-        if (width == 0) {
-            width = (int) (imageViewWidth * 100.0f);
-            height = (int) (imageViewWidth * 100.0f);
-        }
-        int port = (int) (imageViewWidth * 100.0f / width);
-        if (port > 100) {
-            port = 100;
-        }
-        GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
-                , port, AppApplication.getTOKEN());
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        imageLoader.loadImage(context, GlideImageConfig.builder()
-                .placeholder(R.drawable.shape_default_image)
-                .errorPic(R.drawable.shape_default_image)
-                .url(glideUrl.toStringUrl())
-                .imagerView(circleCover)
-                .build()
-        );
-        // 设置频道名称
-        circleName.setText(groupInfoBean.getTitle());
-        // 设置分享人数
-        String feedCountNumber = ConvertUtils.numberConvert(groupInfoBean.getPosts_count());
+//        GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
+//        if (groupCoverBean == null) {
+//            groupCoverBean = new GroupInfoBean.GroupCoverBean();
+//        }
+//        String[] size = groupCoverBean.getSize().split("x");
+//        int width = 0;
+//        int height = 0;
+//        if (size.length > 0) {
+//            try {
+//                width = Integer.parseInt(size[0]);
+//                height = Integer.parseInt(size[1]);
+//            } catch (NumberFormatException ignored) {
+//            }
+//        }
+//        // 计算图片压缩比
+//        int imageViewWidth = context.getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
+//        if (width == 0) {
+//            width = (int) (imageViewWidth * 100.0f);
+//            height = (int) (imageViewWidth * 100.0f);
+//        }
+//        int port = (int) (imageViewWidth * 100.0f / width);
+//        if (port > 100) {
+//            port = 100;
+//        }
+//        GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
+//                , port, AppApplication.getTOKEN());
+//        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+//        imageLoader.loadImage(context, GlideImageConfig.builder()
+//                .placeholder(R.drawable.shape_default_image)
+//                .errorPic(R.drawable.shape_default_image)
+//                .url(glideUrl.toStringUrl())
+//                .imagerView(circleCover)
+//                .build()
+//        );
+        circleName.setText(circleInfo.getName());
+
+        String feedCountNumber = ConvertUtils.numberConvert(circleInfo.getPosts_count());
         String feedContent = context.getString(R.string.circle_post) + " " + "<" + feedCountNumber + ">";
         CharSequence feedString = ColorPhrase.from(feedContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
@@ -121,7 +120,7 @@ public class CircleListItem extends BaseCircleItem {
                 .format();
         circleFeedCount.setText(feedString);
         // 设置订阅人数
-        String followCountNumber = ConvertUtils.numberConvert(groupInfoBean.getMembers_count());
+        String followCountNumber = ConvertUtils.numberConvert(circleInfo.getUsers_count());
         String followContent = context.getString(R.string.circle_member) + " " + "<" + followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
@@ -130,7 +129,7 @@ public class CircleListItem extends BaseCircleItem {
         circleMemberCount.setText(followString);
 
         // 设置订阅状态
-        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        boolean isJoined = circleInfo.getJoined() != null;
         circleSubscribe.setChecked(isJoined);
         circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
         circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
@@ -146,7 +145,7 @@ public class CircleListItem extends BaseCircleItem {
                     if (mCircleItemItemEvent == null) {
                         return;
                     }
-                    mCircleItemItemEvent.toCircleDetail(groupInfoBean);
+                    mCircleItemItemEvent.toCircleDetail(circleInfo);
                 });
         RxView.clicks(holder.getView(R.id.iv_circle_cover))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

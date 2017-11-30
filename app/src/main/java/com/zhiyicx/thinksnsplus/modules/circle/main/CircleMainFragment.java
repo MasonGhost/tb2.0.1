@@ -82,7 +82,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     protected RecyclerView.Adapter getAdapter() {
         for (int i = 0; i < 12; i++) {
             CircleInfo groupInfoBean = new CircleInfo();
-            groupInfoBean.setId((i == 0 || i == 6) ? -1 : i);
+            groupInfoBean.setId((i == 0 || i == 6) ? -1L : i);
             groupInfoBean.setName("我加入");
             groupInfoBean.setSummary("查看更多");
             mListDatas.add(groupInfoBean);
@@ -101,12 +101,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
-    public void toAllCircle(GroupInfoBean groupInfoBean) {
+    public void toAllCircle(CircleInfo groupInfoBean) {
 
     }
 
     @Override
-    public void toCircleDetail(GroupInfoBean groupInfoBean) {
+    public void toCircleDetail(CircleInfo groupInfoBean) {
         startActivity(new Intent(getActivity(), CircleDetailActivity.class));
     }
 }

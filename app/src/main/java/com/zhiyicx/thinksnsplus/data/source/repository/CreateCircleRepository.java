@@ -6,7 +6,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleContract;
 import javax.inject.Inject;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/21/17:00
  * @Email Jliuer@aliyun.com
  * @Description

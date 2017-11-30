@@ -22,8 +22,8 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
     protected CircleItemItemEvent mCircleItemItemEvent;
 
     public interface CircleItemItemEvent {
-        void toAllCircle(GroupInfoBean groupInfoBean);
-        void toCircleDetail(GroupInfoBean groupInfoBean);
+        void toAllCircle(CircleInfo circleInfo);
+        void toCircleDetail(CircleInfo circleInfo);
     }
 
     public CircleItemItemEvent getCircleItemItemEvent() {

@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +21,9 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
         implements CircleListContract.Presenter {
 
     @Inject
+    CircleInfoGreenDaoImpl mCircleInfoGreenDao;
+
+    @Inject
     public CircleListPresenter(CircleListContract.Repository repository, CircleListContract.View rootView) {
         super(repository, rootView);
     }
@@ -32,7 +35,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
 
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
-                        mRootView.onNetResponseSuccess(data,isLoadMore);
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
                     @Override
@@ -44,18 +47,19 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable,isLoadMore);
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
+        mRootView.onCacheResponseSuccess(mCircleInfoGreenDao.getCircleListByCategory(mRootView.getCategoryId()), isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CircleInfo> data, boolean isLoadMore) {
-        return false;
+        mCircleInfoGreenDao.saveMultiData(data);
+        return isLoadMore;
     }
 }

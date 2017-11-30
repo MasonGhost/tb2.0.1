@@ -1,6 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
+import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author Jliuer
@@ -8,6 +19,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class CircleInfo extends BaseListBean {
 
 
@@ -32,7 +44,7 @@ public class CircleInfo extends BaseListBean {
      * updated_at : 2017-11-28 02:46:28
      * joined : {"id":2,"group_id":3,"user_id":18,"audit":0,"role":"founder","disabled":0,"created_at":"2017-11-29 17:08:16","updated_at":"2017-11-29 17:08:17"}
      */
-
+    @Id
     private Long id;
     private String name;
     private int user_id;
@@ -51,6 +63,7 @@ public class CircleInfo extends BaseListBean {
     private int audit;
     private String created_at;
     private String updated_at;
+    @Convert(columnType = String.class,converter = JoinedBeanConvert.class)
     private JoinedBean joined;
 
     public Long getId() {
@@ -205,7 +218,8 @@ public class CircleInfo extends BaseListBean {
         this.joined = joined;
     }
 
-    public static class JoinedBean {
+    public static class JoinedBean implements Parcelable,Serializable{
+        private static final long serialVersionUID = -2874474992456690897L;
         /**
          * id : 2
          * group_id : 3
@@ -289,5 +303,144 @@ public class CircleInfo extends BaseListBean {
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
         }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeInt(this.group_id);
+            dest.writeInt(this.user_id);
+            dest.writeInt(this.audit);
+            dest.writeString(this.role);
+            dest.writeInt(this.disabled);
+            dest.writeString(this.created_at);
+            dest.writeString(this.updated_at);
+        }
+
+        public JoinedBean() {
+        }
+
+        protected JoinedBean(Parcel in) {
+            this.id = in.readInt();
+            this.group_id = in.readInt();
+            this.user_id = in.readInt();
+            this.audit = in.readInt();
+            this.role = in.readString();
+            this.disabled = in.readInt();
+            this.created_at = in.readString();
+            this.updated_at = in.readString();
+        }
+
+        public static final Creator<JoinedBean> CREATOR = new Creator<JoinedBean>() {
+            @Override
+            public JoinedBean createFromParcel(Parcel source) {
+                return new JoinedBean(source);
+            }
+
+            @Override
+            public JoinedBean[] newArray(int size) {
+                return new JoinedBean[size];
+            }
+        };
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.category_id);
+        dest.writeString(this.location);
+        dest.writeString(this.longitude);
+        dest.writeString(this.latitude);
+        dest.writeString(this.geo_hash);
+        dest.writeInt(this.allow_feed);
+        dest.writeString(this.mode);
+        dest.writeInt(this.money);
+        dest.writeString(this.summary);
+        dest.writeString(this.notice);
+        dest.writeInt(this.users_count);
+        dest.writeInt(this.posts_count);
+        dest.writeInt(this.audit);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.joined, flags);
+    }
+
+    public CircleInfo() {
+    }
+
+    protected CircleInfo(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.user_id = in.readInt();
+        this.category_id = in.readInt();
+        this.location = in.readString();
+        this.longitude = in.readString();
+        this.latitude = in.readString();
+        this.geo_hash = in.readString();
+        this.allow_feed = in.readInt();
+        this.mode = in.readString();
+        this.money = in.readInt();
+        this.summary = in.readString();
+        this.notice = in.readString();
+        this.users_count = in.readInt();
+        this.posts_count = in.readInt();
+        this.audit = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 581625869)
+    public CircleInfo(Long id, String name, int user_id, int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed,
+            String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at, String updated_at,
+            JoinedBean joined) {
+        this.id = id;
+        this.name = name;
+        this.user_id = user_id;
+        this.category_id = category_id;
+        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.geo_hash = geo_hash;
+        this.allow_feed = allow_feed;
+        this.mode = mode;
+        this.money = money;
+        this.summary = summary;
+        this.notice = notice;
+        this.users_count = users_count;
+        this.posts_count = posts_count;
+        this.audit = audit;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.joined = joined;
+    }
+
+    public static final Creator<CircleInfo> CREATOR = new Creator<CircleInfo>() {
+        @Override
+        public CircleInfo createFromParcel(Parcel source) {
+            return new CircleInfo(source);
+        }
+
+        @Override
+        public CircleInfo[] newArray(int size) {
+            return new CircleInfo[size];
+        }
+    };
+
+    public static class JoinedBeanConvert extends BaseConvert<JoinedBean>{}
 }

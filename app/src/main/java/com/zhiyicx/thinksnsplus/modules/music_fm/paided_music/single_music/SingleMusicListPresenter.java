@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/24/17:04

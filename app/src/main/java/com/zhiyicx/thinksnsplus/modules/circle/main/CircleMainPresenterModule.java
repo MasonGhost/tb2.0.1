@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/11/14/11:37
  * @Email Jliuer@aliyun.com
  * @Description
