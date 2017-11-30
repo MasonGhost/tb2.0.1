@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/24/17:04
@@ -26,24 +28,25 @@ public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListCo
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getMyPaidsMusicList(maxId).subscribe(new BaseSubscribeForV2<List<MusicDetaisBean>>() {
+        Subscription subscribe = mRepository.getMyPaidsMusicList(maxId).subscribe(new BaseSubscribeForV2<List<MusicDetaisBean>>() {
             @Override
             protected void onSuccess(List<MusicDetaisBean> data) {
-                mRootView.onNetResponseSuccess(data,isLoadMore);
+                mRootView.onNetResponseSuccess(data, isLoadMore);
             }
 
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
-                mRootView.onResponseError(null,isLoadMore);
+                mRootView.onResponseError(null, isLoadMore);
             }
 
             @Override
             protected void onException(Throwable throwable) {
                 super.onException(throwable);
-                mRootView.onResponseError(throwable,isLoadMore);
+                mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
