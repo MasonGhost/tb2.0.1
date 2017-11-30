@@ -189,6 +189,7 @@ public class VoteManager {
                         mPresenterPolicy.receiveVoteMessage(msg);
                     }
                     break;
+                    default:
             }
         }
     }

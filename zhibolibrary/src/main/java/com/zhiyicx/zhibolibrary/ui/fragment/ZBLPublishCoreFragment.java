@@ -2190,6 +2190,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 return;
             } else if (currentView == LIVE_VIEW) {//观众端
                 hidekeyboard();//隐藏软键盘
+                mGiftSheet.toggle();
             }
         } else if (view.getId() == R.id.ib_publish_core_gift) {
             /**
