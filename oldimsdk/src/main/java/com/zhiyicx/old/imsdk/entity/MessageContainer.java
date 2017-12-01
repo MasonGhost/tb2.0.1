@@ -15,6 +15,7 @@ public class MessageContainer implements Serializable{
     public Message msg;
     public int roomId;
     public List<Integer> roomIds;
+    public int reSendCounts;
 
     public MessageContainer(String event, Message msg, int roomId, List<Integer> roomIds) {
         mEvent = event;

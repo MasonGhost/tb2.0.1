@@ -87,7 +87,8 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                         , mPage)
                         .subscribeOn(Schedulers.io());
             case "video":
-                return ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_SEARCH_VIDEO_LIST, map).map(new Func1<JsonObject, SearchJson>() {
+                return ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_SEARCH_VIDEO_LIST, map).map(new Func1<JsonObject,
+                        SearchJson>() {
                     @Override
                     public SearchJson call(JsonObject jsonObject) {
                         return new Gson().fromJson(jsonObject, SearchJson.class);
@@ -95,7 +96,8 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                 });
             case "stream":
             default:
-                return ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_SEARCH_LIVE_LIST, map).map(new Func1<JsonObject, SearchJson>() {
+                return ZBCloudApiClient.getInstance().sendCloudApiRequestForRx(ZBLApi.ZB_API_SEARCH_LIVE_LIST, map).map(new Func1<JsonObject,
+                        SearchJson>() {
                     @Override
                     public SearchJson call(JsonObject jsonObject) {
                         return new Gson().fromJson(jsonObject, SearchJson.class);
@@ -161,26 +163,49 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                                     if (usid.length() > 0)
                                         usid = usid.substring(0, usid.length() - 1);
                                     if (usid.length() > 0) {
-                                        mUserInfoSubscription = mModel.getUsidInfo(usid, "").subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                                        mUserInfoSubscription = mModel.getUsidInfo(usid, "")
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .map(new Func1<BaseJson<UserInfo[]>, SearchJson>() {
                                                     @Override
-                                                    public void call(BaseJson<UserInfo[]> baseJson) {
+                                                    public SearchJson call(BaseJson<UserInfo[]> baseJson) {
                                                         if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
-                                                            if (mSearchJson.data.stream_list != null) {
-                                                                for (int i = 0; i < baseJson.data.length; i++) {
-                                                                    mSearchJson.data.stream_list[i].user = baseJson.data[i];
+                                                            UserInfo[] userInfos = baseJson.data;
+                                                            HashMap<String, UserInfo> userInfoHashMap = new HashMap<>();
+                                                            if (userInfos != null && userInfos.length > 0) {
+                                                                for (int i = 0; i < userInfos.length; i++) {
+                                                                    userInfoHashMap.put(userInfos[i].usid, userInfos[i]);
                                                                 }
-                                                            } else {
-                                                                for (int i = 0; i < baseJson.data.length; i++) {
-                                                                    mSearchJson.data.video_list[i].user = baseJson.data[i];
+                                                                if (mSearchJson.data.stream_list != null) {
+                                                                    for (SearchResult datum : mSearchJson.data.stream_list) {
+                                                                        datum.user = userInfoHashMap.get(datum.user.usid);
+                                                                    }
+                                                                } else {
+                                                                    for (SearchResult datum : mSearchJson.data.video_list) {
+                                                                        datum.user = userInfoHashMap.get(datum.user.usid);
+                                                                    }
+
                                                                 }
+
                                                             }
+                                                        } else {
+                                                            return null;
+                                                        }
+                                                        return mSearchJson;
+                                                    }
+                                                })
+                                                .subscribe(new Action1<SearchJson>() {
+                                                    @Override
+                                                    public void call(SearchJson data) {
+                                                        if (data != null) {
                                                             refresh(mSearchJson, isMore);//刷新数据
                                                         } else {
                                                             errorDeal(isMore);
                                                         }
                                                     }
-                                                }, new Action1<Throwable>() {
+                                                }, new Action1<Throwable>()
+
+                                                {
                                                     @Override
                                                     public void call(Throwable throwable) {
                                                         throwable.printStackTrace();
@@ -199,7 +224,9 @@ public class SearchTabPresenter extends BasePresenter<SearchTabModel, SearchTabV
                                 mRootView.showMessage(json.message);
                             }
                         }
-                    }, new Action1<Throwable>() {
+                    }, new Action1<Throwable>()
+
+                    {
                         @Override
                         public void call(Throwable throwable) {
                             throwable.printStackTrace();

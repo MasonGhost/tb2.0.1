@@ -170,7 +170,7 @@ public class LiveItemPresenter extends BasePresenter<LiveItemModel, LiveItemView
                                 UserInfo[] userInfos = baseJson.data;
                                 HashMap<String, UserInfo> userInfoHashMap = new HashMap<>();
                                 if (userInfos != null && userInfos.length > 0) {
-                                    for (int i = 0; i < mApiList.data.length; i++) {
+                                    for (int i = 0; i < userInfos.length; i++) {
                                         userInfoHashMap.put(userInfos[i].usid, userInfos[i]);
                                     }
                                     for (SearchResult datum : mApiList.data) {

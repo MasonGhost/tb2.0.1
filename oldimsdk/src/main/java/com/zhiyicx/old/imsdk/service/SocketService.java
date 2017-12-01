@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -131,6 +133,23 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long SLEEP_TIME = 6 * 1000;//线程沉睡时间,防止占用cpu过高
     private long disconnect_start_time = 0;//重连开始时间
 
+    /**
+     * 心跳，防止cpu占用过高
+     */
+    private static final long HEART_BEAT_RATE_INTERVAL_FOR_CPU = 500;
+    /**
+     * 消息发送间隔时间，防止cpu占用过高
+     */
+    private static final long DELAY_RECONNECT_TIME = 5000;
+    /**
+     * 消息发送间隔时间，防止cpu占用过高
+     */
+    private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;
+
+    /**
+     * 最大的重发次数
+     */
+    private static final int MAX_RESEND_COUNT = 3;
 
     private ImService mService;
     private Context mContext;
@@ -172,14 +191,15 @@ public class SocketService extends BaseService implements ImService.ImListener {
             while (!exit) {
                 if (isNeedReConnected) {
                     /**
-                     * ping后或者发送普通消息5s收不到回应则重连
+                     * ping后或者发送普通消息{@Link HEART_PING_PONG_RATE}s收不到回应则重连
                      */
                     if (System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime > responsTime) {
                         socketReconnect();
+                        heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
                         continue;
                     }
                     /**
-                     *发送心跳包与超时重连
+                     * 心跳时间大于设定时间，&&接收到消息的时间超过了心跳时间，则发送新跳包
                      */
                     if (System.currentTimeMillis() - sendTime > HEART_BEAT_RATE && System.currentTimeMillis() - responsTime > HEART_BEAT_RATE) {
                         if (DeviceUtils.netIsConnected(mContext) && mService.isConnected()) {
@@ -193,21 +213,23 @@ public class SocketService extends BaseService implements ImService.ImListener {
                         } else {
                             socketReconnect();
                         }
-                    } else {
-                        //防止cpu占用过高
-                        try {
-                            Thread.sleep(4000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                     }
-
-
                 }
+                heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
             }
         }
     };
 
+    private void heartRateThreadSleep(long heartBeatRateIntervalForCpu) {
+        /**
+         * 防止cpu占用过高卡顿
+         */
+        try {
+            Thread.sleep(heartBeatRateIntervalForCpu);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 根据软件在前台还是后台，以及当前的网络状况，修改心跳的频率
      */
@@ -271,11 +293,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
 
                 }
                 //防止cpu占用过高
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                heartRateThreadSleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
             }
 
         }
@@ -285,7 +303,10 @@ public class SocketService extends BaseService implements ImService.ImListener {
         TimeOutTask timeOutTask = new TimeOutTask(messageContainer, System.currentTimeMillis(), new TimeOutListener() {
             @Override
             public void timeOut(MessageContainer messageContainer) {
-                sendTimeOutMsg(messageContainer);
+                if (messageContainer.reSendCounts > MAX_RESEND_COUNT) {
+                } else {
+                    mMessageContainers.add(messageContainer);
+                }
             }
         });
         timeTasks.put(messageContainer.msg.id, timeOutTask);
@@ -1441,7 +1462,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
     @Override
     public void onDisconnect(int code, String reason) {
         LogUtils.debugInfo(TAG, "----------onDisconnect------");
-        if (connected) sendDisconnectedMsg(code, reason);
+        if (connected) {
+            sendDisconnectedMsg(code, reason);
+        }
         connected = false;
         isDisconnecting = false;
 
@@ -1456,13 +1479,23 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 无法连接到服务器（主要是网络太差出现）
              */
             case WebSocket.ConnectionHandler.CLOSE_CANNOT_CONNECT:
-                socketReconnect();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        socketReconnect();
+                    }
+                }, DELAY_RECONNECT_TIME);
                 break;
             /**
              * 意外的失去了先前建立的连接
              */
             case WebSocket.ConnectionHandler.CLOSE_CONNECTION_LOST:
-                socketReconnect();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        socketReconnect();
+                    }
+                }, DELAY_RECONNECT_TIME);
 
                 break;
             /**
@@ -1489,6 +1522,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case WebSocket.ConnectionHandler.CLOSE_RECONNECT:
 
                 break;
+                default:
 
 
         }

@@ -125,7 +125,6 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                 .inject(this);
 
 
-
         setPlaceHolderVisible(true);//设置进入是时的模糊效果和加载动画
         mPresenter.parseIntent(getIntent());
         start();
@@ -140,8 +139,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
         if (data == null) {
             presenterUser = getUserInfo();//重搜索页面进入
             if (presenterUser == null) presenterUser = new UserInfo(new Icon());
-        }
-        else {
+        } else {
             presenterUser = new UserInfo();
             presenterUser = data.user;
             presenterUser.location = data.stream.location;
@@ -154,12 +152,14 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     public void showPresenterInfo() {
         rlPublishCorePresenterInfo.setVisibility(View.VISIBLE);
-        UiUtils.glideDisplayWithTrasform(presenterUser.avatar.origin, ivPresenterHeadpic, new GlideCircleTrasform(UiUtils.getContext()));
+        UiUtils.glideDisplayWithTrasform(presenterUser.avatar != null && presenterUser.avatar.origin != null ? presenterUser.avatar.origin : "",
+                ivPresenterHeadpic, new GlideCircleTrasform(UiUtils.getContext()));
         tvPresenterName.setText(presenterUser.uname);
-        if (!TextUtils.isEmpty(presenterUser.location))
+        if (!TextUtils.isEmpty(presenterUser.location)) {
             tvPresenterEnglishname.setText(presenterUser.location);
-        else
+        } else {
             tvPresenterEnglishname.setText("火星");
+        }
         ivPresenteVerified.setVisibility(presenterUser.is_verified == 1 ? View.VISIBLE : View.GONE);
         mediaController.show();//更新播放按钮图片状态
     }
@@ -224,7 +224,8 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                 @Override
                 public void initPopupView(View contentView) {
                     ((TextView) contentView.findViewById(R.id.tv_userinfo_name)).setText(userInfotmp.uname);
-                    ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(TextUtils.isEmpty(userInfotmp.location) ? getString(R.string.str_default_location) : userInfotmp.location);
+                    ((TextView) contentView.findViewById(R.id.tv_userinfo_city)).setText(TextUtils.isEmpty(userInfotmp.location) ? getString(R
+                            .string.str_default_location) : userInfotmp.location);
                     UiUtils.glideDisplayWithTrasform(userInfotmp.avatar.getOrigin()
                             , (ImageView) contentView.findViewById(R.id.iv_userinfo_item_icon)
                             , new GlideCircleTrasform(getApplicationContext()));
@@ -248,8 +249,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                         btAttention.setNameLeftDrawable(null);
                         btAttention.setName(getString(R.string.str_cant_follow_self));
                         btAttention.setBackgroundResource(R.drawable.shape_follow_button_enable);
-                    }
-                    else {
+                    } else {
                         btAttention.setEnabled(true);
                         btAttention.setVisibility(View.VISIBLE);
                         btAttention.setNameSize(14);
@@ -284,8 +284,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
             btAttention.setName(getString(R.string.str_already_follow));
             btAttention.setNameLeftDrawable(R.mipmap.ico_added_gz);
             btAttention.setBackgroundResource(R.drawable.shape_follow_button_enable);
-        }
-        else {
+        } else {
             btAttention.setName(getString(R.string.str_follow));
             btAttention.setNameLeftDrawable(null);
             btAttention.setBackgroundResource(R.drawable.shape_blue_solid);
@@ -361,8 +360,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
 //            setPlaceHolderVisible(false);
             mPlaceHolder.setImageBitmap(FastBlur.blurBitmap(bitmap, UiUtils.getScreenWidth()
                     , UiUtils.getScreenHeidth()));
-        }
-        else {
+        } else {
             UiUtils.glideWrap(url)
                     .placeholder(new BitmapDrawable(FastBlur.blurBitmap(bitmap, UiUtils.getScreenWidth()
                             , UiUtils.getScreenHeidth())))
@@ -390,8 +388,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                         mPromptTV.setVisibility(isVisible ? View.VISIBLE : View.GONE);
                         if (isVisible) {
                             ((AnimationDrawable) mPromptTV.getDrawable()).start();
-                        }
-                        else {
+                        } else {
                             ((AnimationDrawable) mPromptTV.getDrawable()).stop();
                         }
                     }
@@ -454,16 +451,14 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                 if (isFollow) {
                     tv_follows.setText(Integer.valueOf(tv_follows.getText().toString()) + 1 + "");
 
-                }
-                else {
+                } else {
 
                     tv_follows.setText(Integer.valueOf(tv_follows.getText().toString()) - 1 + "");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
 
             showPresenterInfo(presenterUser);
         }
@@ -604,14 +599,12 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                 mZBPlayClient.reStartConnect();//播放视频
                 setCoverVisable(false);//隐藏蒙层
             }
-        }
-        else if (view.getId() == R.id.rl_publish_core_presenter_info) {
+        } else if (view.getId() == R.id.rl_publish_core_presenter_info) {
             /**
              * 点击主播头像
              */
             showPresenterInfo(presenterUser);
-        }
-        else if (view.getId() == R.id.bt_live_play_close) {
+        } else if (view.getId() == R.id.bt_live_play_close) {
             killMyself();
         }
     }

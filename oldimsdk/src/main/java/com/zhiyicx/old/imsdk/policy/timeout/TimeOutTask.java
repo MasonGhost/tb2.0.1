@@ -31,6 +31,7 @@ public class TimeOutTask implements Runnable {
         this.mMessageContainer = mMessageContainer;
         this.begin_time = begin_time;
         this.mListener=l;
+        mMessageContainer.reSendCounts++;
     }
 
     @Override
