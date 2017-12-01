@@ -230,6 +230,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             e.printStackTrace();
         }
     }
+
     /**
      * 根据软件在前台还是后台，以及当前的网络状况，修改心跳的频率
      */
@@ -286,8 +287,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     MessageContainer messageContainer = mMessageContainers.poll();
 
                     if (messageContainer != null) {
-                        if (messageContainer.msg.ext.customID != MessageType.MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
+                        if (messageContainer.msg != null && messageContainer.msg.ext != null && messageContainer.msg.ext.customID != MessageType
+                                .MESSAGE_CUSTOM_ID_ZAN)//点赞不处理超时
+                        {
                             setTimeoutTask(messageContainer);
+                        }
                         sendMessage(messageContainer);
                     }
 
@@ -1522,7 +1526,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case WebSocket.ConnectionHandler.CLOSE_RECONNECT:
 
                 break;
-                default:
+            default:
 
 
         }

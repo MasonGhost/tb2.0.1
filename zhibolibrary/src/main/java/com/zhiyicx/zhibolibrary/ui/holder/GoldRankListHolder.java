@@ -36,7 +36,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
     TextView tvRankGoldItemDetailTitle;
     TextView tvRankGoldItemGoldeSent;
     TextView tvRankGoldItemRank;
-    FllowButtonView btRankGoldItemAttention;
+    ImageView btRankGoldItemAttention;
 
 
     private SearchResult mData;
@@ -65,7 +65,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
         tvRankGoldItemDetailTitle = (TextView) itemView.findViewById(R.id.tv_rank_gold_item_detail_title);
         tvRankGoldItemGoldeSent = (TextView) itemView.findViewById(R.id.tv_rank_gold_item_golde_sent);
         tvRankGoldItemRank = (TextView) itemView.findViewById(R.id.tv_rank_gold_item_rank);
-        btRankGoldItemAttention = (FllowButtonView) itemView.findViewById(R.id.bt_rank_gold_item_attention);
+        btRankGoldItemAttention = (ImageView) itemView.findViewById(R.id.bt_rank_gold_item_attention);
         itemView.findViewById(R.id.fl_container).setOnClickListener(this);
         btRankGoldItemAttention.setOnClickListener(this);
 
@@ -77,24 +77,24 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
     public void setData(SearchResult data) {
         this.mData = data;
         tvRankGoldItemTitle.setText(data.user.uname);
-        Drawable drawable = mContext.getResources().getDrawable(data.user.sex == null || data.user.sex == 1 ? R.mipmap.ico_sex_man : R.mipmap.ico_sex_woman);
+        Drawable drawable = mContext.getResources().getDrawable(data.user.sex == null || data.user.sex == 1 ? R.mipmap.ico_sex_man : R.mipmap
+                .ico_sex_woman);
 /// 这一步必须要做,否则不会显示.
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         tvRankGoldItemTitle.setCompoundDrawables(null, null, drawable, null);
 
 
         UiUtils.glideDisplayWithTrasform(data.user.avatar.getOrigin(), ivRankGoldItemIcon, new GlideCircleTrasform(UiUtils.getContext()));
-
-        tvRankGoldItemDetailTitle.setText(TextUtils.isEmpty(data.user.intro) ? UiUtils.getString("str_default_intro") : data.user.intro
-        );
+// 设计图已经去掉了
+//        tvRankGoldItemDetailTitle.setText(TextUtils.isEmpty(data.user.intro) ? UiUtils.getString("str_default_intro") : data.user.intro
+//        );
         tvRankGoldItemGoldeSent.setText("x " + data.user.gold);
         tvRankGoldItemRank.setText(this.getPosition() + 1 + "");
         mVerifiedIV.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
         if (this.getPosition() < 3) {
-            tvRankGoldItemRank.setTextColor(UiUtils.getColor("color_font_red"));
-        }
-        else {
-            tvRankGoldItemRank.setTextColor(UiUtils.getColor("color_font_black_light"));
+            tvRankGoldItemRank.setTextColor(UiUtils.getColor("title_blue"));
+        } else {
+            tvRankGoldItemRank.setTextColor(UiUtils.getColor("color_light_gray"));
         }
         if (data.user.uid.equals(ZhiboApplication.getUserInfo().uid))
             btRankGoldItemAttention.setVisibility(View.INVISIBLE);
@@ -102,7 +102,6 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
             btRankGoldItemAttention.setVisibility(View.VISIBLE);
             isFollow = data.user.is_follow == 1 ? true : false;//是否关注
             setFollow(isFollow);
-            btRankGoldItemAttention.setNameSize(13);
         }
 
     }
@@ -110,16 +109,10 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
     @Override
     public void setFollowStatus(boolean isFollow) {
         if (isFollow) {
-            btRankGoldItemAttention.setName(UiUtils.getString("str_already_follow"));
-            btRankGoldItemAttention.setNameColor(UiUtils.getColor(R.color.white));
-            btRankGoldItemAttention.setBackgroundResource(R.drawable.shape_stroke_corner_disable);
-            btRankGoldItemAttention.setNameLeftDrawable(R.mipmap.ico_added_gz);
-        }
-        else {
-            btRankGoldItemAttention.setName(UiUtils.getString("str_follow"));
-            btRankGoldItemAttention.setNameColor(UiUtils.getColor(R.color.color_blue_button));
-            btRankGoldItemAttention.setBackgroundResource(R.drawable.shape_stroke_corner);
-            btRankGoldItemAttention.setNameLeftDrawable(null);
+            btRankGoldItemAttention.setImageResource(R.mipmap.detail_ico_followed);
+        } else {
+            btRankGoldItemAttention.setImageResource(R.mipmap.detail_ico_follow);
+
         }
     }
 
@@ -150,13 +143,11 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
             if ((currentTime - mTime) < UserService.FOLLOW_SPACING_TIME) {
                 showMessage(UiUtils.getString("str_frequently_follow_prompt"));
                 return;
-            }
-            else {
+            } else {
                 mTime = System.currentTimeMillis();
             }
             mPresenter.follow(UserHomePresenter.isFollow(!isFollow));
-        }
-        else if (v.getId() == R.id.fl_container) {
+        } else if (v.getId() == R.id.fl_container) {
             /**
              * 点击头像
              */
