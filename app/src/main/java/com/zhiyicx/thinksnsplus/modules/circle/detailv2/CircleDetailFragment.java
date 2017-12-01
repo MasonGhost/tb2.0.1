@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -9,13 +10,20 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -26,17 +34,29 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.*;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForOneImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForSixImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
+import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -75,6 +95,32 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     InputLimitView mIlvComment;
     @BindView(R.id.iv_refresh)
     ImageView mIvRefresh;
+    @BindView(R.id.uc_zoomiv)
+    ImageView mIvCircleHeadBg;
+    @BindView(R.id.iv_circle_head)
+    ImageView mIvCircleHead;
+    @BindView(R.id.tv_dynamic_count)
+    TextView mTvCirclePostCount;
+    @BindView(R.id.tv_type)
+    TextView mTvCirclePostOrder;
+    @BindView(R.id.tv_circle_title)
+    TextView mTvCircleTitle;
+    @BindView(R.id.tv_circle_member)
+    TextView mTvCircleMember;
+    @BindView(R.id.tv_circle_dec)
+    TextView mTvCircleDec;
+    @BindView(R.id.tv_circle_subscrib)
+    CheckBox mTvCircleSubscrib;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
+    @BindView(R.id.iv_serach)
+    ImageView mIvSerach;
+    @BindView(R.id.iv_share)
+    ImageView mIvShare;
+    @BindView(R.id.iv_setting)
+    ImageView mIvSetting;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private ActionBarDrawerToggle mToggle;
 
@@ -86,10 +132,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
 
+    // 类型选择框
+    private TypeChoosePopupWindow mTypeChoosePopupWindow;
+
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
     private PhotoSelectorImpl mPhotoSelector;
 
+    private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
     @Override
     protected int getBodyLayoutId() {
@@ -97,13 +147,18 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return super.setUseStatusView();
+    protected boolean setUseSatusbar() {
+        return true;
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return android.R.color.transparent;
     }
 
     @Override
@@ -145,6 +200,40 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
+        myAppBarLayoutBehavoir.setRefreshing(false);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
+        mIvRefresh.setVisibility(View.GONE);
+
+        CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
+        mTvCircleTitle.setText(detail.getName());
+        mTvCircleSubscrib.setVisibility(detail.getJoined() == null ? View.GONE : View.VISIBLE);
+        mTvCircleDec.setText("位置：\t" + detail.getLocation());
+        mTvCircleMember.setText("成员\t" + detail.getUsers_count());
+        mTvCirclePostCount.setText(detail.getPosts_count() + "个帖子");
+        Glide.with(mActivity)
+                .load(detail.getAvatar())
+                .error(R.drawable.shape_default_image)
+                .placeholder(R.drawable.shape_default_image)
+                .into(mIvCircleHead);
+
+        Glide.with(mActivity)
+                .load(detail.getAvatar())
+                .placeholder(R.drawable.shape_default_image)
+                .transform(new GaussianBlurTrasnform(mActivity))
+                .error(R.drawable.shape_default_image)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mIvCircleHeadBg.setImageDrawable(resource);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        mIvCircleHeadBg.setImageDrawable(errorDrawable);
+                    }
+                });
+
     }
 
     @Override
@@ -194,21 +283,31 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
 
-        AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
+        myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
                 ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
-        myAppBarLayoutBehavoir.setOnProgressChangeListener((progress, isRelease) -> {
-            mIvRefresh.setVisibility(View.VISIBLE);
-            ((AnimationDrawable) mIvRefresh.getDrawable()).start();
+
+        myAppBarLayoutBehavoir.setOnRefreshChangeListener(new AppBarLayoutOverScrollViewBehavior.onRefreshChangeListener() {
+            @Override
+            public void onRefreshShow() {
+                mIvRefresh.setVisibility(View.VISIBLE);
+                ((AnimationDrawable) mIvRefresh.getDrawable()).start();
+            }
+
+            @Override
+            public void doRefresh() {
+                mPresenter.requestNetData(0L, false);
+            }
         });
+
     }
 
     private void initToolBar() {
-        if (!setUseStatusView()) {
+        if (setUseStatusView()) {
             // toolBar 设置状态栏高度的 marginTop
-//            int marginTop = DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-//            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + marginTop;
-//            CollapsingToolbarLayout.LayoutParams layoutParams = new CollapsingToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-//            mTitleContainerParent.setLayoutParams(layoutParams);
+            int height = getResources().getDimensionPixelSize(R.dimen.spacing_large);
+            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolbar.getLayoutParams();
+            layoutParams.setMargins(0, height, 0, 0);
+            mToolbar.setLayoutParams(layoutParams);
         }
     }
 
@@ -556,4 +655,5 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         circlePostListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(circlePostListBaseItem);
     }
+
 }

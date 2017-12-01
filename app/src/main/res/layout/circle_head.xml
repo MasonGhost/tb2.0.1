@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:alpha="0"
     android:tag="middle"
     app:layout_collapseMode="parallax"
     app:layout_collapseParallaxMultiplier="0.5">
@@ -48,5 +49,24 @@
         android:text="秒速5毫米"
         android:textColor="@color/general_for_bg_light"
         android:textSize="@dimen/size_icon_assist"/>
+
+    <CheckBox
+        android:id="@+id/tv_circle_subscrib"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@drawable/shape_circle_join_button"
+        android:button="@null"
+        android:drawableLeft="@mipmap/channel_ico_add_white"
+        android:drawablePadding="@dimen/spacing_small_3dp"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:text="订阅"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_content_comment"/>
+
+
 
 </RelativeLayout>

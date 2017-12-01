@@ -15,13 +15,13 @@ public class CirclePostCommentBeanTest extends AbstractDaoTestLongPk<CirclePostC
     protected CirclePostCommentBean createEntity(Long key) {
         CirclePostCommentBean entity = new CirclePostCommentBean();
         entity.setId(key);
-        entity.setCircle_id();
-        entity.setPost_id();
-        entity.setUser_id();
-        entity.setCommentable_id();
-        entity.setReply_to_user_id();
-        entity.setTo_user_id();
-        entity.setState();
+        entity.setCircle_id(1);
+        entity.setPost_id(1);
+        entity.setUser_id(1L);
+        entity.setCommentable_id(1L);
+        entity.setReply_to_user_id(1L);
+        entity.setTo_user_id(1);
+        entity.setState(1);
         return entity;
     }
 

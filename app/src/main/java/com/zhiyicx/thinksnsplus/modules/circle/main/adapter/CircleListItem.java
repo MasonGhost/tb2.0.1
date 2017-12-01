@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -15,6 +16,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -76,40 +78,12 @@ public class CircleListItem extends BaseCircleItem {
         Context context = circleSubscribe.getContext();
 
         // 设置封面
-//        GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
-//        if (groupCoverBean == null) {
-//            groupCoverBean = new GroupInfoBean.GroupCoverBean();
-//        }
-//        String[] size = groupCoverBean.getSize().split("x");
-//        int width = 0;
-//        int height = 0;
-//        if (size.length > 0) {
-//            try {
-//                width = Integer.parseInt(size[0]);
-//                height = Integer.parseInt(size[1]);
-//            } catch (NumberFormatException ignored) {
-//            }
-//        }
-//        // 计算图片压缩比
-//        int imageViewWidth = context.getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
-//        if (width == 0) {
-//            width = (int) (imageViewWidth * 100.0f);
-//            height = (int) (imageViewWidth * 100.0f);
-//        }
-//        int port = (int) (imageViewWidth * 100.0f / width);
-//        if (port > 100) {
-//            port = 100;
-//        }
-//        GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
-//                , port, AppApplication.getTOKEN());
-//        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-//        imageLoader.loadImage(context, GlideImageConfig.builder()
-//                .placeholder(R.drawable.shape_default_image)
-//                .errorPic(R.drawable.shape_default_image)
-//                .url(glideUrl.toStringUrl())
-//                .imagerView(circleCover)
-//                .build()
-//        );
+        Glide.with(context)
+                .load(circleInfo.getAvatar())
+                .error(R.drawable.shape_default_image)
+                .placeholder(R.drawable.shape_default_image)
+                .into(circleCover);
+
         circleName.setText(circleInfo.getName());
 
         String feedCountNumber = ConvertUtils.numberConvert(circleInfo.getPosts_count());

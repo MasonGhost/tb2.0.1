@@ -1,13 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterContract;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,7 +21,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_USERS;
 
 public class PersonalCenterRepository extends BaseDynamicRepository implements PersonalCenterContract.Repository {
 
-    public enum MyDynamicTypeEnum{
+    public enum MyDynamicTypeEnum {
         ALL(null),
         PAID("paid"),
         PINNED("pinned");

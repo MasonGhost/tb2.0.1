@@ -465,6 +465,11 @@ public class ApiConfig {
     public static final String APP_PATH_PUBLISH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
 
     /**
+     * 删除帖子
+     */
+    public static final String APP_PATH_DELETE_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts/{post_id}";
+
+    /**
      * 获取圈子下帖子列表
      */
     public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";

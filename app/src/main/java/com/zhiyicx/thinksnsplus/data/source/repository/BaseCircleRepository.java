@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -76,10 +78,15 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId));
     }
 
-    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {
+    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<CirclePostBean> observable) {
 
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(circlePostBean -> {
+                    List<CirclePostListBean> data=circlePostBean.getPinneds();
+                    data.addAll(circlePostBean.getPosts());
+                    return data;
+                })
                 .flatMap(postListBeans -> {
                     final List<Object> user_ids = new ArrayList<>();
                     for (CirclePostListBean circlePostListBean : postListBeans) {

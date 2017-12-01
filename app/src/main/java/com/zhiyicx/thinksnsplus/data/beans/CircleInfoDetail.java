@@ -1,5 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * @author Jliuer
  * @Date 2017/11/30/11:02
@@ -34,6 +39,7 @@ public class CircleInfoDetail {
 
     private Long id;
     private String name;
+    private String avatar;
     private int user_id;
     private int category_id;
     private String location;
@@ -53,6 +59,23 @@ public class CircleInfoDetail {
     private int join_income_count;
     private int pinned_income_count;
     private UserInfoBean user;
+    private JoinedBean joined;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public JoinedBean getJoined() {
+        return joined;
+    }
+
+    public void setJoined(JoinedBean joined) {
+        this.joined = joined;
+    }
 
     public Long getId() {
         return id;
@@ -220,5 +243,136 @@ public class CircleInfoDetail {
 
     public void setUser(UserInfoBean user) {
         this.user = user;
+    }
+
+    public static class JoinedBean implements Parcelable,Serializable {
+        private static final long serialVersionUID = -2874474992456690897L;
+        /**
+         * id : 2
+         * group_id : 3
+         * user_id : 18
+         * audit : 0
+         * role : founder
+         * disabled : 0
+         * created_at : 2017-11-29 17:08:16
+         * updated_at : 2017-11-29 17:08:17
+         */
+
+        private int id;
+        private int group_id;
+        private int user_id;
+        private int audit;
+        private String role;
+        private int disabled;
+        private String created_at;
+        private String updated_at;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getGroup_id() {
+            return group_id;
+        }
+
+        public void setGroup_id(int group_id) {
+            this.group_id = group_id;
+        }
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public int getAudit() {
+            return audit;
+        }
+
+        public void setAudit(int audit) {
+            this.audit = audit;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+        public int getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(int disabled) {
+            this.disabled = disabled;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeInt(this.group_id);
+            dest.writeInt(this.user_id);
+            dest.writeInt(this.audit);
+            dest.writeString(this.role);
+            dest.writeInt(this.disabled);
+            dest.writeString(this.created_at);
+            dest.writeString(this.updated_at);
+        }
+
+        public JoinedBean() {
+        }
+
+        protected JoinedBean(Parcel in) {
+            this.id = in.readInt();
+            this.group_id = in.readInt();
+            this.user_id = in.readInt();
+            this.audit = in.readInt();
+            this.role = in.readString();
+            this.disabled = in.readInt();
+            this.created_at = in.readString();
+            this.updated_at = in.readString();
+        }
+
+        public static final Creator<JoinedBean> CREATOR = new Creator<JoinedBean>() {
+            @Override
+            public JoinedBean createFromParcel(Parcel source) {
+                return new JoinedBean(source);
+            }
+
+            @Override
+            public JoinedBean[] newArray(int size) {
+                return new JoinedBean[size];
+            }
+        };
     }
 }

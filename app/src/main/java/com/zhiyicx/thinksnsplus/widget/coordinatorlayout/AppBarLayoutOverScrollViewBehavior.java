@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 17/11/20 12:00
  * @Email Jliuer@aliyun.com
  * @Description 图片放大回弹
@@ -24,8 +24,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "overScroll";
     private static final String TAG_TOOLBAR = "toolbar";
     private static final String TAG_MIDDLE = "middle";
-    private static final String TAG_STOP = "stop";
-    private static final float TARGET_HEIGHT = 1000;
+    private static final float TARGET_HEIGHT = 1500;
     private View mTargetView;
     private int mParentHeight;
     private int mTargetViewHeight;
@@ -39,8 +38,9 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private int mStopHeight;
     private int mFirstTop;
     private boolean isRecovering = false;//是否正在自动回弹中
+    private boolean isRefreshing = false;
 
-    private final float MAX_REFRESH_LIMIT = 0.2f;//达到这个下拉临界值就开始刷新动画
+    private final float MAX_REFRESH_LIMIT = 0.3f;//达到这个下拉临界值就开始刷新动画
 
     public AppBarLayoutOverScrollViewBehavior() {
     }
@@ -67,7 +67,11 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
                 initial(abl);
             }
         }
-        abl.addOnOffsetChangedListener((appBarLayout, i) -> mToolBar.setAlpha(Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange())));
+        abl.addOnOffsetChangedListener((appBarLayout, i) -> {
+                    float point = Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange());
+                    middleLayout.setAlpha(1f - point);
+                }
+        );
         return handled;
     }
 
@@ -122,38 +126,44 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         ViewCompat.setScaleY(mTargetView, mLastScale);
         mLastBottom = mParentHeight + (int) (mTargetViewHeight / 2 * (mLastScale - 1));
         abl.setBottom(mLastBottom);
-        target.setScrollY(0);
+        // RecyclerView does not support scrolling to an absolute position. Use scrollToPosition instead
+//         target . setScrollY(0);
+
 
         float top = mFirstTop * mLastScale;
         middleLayout.setTranslationY(top - mFirstTop);
 
-        if (onProgressChangeListener != null) {
+        if (onRefreshChangeListener != null) {
             float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
-            onProgressChangeListener.onProgressChange(progress, false);
+            if (progress >= 0.3 && !isRefreshing && progress < 0.4 && !isRecovering) {
+                isRefreshing = true;
+                onRefreshChangeListener.onRefreshShow();
+            }
         }
 
     }
 
-    public interface onProgressChangeListener {
-        /**
-         * 范围 0~1
-         *
-         * @param progress
-         * @param isRelease 是否是释放状态
-         */
-        void onProgressChange(float progress, boolean isRelease);
+    public interface onRefreshChangeListener {
+        void onRefreshShow();
+
+        void doRefresh();
     }
 
-    public void setOnProgressChangeListener(AppBarLayoutOverScrollViewBehavior.onProgressChangeListener onProgressChangeListener) {
-        this.onProgressChangeListener = onProgressChangeListener;
+    public void setOnRefreshChangeListener(onRefreshChangeListener onRefreshChangeListener) {
+        this.onRefreshChangeListener = onRefreshChangeListener;
     }
 
-    onProgressChangeListener onProgressChangeListener;
+    onRefreshChangeListener onRefreshChangeListener;
 
     private void recovery(final AppBarLayout abl) {
         if (isRecovering) {
             return;
         }
+
+        if (onRefreshChangeListener != null && isRefreshing) {
+            onRefreshChangeListener.doRefresh();
+        }
+
         if (mTotalDy > 0) {
             isRecovering = true;
             mTotalDy = 0;
@@ -200,4 +210,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         }
     }
 
+    public void setRefreshing(boolean refreshing) {
+        isRefreshing = refreshing;
+    }
 }

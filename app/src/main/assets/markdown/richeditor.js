@@ -187,7 +187,7 @@ var RE = {
 	},
 	noMarkdownWords: function noMarkdownWords() {
 		var _self = this;
-		var content = _self.cache.editor.innerHTML.replace(/<div class="tips">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
+		var content = _self.cache.editor.innerHTML.replace(/<div class=".*">.*<\/div>|<\/?[^>]*>/g, '').replace(/\s+/, '').trim();
         AndroidInterface.noMarkdownWords(content);
 		return content;
 	},

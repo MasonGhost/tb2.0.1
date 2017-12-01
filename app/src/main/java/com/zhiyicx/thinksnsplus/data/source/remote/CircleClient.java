@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 
 import java.util.List;
 
@@ -72,7 +73,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_POSTLIST)
-    Observable<List<CirclePostListBean>> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
+    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
 
     /**
      * 创建圈子

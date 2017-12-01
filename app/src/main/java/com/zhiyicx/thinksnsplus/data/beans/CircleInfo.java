@@ -47,6 +47,7 @@ public class CircleInfo extends BaseListBean {
     @Id
     private Long id;
     private String name;
+    private String avatar;
     private int user_id;
     private int category_id;
     private String location;
@@ -65,6 +66,14 @@ public class CircleInfo extends BaseListBean {
     private String updated_at;
     @Convert(columnType = String.class,converter = JoinedBeanConvert.class)
     private JoinedBean joined;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public Long getId() {
         return id;
@@ -360,6 +369,7 @@ public class CircleInfo extends BaseListBean {
         super.writeToParcel(dest, flags);
         dest.writeValue(this.id);
         dest.writeString(this.name);
+        dest.writeString(this.avatar);
         dest.writeInt(this.user_id);
         dest.writeInt(this.category_id);
         dest.writeString(this.location);
@@ -386,6 +396,7 @@ public class CircleInfo extends BaseListBean {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
+        this.avatar = in.readString();
         this.user_id = in.readInt();
         this.category_id = in.readInt();
         this.location = in.readString();
@@ -405,12 +416,13 @@ public class CircleInfo extends BaseListBean {
         this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
     }
 
-    @Generated(hash = 581625869)
-    public CircleInfo(Long id, String name, int user_id, int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed,
-            String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at, String updated_at,
-            JoinedBean joined) {
+    @Generated(hash = 1306244380)
+    public CircleInfo(Long id, String name, String avatar, int user_id, int category_id, String location, String longitude, String latitude, String geo_hash,
+            int allow_feed, String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
+            String updated_at, JoinedBean joined) {
         this.id = id;
         this.name = name;
+        this.avatar = avatar;
         this.user_id = user_id;
         this.category_id = category_id;
         this.location = location;

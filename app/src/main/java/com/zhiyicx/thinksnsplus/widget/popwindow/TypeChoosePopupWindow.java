@@ -81,14 +81,14 @@ public class TypeChoosePopupWindow extends PopupWindow {
             case VERTICAL:
                 LinearLayoutManager verticalManager = new LinearLayoutManager(mActivity);
                 verticalManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.addItemDecoration(new LinearDecoration(0,0,0,mItemSpacing));
+                recyclerView.addItemDecoration(new LinearDecoration(0, 0, 0, mItemSpacing));
                 recyclerView.setLayoutManager(verticalManager);
                 break;
             case HORIZONTAL:
                 LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity);
                 horizontalManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
-                recyclerView.addItemDecoration(new LinearDecoration(0,0,mItemSpacing,0));
+                recyclerView.addItemDecoration(new LinearDecoration(0, 0, mItemSpacing, 0));
 
                 recyclerView.setLayoutManager(horizontalManager);
                 break;
@@ -97,6 +97,7 @@ public class TypeChoosePopupWindow extends PopupWindow {
                 recyclerView.addItemDecoration(new ShareDecoration(mItemSpacing));
                 recyclerView.setLayoutManager(gridLayoutManager);
                 break;
+            default:
         }
 
         recyclerView.setAdapter(mAdapter);
