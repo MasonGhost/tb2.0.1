@@ -20,6 +20,10 @@ import com.zhiyicx.zhibosdk.manage.listener.OnFilterWordsConfigCallback;
 
 import java.util.Set;
 
+import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_CONTENT;
+import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_TITLE;
+import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.SHARE_URL;
+
 /**
  * 本项目由
  * dagger2
@@ -29,7 +33,7 @@ import java.util.Set;
  * +eventbus
  * +butterknife组成
  */
-public class ZhiboApplication  {
+public class ZhiboApplication {
     public static final String INTENT_ACTION_UESRINFO = "com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity";
     public static final String INTENT_ACTION_RECHARGE = "com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity";
     public static final String INTNET_ACTION_USERHOMEACTIVITY = "com.zhiyicx.zhibo.UserHomeActivity";
@@ -75,11 +79,29 @@ public class ZhiboApplication  {
     public static void init(Application application) {
         mContext = application;
         /**
+         * 初始化分享数据
+         */
+        initShareData();
+        /**
          * 推流初始化
          */
         ZBSmartLiveSDK.init(application, ZBLApi.ZHIBO_BASE_URL, ZBLApi.ZHIBO_BASE_VERSION);
+
     }
 
+    /**
+     * 初始化分享数据
+     */
+    private static void initShareData() {
+        /**
+         * 暂时使用本地
+         */
+        ShareContent shareContent = new ShareContent();
+        ZhiboApplication.setShareContent(shareContent);
+        shareContent.setTitle(SHARE_TITLE);
+        shareContent.setContent(SHARE_CONTENT);
+        shareContent.setUrl(ZBInitConfigManager.getZBCloundDomain() + SHARE_URL);
+    }
 
     /**
      * dagger构建

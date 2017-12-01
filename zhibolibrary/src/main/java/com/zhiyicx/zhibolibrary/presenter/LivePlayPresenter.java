@@ -264,7 +264,9 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mRootView.killMyself();
+                        if (mRootView != null) {
+                            mRootView.killMyself();
+                        }
                     }
                 }, 1500);
 
@@ -277,7 +279,9 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mRootView.killMyself();
+                        if (mRootView != null) {
+                            mRootView.killMyself();
+                        }
                     }
                 }, 1500);
 

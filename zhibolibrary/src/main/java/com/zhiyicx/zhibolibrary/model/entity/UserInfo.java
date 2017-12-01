@@ -107,9 +107,11 @@ public class UserInfo implements Serializable {
 
         com.zhiyicx.common.thridmanager.share.ShareContent shareContent = new com.zhiyicx.common.thridmanager.share.ShareContent();
         if (userInfo.uname != null) {
+            shareContent.setTitle(ZhiboApplication.getShareContent().getTitle());
             shareContent.setTitle(shareContent.getTitle().replace(STR_SHARE_NAME, userInfo.uname));
         }
         if (userInfo.usid != null) {
+            shareContent.setUrl(ZhiboApplication.getShareContent().getUrl());
             shareContent.setUrl(shareContent.getUrl().replace(STR_SHARE_USID, userInfo.usid));
         }
         if (userInfo.usid.equals(ZhiboApplication.getUserInfo().usid)) {
@@ -118,6 +120,7 @@ public class UserInfo implements Serializable {
             shareContent.setContent(userInfo.uname + ZhiboApplication.getShareContent().getContent());
         }
         shareContent.setImage(userInfo.avatar.origin);
+
         return shareContent;
     }
 }

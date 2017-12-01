@@ -81,7 +81,6 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
                 .build()
                 .inject(this);
         initViewPager();
-        initShareData();
         initFilterWord();
         initDialog();
 
@@ -97,19 +96,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
         }
     }
 
-    /**
-     * 初始化分享数据
-     */
-    private void initShareData() {
-        /**
-         * 暂时使用本地
-         */
-        ShareContent shareContent = new ShareContent();
-        ZhiboApplication.setShareContent(shareContent);
-        shareContent.setTitle(SHARE_TITLE);
-        shareContent.setContent(SHARE_CONTENT);
-        shareContent.setUrl(ZBInitConfigManager.getZBCloundDomain() + SHARE_URL);
-    }
+
 
     private void initDialog() {
         mLoading = new ProgressDialog(this);

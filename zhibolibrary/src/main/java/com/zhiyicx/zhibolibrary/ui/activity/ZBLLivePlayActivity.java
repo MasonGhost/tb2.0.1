@@ -138,7 +138,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
         SearchResult data = getData();//是充直播页面进来
         if (data == null) {
             presenterUser = getUserInfo();//重搜索页面进入
-            if (presenterUser == null) presenterUser = new UserInfo(new Icon());
+            if (presenterUser == null) {
+                presenterUser = new UserInfo(new Icon());
+            }
         } else {
             presenterUser = new UserInfo();
             presenterUser = data.user;
@@ -185,9 +187,12 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mPresenter.isPlay())//开始播放了
+                {
                     mZBPlayClient.reconnect();
-                else//还没开始播放
+                } else//还没开始播放
+                {
                     mPresenter.showPlay();
+                }
             }
         });
         builder.setPositiveButton(getString(R.string.str_retire), new DialogInterface.OnClickListener() {
@@ -215,7 +220,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
      */
     private void showPresenterInfo(final UserInfo userInfotmp) {
 
-        if (userInfotmp == null) return;
+        if (userInfotmp == null) {
+            return;
+        }
         if (mUserInfoPopView == null) {
             mUserInfoPopView = LayoutInflater.from(this).inflate(R.layout.zb_pop_userinfo, null);
         }
@@ -313,6 +320,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
 
     @Override
     public void killMyself() {
+        if (mPublishCoreView == null) {
+            return;
+        }
         mPublishCoreView.hidekeyboard();//隐藏软键盘
         if (mediaController != null) {
             mediaController.setEnabled(false);//回收
@@ -415,7 +425,9 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
 
     @Override
     public void hideWarn() {
-        if (mOptionDialog.isShowing()) mOptionDialog.dismiss();
+        if (mOptionDialog.isShowing()) {
+            mOptionDialog.dismiss();
+        }
         LogUtils.warnInfo(TAG, "hide....");
     }
 
@@ -531,17 +543,13 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     protected void onResume() {
         super.onResume();
-        if (isPlaying()) {
-            mZBPlayClient.onResume();
-        }
+        mZBPlayClient.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (isPlaying()) {
-            mZBPlayClient.onPause();
-        }
+        mZBPlayClient.onPause();
     }
 
     @Override

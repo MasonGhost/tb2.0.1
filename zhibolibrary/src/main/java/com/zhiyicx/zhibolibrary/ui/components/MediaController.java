@@ -75,8 +75,9 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 
     public MediaController(Context context) {
         super(context);
-        if (!mFromXml && initController(context))
+        if (!mFromXml && initController(context)) {
             initFloatingWindow();
+        }
     }
 
     public MediaController(Context context, boolean useFastForward, boolean disableProgressBar) {
@@ -99,8 +100,9 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 
     @Override
     public void onFinishInflate() {
-        if (mRoot != null)
+        if (mRoot != null) {
             initControllerView(mRoot);
+        }
         super.onFinishInflate();
     }
 
@@ -120,12 +122,12 @@ public class MediaController extends FrameLayout implements ZBMediaController {
      */
     protected View makeControllerView() {
 
-        View view= ((LayoutInflater) mContext
+        View view = ((LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.zb_media_controller, this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && DeviceUtils.hasHardwareMenuKey(mContext)) {
-        }else {
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.setPadding(0,0,0,80);
+                view.setPadding(0, 0, 0, 80);
             }
         }
         return view;
@@ -191,8 +193,9 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 
     private void disableUnsupportedButtons() {
         try {
-            if (mPauseButton != null && !mPlayer.canPause())
+            if (mPauseButton != null && !mPlayer.canPause()) {
                 mPauseButton.setEnabled(false);
+            }
         } catch (IncompatibleClassChangeError ex) {
             ex.printStackTrace();
         }
@@ -253,13 +256,15 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 //                        updatePausePlay();
                     }
                     break;
+                default:
             }
         }
     };
 
     private long setProgress() {
-        if (mPlayer == null || mDragging)
+        if (mPlayer == null || mDragging) {
             return 0;
+        }
 
         long position = mPlayer.getCurrentPosition();
         long duration = mPlayer.getDuration();
@@ -274,10 +279,12 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 
         mDuration = duration;
 
-        if (mEndTime != null)
+        if (mEndTime != null) {
             mEndTime.setText(generateTime(mDuration));
-        if (mCurrentTime != null)
+        }
+        if (mCurrentTime != null) {
             mCurrentTime.setText(generateTime(position));
+        }
 
         return position;
     }
@@ -290,12 +297,10 @@ public class MediaController extends FrameLayout implements ZBMediaController {
         int hours = totalSeconds / 3600;
 
         if (hours > 0) {
-            return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes,
-                    seconds).toString();
-        }
-        else {
-            return String.format(Locale.US, "%02d:%02d", minutes, seconds)
-                    .toString();
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes,
+                    seconds);
+        } else {
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         }
     }
 
@@ -342,10 +347,13 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 //    }
 
     private OnClickListener mPauseListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             doPauseResume();
             show(sDefaultTimeout);
-            if (mOnPlayClickListener != null) mOnPlayClickListener.onPlayClick(v);
+            if (mOnPlayClickListener != null) {
+                mOnPlayClickListener.onPlayClick(v);
+            }
         }
     };
 
@@ -372,6 +380,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     OnShareClickListener mOnShareClickListener;
 
     private OnClickListener mShareListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (mOnShareClickListener != null) {
                 mOnShareClickListener.onShareClick(v);
@@ -381,11 +390,14 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     };
 
     public void updatePausePlay(boolean isPlay) {
-        if (mRoot == null || mPauseButton == null) return;
-        if (isPlay)
+        if (mRoot == null || mPauseButton == null) {
+            return;
+        }
+        if (isPlay) {
             mPauseButton.setImageResource(R.mipmap.ico_zhanting);
-        else
+        } else {
             mPauseButton.setImageResource(R.mipmap.ico_bofang);
+        }
     }
 
     private void doPauseResume() {
@@ -393,8 +405,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
             updatePausePlay(false);//更新播放按钮图片状态
-        }
-        else {
+        } else {
             mPlayer.start();
             updatePausePlay(true);//更新播放按钮图片状态
         }
@@ -403,17 +414,21 @@ public class MediaController extends FrameLayout implements ZBMediaController {
 
     private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
 
+        @Override
         public void onStartTrackingTouch(SeekBar bar) {
             mDragging = true;
             show(3600000);
             mHandler.removeMessages(SHOW_PROGRESS);
-            if (mInstantSeeking)
+            if (mInstantSeeking) {
                 mAM.setStreamMute(AudioManager.STREAM_MUSIC, true);
+            }
         }
 
+        @Override
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
-            if (!fromuser)
+            if (!fromuser) {
                 return;
+            }
 
             final int newposition = (int) (mDuration * progress) / 1000;
             String time = generateTime(newposition);
@@ -427,13 +442,16 @@ public class MediaController extends FrameLayout implements ZBMediaController {
                 };
                 mHandler.postDelayed(mLastSeekBarRunnable, SEEK_TO_POST_DELAY_MILLIS);
             }
-            if (mCurrentTime != null)
+            if (mCurrentTime != null) {
                 mCurrentTime.setText(time);
+            }
         }
 
+        @Override
         public void onStopTrackingTouch(SeekBar bar) {
-            if (!mInstantSeeking)
+            if (!mInstantSeeking) {
                 mPlayer.seekTo((int) (mDuration * bar.getProgress()) / 1000);
+            }
 
             show(sDefaultTimeout);
             mHandler.removeMessages(SHOW_PROGRESS);
@@ -444,6 +462,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     };
 
     private OnClickListener mRewListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             int pos = (int) mPlayer.getCurrentPosition();
             pos -= 5000; // milliseconds
@@ -455,6 +474,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     };
 
     private OnClickListener mFfwdListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             int pos = (int) mPlayer.getCurrentPosition();
             pos += 15000; // milliseconds
@@ -514,14 +534,14 @@ public class MediaController extends FrameLayout implements ZBMediaController {
                     mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                 }
             }
-            if (mPauseButton != null)
+            if (mPauseButton != null) {
                 mPauseButton.requestFocus();
+            }
             disableUnsupportedButtons();
 
             if (mFromXml) {
                 setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 int[] location = new int[2];
 
                 if (mAnchor != null) {
@@ -533,8 +553,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
                     mWindow.setAnimationStyle(mAnimStyle);
                     mWindow.showAtLocation(mAnchor, Gravity.BOTTOM,
                             anchorRect.left, 0);
-                }
-                else {
+                } else {
                     Rect anchorRect = new Rect(location[0], location[1],
                             location[0] + mRoot.getWidth(), location[1]
                             + mRoot.getHeight());
@@ -545,8 +564,9 @@ public class MediaController extends FrameLayout implements ZBMediaController {
                 }
             }
             mShowing = true;
-            if (mShownListener != null)
+            if (mShownListener != null) {
                 mShownListener.onShown();
+            }
         }
 //        updatePausePlay();
         mHandler.sendEmptyMessage(SHOW_PROGRESS);
@@ -572,17 +592,21 @@ public class MediaController extends FrameLayout implements ZBMediaController {
                 }
             }
             try {
-                if (mHandler != null) mHandler.removeMessages(SHOW_PROGRESS);
-                if (mFromXml)
+                if (mHandler != null) {
+                    mHandler.removeMessages(SHOW_PROGRESS);
+                }
+                if (mFromXml) {
                     setVisibility(View.GONE);
-                else
+                } else {
                     mWindow.dismiss();
+                }
             } catch (IllegalArgumentException ex) {
                 Log.d(TAG, "MediaController already removed");
             }
             mShowing = false;
-            if (mHiddenListener != null)
+            if (mHiddenListener != null) {
                 mHiddenListener.onHidden();
+            }
         }
     }
 
@@ -597,8 +621,9 @@ public class MediaController extends FrameLayout implements ZBMediaController {
         if (mRewButton != null) {
             mRewButton.setEnabled(enabled);
         }
-        if (mProgress != null && !mDisableProgress)
+        if (mProgress != null && !mDisableProgress) {
             mProgress.setEnabled(enabled);
+        }
         disableUnsupportedButtons();
 
         if (!enabled) {
@@ -607,4 +632,19 @@ public class MediaController extends FrameLayout implements ZBMediaController {
         super.setEnabled(enabled);
     }
 
+    public void pausePlayer()
+
+    {
+        if (mPlayer != null) {
+            mPlayer.pause();
+        }
+    }
+
+    public void startPlayer()
+
+    {
+        if (mPlayer != null) {
+            mPlayer.start();
+        }
+    }
 }
