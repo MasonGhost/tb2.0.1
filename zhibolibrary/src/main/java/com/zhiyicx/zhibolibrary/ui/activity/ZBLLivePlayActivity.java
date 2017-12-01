@@ -481,7 +481,6 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
         @Override
         public void onShareClick(View v) {
 
-
             mPresenter.showshare(presenterUser, ZBLLivePlayActivity.this);
         }
     };
@@ -532,13 +531,17 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     protected void onResume() {
         super.onResume();
-        mZBPlayClient.onResume();
+        if (isPlaying()) {
+            mZBPlayClient.onResume();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mZBPlayClient.onPause();
+        if (isPlaying()) {
+            mZBPlayClient.onPause();
+        }
     }
 
     @Override

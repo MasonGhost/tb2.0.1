@@ -3,16 +3,25 @@ package com.zhiyicx.zhibolibrary.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.LivePlayModel;
@@ -100,8 +109,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                 mRootView.setPlaceHolderVisible(false);
                 if (!isVideo) {
                     getGiftConfig();
-                }
-                else {
+                } else {
                     //设置播放控制器
                     mRootView.setMediaController(new MediaController(UiUtils.getContext(), false, false));
                     mRootView.showPresenterInfo();
@@ -148,20 +156,42 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
     /**
      * 分享
      */
-    public void showshare(UserInfo presenterUser, Activity context) {
-        UmengSharePolicyImpl sharePolicy = new UmengSharePolicyImpl(context);
+    public void showshare(UserInfo mPresenterInfo, final Activity context) {
+        final UmengSharePolicyImpl sharePolicy = new UmengSharePolicyImpl(context);
         sharePolicy.setOnShareCallbackListener(this);
-        sharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
-        sharePolicy.showShare(context);
+        final ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mPresenterInfo.uname);
+        shareContent.setContent(TextUtils.isEmpty(mPresenterInfo.intro) ? UiUtils.getString(R.string.intro_default) : mPresenterInfo.intro);
+        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, mPresenterInfo.uid));
+        if (mPresenterInfo.avatar == null || mPresenterInfo.avatar.getOrigin() == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(UiUtils.getResources(), R.mipmap
+                    .pic_default_secret)));
+        } else {
+            shareContent.setImage(mPresenterInfo.avatar.getOrigin());
+        }
+        sharePolicy.setShareContent(shareContent);
+        // 友盟不支持重定向图片
+        if (shareContent == null || shareContent.getImage() == null) {
+            sharePolicy.showShare(context);
+
+        } else {
+            Glide.with(UiUtils.getContext()).load(shareContent.getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    shareContent.setBitmap(resource);
+                    sharePolicy.setShareContent(shareContent);
+                    sharePolicy.showShare(context);
+
+                }
+            });
+        }
     }
 
     /**
      * 设置播放器需要的监听
      */
     public void initListener() {
-        mRootView.setListener(
-                mOnVideoSizeChangedListener
-        );
+        mRootView.setListener(mOnVideoSizeChangedListener);
     }
 
     @Subscriber(tag = "net_change_not_wifi", mode = ThreadMode.MAIN)
@@ -179,15 +209,13 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
             mUserInfo = (UserInfo) bundle.getSerializable("userInfo");
             mIconUrl = bundle.getString("iconUrl");
             mVid = bundle.getString("vid");
-        }
-        else {//直播
+        } else {//直播
             mData = (SearchResult) bundle.getSerializable("data");//用户数据
             if (mData == null) {//搜索页面跳转而来
                 mUserInfo = (UserInfo) bundle.getSerializable("userInfo");
                 mIconUrl = bundle.getString("iconUrl");
                 mSid = bundle.getString("sid");
-            }
-            else {//直播列表页面跳转而来
+            } else {//直播列表页面跳转而来
                 if (mData.stream != null) {//直播页面
                     mUserInfo = mData.user;
                     mIconUrl = mData.stream.icon.getOrigin();
@@ -207,12 +235,10 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         initCallBack();//初始化监听器
         if (isVideo) {//回放
             startVideo(mVid);
-        }
-        else {//直播
+        } else {//直播
             if (mData == null) {//搜索页面跳转而来
                 startPlay(mUserInfo.uid, mSid);
-            }
-            else {//直播列表页面跳转而来
+            } else {//直播列表页面跳转而来
                 startPlay(mData.user.uid, mData.stream.id);
             }
         }
@@ -262,7 +288,8 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                 try {
                     JSONObject jsonObject = new JSONObject(jsonstr);
 
-                    lauchEnd((SearchResult[]) new Gson().fromJson(jsonObject.getJSONObject("data").getString("list"), new TypeToken<SearchResult[]>() {
+                    lauchEnd((SearchResult[]) new Gson().fromJson(jsonObject.getJSONObject("data").getString("list"), new TypeToken<SearchResult[]>
+                            () {
                     }.getType()), uid, (int) jsonObject.getJSONObject("data").getInt("view_count"));
 
 
@@ -305,7 +332,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
         if (ZBLApi.sZBApiConfig != null && ZBLApi.sZBApiConfig.gift_list != null && ZBLApi.sZBApiConfig.gift_list.size() > 0) {
             for (final ZBGift value : ZBLApi.sZBApiConfig.gift_list) {
 
-                if (TextUtils.isEmpty(DataHelper.getStringSF(value.image,UiUtils.getContext()))) {
+                if (TextUtils.isEmpty(DataHelper.getStringSF(value.image, UiUtils.getContext()))) {
                     mModel.downloadFile(value.image).
                             subscribeOn(Schedulers.io()).
                             observeOn(Schedulers.io())
@@ -316,7 +343,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                                     if (isDownload) {
                                         DataHelper.SetStringSF(value.image, value.image, UiUtils.getContext());
                                     }
-                                    LogUtils.debugInfo(TAG,"isDownload = " + isDownload);
+                                    LogUtils.debugInfo(TAG, "isDownload = " + isDownload);
 
                                 }
                             }, new Action1<Throwable>() {
@@ -355,8 +382,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                     public void call(ApiList apiList) {
                         if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             lauchEnd(apiList.data, uid, 100);
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -407,8 +433,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                             mRootView.killMyself();
                         }
                     });
-        }
-        else {
+        } else {
             doEnd(mRecommendDatas, uid, viewCount);
         }
     }
@@ -484,8 +509,7 @@ public class LivePlayPresenter extends BasePresenter<LivePlayModel, LivePlayView
                         if (json.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.setFollow(UserHomePresenter.isFollow(json.data.is_follow));//设置关注按钮状态
                             mUserInfo.is_follow = json.data.is_follow;
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(json.message);
                         }
                     }
