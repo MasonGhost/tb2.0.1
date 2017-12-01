@@ -11,6 +11,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -22,10 +23,13 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 
 /**
@@ -57,6 +61,33 @@ public interface CircleClient {
      */
     @GET(APP_PATH_GET_CIRCLELIST)
     Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取推荐的圈子
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
+    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取已经加入的圈子
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_GET_MY_JOINED_CIRCLE)
+    Observable<List<CircleInfo>> getMyJoinedCircle(@Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取全部圈子
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_GET_ALL_CIRCLE)
+    Observable<List<CircleInfo>> getAllCircle(@Query("limit") int limit, @Query("offet") int offet);
 
     /**
      * 获取圈子详情

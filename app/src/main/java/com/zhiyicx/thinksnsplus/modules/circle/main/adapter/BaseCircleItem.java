@@ -12,6 +12,9 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
  */
 public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
 
+    public static final long MYJOINEDCIRCLE = -1L;
+    public static final long RECOMMENDCIRCLE = -2L;
+
     public BaseCircleItem() {
     }
 
@@ -22,8 +25,11 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
     protected CircleItemItemEvent mCircleItemItemEvent;
 
     public interface CircleItemItemEvent {
-        void toAllCircle(CircleInfo circleInfo);
+        void toAllJoinedCircle(CircleInfo circleInfo);
+
         void toCircleDetail(CircleInfo circleInfo);
+
+        void changeRecommend();
     }
 
     public CircleItemItemEvent getCircleItemItemEvent() {

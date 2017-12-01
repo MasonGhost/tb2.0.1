@@ -69,6 +69,16 @@ public class CircleMainHeader {
         );
     }
 
+    public void updateCircleCount(int count) {
+        Context context = mCircleCount.getContext();
+        String circleCount = String.format(Locale.getDefault(), context.getString(R.string.group_count), count);
+        int lengh = (count + "").length();
+        SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
+        countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        mCircleCount.setLeftText(countSpan);
+    }
+
     private void toAdvert(Context context, String link, String title) {
         CustomWEBActivity.startToWEBActivity(context, link, title);
     }

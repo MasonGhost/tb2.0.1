@@ -22,7 +22,6 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class CircleInfo extends BaseListBean {
 
-
     /**
      * id : 3
      * name : 白岩说
@@ -40,6 +39,8 @@ public class CircleInfo extends BaseListBean {
      * users_count : 0
      * posts_count : 0
      * audit : 1
+     * join_income_count : 1 加圈收益统计
+     * pinned_income_count : 1 置顶收益统计
      * created_at : 2017-11-28 02:46:28
      * updated_at : 2017-11-28 02:46:28
      * joined : {"id":2,"group_id":3,"user_id":18,"audit":0,"role":"founder","disabled":0,"created_at":"2017-11-29 17:08:16","updated_at":"2017-11-29 17:08:17"}
@@ -49,6 +50,8 @@ public class CircleInfo extends BaseListBean {
     private String name;
     private String avatar;
     private int user_id;
+    private int join_income_count;
+    private int pinned_income_count;
     private int category_id;
     private String location;
     private String longitude;
@@ -109,6 +112,22 @@ public class CircleInfo extends BaseListBean {
 
     public String getLocation() {
         return location;
+    }
+
+    public int getJoin_income_count() {
+        return join_income_count;
+    }
+
+    public void setJoin_income_count(int join_income_count) {
+        this.join_income_count = join_income_count;
+    }
+
+    public int getPinned_income_count() {
+        return pinned_income_count;
+    }
+
+    public void setPinned_income_count(int pinned_income_count) {
+        this.pinned_income_count = pinned_income_count;
     }
 
     public void setLocation(String location) {
@@ -371,6 +390,8 @@ public class CircleInfo extends BaseListBean {
         dest.writeString(this.name);
         dest.writeString(this.avatar);
         dest.writeInt(this.user_id);
+        dest.writeInt(this.join_income_count);
+        dest.writeInt(this.pinned_income_count);
         dest.writeInt(this.category_id);
         dest.writeString(this.location);
         dest.writeString(this.longitude);
@@ -398,6 +419,8 @@ public class CircleInfo extends BaseListBean {
         this.name = in.readString();
         this.avatar = in.readString();
         this.user_id = in.readInt();
+        this.join_income_count = in.readInt();
+        this.pinned_income_count = in.readInt();
         this.category_id = in.readInt();
         this.location = in.readString();
         this.longitude = in.readString();
@@ -416,14 +439,16 @@ public class CircleInfo extends BaseListBean {
         this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1306244380)
-    public CircleInfo(Long id, String name, String avatar, int user_id, int category_id, String location, String longitude, String latitude, String geo_hash,
-            int allow_feed, String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
-            String updated_at, JoinedBean joined) {
+    @Generated(hash = 198916784)
+    public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count, int category_id, String location,
+            String longitude, String latitude, String geo_hash, int allow_feed, String mode, int money, String summary, String notice, int users_count,
+            int posts_count, int audit, String created_at, String updated_at, JoinedBean joined) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
         this.user_id = user_id;
+        this.join_income_count = join_income_count;
+        this.pinned_income_count = pinned_income_count;
         this.category_id = category_id;
         this.location = location;
         this.longitude = longitude;

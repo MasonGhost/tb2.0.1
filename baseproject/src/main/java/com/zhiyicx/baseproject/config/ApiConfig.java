@@ -133,7 +133,7 @@ public class ApiConfig {
 
     public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/%s";// 删除一条动态
     // 获取动态列表
-    public static final String DYNAMIC_TYPE_EMPTY= "empty"; // 占位
+    public static final String DYNAMIC_TYPE_EMPTY = "empty"; // 占位
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态
@@ -443,6 +443,21 @@ public class ApiConfig {
      * 获取圈子分类
      */
     public static final String APP_PATH_GET_CIRCLE_CATEGROIES = "api/" + API_VERSION_2 + "/plus-group/categories";
+
+    /**
+     * 推荐的圈子
+     */
+    public static final String APP_PATH_GET_RECOMMEND_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/recommend/groups";
+
+    /**
+     * 我加入的圈子
+     */
+    public static final String APP_PATH_GET_MY_JOINED_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/user-groups";
+
+    /**
+     * 全部圈子
+     */
+    public static final String APP_PATH_GET_ALL_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups";
 
     /**
      * 创建圈子

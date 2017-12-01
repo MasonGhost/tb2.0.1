@@ -8,8 +8,8 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -74,6 +73,27 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
+    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet) {
+        return mCircleClient.getMyJoinedCircle(limit, offet)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CircleInfo>> getAllCircle(int limit, int offet) {
+        return mCircleClient.getAllCircle(limit, offet)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Integer>> getCircleCount() {
+        BaseJsonV2<Integer> test = new BaseJsonV2<>();
+        test.setData(2345);
+        return Observable.just(test);
+    }
+
+    @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
         return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId));
     }
@@ -83,7 +103,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
-                    List<CirclePostListBean> data=circlePostBean.getPinneds();
+                    List<CirclePostListBean> data = circlePostBean.getPinneds();
                     data.addAll(circlePostBean.getPosts());
                     return data;
                 })

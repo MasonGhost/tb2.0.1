@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
@@ -15,20 +14,26 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 /**
  * @author Jliuer
  * @Date 2017/11/14/11:28
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 圈子首页
  */
 public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, CircleInfo>
         implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent {
+
+    public static final int DATALIMIT = 5;
 
     private CircleMainHeader mCircleMainHeader;
 
     @Override
     protected boolean setUseCenterLoading() {
-        return false;
+        return true;
     }
 
     @Override
@@ -67,6 +72,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    public void updateCircleCount(int count) {
+        mActivity.runOnUiThread(() -> mCircleMainHeader.updateCircleCount(count));
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), CreateCircleActivity.class));
@@ -80,13 +90,6 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        for (int i = 0; i < 12; i++) {
-            CircleInfo groupInfoBean = new CircleInfo();
-            groupInfoBean.setId((i == 0 || i == 6) ? -1L : i);
-            groupInfoBean.setName("我加入");
-            groupInfoBean.setSummary("查看更多");
-            mListDatas.add(groupInfoBean);
-        }
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         adapter.addItemViewDelegate(new CircleListItem(this));
         adapter.addItemViewDelegate(new CircleTypeItem(this));
@@ -98,10 +101,22 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         mCircleMainHeader = new CircleMainHeader(getActivity(), null, 2341);
         mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
         super.initData();
+        mPresenter.requestNetData(0L, false);
     }
 
     @Override
-    public void toAllCircle(CircleInfo groupInfoBean) {
+    public void onNetResponseSuccess(@NotNull List<CircleInfo> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        closeLoadingView();
+    }
+
+    @Override
+    public void toAllJoinedCircle(CircleInfo groupInfoBean) {
+
+    }
+
+    @Override
+    public void changeRecommend() {
 
     }
 

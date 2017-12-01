@@ -5,8 +5,6 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -42,13 +40,20 @@ public class CircleTypeItem extends BaseCircleItem {
         button.setLeftText(circleInfo.getName());
         button.setRightText(circleInfo.getSummary());
 
+        if (circleInfo.getId() == -2) {
+
+        }
+
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (mCircleItemItemEvent == null) {
                         return;
                     }
-                    mCircleItemItemEvent.toAllCircle(circleInfo);
+                    if (circleInfo.getId()==BaseCircleItem.MYJOINEDCIRCLE){
+                        mCircleItemItemEvent.toAllJoinedCircle(circleInfo);
+                    }
+
                 });
     }
 }
