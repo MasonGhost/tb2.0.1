@@ -143,4 +143,5 @@
     <string name="cast_replace">投%s</string>
     <string name="send_message_fail">发送失败~</string>
     <string name="vote">投票</string>
+    <string name="server_connecting_to_retry">服务连接中，暂不能发起投票，请稍后再试</string>
 </resources>

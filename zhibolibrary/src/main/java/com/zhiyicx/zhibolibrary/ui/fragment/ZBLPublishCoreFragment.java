@@ -129,6 +129,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private static final int RANK_SHOW_NUM = 3;
     private static final int RECIEVED_ZAN = 101;
     private static final int RECIECED_GIFT = 102;
+
+    private static final int FILTER_MOVE_SPACING = 100;
+    private static final int IM_MESSAGE_OFFSET = 200;
     private int mCid;
     @Inject
     PublishCorePresenter mPresenter;
@@ -521,7 +524,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             @Override
             public void onSendGiftClick() {
                 doSendGift();
-//                mGiftSheet.dismiss();
 
             }
         });
@@ -547,7 +549,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             doVotePoll(meut, mVoteOptionPop.getVoteId(), mVoteOptionPop.getSelectOptionKey());
         } else {
             sendGiftSuccessAndShow();
-//        mPresenter.exchange(1, presenterUser.uid, meut.gift_code, GoldService.EXCHANGE_TYPE_GIFT);
         }
     }
 
@@ -577,8 +578,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void showChargeDialog() {
         if (mChargeDialog == null) {
-
-
             mChargeDialog = new AlertDialog.Builder(getActivity());
             UiUtils.getDialog(mChargeDialog, new DialogInterface.OnClickListener() {
                         @Override
@@ -601,8 +600,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void showDisableSendMsgDialog() {
         if (mDisableSendMsgDialog == null) {
-
-
             mDisableSendMsgDialog = new AlertDialog.Builder(getActivity());
             UiUtils.getDialog(mDisableSendMsgDialog, new DialogInterface.OnClickListener() {
                 @Override
@@ -627,25 +624,20 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void settleView() {
 //        mEditText.setFilters(new InputFilter[]{CharactorHandler.emojiFilter});//emoji过滤
-
-        if (currentView == PUBLISH_VIEW) {//主播直播页面
-
+        //主播直播页面
+        if (currentView == PUBLISH_VIEW) {
             if (mGiftButton != null) {
                 mGiftButton.setVisibility(View.GONE);
             }
             if (mGiftSendButton != null) {
                 mGiftSendButton.setImageResource(R.mipmap.ico_live_share);
             }
-
             rlPublishCorePresenterInfo.setVisibility(View.GONE);
             ivCamearChange.setVisibility(View.VISIBLE);
 
             if (mRoot != null) {
                 initFilterTouch(mRoot);
             }
-
-//            if (mFilterIV != null)
-//                mFilterIV.setVisibility(View.VISIBLE);
 
             if (mMessageRecyclerView != null) {
                 mMessageRecyclerView.post(new Runnable() {
@@ -659,8 +651,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                                         .LayoutParams) mMessageRecyclerView.getLayoutParams()).height);
                         messageParams.topMargin = AutoUtils.getPercentHeightSize(70);
                         mMessageRecyclerView.setLayoutParams(messageParams);
-
-
                     }
                 });
             }
@@ -675,15 +665,15 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 params.topMargin = (int) (UiUtils.getScreenHeidth() / 3);
                 mFilterNameTv.setLayoutParams(params);
             }
-//            if (mPollIb != null)
-//                mPollIb.setVisibility(View.VISIBLE);
-
-        } else if (currentView == LIVE_VIEW) {//用户直播页面
-            initLisenter();//点击屏幕,点赞动画
+            //用户直播页面
+        } else if (currentView == LIVE_VIEW) {
+            //点击屏幕,点赞动画
+            initLisenter();
             showPresenterInfo();
         }
         setEditorActiongListener();
-        controlKeyboardLayout(mRootView, mRoot);//点击输入框页面上移
+        //点击输入框页面上移
+        controlKeyboardLayout(mRootView, mRoot);
     }
 
     /**
@@ -692,13 +682,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * @param root
      */
     private void initFilterTouch(View root) {
-
-
         final GestureDetector gestureDetector = new GestureDetector(UiUtils.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 // 向右滑动，切换上一个滤镜
-                if (e2.getRawX() - e1.getRawX() > 100) {
+                if (e2.getRawX() - e1.getRawX() > FILTER_MOVE_SPACING) {
                     if (mFilterIndex <= 0) {
 
                     } else {
@@ -710,16 +698,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     return true;
                 }
                 // 向左滑动，切换下一个滤镜
-                if (e1.getRawX() - e2.getRawX() > 100) {
-
-//                    if (mFilterIndex >= 10) {
-//
-//                    } else {
+                if (e1.getRawX() - e2.getRawX() > FILTER_MOVE_SPACING) {
                     mFilterIndex++;
                     ((PublishView) getActivity()).getFilterManager()
                             .changeFilter(new FilterInfo(false, mFilterIndex));
                     refreshFilterName(mFilterIndex);
-                    //  }
                     return true;
                 }
                 return super.onFling(e1, e2, velocityX, velocityY);
@@ -800,18 +783,19 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 clickBlank();
             }
         });
-
-
     }
 
     /**
      * 点击了空白处
      */
     private void clickBlank() {
-        hidekeyboard();//隐藏软键盘
-        if (!flag && System.currentTimeMillis() - mLastZanClickTime > DELAY_ZAN_TIME) {//点赞效果
+        //隐藏软键盘
+        hidekeyboard();
+        //点赞效果
+        if (!flag && System.currentTimeMillis() - mLastZanClickTime > DELAY_ZAN_TIME) {
             mLastZanClickTime = System.currentTimeMillis();
-            mPresenter.sendZan(mFavorLayout.getSelfColor() + 200);//保证和常量一直，所以+200
+            //保证和常量一直，所以 + IM_MESSAGE_OFFSET
+            mPresenter.sendZan(mFavorLayout.getSelfColor() + IM_MESSAGE_OFFSET);
             mZans.add(new ZanTag(mFavorLayout.getSelfColor(), true));
         }
     }
@@ -827,7 +811,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     if (i == EditorInfo.IME_ACTION_SEARCH
                             || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode()
                             && KeyEvent.ACTION_DOWN == event.getAction())) {
-                        mPresenter.sendTextmsg(mEditText.getText().toString().trim());//发送消息
+                        //发送消息
+                        mPresenter.sendTextmsg(mEditText.getText().toString().trim());
                         return true;
                     }
                     return false;
@@ -999,7 +984,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 super.smoothScrollToPosition(recyclerView, state, position);
             }
         };
-//        mLayoutManager.setReverseLayout(true);
+///        mLayoutManager.setReverseLayout(true);
 //        mLayoutManager.setStackFromEnd(true);//列表再底部开始展示，反转后由上面开始展示
         mChatList = new ArrayList<>();
         mMessageAdapter = new LiveChatListAdapter(mChatList);
@@ -1031,8 +1016,10 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void checkFollow(UserInfo userInfo, boolean isPresenter) {
         clickIsPresenter = isPresenter;
-        mClickUserInfo = userInfo;//保存当前点击的用户
-        mPopPresenter.queryFollow();//检查当前选中的用户是否被关注
+        //保存当前点击的用户
+        mClickUserInfo = userInfo;
+        //检查当前选中的用户是否被关注
+        mPopPresenter.queryFollow();
     }
 
     /**
@@ -1048,6 +1035,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
     }
 
+    /**
+     * 获取消息中的用户信息
+     *
+     * @param message
+     */
     private void getEveryBodyInfo(Message message) {
         if (mUserMessageCach.containsKey(message.ext.ZBUSID) && !TextUtils.isEmpty(mUserMessageCach.get(message.ext.ZBUSID).uid)) {
             mClickUserInfo = mUserMessageCach.get(message.ext.ZBUSID);//保存当前点击的用户
@@ -1090,18 +1082,20 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     }
 
     /**
-     * 主播离开了房间
+     * 主播关播离开了房间，直播结束
      */
     @Override
     public void convrEnd(int cid) {
         hidekeyboard();
-        if (currentView != PUBLISH_VIEW) {//观众直播页面
+        //观众直播页面
+        if (currentView != PUBLISH_VIEW) {
             /**
              * 跳转推荐页面
              */
 
             mPresenter.getRecomList(presenterUser.uid);
-        } else {//主播直播页面
+            //主播直播页面
+        } else {
             if (mPublishView.isSelfClose()) {
                 return;
             }
@@ -1123,7 +1117,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     @Override
     public void getChatroomMc(ChatRoomDataCount chatRoomDataCount) {
         mChatRoomDataCount = chatRoomDataCount;
-        mPeopleTV.setText(chatRoomDataCount.getViererCount() + "");
+        mPeopleTV.setText(String.valueOf(chatRoomDataCount.getViererCount()));
 
     }
 
@@ -1133,7 +1127,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     @Override
     public void updatedGold() {
         if (mPagerDelegate != null) {
-            mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
+            mPagerDelegate.setTvGlodNumText(String.valueOf(ZhiboApplication.getUserInfo().gold));
         }
     }
 
@@ -1581,7 +1575,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             }
             mMessageRecyclerView.scrollToPosition(0);
             mCurrentRootInvisibleHeight = rootInvisibleHeight;
-            System.out.println("rootInvisibleHeight = " + rootInvisibleHeight);
         }
 
     }
@@ -1669,7 +1662,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
          * 在缓存中查询当前信息的用户信息是否存在
          */
         if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
-            //addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID).mUserInfo, message));
             addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID), message));
         } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
@@ -1706,7 +1698,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     public void recievedZanMessage(Message message) {
 
         mEndStreamJson.data.zan_count++;
-        mZans.add(new ZanTag(new Gson().fromJson(message.getExt().custom.toString(), Zan.class).comment - 200, false));
+        mZans.add(new ZanTag(new Gson().fromJson(message.getExt().custom.toString(), Zan.class).comment - IM_MESSAGE_OFFSET, false));
     }
 
     /**
@@ -1733,7 +1725,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
          */
         if (mUserMessageCach.containsKey(message.ext.ZBUSID)) {
             message.txt = getString(R.string.str_follow_presenter);
-            //  addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID).mUserInfo, message));
             addChat(new UserMessage(mUserMessageCach.get(message.ext.ZBUSID), message));
         } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
@@ -1871,10 +1862,12 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
     private void initVoteManager(int currentView, String usid) {
         String currentUsid = ZhiboApplication.getUserInfo().usid;
-        if (currentView == 0) {//主播
+        //主播
+        if (currentView == 0) {
             initVoteCreatePop(currentUsid);
             mVoteManager = VoteManager.newBuilder().cid(mCid).userType(VoteManager.TYPE_PRESENTER).setListener(preseterListener).build();
-        } else if (currentView == 1) {//观众
+            //观众
+        } else if (currentView == 1) {
             mVoteManager = VoteManager.newBuilder().cid(mCid).userType(VoteManager.TYPE_AUDIENCE).presenterUsid(usid).setListener(audienceListener)
                     .build();
         }
@@ -1957,7 +1950,6 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             onView.destoryTimeCounter();
         }
         onView = new VoteOnView(getActivity(), info);
-        //onView.setUserType(type);
         AutoRelativeLayout.LayoutParams params = new AutoRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
         params.leftMargin = UiUtils.dip2px(10);
@@ -2236,7 +2228,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         } else if (view.getId() == R.id.ib_publish_core_poll) {
             if (!mPresenter.isJoinedChatRoom()) {
-                UiUtils.SnackbarText("服务连接中，暂不能发起投票，请稍后再试");
+                UiUtils.SnackbarText(getString(R.string.server_connecting_to_retry));
                 return;
             }
             if (voteCreatePop != null)//发起投票弹窗
