@@ -272,8 +272,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private void changeHeartBeatRateByReconnect() {
 
-        if (HEART_BEAT_RATE > HEART_BEAT_RATE_MAX)
+        if (HEART_BEAT_RATE > HEART_BEAT_RATE_MAX) {
             HEART_BEAT_RATE = HEART_BEAT_RATE - 10 * 1000;
+        }
     }
 
     /**

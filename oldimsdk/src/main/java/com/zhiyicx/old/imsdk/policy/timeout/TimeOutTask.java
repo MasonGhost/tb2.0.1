@@ -30,7 +30,7 @@ public class TimeOutTask implements Runnable {
     public TimeOutTask(MessageContainer mMessageContainer, long begin_time, TimeOutListener l) {
         this.mMessageContainer = mMessageContainer;
         this.begin_time = begin_time;
-        this.mListener=l;
+        this.mListener = l;
         mMessageContainer.reSendCounts++;
     }
 
@@ -42,7 +42,7 @@ public class TimeOutTask implements Runnable {
             if (System.currentTimeMillis() - begin_time >= out_time) {
                 timeout();
                 isEnd = true;
-            }else {
+            } else {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -54,8 +54,8 @@ public class TimeOutTask implements Runnable {
     }
 
     private void timeout() {
-            if(mListener!=null)
-                mListener.timeOut(mMessageContainer);
+        if (mListener != null)
+            mListener.timeOut(mMessageContainer);
     }
 
 }

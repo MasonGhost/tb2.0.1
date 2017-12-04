@@ -12,6 +12,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -740,7 +741,8 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     public void refreshGoldCountReduce(int decrice) {
         UserInfo info = ZhiboApplication.getUserInfo();
-        info.setGold(info.getGold() - decrice);
+        info.setGold(info.getGold() - (int)(ZhiboApplication.getUserInfo().getAppConfigInfoFromLocal()
+                .getWallet_ratio() * decrice / PayConfig.RATIO_UNIT));
         ZhiboApplication.setUserInfo(info);
     }
 
