@@ -32,6 +32,12 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 
+    void sendPostComment(String commentContent,Long postId, Long replyToUserId,Long commentMark);
+
+    void deletePostComment(CirclePostListBean circlePostListBean, int postPosition, long comment_id, int commentPositon);
+
+    void deletePost(CirclePostListBean circlePostListBean, int position);
+
     Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo);
 
 }

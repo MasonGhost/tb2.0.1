@@ -9,24 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListContract;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupContract;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -107,14 +97,22 @@ public class CircleListItem extends BaseCircleItem {
         circleSubscribe.setChecked(isJoined);
         circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
         circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-        RxView.clicks(circleSubscribe)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    if (mCircleItemItemEvent == null) {
-                        return;
-                    }
-                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                });
+        if (circleInfo.getAudit() == 1) {
+            RxView.clicks(circleSubscribe)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    });
+        } else {
+            if (mCircleItemItemEvent == null) {
+                return;
+            }
+            mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+        }
+
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

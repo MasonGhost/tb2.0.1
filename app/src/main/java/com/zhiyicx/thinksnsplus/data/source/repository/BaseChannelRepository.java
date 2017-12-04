@@ -120,14 +120,16 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
                                                 UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers()
                                                         .get(j).getUser_id());
-                                                if (userInfoBean != null)
+                                                if (userInfoBean != null) {
                                                     groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
+                                                }
                                             }
                                             for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
                                                 UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get
                                                         (m).getUser_id());
-                                                if (userInfoBean != null)
+                                                if (userInfoBean != null) {
                                                     groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
+                                                }
                                             }
                                         }
                                     }

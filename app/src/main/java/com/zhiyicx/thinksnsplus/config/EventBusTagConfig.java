@@ -45,6 +45,8 @@ public class EventBusTagConfig {
     // 圈子的动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC = "event_send_comment_to_grouop_dynamic";
 
+    public static final String EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC = "event_send_comment_to_circle_dynamic";
+
     // 动态图片付费
     public static final String EVENT_DYNAMIC_TOLL_PICTRUE = "event_dynamic_toll_pictrue";
 

@@ -24,7 +24,9 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -101,17 +103,48 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
+    public void sendPostComment(String commentContent, Long postId, Long replyToUserId, Long commentMark) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("body", commentContent);
+        params.put("group_post_comment_mark", commentMark);
+        if (replyToUserId != 0) {
+            params.put("reply_user", replyToUserId);
+        }
+
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_CIRCLE_DYNAMIC_COMMENT, params);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_COMMENT_POST_FORMAT, group_id, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deletePostComment(CirclePostListBean circlePostListBean, int postPosition, long comment_id, int commentPositon) {
+
+    }
+
+    @Override
+    public void deletePost(CirclePostListBean circlePostListBean, int position) {
+
+    }
+
+    @Override
     public Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo) {
         boolean isJoined = circleInfo.getJoined() != null;
+        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         if (isJoined) {
-            return mCircleClient.exitCircle(circleInfo.getId())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            // 已经订阅，变为未订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE_V2);
+            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_EXIT_CIRCLE_FROMAT, String.valueOf(circleInfo.getId())));
         } else {
-            return mCircleClient.joinCircle(circleInfo.getId())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            // 未订阅，变为已订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
+            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_JOIN_CIRCLE_FORMAT, String.valueOf(circleInfo.getId())));
         }
+        // 启动后台任务
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        return null;
     }
 
     @Override

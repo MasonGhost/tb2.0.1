@@ -22,6 +22,7 @@ public enum BackgroundTaskRequestMethodConfig {
     POST_V2(11),
     SEND_GROUP_DYNAMIC(12),
     SEND_GROUP_DYNAMIC_COMMENT(13),
+    SEND_CIRCLE_DYNAMIC_COMMENT(19),
     DELETE_V2(14),
     PUT(15),
     SEND_CERTIFICATION(16), // 发布认证申请

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -316,6 +317,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         initToolBar();
         mDrawer.setClipToPadding(false);
         mDrawer.setClipChildren(false);
+        mDrawer.setScrimColor(Color.TRANSPARENT);
         mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override

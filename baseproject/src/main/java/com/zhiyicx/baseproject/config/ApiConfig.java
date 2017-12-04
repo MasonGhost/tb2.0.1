@@ -517,6 +517,18 @@ public class ApiConfig {
     public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
 
     /**
+     * 评论帖子
+     */
+    public static final String APP_PATH_COMMENT_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments";
+    public static final String APP_PATH_COMMENT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments";
+
+    /**
+     * 删除帖子评论
+     */
+    public static final String APP_PATH_DELETE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments/{comment_id}";
+    public static final String APP_PATH_DELETE_POST_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments/%s";
+
+    /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
 //    public static final String APP_COMPONENT_FEED = "feed";

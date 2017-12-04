@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class CirclePostCommentBeanGreenDaoImpl extends CommonCacheImpl<CirclePos
 
     @Override
     public void saveMultiData(List<CirclePostCommentBean> multiData) {
-
+        getWDaoSession().getCirclePostCommentBeanDao().insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -40,40 +41,50 @@ public class CirclePostCommentBeanGreenDaoImpl extends CommonCacheImpl<CirclePos
 
     @Override
     public CirclePostCommentBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return getRDaoSession().getCirclePostCommentBeanDao().load(primaryKey);
     }
 
     @Override
     public List<CirclePostCommentBean> getMultiDataFromCache() {
-        return null;
+        return getRDaoSession().getCirclePostCommentBeanDao().loadAll();
     }
 
     @Override
     public void clearTable() {
-
+        getWDaoSession().getCirclePostCommentBeanDao().deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        getWDaoSession().getCirclePostCommentBeanDao().deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(CirclePostCommentBean dta) {
-
+        getWDaoSession().getCirclePostCommentBeanDao().delete(dta);
     }
 
     @Override
     public void updateSingleData(CirclePostCommentBean newData) {
-
+        insertOrReplace(newData);
     }
 
     @Override
     public long insertOrReplace(CirclePostCommentBean newData) {
-        return 0;
+        return getWDaoSession().getCirclePostCommentBeanDao().insertOrReplace(newData);
     }
 
     public List<CirclePostCommentBean> getMySendingComment(int i) {
         return new ArrayList<>();
+    }
+
+    public CirclePostCommentBean getCircleCommentsByCommentMark(Long comment_mark) {
+        List<CirclePostCommentBean> result = getRDaoSession().getCirclePostCommentBeanDao().queryBuilder()
+                .where(CirclePostCommentBeanDao.Properties.Comment_mark.eq(comment_mark))
+                .list();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
     }
 }

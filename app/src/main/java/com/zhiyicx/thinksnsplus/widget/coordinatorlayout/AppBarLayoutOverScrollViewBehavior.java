@@ -135,7 +135,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
 
         if (onRefreshChangeListener != null) {
             float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
-            if (progress >= 0.3 && !isRefreshing && progress < 0.4 && !isRecovering) {
+            if (progress >= 0.6 && !isRefreshing && progress < 0.7 && !isRecovering) {
                 isRefreshing = true;
                 onRefreshChangeListener.onRefreshShow();
             }
