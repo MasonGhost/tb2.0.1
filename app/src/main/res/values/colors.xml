@@ -27,4 +27,8 @@
 
     <color name="home_add_page_bg">#F5ffffff</color>
 
+    <!--圈子-->
+    <color name="circle_navigation_bg">#363845</color>
+    <color name="circle_navigation_txt_color">#4a4d5e</color>
+
 </resources>

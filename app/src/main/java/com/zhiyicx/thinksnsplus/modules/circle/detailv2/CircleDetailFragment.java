@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.nineoldandroids.view.ViewHelper;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
@@ -67,6 +69,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
@@ -124,6 +127,20 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     ImageView mIvSetting;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_circle_member_count)
+    TextView mTvCircleMemberCount;
+    @BindView(R.id.ll_member_container)
+    LinearLayout mLlMemberContainer;
+    @BindView(R.id.ll_detail_container)
+    LinearLayout mLlDetailContainer;
+    @BindView(R.id.ll_earnings_container)
+    LinearLayout mLlEarningsContainer;
+    @BindView(R.id.ll_permission_container)
+    LinearLayout mLlPermissionContainer;
+    @BindView(R.id.ll_report_container)
+    LinearLayout mLlReportContainer;
+    @BindView(R.id.ll_circle_navigation_container)
+    LinearLayout mLlCircleNavigationContainer;
 
     private ActionBarDrawerToggle mToggle;
 
@@ -143,6 +160,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private PhotoSelectorImpl mPhotoSelector;
 
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
+
+    private boolean updateHeadImg;
 
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
@@ -226,30 +245,34 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText("位置：\t" + detail.getLocation());
         mTvCircleMember.setText("成员\t" + detail.getUsers_count());
         mTvCirclePostCount.setText(detail.getPosts_count() + "个帖子");
-        Glide.with(mActivity)
-                .load(detail.getAvatar())
-                .error(R.drawable.shape_default_image)
-                .placeholder(R.drawable.shape_default_image)
-                .into(mIvCircleHead);
 
-        Glide.with(mActivity)
-                .load(detail.getAvatar())
-                .placeholder(R.drawable.shape_default_image)
-                .transform(new GaussianBlurTrasnform(mActivity))
-                .error(R.drawable.shape_default_image)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        mIvCircleHeadBg.setImageDrawable(resource);
-                    }
+        if (!updateHeadImg) {
+            updateHeadImg = true;
 
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        mIvCircleHeadBg.setImageDrawable(errorDrawable);
-                    }
-                });
+            Glide.with(mActivity)
+                    .load(detail.getAvatar())
+                    .error(R.drawable.shape_default_image)
+                    .placeholder(R.drawable.shape_default_image)
+                    .into(mIvCircleHead);
 
+            Glide.with(mActivity)
+                    .load(detail.getAvatar())
+                    .placeholder(R.drawable.shape_default_image)
+                    .transform(new GaussianBlurTrasnform(mActivity))
+                    .error(R.drawable.shape_default_image)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            mIvCircleHeadBg.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            mIvCircleHeadBg.setImageDrawable(errorDrawable);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -294,7 +317,25 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mDrawer.setClipToPadding(false);
         mDrawer.setClipChildren(false);
         mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                View mContent = mDrawer.getChildAt(0);
+                ViewHelper.setTranslationX(mContent,
+                        -drawerView.getMeasuredWidth() * slideOffset);
+            }
+        };
 
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -325,6 +366,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             layoutParams.setMargins(0, height, 0, 0);
             mToolbar.setLayoutParams(layoutParams);
         }
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) mLlCircleNavigationContainer.getLayoutParams();
+        params.width = DeviceUtils.getScreenWidth(getActivity()) / 2;
+        mLlCircleNavigationContainer.setLayoutParams(params);
+
     }
 
     @Override
@@ -672,4 +717,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         adapter.addItemViewDelegate(circlePostListBaseItem);
     }
 
+    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
+            R.id.ll_permission_container, R.id.ll_report_container})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ll_member_container:
+                break;
+            case R.id.ll_detail_container:
+                break;
+            case R.id.ll_earnings_container:
+                break;
+            case R.id.ll_permission_container:
+                break;
+            case R.id.ll_report_container:
+                break;
+            default:
+        }
+    }
 }

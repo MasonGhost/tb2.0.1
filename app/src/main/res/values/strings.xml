@@ -251,6 +251,7 @@
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
     <string name="create">创建</string>
+
     <string name="create_circle">创建圈子</string>
     <string name="create_circle_notice">选填</string>
     <string name="create_circle_nolocation">不显示位置</string>
@@ -274,6 +275,12 @@
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
 
+    <string name="circle_detail">详细信息</string>
+    <string name="circle_earnings">圈子收益</string>
+    <string name="circle_permission">发帖权限</string>
+    <string name="circle_report">举报管理</string>
+    <string name="circle_more">更多操作</string>
+    <string name="circle_exit">退出圈子</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>

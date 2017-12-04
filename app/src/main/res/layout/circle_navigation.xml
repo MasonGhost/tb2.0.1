@@ -1,51 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_circle_navigation_container"
     android:layout_width="match_parent"
-    android:paddingTop="20dp"
     android:layout_height="match_parent"
     android:layout_gravity="right"
-    android:background="#aaaaaa"
-    android:orientation="vertical">
+    android:background="@color/circle_navigation_bg"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/spacing_mid"
+    android:paddingRight="@dimen/spacing_mid"
+    android:paddingTop="@dimen/spacing_huge_60">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#777777"
-        android:text="tym"
-        android:textColor="#dddddd"
-        android:textSize="16sp"/>
+        android:layout_marginBottom="@dimen/spacing_mid_small"
+        android:text="@string/circle_more"
+        android:textColor="@color/circle_navigation_txt_color"
+        android:textSize="@dimen/size_content_comment"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <LinearLayout
+        android:id="@+id/ll_member_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/ico_circle_member"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/circle_member"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:id="@+id/tv_circle_member_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="555"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <LinearLayout
+        android:id="@+id/ll_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/ico_circle_details"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/circle_detail"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <LinearLayout
+        android:id="@+id/ll_earnings_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/ico_circle_earnings"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/circle_earnings"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <LinearLayout
+        android:id="@+id/ll_permission_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/ico_circle_limits"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/circle_permission"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <LinearLayout
+        android:id="@+id/ll_report_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/ico_circle_report"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/circle_report"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:src="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/circle_navigation_driver"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#777777"
-        android:text="tym"
-        android:textColor="#dddddd"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#777777"
-        android:text="tym"
-        android:textColor="#dddddd"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#777777"
-        android:text="tym"
-        android:textColor="#dddddd"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#777777"
-        android:text="tym"
-        android:textColor="#dddddd"
-        android:textSize="16sp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@drawable/shape_circle_exit"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_small"
+        android:text="@string/circle_exit"
+        android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_content"/>
 
 </LinearLayout>
