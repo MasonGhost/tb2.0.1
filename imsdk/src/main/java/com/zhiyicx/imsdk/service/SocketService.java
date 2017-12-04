@@ -521,7 +521,10 @@ public class SocketService extends BaseService implements ImService.ImListener {
         mService = null;
         exit = true;
         if (mSocketRetryReceiver != null) {
-            unregisterReceiver(mSocketRetryReceiver);
+            try {
+                unregisterReceiver(mSocketRetryReceiver);
+            } catch (Exception ignored) {
+            }
         }
 
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {

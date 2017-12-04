@@ -138,4 +138,9 @@
     <string name="ctime">交易时间</string>
     <string name="use_camea_permisson_tip">相机权限已被禁用，请前往\"设置\"中进行修改，允许使用相机</string>
     <string name="ticket_illegal_tip">直播权限失效，请重新登录后使用!</string>
+    <string name="mars">火星</string>
+    <string name="x_replace">x%d</string>
+    <string name="cast_replace">投%s</string>
+    <string name="send_message_fail">发送失败~</string>
+    <string name="vote">投票</string>
 </resources>

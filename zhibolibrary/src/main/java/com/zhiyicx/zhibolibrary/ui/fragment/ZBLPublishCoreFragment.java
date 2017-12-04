@@ -108,6 +108,7 @@ import com.zhy.autolayout.utils.AutoUtils;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +118,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 
 /**
- * Created by jess on 16/5/11.
+ * @Describe 直播和观看直播主页面
+ * @Author Jungle68
+ * @Date 2017/12/4
+ * @Contact master.jungle68@gmail.com
  */
 public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCoreView, UserHomeView, View.OnClickListener, ViewTreeObserver
         .OnGlobalLayoutListener {
@@ -226,7 +230,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private AlertDialog.Builder mDisableSendMsgDialog;//系统禁言弹框
 
 
-    private View newsLayout;//用来作为禁言pop的父布局
+    private View mNewsLayout;//用来作为禁言pop的父布局
     private long mTime;
     private UserInfo mClickUserInfo;//被点击用户的信息
     private boolean clickIsPresenter;//被点击用户的信息
@@ -234,23 +238,23 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private Queue<ZanTag> mZans = new ConcurrentLinkedQueue<>();//线程安全的队列,用户显示赞
     private Queue<Message> mMessages = new ConcurrentLinkedQueue<>();//线程安全的队列,用户显示礼物
     private SweetSheet mGiftSheet;
-    private ViewPagerDelegate vpd;
-    private int lastposiotn = -1;//上次点击的item
-    private boolean isExit = false;
+    private ViewPagerDelegate mPagerDelegate;
+    private int mLastposiotn = -1;//上次点击的item
+    private boolean mIsExit = false;
 
-    private long showGiftTime = 0L;//
+    private long mShowGiftTime = 0L;//
     private final static long GIFT_SHOW_TIME = 100 * 5;//显示礼物间隔时间
 
     private final static long DELAY_SHOW_TIME = 30;//ui刷新延迟时间
     private final static long DELAY_ZAN_TIME = 100;//点赞的间隔时间
-    private long last_zan_click_time;
+    private long mLastZanClickTime;
 
-    private SearchResult data;//主播信息
+    private SearchResult mPresenterData;//主播信息
     private UserInfo presenterUser;//主播信息
-    private List<MenuEntity> list;
+    private List<MenuEntity> mGiftList;
 
-    private boolean isBanneded = false;//是否被禁言了
-    private long gag = -1;//禁言时长
+    private boolean mIsBanneded = false;//是否被禁言了
+    private long mGag = -1;//禁言时长
     private ProgressDialog mLoading;
     private ZBEndStreamJson mEndStreamJson = new ZBEndStreamJson();//本地保存收到礼物和赞
     private ChatRoomDataCount mChatRoomDataCount = new ChatRoomDataCount();//聊天室人数 浏览量 统计
@@ -307,10 +311,10 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private Runnable giftRunnable = new Runnable() {
         @Override
         public void run() {
-            while (!isExit) {
-                if (System.currentTimeMillis() - showGiftTime >= GIFT_SHOW_TIME && mUIHandler != null) {
+            while (!mIsExit) {
+                if (System.currentTimeMillis() - mShowGiftTime >= GIFT_SHOW_TIME && mUIHandler != null) {
                     mUIHandler.sendEmptyMessageDelayed(RECIECED_GIFT, DELAY_SHOW_TIME);
-                    showGiftTime = System.currentTimeMillis();
+                    mShowGiftTime = System.currentTimeMillis();
                 }
                 if (!mZans.isEmpty()) {
                     ZanTag zanTag = mZans.poll();
@@ -342,68 +346,68 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     protected View initView() {
         mInutLimitHeight = (int) (DeviceUtils.getScreenHeight(getContext()) / 3);
         this.currentView = getArguments().getInt("currentView", 0);//当前要显示的页面,当前页面可以复用,用来区分主播直播页面和用户直播页面;
-        newsLayout = UiUtils.inflate(R.layout.zb_fragment_publish_core);
-        mFavorLayout = (FavorLayout) newsLayout.findViewById(R.id.fl_publish_core);
-        mMessageRecyclerView = (RecyclerView) newsLayout.findViewById(R.id.rv_publish_core);
-        mInputContainer = (AutoLinearLayout) newsLayout.findViewById(R.id.ll_publish_core_input_container);
-        mNotInputContainer = (AutoRelativeLayout) newsLayout.findViewById(R.id.rl_publish_core_not_input_container);
-        mEditText = (EditText) newsLayout.findViewById(R.id.et_publish_core);
-        mPeopleTV = (TextView) newsLayout.findViewById(R.id.tv_publish_core_online_people);
-        mRoot = (AutoRelativeLayout) newsLayout.findViewById(R.id.publish_core_root);
-        mSendBT = (Button) newsLayout.findViewById(R.id.bt_publish_core_send);
+        mNewsLayout = UiUtils.inflate(R.layout.zb_fragment_publish_core);
+        mFavorLayout = (FavorLayout) mNewsLayout.findViewById(R.id.fl_publish_core);
+        mMessageRecyclerView = (RecyclerView) mNewsLayout.findViewById(R.id.rv_publish_core);
+        mInputContainer = (AutoLinearLayout) mNewsLayout.findViewById(R.id.ll_publish_core_input_container);
+        mNotInputContainer = (AutoRelativeLayout) mNewsLayout.findViewById(R.id.rl_publish_core_not_input_container);
+        mEditText = (EditText) mNewsLayout.findViewById(R.id.et_publish_core);
+        mPeopleTV = (TextView) mNewsLayout.findViewById(R.id.tv_publish_core_online_people);
+        mRoot = (AutoRelativeLayout) mNewsLayout.findViewById(R.id.publish_core_root);
+        mSendBT = (Button) mNewsLayout.findViewById(R.id.bt_publish_core_send);
         mSendBT.setOnClickListener(this);
-        ivPresenterHeadpic = (ImageView) newsLayout.findViewById(R.id.iv_presenter_headpic);
-        ivPresenteVerified = (ImageView) newsLayout.findViewById(R.id.iv_presente_verified1);
-        tvPresenterName = (TextView) newsLayout.findViewById(R.id.tv_presenter_name);
-        tvPresenterEnglishname = (TextView) newsLayout.findViewById(R.id.tv_presenter_englishname);
-        rlPubLishcoreRanks = (AutoLinearLayout) newsLayout.findViewById(R.id.rl_publish_core_ranks);
-        ivCamearChange = (ImageView) newsLayout.findViewById(R.id.iv_camear_change);
+        ivPresenterHeadpic = (ImageView) mNewsLayout.findViewById(R.id.iv_presenter_headpic);
+        ivPresenteVerified = (ImageView) mNewsLayout.findViewById(R.id.iv_presente_verified1);
+        tvPresenterName = (TextView) mNewsLayout.findViewById(R.id.tv_presenter_name);
+        tvPresenterEnglishname = (TextView) mNewsLayout.findViewById(R.id.tv_presenter_englishname);
+        rlPubLishcoreRanks = (AutoLinearLayout) mNewsLayout.findViewById(R.id.rl_publish_core_ranks);
+        ivCamearChange = (ImageView) mNewsLayout.findViewById(R.id.iv_camear_change);
         ivCamearChange.setOnClickListener(this);
-        rlPublishCorePresenterInfo = (AutoLinearLayout) newsLayout.findViewById(R.id.rl_publish_core_presenter_info);
+        rlPublishCorePresenterInfo = (AutoLinearLayout) mNewsLayout.findViewById(R.id.rl_publish_core_presenter_info);
         rlPublishCorePresenterInfo.setOnClickListener(this);
-        rlPublishCorePresentGiftrank = (AutoLinearLayout) newsLayout.findViewById(R.id.rl_publish_core_present_giftrank);
+        rlPublishCorePresentGiftrank = (AutoLinearLayout) mNewsLayout.findViewById(R.id.rl_publish_core_present_giftrank);
         rlPublishCorePresentGiftrank.setOnClickListener(this);
-        ivHeadpic3 = (ImageView) newsLayout.findViewById(R.id.iv_headpic3);
-        tvName3 = (TextView) newsLayout.findViewById(R.id.tv_name3);
-        tvDes3 = (TextView) newsLayout.findViewById(R.id.tv_des3);
-        tvGoldNums3 = (TextView) newsLayout.findViewById(R.id.tv_gold_nums3);
-        llGitf3 = (AutoLinearLayout) newsLayout.findViewById(R.id.ll_gitf3);
-        ivHeadpic2 = (ImageView) newsLayout.findViewById(R.id.iv_headpic2);
-        tvName2 = (TextView) newsLayout.findViewById(R.id.tv_name2);
-        tvDes2 = (TextView) newsLayout.findViewById(R.id.tv_des2);
-        tvGoldNums2 = (TextView) newsLayout.findViewById(R.id.tv_gold_nums2);
-        llGitf2 = (AutoLinearLayout) newsLayout.findViewById(R.id.ll_gitf2);
-        ivHeadpic1 = (ImageView) newsLayout.findViewById(R.id.iv_headpic1);
-        tvName1 = (TextView) newsLayout.findViewById(R.id.tv_name1);
-        tvDes1 = (TextView) newsLayout.findViewById(R.id.tv_des1);
-        tvGoldNums1 = (TextView) newsLayout.findViewById(R.id.tv_gold_nums1);
-        llGitf1 = (AutoLinearLayout) newsLayout.findViewById(R.id.ll_gitf1);
-        ivGiftVerified3 = (ImageView) newsLayout.findViewById(R.id.iv_gift_verified3);
-        ivGiftVerified2 = (ImageView) newsLayout.findViewById(R.id.iv_gift_verified2);
-        ivGiftVerified1 = (ImageView) newsLayout.findViewById(R.id.iv_gift_verified1);
-        ivGift1 = (ImageView) newsLayout.findViewById(R.id.iv_gift_1);
-        ivGift2 = (ImageView) newsLayout.findViewById(R.id.iv_gift_2);
-        ivGift3 = (ImageView) newsLayout.findViewById(R.id.iv_gift_3);
-        ibPublishCoreKeyboard = (ImageButton) newsLayout.findViewById(R.id.ib_publish_core_keyboard);
+        ivHeadpic3 = (ImageView) mNewsLayout.findViewById(R.id.iv_headpic3);
+        tvName3 = (TextView) mNewsLayout.findViewById(R.id.tv_name3);
+        tvDes3 = (TextView) mNewsLayout.findViewById(R.id.tv_des3);
+        tvGoldNums3 = (TextView) mNewsLayout.findViewById(R.id.tv_gold_nums3);
+        llGitf3 = (AutoLinearLayout) mNewsLayout.findViewById(R.id.ll_gitf3);
+        ivHeadpic2 = (ImageView) mNewsLayout.findViewById(R.id.iv_headpic2);
+        tvName2 = (TextView) mNewsLayout.findViewById(R.id.tv_name2);
+        tvDes2 = (TextView) mNewsLayout.findViewById(R.id.tv_des2);
+        tvGoldNums2 = (TextView) mNewsLayout.findViewById(R.id.tv_gold_nums2);
+        llGitf2 = (AutoLinearLayout) mNewsLayout.findViewById(R.id.ll_gitf2);
+        ivHeadpic1 = (ImageView) mNewsLayout.findViewById(R.id.iv_headpic1);
+        tvName1 = (TextView) mNewsLayout.findViewById(R.id.tv_name1);
+        tvDes1 = (TextView) mNewsLayout.findViewById(R.id.tv_des1);
+        tvGoldNums1 = (TextView) mNewsLayout.findViewById(R.id.tv_gold_nums1);
+        llGitf1 = (AutoLinearLayout) mNewsLayout.findViewById(R.id.ll_gitf1);
+        ivGiftVerified3 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_verified3);
+        ivGiftVerified2 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_verified2);
+        ivGiftVerified1 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_verified1);
+        ivGift1 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_1);
+        ivGift2 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_2);
+        ivGift3 = (ImageView) mNewsLayout.findViewById(R.id.iv_gift_3);
+        ibPublishCoreKeyboard = (ImageButton) mNewsLayout.findViewById(R.id.ib_publish_core_keyboard);
         ibPublishCoreKeyboard.setOnClickListener(this);
-        mPollIb = (ImageButton) newsLayout.findViewById(R.id.ib_publish_core_poll);
+        mPollIb = (ImageButton) mNewsLayout.findViewById(R.id.ib_publish_core_poll);
         mPollIb.setOnClickListener(this);
-        tvVoteKey1 = (TextView) newsLayout.findViewById(R.id.tv_option_key1);
-        tvVoteKey2 = (TextView) newsLayout.findViewById(R.id.tv_option_key2);
-        tvVoteKey3 = (TextView) newsLayout.findViewById(R.id.tv_option_key3);
-        mFilterIV = (ImageView) newsLayout.findViewById(R.id.ib_publish_core_filter);
+        tvVoteKey1 = (TextView) mNewsLayout.findViewById(R.id.tv_option_key1);
+        tvVoteKey2 = (TextView) mNewsLayout.findViewById(R.id.tv_option_key2);
+        tvVoteKey3 = (TextView) mNewsLayout.findViewById(R.id.tv_option_key3);
+        mFilterIV = (ImageView) mNewsLayout.findViewById(R.id.ib_publish_core_filter);
         mFilterIV.setOnClickListener(this);
-        mGiftButton = (ImageButton) newsLayout.findViewById(R.id.ib_publish_core_gift);
+        mGiftButton = (ImageButton) mNewsLayout.findViewById(R.id.ib_publish_core_gift);
         mGiftButton.setOnClickListener(this);
-        mGiftSendButton = (ImageButton) newsLayout.findViewById(R.id.ib_publish_core_gift_send);
+        mGiftSendButton = (ImageButton) mNewsLayout.findViewById(R.id.ib_publish_core_gift_send);
         mGiftSendButton.setOnClickListener(this);
-        mVoteShowContainerRl = (AutoRelativeLayout) newsLayout.findViewById(R.id.rl_publish_core_vote_show);
-        mFilterNameTv = (TextView) newsLayout.findViewById(R.id.tv_publish_core_filter_name);
-        newsLayout.findViewById(R.id.ib_publish_core_share).setOnClickListener(this);
-        newsLayout.findViewById(R.id.ib_publish_core_receive_list).setOnClickListener(this);
+        mVoteShowContainerRl = (AutoRelativeLayout) mNewsLayout.findViewById(R.id.rl_publish_core_vote_show);
+        mFilterNameTv = (TextView) mNewsLayout.findViewById(R.id.tv_publish_core_filter_name);
+        mNewsLayout.findViewById(R.id.ib_publish_core_share).setOnClickListener(this);
+        mNewsLayout.findViewById(R.id.ib_publish_core_receive_list).setOnClickListener(this);
 
 
-        return newsLayout;
+        return mNewsLayout;
     }
 
     /**
@@ -416,22 +420,23 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
          * 把自己的用户信息加入到缓存中，防止请求网络查询
          */
         mUserMessageCach.put(ZhiboApplication.getUserInfo().usid, ZhiboApplication.getUserInfo());
-        data = getData();//是充直播页面进来
+        mPresenterData = getData();//是充直播页面进来
 
-        if (data == null) {
+        if (mPresenterData == null) {
             presenterUser = getUser();//重搜索页面进入
             if (presenterUser == null) {
                 presenterUser = new UserInfo(new Icon());
             }
         } else {
             presenterUser = new UserInfo();
-            if (data.user != null) {
-                presenterUser.uid = data.user.uid;
-                presenterUser.usid = data.user.usid;
-                presenterUser.uname = data.user.uname;
-                presenterUser.avatar = data.user.avatar;
+            if (mPresenterData.user != null) {
+                presenterUser.uid = mPresenterData.user.uid;
+                presenterUser.usid = mPresenterData.user.usid;
+                presenterUser.uname = mPresenterData.user.uname;
+                presenterUser.avatar = mPresenterData.user.avatar;
+                presenterUser.is_verified = mPresenterData.user.is_verified;
             }
-            presenterUser.location = data.stream.location;
+            presenterUser.location = mPresenterData.stream.location;
         }
 
 
@@ -481,11 +486,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void initGiftsView() {
 
-        mGiftSheet = new SweetSheet((ViewGroup) newsLayout);
-        list = mPresenter.getGiftPic(getContext());
-        mGiftSheet.setMenuList(list);
-        vpd = new ViewPagerDelegate(COLUMN_NUMS);
-        mGiftSheet.setDelegate(vpd);
+        mGiftSheet = new SweetSheet((ViewGroup) mNewsLayout);
+        mGiftList = mPresenter.getGiftPic(getContext());
+        mGiftSheet.setMenuList(mGiftList);
+        mPagerDelegate = new ViewPagerDelegate(COLUMN_NUMS);
+        mGiftSheet.setDelegate(mPagerDelegate);
         mGiftSheet.setBackgroundEffect(new DimEffect(0.2f));
         mGiftSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
             @Override
@@ -505,14 +510,14 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         });
 
-        vpd.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
-        vpd.setOnBuyGoldClickListener(new ViewPagerDelegate.OnBuyGoldClickListener() {
+        mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
+        mPagerDelegate.setOnBuyGoldClickListener(new ViewPagerDelegate.OnBuyGoldClickListener() {
             @Override
             public void onBuyGoldClick() {
                 goCharge();
             }
         });
-        vpd.setOnSendGiftClickListener(new ViewPagerDelegate.OnSendGiftClickListener() {
+        mPagerDelegate.setOnSendGiftClickListener(new ViewPagerDelegate.OnSendGiftClickListener() {
             @Override
             public void onSendGiftClick() {
                 doSendGift();
@@ -528,11 +533,11 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * 送礼物
      */
     private void doSendGift() {
-        if (lastposiotn == -1) {
+        if (mLastposiotn == -1) {
             UiUtils.makeText(getString(R.string.str_please_choose_gift));
             return;
         }
-        MenuEntity meut = list.get(lastposiotn);
+        MenuEntity meut = mGiftList.get(mLastposiotn);
 
         if (ZhiboApplication.getUserInfo().gold < meut.gold) {
             UiUtils.makeText(getString(R.string.str_gold_not_enough));
@@ -558,13 +563,13 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
          */
 
 
-        if (lastposiotn != -1) {
-            list.get(lastposiotn).isChecked = false;
+        if (mLastposiotn != -1) {
+            mGiftList.get(mLastposiotn).isChecked = false;
         }
-        list.get(position).isChecked = true;
+        mGiftList.get(position).isChecked = true;
 
-        lastposiotn = position;
-        vpd.setSendBtEnable(true);
+        mLastposiotn = position;
+        mPagerDelegate.setSendBtEnable(true);
     }
 
     /**
@@ -779,7 +784,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (!TextUtils.isEmpty(presenterUser.location)) {
             tvPresenterEnglishname.setText(presenterUser.location);
         } else {
-            tvPresenterEnglishname.setText("火星");
+            tvPresenterEnglishname.setText(R.string.mars);
         }
         ivPresenteVerified.setVisibility(presenterUser.is_verified == 1 ? View.VISIBLE : View.GONE);
 
@@ -804,8 +809,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     private void clickBlank() {
         hidekeyboard();//隐藏软键盘
-        if (!flag && System.currentTimeMillis() - last_zan_click_time > DELAY_ZAN_TIME) {//点赞效果
-            last_zan_click_time = System.currentTimeMillis();
+        if (!flag && System.currentTimeMillis() - mLastZanClickTime > DELAY_ZAN_TIME) {//点赞效果
+            mLastZanClickTime = System.currentTimeMillis();
             mPresenter.sendZan(mFavorLayout.getSelfColor() + 200);//保证和常量一直，所以+200
             mZans.add(new ZanTag(mFavorLayout.getSelfColor(), true));
         }
@@ -858,7 +863,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     private void showGift() {
         if (!mMessages.isEmpty()) {
             Message tmp = mMessages.poll();
-            boolean isVote = (tmp.ext.customID == VoteManager.MESSAGE_VOTE_RECEIVED ? true : false);//true:收到的投票
+            boolean isVote = (tmp.ext.customID == VoteManager.MESSAGE_VOTE_RECEIVED);//true:收到的投票
             UserInfo userInfo = mUserMessageCach.get(tmp.ext.ZBUSID);
             ZBGift gift = null;
             OptionDetail detail = null;
@@ -890,7 +895,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     tvDes1.setText(gift.name);
                     tvGoldNums1.setVisibility(View.VISIBLE);
                 }
-                tvGoldNums1.setText("x" + gift.gold);
+                tvGoldNums1.setText(String.format(getString(R.string.x_replace), gift.gold));
                 mEndStreamJson.data.gold += gift.gold;
                 Anim.showGiftAnimate(llGitf1, tvVoteKey1, getActivity());
                 llGitf1.setVisibility(View.VISIBLE);
@@ -907,7 +912,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
                 if (isVote && null != detail) {
                     tvVoteKey1.setVisibility(View.VISIBLE);
-                    tvVoteKey1.setText("投" + detail.getVote_key());
+                    tvVoteKey1.setText(String.format(getString(R.string.cast_replace), detail.getVote_key()));
                 }
 
                 return;
@@ -923,7 +928,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     tvGoldNums2.setVisibility(View.VISIBLE);
                     tvDes2.setText(gift.name);
                 }
-                tvGoldNums2.setText("x" + gift.gold);
+                tvGoldNums2.setText(String.format(getString(R.string.x_replace), gift.gold));
                 mEndStreamJson.data.gold += gift.gold;
                 Anim.showGiftAnimate(llGitf2, tvVoteKey2, getActivity());
                 ivGiftVerified2.setVisibility(userInfo.is_verified == 1 ? View.VISIBLE : View.GONE);
@@ -941,7 +946,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
                 if (isVote && null != detail) {
                     tvVoteKey2.setVisibility(View.VISIBLE);
-                    tvVoteKey2.setText("投" + detail.getVote_key());
+                    tvVoteKey2.setText(String.format(getString(R.string.cast_replace), detail.getVote_key()));
                 }
                 return;
             }
@@ -957,7 +962,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                     tvDes3.setText(gift.name);
                 }
                 ivGiftVerified3.setVisibility(userInfo.is_verified == 1 ? View.VISIBLE : View.GONE);
-                tvGoldNums3.setText("x" + gift.gold);
+                tvGoldNums3.setText(String.format(getString(R.string.x_replace), gift.gold));
                 mEndStreamJson.data.gold += gift.gold;
                 Anim.showGiftAnimate(llGitf3, tvVoteKey3, getActivity());
                 llGitf3.setVisibility(View.VISIBLE);
@@ -973,7 +978,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 }
                 if (isVote && null != detail) {
                     tvVoteKey3.setVisibility(View.VISIBLE);
-                    tvVoteKey3.setText("投" + detail.getVote_key());
+                    tvVoteKey3.setText(String.format(getString(R.string.cast_replace), detail.getVote_key()));
                 }
                 return;
             }
@@ -1127,8 +1132,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      */
     @Override
     public void updatedGold() {
-        if (vpd != null) {
-            vpd.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
+        if (mPagerDelegate != null) {
+            mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
         }
     }
 
@@ -1151,7 +1156,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 break;
             case GoldService.EXCHANGE_TYPE_ZAN_PRESENTER:
                 break;
-
+            default:
         }
 
     }
@@ -1161,7 +1166,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
      * 送礼物
      */
     private void sendGiftSuccessAndShow() {
-        final MenuEntity meut = list.get(lastposiotn);
+        final MenuEntity meut = mGiftList.get(mLastposiotn);
         final GiftMessage giftMessage = new GiftMessage(meut.gift_code, 1);
         mPresenter.sendGiftMessage(DataDealUitls.transBean2Map(giftMessage), meut.gift_code, 1 + "", new OnCommonCallbackListener() {
             @Override
@@ -1237,8 +1242,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
     @Override
     public void setbanneded(boolean isBanneded, long gag) {
-        this.isBanneded = isBanneded;
-        this.gag = gag;
+        this.mIsBanneded = isBanneded;
+        this.mGag = gag;
     }
 
 
@@ -1283,7 +1288,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     }
 
     private void disableMsg() {
-        if (isBanneded) {
+        if (mIsBanneded) {
             return;
         }
         hidekeyboard();//隐藏软键盘
@@ -1302,9 +1307,8 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     public void giftRankrefresh(BaseJson apiList, boolean isMore) {
         SearchResult[] datas = (SearchResult[]) apiList.data;
         mGiftranks = new ArrayList<>();
-        for (SearchResult data : datas) {//添加数据
-            mGiftranks.add(data);
-        }
+        //添加数据
+        mGiftranks.addAll(Arrays.asList(datas));
         int size = mGiftranks.size();
         if (size == 0) {
             rlPublishCorePresentGiftrank.setVisibility(View.INVISIBLE);
@@ -1354,9 +1358,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_intro)).setText(
                                     TextUtils.isEmpty(userInfotmp.intro) ? getString(R.string.str_default_intro) : userInfotmp.intro
                             );
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(userInfotmp.zan_count + "");
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_fans)).setText(userInfotmp.fans_count + "");
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_attention)).setText(userInfotmp.follow_count + "");
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(String.valueOf(userInfotmp.zan_count));
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_fans)).setText(String.valueOf(userInfotmp.fans_count));
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_attention)).setText(String.valueOf(userInfotmp.follow_count));
                             if (currentView == PUBLISH_VIEW && userInfotmp.usid != ZhiboApplication.getUserInfo().usid) {
                                 contentView.findViewById(R.id.bt_userinfo_set).setVisibility(View.VISIBLE);
                                 contentView.findViewById(R.id.bt_userinfo_set).setOnClickListener(new View.OnClickListener() {
@@ -1368,7 +1372,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                                             mBottomPopView = LayoutInflater.from(getActivity())
                                                     .inflate(R.layout.zb_pop_bottom_choosebuttom, null);
                                         }
-                                        BottomPop = CustomPopupWindow.newInstance(mBottomPopView, newsLayout
+                                        BottomPop = CustomPopupWindow.newInstance(mBottomPopView, mNewsLayout
                                                 , new CustomPopupWindow.CustomPopupWindowListener() {
                                                     @Override
                                                     public void initPopupView(View contentView) {
@@ -1499,10 +1503,12 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                             userMessage1.msg.txt = getString(R.string.str_follow_presenter);
                             addChat(userMessage1);
                             break;
+                        default:
 
                     }
 
                     break;
+                default:
             }
         }
 
@@ -1524,7 +1530,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 addChat(userMessage);
                 mEditText.setText("");//清除聊天框
             } else {//发送失败
-                showMessage("发送失败~");
+                showMessage(getString(R.string.send_message_fail));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1759,7 +1765,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         super.onDestroy();
         endVote();
         mPresenter.onDestroy();
-        isExit = true;
+        mIsExit = true;
         mUIHandler.removeCallbacksAndMessages(null);
         mUIHandler = null;
         mHandler.removeCallbacksAndMessages(null);
@@ -1847,7 +1853,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         /**
          * 查看是否被禁言
          */
-        if (isBanneded && gag != -1) {
+        if (mIsBanneded && mGag != -1) {
             disableMsg();
         }
 
@@ -1898,13 +1904,13 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 @Override
                 public void vote(String optionKey) {
                     isVote = true;
-                    if (lastposiotn != -1) {
-                        vpd.getViewPager().findViewWithTag(lastposiotn)
+                    if (mLastposiotn != -1) {
+                        mPagerDelegate.getViewPager().findViewWithTag(mLastposiotn)
                                 .setBackgroundDrawable(null);
-                        lastposiotn = -1;
+                        mLastposiotn = -1;
                     }
-                    vpd.setSendBtText("投票");
-                    vpd.setSendBtEnable(false);
+                    mPagerDelegate.setSendBtText(getString(R.string.vote));
+                    mPagerDelegate.setSendBtEnable(false);
                     mGiftSheet.toggle();//弹出礼物框
                 }
             });
@@ -1966,9 +1972,9 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             @Override
             public void click(VoteOption option, VoteInfo voteInfo) {
                 Log.v("taglei", "addVoteOnView  click...");
-                if (lastposiotn != -1) {
-                    list.get(lastposiotn).isChecked = false;
-                    lastposiotn = -1;
+                if (mLastposiotn != -1) {
+                    mGiftList.get(mLastposiotn).isChecked = false;
+                    mLastposiotn = -1;
 
                 }
                 if (null != mVoteOptionPop) {
@@ -2200,12 +2206,12 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
             /**
              * 清除上次选择状态,选中当前
              */
-            if (lastposiotn != -1) {
-                list.get(lastposiotn).isChecked = false;
-                lastposiotn = -1;
+            if (mLastposiotn != -1) {
+                mGiftList.get(mLastposiotn).isChecked = false;
+                mLastposiotn = -1;
             }
-            vpd.setSendBtText("送出");
-            vpd.setSendBtEnable(false);
+            mPagerDelegate.setSendBtText("送出");
+            mPagerDelegate.setSendBtEnable(false);
             mGiftSheet.toggle();
         } else if (view.getId() == R.id.rl_publish_core_present_giftrank) {
             /**
