@@ -85,7 +85,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
 // 设计图已经去掉了
 //        tvRankGoldItemDetailTitle.setText(TextUtils.isEmpty(data.user.intro) ? UiUtils.getString("str_default_intro") : data.user.intro
 //        );
-        tvRankGoldItemGoldeSent.setText("x " + data.user.getGold());
+        tvRankGoldItemGoldeSent.setText("x " + data.user.getDisPlayGold());
         tvRankGoldItemRank.setText(this.getPosition() + 1 + "");
         mVerifiedIV.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
         if (this.getPosition() < 3) {
@@ -97,7 +97,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
             btRankGoldItemAttention.setVisibility(View.INVISIBLE);
         else {
             btRankGoldItemAttention.setVisibility(View.VISIBLE);
-            isFollow = data.user.is_follow == 1 ? true : false;//是否关注
+            isFollow = data.user.is_follow == 1;//是否关注
             setFollow(isFollow);
         }
 

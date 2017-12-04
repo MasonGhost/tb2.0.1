@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -241,7 +240,7 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
                     ((TextView) contentView.findViewById(R.id.tv_userinfo_intro)).setText(
                             TextUtils.isEmpty(userInfotmp.intro) ? getString(R.string.str_default_intro) : userInfotmp.intro
                     );
-                    ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(userInfotmp.zan_count + "");
+                    ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(userInfotmp.zan_remain + "");
                     ((TextView) contentView.findViewById(R.id.tv_userinfo_fans)).setText(userInfotmp.fans_count + "");
                     ((TextView) contentView.findViewById(R.id.tv_userinfo_attention)).setText(userInfotmp.follow_count + "");
                     contentView.findViewById(R.id.bt_userinfo_talk).setOnClickListener(new View.OnClickListener() {

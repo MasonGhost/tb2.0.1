@@ -11,7 +11,6 @@ import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
 import com.zhiyicx.zhibolibrary.model.entity.StarExchangeList;
 import com.zhiyicx.zhibolibrary.model.entity.TradeOrder;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
-import com.zhiyicx.zhibolibrary.model.impl.PublishCoreModelImpl;
 import com.zhiyicx.zhibolibrary.model.impl.UserInfoModelImpl;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
 import com.zhiyicx.zhibolibrary.ui.view.StarExchangeView;
@@ -283,7 +282,7 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
         ZhiboApplication.userInfo.setGold(data.getGold());
         ZhiboApplication.userInfo.follow_count = data.follow_count;
         ZhiboApplication.userInfo.fans_count = data.fans_count;
-        ZhiboApplication.userInfo.zan_count = data.zan_count;
+        ZhiboApplication.userInfo.zan_remain = data.zan_remain;
         mRootView.updatedGold();//刷新金币信息
         mRootView.updateStar();//刷新赞的信息
     }

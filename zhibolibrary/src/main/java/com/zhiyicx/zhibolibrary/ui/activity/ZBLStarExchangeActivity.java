@@ -45,7 +45,9 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
         mStarTV = (TextView) findViewById(R.id.tv_star_count);
         mRegularLL = (LinearLayout) findViewById(R.id.ll_star_exchange_regular);
         findViewById(R.id.rl_star_exchange_back).setOnClickListener(this);
-        findViewById(R.id.rl_star_history).setOnClickListener(this);
+        // 记录和ts+合并故不需要了
+        findViewById(R.id.rl_star_history).setVisibility(View.GONE);
+//        findViewById(R.id.rl_star_history).setOnClickListener(this);
     }
 
     @Override
@@ -119,7 +121,7 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
      * @param s
      */
     private void checkStar(StarExchangeList.StarExchange s) {
-        if (ZhiboApplication.userInfo.zan_count < s.zan) {
+        if (ZhiboApplication.userInfo.zan_remain < s.zan) {
             showMessage("您的赞数量不足~");
             return;
         }
@@ -142,12 +144,12 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
 
     @Override
     public void updatedGold() {
-        mGoldTV.setText(ZhiboApplication.userInfo.getGold() + "");
+        mGoldTV.setText(ZhiboApplication.userInfo.getDisPlayGold());
     }
 
     @Override
     public void updateStar() {
-        mStarTV.setText(ZhiboApplication.userInfo.zan_count + "");
+        mStarTV.setText(ZhiboApplication.userInfo.zan_remain + "");
     }
 
 
@@ -192,10 +194,9 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
         if (v.getId() == R.id.rl_star_exchange_back) {
             killMyself();
         } else if (v.getId() == R.id.rl_star_history) {
-            // 记录和ts+合并故不需要了
-//            Intent intent = new Intent(ZBLStarExchangeActivity.this, ZBLGoldHistoryActivity.class);
-//            intent.putExtra("type", GoldService.HISTORY_TYPE_ZAN);
-//            startActivity(intent);
+            Intent intent = new Intent(ZBLStarExchangeActivity.this, ZBLGoldHistoryActivity.class);
+            intent.putExtra("type", GoldService.HISTORY_TYPE_ZAN);
+            startActivity(intent);
         }
     }
 }

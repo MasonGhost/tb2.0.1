@@ -60,7 +60,7 @@ public class RankListHolder extends ZBLBaseHolder<SearchResult> {
 //        );
 
         mStarTV.setText("获赞：" + data.user.fans_count);
-        mGoldTV.setText("积分：" + data.user.getGold());
+        mGoldTV.setText("积分：" + data.user.getDisPlayGold());
         mRankTV.setText(this.getPosition() + 1 + "");
 //        mVerifiedIV.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
         if (this.getPosition() < 3) {

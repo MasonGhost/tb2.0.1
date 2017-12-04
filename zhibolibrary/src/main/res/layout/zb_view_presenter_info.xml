@@ -9,7 +9,7 @@
     android:layout_marginTop="30px"
     android:background="@drawable/shape_solid_corner_circle_black"
     android:orientation="horizontal"
-    android:paddingLeft="-1.6dp"
+    android:paddingLeft="-1dp"
     android:paddingRight="16dp">
 
     <com.zhy.autolayout.AutoRelativeLayout

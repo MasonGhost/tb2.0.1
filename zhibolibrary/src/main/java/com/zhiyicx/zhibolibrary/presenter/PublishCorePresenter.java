@@ -448,7 +448,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
         ZhiboApplication.getUserInfo().setGold(data.getGold());
         ZhiboApplication.getUserInfo().follow_count = data.follow_count;
         ZhiboApplication.getUserInfo().fans_count = data.fans_count;
-        ZhiboApplication.getUserInfo().zan_count = data.zan_count;
+        ZhiboApplication.getUserInfo().zan_remain = data.zan_remain;
         mRootView.updatedGold();//刷新金币信息
     }
 

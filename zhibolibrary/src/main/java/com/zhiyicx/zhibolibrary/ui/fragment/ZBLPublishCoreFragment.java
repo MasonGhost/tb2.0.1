@@ -520,7 +520,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         });
 
-        mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().getGold() + "");
+        mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().getDisPlayGold() + "");
         mPagerDelegate.setOnBuyGoldClickListener(new ViewPagerDelegate.OnBuyGoldClickListener() {
             @Override
             public void onBuyGoldClick() {
@@ -1134,7 +1134,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     @Override
     public void updatedGold() {
         if (mPagerDelegate != null) {
-            mPagerDelegate.setTvGlodNumText(String.valueOf(ZhiboApplication.getUserInfo().getGold()));
+            mPagerDelegate.setTvGlodNumText(String.valueOf(ZhiboApplication.getUserInfo().getDisPlayGold()));
         }
     }
 
@@ -1319,6 +1319,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         if (size > RANK_SHOW_NUM) {
             size = RANK_SHOW_NUM;
         }
+        rlPubLishcoreRanks.removeAllViews();
         for (int i = 0; i < size; i++) {
             RankHeadView iv = new RankHeadView(getActivity());
             iv.setData(mGiftranks.get(i));
@@ -1360,7 +1361,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_intro)).setText(
                                     TextUtils.isEmpty(userInfotmp.intro) ? getString(R.string.str_default_intro) : userInfotmp.intro
                             );
-                            ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(String.valueOf(userInfotmp.zan_count));
+                            ((TextView) contentView.findViewById(R.id.tv_userinfo_zan_nums)).setText(String.valueOf(userInfotmp.zan_remain));
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_fans)).setText(String.valueOf(userInfotmp.fans_count));
                             ((TextView) contentView.findViewById(R.id.tv_userinfo_attention)).setText(String.valueOf(userInfotmp.follow_count));
                             if (currentView == PUBLISH_VIEW && userInfotmp.usid != ZhiboApplication.getUserInfo().usid) {

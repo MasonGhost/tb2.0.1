@@ -1,6 +1,13 @@
 package com.zhiyicx.zhibolibrary.model.entity;
 
+import com.google.gson.Gson;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.config.SystemConfig;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
+import com.zhiyicx.zhibolibrary.util.UiUtils;
 
 import java.io.Serializable;
 
@@ -9,13 +16,13 @@ import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.STR_SHARE_NAME;
 import static com.zhiyicx.zhibolibrary.model.api.ZBLApi.STR_SHARE_USID;
 
 /**
- *
  * @author zhiyicx
  * @date 2016/3/15
  */
 public class UserInfo implements Serializable {
     private static final long serialVersionUID = 636871008;
-
+    private static final String SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS = "system_bootstrappers"; // 和 app 下的SharePreferenceTagConfig
+    // .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS 一样
     public String password;
     public String uid;
     public String usid;
@@ -33,6 +40,7 @@ public class UserInfo implements Serializable {
     public int follow_count;
     public int fans_count;
     public int zan_count;
+    public int zan_remain;
     public int is_follow;
     public String auth_accesskey;
     public String auth_secretkey;
@@ -61,7 +69,7 @@ public class UserInfo implements Serializable {
                 ", gold=" + getGold() +
                 ", follow_count=" + follow_count +
                 ", fans_count=" + fans_count +
-                ", zan_count=" + zan_count +
+                ", zan_remain=" + zan_remain +
                 ", is_follow=" + is_follow +
                 ", auth_accesskey='" + auth_accesskey + '\'' +
                 ", auth_secretkey='" + auth_secretkey + '\'' +
@@ -124,6 +132,25 @@ public class UserInfo implements Serializable {
         return shareContent;
     }
 
+    /**
+     * 获取配置信息
+     *
+     * @return
+     */
+    public SystemConfigBean getAppConfigInfoFromLocal() {
+        SystemConfigBean systemConfigBean = null;
+        try {
+            systemConfigBean = SharePreferenceUtils.getObject(UiUtils.getContext(),
+                    SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        } catch (Exception ignored) {
+        }
+        if (systemConfigBean == null) { // 读取本地默认配置
+            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+        }
+        return systemConfigBean;
+    }
+
+
     public int getGold() {
         return gold;
     }
@@ -131,4 +158,39 @@ public class UserInfo implements Serializable {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
+    /**
+     * 显示金币信息带单位
+     *
+     * @return
+     */
+    public String getDisPlayGoldWithuUnit() {
+        try {
+            return UiUtils.getResources().getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(gold,
+                    getAppConfigInfoFromLocal()
+                            .getWallet_ratio())
+                    , UiUtils.getString(R.string.str_gold));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+
+    }
+
+    /**
+     * 显示金币信息，不带单位
+     *
+     * @return
+     */
+    public String getDisPlayGold() {
+        try {
+            return UiUtils.getResources().getString(R.string.money_format, PayConfig.realCurrency2GameCurrency(gold, getAppConfigInfoFromLocal()
+                    .getWallet_ratio()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+
+    }
+
 }
