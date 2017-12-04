@@ -456,6 +456,7 @@
                     android:layout_height="70px"
                     android:enabled="false"
                     android:layout_marginLeft="15px"
+                    android:textColor="@color/white"
                     android:background="@drawable/selector_corner_send_button"
                     android:text="发送" />
 
