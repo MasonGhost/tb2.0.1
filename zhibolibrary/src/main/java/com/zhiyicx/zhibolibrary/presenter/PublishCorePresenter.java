@@ -55,6 +55,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -66,18 +67,14 @@ import rx.schedulers.Schedulers;
  * Created by jess on 16/5/11.
  */
 @ActivityScope
-public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener, OnIMMessageTimeOutListener,OnShareCallbackListener {
+public class PublishCorePresenter extends BasePresenter<PublishCoreModel, PublishCoreView> implements OnImListener, OnImStatusListener,
+        OnIMMessageTimeOutListener, OnShareCallbackListener {
     private Subscription mSubscription;
-    private Subscription mVoteSenderSubscirption;
     private Subscription mGiftRank;
     private Subscription mUserInfoSubscription;
-    private Subscription mExchangeSubscription;
     private Subscription mUserinfoSubscription;
-    private Subscription mOrderSubscription;
     private Subscription mRecomListSubscription;
     private UmengSharePolicyImpl mSharePolicy;
-    private String mTokenGift = "";
-    private String mTokenZan = "";
     private BaseJson<SearchResult[]> mApiList;//礼物排行榜数据
     private boolean isJoinedChatRoom = true;//主播是否进入聊天室
     private SearchResult[] mRecommendDatas;//推荐直播数据
@@ -100,8 +97,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
             ZBStreamingClient.getInstance().setOnImListener(this);
             ZBStreamingClient.getInstance().setOnImStatusListener(this);
             ZBStreamingClient.getInstance().setOnIMMessageTimeOutListener(this);
-        }
-        else {
+        } else {
             ZBPlayClient.getInstance().setOnImListener(this);
             ZBPlayClient.getInstance().setOnImStatusListener(this);
             ZBPlayClient.getInstance().setOnIMMessageTimeOutListener(this);
@@ -150,8 +146,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                                 e.printStackTrace();
                                 mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
                             }
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -178,88 +173,59 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      * @param usid
      */
     public void getList(final boolean isMore, int mPage, String usid) {
+        if (mGiftRank != null && !mGiftRank.isUnsubscribed()) {
+            mGiftRank.unsubscribe();
+        }
         mGiftRank = mModel.getGiftRank(
-                usid + "", mPage).subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
+                usid + "", mPage)
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<BaseJson<SearchResult[]>, Observable<Boolean>>() {
                     @Override
-                    public void call() {
-                        if (!isMore) {
+                    public Observable<Boolean> call(BaseJson<SearchResult[]> apiList) {
+                        mApiList = apiList;
+                        if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
+                            /**
+                             * 通过usid获取用户信息
+                             */
+                            StringBuilder usid = new StringBuilder();
+                            for (SearchResult searchResult : mApiList.data) {
+                                usid.append(searchResult.user.usid).append(",");
+                            }
+                            if (usid.length() > 0) {
+                                return mModel.getUsidInfo(usid.toString(), "")
+                                        .map(new Func1<BaseJson<UserInfo[]>, Boolean>() {
+                                            @Override
+                                            public Boolean call(BaseJson<UserInfo[]> baseJson) {
+                                                for (int i = 0; i < baseJson.data.length; i++) {
+                                                    baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                                    mApiList.data[i].user = baseJson.data[i];
+                                                }
+                                                return true;
+                                            }
+                                        });
+                            }
                         }
+                        return Observable.just(false);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(new Action0() {
+                .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call() {
-                        if (!isMore) {
-
+                    public void call(Boolean isSuccess) {
+                        if (isSuccess) {
+                            mRootView.giftRankrefresh(mApiList, isMore);//刷新数据
+                        } else {
+                            mRootView.showMessage(mApiList.message);
                         }
-                    }
-                })
-                .subscribe(new Action1<BaseJson<SearchResult[]>>() {
-                    @Override
-                    public void call(BaseJson<SearchResult[]> apiList) {
-                        getUserInfoFroRankList(apiList, isMore);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         throwable.printStackTrace();
                         mRootView.showMessage(UiUtils.getString("str_net_erro"));//提示用户
-                        if (!isMore) {//隐藏loading
-                        }
                     }
                 });
 
-    }
-
-    /**
-     * 获取礼物排行榜的用户信息
-     *
-     * @param apiList
-     * @param isMore
-     */
-    private void getUserInfoFroRankList(BaseJson<SearchResult[]> apiList, final boolean isMore) {
-        if (apiList.code.equals(ZBLApi.REQUEST_SUCESS)) {
-            mApiList = apiList;
-            /**
-             * 通过usid获取用户信息
-             */
-            String usid = "";
-            for (SearchResult searchResult : mApiList.data) {
-                usid += searchResult.user.usid + ",";
-            }
-
-            if (usid.length() > 0) {
-                usid = usid.substring(0, usid.length() - 1);
-            }
-            if (usid.length() > 0) {
-                mModel.getUsidInfo(usid, "")
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                    @Override
-                    public void call(BaseJson<UserInfo[]> baseJson) {
-                        for (int i = 0; i < baseJson.data.length; i++) {
-                            baseJson.data[i].gold = mApiList.data[i].user.gold;
-                            mApiList.data[i].user = baseJson.data[i];
-                        }
-
-                        mRootView.giftRankrefresh(mApiList, isMore);//刷新数据
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
-
-            }
-
-
-        }
-        else {
-            mRootView.showMessage(apiList.message);
-        }
     }
 
     /**
@@ -278,7 +244,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0() {
+                .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
                         mRootView.setClickable(true, 0);
@@ -292,8 +258,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                             if (apiList.data.length > 0) {
                                 mRootView.updatePresenterInfo(apiList.data[0]);
                             }
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(apiList.message);
                         }
                     }
@@ -414,8 +379,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                     public void call(BaseJson<UserInfo[]> users) {
                         if (users.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             mRootView.saveAndAddChat(users, message);
-                        }
-                        else {
+                        } else {
                             mRootView.showMessage(users.message);
                         }
                     }
@@ -468,8 +432,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void disableSendMsg(long gag) {
         if (gag == 0) {//永久
             mRootView.disableSendMsgEver();
-        }
-        else if (gag > 0) {//时段
+        } else if (gag > 0) {//时段
             mRootView.disableSendMsgSomeTime(gag);
 
         }
@@ -500,37 +463,36 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     private void lauchEnd(SearchResult[] datas, final String uid, final int viewcount) throws Exception {
 
         mRecommendDatas = datas;
-            /**
-             * 通过usid获取用户信息
-             */
-            String usid = "";
-            for (SearchResult searchResult : datas) {
-                usid += searchResult.user.usid + ",";
-            }
-            if (usid.length() > 0) {
-                usid = usid.substring(0, usid.length() - 1);
-            }
-            if (usid.length() > 0) {
-                mUserinfoSubscription = mModel.getUsidInfo(usid, "")
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
-                            @Override
-                            public void call(BaseJson<UserInfo[]> baseJson) {
-                                for (int i = 0; i < baseJson.data.length; i++) {
-                                    mRecommendDatas[i].user = baseJson.data[i];
-                                }
-                                doEnd(mRecommendDatas, uid, viewcount);
+        /**
+         * 通过usid获取用户信息
+         */
+        String usid = "";
+        for (SearchResult searchResult : datas) {
+            usid += searchResult.user.usid + ",";
+        }
+        if (usid.length() > 0) {
+            usid = usid.substring(0, usid.length() - 1);
+        }
+        if (usid.length() > 0) {
+            mUserinfoSubscription = mModel.getUsidInfo(usid, "")
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<BaseJson<UserInfo[]>>() {
+                        @Override
+                        public void call(BaseJson<UserInfo[]> baseJson) {
+                            for (int i = 0; i < baseJson.data.length; i++) {
+                                mRecommendDatas[i].user = baseJson.data[i];
                             }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                throwable.printStackTrace();
-                                doEnd(new SearchResult[]{}, uid, viewcount);
-                            }
-                        });
-            }
-            else {
-                doEnd(mRecommendDatas, uid, viewcount);
-            }
+                            doEnd(mRecommendDatas, uid, viewcount);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            doEnd(new SearchResult[]{}, uid, viewcount);
+                        }
+                    });
+        } else {
+            doEnd(mRecommendDatas, uid, viewcount);
+        }
     }
 
     private void doEnd(SearchResult[] datas, String uid, int viewcount) {
@@ -553,14 +515,14 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
         mSharePolicy.setShareContent(UserInfo.getShareContentByUserInfo(presenterUser));
 
         if (mSharePolicy.getShareContent() == null || mSharePolicy.getShareContent().getImage() == null) {
-            mSharePolicy.showShare(((Fragment)mRootView).getActivity());
+            mSharePolicy.showShare(((Fragment) mRootView).getActivity());
 
         } else {
             Glide.with(UiUtils.getContext()).load(mSharePolicy.getShareContent().getImage()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     mSharePolicy.getShareContent().setBitmap(resource);
-                    mSharePolicy.showShare(((Fragment)mRootView).getActivity());
+                    mSharePolicy.showShare(((Fragment) mRootView).getActivity());
                 }
             });
         }
@@ -589,12 +551,9 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
         unSubscribe(mSubscription);
         unSubscribe(mGiftRank);
         unSubscribe(mUserInfoSubscription);
-        unSubscribe(mExchangeSubscription);
-        unSubscribe(mOrderSubscription);
         unSubscribe(mRecomListSubscription);
-        unSubscribe(mVoteSenderSubscirption);
         unSubscribe(mUserinfoSubscription);
-        if(mSharePolicy!=null) {
+        if (mSharePolicy != null) {
             mSharePolicy.setOnShareCallbackListener(null);
             mSharePolicy = null;
         }
@@ -712,7 +671,6 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     @Override
     public void onMessageACK(Message message) {
-       LogUtils.d("----ACK-----message = " + message.toString());
         if (message.type == MessageType.MESSAGE_TYPE_TEXT) {
             mRootView.addSelfChat(true, message);
         }

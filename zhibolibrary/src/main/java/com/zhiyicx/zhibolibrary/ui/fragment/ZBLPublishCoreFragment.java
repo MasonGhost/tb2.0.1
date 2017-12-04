@@ -464,12 +464,19 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         initRecycleView();
 
         initGiftsView();//发送的礼物
-        mPresenter.getList(false, 1, presenterUser.usid); //获取排行榜数据
+        refreshGiftRank();
         mPresenter.initZhiboRules();//添加直播间规则
         initDialog();
         settleView();//布局页面
 
 
+    }
+
+    /**
+     * 刷新礼物排行榜
+     */
+    private void refreshGiftRank() {
+        mPresenter.getList(false, 1, presenterUser.usid); //获取排行榜数据
     }
 
     @Override
@@ -1177,6 +1184,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 mMessages.add(msg);
                 mPresenter.refreshGoldCountReduce(meut.gold);
                 mHandler.sendEmptyMessage(MSG_REFRESHGOLD);
+                refreshGiftRank();
             }
 
             @Override
@@ -1685,8 +1693,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         } else {
             mPresenter.getLocalUserInfo(message, "uname,is_verified,avatar");
         }
-
-
+        refreshGiftRank();
     }
 
     /**
