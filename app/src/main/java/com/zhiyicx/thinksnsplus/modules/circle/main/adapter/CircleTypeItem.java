@@ -1,7 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
+import android.graphics.drawable.Drawable;
+
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -40,8 +44,14 @@ public class CircleTypeItem extends BaseCircleItem {
         button.setLeftText(circleInfo.getName());
         button.setRightText(circleInfo.getSummary());
 
-        if (circleInfo.getId() == -2) {
-
+        if (circleInfo.getId() == RECOMMENDCIRCLE) {
+            button.setRightImage(0);
+            Drawable change = button.getContext().getResources().getDrawable(R.mipmap.activity_ico_time);
+            button.getCombinedButtonRightTextView().setCompoundDrawablePadding(ConvertUtils.dp2px(button.getContext(),4));
+            button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(change, null, null, null);
+        } else if (circleInfo.getId() == MYJOINEDCIRCLE) {
+            button.setRightImage(R.mipmap.ic_arrow_smallgrey);
+            button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 
         RxView.clicks(holder.getConvertView())
@@ -50,10 +60,11 @@ public class CircleTypeItem extends BaseCircleItem {
                     if (mCircleItemItemEvent == null) {
                         return;
                     }
-                    if (circleInfo.getId()==BaseCircleItem.MYJOINEDCIRCLE){
+                    if (circleInfo.getId() == BaseCircleItem.MYJOINEDCIRCLE) {
                         mCircleItemItemEvent.toAllJoinedCircle(circleInfo);
+                    } else if (circleInfo.getId() == BaseCircleItem.RECOMMENDCIRCLE) {
+                        mCircleItemItemEvent.changeRecommend();
                     }
-
                 });
     }
 }

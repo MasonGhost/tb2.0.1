@@ -112,6 +112,7 @@ public class CombinationButton extends FrameLayout {
     public void setRightTextColor(int color) {
         mCombinedButtonRightText.setTextColor(color);
     }
+
     public void setLeftTextColor(int color) {
         mCombinedButtonLeftText.setTextColor(color);
     }
@@ -133,6 +134,12 @@ public class CombinationButton extends FrameLayout {
     }
 
     public void setRightImage(int res) {
+        if (res == 0) {
+            mCombinedButtonImgRight.setVisibility(INVISIBLE);
+            return;
+        } else {
+            mCombinedButtonImgRight.setVisibility(VISIBLE);
+        }
         mCombinedButtonImgRight.setImageResource(res);
     }
 }

@@ -108,13 +108,16 @@ public class CircleListItem extends BaseCircleItem {
         circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
         circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(circleSubscribe)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-
+                    if (mCircleItemItemEvent == null) {
+                        return;
+                    }
+                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
                 });
 
         RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mCircleItemItemEvent == null) {
                         return;
@@ -122,7 +125,7 @@ public class CircleListItem extends BaseCircleItem {
                     mCircleItemItemEvent.toCircleDetail(circleInfo);
                 });
         RxView.clicks(holder.getView(R.id.iv_circle_cover))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
 
                 });

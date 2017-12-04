@@ -7,13 +7,13 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @author Jliuer
  * @Date 17/11/22 14:49
  * @Email Jliuer@aliyun.com
- * @Description 
+ * @Description
  */
 public class CircleDetailActivity extends TSActivity<CircleDetailPresenter, CircleDetailFragment> {
 
     @Override
     protected CircleDetailFragment getFragment() {
-        return new CircleDetailFragment();
+        return CircleDetailFragment.newInstance(getIntent().getLongExtra(CircleDetailFragment.CIRCLE_ID, 1));
     }
 
     @Override

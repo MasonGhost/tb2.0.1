@@ -22,7 +22,7 @@ public interface CircleListContract {
     }
 
     interface Presenter extends ITSListPresenter<CircleInfo> {
-
+        void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
     }
 
     interface Repository extends IBaseCircleRepository {

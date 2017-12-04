@@ -30,6 +30,8 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
         void toCircleDetail(CircleInfo circleInfo);
 
         void changeRecommend();
+
+        void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
     }
 
     public CircleItemItemEvent getCircleItemItemEvent() {

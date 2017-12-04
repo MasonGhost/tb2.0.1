@@ -69,7 +69,7 @@ public class CircleInfoGreenDaoImpl extends CommonCacheImpl<CircleInfo> {
 
     @Override
     public void updateSingleData(CircleInfo newData) {
-
+        saveSingleData(newData);
     }
 
     @Override

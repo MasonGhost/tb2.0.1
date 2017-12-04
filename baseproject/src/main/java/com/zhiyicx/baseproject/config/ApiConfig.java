@@ -460,6 +460,28 @@ public class ApiConfig {
     public static final String APP_PATH_GET_ALL_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups";
 
     /**
+     * 圈子个数
+     */
+    public static final String APP_PATH_GET_CIRCLE_COUNT = "api/" + API_VERSION_2 + "/plus-group/groups/count";
+
+    /**
+     * 加入圈子
+     */
+    public static final String APP_PATH_PUT_JOIN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";
+    public static final String APP_PATH_PUT_JOIN_CIRCLE_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s";
+
+    /**
+     * 退出圈子
+     */
+    public static final String APP_PATH_PUT_EXIT_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/exit";
+    public static final String APP_PATH_PUT_EXIT_CIRCLE_FROMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s/exit";
+
+    /**
+     * 设置圈子权限
+     */
+    public static final String APP_PATH_SET_CIRCLE_PERMISSIONS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/permissions";
+
+    /**
      * 创建圈子
      */
     public static final String APP_PATH_CREATE_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups";
@@ -468,6 +490,11 @@ public class ApiConfig {
      * 获取圈子列表
      */
     public static final String APP_PATH_GET_CIRCLELIST = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups ";
+
+    /**
+     * 获取附近圈子列表
+     */
+    public static final String APP_PATH_GET_ROUNDCIRCLE = "api/" + API_VERSION_2 + "/plus-group/round/groups ";
 
     /**
      * 获取圈子详情

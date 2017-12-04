@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
@@ -28,6 +29,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent {
 
     public static final int DATALIMIT = 5;
+    public static final int TITLEVOUNT = 2;
 
     private CircleMainHeader mCircleMainHeader;
 
@@ -112,16 +114,28 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void toAllJoinedCircle(CircleInfo groupInfoBean) {
-
+        if (mListDatas.size() <= TITLEVOUNT) {
+            return;
+        }
     }
 
     @Override
     public void changeRecommend() {
+        if (mListDatas.size() <= TITLEVOUNT) {
+            return;
+        }
+        mPresenter.getRecommendCircle();
+    }
+
+    @Override
+    public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
 
     }
 
     @Override
-    public void toCircleDetail(CircleInfo groupInfoBean) {
-        startActivity(new Intent(getActivity(), CircleDetailActivity.class));
+    public void toCircleDetail(CircleInfo circleInfo) {
+        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
+        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
+        startActivity(intent);
     }
 }

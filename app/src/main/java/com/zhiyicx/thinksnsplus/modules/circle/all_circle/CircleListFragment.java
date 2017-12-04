@@ -1,11 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -17,7 +21,8 @@ import javax.inject.Inject;
  * @email Jliuer@aliyun.com
  * @description
  */
-public class CircleListFragment extends TSListFragment<CircleListContract.Presenter, CircleInfo> implements CircleListContract.View {
+public class CircleListFragment extends TSListFragment<CircleListContract.Presenter, CircleInfo>
+        implements CircleListContract.View, BaseCircleItem.CircleItemItemEvent {
 
     public static final String CIRCLE_TYPE = "circle_type";
 
@@ -59,7 +64,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem());
+        adapter.addItemViewDelegate(new CircleListItem(this));
         return adapter;
     }
 
@@ -71,5 +76,27 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
                 .circleListPresenterModule(new CircleListPresenterModule(this))
                 .build().inject(this);
         super.initData();
+    }
+
+    @Override
+    public void toAllJoinedCircle(CircleInfo circleInfo) {
+
+    }
+
+    @Override
+    public void toCircleDetail(CircleInfo circleInfo) {
+        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
+        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void changeRecommend() {
+
+    }
+
+    @Override
+    public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
+        mPresenter.dealCircleJoinOrExit(position, circleInfo);
     }
 }

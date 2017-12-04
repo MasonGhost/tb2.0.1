@@ -1,11 +1,15 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -17,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     protected CircleClient mCircleClient;
 
+    @Inject
+    protected Application mContext;
     @Inject
     protected UserInfoRepository mUserInfoRepository;
     @Inject
@@ -88,9 +95,23 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<BaseJsonV2<Integer>> getCircleCount() {
-        BaseJsonV2<Integer> test = new BaseJsonV2<>();
-        test.setData(2345);
-        return Observable.just(test);
+        return mCircleClient.getCircleCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo) {
+        boolean isJoined = circleInfo.getJoined() != null;
+        if (isJoined) {
+            return mCircleClient.exitCircle(circleInfo.getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        } else {
+            return mCircleClient.joinCircle(circleInfo.getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
     }
 
     @Override

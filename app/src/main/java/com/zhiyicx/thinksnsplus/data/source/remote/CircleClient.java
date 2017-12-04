@@ -13,10 +13,14 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -27,10 +31,15 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 
 /**
  * @Author Jliuer
@@ -64,6 +73,7 @@ public interface CircleClient {
 
     /**
      * 获取推荐的圈子
+     *
      * @param limit
      * @param offet
      * @return
@@ -73,6 +83,7 @@ public interface CircleClient {
 
     /**
      * 获取已经加入的圈子
+     *
      * @param limit
      * @param offet
      * @return
@@ -82,6 +93,7 @@ public interface CircleClient {
 
     /**
      * 获取全部圈子
+     *
      * @param limit
      * @param offet
      * @return
@@ -90,7 +102,53 @@ public interface CircleClient {
     Observable<List<CircleInfo>> getAllCircle(@Query("limit") int limit, @Query("offet") int offet);
 
     /**
+     * 获取附近圈子
+     * @param limit
+     * @param offet
+     * @param longitude
+     * @param latitude
+     * @return
+     */
+    @GET(APP_PATH_GET_ROUNDCIRCLE)
+    Observable<List<CircleInfo>> getRoundCircle(@Query("limit") int limit, @Query("offet") int offet,
+                                                @Query("longitude") String longitude, @Query("latitude") String latitude);
+
+    /**
+     * 获取圈子数量
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLE_COUNT)
+    Observable<BaseJsonV2<Integer>> getCircleCount();
+
+    /**
+     * 加入圈子
+     * @param circleId
+     * @return
+     */
+    @PUT(APP_PATH_PUT_JOIN_CIRCLE)
+    Observable<BaseJsonV2<Object>> joinCircle(@Path("circle_id") long circleId);
+
+    /**
+     * 退出圈子
+     *
+     * @return
+     */
+    @DELETE(APP_PATH_PUT_EXIT_CIRCLE)
+    Observable<BaseJsonV2<Object>> exitCircle(@Path("circle_id") long circleId);
+
+    /**
+     * 设置圈子权限
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_SET_CIRCLE_PERMISSIONS)
+    Observable<Object> setCirclePermissions();
+
+    /**
      * 获取圈子详情
+     *
      * @param circleId
      * @return
      */
@@ -99,6 +157,7 @@ public interface CircleClient {
 
     /**
      * 获取圈子下帖子列表
+     *
      * @param circleId
      * @param offet
      * @return

@@ -39,9 +39,11 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
                     CircleInfo moreJoined = new CircleInfo();
                     moreJoined.setName("我加入的");
+                    moreJoined.setSummary("查看更多");
                     moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
                     CircleInfo changeCircle = new CircleInfo();
                     changeCircle.setName("热门推荐");
+                    changeCircle.setSummary("换一批");
                     changeCircle.setId(BaseCircleItem.RECOMMENDCIRCLE);
                     myJoinedCircle.add(0, moreJoined);
                     recommendCircle.add(0, changeCircle);
@@ -78,7 +80,9 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
-                        mRootView.refreshData();
+                        mRootView.getListDatas().subList(6, mRootView.getListDatas().size() - 1).clear();
+                        mRootView.getListDatas().addAll(data);
+                        mRootView.refreshRangeData(6,5);
                     }
                 });
     }

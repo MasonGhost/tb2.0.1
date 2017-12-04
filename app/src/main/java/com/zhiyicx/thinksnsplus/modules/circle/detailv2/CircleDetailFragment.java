@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -83,6 +84,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         CirclePostListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
         , PhotoSelectorImpl.IPhotoBackListener {
 
+    public static final String CIRCLE_ID = "circle_id";
+
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
     @BindView(R.id.circle_title_layout)
@@ -141,6 +144,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
+    public static CircleDetailFragment newInstance(long circle_id) {
+        CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(CIRCLE_ID, circle_id);
+        circleDetailFragment.setArguments(bundle);
+        return circleDetailFragment;
+    }
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_detail;
@@ -159,6 +170,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     protected int setToolBarBackgroud() {
         return android.R.color.transparent;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -194,7 +210,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public long getCircleId() {
-        return 2;
+        return getArguments().getLong(CIRCLE_ID);
     }
 
     @Override

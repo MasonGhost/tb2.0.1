@@ -601,6 +601,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     @Override
+    public void refreshRangeData(int start, int count) {
+        setEmptyView();
+        int position = start + mHeaderAndFooterWrapper.getHeadersCount();
+        mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
+    }
+
+    @Override
     public int getPage() {
         return mPage;
     }

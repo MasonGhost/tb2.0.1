@@ -32,4 +32,6 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 
+    Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo);
+
 }
