@@ -29,26 +29,6 @@ public interface GoldService {
 
     public static final String HISTORY_TYPE_ZAN = "zan";
     public static final String HISTORY_TYPE_GOLD = "gold";
-//
-//    /**
-//     * 兑换
-//     *
-//     * @param token     通讯口令,每个口令有效期60s (当前时间+兑换消耗的类型+数量组成的md5字符串 )
-//     * @param hextime   十六进制的时间戳
-//     * @param count     消耗的赞的数量
-//     * @param type      兑换消耗的产品类型 (此处为zan)
-//     * @param accessKey 授权accesskey
-//     * @param secretKey 授权secretkey
-//     * @return
-//     */
-//    @FormUrlEncoded
-//    @POST("/api/gold/exchange")
-//    Observable<BaseJson<TradeOrder>> exchange(@Field("token") String token,
-//                                              @Field("hextime") String hextime,
-//                                              @Field("count") int count,
-//                                              @Field("type") String type,
-//                                              @Field("auth_accesskey") String accessKey,
-//                                              @Field("auth_secretkey") String secretKey);
 
     /**
      * 生成口令

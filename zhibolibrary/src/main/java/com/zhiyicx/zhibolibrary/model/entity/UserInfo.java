@@ -29,7 +29,7 @@ public class UserInfo implements Serializable {
     public Integer phone_status;
     public String reg_time;
     public int is_verified;
-    public int gold;
+    private int gold;
     public int follow_count;
     public int fans_count;
     public int zan_count;
@@ -58,7 +58,7 @@ public class UserInfo implements Serializable {
                 ", phone_status=" + phone_status +
                 ", reg_time='" + reg_time + '\'' +
                 ", is_verified=" + is_verified +
-                ", gold=" + gold +
+                ", gold=" + getGold() +
                 ", follow_count=" + follow_count +
                 ", fans_count=" + fans_count +
                 ", zan_count=" + zan_count +
@@ -122,5 +122,13 @@ public class UserInfo implements Serializable {
         shareContent.setImage(userInfo.avatar.origin);
 
         return shareContent;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
     }
 }

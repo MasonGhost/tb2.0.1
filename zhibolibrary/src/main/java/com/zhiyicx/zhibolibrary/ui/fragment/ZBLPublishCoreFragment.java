@@ -508,7 +508,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
                 /**
                  * 当前金币不足，提醒充值
                  */
-                if (ZhiboApplication.getUserInfo().gold < menuEntity1.gold) {
+                if (ZhiboApplication.getUserInfo().getGold() < menuEntity1.gold) {
                     showChargeDialog();
                     return false;
 
@@ -520,7 +520,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
         });
 
-        mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().gold + "");
+        mPagerDelegate.setTvGlodNumText(ZhiboApplication.getUserInfo().getGold() + "");
         mPagerDelegate.setOnBuyGoldClickListener(new ViewPagerDelegate.OnBuyGoldClickListener() {
             @Override
             public void onBuyGoldClick() {
@@ -548,7 +548,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
         }
         MenuEntity meut = mGiftList.get(mLastposiotn);
 
-        if (ZhiboApplication.getUserInfo().gold < meut.gold) {
+        if (ZhiboApplication.getUserInfo().getGold() < meut.gold) {
             UiUtils.makeText(getString(R.string.str_gold_not_enough));
             return;
         }
@@ -1134,7 +1134,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
     @Override
     public void updatedGold() {
         if (mPagerDelegate != null) {
-            mPagerDelegate.setTvGlodNumText(String.valueOf(ZhiboApplication.getUserInfo().gold));
+            mPagerDelegate.setTvGlodNumText(String.valueOf(ZhiboApplication.getUserInfo().getGold()));
         }
     }
 
@@ -2150,7 +2150,7 @@ public class ZBLPublishCoreFragment extends ZBLBaseFragment implements PublishCo
 
     private void refreshGoldCount(int decrice) {
         UserInfo info = ZhiboApplication.getUserInfo();
-        info.gold = info.gold - decrice;
+        info.setGold(info.getGold() - decrice);
         ZhiboApplication.setUserInfo(info);
     }
 

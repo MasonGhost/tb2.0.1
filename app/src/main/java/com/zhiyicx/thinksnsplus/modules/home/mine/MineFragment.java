@@ -1,16 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -41,7 +37,6 @@ import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.live.mine.MineLiveActivity;
 import com.zhiyicx.thinksnsplus.modules.live.mine.MineLiveFragment;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
@@ -54,8 +49,6 @@ import com.zhiyicx.zhibolibrary.manager.ConfigManager;
 import com.zhiyicx.zhibolibrary.manager.soupport.IConfigManager;
 import com.zhiyicx.zhibolibrary.model.entity.Icon;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
-import com.zhiyicx.zhibolibrary.ui.activity.ZBLHomeActivity;
-import com.zhiyicx.zhibolibrary.ui.activity.ZBLStarExchangeActivity;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 
@@ -322,7 +315,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                                 userInfo.avatar = avatar;
                                 userInfo.location = mUserInfoBean.getLocation();
                                 if (mUserInfoBean.getWallet() != null) {
-                                    userInfo.gold = (int) mUserInfoBean.getWallet().getBalance();
+                                    userInfo.setGold((int) mUserInfoBean.getWallet().getBalance());
                                 }
                                 ZhiboApplication.setUserInfo(userInfo);
 

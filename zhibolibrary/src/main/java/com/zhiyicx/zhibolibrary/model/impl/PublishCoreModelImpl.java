@@ -20,6 +20,8 @@ import com.zhiyicx.zhibosdk.manage.listener.OnCommonCallbackListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import okhttp3.FormBody;
 import rx.Observable;
 import rx.functions.Func1;
@@ -33,6 +35,7 @@ public class PublishCoreModelImpl implements PublishCoreModel {
     private UserService mUserService;
     private LiveService mLiveService;
 
+    @Inject
     public PublishCoreModelImpl(ServiceManager manager) {//
         mService = manager.getImService();//初始化服务
         mUserService = manager.getUserService();

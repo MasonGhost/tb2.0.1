@@ -197,7 +197,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
                                             @Override
                                             public Boolean call(BaseJson<UserInfo[]> baseJson) {
                                                 for (int i = 0; i < baseJson.data.length; i++) {
-                                                    baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                                    baseJson.data[i].setGold(mApiList.data[i].user.getGold());
                                                     mApiList.data[i].user = baseJson.data[i];
                                                 }
                                                 return true;
@@ -445,7 +445,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
     }
 
     private void updateUserCount(UserInfo data) {
-        ZhiboApplication.getUserInfo().gold = data.gold;
+        ZhiboApplication.getUserInfo().setGold(data.getGold());
         ZhiboApplication.getUserInfo().follow_count = data.follow_count;
         ZhiboApplication.getUserInfo().fans_count = data.fans_count;
         ZhiboApplication.getUserInfo().zan_count = data.zan_count;
@@ -740,7 +740,7 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     public void refreshGoldCountReduce(int decrice) {
         UserInfo info = ZhiboApplication.getUserInfo();
-        info.gold -= decrice;
+        info.setGold(info.getGold() - decrice);
         ZhiboApplication.setUserInfo(info);
     }
 

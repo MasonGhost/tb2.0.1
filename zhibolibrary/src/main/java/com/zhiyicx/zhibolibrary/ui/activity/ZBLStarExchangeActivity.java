@@ -21,8 +21,6 @@ import com.zhiyicx.zhibolibrary.ui.components.ExchangeItemView;
 import com.zhiyicx.zhibolibrary.ui.view.StarExchangeView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 
-import org.simple.eventbus.EventBus;
-
 import javax.inject.Inject;
 
 /**
@@ -144,7 +142,7 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
 
     @Override
     public void updatedGold() {
-        mGoldTV.setText(ZhiboApplication.userInfo.gold + "");
+        mGoldTV.setText(ZhiboApplication.userInfo.getGold() + "");
     }
 
     @Override
@@ -194,9 +192,10 @@ public class ZBLStarExchangeActivity extends ZBLBaseActivity implements StarExch
         if (v.getId() == R.id.rl_star_exchange_back) {
             killMyself();
         } else if (v.getId() == R.id.rl_star_history) {
-            Intent intent = new Intent(ZBLStarExchangeActivity.this, ZBLGoldHistoryActivity.class);
-            intent.putExtra("type", GoldService.HISTORY_TYPE_ZAN);
-            startActivity(intent);
+            // 记录和ts+合并故不需要了
+//            Intent intent = new Intent(ZBLStarExchangeActivity.this, ZBLGoldHistoryActivity.class);
+//            intent.putExtra("type", GoldService.HISTORY_TYPE_ZAN);
+//            startActivity(intent);
         }
     }
 }

@@ -119,7 +119,7 @@ public class GoldRankPresenter extends ListBasePresenter<SearchResult, GoldRankM
                     public void call(BaseJson<UserInfo[]> baseJson) {
                         if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
                             for (int i = 0; i < baseJson.data.length; i++) {
-                                baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                baseJson.data[i].setGold(mApiList.data[i].user.getGold());
                                 mApiList.data[i].user = baseJson.data[i];
                             }
                             refresh(mApiList, isMore);//刷新数据

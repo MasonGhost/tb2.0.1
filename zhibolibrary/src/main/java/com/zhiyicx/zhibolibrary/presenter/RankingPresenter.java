@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
 import com.zhiyicx.zhibolibrary.model.RankingModel;
@@ -115,7 +114,7 @@ public class RankingPresenter extends ListBasePresenter<SearchResult, RankingMod
                                 if (baseJson.code.equals(ZBLApi.REQUEST_SUCESS)) {
 
                                     for (int i = 0; i < baseJson.data.length; i++) {
-                                        baseJson.data[i].gold = mApiList.data[i].user.gold;
+                                        baseJson.data[i].setGold(mApiList.data[i].user.getGold());
                                         mApiList.data[i].user = baseJson.data[i];
                                     }
                                     dealRefreshLayout(isMore);

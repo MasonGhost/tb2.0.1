@@ -31,12 +31,6 @@ public class StarExchangeModelImpl implements StarExchangeModel {
         this.mCommonService=manager.getCommonService();
     }
 
-//    @Override
-//    public Observable<BaseJson<TradeOrder>> exchange(String token, String hextime
-//            , int count, String type, String accessKey, String secretKey) {
-//        return mService.exchange(token, hextime, count, type, accessKey, secretKey);
-//    }
-
     /**
      *      * @param token     通讯口令,每个口令有效期60s (当前时间戳+口令类型(type)+当前操作的用户uid组成的md5字符串)
      * @param hextime   十六进制的时间戳
@@ -91,10 +85,6 @@ public class StarExchangeModelImpl implements StarExchangeModel {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("api", ZBLApi.API_GET_TRADE_STATUS);
         builder.add("trade_order", tradeOrder);
-//        PermissionData[] permissionDatas = ZhiboApplication.getPermissionDatas();
-//        for (PermissionData data : permissionDatas) {
-//            builder.add(data.auth_key, data.auth_value);
-//        }
         FormBody formBody = builder.build();
         return mService.getOrderStatus(ZBLApi.CONFIG_BASE_DOMAIN, formBody).subscribeOn(Schedulers.io());
     }

@@ -1,7 +1,6 @@
 package com.zhiyicx.zhibolibrary.presenter;
 
 import com.google.gson.Gson;
-import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
@@ -9,16 +8,16 @@ import com.zhiyicx.zhibolibrary.model.StarExchangeModel;
 import com.zhiyicx.zhibolibrary.model.api.ZBLApi;
 import com.zhiyicx.zhibolibrary.model.api.service.GoldService;
 import com.zhiyicx.zhibolibrary.model.entity.BaseJson;
-import com.zhiyicx.zhibolibrary.model.entity.Config;
 import com.zhiyicx.zhibolibrary.model.entity.StarExchangeList;
 import com.zhiyicx.zhibolibrary.model.entity.TradeOrder;
 import com.zhiyicx.zhibolibrary.model.entity.UserInfo;
+import com.zhiyicx.zhibolibrary.model.impl.PublishCoreModelImpl;
+import com.zhiyicx.zhibolibrary.model.impl.UserInfoModelImpl;
 import com.zhiyicx.zhibolibrary.presenter.common.BasePresenter;
 import com.zhiyicx.zhibolibrary.ui.view.StarExchangeView;
 import com.zhiyicx.zhibolibrary.util.DataHelper;
 import com.zhiyicx.zhibolibrary.util.LogUtils;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
-import com.zhiyicx.zhibosdk.model.api.ZBApi;
 import com.zhiyicx.zhibosdk.model.entity.ZBApiToken;
 
 import javax.inject.Inject;
@@ -42,9 +41,11 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
     private String mToken = "";
     private Subscription mOrderSubscription;
     private Subscription mConfigSubscription;
-
+    @Inject
+    UserInfoModelImpl mUserInfoModel;
 
     @Inject
+
     public StarExchangePresenter(StarExchangeModel model, StarExchangeView rootView) {
         super(model, rootView);
     }
@@ -132,7 +133,7 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
                                     , ZhiboApplication.userInfo.uid
                                     , GoldService.EXCHANGE_TYPE_ZAN
                                     , null
-                                 );
+                            );
                         }
                         return Observable.error(throwable);//继续抛给onerro
 
@@ -194,24 +195,36 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
                 , costStar
                 , giftCode
                 , null
-               )
+        )
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<BaseJson<TradeOrder>, Observable<BaseJson<UserInfo>>>() {
                     @Override
                     public Observable<BaseJson<UserInfo>> call(BaseJson<TradeOrder> json) {
                         if (!json.code.equals(ZBLApi.REQUEST_SUCESS)) {//请求失败
-                            LogUtils.debugInfo(TAG, json.message + "-----create1");
-                            if (json.code.equals(ZBLApi.REQUEST_EXCHANGE_PROTOKEN_INVALID)||json.code.equals(ZBLApi.REQUEST_EXCHANGE_PROTOKEN_INVALID2)) {//如果是口令无效的错误则抛错,重新拉取口令
+                            if (json.code.equals(ZBLApi.REQUEST_EXCHANGE_PROTOKEN_INVALID) || json.code.equals(ZBLApi
+                                    .REQUEST_EXCHANGE_PROTOKEN_INVALID2)) {//如果是口令无效的错误则抛错,重新拉取口令
                                 subscriber.onError(new IllegalArgumentException());//调用retry
                             } else {
                                 mRootView.showMessage(json.message);
                             }
                             return null;
                         }
-                        LogUtils.debugInfo(TAG, "-----create2");
-                        return mModel.getOrderStatus(json.data.trade_order//成功后再次查询订单状态
-                               );
+                        return mUserInfoModel.getUsidInfo(json.data.getUsid(), "")
+                                .map(new Func1<BaseJson<UserInfo[]>, BaseJson<UserInfo>>() {
+                                    @Override
+                                    public BaseJson<UserInfo> call(BaseJson<UserInfo[]> baseJson) {
+                                        BaseJson baseJson1 = new BaseJson();
+                                        baseJson1.code = baseJson.code;
+                                        baseJson1.message = baseJson.message;
+                                        if (baseJson.isSuccess()) {
+                                            baseJson1.data = baseJson.data[0];
+                                            return baseJson1;
+                                        }
+                                        return baseJson1;
+                                    }
+                                })
+                                ;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
@@ -221,7 +234,15 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
      * 获取配置信息
      */
     public void getConfig() {
-        String localConfig = "{\"zan_list\":[{\"zan\":100,\"gold\":20},{\"zan\":200,\"gold\":40},{\"zan\":500,\"gold\":100},{\"zan\":1000,\"gold\":200},{\"zan\":2000,\"gold\":400},{\"zan\":5000,\"gold\":1000}],\"pay_list\":{\"ios\":[{\"money\":1,\"gold\":1,\"product_id\":\"zhibo.product01\"},{\"money\":6,\"gold\":10,\"product_id\":\"zhibo.product02\"},{\"money\":12,\"gold\":30,\"product_id\":\"zhibo.product03\"},{\"money\":30,\"gold\":110,\"product_id\":\"zhibo.product04\"},{\"money\":50,\"gold\":300,\"product_id\":\"zhibo.product05\"},{\"money\":108,\"gold\":1000,\"product_id\":\"zhibo.product06\"},{\"money\":188,\"gold\":2500,\"product_id\":\"zhibo.product07\"}],\"android\":[{\"money\":1,\"gold\":1},{\"money\":5,\"gold\":10},{\"money\":10,\"gold\":30},{\"money\":30,\"gold\":120},{\"money\":50,\"gold\":250},{\"money\":100,\"gold\":600},{\"money\":200,\"gold\":2000}]},\"cash_list\":[{\"money\":1,\"gold\":10},{\"money\":5,\"gold\":50},{\"money\":10,\"gold\":100},{\"money\":20,\"gold\":200},{\"money\":50,\"gold\":500},{\"money\":100,\"gold\":1000}]}";
+        String localConfig = "{\"zan_list\":[{\"zan\":100,\"gold\":20},{\"zan\":200,\"gold\":40},{\"zan\":500,\"gold\":100},{\"zan\":1000," +
+                "\"gold\":200},{\"zan\":2000,\"gold\":400},{\"zan\":5000,\"gold\":1000}],\"pay_list\":{\"ios\":[{\"money\":1,\"gold\":1," +
+                "\"product_id\":\"zhibo.product01\"},{\"money\":6,\"gold\":10,\"product_id\":\"zhibo.product02\"},{\"money\":12,\"gold\":30," +
+                "\"product_id\":\"zhibo.product03\"},{\"money\":30,\"gold\":110,\"product_id\":\"zhibo.product04\"},{\"money\":50,\"gold\":300," +
+                "\"product_id\":\"zhibo.product05\"},{\"money\":108,\"gold\":1000,\"product_id\":\"zhibo.product06\"},{\"money\":188,\"gold\":2500," +
+                "\"product_id\":\"zhibo.product07\"}],\"android\":[{\"money\":1,\"gold\":1},{\"money\":5,\"gold\":10},{\"money\":10,\"gold\":30}," +
+                "{\"money\":30,\"gold\":120},{\"money\":50,\"gold\":250},{\"money\":100,\"gold\":600},{\"money\":200,\"gold\":2000}]}," +
+                "\"cash_list\":[{\"money\":1,\"gold\":10},{\"money\":5,\"gold\":50},{\"money\":10,\"gold\":100},{\"money\":20,\"gold\":200}," +
+                "{\"money\":50,\"gold\":500},{\"money\":100,\"gold\":1000}]}";
 
         //服務器暫不支持获取，先本地配置
 
@@ -259,7 +280,7 @@ public class StarExchangePresenter extends BasePresenter<StarExchangeModel, Star
 
 
     private void updateUserCount(UserInfo data) {
-        ZhiboApplication.userInfo.gold = data.gold;
+        ZhiboApplication.userInfo.setGold(data.getGold());
         ZhiboApplication.userInfo.follow_count = data.follow_count;
         ZhiboApplication.userInfo.fans_count = data.fans_count;
         ZhiboApplication.userInfo.zan_count = data.zan_count;

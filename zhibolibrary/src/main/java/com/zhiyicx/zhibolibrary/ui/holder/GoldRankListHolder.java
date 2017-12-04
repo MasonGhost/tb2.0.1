@@ -1,11 +1,9 @@
 package com.zhiyicx.zhibolibrary.ui.holder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import com.zhiyicx.zhibolibrary.model.api.service.UserService;
 import com.zhiyicx.zhibolibrary.model.entity.SearchResult;
 import com.zhiyicx.zhibolibrary.presenter.UserHomePresenter;
 import com.zhiyicx.zhibolibrary.ui.Transformation.GlideCircleTrasform;
-import com.zhiyicx.zhibolibrary.ui.components.FllowButtonView;
 import com.zhiyicx.zhibolibrary.ui.view.UserHomeView;
 import com.zhiyicx.zhibolibrary.util.UiUtils;
 
@@ -88,7 +85,7 @@ public class GoldRankListHolder extends ZBLBaseHolder<SearchResult> implements U
 // 设计图已经去掉了
 //        tvRankGoldItemDetailTitle.setText(TextUtils.isEmpty(data.user.intro) ? UiUtils.getString("str_default_intro") : data.user.intro
 //        );
-        tvRankGoldItemGoldeSent.setText("x " + data.user.gold);
+        tvRankGoldItemGoldeSent.setText("x " + data.user.getGold());
         tvRankGoldItemRank.setText(this.getPosition() + 1 + "");
         mVerifiedIV.setVisibility(data.user.is_verified == 1 ? View.VISIBLE : View.GONE);
         if (this.getPosition() < 3) {
