@@ -6,7 +6,6 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
-import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 /**

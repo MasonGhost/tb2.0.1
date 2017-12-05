@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,24 +35,31 @@ public class CirclePostDetailRepository extends BaseCircleRepository implements 
 
     @Override
     public Observable<CirclePostDetailBean> getPostDetail(long circleId, long postId) {
-        return null;
+        return mCircleClient.getPostDetail(circleId,postId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after) {
-        return null;
+        return getPostCommentList(postId, (long) after).flatMap(circleCommentZip -> {
+            circleCommentZip.getPinneds().addAll(circleCommentZip.getComments());
+            return Observable.just(circleCommentZip.getPinneds())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        });
     }
 
     public Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId) {
         return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(circleCommentZip -> {
                     final List<Object> user_ids = new ArrayList<>();
 
                     if (circleCommentZip.getPinneds() != null) {
                         for (CirclePostCommentBean commentListBean : circleCommentZip.getPinneds()) {
                             user_ids.add(commentListBean.getUser_id());
+                            commentListBean.setPinned(true);
                             user_ids.add(commentListBean.getReply_to_user_id());
                             user_ids.add(commentListBean.getTo_user_id());
                         }
@@ -59,6 +67,7 @@ public class CirclePostDetailRepository extends BaseCircleRepository implements 
                     if (circleCommentZip.getComments() != null) {
                         for (CirclePostCommentBean commentListBean : circleCommentZip.getComments()) {
                             user_ids.add(commentListBean.getUser_id());
+                            commentListBean.setPinned(false);
                             user_ids.add(commentListBean.getReply_to_user_id());
                             user_ids.add(commentListBean.getTo_user_id());
                         }

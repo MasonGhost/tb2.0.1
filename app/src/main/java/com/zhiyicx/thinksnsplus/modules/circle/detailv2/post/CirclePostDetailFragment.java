@@ -135,8 +135,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         super.initView(rootView);
         if (mCirclePostDetailBean == null && getArguments() != null) {
             mCirclePostDetailBean = new CirclePostDetailBean();
-            mCirclePostDetailBean.setId(getArguments().getLong(CIRCLE_ID));
-            mCirclePostDetailBean.setGroup_id(getArguments().getLong(POST_ID));
+            mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
+            mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -145,6 +145,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        requestNetData(0L,false);
     }
 
     @Override

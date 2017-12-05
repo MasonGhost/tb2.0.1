@@ -106,7 +106,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
         mImgList = new ArrayList<>();
         animationRectBeanArrayList = new ArrayList<>();
         mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
-                .item_info_comment_web, null);
+                .item_post_comment_head, null);
         mInfoDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mInfoDetailHeader.findViewById(R.id.tv_info_title);
@@ -142,7 +142,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
                 css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
-                mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
+                mContent.loadMarkdown("hiLOL<hr><hr><hr><hr>好好睡<hr><br>![归山去](5106)好工作<br><a href=\"dffggg\" class=\"editor-link\">百度</a>");
                 mContent.setWebChromeClient(mWebChromeClient);
 
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
