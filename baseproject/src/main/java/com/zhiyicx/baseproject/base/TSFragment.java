@@ -903,25 +903,25 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void onDestroyView() {
-        if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
-            mStatusbarSupport.unsubscribe();
-        }
-        if (mViewTreeSubscription != null && !mViewTreeSubscription.isUnsubscribed()) {
-            mViewTreeSubscription.unsubscribe();
-        }
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         if (mSnackBar != null) {
             if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }
             mSnackBar = null;
         }
+        if (mStatusbarSupport != null && !mStatusbarSupport.isUnsubscribed()) {
+            mStatusbarSupport.unsubscribe();
+        }
+        if (mViewTreeSubscription != null && !mViewTreeSubscription.isUnsubscribed()) {
+            mViewTreeSubscription.unsubscribe();
+        }
         dismissPop(mDeleteTipPopupWindow);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**

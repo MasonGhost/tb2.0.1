@@ -6,6 +6,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.crashhandler.CrashHandler;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -26,8 +27,8 @@ public abstract class TSApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         /// 处理app崩溃异常,打开后保存本地处理，
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init();
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init();
         // 友盟
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
