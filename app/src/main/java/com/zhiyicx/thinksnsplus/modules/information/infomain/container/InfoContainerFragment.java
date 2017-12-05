@@ -431,4 +431,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
             return POSITION_NONE;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getActivity().finish();
+    }
 }

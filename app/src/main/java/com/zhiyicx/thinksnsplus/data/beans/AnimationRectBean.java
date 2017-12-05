@@ -10,13 +10,16 @@ import android.widget.ImageView;
 
 import com.zhiyicx.common.utils.log.LogUtils;
 
+import java.io.Serializable;
+
 /**
  * @author LiuChao
  * @describe 用于图片查看时的转场缩放动画实体类，传递的是图片控件的相关属性，以及
  * @date 2017/3/21
  * @contact email:450127106@qq.com
  */
-public class AnimationRectBean implements Parcelable {
+public class AnimationRectBean implements Parcelable,Serializable {
+    private static final long serialVersionUID = 336871009;
 
     @Override
     public int describeContents() {

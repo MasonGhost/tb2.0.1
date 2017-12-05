@@ -755,9 +755,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 animationRectBeanArrayList.add(rect);
                             }
                         }
+                        ArrayList<ImageBean> datas = new ArrayList<>();
+                        datas.addAll(selectedPhotos);
                         PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
                                 photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
-                                position, isToll, selectedPhotos);
+                                position, isToll, datas);
                     }
                 });
             }
