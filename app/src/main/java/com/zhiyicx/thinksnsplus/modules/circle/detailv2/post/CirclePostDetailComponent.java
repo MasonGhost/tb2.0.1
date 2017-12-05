@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
@@ -13,7 +14,7 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = CirclePostDetailPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = {CirclePostDetailPresenterModule.class, ShareModule.class})
 public interface CirclePostDetailComponent extends InjectComponent<CirclePostDetailActivity> {
 
 }

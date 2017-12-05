@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresenter, CirclePostDetailFragment> {
@@ -18,6 +19,7 @@ public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresent
     protected void componentInject() {
         DaggerCirclePostDetailComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(this))
                 .circlePostDetailPresenterModule(new CirclePostDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
     }

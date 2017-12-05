@@ -1207,8 +1207,8 @@ public class BackgroundTaskHandler {
                                 circlePostCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
                             } catch (JSONException e) {
                                 circlePostCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
-                                circlePostCommentBean.setComment_mark(jsonObject.getLong("group_post_comment_mark"));
                             }
+                            circlePostCommentBean.setComment_mark(comment_mark);
                             circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
                             EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC);

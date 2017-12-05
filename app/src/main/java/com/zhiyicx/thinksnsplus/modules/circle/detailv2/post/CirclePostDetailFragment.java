@@ -26,17 +26,21 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -88,6 +92,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private CirclePostDetailBean mCirclePostDetailBean;
 
     private PostDetailHeaderView mPostDetailHeaderView;
+
+    private RewardsCountBean mRewardsCountBean;
+    private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
 
     public static CirclePostDetailFragment newInstance(Bundle bundle) {
         CirclePostDetailFragment postDetailFragment = new CirclePostDetailFragment();
@@ -150,7 +157,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     @Override
     protected void initData() {
         super.initData();
-        requestNetData(0L,false);
+        requestNetData(0L, false);
     }
 
     @Override
@@ -181,7 +188,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     @Override
     public void onSendClick(View v, String text) {
-
+        DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendComment(mReplyUserId, text);
+        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -204,9 +215,23 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
+    public CirclePostDetailBean getCurrentePost() {
+        return mCirclePostDetailBean;
+    }
+
+    @Override
+    public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
+        this.mRewardsCountBean = rewardsCountBean;
+        this.mRewardsListBeen.clear();
+        this.mRewardsListBeen.addAll(datas);
+        mPostDetailHeaderView.updateReward(mCirclePostDetailBean.getId(), mRewardsListBeen,
+                mRewardsCountBean, RewardType.QA_ANSWER, mPresenter.getGoldName());
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<CirclePostCommentBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
-            if (data.isEmpty()) { // 空白展位图
+            if (data.isEmpty()) {
                 CirclePostCommentBean emptyData = new CirclePostCommentBean();
                 data.add(emptyData);
             }

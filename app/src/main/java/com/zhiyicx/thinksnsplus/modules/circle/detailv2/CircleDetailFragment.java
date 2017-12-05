@@ -37,6 +37,7 @@ import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -527,7 +528,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogUtils.d("have't image");
                 }
                 int user_id = mListDatas.get(dataPosition).getUser_id().intValue();
                 int current_id = (int) AppApplication.getMyUserIdWithdefault();

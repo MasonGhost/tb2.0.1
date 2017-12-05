@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 import java.util.List;
@@ -31,6 +33,10 @@ public interface CirclePostDetailContract {
         long getCircleId();
 
         void allDataReady(CirclePostDetailBean data);
+
+        CirclePostDetailBean getCurrentePost();
+
+        void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> postRewardList);
     }
 
     interface Presenter extends ITSListPresenter<CirclePostCommentBean> {
@@ -45,6 +51,8 @@ public interface CirclePostDetailContract {
         void deletePost();
 
         void handleCollect(boolean b, String s);
+
+        void sendComment(long replyUserId, String text);
     }
 
     interface Repository extends IBaseCircleRepository {

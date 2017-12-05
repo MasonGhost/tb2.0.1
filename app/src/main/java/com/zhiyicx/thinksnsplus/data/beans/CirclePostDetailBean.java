@@ -32,6 +32,8 @@ public class CirclePostDetailBean implements Serializable{
 
     private Long id;
     private long group_id;
+    private int reward_amount;
+    private int reward_number;
     private int user_id;
     private String title;
     private String body;
@@ -48,6 +50,22 @@ public class CirclePostDetailBean implements Serializable{
     private boolean pinned ;
     private List<CirclePostCommentBean> comments;
     private List<PostDigListBean> digs;
+
+    public int getReward_amount() {
+        return reward_amount;
+    }
+
+    public void setReward_amount(int reward_amount) {
+        this.reward_amount = reward_amount;
+    }
+
+    public int getReward_number() {
+        return reward_number;
+    }
+
+    public void setReward_number(int reward_number) {
+        this.reward_number = reward_number;
+    }
 
     public List<PostDigListBean> getDigs() {
         return digs;

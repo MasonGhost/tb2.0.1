@@ -142,7 +142,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
                 css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
-                mContent.loadMarkdown("hiLOL<hr><hr><hr><hr>好好睡<hr><br>![归山去](5106)好工作<br><a href=\"dffggg\" class=\"editor-link\">百度</a>");
+                mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
 
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
