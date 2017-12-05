@@ -4,7 +4,9 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
 import java.util.Map;
@@ -32,12 +34,20 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 
-    void sendPostComment(String commentContent,Long postId, Long replyToUserId,Long commentMark);
+    void sendPostComment(String commentContent, Long postId, Long replyToUserId, Long commentMark);
 
-    void deletePostComment(CirclePostListBean circlePostListBean, int postPosition, long comment_id, int commentPositon);
+    void deletePostComment(long postId, long commentId);
 
-    void deletePost(CirclePostListBean circlePostListBean, int position);
+    void deletePost(long circleId, long postId);
+
+    void dealLike(boolean isLike, long postId);
+
+    void dealCollect(boolean isCollected, long postId);
 
     Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo);
+
+    Observable<List<RewardsListBean>> getPostRewardList(long postId, int limit, long offet);
+
+    Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet);
 
 }

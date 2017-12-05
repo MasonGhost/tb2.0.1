@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -32,6 +33,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -54,6 +56,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
@@ -314,6 +318,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        AndroidBug5497Workaround.assistActivity(getActivity());
         initToolBar();
         mDrawer.setClipToPadding(false);
         mDrawer.setClipChildren(false);
@@ -357,7 +362,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mPresenter.requestNetData(0L, false);
             }
         });
-
+        mIlvComment.setOnSendClickListener(this);
     }
 
     private void initToolBar() {
@@ -387,7 +392,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
+        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position).getGroup_id(), mListDatas.get(position).getId());
     }
 
     @Override
@@ -617,11 +622,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 })
                 .item3ClickListener(() -> {// 删除
                     mMyPostPopWindow.hide();
-                    mPresenter.deleteDynamic(circlePostListBean, position);
+                    mPresenter.deletePost(circlePostListBean, position);
                     showBottomView(true);
                 })
                 .item1ClickListener(() -> {// 分享
-                    mPresenter.shareDynamic(circlePostListBean, shareBitMap);
+                    mPresenter.sharePost(circlePostListBean, shareBitMap);
                     mMyPostPopWindow.hide();
                 })
                 .bottomClickListener(() -> {//取消
@@ -658,8 +663,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mListDatas.get(dataPosition).setLikes_count(!mListDatas.get(dataPosition).hasLiked() ?
                 mListDatas.get(dataPosition).getLikes_count() - 1 : mListDatas.get(dataPosition).getLikes_count() + 1);
         refreshData(dataPosition);
-        mPresenter.handleLike(mListDatas.get(dataPosition).hasLiked(),
-                mListDatas.get(dataPosition).getGroup_id(), mListDatas.get(dataPosition).getId(), dataPosition);
+        mPresenter.handleLike(mListDatas.get(dataPosition).hasLiked(), mListDatas.get(dataPosition).getId(), dataPosition);
     }
 
     /**
@@ -684,7 +688,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     showBottomView(true);
                 })
                 .item1ClickListener(() -> {// 分享
-                    mPresenter.shareDynamic(circlePostListBean, shareBitmap);
+                    mPresenter.sharePost(circlePostListBean, shareBitmap);
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })

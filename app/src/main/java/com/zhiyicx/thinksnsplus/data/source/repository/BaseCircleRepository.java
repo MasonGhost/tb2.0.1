@@ -14,7 +14,9 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -103,6 +105,63 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
+    public Observable<List<RewardsListBean>> getPostRewardList(long postId, int limit, long offet) {
+        return mCircleClient.getPostRewardList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet) {
+        return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void dealLike(boolean isLiked, long postId) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_LIKE_POST_FORMAT, String.valueOf(postId)));
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_LIKE_POST_FORMAT, String.valueOf(postId)));
+                    }
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void dealCollect(boolean isCollected, long postId) {
+        Observable.just(isCollected)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    // 后台处理
+                    if (!aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_COLLECT_POST_FORMAT, String.valueOf(postId)));
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_UNCOLLECT_POST_FORMAT, String.valueOf(postId)));
+                    }
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
     public void sendPostComment(String commentContent, Long postId, Long replyToUserId, Long commentMark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
@@ -113,25 +172,34 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         }
 
         // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_CIRCLE_DYNAMIC_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_COMMENT_POST_FORMAT, group_id, feed_id));
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_CIRCLE_POST_COMMENT, params);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_COMMENT_POST_FORMAT, postId));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
-    public void deletePostComment(CirclePostListBean circlePostListBean, int postPosition, long comment_id, int commentPositon) {
-
+    public void deletePostComment(long postId, long commentId) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_POST_COMMENT_FORMAT, postId, commentId));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
-    public void deletePost(CirclePostListBean circlePostListBean, int position) {
-
+    public void deletePost(long circleId, long postId) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_POST_FORMAT, circleId, postId));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
     public Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo) {
         boolean isJoined = circleInfo.getJoined() != null;
-        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
         backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         if (isJoined) {
             // 已经订阅，变为未订阅

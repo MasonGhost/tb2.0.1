@@ -600,8 +600,12 @@
         <activity
             android:name=".modules.circle.create.types.CircleTyepsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.create.location.CircleLocationActivity">
-        </activity>
+        <activity
+            android:name=".modules.circle.create.location.CircleLocationActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.detailv2.post.CirclePostDetailActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

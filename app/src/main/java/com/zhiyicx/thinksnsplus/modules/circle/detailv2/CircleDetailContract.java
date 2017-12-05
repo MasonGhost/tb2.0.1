@@ -32,11 +32,11 @@ public interface CircleDetailContract {
 
         void sendComment(int currentPostion, long replyToUserId, String text);
 
-        void deleteDynamic(CirclePostListBean circlePostListBean, int position);
+        void deletePost(CirclePostListBean circlePostListBean, int position);
 
-        void shareDynamic(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
+        void sharePost(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
 
-        void handleLike(boolean b, long group_id, Long id, int dataPosition);
+        void handleLike(boolean b,Long id, int dataPosition);
 
         void handleCollect(CirclePostListBean circlePostListBean);
     }

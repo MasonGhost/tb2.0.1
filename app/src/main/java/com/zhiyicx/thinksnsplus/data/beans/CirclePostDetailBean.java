@@ -1,13 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * @author Jliuer
  * @Date 2017/12/01/16:20
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostDetailBean {
+public class CirclePostDetailBean implements Serializable{
 
+    private static final long serialVersionUID = 7637237373642887996L;
     /**
      * id : 81
      * group_id : 1
@@ -26,8 +30,8 @@ public class CirclePostDetailBean {
      * user : {"id":1,"name":"admin","bio":null,"sex":2,"location":"四川省 巴中市 南江县","created_at":"2017-10-23 01:17:34","updated_at":"2017-11-15 07:36:17","avatar":"http://thinksns-plus.dev/api/v2/users/1/avatar","bg":null,"verified":{"type":"user","icon":"http://thinksns-plus.dev/storage/certifications/000/000/0us/er.png","description":"1111"},"extra":{"user_id":1,"likes_count":5,"comments_count":3,"followers_count":0,"followings_count":6,"updated_at":"2017-11-27 07:25:04","feeds_count":8,"questions_count":2,"answers_count":0,"checkin_count":7,"last_checkin_count":1}}
      */
 
-    private int id;
-    private int group_id;
+    private Long id;
+    private long group_id;
     private int user_id;
     private String title;
     private String body;
@@ -41,20 +45,47 @@ public class CirclePostDetailBean {
     private boolean collected;
     private GroupBean group;
     private UserBean user;
+    private boolean pinned ;
+    private List<CirclePostCommentBean> comments;
+    private List<PostDigListBean> digs;
 
-    public int getId() {
+    public List<PostDigListBean> getDigs() {
+        return digs;
+    }
+
+    public void setDigs(List<PostDigListBean> digs) {
+        this.digs = digs;
+    }
+
+    public List<CirclePostCommentBean> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CirclePostCommentBean> comments) {
+        this.comments = comments;
+    }
+
+    public boolean hasPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getGroup_id() {
+    public long getGroup_id() {
         return group_id;
     }
 
-    public void setGroup_id(int group_id) {
+    public void setGroup_id(long group_id) {
         this.group_id = group_id;
     }
 
@@ -130,7 +161,7 @@ public class CirclePostDetailBean {
         this.updated_at = updated_at;
     }
 
-    public boolean isLiked() {
+    public boolean getLiked() {
         return liked;
     }
 
@@ -138,7 +169,7 @@ public class CirclePostDetailBean {
         this.liked = liked;
     }
 
-    public boolean isCollected() {
+    public boolean getCollected() {
         return collected;
     }
 

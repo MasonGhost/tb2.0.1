@@ -507,20 +507,38 @@ public class ApiConfig {
     public static final String APP_PATH_PUBLISH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
 
     /**
-     * 删除帖子
-     */
-    public static final String APP_PATH_DELETE_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts/{post_id}";
-
-    /**
      * 获取圈子下帖子列表
      */
     public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
 
     /**
-     * 评论帖子
+     * 评论帖子/评论列表
      */
     public static final String APP_PATH_COMMENT_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments";
     public static final String APP_PATH_COMMENT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments";
+
+    /**
+     * 帖子点赞
+     */
+    public static final String APP_PATH_LIKE_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/likes";
+    public static final String APP_PATH_LIKE_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/likes";
+
+    /**
+     * 帖子打赏
+     */
+    public static final String APP_PATH_LIKEREWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
+
+    /**
+     * 帖子收藏
+     */
+    public static final String APP_PATH_COLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/collections";
+    public static final String APP_PATH_UNCOLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/&s/uncollect";
+
+    /**
+     * 删除帖子/帖子详情
+     */
+    public static final String APP_PATH_POST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts/{post_id}";
+    public static final String APP_PATH_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s/posts/%s";
 
     /**
      * 删除帖子评论

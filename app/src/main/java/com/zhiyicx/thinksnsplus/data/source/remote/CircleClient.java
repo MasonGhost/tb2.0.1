@@ -3,15 +3,17 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
 
 import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FormUrlEncoded;
@@ -26,6 +28,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
@@ -36,6 +39,9 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CI
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKEREWARD_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
@@ -103,6 +109,7 @@ public interface CircleClient {
 
     /**
      * 获取附近圈子
+     *
      * @param limit
      * @param offet
      * @param longitude
@@ -123,6 +130,7 @@ public interface CircleClient {
 
     /**
      * 加入圈子
+     *
      * @param circleId
      * @return
      */
@@ -186,4 +194,44 @@ public interface CircleClient {
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(APP_PATH_PUBLISH_POST)
     Observable<BaseJsonV2<Object>> publishPost(@Path("circle_id") long circleId, @Body RequestBody body);
+
+    /**
+     * 获取帖子详情
+     *
+     * @param circleId
+     * @param postId
+     * @return
+     */
+    @GET(APP_PATH_POST)
+    Observable<CirclePostDetailBean> getPostDetail(@Path("circle_id") long circleId, @Path("post_id") long postId);
+
+    /**
+     * 获取帖子评论
+     * @param postId
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_COMMENT_POST)
+    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int offet);
+
+    /**
+     * 获取帖子点赞列表
+     * @param postId
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_LIKE_POST)
+    Observable<List<PostDigListBean>> getPostDigList(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") long offet);
+
+    /**
+     * 获取帖子打赏列表
+     * @param postId
+     * @param limit
+     * @param offet
+     * @return
+     */
+    @GET(APP_PATH_LIKEREWARD_POST)
+    Observable<List<RewardsListBean>> getPostRewardList(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") long offet);
 }

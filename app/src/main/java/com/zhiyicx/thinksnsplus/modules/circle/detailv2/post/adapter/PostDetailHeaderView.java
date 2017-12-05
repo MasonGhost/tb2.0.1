@@ -1,52 +1,56 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
+package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.klinker.android.link_builder.Link;
+import com.bumptech.glide.Glide;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
+import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +63,7 @@ import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 
 /**
  * @author Catherine
@@ -68,75 +72,79 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class AnswerDetailHeaderView extends BaseWebLoad{
-
-
-    private UserAvatarView mUserAvatarView;
-    private TextView mName;
-    private TextView mDescription;
-    private CheckBox mUserFollow;
+public class PostDetailHeaderView extends BaseWebLoad {
     private MarkdownView mContent;
-
+    private MarkdownView mContentSubject;
+    private TextView mTitle;
+    private TextView mChannel;
+    private TextView mFrom;
     private DynamicHorizontalStackIconView mDigListView;
     private ReWardView mReWardView;
     private FrameLayout mCommentHintView;
     private TextView mCommentCountView;
-
-    private View mAnswerDetailHeader;
-    private RelativeLayout mUserInfoContainer;
+    private FrameLayout mInfoRelateList;
+    private TagFlowLayout mFtlRelate;
+    private RecyclerView mRvRelateInfo;
+    private View mInfoDetailHeader;
     private Context mContext;
     private int screenWidth;
     private int picWidth;
     private Bitmap sharBitmap;
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
+    private boolean isReviewIng;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
 
-    private AnswerHeaderEventListener mAnswerHeaderEventListener;
-
-    public View getAnswerDetailHeader() {
-        return mAnswerDetailHeader;
+    public View getInfoDetailHeader() {
+        return mInfoDetailHeader;
     }
 
-    public AnswerDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
+    public PostDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mImgList = new ArrayList<>();
         animationRectBeanArrayList = new ArrayList<>();
-
-        mAnswerDetailHeader = LayoutInflater.from(context).inflate(R.layout
-                .item_answer_comment_header, null);
-
-        mAnswerDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
+        mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
+                .item_info_comment_web, null);
+        mInfoDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-
-        mUserAvatarView = (UserAvatarView) mAnswerDetailHeader.findViewById(R.id.iv_head_icon);
-        mUserInfoContainer = (RelativeLayout) mAnswerDetailHeader.findViewById(R.id.rl_userinfo_container);
-        mName = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_name);
-        mDescription = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_desc);
-        mUserFollow = (CheckBox) mAnswerDetailHeader.findViewById(R.id.tv_user_follow);
-        mContent = (MarkdownView) mAnswerDetailHeader.findViewById(R.id.answer_detail_content);
-        mDigListView = (DynamicHorizontalStackIconView) mAnswerDetailHeader.findViewById(R.id.detail_dig_view);
-        mReWardView = (ReWardView) mAnswerDetailHeader.findViewById(R.id.v_reward);
-        mCommentHintView = (FrameLayout) mAnswerDetailHeader.findViewById(R.id.answer_detail_comment);
-        mCommentCountView = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_comment_count);
-        mIvDetail = (ImageView) mAnswerDetailHeader.findViewById(R.id.iv_detail);
-
-
+        mTitle = (TextView) mInfoDetailHeader.findViewById(R.id.tv_info_title);
+        mChannel = (TextView) mInfoDetailHeader.findViewById(R.id.tv_from_channel);
+        mFrom = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_timeform);
+        mContent = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_detail_content);
+        mContentSubject = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_content_subject);
+        mDigListView = (DynamicHorizontalStackIconView) mInfoDetailHeader.findViewById(R.id.detail_dig_view);
+        mReWardView = (ReWardView) mInfoDetailHeader.findViewById(R.id.v_reward);
+        mCommentHintView = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_detail_comment);
+        mCommentCountView = (TextView) mInfoDetailHeader.findViewById(R.id.tv_comment_count);
+        mInfoRelateList = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_relate_list);
+        mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
+        mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
+        mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
         initAdvert(context, adverts);
     }
 
-    public void setDetail(AnswerInfoBean answerInfoBean) {
-        if (answerInfoBean != null) {
-            // 资讯content
-            if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
+    public void setDetail(CirclePostDetailBean circlePostDetailBean) {
+        if (circlePostDetailBean != null) {
+            mTitle.setText(circlePostDetailBean.getTitle());
+//            mChannel.setVisibility(VISIBLE);
+            mChannel.setText("原创");
+            String from = circlePostDetailBean.getUser().getName();
+            if (!TextUtils.isEmpty(from)) {
+                mFrom.setText(from);
+            }
+            mContentSubject.setVisibility(GONE);
+
+            // 资讯contente
+            if (!TextUtils.isEmpty(circlePostDetailBean.getBody())) {
                 InternalStyleSheet css = new Github();
-                css.addRule("body", "line-height: 1.6", "padding: 10px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
+                css.addRule("body", "line-height: 1.6", "padding: 0px");
+                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
                 mContent.addStyleSheet(css);
-                mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
+                mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
+
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -182,52 +190,15 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
                     }
                 });
             }
-            RxView.clicks(mUserInfoContainer)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        if (mAnswerHeaderEventListener != null && answerInfoBean.getAnonymity() != 1) {
-                            mAnswerHeaderEventListener.clickUserInfo(answerInfoBean.getUser());
-                        }
-                    });
-
-            boolean isAnonmity = answerInfoBean.getAnonymity() == 1;
-            boolean isSelf = answerInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
-            mDescription.setText(isSelf || !isAnonmity ? answerInfoBean.getUser().getIntro() : "");
-            mUserFollow.setVisibility((isAnonmity || isSelf) ? GONE : VISIBLE);
-            // 自己的匿名回答，增加匿名提示
-            if (isAnonmity) {
-                mName.setText(!isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user)
-                        : answerInfoBean.getUser().getName() + mContext.getString(R.string.qa_question_answer_anonymity_current_user));
-                ConvertUtils.stringLinkConvert(mName, setLinks());
-            } else {
-                mName.setText(answerInfoBean.getUser().getName());
-            }
-            mUserFollow.setChecked(!isAnonmity && answerInfoBean.getUser().isFollower());
             // 评论信息
-            updateCommentView(answerInfoBean);
-            mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
-            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false, !isSelf && isAnonmity);
-
+            updateCommentView(circlePostDetailBean);
         }
     }
 
-    private List<Link> setLinks() {
-        List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(mContext.getString(R.string.qa_question_answer_anonymity_current_user)).setTextColor(ContextCompat.getColor(mContext, R.color
-                .normal_for_assist_text))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(followCountLink);
-        return links;
-    }
-
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mAnswerDetailHeader
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
-        boolean noAdvert=!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || (adverts != null && adverts.isEmpty());
-        if (noAdvert) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts == null || adverts != null && adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
@@ -283,30 +254,26 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
 
     }
 
-    public void updateUserFollow(boolean isFollowed) {
-        mUserFollow.setChecked(isFollowed);
-        mUserFollow.setText(isFollowed ? mUserFollow.getContext().getString(R.string.qa_topic_followed) : mUserFollow.getContext().getString(R.string.qa_topic_follow));
-        mUserFollow.setPadding(isFollowed ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) : mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-    }
-
-    public void updateDigList(AnswerInfoBean answerInfoBean) {
-        if (answerInfoBean == null) {
+    public void updateDigList(CirclePostDetailBean circlePostDetailBean) {
+        if (circlePostDetailBean == null) {
             return;
         }
 
-        mDigListView.setDigCount(answerInfoBean.getLikes_count());
-        mDigListView.setPublishTime(answerInfoBean.getCreated_at());
-        mDigListView.setViewerCount(answerInfoBean.getViews_count());
-        mDigListView.setDigUserHeadIconAnswer(answerInfoBean.getLikes());
+        mDigListView.setDigCount(5);
+        mDigListView.setPublishTime(circlePostDetailBean.getCreated_at());
+        mDigListView.setViewerCount(circlePostDetailBean.getViews_count());
+        // 设置点赞头像
+        mDigListView.setDigUserHeadIconPost(circlePostDetailBean.getDigs());
 
-        if (answerInfoBean.getLikes() != null
-                && answerInfoBean.getLikes().size() > 0) {
+        // 点赞信息
+        if (circlePostDetailBean.getDigs() != null
+                && circlePostDetailBean.getDigs().size() > 0) {
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
+                Intent intent = new Intent(mContext, InfoDigListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AnswerDigListFragment.DIG_LIST_DATA, answerInfoBean);
-                Intent intent = new Intent(mContext, AnswerDigListActivity.class);
-                intent.putExtras(bundle);
+                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, circlePostDetailBean);
+                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
                 mContext.startActivity(intent);
             });
         }
@@ -315,11 +282,11 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
     /**
      * 更新评论页面
      */
-    public void updateCommentView(AnswerInfoBean answerInfoBean) {
+    public void updateCommentView(CirclePostDetailBean circlePostDetailBean) {
         // 评论信息
-        if (answerInfoBean.getComments_count() != 0) {
+        if (circlePostDetailBean.getComments_count() != 0) {
             mCommentHintView.setVisibility(View.VISIBLE);
-            mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, answerInfoBean.getComments_count() + ""));
+            mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, circlePostDetailBean.getComments_count() + ""));
         } else {
             mCommentHintView.setVisibility(View.GONE);
         }
@@ -336,25 +303,46 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
     public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType, String moneyName) {
         mReWardView.initData(sourceId, data, rewardsCountBean, rewardType, moneyName);
         mReWardView.setOnRewardsClickListener(() -> {
-
         });
     }
 
-    public void setAnswerHeaderEventListener(AnswerHeaderEventListener answerHeaderEventListener) {
-        mAnswerHeaderEventListener = answerHeaderEventListener;
+    public void setReWardViewVisible(int visible) {
+        mReWardView.setVisibility(visible);
+    }
+
+    public void setAdvertViewVisible(int visible) {
+        if (visible == View.GONE || !com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mDynamicDetailAdvertHeader.hideAdvert();
+        } else if (visible == View.VISIBLE && com.zhiyicx.common.BuildConfig.USE_ADVERT
+                && mDynamicDetailAdvertHeader.getAdvertListBeans() != null && !mDynamicDetailAdvertHeader.getAdvertListBeans().isEmpty()) {
+            mDynamicDetailAdvertHeader.showAdvert();
+        }
+    }
+
+    /**
+     * @param visible 0 正常，
+     */
+    public void setInfoReviewIng(int visible) {
+        isReviewIng = true;
+        setReWardViewVisible(visible);
+        setAdvertViewVisible(visible);
+        mInfoRelateList.setVisibility(visible);
+        mFtlRelate.setVisibility(visible);
+        mDigListView.setVisibility(visible);
+        mRvRelateInfo.setVisibility(visible);
+    }
+
+    public void destroyedWeb() {
+        destryWeb(mContent);
+        destryWeb(mContentSubject);
+
     }
 
     public MarkdownView getContentWebView() {
         return mContent;
     }
 
-    public interface AnswerHeaderEventListener {
-        void userFollowClick(boolean isChecked);
-
-        void clickUserInfo(UserInfoBean user);
-    }
-    public void destroyedWeb(){
-        destryWeb(mContent);
-
+    public MarkdownView getContentSubWebView() {
+        return mContentSubject;
     }
 }

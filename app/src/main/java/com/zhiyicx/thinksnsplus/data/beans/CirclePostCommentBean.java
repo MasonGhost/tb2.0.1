@@ -56,8 +56,17 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
     private UserInfoBean replyUser;
     private String created_at;
     @SerializedName(value = "to_user_id", alternate = {"target_user"})
-    private int to_user_id;// 发动态人的 id
+    private long to_user_id;// 发动态人的 id
     private int state = SEND_ING;
+    private boolean pinned ;// 是否是被固定
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
 
     public Long getId() {
         return id;
@@ -139,11 +148,11 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         this.created_at = created_at;
     }
 
-    public int getTo_user_id() {
+    public long getTo_user_id() {
         return to_user_id;
     }
 
-    public void setTo_user_id(int to_user_id) {
+    public void setTo_user_id(long to_user_id) {
         this.to_user_id = to_user_id;
     }
 
@@ -153,6 +162,10 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public boolean getPinned() {
+        return this.pinned;
     }
 
 
@@ -176,8 +189,9 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         dest.writeLong(this.reply_to_user_id);
         dest.writeParcelable(this.replyUser, flags);
         dest.writeString(this.created_at);
-        dest.writeInt(this.to_user_id);
+        dest.writeLong(this.to_user_id);
         dest.writeInt(this.state);
+        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
     }
 
     /** To-one relationship, resolved on first access. */
@@ -306,14 +320,15 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         this.reply_to_user_id = in.readLong();
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.created_at = in.readString();
-        this.to_user_id = in.readInt();
+        this.to_user_id = in.readLong();
         this.state = in.readInt();
+        this.pinned = in.readByte() != 0;
     }
 
-    @Generated(hash = 153228946)
+    @Generated(hash = 2049682898)
     public CirclePostCommentBean(Long id, Long comment_mark, int circle_id, int post_id, long user_id,
             String content, String commentable_type, long commentable_id, long reply_to_user_id,
-            String created_at, int to_user_id, int state) {
+            String created_at, long to_user_id, int state, boolean pinned) {
         this.id = id;
         this.comment_mark = comment_mark;
         this.circle_id = circle_id;
@@ -326,6 +341,7 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         this.created_at = created_at;
         this.to_user_id = to_user_id;
         this.state = state;
+        this.pinned = pinned;
     }
 
     public static final Creator<CirclePostCommentBean> CREATOR = new Creator<CirclePostCommentBean>() {

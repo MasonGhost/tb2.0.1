@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
@@ -22,6 +23,7 @@ public class CircleDetailActivity extends TSActivity<CircleDetailPresenter, Circ
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .circleDetailPresenterModule(new CircleDetailPresenterModule(mContanierFragment))
+                .shareModule(new ShareModule(this))
                 .build().inject(this);
     }
 }
