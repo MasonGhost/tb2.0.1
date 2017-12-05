@@ -244,7 +244,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            if (metadata != null) {
+            if (metadata != null && metadata.getDescription() != null) {
                 mCurrentMediaId = metadata.getDescription().getMediaId();
                 updateCurrentMusic(mCurrentMediaId);
                 EventBus.getDefault().post(Integer.valueOf(mCurrentMediaId), EVENT_MUSIC_CHANGE);
@@ -378,7 +378,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             getActivity().finish();
             return;
         }
-        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(currentMusic.getDescription().getMediaId());
+        if (currentMusic.getDescription() != null) {
+            mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(currentMusic.getDescription().getMediaId());
+        }
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
@@ -462,10 +464,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private void initFirstMusic() {
         mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
-        updateCurrentMusic(MediaIDHelper.extractMusicIDFromMediaID(AppApplication
-                .getmQueueManager().getCurrentMusic().getDescription().getMediaId()));
-        mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription
-                ().getTitle());
+        try {
+            updateCurrentMusic(MediaIDHelper.extractMusicIDFromMediaID(AppApplication
+                    .getmQueueManager().getCurrentMusic().getDescription().getMediaId()));
+            mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription
+                    ().getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initLyricsAnimation() {
@@ -550,7 +557,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         MediaMetadataCompat metadata = mediaController.getMetadata();
 
-        if (metadata != null) {
+        if (metadata != null && metadata.getDescription() != null) {
             updateMediaDescription(metadata.getDescription());
             updateDuration(metadata);
         }
