@@ -741,10 +741,10 @@ public class PublishCorePresenter extends BasePresenter<PublishCoreModel, Publis
      */
     public void refreshGoldCountReduce(int decrice) {
         UserInfo info = ZhiboApplication.getUserInfo();
-        // 本地处理比例，目前是服务器处理
+/// 本地处理比例，目前是服务器处理
 //        info.setGold(info.getGold() - (int)(ZhiboApplication.getUserInfo().getAppConfigInfoFromLocal()
 //                .getWallet_ratio() * decrice / PayConfig.RATIO_UNIT));
-        info.setGold(info.getGold()-decrice);
+        info.setGold(info.getGold() - decrice);
         ZhiboApplication.setUserInfo(info);
     }
 
