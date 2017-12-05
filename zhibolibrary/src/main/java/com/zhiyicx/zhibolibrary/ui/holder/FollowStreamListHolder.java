@@ -54,11 +54,12 @@ public class FollowStreamListHolder extends ZBLBaseHolder<SearchResult> implemen
     @Override
     public void setData(SearchResult data) {
         this.mData = data;
+        if (data.user == null) {
+            return;
+        }
         mTitleTV.setText(data.user.uname);
-
-
-        mTitleTV.setText(data.user.uname);
-        Drawable drawable = mContext.getResources().getDrawable(data.user.sex == null || data.user.sex == 1 ? R.mipmap.ico_sex_man : R.mipmap.ico_sex_woman);
+        Drawable drawable = mContext.getResources().getDrawable(data.user.sex == null || data.user.sex == 1 ? R.mipmap.ico_sex_man : R.mipmap
+                .ico_sex_woman);
 /// 这一步必须要做,否则不会显示.
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         mTitleTV.setCompoundDrawables(null, null, drawable, null);
@@ -79,15 +80,14 @@ public class FollowStreamListHolder extends ZBLBaseHolder<SearchResult> implemen
             if (mOnViewClickListener != null) {
                 mOnViewClickListener.onViewClick(v, this.getPosition());
             }
-        }
-        else if (
+        } else if (
                 v.getId() == R.id.rl_container) {
             if (mData != null) {
                 watchUser(mData);
             }
         }
 
-}
+    }
 
     /**
      * 查看用户主页

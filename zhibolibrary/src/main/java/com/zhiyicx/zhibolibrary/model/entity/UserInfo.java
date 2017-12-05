@@ -172,7 +172,7 @@ public class UserInfo implements Serializable {
                     , UiUtils.getString(R.string.str_gold));
         } catch (Exception e) {
             e.printStackTrace();
-            return "0";
+            return "0.00" + UiUtils.getString(R.string.str_gold);
         }
 
     }
@@ -183,14 +183,15 @@ public class UserInfo implements Serializable {
      * @return
      */
     public String getDisPlayGold() {
-        try {
-            return UiUtils.getResources().getString(R.string.money_format, PayConfig.realCurrency2GameCurrency(gold, getAppConfigInfoFromLocal()
-                    .getWallet_ratio()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0";
-        }
-
+///  本地处理比例，现在是服务器处理，故不转换
+//        try {
+//            return UiUtils.getResources().getString(R.string.money_format, PayConfig.realCurrency2GameCurrency(gold, getAppConfigInfoFromLocal()
+//                    .getWallet_ratio()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "0.00";
+//        }
+        return UiUtils.getResources().getString(R.string.money_format, (float) gold);
     }
 
 }
