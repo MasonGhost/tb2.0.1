@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class,modules = DraftBoxPresenterModule.class)
-public interface DraftBoxComponent extends InjectComponent<DraftBoxActivity>{
+public interface DraftBoxComponent extends InjectComponent<DraftBoxFragment>{
 }

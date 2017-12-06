@@ -37,7 +37,7 @@
         tools:replace="android:allowBackup">
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="ThinkSNSFileProvider"
+            android:authorities="${applicationId}.ThinkSNSFileProvider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:replace="android:authorities">

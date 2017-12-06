@@ -186,6 +186,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 case R.id.rb_three:
                     mCurrentDays = mSelectDays.get(2);
                     break;
+                default:
             }
             setConfirmEnable();
         });
@@ -202,6 +203,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                         }
                     } else {
                         mInputMoney = 0;
+                        mInputMoneyDouble = 0f;
                     }
                     setConfirmEnable();
                 }, throwable -> {
@@ -238,11 +240,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     }
 
     private void setConfirmEnable() {
-//        boolean enable = mCurrentDays > 0 && mInputMoney > 0;
         boolean enable = mCurrentDays > 0 && mInputMoneyDouble > 0;
         mBtTop.setEnabled(enable);
-//        if (!enable)
-//            return;
         double money = mCurrentDays * mInputMoneyDouble;
         mEtTopTotal.setText(money > 0 ? money + "" : "");
     }

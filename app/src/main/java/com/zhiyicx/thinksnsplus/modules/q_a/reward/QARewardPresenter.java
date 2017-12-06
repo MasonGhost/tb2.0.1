@@ -129,6 +129,12 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                         super.onFailure(message, code);
                         mRootView.showSnackErrorMessage(message);
                     }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.dismissSnackBar();
+                    }
                 });
         addSubscrebe(subscription);
     }

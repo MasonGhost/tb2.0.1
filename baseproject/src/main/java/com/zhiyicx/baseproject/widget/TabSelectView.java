@@ -63,6 +63,7 @@ public class TabSelectView extends FrameLayout {
     private Context mContext;
     private CommonNavigator mCommonNavigator;
     private boolean mIsAdjustMode;
+    private int mLinePagerIndicator;
 
     public TabSelectView(Context context) {
         super(context);
@@ -234,7 +235,7 @@ public class TabSelectView extends FrameLayout {
             @Override
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
-                linePagerIndicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);// 适应文字长度
+                linePagerIndicator.setMode(mLinePagerIndicator);// 适应文字长度
                 //linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
                 linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
                 linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_LINE_HEGIHT)));
@@ -269,6 +270,10 @@ public class TabSelectView extends FrameLayout {
 
     public void setAdjustMode(boolean adjustMode) {
         mIsAdjustMode = adjustMode;
+    }
+
+    public void setIndicatorMode(int indicatorMode) {
+        mLinePagerIndicator = indicatorMode;
     }
 
     public void setIndicatorMatchWidth(boolean matchWidth) {

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.os.Parcelable;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -167,5 +169,7 @@ public interface MessageContract {
 
 
         void checkUnreadNotification();
+
+        UnReadNotificaitonBean getUnreadNotiBean();
     }
 }

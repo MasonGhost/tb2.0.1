@@ -7,8 +7,8 @@
     <string name="find">发现</string>
     <string name="message">消息</string>
     <string name="mine">我</string>
-    <string name="app_rule">点击下一步即代表同意《ThinkSNS+用户使用协议》</string>
-    <string name="app_rule_register">点击注册即代表同意《ThinkSNS+用户使用协议》</string>
+    <string name="app_rule">点击下一步即代表同意《%s用户使用协议》</string>
+    <string name="app_rule_register">点击注册即代表同意《%s用户使用协议》</string>
     <string name="user_rule_register">用户使用协议</string>
     <!--首页-->
     <string name="hot">热门</string>
@@ -419,10 +419,10 @@
     <string name="transaction_account">交易账户</string>
     <string name="transaction_time">交易时间</string>
     <string name="transaction_success">交易成功</string>
-    <string name="bill_doing">操作中</string>
+    <string name="bill_doing">审核中</string>
     <string name="bill_doing_fialed">操作失败</string>
     <string name="transaction_fail">交易失败</string>
-    <string name="transaction_doing">交易中&#8230;</string>
+    <string name="transaction_doing">审核中&#8230;</string>
 
     <!--意见反馈-->
     <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>
@@ -521,6 +521,9 @@
     <string name="create_topic">建议创建话题</string>
     <string name="input_topic_tip">请输入话题名称</string>
     <string name="input_topic_des_tip">请输入话题相关描述信息</string>
+
+    <string name="draft_type_questions">提问</string>
+    <string name="draft_type_answers">回答</string>
 
 
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
@@ -667,6 +670,8 @@
     <string name="request_to_publish_topic">向官方建议创建新话题</string>
     <string name="to_publish_qa">去提问</string>
     <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
+    <string name="you_must_bind_email_to_unbind_phone">你必须绑定邮箱才能解绑手机哦</string>
+    <string name="you_must_bind_phone_to_unbind_email">你必须绑定手机才能解绑邮箱哦</string>
     <string name="you_must_bind_phone2">你必须绑定手机才能绑定三方哦</string>
     <string name="bind_success">账号绑定成功</string>
     <string name="unbind_success">账号解绑成功</string>
@@ -702,7 +707,7 @@
     <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
     <string name="rank_type_like_count">点赞量：%d</string>
     <string name="rank_type_view_count">浏览量：%d</string>
-    <string name="rank_type_check_in">连续签到：%d</string>
+    <string name="rank_type_check_in">累计签到：%d</string>
     <string name="please_input_intro">请输入简介</string>
     <string name="default_intro_format">简介：%s</string>
     <string name="default_certify_format">认证：%s</string>
@@ -768,4 +773,9 @@
     <string name="can_not_use_protected_name">不能使用站点预留昵称</string>
     <string name="can_not_use_protected_email">不能使用站点预留邮箱</string>
     <string name="str_pingyin_dot">、</string>
+    <string name="app_name_info">%s 资讯</string>
+    <string name="app_name_anster">%s 回答</string>
+    <string name="delete_comment">删除评论</string>
+    <string name="delete_info">删除资讯</string>
+
 </resources>

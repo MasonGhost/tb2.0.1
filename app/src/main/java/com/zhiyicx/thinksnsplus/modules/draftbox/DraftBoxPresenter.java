@@ -1,13 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -27,6 +30,11 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     @Inject
     AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
+    @Override
+    protected boolean useEventBus() {
+        return super.useEventBus();
+    }
+
     @Inject
     public DraftBoxPresenter(DraftBoxContract.Repository repository, DraftBoxContract.View rootView) {
         super(repository, rootView);
@@ -43,10 +51,12 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     }
 
     public List<BaseDraftBean> requestCacheData() {
-        List<BaseDraftBean> answers = mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
-        List<BaseDraftBean> questions = mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
-        questions.addAll(answers);
-        return questions;
+        if (DraftBoxFragment.MY_DRAFT_TYPE_QUESTION.equals(mRootView.getDraftType())){
+            return mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        }else if(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER.equals(mRootView.getDraftType())){
+            return mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        }
+        return null;
     }
 
     @Override

@@ -86,7 +86,8 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
                 .compose(this.bindToLifecycle())
-                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
+                        .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
                         mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
@@ -102,8 +103,12 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
                     showErrorTips("");
                     setConfirmEnable(!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString().trim()));
                 });
-
-        mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        try {
+            mAppRule.setVisibility(mPresenter.getSystemConfigBean().getRegisterSettings().hasShowTerms() ? View.VISIBLE : View.GONE);
+        } catch (NullPointerException e) {
+            mAppRule.setVisibility(View.GONE);
+        }
+        mAppRule.setText(getString(R.string.app_rule, getString(R.string.app_name)));
         RxView.clicks(mAppRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())

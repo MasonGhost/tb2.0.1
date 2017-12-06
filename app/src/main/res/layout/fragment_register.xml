@@ -195,9 +195,9 @@
         android:id="@+id/tv_app_rule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:padding="@dimen/spacing_large"
-        android:text="@string/app_rule_register"/>
+       />
     </FrameLayout>
 
 </com.wcy.overscroll.OverScrollLayout>

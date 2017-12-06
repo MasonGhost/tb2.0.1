@@ -56,6 +56,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_QA_ANSWER_DETAIL;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT;
 import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
 
@@ -137,8 +138,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle("ThinkSNS+\b\b回答");
-        shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+        shareContent.setTitle(mContext.getString(R.string.app_name_anster,mContext.getString(R.string.app_name)));
+        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
                 mRootView.getAnswerInfo().getId()));
         shareContent.setContent(mRootView.getAnswerInfo().getBody());
 

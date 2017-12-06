@@ -66,22 +66,19 @@ public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePres
 
     protected Observable<Object> handleWalletBlance(long amount) {
         return mCommentRepository.getCurrentLoginUserInfo()
-                .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
-                    @Override
-                    public Observable<Object> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
-                            }
-                        } else {
+                .flatMap(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    if (userInfoBean.getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                        if (userInfoBean.getWallet().getBalance() < amount) {
                             mRootView.goRecharge(WalletActivity.class);
                             return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                         }
-                        return Observable.just(userInfoBean);
+                    } else {
+                        mRootView.goRecharge(WalletActivity.class);
+                        return Observable.error(new RuntimeException(DEFAULT_WALLET_EXCEPTION_MESSAGE));
                     }
+                    return Observable.just(userInfoBean);
                 });
     }
 
