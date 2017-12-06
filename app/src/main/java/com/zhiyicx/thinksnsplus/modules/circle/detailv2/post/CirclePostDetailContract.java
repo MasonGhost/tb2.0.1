@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -32,9 +31,9 @@ public interface CirclePostDetailContract {
 
         long getCircleId();
 
-        void allDataReady(CirclePostDetailBean data);
+        void allDataReady(CirclePostListBean data);
 
-        CirclePostDetailBean getCurrentePost();
+        CirclePostListBean getCurrentePost();
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> postRewardList);
     }
@@ -44,19 +43,18 @@ public interface CirclePostDetailContract {
 
         List<RealAdvertListBean> getAdvert();
 
-        void handleLike(boolean b, String s);
+        void handleLike(boolean isLiked, long id);
 
         void shareInfo(Bitmap bitmap);
 
-        void deletePost();
-
-        void handleCollect(boolean b, String s);
+        void handleCollect(boolean isUnCollected, long id);
 
         void sendComment(long replyUserId, String text);
     }
 
     interface Repository extends IBaseCircleRepository {
-        Observable<CirclePostDetailBean> getPostDetail(long circleId,long postId);
+        Observable<CirclePostListBean> getPostDetail(long circleId, long postId);
+
         Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after);
     }
 }

@@ -628,27 +628,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         Subscription subscribe = handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(Object o) {
-                        return mCommentRepository.paykNote(note);
+                .flatMap(o -> mCommentRepository.paykNote(note))
+                .flatMap(stringBaseJsonV2 -> {
+                    if (isImage) {
+                        return Observable.just(stringBaseJsonV2);
                     }
-                })
-                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        if (isImage) {
-                            return Observable.just(stringBaseJsonV2);
-                        }
-                        return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
-                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
-                                    @Override
-                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
-                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
-                                        return Observable.just(stringBaseJsonV2);
-                                    }
-                                });
-                    }
+                    return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
+                            .flatMap(detailBeanV2 -> {
+                                stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                return Observable.just(stringBaseJsonV2);
+                            });
                 })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override

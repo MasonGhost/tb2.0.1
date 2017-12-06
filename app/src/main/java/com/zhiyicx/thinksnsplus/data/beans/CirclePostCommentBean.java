@@ -296,13 +296,6 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 305822522)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getCirclePostCommentBeanDao() : null;
-    }
-
     public CirclePostCommentBean() {
     }
 
@@ -365,4 +358,39 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
     private transient Long commentUser__resolvedKey;
     @Generated(hash = 1789712289)
     private transient Long replyUser__resolvedKey;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CirclePostCommentBean that = (CirclePostCommentBean) o;
+
+        if (circle_id != that.circle_id) {
+            return false;
+        }
+        if (post_id != that.post_id) {
+            return false;
+        }
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + circle_id;
+        result = 31 * result + post_id;
+        return result;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 305822522)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getCirclePostCommentBeanDao() : null;
+    }
 }

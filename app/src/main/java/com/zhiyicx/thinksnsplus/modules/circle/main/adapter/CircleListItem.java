@@ -97,6 +97,7 @@ public class CircleListItem extends BaseCircleItem {
         circleSubscribe.setChecked(isJoined);
         circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
         circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        circleSubscribe.setClickable(circleInfo.getAudit() == 1);
         if (circleInfo.getAudit() == 1) {
             RxView.clicks(circleSubscribe)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

@@ -58,16 +58,17 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
             mRootView.showSnackErrorMessage("圈子还在审核啊");
             return;
         }
+        mRepository.dealCircleJoinOrExit(circleInfo);
         boolean isJoined = circleInfo.getJoined() != null;
         if (isJoined) {
+            circleInfo.setJoined(null);
             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
         } else {
+            circleInfo.setJoined(new CircleInfo.JoinedBean());
             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
         }
         // 更改数据源，切换订阅状态
-        circleInfo.setJoined(new CircleInfo.JoinedBean());
         mCircleInfoGreenDao.updateSingleData(circleInfo);
-        mRepository.dealCircleJoinOrExit(circleInfo);
         mRootView.refreshData(position);
 
     }

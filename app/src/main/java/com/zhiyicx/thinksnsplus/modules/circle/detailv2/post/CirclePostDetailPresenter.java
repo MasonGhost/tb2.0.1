@@ -9,7 +9,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -18,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLECT_UPDATE;
 
 /**
  * @author Jliuer
@@ -61,7 +65,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     mRepository.getPostDigList(mRootView.getPostId(), 0, maxId.intValue()),
                     (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
                         circlePostDetailBean.setComments(circlePostCommentBeans);
-                        circlePostDetailBean.setDigs(postDigListBeans);
+                        circlePostDetailBean.setDigList(postDigListBeans);
                         Observable.empty()
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new rx.Subscriber<Object>() {
@@ -86,9 +90,9 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BaseSubscribeForV2<CirclePostDetailBean>() {
+                    .subscribe(new BaseSubscribeForV2<CirclePostListBean>() {
                         @Override
-                        protected void onSuccess(CirclePostDetailBean data) {
+                        protected void onSuccess(CirclePostListBean data) {
                             mRootView.allDataReady(data);
 
                         }
@@ -153,12 +157,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void deleteComment(CirclePostCommentBean data) {
-//        CirclePostDetailBean circlePostListBean=mRootView.getCurrentePost();
-//        circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
-//        mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(data));
-//        mRootView.getCurrentePost().getComments().remove(commentPosition);
-//        mRootView.refreshData(postPositon);
-//        mRepository.deletePostComment(circlePostListBean.getId(), commentId);
+        CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
+        circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
+        mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
+        mRootView.getCurrentePost().getComments().remove(data);
+        mRootView.refreshData();
+        mRepository.deletePostComment(circlePostListBean.getId(), data.getId());
     }
 
     @Override
@@ -167,8 +171,32 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Override
-    public void handleLike(boolean b, String s) {
+    public void handleLike(boolean isLiked, long id) {
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao
+                .getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+        PostDigListBean digListBean = new PostDigListBean();
+        digListBean.setUser_id(userInfoBean.getUser_id());
+        digListBean.setId(System.currentTimeMillis());
+        digListBean.setDiggUserInfo(userInfoBean);
+        if (mRootView.getCurrentePost().getDigList() == null) {
+            mRootView.getCurrentePost().setDigList(new ArrayList<>());
+        }
+        if (isLiked) {
+            mRootView.getCurrentePost().getDigList().add(0, digListBean); // 放到第一个
+            mRootView.getCurrentePost().setLikes_count(mRootView.getCurrentePost().getLikes_count() + 1);
+        } else {
+            for (PostDigListBean infoDigListBean : mRootView.getCurrentePost().getDigList()) {
+                if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())) {
+                    mRootView.getCurrentePost().getDigList().remove(infoDigListBean);
+                    mRootView.getCurrentePost().setLikes_count(mRootView.getCurrentePost().getLikes_count() - 1);
+                    break;
+                }
+            }
+        }
+        mRootView.getCurrentePost().setLiked(isLiked);
+        mRootView.setDigg(isLiked);
 
+        mRepository.dealLike(isLiked, id);
     }
 
     @Override
@@ -177,13 +205,13 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Override
-    public void deletePost() {
-
-    }
-
-    @Override
-    public void handleCollect(boolean b, String s) {
-
+    public void handleCollect(boolean isUnCollected, long id) {
+        mRootView.setCollect(isUnCollected);
+        mRootView.getCurrentePost().setCollected(isUnCollected);
+        mRootView.setCollect(isUnCollected);
+        mCirclePostListBeanGreenDao.updateSingleData(mRootView.getCurrentePost());
+        EventBus.getDefault().post(mRootView.getCurrentePost(), POST_LIST_COLLECT_UPDATE);
+        mRepository.dealCollect(isUnCollected, id);
     }
 
     @Override

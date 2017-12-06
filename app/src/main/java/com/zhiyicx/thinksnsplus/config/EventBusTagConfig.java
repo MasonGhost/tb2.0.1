@@ -26,7 +26,10 @@ public class EventBusTagConfig {
     // 发送动态到频道动态列表
 
     public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL = "event_send_dynamic_to_channel";
-    // 收藏动态
+
+    /**
+     * 动态详情页收藏通知
+     */
     public static final String EVENT_COLLECT_DYNAMIC = "event_collect_dynamic";
     // 收藏圈子动态
     public static final String EVENT_COLLECT_GROUP_DYNAMIC = "event_collect_group_dynamic";
@@ -38,8 +41,21 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
     // 更新圈子收藏
     public static final String EVENT_UPDATE_GROUP_COLLECTION = "event_update_group_collection";
-    // 详情界面删除内容通知
+
+    /**
+     * 动态详情界面删除内容通知
+     */
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
+
+    /**
+     * 帖子详情界面删除内容通知
+     */
+    public static final String POST_LIST_DELETE_UPDATE = "post_list_delete_update";
+
+    /**
+     * 帖子详情界面收藏通知
+     */
+    public static final String POST_LIST_COLLECT_UPDATE = "post_list_collect_update";
     // 动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_comment_to_List";
     // 圈子的动态列表发送评论
@@ -65,7 +81,9 @@ public class EventBusTagConfig {
     // 资讯列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
 
-    // 资讯收藏
+    /**
+     * 资讯收藏
+     */
     public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
 
     // 删除资讯

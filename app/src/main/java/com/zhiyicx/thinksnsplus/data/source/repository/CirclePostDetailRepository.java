@@ -4,7 +4,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
@@ -34,7 +34,7 @@ public class CirclePostDetailRepository extends BaseCircleRepository implements 
     }
 
     @Override
-    public Observable<CirclePostDetailBean> getPostDetail(long circleId, long postId) {
+    public Observable<CirclePostListBean> getPostDetail(long circleId, long postId) {
         return mCircleClient.getPostDetail(circleId,postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

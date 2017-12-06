@@ -25,11 +25,12 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class CirclePostListBean extends BaseListBean {
+public class CirclePostListBean extends BaseListBean implements Serializable{
 
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;
+    private static final long serialVersionUID = 9154485538884327047L;
 
     /**
      * id : 88
@@ -70,9 +71,66 @@ public class CirclePostListBean extends BaseListBean {
     private List<CirclePostCommentBean> comments;
     private int state = SEND_ING;
 
+    private int reward_amount;
+    private int reward_number;
+    private String body;
+    @Convert(converter = CircleInfoConvert.class,columnType = String.class)
+    private CircleInfo group;
+    private boolean pinned ;
+    @Convert(converter = PostDigListConvert.class,columnType = String.class)
+    private List<PostDigListBean> digs;
+
     @Override
     public Long getMaxId() {
         return id;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public int getReward_amount() {
+        return reward_amount;
+    }
+
+    public void setReward_amount(int reward_amount) {
+        this.reward_amount = reward_amount;
+    }
+
+    public int getReward_number() {
+        return reward_number;
+    }
+
+    public void setReward_number(int reward_number) {
+        this.reward_number = reward_number;
+    }
+
+    public List<PostDigListBean> getDigList() {
+        return digs;
+    }
+
+    public void setDigList(List<PostDigListBean> digs) {
+        this.digs = digs;
+    }
+
+    public boolean hasPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
+
+    public CircleInfo getGroup() {
+        return group;
+    }
+
+    public void setGroup(CircleInfo group) {
+        this.group = group;
     }
 
     public Long getPost_mark() {
@@ -392,6 +450,18 @@ public class CirclePostListBean extends BaseListBean {
         this.user = user;
     }
 
+    public boolean getPinned() {
+        return this.pinned;
+    }
+
+    public List<PostDigListBean> getDigs() {
+        return this.digs;
+    }
+
+    public void setDigs(List<PostDigListBean> digs) {
+        this.digs = digs;
+    }
+
     public CirclePostListBean() {
     }
 
@@ -415,8 +485,8 @@ public class CirclePostListBean extends BaseListBean {
         this.comments = in.createTypedArrayList(CirclePostCommentBean.CREATOR);
     }
 
-    @Generated(hash = 781977652)
-    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count, int comments_count, int views_count, boolean liked, boolean collected, String created_at, String updated_at, UserInfoBean user, List<ImagesBean> images, List<CirclePostCommentBean> comments, int state) {
+    @Generated(hash = 1415342187)
+    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count, int comments_count, int views_count, boolean liked, boolean collected, String created_at, String updated_at, UserInfoBean user, List<ImagesBean> images, List<CirclePostCommentBean> comments, int state, int reward_amount, int reward_number, String body, CircleInfo group, boolean pinned, List<PostDigListBean> digs) {
         this.id = id;
         this.post_mark = post_mark;
         this.group_id = group_id;
@@ -434,6 +504,12 @@ public class CirclePostListBean extends BaseListBean {
         this.images = images;
         this.comments = comments;
         this.state = state;
+        this.reward_amount = reward_amount;
+        this.reward_number = reward_number;
+        this.body = body;
+        this.group = group;
+        this.pinned = pinned;
+        this.digs = digs;
     }
 
     public static final Creator<CirclePostListBean> CREATOR = new Creator<CirclePostListBean>() {
@@ -452,5 +528,11 @@ public class CirclePostListBean extends BaseListBean {
     }
 
     public static class CirclePostCommentConvert extends BaseConvert<List<CirclePostCommentBean>> {
+    }
+
+    public static class PostDigListConvert extends BaseConvert<List<PostDigListBean>> {
+    }
+
+    public static class CircleInfoConvert extends BaseConvert<CircleInfo> {
     }
 }

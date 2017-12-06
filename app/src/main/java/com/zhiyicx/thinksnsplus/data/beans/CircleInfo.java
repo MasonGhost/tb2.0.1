@@ -20,8 +20,9 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class CircleInfo extends BaseListBean {
+public class CircleInfo extends BaseListBean implements Serializable{
 
+    private static final long serialVersionUID = 4393338023102640914L;
     /**
      * id : 3
      * name : 白岩说

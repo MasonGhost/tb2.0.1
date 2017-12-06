@@ -14,6 +14,7 @@ import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -105,12 +106,13 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
+        mRootView.onCacheResponseSuccess(mCirclePostListBeanGreenDao.getMultiDataFromCache(),isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
-        return false;
+        mCirclePostListBeanGreenDao.saveMultiData(data);
+        return isLoadMore;
     }
 
     @Override
@@ -267,9 +269,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     }
 
+    @Subscriber(tag = EventBusTagConfig.POST_LIST_DELETE_UPDATE)
+    public void deletePost(CirclePostListBean postListBean) {
+        deletePost(postListBean, mRootView.getListDatas().indexOf(postListBean));
+        LogUtils.d(EventBusTagConfig.POST_LIST_DELETE_UPDATE);
+    }
+
     @Override
     public void onStart(Share share) {
-        
+
     }
 
     @Override

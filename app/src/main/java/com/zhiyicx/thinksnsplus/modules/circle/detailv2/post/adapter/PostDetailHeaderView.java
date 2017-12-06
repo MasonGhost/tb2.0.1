@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,44 +12,27 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.common.base.BaseApplication;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,11 +41,9 @@ import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
 
 import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
-import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 
 /**
  * @author Catherine
@@ -125,7 +105,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
         initAdvert(context, adverts);
     }
 
-    public void setDetail(CirclePostDetailBean circlePostDetailBean) {
+    public void setDetail(CirclePostListBean circlePostDetailBean) {
         if (circlePostDetailBean != null) {
             mTitle.setText(circlePostDetailBean.getTitle());
 //            mChannel.setVisibility(VISIBLE);
@@ -254,7 +234,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
 
     }
 
-    public void updateDigList(CirclePostDetailBean circlePostDetailBean) {
+    public void updateDigList(CirclePostListBean circlePostDetailBean) {
         if (circlePostDetailBean == null) {
             return;
         }
@@ -263,11 +243,11 @@ public class PostDetailHeaderView extends BaseWebLoad {
         mDigListView.setPublishTime(circlePostDetailBean.getCreated_at());
         mDigListView.setViewerCount(circlePostDetailBean.getViews_count());
         // 设置点赞头像
-        mDigListView.setDigUserHeadIconPost(circlePostDetailBean.getDigs());
+        mDigListView.setDigUserHeadIconPost(circlePostDetailBean.getDigList());
 
         // 点赞信息
-        if (circlePostDetailBean.getDigs() != null
-                && circlePostDetailBean.getDigs().size() > 0) {
+        if (circlePostDetailBean.getDigList() != null
+                && circlePostDetailBean.getDigList().size() > 0) {
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
                 Intent intent = new Intent(mContext, InfoDigListActivity.class);
@@ -282,7 +262,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
     /**
      * 更新评论页面
      */
-    public void updateCommentView(CirclePostDetailBean circlePostDetailBean) {
+    public void updateCommentView(CirclePostListBean circlePostDetailBean) {
         // 评论信息
         if (circlePostDetailBean.getComments_count() != 0) {
             mCommentHintView.setVisibility(View.VISIBLE);

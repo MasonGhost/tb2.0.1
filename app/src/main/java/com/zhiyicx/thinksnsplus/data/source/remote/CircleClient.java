@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
-import com.zhiyicx.thinksnsplus.data.beans.CirclePostDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
@@ -203,7 +203,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_POST)
-    Observable<CirclePostDetailBean> getPostDetail(@Path("circle_id") long circleId, @Path("post_id") long postId);
+    Observable<CirclePostListBean> getPostDetail(@Path("circle_id") long circleId, @Path("post_id") long postId);
 
     /**
      * 获取帖子评论
