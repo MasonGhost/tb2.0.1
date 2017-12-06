@@ -81,7 +81,7 @@ public class UpLoadFile {
      * @param filePathList 携带的文件
      * @param params       携带的表单数据
      */
-    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList, HashMap<String, Object> params) {
+    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList, Map<String, Object> params) {
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);//表单类型
@@ -97,7 +97,6 @@ public class UpLoadFile {
                     File file = new File(filePathList.get(fileParam));//filePath 图片地址
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
-//                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
                             MediaType.parse( "multipart/form-data" ), file);
                     builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {
@@ -148,10 +147,6 @@ public class UpLoadFile {
 
     public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList) {
         return upLoadFileAndParams(filePathList, null);
-    }
-
-    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList,Map<String, Object> params) {
-        return upLoadFileAndParams(filePathList, params);
     }
 
     public static List<MultipartBody.Part> upLoadFileAndProgress(Map<String, String> filePathList,ProgressRequestBody.ProgressRequestListener listener) {

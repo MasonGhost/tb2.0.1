@@ -9,6 +9,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -69,7 +70,6 @@ public class RequestIntercept implements Interceptor {
         BufferedSource source = responseBody.source();
         source.request(Long.MAX_VALUE); // Buffer the entire body.
         Buffer buffer = source.buffer();
-
         //获取content的压缩类型
         String encoding = originalResponse
                 .headers()
@@ -78,7 +78,12 @@ public class RequestIntercept implements Interceptor {
         Buffer clone = buffer.clone();
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
-        LogUtils.json(TAG, bodyString);
+        try {
+            LogUtils.json(TAG, bodyString);
+        } catch (Exception e) {
+            LogUtils.d(TAG, bodyString);
+        }
+
 
         if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
             return mListener.onHttpResponse(bodyString, chain, originalResponse);

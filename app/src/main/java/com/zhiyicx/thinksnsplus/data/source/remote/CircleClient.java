@@ -173,15 +173,16 @@ public interface CircleClient {
     @GET(APP_PATH_GET_POSTLIST)
     Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
 
+
     /**
      * 创建圈子
      *
      * @param categoryId 圈子类别id
-     * @param params     参数哟
      * @return 就是返回一个圈子
      */
     @POST(APP_PATH_CREATE_CIRCLE)
     @Multipart
+    @Headers({"Accept:application/json;charset=UTF-8"})
     Observable<BaseJsonV2<CircleInfo>> createCircle(@Path("category_id") long categoryId, @Part List<MultipartBody.Part> params);
 
     /**

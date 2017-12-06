@@ -342,6 +342,7 @@
                     android:textSize="@dimen/size_content"/>
 
                 <EditText
+                    android:id="@+id/et_circle_amount"
                     style="@style/style_dynamic_editext"
                     android:maxLength="@integer/money_input_max_size"
                     android:textColor="@color/important_for_content"
@@ -362,6 +363,7 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
+                android:id="@+id/ll_free"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -427,7 +429,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/create_circle_ps_height"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:text="@string/edit_circle_rule"

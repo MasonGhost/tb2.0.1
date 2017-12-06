@@ -16,7 +16,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:src="@drawable/frame_loading_grey"
-        android:visibility="gone"/>
+        android:visibility="invisible"/>
 
 
     <ImageView

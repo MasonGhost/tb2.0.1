@@ -131,6 +131,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     ImageView mIvSetting;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.btn_send_post)
+    ImageView mBtnSendPost;
     @BindView(R.id.tv_circle_member_count)
     TextView mTvCircleMemberCount;
     @BindView(R.id.ll_member_container)
@@ -241,7 +243,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         closeLoadingView();
         myAppBarLayoutBehavoir.setRefreshing(false);
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
-        mIvRefresh.setVisibility(View.GONE);
+        mIvRefresh.setVisibility(View.INVISIBLE);
 
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
         mTvCircleTitle.setText(detail.getName());

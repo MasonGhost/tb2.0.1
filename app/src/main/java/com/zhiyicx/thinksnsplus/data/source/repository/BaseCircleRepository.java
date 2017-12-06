@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -23,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -71,8 +73,10 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<CircleInfo>> createCircle(long categoryId, Map<String, Object> params, Map<String, String> filePathList) {
-        return mCircleClient.createCircle(categoryId, UpLoadFile.upLoadFileAndParams(filePathList, params))
+    public Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean) {
+        Map<String, String> file = new HashMap<>();
+        file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
+        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls.transBean2Map(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

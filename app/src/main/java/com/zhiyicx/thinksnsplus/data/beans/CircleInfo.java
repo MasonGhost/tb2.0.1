@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -20,7 +21,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class CircleInfo extends BaseListBean implements Serializable{
+public class CircleInfo extends BaseListBean implements Serializable {
 
     private static final long serialVersionUID = 4393338023102640914L;
     /**
@@ -68,7 +69,7 @@ public class CircleInfo extends BaseListBean implements Serializable{
     private int audit;
     private String created_at;
     private String updated_at;
-    @Convert(columnType = String.class,converter = JoinedBeanConvert.class)
+    @Convert(columnType = String.class, converter = JoinedBeanConvert.class)
     private JoinedBean joined;
 
     public String getAvatar() {
@@ -247,7 +248,7 @@ public class CircleInfo extends BaseListBean implements Serializable{
         this.joined = joined;
     }
 
-    public static class JoinedBean implements Parcelable,Serializable{
+    public static class JoinedBean implements Parcelable, Serializable {
         private static final long serialVersionUID = -2874474992456690897L;
         /**
          * id : 2
@@ -414,6 +415,11 @@ public class CircleInfo extends BaseListBean implements Serializable{
     public CircleInfo() {
     }
 
+    public CircleInfo(long id) {
+        this.id = id;
+    }
+
+
     protected CircleInfo(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -442,8 +448,8 @@ public class CircleInfo extends BaseListBean implements Serializable{
 
     @Generated(hash = 198916784)
     public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count, int category_id, String location,
-            String longitude, String latitude, String geo_hash, int allow_feed, String mode, int money, String summary, String notice, int users_count,
-            int posts_count, int audit, String created_at, String updated_at, JoinedBean joined) {
+                      String longitude, String latitude, String geo_hash, int allow_feed, String mode, int money, String summary, String notice, int users_count,
+                      int posts_count, int audit, String created_at, String updated_at, JoinedBean joined) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
@@ -480,5 +486,25 @@ public class CircleInfo extends BaseListBean implements Serializable{
         }
     };
 
-    public static class JoinedBeanConvert extends BaseConvert<JoinedBean>{}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CircleInfo that = (CircleInfo) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public static class JoinedBeanConvert extends BaseConvert<JoinedBean> {
+    }
 }

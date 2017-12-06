@@ -15,14 +15,12 @@
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#cccccc">
+            android:layout_height="match_parent">
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/circle_appbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#aaaaaa"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:elevation="0dp"
                 app:layout_behavior="@string/appbar_overscroll_behavior">
@@ -56,8 +54,6 @@
 
                     </android.support.v7.widget.Toolbar>
 
-
-
                 </android.support.design.widget.CollapsingToolbarLayout>
 
 
@@ -84,6 +80,15 @@
                 app:showLimitSize="@integer/show_comment_input_size">
 
             </com.zhiyicx.baseproject.widget.InputLimitView>
+
+            <ImageView
+                android:id="@+id/btn_send_post"
+                android:layout_width="@dimen/channel_detail_float_btn_height"
+                android:layout_height="@dimen/channel_detail_float_btn_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/floating_button_bottom_margin"
+                android:scaleType="fitXY"
+                android:src="@mipmap/channel_btn_suspension" />
 
         </android.support.design.widget.CoordinatorLayout>
     </LinearLayout>

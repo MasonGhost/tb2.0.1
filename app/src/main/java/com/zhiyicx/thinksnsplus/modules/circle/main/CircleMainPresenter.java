@@ -12,6 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 
 /**
  * @author Jliuer
@@ -31,7 +32,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
-        Observable.zip(mRepository.getCircleCount(),
+        Subscription subscription = Observable.zip(mRepository.getCircleCount(),
                 mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0),
                 mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
@@ -67,6 +68,8 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     }
                 });
 
+        addSubscrebe(subscription);
+
     }
 
     @Override
@@ -76,15 +79,29 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
     @Override
     public void getRecommendCircle() {
-        mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0)
+        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
-                        mRootView.getListDatas().subList(6, mRootView.getListDatas().size() - 1).clear();
-                        mRootView.getListDatas().addAll(data);
-                        mRootView.refreshRangeData(6,5);
+                        int start = mRootView.getListDatas().indexOf(new CircleInfo(BaseCircleItem.RECOMMENDCIRCLE)) + 1;
+                        List<CircleInfo> subs = mRootView.getListDatas().subList(0, start);
+                        subs.addAll(data);
+                        mRootView.getListDatas().clear();
+                        mRootView.getListDatas().addAll(subs);
+                        mRootView.refreshData();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override
