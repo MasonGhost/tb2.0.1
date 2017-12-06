@@ -153,12 +153,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void deleteComment(CirclePostCommentBean data) {
-        CirclePostDetailBean circlePostListBean=mRootView.getCurrentePost();
-        circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
-        mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(data));
-        mRootView.getCurrentePost().getComments().remove(commentPosition);
-        mRootView.refreshData(postPositon);
-        mRepository.deletePostComment(circlePostListBean.getId(), commentId);
+//        CirclePostDetailBean circlePostListBean=mRootView.getCurrentePost();
+//        circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
+//        mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(data));
+//        mRootView.getCurrentePost().getComments().remove(commentPosition);
+//        mRootView.refreshData(postPositon);
+//        mRepository.deletePostComment(circlePostListBean.getId(), commentId);
     }
 
     @Override
