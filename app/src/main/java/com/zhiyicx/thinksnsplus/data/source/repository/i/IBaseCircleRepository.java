@@ -28,7 +28,9 @@ public interface IBaseCircleRepository {
 
     Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId);
 
-    Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet,String type);
+    Observable<List<CirclePostListBean>> getMinePostList(int limit, int offet, int type);
+
+    Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
 
     Observable<List<CircleInfo>> getAllCircle(int limit, int offet);
 

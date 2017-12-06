@@ -287,6 +287,11 @@
         <item>@string/joined_group</item>
         <item>待审核的</item>
     </string-array>
+    <string-array name="circle_post_mine_type">
+        <item>我发布的</item>
+        <item>已置顶的</item>
+        <item>置顶待审核</item>
+    </string-array>
     <!--收藏-->
     <string name="collect">收藏</string>
     <string name="collect_dynamic">动态</string>

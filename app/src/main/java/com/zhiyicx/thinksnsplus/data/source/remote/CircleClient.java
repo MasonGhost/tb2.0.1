@@ -35,6 +35,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
@@ -187,6 +188,17 @@ public interface CircleClient {
      */
     @GET(APP_PATH_GET_POSTLIST)
     Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
+
+    /**
+     * 获取我的帖子列表
+     *
+     * @param limit
+     * @param offet
+     * @param type 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     * @return
+     */
+    @GET(APP_PATH_GET_MINE_POSTLIST)
+    Observable<CirclePostBean> getMinePostList(@Query("limit") int limit, @Query("offet") int offet, @Query("type") int type);
 
     /**
      * 创建圈子

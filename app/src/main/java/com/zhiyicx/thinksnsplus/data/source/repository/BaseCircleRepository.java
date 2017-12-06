@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
+import retrofit2.http.PUT;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -54,6 +55,21 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     protected UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    /**
+     * 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     */
+    public enum CircleMinePostType {
+        PUBLISH(1),
+        HAD_PINNED(2),
+        WAIT_PINNED_AUDIT(3);
+        public int value;
+
+        CircleMinePostType(int value) {
+            this.value = value;
+        }
+    }
+
 
     @Inject
     public BaseCircleRepository(ServiceManager serviceManager) {
@@ -84,8 +100,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet,String type) {
-        return mCircleClient.getMyJoinedCircle(limit, offet,type)
+    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type) {
+        return mCircleClient.getMyJoinedCircle(limit, offet, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -218,6 +234,20 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
         return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId));
+    }
+
+    /**
+     * 获取我的帖子列表
+     *
+     * @param limit
+     * @param offet
+     * @param type
+     * @return
+     */
+    @Override
+    public Observable<List<CirclePostListBean>> getMinePostList(int limit, int offet, int type) {
+        return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type));
+
     }
 
     private Observable<List<CirclePostListBean>> dealWithPostList(Observable<CirclePostBean> observable) {

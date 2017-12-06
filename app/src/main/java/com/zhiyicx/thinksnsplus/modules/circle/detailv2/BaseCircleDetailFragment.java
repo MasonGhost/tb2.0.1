@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -47,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
@@ -60,7 +60,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
@@ -85,12 +84,12 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
- * @author Jliuer
- * @Date 2017/11/21/9:50
- * @Email Jliuer@aliyun.com
- * @Description
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/12/6
+ * @Contact master.jungle68@gmail.com
  */
-public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Presenter, CirclePostListBean>
+public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContract.Presenter, CirclePostListBean>
         implements CircleDetailContract.View, CirclePostListBaseItem.OnReSendClickListener,
         CirclePostNoPullRecyclerView.OnCommentStateClickListener<CirclePostCommentBean>, CirclePostListCommentView.OnCommentClickListener,
         CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
@@ -98,64 +97,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         , PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String CIRCLE_ID = "circle_id";
+    public static final String CIRCLE_TYPE = "circle_type";
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
-    @BindView(R.id.circle_title_layout)
-    RelativeLayout mTitleContainerParent;
-    @BindView(R.id.circle_appbar_layout)
-    AppBarLayout mAppBarLayout;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
-    @BindView(R.id.iv_refresh)
-    ImageView mIvRefresh;
-    @BindView(R.id.uc_zoomiv)
-    ImageView mIvCircleHeadBg;
-    @BindView(R.id.iv_circle_head)
-    ImageView mIvCircleHead;
-    @BindView(R.id.tv_dynamic_count)
-    TextView mTvCirclePostCount;
-    @BindView(R.id.tv_type)
-    TextView mTvCirclePostOrder;
-    @BindView(R.id.tv_circle_title)
-    TextView mTvCircleTitle;
-    @BindView(R.id.tv_circle_member)
-    TextView mTvCircleMember;
-    @BindView(R.id.tv_circle_dec)
-    TextView mTvCircleDec;
-    @BindView(R.id.tv_circle_subscrib)
-    CheckBox mTvCircleSubscrib;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.iv_serach)
-    ImageView mIvSerach;
-    @BindView(R.id.iv_share)
-    ImageView mIvShare;
-    @BindView(R.id.iv_setting)
-    ImageView mIvSetting;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.tv_circle_member_count)
-    TextView mTvCircleMemberCount;
-    @BindView(R.id.ll_member_container)
-    LinearLayout mLlMemberContainer;
-    @BindView(R.id.ll_detail_container)
-    LinearLayout mLlDetailContainer;
-    @BindView(R.id.ll_earnings_container)
-    LinearLayout mLlEarningsContainer;
-    @BindView(R.id.ll_permission_container)
-    LinearLayout mLlPermissionContainer;
-    @BindView(R.id.ll_report_container)
-    LinearLayout mLlReportContainer;
-    @BindView(R.id.ll_circle_navigation_container)
-    LinearLayout mLlCircleNavigationContainer;
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
-
-    private ActionBarDrawerToggle mToggle;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletPostPopWindow;
@@ -172,17 +122,18 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private long mReplyToUserId;// 被评论者的 id
     private PhotoSelectorImpl mPhotoSelector;
 
-    private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
-
     private boolean updateHeadImg;
 
-    public static CircleDetailFragment newInstance(long circle_id) {
-        CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
+    private BaseCircleRepository.CircleMinePostType mCircleMinePostType = BaseCircleRepository.CircleMinePostType.PUBLISH;
+
+    public static BaseCircleDetailFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
+        BaseCircleDetailFragment circleDetailFragment = new BaseCircleDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(CIRCLE_ID, circle_id);
+        bundle.putSerializable(CIRCLE_TYPE, circleMinePostType);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -194,6 +145,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .shareModule(new ShareModule(getActivity()))
                 .build()
                 .inject(this);
+        if (getArguments() != null) {
+            mCircleMinePostType = (BaseCircleRepository.CircleMinePostType) getArguments().getSerializable(CIRCLE_TYPE);
+        }
     }
 
     @Override
@@ -212,33 +166,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
-    protected int setToolBarBackgroud() {
-        return android.R.color.transparent;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
-    }
-
-    @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseCenterLoading() {
-        return true;
-    }
-
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        return 0;
     }
 
     @Override
@@ -246,11 +175,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         return ITEM_SPACING;
     }
 
-    @Override
-    protected void setLoadingViewHolderClick() {
-        super.setLoadingViewHolderClick();
-        mPresenter.requestNetData(0L, false);
-    }
 
     @Override
     public long getCircleId() {
@@ -260,43 +184,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
-        myAppBarLayoutBehavoir.setRefreshing(false);
-        ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
-        mIvRefresh.setVisibility(View.GONE);
-
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
-        mTvCircleTitle.setText(detail.getName());
-        mTvCircleSubscrib.setVisibility(detail.getJoined() == null ? View.GONE : View.VISIBLE);
-        mTvCircleDec.setText("位置：\t" + detail.getLocation());
-        mTvCircleMember.setText("成员\t" + detail.getUsers_count());
-        mTvCirclePostCount.setText(detail.getPosts_count() + "个帖子");
-
         if (!updateHeadImg) {
             updateHeadImg = true;
-
-            Glide.with(mActivity)
-                    .load(detail.getAvatar())
-                    .error(R.drawable.shape_default_image)
-                    .placeholder(R.drawable.shape_default_image)
-                    .into(mIvCircleHead);
-
-            Glide.with(mActivity)
-                    .load(detail.getAvatar())
-                    .placeholder(R.drawable.shape_default_image)
-                    .transform(new GaussianBlurTrasnform(mActivity))
-                    .error(R.drawable.shape_default_image)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            mIvCircleHeadBg.setImageDrawable(resource);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            mIvCircleHeadBg.setImageDrawable(errorDrawable);
-                        }
-                    });
         }
     }
 
@@ -313,25 +203,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         setAdapter(adapter, new CirclePostListItemForSevenImage(getContext()));
         setAdapter(adapter, new CirclePostListItemForEightImage(getContext()));
         setAdapter(adapter, new CirclePostListItemForNineImage(getContext()));
-        CirclePostEmptyItem emptyItem = new CirclePostEmptyItem();
-        adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
-        // 增加空数据，用于显示占位图
-        if (!isLoadMore && data.isEmpty() && getCircleId() >= 0) {
-            CirclePostListBean emptyData = new CirclePostListBean();
-            data.add(emptyData);
-        }
-        super.onNetResponseSuccess(data, isLoadMore);
-    }
-
-    @Override
     protected void initData() {
-        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
     }
 
@@ -339,64 +216,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     protected void initView(View rootView) {
         super.initView(rootView);
         AndroidBug5497Workaround.assistActivity(getActivity());
-        initToolBar();
-        mDrawer.setClipToPadding(false);
-        mDrawer.setClipChildren(false);
-        mDrawer.setScrimColor(Color.TRANSPARENT);
-        mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                View mContent = mDrawer.getChildAt(0);
-                ViewHelper.setTranslationX(mContent,
-                        -drawerView.getMeasuredWidth() * slideOffset);
-            }
-        };
-
-        mDrawer.addDrawerListener(mToggle);
-        mToggle.syncState();
-
-        myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
-                ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
-
-        myAppBarLayoutBehavoir.setOnRefreshChangeListener(new AppBarLayoutOverScrollViewBehavior.onRefreshChangeListener() {
-            @Override
-            public void onRefreshShow() {
-                mIvRefresh.setVisibility(View.VISIBLE);
-                ((AnimationDrawable) mIvRefresh.getDrawable()).start();
-            }
-
-            @Override
-            public void doRefresh() {
-                mPresenter.requestNetData(0L, false);
-            }
-        });
         mIlvComment.setOnSendClickListener(this);
-    }
-
-    private void initToolBar() {
-        if (setUseStatusView()) {
-            // toolBar 设置状态栏高度的 marginTop
-            int height = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolbar.getLayoutParams();
-            layoutParams.setMargins(0, height, 0, 0);
-            mToolbar.setLayoutParams(layoutParams);
-        }
-        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) mLlCircleNavigationContainer.getLayoutParams();
-        params.width = DeviceUtils.getScreenWidth(getActivity()) / 2;
-        mLlCircleNavigationContainer.setLayoutParams(params);
-
     }
 
     @Override
@@ -610,7 +430,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteComment(circlePostListBean, dynamicPositon, circlePostListBean.getComments().get(commentPosition).getId(), commentPosition);
+                    mPresenter.deleteComment(circlePostListBean, dynamicPositon, circlePostListBean.getComments().get(commentPosition).getId(),
+                            commentPosition);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -627,7 +448,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         Long feed_id = circlePostListBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyPostPopWindow = ActionPopupWindow.builder()
-                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                        .dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
@@ -743,31 +565,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         adapter.addItemViewDelegate(circlePostListBaseItem);
     }
 
-    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
-            R.id.ll_permission_container, R.id.ll_report_container})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.ll_member_container:
-                break;
-            case R.id.ll_detail_container:
-                break;
-            case R.id.ll_earnings_container:
-                break;
-            case R.id.ll_permission_container:
-                break;
-            case R.id.ll_report_container:
-                break;
-            default:
-        }
-    }
-
     @Override
     public boolean isNeedHeaderInfo() {
-        return true;
+        return false;
     }
 
     @Override
     public int getCircleMinePostType() {
-        return 0;
+        return mCircleMinePostType.value;
     }
 }

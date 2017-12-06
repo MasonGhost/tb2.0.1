@@ -21,6 +21,14 @@ public interface CircleDetailContract {
     interface View extends ITSListView<CirclePostListBean, Presenter> {
         long getCircleId();
         void allDataReady(CircleZipBean circleZipBean);
+
+        /**
+         * 是否需要头信息
+         * @return true 需要
+         */
+        boolean isNeedHeaderInfo();
+
+        int getCircleMinePostType();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {

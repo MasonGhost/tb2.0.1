@@ -72,7 +72,7 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
             mFragmentList = new ArrayList<>();
         }
         mFragmentList.add(new MyCircleContentContainerFragment());
-        mFragmentList.add(new MyAnswerContainerFragment());
+        mFragmentList.add(new MyCirclePostContentContainerFragment());
         return mFragmentList;
     }
 

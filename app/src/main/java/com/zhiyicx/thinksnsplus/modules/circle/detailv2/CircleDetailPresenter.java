@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -69,40 +71,72 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (!isLoadMore) {
-            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle(mRootView.getCircleId(),
-                    maxId),
-                    CircleZipBean::new)
-                    .map(circleZipBean -> {
-                        List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
-                        for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
-                                    .getMaxId().intValue());
-                            if (!circlePostCommentBeans.isEmpty()) {
-                                circlePostCommentBeans.addAll(data.get(i).getComments());
-                                data.get(i).getComments().clear();
-                                data.get(i).getComments().addAll(circlePostCommentBeans);
+
+        // 需要头信息
+        if (mRootView.isNeedHeaderInfo()) {
+            if (!isLoadMore) {
+                Subscription subscribe = Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle
+                                (mRootView.getCircleId(),
+                                        maxId),
+                        CircleZipBean::new)
+                        .map(circleZipBean -> {
+                            List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
+                            for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
+                                List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
+                                        .getMaxId().intValue());
+                                if (!circlePostCommentBeans.isEmpty()) {
+                                    circlePostCommentBeans.addAll(data.get(i).getComments());
+                                    data.get(i).getComments().clear();
+                                    data.get(i).getComments().addAll(circlePostCommentBeans);
+                                }
                             }
-                        }
-                        return circleZipBean;
-                    })
-                    .subscribe(new BaseSubscribeForV2<CircleZipBean>() {
+                            return circleZipBean;
+                        }).subscribe(new BaseSubscribeForV2<CircleZipBean>() {
+                            @Override
+                            protected void onSuccess(CircleZipBean data) {
+                                mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
+                                mRootView.allDataReady(data);
+                            }
+
+                            @Override
+                            protected void onFailure(String message, int code) {
+                                super.onFailure(message, code);
+                            }
+
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                super.onException(throwable);
+                            }
+                        });
+                addSubscrebe(subscribe);
+
+            }
+
+        } else {
+            Subscription subscribe = mRepository.getMinePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), mRootView
+                    .getCircleMinePostType())
+                    .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
                         @Override
-                        protected void onSuccess(CircleZipBean data) {
-                            mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
-                            mRootView.allDataReady(data);
+                        protected void onSuccess(List<CirclePostListBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+
                         }
 
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            mRootView.showMessage(message);
                         }
 
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
+                            mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
+            addSubscrebe(subscribe);
+
+
         }
     }
 
