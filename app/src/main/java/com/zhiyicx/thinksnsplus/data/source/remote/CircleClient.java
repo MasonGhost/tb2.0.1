@@ -56,6 +56,20 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMI
 public interface CircleClient {
 
     /**
+     * 我加入的圈子接口
+     * 默认: join, join 我加入 audit 待审核
+     */
+    enum MineCircleType {
+        JOIN("join"),
+        AUDIT("audit");
+        public String value;
+
+        MineCircleType(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
      * @param limit 返回条数 默认为15
      * @param offet 翻页偏移量
      * @author Jliuer
@@ -90,12 +104,13 @@ public interface CircleClient {
     /**
      * 获取已经加入的圈子
      *
-     * @param limit
-     * @param offet
+     * @param limit 默认 20 ，数据返回条数 默认为20
+     * @param offet 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param type  默认: join, join 我加入 audit 待审核
      * @return
      */
     @GET(APP_PATH_GET_MY_JOINED_CIRCLE)
-    Observable<List<CircleInfo>> getMyJoinedCircle(@Query("limit") int limit, @Query("offet") int offet);
+    Observable<List<CircleInfo>> getMyJoinedCircle(@Query("limit") int limit, @Query("offet") int offet, @Query("type") String type);
 
     /**
      * 获取全部圈子
@@ -207,6 +222,7 @@ public interface CircleClient {
 
     /**
      * 获取帖子评论
+     *
      * @param postId
      * @param limit
      * @param offet
@@ -217,6 +233,7 @@ public interface CircleClient {
 
     /**
      * 获取帖子点赞列表
+     *
      * @param postId
      * @param limit
      * @param offet
@@ -227,6 +244,7 @@ public interface CircleClient {
 
     /**
      * 获取帖子打赏列表
+     *
      * @param postId
      * @param limit
      * @param offet

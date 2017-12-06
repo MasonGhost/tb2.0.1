@@ -6,10 +6,10 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * @author Catherine
- * @describe
- * @date 2017/8/25
- * @contact email:648129313@qq.com
+ * @Describe 我的圈子列表
+ * @Author Jungle68
+ * @Date 2017/12/6
+ * @Contact master.jungle68@gmail.com
  */
 @Module
 public class MyGroupPresenterModule {

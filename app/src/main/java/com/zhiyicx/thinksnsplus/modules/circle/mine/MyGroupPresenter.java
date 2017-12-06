@@ -15,12 +15,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
-
 /**
- * @author Catherine
- * @describe
- * @date 2017/8/25
- * @contact email:648129313@qq.com
+ * @Describe 我的圈子列表
+ * @Author Jungle68
+ * @Date 2017/12/6
+ * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
 public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repository, MyGroupContract.View> implements MyGroupContract.Presenter {

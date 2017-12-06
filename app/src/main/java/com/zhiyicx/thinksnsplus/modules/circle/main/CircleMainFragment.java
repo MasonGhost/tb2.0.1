@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -112,11 +113,18 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         closeLoadingView();
     }
 
+    /**
+     * 查看我加入的
+     *
+     * @param groupInfoBean
+     */
     @Override
     public void toAllJoinedCircle(CircleInfo groupInfoBean) {
         if (mListDatas.size() <= TITLEVOUNT) {
             return;
         }
+        Intent intent = new Intent(getActivity(), MyJoinedCircleActivity.class);
+        startActivity(intent);
     }
 
     @Override
