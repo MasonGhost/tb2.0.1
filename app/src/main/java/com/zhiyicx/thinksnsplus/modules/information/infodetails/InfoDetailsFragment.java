@@ -404,8 +404,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.deleteComment(data);
                     mDeletCommentPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteComment(data);
+                    }, true);
 
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
@@ -427,7 +429,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
                     if (isMine) {
-                        mPresenter.deleteInfo();
+                        showDeleteTipPopupWindow(getString(R.string.delete_info), () -> {
+                            mPresenter.deleteInfo();
+                        }, true);
                     } else {
                         mPresenter.handleCollect(!infoMation.getHas_collect(),
                                 mInfoMation.getId() + "");

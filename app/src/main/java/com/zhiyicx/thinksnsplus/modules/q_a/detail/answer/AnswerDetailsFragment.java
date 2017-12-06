@@ -413,8 +413,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     startActivity(intent);
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.deleteComment(data);
                     mDeletCommentPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteComment(data);
+                    }, true);
 
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
@@ -454,8 +456,10 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {// 删除
-                    mPresenter.deleteAnswer();
                     mDealInfoMationPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete), () -> {
+                        mPresenter.deleteAnswer();
+                    }, true);
                 })
                 .item2ClickListener(() -> {// 采纳
                     mDealInfoMationPopWindow.hide();

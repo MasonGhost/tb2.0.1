@@ -228,10 +228,12 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
-        mPresenter.uploadPic(path, "", true, 0, 0);
+        if (mPresenter != null) {
+            mPresenter.uploadPic(path, "", true, 0, 0);
+        }
         mSubsamplingScaleImageView = mRicheTest.insertImage(path, mRicheTest.getWidth());
         mPicTag++;
-        LogUtils.d("uploadPicSuccess::"+mPicTag);
+        LogUtils.d("uploadPicSuccess::" + mPicTag);
     }
 
     @Override
@@ -289,7 +291,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (mPicTag > 0) {
             mPicTag--;
         }
-        LogUtils.d("onImageDelete::"+mPicTag);
+        LogUtils.d("onImageDelete::" + mPicTag);
     }
 
     @Override

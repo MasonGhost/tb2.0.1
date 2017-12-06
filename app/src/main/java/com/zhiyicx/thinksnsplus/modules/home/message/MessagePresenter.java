@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -110,6 +111,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 通知的小红点
      */
     private boolean mNotificaitonRedDotIsShow;
+
+    /**
+     * 用户未读消息
+     */
+    private UnReadNotificaitonBean mUnReadNotificaitonBean;
 
     private Subscription mUnreadNotiSub;
 
@@ -250,8 +256,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    int size = mRootView.getListDatas().size();
-                    for (int i = 0; i < size; i++) {
+                    for (int i = 0; i < mRootView.getListDatas().size(); i++) {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
                                 .getCid());
                         if (message != null) {
@@ -259,6 +264,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
                             mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
                                     .getListDatas().get(i).getConversation().getCid()));
+                        } else {
+                            mRootView.getListDatas().remove(i);
                         }
                     }
                     checkBottomMessageTip();
@@ -358,6 +365,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         LogUtils.i("addBtnAnimation notification", data);
                     }
                 });
+    }
+
+    @Override
+    public UnReadNotificaitonBean getUnreadNotiBean() {
+        return mUnReadNotificaitonBean;
     }
 
     /**
@@ -468,13 +480,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
 
-        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(messageItemBean.getConversation().getCid());
-        if (message != null) {
-            messageItemBean.getConversation().setLast_message(message);
-            messageItemBean.getConversation().setLast_message_time(message.getCreate_time());
-            mRootView.getListDatas().add(0, messageItemBean);
-            mRootView.refreshData();
-        }
+        mRootView.getListDatas().add(0, messageItemBean);
+        mRootView.refreshData();
 
     }
 
@@ -540,6 +547,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mUnreadNotiSub = mRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
+                    mUnReadNotificaitonBean = data;
                     if (data.getCounts() == null) {
                         return false;
                     }

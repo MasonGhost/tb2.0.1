@@ -191,7 +191,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle("ThinkSNS+\b\b资讯");
+        shareContent.setTitle(mContext.getString(R.string.app_name_info,mContext.getString(R.string.app_name)));
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());

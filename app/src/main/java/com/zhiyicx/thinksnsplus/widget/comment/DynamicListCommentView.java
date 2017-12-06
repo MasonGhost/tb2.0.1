@@ -35,7 +35,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class DynamicListCommentView extends LinearLayout {
-    private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
+    public static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
 
     private DynamicNoPullRecycleView mDynamicNoPullRecycleView;
     private TextView mMoreComment;

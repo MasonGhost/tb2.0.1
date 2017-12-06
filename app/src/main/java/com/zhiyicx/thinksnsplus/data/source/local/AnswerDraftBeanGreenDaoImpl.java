@@ -77,6 +77,9 @@ public class AnswerDraftBeanGreenDaoImpl extends CommonCacheImpl<AnswerDraftBean
 
     @Override
     public void deleteSingleCache(AnswerDraftBean dta) {
+        if (dta == null) {
+            return;
+        }
         mAnswerDraftBeanDao.delete(dta);
     }
 

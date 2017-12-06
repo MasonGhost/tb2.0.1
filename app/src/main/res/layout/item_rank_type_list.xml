@@ -17,8 +17,10 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/size_rank_number"
             android:textColor="@color/themeColor"
-            tools:text="100"
-            android:layout_marginRight="@dimen/spacing_large"/>
+            tools:text="1000"
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
 
     <RelativeLayout
             android:layout_width="0dp"

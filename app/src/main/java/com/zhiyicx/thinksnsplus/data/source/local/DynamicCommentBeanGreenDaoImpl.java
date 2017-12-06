@@ -76,14 +76,17 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
             return;
         }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
-        if (dynamicCommentBean.get_id() == null) {
+        if (dynamicCommentBean.get_id() == null && dynamicCommentBean.getComment_mark() != null) {
             dynamicCommentBean = dynamicCommentBeanDao.queryBuilder()
-                    .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(dynamicCommentBean.getComment_mark()))
+                    .where(DynamicCommentBeanDao.Properties.Comment_mark.eq(dynamicCommentBean.getComment_mark()))
                     .unique();
         }
-        dynamicCommentBeanDao.delete(dynamicCommentBean);
 
-
+        try {
+            dynamicCommentBeanDao.delete(dynamicCommentBean);
+            // 没有缓存
+        } catch (Exception e) {
+        }
     }
 
     /**

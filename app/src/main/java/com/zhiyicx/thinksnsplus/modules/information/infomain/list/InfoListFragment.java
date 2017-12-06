@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -72,6 +73,12 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -66,6 +67,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_home_message_list;
+    }
+
+    @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
     }
@@ -82,10 +88,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         rootView.setBackgroundResource(R.color.bgColor);
     }
 
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
 
     @Override
     protected boolean showToolbar() {
@@ -111,15 +113,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    /**
-     * 是否需要上拉加载
-     *
-     * @return true 是需要
-     */
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
-    }
 
     @Override
     public void onResume() {
@@ -136,7 +129,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null&&mListDatas.isEmpty()) {
+        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
     }
@@ -300,6 +293,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     private void toReviewList() {
         Bundle bundle = new Bundle();
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
+        if (mPresenter.getUnreadNotiBean() != null && mPresenter.getUnreadNotiBean().getPinneds() != null) {
+            bundle.putParcelable(MessageReviewFragment.BUNDLE_PINNED_DATA, mPresenter.getUnreadNotiBean().getPinneds());
+        }
         to.putExtras(bundle);
         startActivity(to);
     }

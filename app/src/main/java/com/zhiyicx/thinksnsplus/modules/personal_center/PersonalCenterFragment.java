@@ -803,8 +803,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
-                            commentPosition);
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(),
+                                commentPosition);
+                    }, true);
+
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -842,9 +845,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     mDeletDynamicPopWindow.hide();
                 })
                 .item4ClickListener(() -> {
-                    updateDynamicCounts(-1);
-                    mPresenter.deleteDynamic(dynamicBean, position);
                     mDeletDynamicPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        updateDynamicCounts(-1);
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                    }, true);
                 })
                 .item1ClickListener(() -> {
                     mPresenter.shareDynamic(dynamicBean, shareBitmap);

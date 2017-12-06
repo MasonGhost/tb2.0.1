@@ -98,7 +98,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     /**
-     *  item 间距单位 dp
+     * item 间距单位 dp
      */
     public static final long ITEM_SPACING = 5L;
     @BindView(R.id.fl_container)
@@ -731,10 +731,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
-                                    .getComments().get(commentPosition).getComment_id(),
-                            commentPosition);
-                    showBottomView(true);
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
+                                        .getComments().get(commentPosition).getComment_id(),
+                                commentPosition);
+                        showBottomView(true);
+                    }, true);
+
                 })
                 .bottomClickListener(() -> {
                     mDeletCommentPopWindow.hide();
@@ -836,8 +839,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item5ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
-                    mPresenter.deleteDynamic(dynamicBean, position);
-                    showBottomView(true);
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                        showBottomView(true);
+                    }, true);
+
                 })
                 .bottomClickListener(() -> {//取消
                     mMyDynamicPopWindow.hide();

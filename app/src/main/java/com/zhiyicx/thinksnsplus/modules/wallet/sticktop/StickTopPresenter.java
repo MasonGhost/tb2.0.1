@@ -67,7 +67,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
      */
     @Override
     public void stickTop(long parent_id) {
-        if (mRootView.getInputMoney() < 0) {
+        if (mRootView.getInputMoney() <= 0) {
             mRootView.initStickTopInstructionsPop();
             return;
         }
@@ -84,19 +84,16 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<Integer>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<Integer>> call(UserInfoBean userInfoBean) {
-                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
-                        if (userInfoBean.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
-                            if (userInfoBean.getWallet().getBalance() < amount) {
-                                mRootView.goRecharge(WalletActivity.class);
-                                return Observable.error(new RuntimeException(""));
-                            }
+                .flatMap(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    if (userInfoBean.getWallet() != null) {
+                        mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                        if (userInfoBean.getWallet().getBalance() < amount) {
+                            mRootView.goRecharge(WalletActivity.class);
+                            return Observable.error(new RuntimeException(""));
                         }
-                        return mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
                     }
+                    return mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
                 }, throwable -> {
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
@@ -126,7 +123,7 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.showSnackErrorMessage(message);
-                        mRootView.onFailure(message,code);
+                        mRootView.onFailure(message, code);
                     }
 
                     @Override

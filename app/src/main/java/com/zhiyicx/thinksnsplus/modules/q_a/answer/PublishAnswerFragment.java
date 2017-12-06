@@ -106,13 +106,17 @@ public class PublishAnswerFragment extends PublishContentFragment {
     @Override
     public void publishSuccess(AnswerInfoBean answerBean) {
         super.publishSuccess(answerBean);
-        getActivity().finish();
+        AnswerDraftBean draftBean=new AnswerDraftBean();
+        draftBean.setMark(getArguments().getLong(BUNDLE_SOURCE_MARK));
+        mPresenter.deleteAnswer(draftBean);
     }
 
     @Override
     public void updateSuccess() {
         super.updateSuccess();
-        getActivity().finish();
+        AnswerDraftBean draftBean=new AnswerDraftBean();
+        draftBean.setMark(getArguments().getLong(BUNDLE_SOURCE_MARK));
+        mPresenter.deleteAnswer(draftBean);
     }
 
     @Override
@@ -130,14 +134,12 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
-
-//        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
-//            super.onBackPressed();
-//        } else {
-//            initEditWarningPop();
-//        }
+//        super.onBackPressed();
+        if (!mToolbarRight.isEnabled() || mType == PublishType.UPDATE_ANSWER) {
+            super.onBackPressed();
+        } else {
+            initEditWarningPop();
+        }
     }
 
     /**
@@ -199,6 +201,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
                     AnswerDraftBean answerDraftBean = new AnswerDraftBean();
                     long mark = Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
                             .currentTimeMillis());
+                    // 覆盖草稿
                     if (draftMark != 0) {
                         mark = draftMark;
                     }

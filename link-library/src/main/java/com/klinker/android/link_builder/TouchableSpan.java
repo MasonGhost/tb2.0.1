@@ -84,17 +84,17 @@ public class TouchableSpan extends TouchableBaseSpan {
         // handle the click
         if (link.getClickListener() != null) {
             List<String> splitTextList = new ArrayList<>();
-            if (link.getLinkMetadata()!=null){
+            if (link.getLinkMetadata() != null) {
                 String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg="((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?";
+                String reg = "((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
-                    String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+                    String result = targetStr.substring(matcher1.start(), matcher1.end());
                     splitTextList.add(result);
                 }
             }
-            String backText=splitTextList.isEmpty()?link.getText():splitTextList.get(position);
+            String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
             link.getClickListener().onClick(backText, link.getLinkMetadata());
         }
         super.onClick(widget);
@@ -110,9 +110,9 @@ public class TouchableSpan extends TouchableBaseSpan {
         // handle the long click
         if (link.getLongClickListener() != null) {
             List<String> splitTextList = new ArrayList<>();
-            if (link.getLinkMetadata()!=null){
+            if (link.getLinkMetadata() != null) {
                 String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg="((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?";
+                String reg = "((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
@@ -120,7 +120,7 @@ public class TouchableSpan extends TouchableBaseSpan {
                     splitTextList.add(result);
                 }
             }
-            String backText=splitTextList.isEmpty()?link.getText():splitTextList.get(position);
+            String backText = splitTextList.isEmpty() ? link.getText() : splitTextList.get(position);
             link.getLongClickListener().onLongClick(backText, link.getLinkMetadata());
             Log.d("onLongClick:", position + "");
         }

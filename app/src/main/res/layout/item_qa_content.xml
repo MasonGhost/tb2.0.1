@@ -76,6 +76,8 @@
             tools:text="ssss"/>
 
         <TextView
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:drawableLeft="@mipmap/icon_shang"
             android:id="@+id/item_info_reward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

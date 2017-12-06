@@ -206,6 +206,7 @@ public final class TSnackbar {
                     case MSG_DISMISS:
                         ((TSnackbar) message.obj).hideView(message.arg1);
                         return true;
+                        default:
                 }
                 return false;
             }

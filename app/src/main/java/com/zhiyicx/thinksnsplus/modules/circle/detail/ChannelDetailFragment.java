@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -87,8 +88,10 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectD
  * @date 2017/4/11
  * @contact email:450127106@qq.com
  */
-public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, GroupDynamicListBean> implements ChannelDetailContract.View, GroupDynamicListBaseItem.OnReSendClickListener,
-        GroupDynamicNoPullRecycleView.OnCommentStateClickListener<GroupDynamicCommentListBean>, GroupDynamicListCommentView.OnCommentClickListener, GroupDynamicListBaseItem.OnMenuItemClickLisitener, GroupDynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
+public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, GroupDynamicListBean> implements ChannelDetailContract
+        .View, GroupDynamicListBaseItem.OnReSendClickListener,
+        GroupDynamicNoPullRecycleView.OnCommentStateClickListener<GroupDynamicCommentListBean>, GroupDynamicListCommentView.OnCommentClickListener,
+        GroupDynamicListBaseItem.OnMenuItemClickLisitener, GroupDynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         GroupDynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
         , PhotoSelectorImpl.IPhotoBackListener {
 
@@ -141,7 +144,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
-        mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
+        mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent,
+                mPresenter);
         mItemChannelDetailHeader.initHeaderView(false, setHeadShow());
 
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
@@ -540,6 +544,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletDynamicPopWindow.hide();
+
                     mPresenter.deleteDynamic(dynamicBean, position);
                 })
                 .bottomClickListener(() -> mDeletDynamicPopWindow.hide())
@@ -605,7 +610,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getNew_comments().get(commentPosition).getId(), commentPosition);
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getNew_comments().get(commentPosition).getId(),
+                                commentPosition);
+                    }, true);
+
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -629,7 +638,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initToolBar() {
         if (!setUseStatusView()) {
             // toolBar 设置状态栏高度的 marginTop
-            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources
+                    ().getDimensionPixelSize(R.dimen.divider_line);
             CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
             mLlToolbarContainerParent.setLayoutParams(layoutParams);
         }
@@ -811,7 +821,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                        .dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
@@ -826,8 +837,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item3ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
-                    mPresenter.deleteDynamic(dynamicBean, position);
-                    showBottomView(true);
+                    showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        mPresenter.deleteDynamic(dynamicBean, position);
+                        showBottomView(true);
+                    }, true);
+
                 })
                 .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitMap);
@@ -874,4 +888,16 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     protected boolean setHeadShow() {
         return true;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDeletDynamicPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendDynamicPopWindow);
+        dismissPop(mOtherDynamicPopWindow);
+        dismissPop(mMyDynamicPopWindow);
+    }
+
 }

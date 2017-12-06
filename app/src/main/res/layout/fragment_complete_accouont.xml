@@ -56,6 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/spacing_large"
-            android:text="@string/app_rule"/>
+          />
     </LinearLayout>
 </LinearLayout>

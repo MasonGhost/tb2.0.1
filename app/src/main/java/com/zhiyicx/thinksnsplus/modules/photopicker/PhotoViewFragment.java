@@ -25,11 +25,13 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.PhotoViewDataCacheBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,10 +54,6 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFrag
 
 public class PhotoViewFragment extends TSFragment {
 
-
-    public final static String ARG_SELCTED_PATH = "ARG_SELECTED_PATHS";// 传进来的已经被选择的图片
-    public final static String ARG_ALL_PATH = "ARG_ALL_PATHS";// 传进来的所有的图片路径
-    public final static String ARG_CURRENT_ITEM = "ARG_CURRENT_ITEM";
     public final static int REQUEST_CODE = 100;
 
     @BindView(R.id.vp_photos)
@@ -98,8 +96,9 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected String setRightTitle() {
-        if (!hasRightTitle)
+        if (!hasRightTitle) {
             return "";
+        }
         mToolbarRight.setTextColor(getColor(R.color.themeColor));
         return getString(R.string.toll_setting);
     }
@@ -251,18 +250,19 @@ public class PhotoViewFragment extends TSFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle bundle = getArguments();
+        PhotoViewDataCacheBean photoViewDataCacheBean = SharePreferenceUtils.getObject(getContext().getApplicationContext(),
+                SharePreferenceTagConfig.SHAREPREFERENCE_TAG_PHOTO_VIEW_INTNET_CACHE);
 
-        if (bundle != null) {
-            seletedPaths = bundle.getStringArrayList(ARG_SELCTED_PATH);
+        if (photoViewDataCacheBean != null) {
+            seletedPaths = photoViewDataCacheBean.getSelectedPhoto();
             checkImagePath.addAll(seletedPaths);
             seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
-            allPaths = bundle.getStringArrayList(ARG_ALL_PATH);
-            currentItem = bundle.getInt(ARG_CURRENT_ITEM);
-            hasRightTitle = bundle.getBoolean(RIGHTTITLE);
-            rectList = bundle.getParcelableArrayList("rect");
-            maxCount = bundle.getInt(ARG_MAX_COUNT);
-            tolls = bundle.getParcelableArrayList(OLDTOLL);
+            allPaths = photoViewDataCacheBean.getAllPhotos();
+            currentItem = photoViewDataCacheBean.getCurrentPosition();
+            hasRightTitle = photoViewDataCacheBean.isToll();
+            rectList = photoViewDataCacheBean.getAnimationRectBeanArrayList();
+            maxCount = photoViewDataCacheBean.getMaxCount();
+            tolls = photoViewDataCacheBean.getSelectedPhotos();
             removePlaceHolder(tolls);
         }
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
@@ -287,24 +287,12 @@ public class PhotoViewFragment extends TSFragment {
             case R.id.bt_complete:
                 setResult(false);
                 break;
+            default:
         }
     }
 
-    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos,
-                                                ArrayList<AnimationRectBean> animationRectBeen,
-                                                int currentItem, int maxCount, boolean isToll,
-                                                ArrayList<ImageBean> tolls) {
-
+    public static PhotoViewFragment newInstance() {
         PhotoViewFragment f = new PhotoViewFragment();
-        Bundle args = new Bundle();
-        args.putStringArrayList(ARG_SELCTED_PATH, (ArrayList<String>) selectedPaths);
-        args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
-        args.putInt(ARG_CURRENT_ITEM, currentItem);
-        args.putInt(ARG_MAX_COUNT, maxCount);
-        args.putBoolean(RIGHTTITLE, isToll);
-        args.putParcelableArrayList(OLDTOLL, tolls);
-        args.putParcelableArrayList("rect", animationRectBeen);
-        f.setArguments(args);
         return f;
     }
 
@@ -410,8 +398,9 @@ public class PhotoViewFragment extends TSFragment {
     }
 
     public void removePlaceHolder(List<ImageBean> list) {
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             return;
+        }
         Iterator<ImageBean> iamgesIterator = list.iterator();
         while (iamgesIterator.hasNext()) {
             ImageBean data = iamgesIterator.next();

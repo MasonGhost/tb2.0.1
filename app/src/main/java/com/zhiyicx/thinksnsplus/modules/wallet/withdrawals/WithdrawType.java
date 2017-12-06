@@ -10,7 +10,7 @@ public enum WithdrawType {
 
     ALIWITHDRAW("alipay"),
 
-    WXWITHDRAW("wx");
+    WXWITHDRAW("wechat");
 
     public String type;
 
