@@ -35,8 +35,15 @@ public class EventBusTagConfig {
     public static final String EVENT_COLLECT_GROUP_DYNAMIC = "event_collect_group_dynamic";
     // 点赞圈子动态
     public static final String EVENT_DIG_GROUP_DYNAMIC = "event_dig_group_dynamic";
-    // 更新动态列表
+    /**
+     * 更新动态列表
+     */
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
+
+    /**
+     * 更新帖子列表
+     */
+    public static final String EVENT_UPDATE_POST = "event_update_post";
     // 更新圈子动态列表
     public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
     // 更新圈子收藏
@@ -58,10 +65,16 @@ public class EventBusTagConfig {
     public static final String POST_LIST_COLLECT_UPDATE = "post_list_collect_update";
     // 动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_comment_to_List";
-    // 圈子的动态列表发送评论
+
+    /**
+     * 圈子的动态发送评论
+     */
     public static final String EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC = "event_send_comment_to_grouop_dynamic";
 
-    public static final String EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC = "event_send_comment_to_circle_dynamic";
+    /**
+     * 帖子詳情頁評論
+     */
+    public static final String EVENT_SEND_COMMENT_TO_CIRCLE_POST = "event_send_comment_to_circle_post";
 
     // 动态图片付费
     public static final String EVENT_DYNAMIC_TOLL_PICTRUE = "event_dynamic_toll_pictrue";

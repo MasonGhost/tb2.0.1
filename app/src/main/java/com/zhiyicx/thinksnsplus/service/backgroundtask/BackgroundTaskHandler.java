@@ -75,7 +75,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
@@ -1211,7 +1211,7 @@ public class BackgroundTaskHandler {
                             circlePostCommentBean.setComment_mark(comment_mark);
                             circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC);
+                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1225,7 +1225,7 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                     }
 
                     @Override
@@ -1233,7 +1233,7 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
                         mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
-                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                     }
                 });
 

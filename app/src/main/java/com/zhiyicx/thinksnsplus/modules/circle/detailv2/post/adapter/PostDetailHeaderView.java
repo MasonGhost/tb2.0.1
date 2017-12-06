@@ -239,7 +239,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
             return;
         }
 
-        mDigListView.setDigCount(5);
+        mDigListView.setDigCount(circlePostDetailBean.getLikes_count());
         mDigListView.setPublishTime(circlePostDetailBean.getCreated_at());
         mDigListView.setViewerCount(circlePostDetailBean.getViews_count());
         // 设置点赞头像

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -26,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -36,6 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -70,7 +73,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         if (!isLoadMore) {
-            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
+            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()),
+                    mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
                     CircleZipBean::new)
                     .map(circleZipBean -> {
                         List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
@@ -106,7 +110,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mCirclePostListBeanGreenDao.getMultiDataFromCache(),isLoadMore);
+        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments();
+        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -233,7 +238,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         return position;
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_DYNAMIC)
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
     public void handleSendComment(CirclePostCommentBean circlePostCommentBean) {
         Observable.just(circlePostCommentBean)
                 .subscribeOn(Schedulers.newThread())
@@ -273,6 +278,37 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void deletePost(CirclePostListBean postListBean) {
         deletePost(postListBean, mRootView.getListDatas().indexOf(postListBean));
         LogUtils.d(EventBusTagConfig.POST_LIST_DELETE_UPDATE);
+    }
+
+    /**
+     * 详情界面处理了数据
+     * 处理更新动态数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_POST)
+    public void updatePost(Bundle data) {
+        Subscription subscribe = Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.computation())
+                .map(bundle -> {
+                    boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
+                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                    int position = mRootView.getListDatas().indexOf(postListBean);
+                    // 如果列表有当前评论
+                    if (position != -1) {
+                        mRootView.getListDatas().set(position, postListBean);
+                    }
+                    return isNeedRefresh ? position : -1;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    if (integer != -1) {
+                        mRootView.refreshData();
+                    }
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
     }
 
     @Override

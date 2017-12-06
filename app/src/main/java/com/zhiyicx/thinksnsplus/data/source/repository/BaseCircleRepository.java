@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -54,6 +55,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     protected UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
 
     @Inject
     public BaseCircleRepository(ServiceManager serviceManager) {
@@ -115,7 +118,30 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet) {
         return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(postDigListBeans -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    for (PostDigListBean digListBean : postDigListBeans) {
+                        user_ids.add(digListBean.getUser_id());
+                        user_ids.add(digListBean.getTarget_user());
+                    }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(postDigListBeans);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(listBaseJson -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : listBaseJson) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                for (PostDigListBean digListBean : postDigListBeans) {
+                                    digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
+                                    digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
+                                }
+                                return postDigListBeans;
+                            });
+                });
     }
 
     @Override
@@ -231,16 +257,19 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 })
                 .flatMap(postListBeans -> {
                     final List<Object> user_ids = new ArrayList<>();
+                    List<CirclePostCommentBean> comments = new ArrayList<>();
                     for (CirclePostListBean circlePostListBean : postListBeans) {
                         user_ids.add(circlePostListBean.getUser_id());
                         if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
                             continue;
                         }
+                        comments.addAll(circlePostListBean.getComments());
                         for (CirclePostCommentBean commentListBean : circlePostListBean.getComments()) {
                             user_ids.add(commentListBean.getUser_id());
                             user_ids.add(commentListBean.getReply_to_user_id());
                         }
                     }
+                    mCirclePostCommentBeanGreenDao.saveMultiData(comments);
                     if (user_ids.isEmpty()) {
                         return Observable.just(postListBeans);
                     }

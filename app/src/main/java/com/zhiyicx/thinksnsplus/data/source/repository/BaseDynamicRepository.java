@@ -133,7 +133,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .subscribe(aBoolean -> {
                     BackgroundRequestTaskBean backgroundRequestTaskBean;
                     HashMap<String, Object> params = new HashMap<>();
-//                    params.put("feed_id", feed_id);
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig

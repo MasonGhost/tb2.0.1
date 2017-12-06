@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -58,7 +57,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
@@ -311,6 +309,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore) {
+        super.onCacheResponseSuccess(data, isLoadMore);
+        if (!data.isEmpty()) {
+            closeLoadingView();
+        }
+    }
+
+    @Override
     protected void initData() {
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
@@ -393,7 +399,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position).getGroup_id(), mListDatas.get(position).getId());
+        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
     }
 
     @Override
@@ -408,7 +414,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void goPostDetail(int position, boolean b) {
-
+        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
     }
 
     @Override

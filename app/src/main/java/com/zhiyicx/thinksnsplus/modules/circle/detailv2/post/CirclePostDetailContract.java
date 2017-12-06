@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
@@ -36,6 +37,8 @@ public interface CirclePostDetailContract {
         CirclePostListBean getCurrentePost();
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> postRewardList);
+
+        Bundle getArgumentsBundle();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostCommentBean> {
