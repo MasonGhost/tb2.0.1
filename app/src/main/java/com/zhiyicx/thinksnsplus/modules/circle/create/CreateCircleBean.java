@@ -22,9 +22,9 @@ public class CreateCircleBean {
     @Expose(serialize = false)
     private String filePath;
     @Expose(serialize = false)
-    private String fileName="avatar";
+    private String fileName = "avatar";
     @Expose(serialize = false)
-    private String fileType="multipart/form-data";
+    private String fileType = "multipart/form-data";
     @Expose(serialize = false)
     private long categoryId;
     private int allow_feed;
@@ -71,11 +71,18 @@ public class CreateCircleBean {
         this.filePath = filePath;
     }
 
-    public static class TagId{
+    public static class TagId {
         private long id;
 
         public TagId(long id) {
             this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "id=" + id +
+                    '}';
         }
     }
 
@@ -157,5 +164,26 @@ public class CreateCircleBean {
 
     public void setTags(List<TagId> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateCircleBean{" +
+                "name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", geo_hash='" + geo_hash + '\'' +
+                ", summary='" + summary + '\'' +
+                ", notice='" + notice + '\'' +
+                ", mode='" + mode + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", categoryId=" + categoryId +
+                ", allow_feed=" + allow_feed +
+                ", money='" + money + '\'' +
+                ", tags=" + tags +
+                '}';
     }
 }

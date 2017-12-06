@@ -38,7 +38,9 @@ public class RequestIntercept implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         if (mListener != null)//在请求服务器之前可以拿到request,做一些操作比如给request添加header,如果不做操作则返回参数中的request
+        {
             request = mListener.onHttpRequestBefore(chain, request);
+        }
 
         Buffer requestbuffer = new Buffer();
         if (request.body() != null) {
@@ -78,15 +80,15 @@ public class RequestIntercept implements Interceptor {
         Buffer clone = buffer.clone();
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
-        try {
-            LogUtils.json(TAG, bodyString);
-        } catch (Exception e) {
-            LogUtils.d(TAG, bodyString);
-        }
+        LogUtils.json(TAG, bodyString);
+        // 服務器出錯時候打印
+        LogUtils.d(TAG, bodyString);
 
 
         if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+        {
             return mListener.onHttpResponse(bodyString, chain, originalResponse);
+        }
 
         return originalResponse;
     }
