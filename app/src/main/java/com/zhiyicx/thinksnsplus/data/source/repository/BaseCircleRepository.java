@@ -84,8 +84,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet) {
-        return mCircleClient.getMyJoinedCircle(limit, offet, CircleClient.MineCircleType.JOIN.value)
+    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet,String type) {
+        return mCircleClient.getMyJoinedCircle(limit, offet,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,7 +35,8 @@ public class MyJoinedCirclePresenter extends AppBasePresenter<MyJoinedCircleCont
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getMyJoinedCircle(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
+        Subscription subscribe = mRepository.getMyJoinedCircle(TSListFragment.DEFAULT_PAGE_SIZE
+                , maxId.intValue(),mRootView.getMineCircleType())
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
 
                     @Override
@@ -79,6 +81,7 @@ public class MyJoinedCirclePresenter extends AppBasePresenter<MyJoinedCircleCont
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override

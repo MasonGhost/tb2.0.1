@@ -6,8 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListPresenter;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListPresenterModule;
@@ -40,6 +42,14 @@ public class MyJoinedCircleFragment extends TSListFragment<MyJoinedCircleContrac
 
     private boolean mIsNeedToolBar;
 
+    public static MyJoinedCircleFragment newInstance(boolean isNeedToolBar) {
+        MyJoinedCircleFragment circleListFragment = new MyJoinedCircleFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BUNDLE_IS_NEED_TOOLBAR, isNeedToolBar);
+        circleListFragment.setArguments(bundle);
+        return circleListFragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +64,18 @@ public class MyJoinedCircleFragment extends TSListFragment<MyJoinedCircleContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return mIsNeedToolBar;
     }
 
     @Override
     protected boolean showToolBarDivider() {
-        return mIsNeedToolBar;
+        return true;
     }
 
     @Override
@@ -77,19 +92,15 @@ public class MyJoinedCircleFragment extends TSListFragment<MyJoinedCircleContrac
         }
     }
 
-    public static MyJoinedCircleFragment newInstance(boolean isNeedToolBar) {
-        MyJoinedCircleFragment circleListFragment = new MyJoinedCircleFragment();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(BUNDLE_IS_NEED_TOOLBAR, isNeedToolBar);
-        circleListFragment.setArguments(bundle);
-        return circleListFragment;
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.joined_group);
     }
-
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(this));
+        adapter.addItemViewDelegate(new CircleListItem(true,getContext(),this));
         return adapter;
     }
 
@@ -123,5 +134,10 @@ public class MyJoinedCircleFragment extends TSListFragment<MyJoinedCircleContrac
     @Override
     protected Long getMaxId(@NotNull List<CircleInfo> data) {
         return (long) mListDatas.size();
+    }
+
+    @Override
+    public String getMineCircleType() {
+        return  CircleClient.MineCircleType.JOIN.value;
     }
 }

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,10 +33,9 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
         Observable.zip(mRepository.getCircleCount(),
-                mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0),
+                mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
                 mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
-
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
                     CircleInfo moreJoined = new CircleInfo();
                     moreJoined.setName("我加入的");
@@ -82,7 +82,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     protected void onSuccess(List<CircleInfo> data) {
                         mRootView.getListDatas().subList(6, mRootView.getListDatas().size() - 1).clear();
                         mRootView.getListDatas().addAll(data);
-                        mRootView.refreshRangeData(6,5);
+                        mRootView.refreshRangeData(6, 5);
                     }
                 });
     }

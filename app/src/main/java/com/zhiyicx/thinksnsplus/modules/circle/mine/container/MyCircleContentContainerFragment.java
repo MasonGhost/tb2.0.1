@@ -10,6 +10,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyWaitAuditCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerFragment;
 
@@ -52,17 +53,17 @@ public class MyCircleContentContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getResources().getStringArray(R.array.qa_mine_answer_title));
+        return Arrays.asList(getResources().getStringArray(R.array.circle_mine_type));
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
-            mFragments = new ArrayList<>();
+        if (mFragmentList == null) {
+            mFragmentList=new ArrayList();
+            mFragmentList.add(MyJoinedCircleFragment.newInstance(false));
+            mFragmentList.add(MyWaitAuditCircleFragment.newInstance(false));
         }
-        mFragments.add(MyJoinedCircleFragment.newInstance(false));
-        mFragments.add(MyJoinedCircleFragment.newInstance(false));
-        return mFragments;
+        return mFragmentList;
     }
 
     @Override

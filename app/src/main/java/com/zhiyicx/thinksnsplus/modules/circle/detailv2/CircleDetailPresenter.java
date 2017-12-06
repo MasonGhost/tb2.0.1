@@ -70,12 +70,14 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         if (!isLoadMore) {
-            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
+            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle(mRootView.getCircleId(),
+                    maxId),
                     CircleZipBean::new)
                     .map(circleZipBean -> {
                         List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
                         for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i).getMaxId().intValue());
+                            List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
+                                    .getMaxId().intValue());
                             if (!circlePostCommentBeans.isEmpty()) {
                                 circlePostCommentBeans.addAll(data.get(i).getComments());
                                 data.get(i).getComments().clear();
@@ -106,7 +108,11 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mCirclePostListBeanGreenDao.getMultiDataFromCache(),isLoadMore);
+        try {
+            mRootView.onCacheResponseSuccess(mCirclePostListBeanGreenDao.getMultiDataFromCache(), isLoadMore);
+        } catch (Exception e) {
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+        }
     }
 
     @Override

@@ -18,6 +18,7 @@ import rx.Observable;
 public interface MyJoinedCircleContract {
 
     interface View extends ITSListView<CircleInfo, Presenter> {
+        String getMineCircleType();
     }
 
     interface Presenter extends ITSListPresenter<CircleInfo> {
