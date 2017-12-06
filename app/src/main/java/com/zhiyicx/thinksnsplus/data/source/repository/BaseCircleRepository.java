@@ -233,7 +233,14 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId));
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId).subscribeOn
+                (Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(circlePostBean -> {
+                    List<CirclePostListBean> data = circlePostBean.getPinneds();
+                    data.addAll(circlePostBean.getPosts());
+                    return data;
+                }));
     }
 
     /**
@@ -246,20 +253,16 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      */
     @Override
     public Observable<List<CirclePostListBean>> getMinePostList(int limit, int offet, int type) {
-        return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type));
+        return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type).subscribeOn(Schedulers.io()));
 
     }
 
-    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<CirclePostBean> observable) {
+    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {
 
-        return observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(circlePostBean -> {
-                    List<CirclePostListBean> data = circlePostBean.getPinneds();
-                    data.addAll(circlePostBean.getPosts());
-                    return data;
-                })
-                .flatMap(postListBeans -> {
+        return
+                observable
+                        .observeOn(Schedulers.io())
+                        .flatMap(postListBeans -> {
                     final List<Object> user_ids = new ArrayList<>();
                     for (CirclePostListBean circlePostListBean : postListBeans) {
                         user_ids.add(circlePostListBean.getUser_id());
@@ -312,6 +315,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return postListBeans;
                             });
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

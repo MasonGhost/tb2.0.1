@@ -152,7 +152,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_circle_detail;
+        return R.layout.fragment_base_circle_detail;
     }
 
     @Override

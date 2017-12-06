@@ -198,7 +198,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_MINE_POSTLIST)
-    Observable<CirclePostBean> getMinePostList(@Query("limit") int limit, @Query("offet") int offet, @Query("type") int type);
+    Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") int limit, @Query("offet") int offet, @Query("type") int type);
 
     /**
      * 创建圈子
