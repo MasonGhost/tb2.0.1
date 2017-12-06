@@ -168,7 +168,7 @@ public class CreateCircleBean {
 
     @Override
     public String toString() {
-        return "CreateCircleBean{" +
+        return "{" +
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", longitude='" + longitude + '\'' +
@@ -177,10 +177,6 @@ public class CreateCircleBean {
                 ", summary='" + summary + '\'' +
                 ", notice='" + notice + '\'' +
                 ", mode='" + mode + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", fileType='" + fileType + '\'' +
-                ", categoryId=" + categoryId +
                 ", allow_feed=" + allow_feed +
                 ", money='" + money + '\'' +
                 ", tags=" + tags +

@@ -35,6 +35,11 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return super.isNeedRefreshDataWhenComeIn();
     }

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -218,6 +220,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             }
             return true;
         });
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
     }
 
     @Override
