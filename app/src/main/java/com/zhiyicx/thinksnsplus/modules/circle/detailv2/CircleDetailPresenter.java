@@ -74,7 +74,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Subscription subscription =
                 Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()),
-                        mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
+                        mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId,mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();

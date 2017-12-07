@@ -21,6 +21,8 @@ public interface CircleDetailContract {
     interface View extends ITSListView<CirclePostListBean, Presenter> {
         long getCircleId();
         void allDataReady(CircleZipBean circleZipBean);
+
+        String getType();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {

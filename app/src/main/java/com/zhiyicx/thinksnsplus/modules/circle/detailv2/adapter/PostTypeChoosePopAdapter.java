@@ -94,7 +94,7 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
     }
 
     public enum MyPostTypeEnum {
-        ALL(null),
+        ALL("latest_post"),
         LATEST_POST("latest_post"),
         LATEST_COMMENT("latest_reply");
         public String value;

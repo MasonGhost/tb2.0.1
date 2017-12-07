@@ -30,7 +30,7 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<CirclePostListBean>> sendCirclePost(PostPublishBean publishBean);
 
-    Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId);
+    Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId,String type);
 
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet);
 

@@ -113,7 +113,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<RewardsListBean>> getPostRewardList(long post_id, Integer limit, Integer offset, String order, String order_type) {
-        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offset,order,order_type)
+        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offset, order, order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -246,8 +246,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId));
+    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId, type));
     }
 
     private Observable<List<CirclePostListBean>> dealWithPostList(Observable<CirclePostBean> observable) {

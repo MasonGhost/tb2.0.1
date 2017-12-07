@@ -101,6 +101,7 @@ import butterknife.Unbinder;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -208,7 +209,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private boolean updateHeadImg;
 
-    private PostTypeChoosePopAdapter.MyPostTypeEnum mPostTypeEnum = PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
+    private PostTypeChoosePopAdapter.MyPostTypeEnum mPostTypeEnum = LATEST_POST;
 
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
@@ -277,6 +278,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public long getCircleId() {
         return getArguments().getLong(CIRCLE_ID);
+    }
+
+    @Override
+    public String getType() {
+        return LATEST_POST.value;
     }
 
     @Override
@@ -365,6 +371,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     protected void initData() {
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
+        initTypePop(mPostTypeEnum);
     }
 
     @Override
@@ -373,7 +380,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         AndroidBug5497Workaround.assistActivity(getActivity());
         initToolBar();
         initLisener();
-        initTypePop(mPostTypeEnum);
     }
 
     @Override
@@ -546,7 +552,24 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onChoosed(PostTypeChoosePopAdapter.MyPostTypeEnum type) {
+        switch (type) {
+            case ALL:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_all));
+                break;
+            case LATEST_POST:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_new));
+                break;
+            case LATEST_COMMENT:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_reply));
 
+                break;
+            default:
+
+        }
+        if (mTypeChoosePopupWindow != null) {
+            mTypeChoosePopupWindow.dismiss();
+        }
+        requestNetData(0L, false);
     }
 
     /**
@@ -775,6 +798,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> startActivity(new Intent(getActivity(), MarkdownActivity.class)));
 
+        RxView.clicks(mTvCirclePostOrder)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mTypeChoosePopupWindow.show());
+
 
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -814,7 +842,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private void initTypePop(PostTypeChoosePopAdapter.MyPostTypeEnum postType) {
         CommonAdapter commonAdapter = new PostTypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
-                .personal_dynamic_typpe)), postType, this);
+                .post_typpe_array)), postType, this);
         mTypeChoosePopupWindow = TypeChoosePopupWindow.Builder()
                 .with(mActivity)
                 .adapter(commonAdapter)
