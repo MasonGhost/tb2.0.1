@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -32,11 +35,16 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class CircleListItem extends BaseCircleItem {
 
-    public CircleListItem(CircleItemItemEvent circleItemItemEvent) {
-        super(circleItemItemEvent);
-    }
+    private Drawable mPayDrawable;
+    /**
+     * 是否是我加入了的
+     */
+    private boolean mIsMineJoined;
 
-    public CircleListItem() {
+    public CircleListItem(boolean isMineJoined, Context context, CircleItemItemEvent circleItemItemEvent) {
+        super(circleItemItemEvent);
+        mIsMineJoined = isMineJoined;
+        mPayDrawable = UIUtils.getCompoundDrawables(context, R.mipmap.musici_pic_pay02);
     }
 
     @Override
@@ -57,6 +65,7 @@ public class CircleListItem extends BaseCircleItem {
 
         // 名字
         TextView circleName = holder.getView(R.id.tv_circle_name);
+        circleName.setCompoundDrawables(null, null, CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode()) ? mPayDrawable : null, null);
 
         // 帖子数量
         TextView circleFeedCount = holder.getView(R.id.tv_circle_feed_count);
@@ -64,11 +73,8 @@ public class CircleListItem extends BaseCircleItem {
         // 成员数量
         TextView circleMemberCount = holder.getView(R.id.tv_circle_follow_count);
 
-        CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
+        Context context = holder.getConvertView().getContext();
 
-        TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
-
-        Context context = circleSubscribe.getContext();
 
         // 设置封面
         Glide.with(context)
@@ -95,30 +101,51 @@ public class CircleListItem extends BaseCircleItem {
                 .format();
         circleMemberCount.setText(followString);
 
-        // 设置订阅状态
-        boolean isJoined = circleInfo.getJoined() != null;
-        circleSubscribe.setChecked(isJoined);
-        circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
-        circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-        boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
-        circleSubscribeFrame.setEnabled(!canChange);
-        circleSubscribe.setEnabled(canChange);
-        RxView.clicks(circleSubscribe)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    if (mCircleItemItemEvent == null) {
-                        return;
-                    }
-                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                });
-        RxView.clicks(circleSubscribeFrame)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    if (mCircleItemItemEvent == null) {
-                        return;
-                    }
-                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                });
+        // 我加入的圈子，不需要加入操作
+        if (mIsMineJoined) {
+            TextView tvRole = holder.getView(R.id.tv_role);
+            if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals(circleInfo.getJoined().getRole())) {
+                tvRole.setVisibility(View.VISIBLE);
+                tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
+            } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR.value.equals(circleInfo.getJoined().getRole())) {
+                tvRole.setVisibility(View.VISIBLE);
+                tvRole.setText(tvRole.getResources().getString(R.string.administrator));
+            } else {
+                tvRole.setVisibility(View.GONE);
+            }
+            // 未加入的，需要申请加入
+        } else {
+            TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
+
+            CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
+            circleSubscribe.setVisibility(View.VISIBLE);
+            // 设置订阅状态
+            boolean isJoined = circleInfo.getJoined() != null;
+            circleSubscribe.setChecked(isJoined);
+            circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
+            circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources()
+                    .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+            boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
+            circleSubscribeFrame.setEnabled(!canChange);
+            circleSubscribe.setEnabled(canChange);
+
+            RxView.clicks(circleSubscribe)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    });
+            RxView.clicks(circleSubscribeFrame)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    });
+        }
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

@@ -12,6 +12,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -98,12 +100,13 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
+        startActivity(new Intent(getActivity(), CircleSearchContainerActivity.class));
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(this));
+        adapter.addItemViewDelegate(new CircleListItem(true,getContext(),this));
         adapter.addItemViewDelegate(new CircleTypeItem(this));
         return adapter;
     }
@@ -122,11 +125,18 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         closeLoadingView();
     }
 
+    /**
+     * 查看我加入的
+     *
+     * @param groupInfoBean
+     */
     @Override
     public void toAllJoinedCircle(CircleInfo groupInfoBean) {
         if (mListDatas.size() <= TITLEVOUNT) {
             return;
         }
+        Intent intent = new Intent(getActivity(), MyJoinedCircleActivity.class);
+        startActivity(intent);
     }
 
     @Override

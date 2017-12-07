@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
         Subscription subscription = Observable.zip(mRepository.getCircleCount(),
-                mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0),
+                mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
                 mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -24,8 +25,11 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
@@ -41,6 +45,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
  * @author Jliuer
@@ -61,6 +67,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public SharePolicy mSharePolicy;
 
     @Inject
+    CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
+    private Subscription mSearchSub;
+
+    @Inject
     public CircleDetailPresenter(CircleDetailContract.Repository repository, CircleDetailContract.View rootView) {
         super(repository, rootView);
     }
@@ -72,14 +82,18 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription =
-                Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()),
-                        mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId,mRootView.getType()),
+
+        // 需要头信息
+        if (mRootView.isNeedHeaderInfo()) {
+            if (!isLoadMore) {
+                Subscription subscribe = Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle
+                                (mRootView.getCircleId(), maxId, mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
                             for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                                List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i).getMaxId().intValue());
+                                List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
+                                        .getMaxId().intValue());
                                 if (!circlePostCommentBeans.isEmpty()) {
                                     circlePostCommentBeans.addAll(data.get(i).getComments());
                                     data.get(i).getComments().clear();
@@ -87,11 +101,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                                 }
                             }
                             return circleZipBean;
-                        })
-                        .subscribe(new BaseSubscribeForV2<CircleZipBean>() {
+                        }).subscribe(new BaseSubscribeForV2<CircleZipBean>() {
                             @Override
                             protected void onSuccess(CircleZipBean data) {
-                                mCirclePostListBeanGreenDao.saveMultiData(data.getCirclePostListBeanList());
                                 mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
                                 mRootView.allDataReady(data);
                             }
@@ -106,7 +118,75 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                                 super.onException(throwable);
                             }
                         });
-        addSubscrebe(subscription);
+                addSubscrebe(subscribe);
+
+            }
+
+        } else {
+            switch (mRootView.getCircleMinePostType()) {
+                case PUBLISH:
+                case HAD_PINNED:
+                case WAIT_PINNED_AUDIT:
+                    Subscription subscribe = mRepository.getMinePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), mRootView
+                            .getCircleMinePostType().value)
+                            .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
+                                @Override
+                                protected void onSuccess(List<CirclePostListBean> data) {
+                                    mRootView.onNetResponseSuccess(data, isLoadMore);
+
+                                }
+
+                                @Override
+                                protected void onFailure(String message, int code) {
+                                    super.onFailure(message, code);
+                                    mRootView.showMessage(message);
+                                }
+
+                                @Override
+                                protected void onException(Throwable throwable) {
+                                    super.onException(throwable);
+                                    mRootView.onResponseError(throwable, isLoadMore);
+                                }
+                            });
+                    addSubscrebe(subscribe);
+                    break;
+                case SEARCH:
+                    if (mSearchSub != null && !mSearchSub.isUnsubscribed()) {
+                        mSearchSub.unsubscribe();
+                    }
+                    final String searchContent = mRootView.getSearchInput();
+                    if (TextUtils.isEmpty(searchContent)) {// 无搜索内容
+                        mRootView.hideRefreshState(isLoadMore);
+                        return;
+                    }
+                    mSearchSub = mRepository.getAllePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, null)
+                            .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
+                                @Override
+                                protected void onSuccess(List<CirclePostListBean> data) {
+                                    // 历史记录存入数据库
+                                    saveSearhDatq(searchContent);
+                                    mRootView.onNetResponseSuccess(data, isLoadMore);
+                                }
+
+                                @Override
+                                protected void onFailure(String message, int code) {
+                                    super.onFailure(message, code);
+                                    mRootView.showMessage(message);
+                                }
+
+                                @Override
+                                protected void onException(Throwable throwable) {
+                                    mRootView.onResponseError(throwable, isLoadMore);
+                                }
+                            });
+                    addSubscrebe(mSearchSub);
+
+                    break;
+                default:
+
+            }
+
+        }
     }
 
     @Override
@@ -250,7 +330,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
     public void handleSendComment(CirclePostCommentBean circlePostCommentBean) {
-        Subscription subscription=Observable.just(circlePostCommentBean)
+        Subscription subscription = Observable.just(circlePostCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostCommentBean1 -> {
@@ -341,5 +421,36 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     @Override
     public void onCancel(Share share) {
 
+    }
+
+    /**
+     * 存搜索记录
+     *
+     * @param searchContent
+     */
+    private void saveSearhDatq(String searchContent) {
+        CircleSearchHistoryBean cricleSearchHistoryBean = new CircleSearchHistoryBean(searchContent, CircleSearchHistoryBean.TYPE_CIRCLE);
+        mCircleSearchBeanGreenDao.saveHistoryDataByType(cricleSearchHistoryBean, CircleSearchHistoryBean.TYPE_CIRCLE);
+    }
+
+
+    @Override
+    public List<CircleSearchHistoryBean> getFirstShowHistory() {
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA);
+    }
+
+    @Override
+    public void cleaerAllSearchHistory() {
+        mCircleSearchBeanGreenDao.clearAllQASearchHistory();
+    }
+
+    @Override
+    public List<CircleSearchHistoryBean> getAllSearchHistory() {
+        return mCircleSearchBeanGreenDao.getCircleSearchHistory();
+    }
+
+    @Override
+    public void deleteSearchHistory(CircleSearchHistoryBean qaSearchHistoryBean) {
+        mCircleSearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
 }

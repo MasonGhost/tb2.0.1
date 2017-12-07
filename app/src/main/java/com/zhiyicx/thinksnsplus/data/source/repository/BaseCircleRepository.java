@@ -37,6 +37,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
+import retrofit2.http.PUT;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -60,6 +61,23 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
 
+    /**
+     * 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     */
+    public enum CircleMinePostType {
+        PUBLISH(1),
+        HAD_PINNED(2),
+        WAIT_PINNED_AUDIT(3),
+        SEARCH(4);
+
+        public int value;
+
+        CircleMinePostType(int value) {
+            this.value = value;
+        }
+    }
+
+
     @Inject
     public BaseCircleRepository(ServiceManager serviceManager) {
         mCircleClient = serviceManager.getCircleClient();
@@ -76,7 +94,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean) {
         Map<String, String> file = new HashMap<>();
         file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
-        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls.transBean2MapWithArray(createCircleBean)))
+        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
+                .transBean2MapWithArray(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -91,15 +110,26 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet) {
-        return mCircleClient.getMyJoinedCircle(limit, offet)
+    public Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type) {
+        return mCircleClient.getMyJoinedCircle(limit, offet, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 获取全部圈
+     *
+     * @param limit       默认 15 ，数据返回条数 默认为15
+     * @param offet       默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword     用于搜索圈子，按圈名搜索
+     * @param category_id 圈子分类id
+     * @return
+     */
+
     @Override
-    public Observable<List<CircleInfo>> getAllCircle(int limit, int offet) {
-        return mCircleClient.getAllCircle(limit, offet)
+    public Observable<List<CircleInfo>> getAllCircle(Integer limit, Integer offet, String keyword
+            , Integer category_id) {
+        return mCircleClient.getAllCircle(limit, offet, keyword, category_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -245,20 +275,50 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return null;
     }
 
+    /**
+     * 获取我的帖子列表
+     *
+     * @param limit
+     * @param offet
+     * @param type
+     * @return
+     */
     @Override
-    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId, type));
+    public Observable<List<CirclePostListBean>> getMinePostList(Integer limit, Integer offet, Integer type) {
+        return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type).subscribeOn(Schedulers.io()));
     }
 
-    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<CirclePostBean> observable) {
+    /**
+     * 获取全部帖子
+     *
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword  搜索关键词，模糊匹配圈子名称
+     * @param group_id 获取某个圈子下面的全部帖子
+     * @return
+     */
+    @Override
+    public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Integer group_id) {
+        return mCircleClient.getAllePostList(limit, offset, keyword, group_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
-        return observable.subscribeOn(Schedulers.io())
+    @Override
+    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId,String type) {
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId,type)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
                     List<CirclePostListBean> data = circlePostBean.getPinneds();
                     data.addAll(circlePostBean.getPosts());
                     return data;
-                })
+                }));
+    }
+
+    private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {
+
+        return observable
                 .flatMap(postListBeans -> {
                     final List<Object> user_ids = new ArrayList<>();
                     List<CirclePostCommentBean> comments = new ArrayList<>();

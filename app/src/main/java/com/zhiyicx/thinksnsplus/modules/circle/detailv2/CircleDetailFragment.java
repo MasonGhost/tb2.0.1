@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,9 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,6 +36,7 @@ import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -52,10 +52,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleDetailRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
@@ -73,13 +71,11 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.rank.adapter.TypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
-import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -94,10 +90,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -188,6 +184,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @BindView(R.id.container)
     CoordinatorLayout mContainer;
 
+    @Inject
+    CircleDetailPresenter mCircleDetailPresenter;
+
     private ActionBarDrawerToggle mToggle;
 
     private ActionPopupWindow mDeletCommentPopWindow;
@@ -217,6 +216,18 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         bundle.putLong(CIRCLE_ID, circle_id);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerCircleDetailComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .circleDetailPresenterModule(new CircleDetailPresenterModule(this))
+                .shareModule(new ShareModule(getActivity()))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -892,6 +903,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 break;
             default:
         }
+    }
+
+    @Override
+    public boolean isNeedHeaderInfo() {
+        return true;
+    }
+
+    @Override
+    public BaseCircleRepository.CircleMinePostType getCircleMinePostType() {
+        return BaseCircleRepository.CircleMinePostType.PUBLISH;
+    }
+
+    @Override
+    public String getSearchInput() {
+        return "";
     }
 
 }

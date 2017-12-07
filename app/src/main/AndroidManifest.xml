@@ -606,6 +606,14 @@
         <activity
             android:name=".modules.circle.detailv2.post.CirclePostDetailActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.mine.joined.MyJoinedCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.search.container.CircleSearchContainerActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

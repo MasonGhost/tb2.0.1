@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -19,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_toLeftOf="@+id/tv_circle_subscrib"
-        android:layout_toRightOf="@id/iv_circle_cover"
+        android:layout_toEndOf="@+id/iv_circle_cover"
+        android:layout_toRightOf="@+id/iv_circle_cover"
         android:orientation="vertical">
 
         <TextView
@@ -74,7 +75,20 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:text="订阅"
         android:textColor="@color/selector_channel_list_subscrib_button_divider"
-        android:textSize="@dimen/size_content_comment"/>
+        android:textSize="@dimen/size_content_comment"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_note_assist"
+        android:visibility="gone"
+        tools:text="管理员"/>
 
     <TextView
         android:id="@+id/tv_circle_subscrib_frame"

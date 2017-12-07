@@ -25,6 +25,32 @@ public class CircleInfo extends BaseListBean implements Serializable {
 
     private static final long serialVersionUID = 4393338023102640914L;
     /**
+     * 名称	类型	说明
+     id	integer	圈子唯一id
+     name	string	圈子名称
+     user_id	integer	所属用户id
+     category_id	integer	圈子所属分类id
+     location	string	圈子位置
+     longitude	string	经度
+     latitude	string	纬度
+     geo_hash	string	geoHash
+     allow_feed	integer	是否允许同步动态，0 不允许 1允许
+     mode	string	圈子类型:public: 公开，private：私有，paid：付费的
+     permissions	string	发帖权限:member,administrator,founder 所有，administrator,founder 管理员和圈主，administrator圈主
+     money	string	如果 mode 为 paid 用于标示收费金额
+     summary	string	简介
+     notice	string	公告
+     users_count	integer	成员统计
+     posts_count	integer	帖子统计
+     audit	integer	审核状态:0 未审核 1 通过 2 拒绝
+     created_at	string	创建时间
+     update_at	string	更新时间
+     join_income_count	integer	加圈收益统计
+     pinned_income_count	integer	置顶收益统计
+     joined	object	是否加入：null未加入
+     avatar	地址	头像地址
+     */
+    /**
      * id : 3
      * name : 白岩说
      * user_id : 18
@@ -45,8 +71,50 @@ public class CircleInfo extends BaseListBean implements Serializable {
      * pinned_income_count : 1 置顶收益统计
      * created_at : 2017-11-28 02:46:28
      * updated_at : 2017-11-28 02:46:28
-     * joined : {"id":2,"group_id":3,"user_id":18,"audit":0,"role":"founder","disabled":0,"created_at":"2017-11-29 17:08:16","updated_at":"2017-11-29 17:08:17"}
+     * joined : {"id":2,"group_id":3,"user_id":18,"audit":0,"role":"founder","disabled":0,"created_at":"2017-11-29 17:08:16",
+     * "updated_at":"2017-11-29 17:08:17"}
      */
+    public enum CirclePayMode {
+        PUBLIC("public"),
+        PRIVATE("private"),
+        PAID("paid");
+        public String value;
+
+        CirclePayMode(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * 审核状态:0 未审核 1 通过 2 拒绝
+     */
+    public enum CircleAuditStatus {
+        NOT_AUDIT(0),
+        PASS(1),
+        REFUSE(2);
+
+        public int value;
+
+        CircleAuditStatus(int value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * 角色，member - administrator - 管理者、founder - 创建者
+     */
+    public enum CircleRole {
+        MEMBER("member"),
+        ADMINISTRATOR("administrator"),
+        FOUNDER("founder");
+        public String value;
+
+        CircleRole(String value) {
+            this.value = value;
+        }
+    }
+
+
     @Id
     private Long id;
     private String name;
@@ -447,9 +515,10 @@ public class CircleInfo extends BaseListBean implements Serializable {
     }
 
     @Generated(hash = 198916784)
-    public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count, int category_id, String location,
-                      String longitude, String latitude, String geo_hash, int allow_feed, String mode, int money, String summary, String notice, int users_count,
-                      int posts_count, int audit, String created_at, String updated_at, JoinedBean joined) {
+    public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
+            int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
+            int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
+            String updated_at, JoinedBean joined) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
@@ -473,6 +542,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
         this.joined = joined;
     }
+
 
     public static final Creator<CircleInfo> CREATOR = new Creator<CircleInfo>() {
         @Override

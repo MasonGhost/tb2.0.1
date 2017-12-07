@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListRepository extends BaseCircleRepository implements CircleListContract.Repository {
+public class CircleListRepository extends BaseCircleRepository implements CircleListContract.Repository, BaseCircleListContract.Repository {
 
     @Inject
     public CircleListRepository(ServiceManager serviceManager) {
@@ -28,7 +29,7 @@ public class CircleListRepository extends BaseCircleRepository implements Circle
 
     @Override
     public Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId) {
-        return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_ONE_PAGE_SIZE,(int)maxId)
+        return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

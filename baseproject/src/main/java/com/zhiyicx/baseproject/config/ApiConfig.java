@@ -512,7 +512,14 @@ public class ApiConfig {
      * 获取圈子下帖子列表
      */
     public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";
-
+    /**
+     * 获取我的帖子列表
+     */
+    public static final String APP_PATH_GET_MINE_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/user-group-posts";
+    /**
+     * 全部帖子列表包含搜索
+     */
+    public static final String APP_PATH_GET_ALL_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/group-posts";
     /**
      * 评论帖子/评论列表
      */

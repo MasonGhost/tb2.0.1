@@ -25,7 +25,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.container.MyCircleContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;

@@ -62,8 +62,8 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.chanel),
-                getString(R.string.chanel));
+        return Arrays.asList(getString(R.string.group),
+                getString(R.string.circle_post));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
             mFragmentList = new ArrayList<>();
         }
         mFragmentList.add(new MyCircleContentContainerFragment());
-        mFragmentList.add(new MyAnswerContainerFragment());
+        mFragmentList.add(new MyCirclePostContentContainerFragment());
         return mFragmentList;
     }
 
@@ -89,7 +89,7 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
     @Override
     protected void initViewPager(View rootView) {
         initMagicIndicator();
-        mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
+        mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
         mVpFragment.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
@@ -149,7 +149,6 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
         mMgIndicator.setNavigator(commonNavigator);
         LinearLayout titleContainer = commonNavigator.getTitleContainer(); // must after setNavigator
         titleContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-//        titleContainer.setDividerPadding(UIUtil.dip2px(getContext(), 15));
         titleContainer.setDividerDrawable(getResources().getDrawable(R.drawable.shape_question_tool_diver));
         ViewPagerHelper.bind(mMgIndicator, mVpFragment);
     }

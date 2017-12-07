@@ -241,6 +241,8 @@
     <string name="had_send_dynamic_to_channel">动态将在审核成功后发布</string>
 
     <!--圈子-->
+    <string name="circle_master">圈主</string>
+    <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
     <string name="more_group">查看更多</string>
     <string name="recommend_group">热门推荐</string>
@@ -299,7 +301,15 @@
     <string name="circle_report">举报管理</string>
     <string name="circle_more">更多操作</string>
     <string name="circle_exit">退出圈子</string>
-
+    <string-array name="circle_mine_type">
+        <item>@string/joined_group</item>
+        <item>待审核的</item>
+    </string-array>
+    <string-array name="circle_post_mine_type">
+        <item>我发布的</item>
+        <item>已置顶的</item>
+        <item>置顶待审核</item>
+    </string-array>
     <!--收藏-->
     <string name="collect">收藏</string>
     <string name="collect_dynamic">动态</string>
@@ -795,5 +805,11 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="create_wait_audit">创建待审核</string>
+    <string name="join_wait_audit">申请加入待审核</string>
+    <string name="not_find_circle_post_to_publish">未找到相关帖子~</string>
+    <string name="to_publish_circle_post">去发帖</string>
+    <string name="not_find_circle_to_publish">未找到相关圈子，创建属于自己的圈子吧</string>
+    <string name="to_publish_circle">创建圈子</string>
 
 </resources>

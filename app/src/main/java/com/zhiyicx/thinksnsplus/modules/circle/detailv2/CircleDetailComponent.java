@@ -14,6 +14,9 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = {CircleDetailPresenterModule.class,ShareModule.class})
+@Component(dependencies = AppComponent.class, modules = {CircleDetailPresenterModule.class, ShareModule.class})
 public interface CircleDetailComponent extends InjectComponent<CircleDetailActivity> {
+    void inject(CircleDetailFragment circleDetailFragment);
+
+    void inject(BaseCircleDetailFragment baseCircleDetailFragment);
 }

@@ -19,11 +19,6 @@ public class CircleDetailActivity extends TSActivity<CircleDetailPresenter, Circ
 
     @Override
     protected void componentInject() {
-        DaggerCircleDetailComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .circleDetailPresenterModule(new CircleDetailPresenterModule(mContanierFragment))
-                .shareModule(new ShareModule(this))
-                .build().inject(this);
+
     }
 }
