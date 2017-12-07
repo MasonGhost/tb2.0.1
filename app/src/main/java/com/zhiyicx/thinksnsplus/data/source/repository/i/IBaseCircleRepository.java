@@ -13,8 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
 
 /**
  * @Author Jliuer
@@ -31,7 +34,27 @@ public interface IBaseCircleRepository {
 
     Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId);
 
-    Observable<List<CirclePostListBean>> getMinePostList(int limit, int offet, int type);
+    /**
+     * 获取我的帖子列表
+     *
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param type   参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     * @return
+     */
+    Observable<List<CirclePostListBean>> getMinePostList(Integer limit, Integer offset, Integer type);
+
+    /**
+     * 全部帖子列表包含搜索
+     *
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword  搜索关键词，模糊匹配圈子名称
+     * @param group_id 获取某个圈子下面的全部帖子
+     * @return
+     */
+    @GET(APP_PATH_GET_ALL_POSTLIST)
+    Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Integer group_id);
 
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
 

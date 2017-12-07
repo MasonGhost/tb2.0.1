@@ -571,7 +571,12 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
-    public int getCircleMinePostType() {
-        return mCircleMinePostType.value;
+    public BaseCircleRepository.CircleMinePostType getCircleMinePostType() {
+        return mCircleMinePostType;
+    }
+
+    @Override
+    public String getSearchInput() {
+        return "";
     }
 }

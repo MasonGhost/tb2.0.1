@@ -67,7 +67,9 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public enum CircleMinePostType {
         PUBLISH(1),
         HAD_PINNED(2),
-        WAIT_PINNED_AUDIT(3);
+        WAIT_PINNED_AUDIT(3),
+        SEARCH(4);
+
         public int value;
 
         CircleMinePostType(int value) {
@@ -273,7 +275,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return null;
     }
 
-
     /**
      * 获取我的帖子列表
      *
@@ -283,9 +284,24 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      * @return
      */
     @Override
-    public Observable<List<CirclePostListBean>> getMinePostList(int limit, int offet, int type) {
+    public Observable<List<CirclePostListBean>> getMinePostList(Integer limit, Integer offet, Integer type) {
         return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type).subscribeOn(Schedulers.io()));
+    }
 
+    /**
+     * 获取全部帖子
+     *
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword  搜索关键词，模糊匹配圈子名称
+     * @param group_id 获取某个圈子下面的全部帖子
+     * @return
+     */
+    @Override
+    public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Integer group_id) {
+        return mCircleClient.getAllePostList(limit, offset, keyword, group_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

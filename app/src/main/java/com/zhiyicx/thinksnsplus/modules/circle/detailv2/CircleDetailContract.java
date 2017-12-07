@@ -7,7 +7,12 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+
+import java.util.Collection;
+import java.util.List;
 
 import rx.Observable;
 
@@ -28,7 +33,9 @@ public interface CircleDetailContract {
          */
         boolean isNeedHeaderInfo();
 
-        int getCircleMinePostType();
+        BaseCircleRepository.CircleMinePostType getCircleMinePostType();
+
+        String getSearchInput();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
@@ -47,6 +54,14 @@ public interface CircleDetailContract {
         void handleLike(boolean b,Long id, int dataPosition);
 
         void handleCollect(CirclePostListBean circlePostListBean);
+
+        List<CircleSearchHistoryBean> getFirstShowHistory();
+
+        void deleteSearchHistory(CircleSearchHistoryBean circleSearchHistoryBean);
+
+        List<CircleSearchHistoryBean>  getAllSearchHistory();
+
+        void cleaerAllSearchHistory();
     }
 
     interface Repository extends IBaseCircleRepository {

@@ -31,6 +31,7 @@ import rx.Observable;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
@@ -198,13 +199,29 @@ public interface CircleClient {
     /**
      * 获取我的帖子列表
      *
-     * @param limit
-     * @param offet
+     * @param limit 默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param type  参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
      * @return
      */
     @GET(APP_PATH_GET_MINE_POSTLIST)
-    Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") int limit, @Query("offet") int offet, @Query("type") int type);
+    Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("type") Integer type);
+
+
+    /**
+     * 全部帖子列表包含搜索
+     *
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword  搜索关键词，模糊匹配圈子名称
+     * @param group_id 获取某个圈子下面的全部帖子
+     * @return
+     */
+    @GET(APP_PATH_GET_ALL_POSTLIST)
+    Observable<List<CirclePostListBean>> getAllePostList(@Query("limit") Integer limit
+            , @Query("offset") Integer offset
+            , @Query("keyword") String keyword
+            , @Query("group_id") Integer group_id);
 
     /**
      * 创建圈子

@@ -611,6 +611,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.circle.search.container.CircleSearchContainerActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
 
     </application>

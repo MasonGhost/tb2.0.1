@@ -8,7 +8,10 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCircleFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCirclePostFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic.QATopicSearchListFragment;
@@ -89,7 +92,7 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
     protected List<Fragment> initFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(SearchCircleFragment.newInstance(false));
-        fragmentList.add(SearchCircleFragment.newInstance(false));
+        fragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH));
         return fragmentList;
     }
 
