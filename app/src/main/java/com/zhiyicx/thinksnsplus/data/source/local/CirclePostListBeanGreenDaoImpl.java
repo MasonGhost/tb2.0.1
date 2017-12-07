@@ -18,6 +18,9 @@ import javax.inject.Inject;
 public class CirclePostListBeanGreenDaoImpl extends CommonCacheImpl<CirclePostListBean> {
 
     @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
+
+    @Inject
     public CirclePostListBeanGreenDaoImpl(Application context) {
         super(context);
     }
@@ -70,5 +73,13 @@ public class CirclePostListBeanGreenDaoImpl extends CommonCacheImpl<CirclePostLi
     @Override
     public long insertOrReplace(CirclePostListBean newData) {
         return getWDaoSession().getCirclePostListBeanDao().insertOrReplace(newData);
+    }
+
+    public List<CirclePostListBean> getDataWithComments() {
+        List<CirclePostListBean> data = getRDaoSession().getCirclePostListBeanDao().loadAll();
+        for (CirclePostListBean postListBean : data) {
+            postListBean.setComments(mCirclePostCommentBeanGreenDao.getCommentByPostId(postListBean.getId()));
+        }
+        return data;
     }
 }

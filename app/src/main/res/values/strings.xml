@@ -244,6 +244,9 @@
     <string name="circle_master">圈主</string>
     <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
+    <string name="more_group">查看更多</string>
+    <string name="recommend_group">热门推荐</string>
+    <string name="exchange_group">换一批</string>
     <string name="all_group">全部圈子</string>
     <string name="join_group">加入</string>
     <string name="quit_group">退出</string>
@@ -253,6 +256,12 @@
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
     <string name="create">创建</string>
+    <string name="create_reviewing">已经提交申请，请等待审核</string>
+    <string name="exit_circle">你是圈子创始人，不能进行退圈</string>
+    <string name="reviewing_circle">圈子还在审核中</string>
+    <string name="circle_detail_location">位置：	%s</string>
+    <string name="circle_detail_usercount">成员：	%d</string>
+    <string name="circle_detail_postcount">%d个帖子</string>
 
     <string name="create_circle">创建圈子</string>
     <string name="create_circle_notice">选填</string>

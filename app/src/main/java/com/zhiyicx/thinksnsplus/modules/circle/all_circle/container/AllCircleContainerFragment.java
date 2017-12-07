@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +107,10 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
+        mTsvToolbar.setRightClickListener(this, () -> {
+            Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
+            startActivity(typeIntent);
+        });
     }
 
     @Override

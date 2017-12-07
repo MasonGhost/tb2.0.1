@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
@@ -8,8 +10,10 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -20,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +37,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLECT_UPDATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author Jliuer
@@ -50,6 +57,14 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
+
+    private boolean mIsAllDataReady = false;
+    private boolean mIsNeedDynamicListRefresh = false;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Inject
     public CirclePostDetailPresenter(CirclePostDetailContract.Repository repository, CirclePostDetailContract.View rootView) {
@@ -94,7 +109,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                         @Override
                         protected void onSuccess(CirclePostListBean data) {
                             mRootView.allDataReady(data);
-
+                            mIsAllDataReady = true;
                         }
 
                         @Override
@@ -119,7 +134,29 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!mIsAllDataReady) { // 数据加载完毕就更新动态列表
+            return;
+        }
+
+        // 清除占位图数据
+        if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils
+                .isEmpty(mRootView.getListDatas().get(0).getContent())) {
+            mRootView.getListDatas().clear();
+        }
+        Bundle bundle = mRootView.getArgumentsBundle();
+        if (bundle != null && bundle.containsKey(CirclePostDetailFragment.POST)) {
+            mRootView.getCurrentePost().setComments(mRootView.getListDatas());
+            bundle.putParcelable(CirclePostDetailFragment.POST_DATA, mRootView.getCurrentePost());
+            bundle.putBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
+            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_POST);
+        }
+    }
+
+    @Override
     public void sendComment(long replyToUserId, String commentContent) {
+        mIsNeedDynamicListRefresh = true;
         CirclePostCommentBean creatComment = new CirclePostCommentBean();
         creatComment.setState(CirclePostCommentBean.SEND_ING);
         creatComment.setContent(commentContent);
@@ -157,6 +194,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void deleteComment(CirclePostCommentBean data) {
+        mIsNeedDynamicListRefresh = true;
         CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
         circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
         mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
@@ -172,6 +210,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void handleLike(boolean isLiked, long id) {
+        mIsNeedDynamicListRefresh = true;
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao
                 .getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
         PostDigListBean digListBean = new PostDigListBean();
@@ -206,6 +245,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void handleCollect(boolean isUnCollected, long id) {
+        mIsNeedDynamicListRefresh = true;
         mRootView.setCollect(isUnCollected);
         mRootView.getCurrentePost().setCollected(isUnCollected);
         mRootView.setCollect(isUnCollected);
@@ -217,5 +257,37 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     @Override
     public boolean insertOrUpdateData(@NotNull List<CirclePostCommentBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
+    public void handleSendComment(CirclePostCommentBean postCommentBean) {
+        Subscription subscribe = Observable.just(postCommentBean)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(postCommentBean1 -> {
+                    int size = mRootView.getListDatas().size();
+                    int dynamicPosition = -1;
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getComment_mark().equals
+                                (postCommentBean1.getComment_mark())) {
+                            dynamicPosition = i;
+                            mRootView.getListDatas().get(i).setState(postCommentBean1.getState
+                                    ());
+                            mRootView.getListDatas().get(i).setId(
+                                    (postCommentBean1.getId()));
+                            mRootView.getListDatas().get(i).setComment_mark
+                                    (postCommentBean1.getComment_mark());
+                            break;
+                        }
+                    }
+                    return dynamicPosition;
+                })
+                .subscribe(integer -> {
+                    if (integer != -1) {
+                        mRootView.refreshData();
+                    }
+
+                }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
     }
 }

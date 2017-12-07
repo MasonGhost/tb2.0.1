@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
+import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -18,10 +19,12 @@ import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -55,6 +58,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     protected UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
 
     /**
      * 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
@@ -84,8 +89,11 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<CircleInfo>> createCircle(long categoryId, Map<String, Object> params, Map<String, String> filePathList) {
-        return mCircleClient.createCircle(categoryId, UpLoadFile.upLoadFileAndParams(filePathList, params))
+    public Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean) {
+        Map<String, String> file = new HashMap<>();
+        file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
+        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
+                .transBean2MapWithArray(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -142,7 +150,30 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet) {
         return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(postDigListBeans -> {
+                    List<Object> user_ids = new ArrayList<>();
+                    for (PostDigListBean digListBean : postDigListBeans) {
+                        user_ids.add(digListBean.getUser_id());
+                        user_ids.add(digListBean.getTarget_user());
+                    }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(postDigListBeans);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(listBaseJson -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : listBaseJson) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                for (PostDigListBean digListBean : postDigListBeans) {
+                                    digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
+                                    digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
+                                }
+                                return postDigListBeans;
+                            });
+                });
     }
 
     @Override
@@ -242,17 +273,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return null;
     }
 
-    @Override
-    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId).subscribeOn
-                (Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(circlePostBean -> {
-                    List<CirclePostListBean> data = circlePostBean.getPinneds();
-                    data.addAll(circlePostBean.getPosts());
-                    return data;
-                }));
-    }
 
     /**
      * 获取我的帖子列表
@@ -268,65 +288,77 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     }
 
+    @Override
+    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(circlePostBean -> {
+                    List<CirclePostListBean> data = circlePostBean.getPinneds();
+                    data.addAll(circlePostBean.getPosts());
+                    return data;
+                }));
+    }
+
     private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {
 
-        return
-                observable
-                        .observeOn(Schedulers.io())
-                        .flatMap(postListBeans -> {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (CirclePostListBean circlePostListBean : postListBeans) {
-                                user_ids.add(circlePostListBean.getUser_id());
-                                if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
-                                    continue;
+        return observable
+                .flatMap(postListBeans -> {
+                    final List<Object> user_ids = new ArrayList<>();
+                    List<CirclePostCommentBean> comments = new ArrayList<>();
+                    for (CirclePostListBean circlePostListBean : postListBeans) {
+                        user_ids.add(circlePostListBean.getUser_id());
+                        if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
+                            continue;
+                        }
+                        comments.addAll(circlePostListBean.getComments());
+                        for (CirclePostCommentBean commentListBean : circlePostListBean.getComments()) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                        }
+                    }
+                    mCirclePostCommentBeanGreenDao.saveMultiData(comments);
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(postListBeans);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(userinfobeans -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : userinfobeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                 }
-                                for (CirclePostCommentBean commentListBean : circlePostListBean.getComments()) {
-                                    user_ids.add(commentListBean.getUser_id());
-                                    user_ids.add(commentListBean.getReply_to_user_id());
-                                }
-                            }
-                            if (user_ids.isEmpty()) {
-                                return Observable.just(postListBeans);
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(userinfobeans -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                for (CirclePostListBean circlePostListBean : postListBeans) {
+                                    circlePostListBean.setUserInfoBean(userInfoBeanSparseArray.get(circlePostListBean
+                                            .getUser_id().intValue()));
+                                    if (circlePostListBean.getComments() == null || circlePostListBean.getComments()
+                                            .isEmpty()) {
+                                        continue;
+                                    }
+                                    for (int i = 0; i < circlePostListBean.getComments().size(); i++) {
+                                        UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                .get(i).getUser_id());
+                                        if (tmpUserinfo != null) {
+                                            circlePostListBean.getComments().get(i).setCommentUser(tmpUserinfo);
                                         }
-                                        for (CirclePostListBean circlePostListBean : postListBeans) {
-                                            circlePostListBean.setUserInfoBean(userInfoBeanSparseArray.get(circlePostListBean
-                                                    .getUser_id().intValue()));
-                                            if (circlePostListBean.getComments() == null || circlePostListBean.getComments()
-                                                    .isEmpty()) {
-                                                continue;
+                                        if (circlePostListBean.getComments().get(i).getReply_to_user_id() == 0) {
+                                            // ��� reply_user_id = 0 �ظ���̬
+                                            UserInfoBean userInfoBean = new UserInfoBean();
+                                            userInfoBean.setUser_id(0L);
+                                            circlePostListBean.getComments().get(i).setReplyUser(userInfoBean);
+                                        } else {
+                                            if (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                    .get(i).getReply_to_user_id()) != null) {
+                                                circlePostListBean.getComments().get(i).setReplyUser
+                                                        (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                                .get(i).getReply_to_user_id()));
                                             }
-                                            for (int i = 0; i < circlePostListBean.getComments().size(); i++) {
-                                                UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                        .get(i).getUser_id());
-                                                if (tmpUserinfo != null) {
-                                                    circlePostListBean.getComments().get(i).setCommentUser(tmpUserinfo);
-                                                }
-                                                if (circlePostListBean.getComments().get(i).getReply_to_user_id() == 0) {
-                                                    // 如果 reply_user_id = 0 回复动态
-                                                    UserInfoBean userInfoBean = new UserInfoBean();
-                                                    userInfoBean.setUser_id(0L);
-                                                    circlePostListBean.getComments().get(i).setReplyUser(userInfoBean);
-                                                } else {
-                                                    if (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                            .get(i).getReply_to_user_id()) != null) {
-                                                        circlePostListBean.getComments().get(i).setReplyUser
-                                                                (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                                        .get(i).getReply_to_user_id()));
-                                                    }
-                                                }
-                                            }
+                                        }
+                                    }
 
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                        return postListBeans;
-                                    });
-                        })
-                        .observeOn(AndroidSchedulers.mainThread());
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                return postListBeans;
+                            });
+                });
     }
 }

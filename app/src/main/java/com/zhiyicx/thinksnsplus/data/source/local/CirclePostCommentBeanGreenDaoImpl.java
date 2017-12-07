@@ -78,9 +78,15 @@ public class CirclePostCommentBeanGreenDaoImpl extends CommonCacheImpl<CirclePos
         return new ArrayList<>();
     }
 
+    public List<CirclePostCommentBean> getCommentByPostId(long postId) {
+        return getRDaoSession().getCirclePostCommentBeanDao().queryBuilder()
+                .where(CirclePostCommentBeanDao.Properties.Post_id.eq(postId)).build().list();
+    }
+
     public CirclePostCommentBean getCircleCommentsByCommentMark(Long comment_mark) {
         List<CirclePostCommentBean> result = getRDaoSession().getCirclePostCommentBeanDao().queryBuilder()
                 .where(CirclePostCommentBeanDao.Properties.Comment_mark.eq(comment_mark))
+                .build()
                 .list();
         if (!result.isEmpty()) {
             return result.get(0);

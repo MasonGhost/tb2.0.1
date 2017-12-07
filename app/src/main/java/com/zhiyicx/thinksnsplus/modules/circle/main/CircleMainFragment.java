@@ -34,6 +34,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     public static final int TITLEVOUNT = 2;
 
     private CircleMainHeader mCircleMainHeader;
+    private List<CircleInfo> mJoinedCircle;
 
     @Override
     protected boolean setUseCenterLoading() {
@@ -63,6 +64,16 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     public static CircleMainFragment newInstance() {
         CircleMainFragment circleMainFragment = new CircleMainFragment();
         return circleMainFragment;
+    }
+
+    @Override
+    public List<CircleInfo> getJoinedCircles() {
+        return mJoinedCircle;
+    }
+
+    @Override
+    public void setJoinedCircles(List<CircleInfo> circles) {
+        mJoinedCircle = circles;
     }
 
     @Override
@@ -138,7 +149,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
-
+        mPresenter.dealCircleJoinOrExit(position, circleInfo);
     }
 
     @Override

@@ -231,17 +231,16 @@
 
             <include
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
-
             <!--简介-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:minHeight="@dimen/create_circle_button_height"
+                android:minHeight="@dimen/userinfo_btn_height"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/create_circle_button_height"
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
@@ -249,8 +248,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/introduce"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content"/>
-                <!--简介编辑框-->
+                    android:textSize="@dimen/size_sub_title"/>
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/et_circle_introduce"
                     style="@style/style_edit_cursor"
@@ -342,6 +340,7 @@
                     android:textSize="@dimen/size_content"/>
 
                 <EditText
+                    android:id="@+id/et_circle_amount"
                     style="@style/style_dynamic_editext"
                     android:maxLength="@integer/money_input_max_size"
                     android:textColor="@color/important_for_content"
@@ -362,6 +361,7 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
+                android:id="@+id/ll_free"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -394,22 +394,22 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
-                android:id="@+id/ll_notice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/create_circle_button_height"
                 android:background="@color/white"
-                android:gravity="center_vertical"
+                android:minHeight="@dimen/userinfo_btn_height"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/create_circle_button_height"
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:layout_marginTop="@dimen/introduce_padding_top"
+                    android:gravity="center_vertical"
                     android:text="@string/edit_circle_notice"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content"/>
-
+                    android:textSize="@dimen/size_sub_title"/>
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/tv_notice"
                     style="@style/style_edit_cursor"
@@ -418,16 +418,16 @@
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:layout_weight="1"
                     android:paddingBottom="@dimen/spacing_mid"
-                    android:paddingTop="@dimen/spacing_large"
+                    android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
-                    app:hintContent="@string/edit_introduce"
+                    app:hintContent="@string/edit_circle_notice"
                     app:limitSize="@integer/introduce_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/create_circle_ps_height"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:text="@string/edit_circle_rule"

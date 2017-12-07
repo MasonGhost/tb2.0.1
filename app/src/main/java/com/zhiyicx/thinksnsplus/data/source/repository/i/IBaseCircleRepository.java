@@ -7,7 +7,9 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ import rx.Observable;
 public interface IBaseCircleRepository {
     Observable<List<CircleTypeBean>> getCategroiesList(int limit, int offet);
 
-    Observable<BaseJsonV2<CircleInfo>> createCircle(long categoryId, Map<String, Object> params, Map<String, String> filePathList);
+    Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean);
 
     Observable<BaseJsonV2<Object>> sendCirclePost(PostPublishBean publishBean);
 

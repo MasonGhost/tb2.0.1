@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderView;
@@ -36,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,9 +49,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE_UPDATE;
 
 /**
@@ -59,10 +61,16 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE
  * @Description
  */
 public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailContract.Presenter, CirclePostCommentBean>
-        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView.OnSendClickListener {
+        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView.OnSendClickListener,
+        OnUserInfoClickListener {
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String POST_ID = "post_id";
+    public static final String POST = "post";
+
+    public static final String POST_LIST_NEED_REFRESH = "post_list_need_refresh";
+    public static final String POST_DATA = "post_data";
+
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -144,9 +152,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     protected void initView(View rootView) {
         super.initView(rootView);
         if (mCirclePostDetailBean == null && getArguments() != null) {
-            mCirclePostDetailBean = new CirclePostListBean();
-            mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
-            mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
+            mCirclePostDetailBean = getArguments().getParcelable(POST);
+            if (mCirclePostDetailBean == null) {
+                mCirclePostDetailBean = new CirclePostListBean();
+                mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
+                mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
+            }
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -158,8 +169,14 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
+    public Bundle getArgumentsBundle() {
+        return getArguments();
+    }
+
+    @Override
     protected void initData() {
         super.initData();
+        setToolBarInfo();
         requestNetData(0L, false);
     }
 
@@ -181,7 +198,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     @Override
     public void setDigg(boolean isDigged) {
-
+        mDdDynamicTool.setItemIsChecked(isDigged, ITEM_POSITION_0);
+        if (mCirclePostDetailBean.getDigList() != null) {
+            mPostDetailHeaderView.updateDigList(mCirclePostDetailBean);
+        }
     }
 
     @Override
@@ -215,6 +235,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mPostDetailHeaderView.updateDigList(data);
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override
@@ -346,6 +371,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mVShadow.setVisibility(View.GONE);
 
                 });
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
+        RxView.clicks(mIvUserPortrait)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
     }
 
@@ -357,6 +388,16 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+    }
+
+    private void setToolBarInfo() {
+        if (mCirclePostDetailBean.getUserInfoBean() == null) {
+            return;
+        }
+        mTvToolbarCenter.setVisibility(View.VISIBLE);
+        UserInfoBean userInfoBean = mCirclePostDetailBean.getUserInfoBean();
+        mTvToolbarCenter.setText(userInfoBean.getName());
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
     }
 
     /**

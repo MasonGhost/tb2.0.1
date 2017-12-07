@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 
 public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresenter, CirclePostDetailFragment> {
 
@@ -29,6 +30,14 @@ public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresent
         Bundle bundle = new Bundle();
         bundle.putLong(CirclePostDetailFragment.CIRCLE_ID, circleId);
         bundle.putLong(CirclePostDetailFragment.POST_ID, postId);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, CirclePostListBean circlePostListBean) {
+        Intent intent = new Intent(context, CirclePostDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CirclePostDetailFragment.POST,circlePostListBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

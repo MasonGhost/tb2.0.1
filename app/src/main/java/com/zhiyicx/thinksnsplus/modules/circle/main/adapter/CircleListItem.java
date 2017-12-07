@@ -75,6 +75,7 @@ public class CircleListItem extends BaseCircleItem {
 
         Context context = holder.getConvertView().getContext();
 
+
         // 设置封面
         Glide.with(context)
                 .load(circleInfo.getAvatar())
@@ -99,6 +100,7 @@ public class CircleListItem extends BaseCircleItem {
                 .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
                 .format();
         circleMemberCount.setText(followString);
+
         // 我加入的圈子，不需要加入操作
         if (mIsMineJoined) {
             TextView tvRole = holder.getView(R.id.tv_role);
@@ -113,6 +115,8 @@ public class CircleListItem extends BaseCircleItem {
             }
             // 未加入的，需要申请加入
         } else {
+            TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
+
             CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
             circleSubscribe.setVisibility(View.VISIBLE);
             // 设置订阅状态
@@ -121,22 +125,26 @@ public class CircleListItem extends BaseCircleItem {
             circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
             circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources()
                     .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-            circleSubscribe.setClickable(circleInfo.getAudit() == CircleInfo.CircleAuditStatus.PASS.value);
-            if (circleInfo.getAudit() == CircleInfo.CircleAuditStatus.PASS.value) {
-                RxView.clicks(circleSubscribe)
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(aVoid -> {
-                            if (mCircleItemItemEvent == null) {
-                                return;
-                            }
-                            mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                        });
-            } else {
-                if (mCircleItemItemEvent == null) {
-                    return;
-                }
-                mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-            }
+            boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
+            circleSubscribeFrame.setEnabled(!canChange);
+            circleSubscribe.setEnabled(canChange);
+
+            RxView.clicks(circleSubscribe)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    });
+            RxView.clicks(circleSubscribeFrame)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    });
         }
 
         RxView.clicks(holder.getConvertView())

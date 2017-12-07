@@ -2,10 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -20,6 +24,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -38,6 +43,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 
 /**
  * @author Jliuer
@@ -50,6 +56,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private static final int REQUST_CODE_AREA = 8000;
     private static final int REQUST_CODE_CATEGORY = 5000;
+
+    public static final String MODE_PUBLIC = "public";
+    public static final String MODE_PRIVATE = "private";
+    public static final String MODE_PAID = "paid";
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -69,6 +79,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     TextView mTvTagHint;
     @BindView(R.id.ll_tag_container)
     LinearLayout mLlTagContainer;
+    @BindView(R.id.et_circle_amount)
+    EditText mEtCircleAmount;
     @BindView(R.id.tv_location)
     TextView mTvLocation;
     @BindView(R.id.ll_location_container)
@@ -87,12 +99,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     CheckBox mCbToll;
     @BindView(R.id.ll_charge)
     LinearLayout mLlCharge;
+    @BindView(R.id.ll_free)
+    LinearLayout mLlFree;
     @BindView(R.id.cb_free)
     CheckBox mCbFree;
     @BindView(R.id.tv_notice)
     UserInfoInroduceInputView mTvNotice;
-    @BindView(R.id.ll_notice)
-    LinearLayout mLlNotice;
     @BindView(R.id.ll_container)
     LinearLayout mLlContainer;
 
@@ -104,6 +116,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private UserInfoTagsAdapter mUserInfoTagsAdapter;
     private List<UserTagBean> mUserTagBeens = new ArrayList<>();
+    private CircleTypeBean mCircleTypeBean;
+
+    private CreateCircleBean mCreateCircleBean;
+    private String mHeadImage = "";
+    private PoiItem mPoiItem;
 
     @Override
     protected String setRightTitle() {
@@ -118,6 +135,64 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected String setCenterTitle() {
         return getString(R.string.create_circle);
+    }
+
+    private void initListener() {
+        Observable.combineLatest(
+                RxTextView.textChanges(mEtCircleName),
+                RxTextView.textChanges(mTvCircleType),
+                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()),
+                RxTextView.textChanges(mTvLocation),
+                RxTextView.textChanges(mTvNotice.getEtContent()), (charSequence, charSequence2, charSequence3, charSequence4, charSequence5) ->
+                        charSequence5.length() * charSequence.length() * charSequence2.length() * charSequence3.length() * charSequence4.length() != 0)
+                .subscribe((Boolean aBoolean) -> mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean));
+
+        mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mCbFree.setChecked(!isChecked);
+            }
+        });
+
+        mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mCbToll.setChecked(!isChecked);
+            }
+        });
+
+        mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mLlCharge.setVisibility(View.GONE);
+                mLlFree.setVisibility(View.GONE);
+            } else {
+                mLlFree.setVisibility(View.VISIBLE);
+                mLlCharge.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mCreateCircleBean = new CreateCircleBean();
+        mCreateCircleBean.setName(mEtCircleName.getText().toString());
+        mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
+        mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
+        mCreateCircleBean.setLocation(mTvLocation.getText().toString());
+        mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+        mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
+        mCreateCircleBean.setMode(mWcBlock.isChecked() ? MODE_PRIVATE : (mCbToll.isChecked() ? MODE_PAID : MODE_PUBLIC));
+        mCreateCircleBean.setNotice(mTvNotice.getInputContent());
+        mCreateCircleBean.setMoney(mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
+        mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
+        List<CreateCircleBean.TagId> tags = new ArrayList<>();
+        for (UserTagBean tagBean : mUserTagBeens) {
+            CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(tagBean.getId());
+            tags.add(tagId);
+        }
+        mCreateCircleBean.setTags(tags);
+        mCreateCircleBean.setCategoryId(mCircleTypeBean.getId());
+        mCreateCircleBean.setFilePath(mHeadImage);
+        mPresenter.createCircle(mCreateCircleBean);
     }
 
     @Override
@@ -144,6 +219,18 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             }
             return true;
         });
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -152,13 +239,13 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
-            PoiItem poiItem = data.getExtras().getParcelable(CircleLocationFragment.BUNDLE_DATA);
-            if (poiItem != null) {
-                mTvLocation.setText(poiItem.getTitle());//更新位置
+            mPoiItem = data.getExtras().getParcelable(CircleLocationFragment.BUNDLE_DATA);
+            if (mPoiItem != null) {
+                mTvLocation.setText(mPoiItem.getTitle());//更新位置
             }
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
-            CircleTypeBean circleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
-            mTvCircleType.setText(circleTypeBean.getName());
+            mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
+            mTvCircleType.setText(mCircleTypeBean.getName());
         } else if (requestCode == TagFrom.CREATE_CIRCLE.id) {
             ArrayList<UserTagBean> choosedTags = data.getExtras().getParcelableArrayList(EditUserTagFragment.BUNDLE_CHOOSED_TAGS);
             mUserTagBeens.clear();
@@ -174,6 +261,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         Glide.with(getActivity())
                 .load(photoList.get(0).getImgUrl())
                 .into(mIvHeadIcon);
+        mHeadImage = photoList.get(0).getImgUrl();
     }
 
     @Override
@@ -219,9 +307,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
-    private void initListener() {
-
-    }
 
     /**
      * 设置城市
