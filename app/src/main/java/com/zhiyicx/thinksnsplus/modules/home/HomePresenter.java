@@ -1,5 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMError;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
@@ -52,7 +56,7 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
-        ImStatusListener, ImTimeoutListener {
+        ImStatusListener, ImTimeoutListener, EMConnectionListener {
     @Inject
     AuthRepository mAuthRepository;
 
@@ -78,9 +82,10 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     public void initIM() {
         if (isLogin()) {
             mAuthRepository.loginIM();
-            ChatClient.getInstance(mContext).setImMsgReceveListener(this);
-            ChatClient.getInstance(mContext).setImStatusListener(this);
-            ChatClient.getInstance(mContext).setImTimeoutListener(this);
+            EMClient.getInstance().addConnectionListener(this);
+//            ChatClient.getInstance(mContext).setImMsgReceveListener(this);
+//            ChatClient.getInstance(mContext).setImStatusListener(this);
+//            ChatClient.getInstance(mContext).setImTimeoutListener(this);
         }
     }
 
@@ -186,6 +191,21 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onConnected() {
         EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
+    }
+
+    @Override
+    public void onDisconnected(int error) {
+        if(error == EMError.USER_REMOVED){
+            // 显示帐号已经被移除
+        }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+            // 显示帐号在其他设备登录
+        } else {
+            if (NetUtils.hasNetwork(mContext)){
+                //连接不到聊天服务器
+            } else{
+                //当前网络不可用，请检查网络设置
+            }
+        }
     }
 
     @Override

@@ -2,12 +2,15 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
@@ -284,7 +287,28 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public void loginIM() {
-        ZBIMClient.getInstance().login(getIMConfig());
+//        ZBIMClient.getInstance().login(getIMConfig());
+        // 此处替换为环信的登陆
+        IMConfig imConfig = getIMConfig();
+        //回调
+        EMClient.getInstance().login("", imConfig.getToken(), new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+                LogUtils.d("main", "登录聊天服务器成功！");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                LogUtils.d("main", "登录聊天服务器失败！");
+            }
+        });
     }
 
 
