@@ -91,6 +91,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     .subscribe(new BaseSubscribeForV2<CircleZipBean>() {
                         @Override
                         protected void onSuccess(CircleZipBean data) {
+                            mCirclePostListBeanGreenDao.saveMultiData(data.getCirclePostListBeanList());
                             mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
                             mRootView.allDataReady(data);
                         }
@@ -110,13 +111,12 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments();
+        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
         mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
-        mCirclePostListBeanGreenDao.saveMultiData(data);
         return isLoadMore;
     }
 
@@ -223,6 +223,16 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         mCirclePostListBeanGreenDao.insertOrReplace(circlePostListBean);
         // 通知服务器
         mRepository.dealCollect(is_collection, circlePostListBean.getId());
+    }
+
+    @Override
+    public void handleViewCount(Long postId, int position) {
+        if (postId == null || postId == 0) {
+            return;
+        }
+        mRootView.getListDatas().get(position).setViews_count(mRootView.getListDatas().get(position).getViews_count() + 1);
+        mCirclePostListBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
+        mRootView.refreshData(position);
     }
 
     @Override

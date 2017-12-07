@@ -39,6 +39,8 @@ public interface CircleDetailContract {
         void handleLike(boolean b,Long id, int dataPosition);
 
         void handleCollect(CirclePostListBean circlePostListBean);
+
+        void handleViewCount(Long id, int position);
     }
 
     interface Repository extends IBaseCircleRepository {

@@ -531,6 +531,21 @@ public class ApiConfig {
     public static final String APP_PATH_LIKEREWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
 
     /**
+     * 帖子置顶
+     */
+    public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";
+
+    /**
+     * 帖子打赏
+     */
+    public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
+
+    /**
+     * 帖子评论置顶
+     */
+    public static final String APP_PATH_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}";
+
+    /**
      * 帖子收藏
      */
     public static final String APP_PATH_COLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/collections";

@@ -248,7 +248,6 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mIsNeedDynamicListRefresh = true;
         mRootView.setCollect(isUnCollected);
         mRootView.getCurrentePost().setCollected(isUnCollected);
-        mRootView.setCollect(isUnCollected);
         mCirclePostListBeanGreenDao.updateSingleData(mRootView.getCurrentePost());
         EventBus.getDefault().post(mRootView.getCurrentePost(), POST_LIST_COLLECT_UPDATE);
         mRepository.dealCollect(isUnCollected, id);

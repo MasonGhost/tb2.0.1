@@ -58,6 +58,10 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                 hanldeRewardResult(mRepository.rewardQA(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
 
+            case POST: // 帖子打赏
+                hanldeRewardResult(mRepository.rewardPost(sourceId, rewardMoney), walletBean, rewardMoney);
+                break;
+
             default:
                 mRootView.showSnackErrorMessage(mContext.getString(R.string.reward_type_error));
 
@@ -68,12 +72,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
         Subscription subscription = handleWalletBlance((long) rewardMoney)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<Object>>() {
-                    @Override
-                    public Observable<Object> call(Object o) {
-                        return result;
-                    }
-                }).doAfterTerminate(() -> mRootView.setSureBtEnable(true))
+                .flatMap(o -> result).doAfterTerminate(() -> mRootView.setSureBtEnable(true))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

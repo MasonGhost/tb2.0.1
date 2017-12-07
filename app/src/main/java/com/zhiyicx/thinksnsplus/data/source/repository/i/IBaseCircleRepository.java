@@ -26,7 +26,7 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean);
 
-    Observable<BaseJsonV2<Object>> sendCirclePost(PostPublishBean publishBean);
+    Observable<BaseJsonV2<CirclePostListBean>> sendCirclePost(PostPublishBean publishBean);
 
     Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId);
 

@@ -115,4 +115,5 @@ public interface IRewardRepository {
     Observable<List<RewardsListBean>> rewardQAList(long answer_id, Integer limit, Integer offset, String order_type);
 
 
+    Observable<Object> rewardPost(long sourceId, double rewardMoney);
 }
