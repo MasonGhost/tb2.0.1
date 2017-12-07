@@ -141,6 +141,10 @@ ext {
             refresh                      : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3',
             refreshHeader                : 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3',
             gifView                      : 'pl.droidsonroids.gif:android-gif-drawable:1.2.3',
+
+            // 环信相关
+            playServices                 : 'com.google.android.gms:play-services-gcm:9.4.0',
+            hyphenate                    : 'com.hyphenate:hyphenate-sdk:3.3.7'
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",

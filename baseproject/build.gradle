@@ -90,6 +90,7 @@ dependencies {
     compile dataDependences.amapSearch
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
+    compile dataDependences.playServices
     annotationProcessor dataDependences.daggerCompiler
     // Project
     compile project(':common')

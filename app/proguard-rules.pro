@@ -383,6 +383,10 @@ public static java.lang.String TABLENAME;
 -keep class **$Properties
 -keep class com.zhiyicx.thinksnsplus.data.beans.*{ *; }
 
+################ 环信 ###############
+-keep class com.hyphenate.** {*;}
+-dontwarn  com.hyphenate.**
+
 #-------------------------------------------------------------------------
 
 #---------------------------------3.与js互相调用的类------------------------
