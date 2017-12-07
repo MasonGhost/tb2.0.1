@@ -74,11 +74,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -253,10 +253,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
         mTvCircleTitle.setText(detail.getName());
-        mTvCircleSubscrib.setVisibility(detail.getJoined() == null ? View.GONE : View.VISIBLE);
-        mTvCircleDec.setText("位置：\t" + detail.getLocation());
-        mTvCircleMember.setText("成员\t" + detail.getUsers_count());
-        mTvCirclePostCount.setText(detail.getPosts_count() + "个帖子");
+        mTvCircleSubscrib.setVisibility(detail.getJoined() != null ? View.GONE : View.VISIBLE);
+
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
+        mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
+        mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
 
         if (!updateHeadImg) {
             updateHeadImg = true;
@@ -311,6 +312,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         // 增加空数据，用于显示占位图
         if (!isLoadMore && data.isEmpty() && getCircleId() >= 0) {
             CirclePostListBean emptyData = new CirclePostListBean();
+            emptyData.setId(null);
             data.add(emptyData);
         }
         super.onNetResponseSuccess(data, isLoadMore);

@@ -257,6 +257,9 @@
     <string name="create_reviewing">已经提交申请，请等待审核</string>
     <string name="exit_circle">你是圈子创始人，不能进行退圈</string>
     <string name="reviewing_circle">圈子还在审核中</string>
+    <string name="circle_detail_location">位置：	%s</string>
+    <string name="circle_detail_usercount">成员：	%d</string>
+    <string name="circle_detail_postcount">%d个帖子</string>
 
     <string name="create_circle">创建圈子</string>
     <string name="create_circle_notice">选填</string>
