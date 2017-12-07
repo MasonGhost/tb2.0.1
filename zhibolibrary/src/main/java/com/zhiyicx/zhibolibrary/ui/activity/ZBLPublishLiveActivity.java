@@ -570,7 +570,6 @@ public class ZBLPublishLiveActivity extends ZBLBaseActivity implements PublishVi
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.getLocation();//获得经纬度
         mPresenter.onResume();
 //        showLoadding(false);
     }

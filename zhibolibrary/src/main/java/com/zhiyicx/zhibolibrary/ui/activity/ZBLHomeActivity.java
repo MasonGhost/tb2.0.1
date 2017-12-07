@@ -97,7 +97,6 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
     }
 
 
-
     private void initDialog() {
         mLoading = new ProgressDialog(this);
         mLoading.setMessage(UiUtils.getString(R.string.str_loading));
@@ -130,7 +129,7 @@ public class ZBLHomeActivity extends ZBLBaseActivity implements HomeView, ViewPa
             //初始化直播间
             // 添加相机权限设置
             mRxPermissions
-                    .request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                    .request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                     .subscribe(new Action1<Boolean>() {
                         @Override
                         public void call(Boolean permission) {

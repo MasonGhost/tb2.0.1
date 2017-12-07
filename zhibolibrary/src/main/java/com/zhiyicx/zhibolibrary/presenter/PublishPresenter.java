@@ -1,24 +1,19 @@
 package com.zhiyicx.zhibolibrary.presenter;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Surface;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -30,7 +25,6 @@ import com.soundcloud.android.crop.Crop;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
-import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.zhibolibrary.R;
 import com.zhiyicx.zhibolibrary.app.ZhiboApplication;
 import com.zhiyicx.zhibolibrary.di.ActivityScope;
@@ -83,12 +77,22 @@ import rx.schedulers.Schedulers;
  * Created by zhiyicx on 2016/3/23.
  */
 @ActivityScope
-public class PublishPresenter extends BasePresenter<PublishModel, PublishView> implements OnShareCallbackListener {
+public class PublishPresenter extends BasePresenter<PublishModel, PublishView> implements OnShareCallbackListener, AMapLocationListener {
     public static final float COVER_WIDTH = 350f;
     public static final float COVER_HEIGHT = 350f;
     private UserInfo myInfo;
     private File mCropfile;
-    private LocationManager mLocationManager;
+
+
+    /**
+     * 声明AMapLocationClientOption对象
+     */
+    public AMapLocationClientOption mLocationOption = null;
+    /**
+     * 声明定位回调监听器
+     */
+    private AMapLocationClient mLocationClient;
+
     private String mLocation = "";
     public boolean isStreaming;
     public final String TAG = this.getClass().getSimpleName();
@@ -98,7 +102,6 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     public boolean isException;
     private boolean isHolder = false;
     private FilterManager mFilterManager;
-    private MyListener myListener;
     private int mGLTextureId;
     private Subscription glsSubscrebtion;
 
@@ -171,12 +174,12 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     @Inject
     public PublishPresenter(PublishModel model, PublishView rootView) {
         super(model, rootView);
-        this.mSharePolicy = new UmengSharePolicyImpl( rootView.getActivity());
+        this.mSharePolicy = new UmengSharePolicyImpl(rootView.getActivity());
         mSharePolicy.setOnShareCallbackListener(this);
         initSensitiveWordFilter();
         myInfo = ZhiboApplication.getUserInfo();
         setShareData();
-
+        initLocation();
     }
 
     /**
@@ -259,20 +262,20 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         ZBStreamingClient.getInstance().setReconnetListener(new OnReconnetListener() {
             @Override
             public void reconnectStart() {
-                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectStart ");
+                LogUtils.debugInfo(TAG, " ZBStreamingClient.getInstance() =-------------reconnectStart ");
                 mRootView.setPlaceHolderVisible(true);
             }
 
             @Override
             public void reconnectScuccess() {
                 mRootView.setPlaceHolderVisible(false);
-                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
+                LogUtils.debugInfo(TAG, " ZBStreamingClient.getInstance() =-------------reconnectScuccess ");
             }
 
             @Override
             public void reConnentFailure() {
                 mRootView.setPlaceHolderVisible(false);
-                LogUtils.debugInfo(TAG," ZBStreamingClient.getInstance() =-------------reConnentFailure ");
+                LogUtils.debugInfo(TAG, " ZBStreamingClient.getInstance() =-------------reConnentFailure ");
                 isException = true;//重连失败标记为异常状态
                 close();
             }
@@ -334,74 +337,46 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
     /**
      * 获取gps经纬度
      */
+    private void initLocation() {
+        if (mLocationOption == null) {
+            //初始化定位
 
-    public void getLocation() {
-        //获得位置管理器
-        mLocationManager = (LocationManager) UiUtils.getContext().getSystemService(Context.LOCATION_SERVICE);
-        // 设定标准
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);// 精确度
-        criteria.setCostAllowed(true);// 是否允许网络
+            //初始化AMapLocationClientOption对象
+            mLocationOption = new AMapLocationClientOption();
 
-        // 拿到最好的定位方法
-        String bsetpro = mLocationManager.getBestProvider(criteria, true);
-
-
-        //检查权限
-        if (ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(UiUtils.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager
-                .PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        // 请求位置更新
-        if (criteria != null) {
-            myListener = new MyListener();
-            mLocationManager.requestLocationUpdates(bsetpro, 0, 0, myListener);
-        } else {
-            mRootView.showMessage("请开启GPS定位");
+            //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            //获取最近3s内精度最高的一次定位结果：
+            //设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
+            mLocationOption.setOnceLocationLatest(true);
+            //设置是否返回地址信息（默认返回地址信息）
+            mLocationOption.setNeedAddress(true);
+            mLocationClient = new AMapLocationClient(ZhiboApplication.getContext());
+            //给定位客户端对象设置定位参数
+            mLocationClient.setLocationOption(mLocationOption);
+            //启动定位
+            mLocationClient.startLocation();
+            //可以通过类implement方式实现AMapLocationListener接口，也可以通过创造接口类对象的方法实现
+            mLocationClient.setLocationListener(this);
         }
     }
 
-    /**
-     * 位置状态改变回调
-     */
-    class MyListener implements LocationListener {
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
 
-        @Override
-        public void onLocationChanged(Location location) {
-            // 位置发生改变时调用
-            // 获取经纬度并且把把正确经纬度转换成火星坐标
-            mLocation = location.getLatitude() + "," + location.getLongitude();
-            System.out.println("location = " + location.getLatitude());
-            // 成功获得地址后,停止获取更新节约资源和电量
-            if (mLocationManager != null) {
-                mLocationManager.removeUpdates(this);
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                // 位置发生改变时调用
+                // 获取经纬度并且把把正确经纬度转换成火星坐标
+                mLocation = aMapLocation.getLatitude() + "," + aMapLocation.getLongitude();
+                System.out.println("location = " + aMapLocation.getLatitude());
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                com.zhiyicx.common.utils.log.LogUtils.d("AmapError" + "location Error, ErrCode:"
+                        + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
             }
-
         }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            // 状态改变时调用
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            // 位置提供者可用时调用
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            // 位置提供者不可用时调用
-        }
-
     }
 
 
@@ -522,8 +497,6 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
             });
         }
     }
-
-
 
 
     /**
@@ -665,9 +638,6 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
 
             @Override
             public void onStartSuccess() {
-                if (mLocationManager != null && myListener != null) {
-                    mLocationManager.removeUpdates(myListener);
-                }
                 hideLoading();
                 isStreaming = true;
                 EventBus.getDefault().post("1", "remove_all");//清除屏幕按钮
@@ -844,8 +814,9 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         if (mCropfile != null) {
             mCropfile = null;
         }
-        if (mLocationManager != null) {
-            mLocationManager = null;
+        if (mLocationClient != null) {
+            mLocationClient.unRegisterLocationListener(this);
+            mLocationClient.onDestroy();
         }
         if (mFilterManager != null) {
             mFilterManager.release();
@@ -853,7 +824,7 @@ public class PublishPresenter extends BasePresenter<PublishModel, PublishView> i
         ZBStreamingClient.getInstance().onDestroy();
         unSubscribe(glsSubscrebtion);
         super.onDestroy();
-        if(mSharePolicy!=null){
+        if (mSharePolicy != null) {
             mSharePolicy.setOnShareCallbackListener(null);
         }
     }
