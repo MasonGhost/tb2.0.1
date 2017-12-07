@@ -14,7 +14,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
  * @Date 2017/12/6
  * @Contact master.jungle68@gmail.com
  */
-public class MyWaitAuditCircleFragment extends MyJoinedCircleFragment {
+public class MyWaitAuditCircleFragment extends BaseCircleListFragment  {
 
 
     public static MyWaitAuditCircleFragment newInstance(boolean isNeedToolBar) {
@@ -28,12 +28,12 @@ public class MyWaitAuditCircleFragment extends MyJoinedCircleFragment {
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleMineAuditListItem( getContext(), this));
+        adapter.addItemViewDelegate(new CircleMineAuditListItem(getContext(), this));
         return adapter;
     }
 
     @Override
-    public String getMineCircleType() {
-        return CircleClient.MineCircleType.AUDIT.value;
+    public CircleClient.MineCircleType getMineCircleType() {
+        return CircleClient.MineCircleType.AUDIT;
     }
 }

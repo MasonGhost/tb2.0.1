@@ -31,6 +31,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
 
 
     public static final int DEFAULT_FIRST_SHOW_HISTORY_SIZE = 5;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
 
@@ -128,4 +129,5 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
     public void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean) {
         mQASearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
+
 }

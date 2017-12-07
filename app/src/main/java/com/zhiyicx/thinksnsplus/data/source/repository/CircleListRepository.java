@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleContract;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListRepository extends BaseCircleRepository implements CircleListContract.Repository, MyJoinedCircleContract.Repository {
+public class CircleListRepository extends BaseCircleRepository implements CircleListContract.Repository, BaseCircleListContract.Repository {
 
     @Inject
     public CircleListRepository(ServiceManager serviceManager) {

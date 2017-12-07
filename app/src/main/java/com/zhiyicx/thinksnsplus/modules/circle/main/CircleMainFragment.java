@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -88,7 +89,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
-        startActivity(new Intent(getActivity(), MarkdownActivity.class));
+        startActivity(new Intent(getActivity(), CircleSearchContainerActivity.class));
     }
 
     @Override

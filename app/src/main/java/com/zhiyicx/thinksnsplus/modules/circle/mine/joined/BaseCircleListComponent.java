@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.circle.mine.joined;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListPresenterModule;
 
 import dagger.Component;
 
@@ -15,6 +13,6 @@ import dagger.Component;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = MyJoinedCirclePresenterModule.class)
-public interface MyJoinedCircleComponent extends InjectComponent<MyJoinedCircleFragment>{
+@Component(dependencies = AppComponent.class,modules = BaseCircleListPresenterModule.class)
+public interface BaseCircleListComponent extends InjectComponent<BaseCircleListFragment>{
 }

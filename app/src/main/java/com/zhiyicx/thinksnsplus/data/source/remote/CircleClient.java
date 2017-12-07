@@ -62,7 +62,8 @@ public interface CircleClient {
      */
     enum MineCircleType {
         JOIN("join"),
-        AUDIT("audit");
+        AUDIT("audit"),
+        SEARCH("search");
         public String value;
 
         MineCircleType(String value) {
@@ -111,17 +112,21 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_MY_JOINED_CIRCLE)
-    Observable<List<CircleInfo>> getMyJoinedCircle(@Query("limit") int limit, @Query("offet") int offet, @Query("type") String type);
+    Observable<List<CircleInfo>> getMyJoinedCircle(@Query("limit") Integer limit, @Query("offet") Integer offet, @Query("type") String type);
 
     /**
      * 获取全部圈子
      *
-     * @param limit
-     * @param offet
+     * @param limit       默认 15 ，数据返回条数 默认为15
+     * @param offet       默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword     用于搜索圈子，按圈名搜索
+     * @param category_id 圈子分类id
      * @return
      */
     @GET(APP_PATH_GET_ALL_CIRCLE)
-    Observable<List<CircleInfo>> getAllCircle(@Query("limit") int limit, @Query("offet") int offet);
+    Observable<List<CircleInfo>> getAllCircle(@Query("limit") Integer limit, @Query("offet") Integer offet
+            , @Query("keyword") String keyword
+            , @Query("category_id") Integer category_id);
 
     /**
      * 获取附近圈子
@@ -133,7 +138,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_ROUNDCIRCLE)
-    Observable<List<CircleInfo>> getRoundCircle(@Query("limit") int limit, @Query("offet") int offet,
+    Observable<List<CircleInfo>> getRoundCircle(@Query("limit") Integer limit, @Query("offet") int offet,
                                                 @Query("longitude") String longitude, @Query("latitude") String latitude);
 
     /**
@@ -194,7 +199,7 @@ public interface CircleClient {
      *
      * @param limit
      * @param offet
-     * @param type 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     * @param type  参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
      * @return
      */
     @GET(APP_PATH_GET_MINE_POSTLIST)

@@ -106,9 +106,20 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 获取全部圈
+     *
+     * @param limit       默认 15 ，数据返回条数 默认为15
+     * @param offet       默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword     用于搜索圈子，按圈名搜索
+     * @param category_id 圈子分类id
+     * @return
+     */
+
     @Override
-    public Observable<List<CircleInfo>> getAllCircle(int limit, int offet) {
-        return mCircleClient.getAllCircle(limit, offet)
+    public Observable<List<CircleInfo>> getAllCircle(Integer limit, Integer offet, String keyword
+            , Integer category_id) {
+        return mCircleClient.getAllCircle(limit, offet, keyword, category_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -263,59 +274,59 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 observable
                         .observeOn(Schedulers.io())
                         .flatMap(postListBeans -> {
-                    final List<Object> user_ids = new ArrayList<>();
-                    for (CirclePostListBean circlePostListBean : postListBeans) {
-                        user_ids.add(circlePostListBean.getUser_id());
-                        if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
-                            continue;
-                        }
-                        for (CirclePostCommentBean commentListBean : circlePostListBean.getComments()) {
-                            user_ids.add(commentListBean.getUser_id());
-                            user_ids.add(commentListBean.getReply_to_user_id());
-                        }
-                    }
-                    if (user_ids.isEmpty()) {
-                        return Observable.just(postListBeans);
-                    }
-                    return mUserInfoRepository.getUserInfo(user_ids)
-                            .map(userinfobeans -> {
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                            final List<Object> user_ids = new ArrayList<>();
+                            for (CirclePostListBean circlePostListBean : postListBeans) {
+                                user_ids.add(circlePostListBean.getUser_id());
+                                if (circlePostListBean.getComments() == null || circlePostListBean.getComments().isEmpty()) {
+                                    continue;
                                 }
-                                for (CirclePostListBean circlePostListBean : postListBeans) {
-                                    circlePostListBean.setUserInfoBean(userInfoBeanSparseArray.get(circlePostListBean
-                                            .getUser_id().intValue()));
-                                    if (circlePostListBean.getComments() == null || circlePostListBean.getComments()
-                                            .isEmpty()) {
-                                        continue;
-                                    }
-                                    for (int i = 0; i < circlePostListBean.getComments().size(); i++) {
-                                        UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                .get(i).getUser_id());
-                                        if (tmpUserinfo != null) {
-                                            circlePostListBean.getComments().get(i).setCommentUser(tmpUserinfo);
+                                for (CirclePostCommentBean commentListBean : circlePostListBean.getComments()) {
+                                    user_ids.add(commentListBean.getUser_id());
+                                    user_ids.add(commentListBean.getReply_to_user_id());
+                                }
+                            }
+                            if (user_ids.isEmpty()) {
+                                return Observable.just(postListBeans);
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(userinfobeans -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
-                                        if (circlePostListBean.getComments().get(i).getReply_to_user_id() == 0) {
-                                            // 如果 reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            circlePostListBean.getComments().get(i).setReplyUser(userInfoBean);
-                                        } else {
-                                            if (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                    .get(i).getReply_to_user_id()) != null) {
-                                                circlePostListBean.getComments().get(i).setReplyUser
-                                                        (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
-                                                                .get(i).getReply_to_user_id()));
+                                        for (CirclePostListBean circlePostListBean : postListBeans) {
+                                            circlePostListBean.setUserInfoBean(userInfoBeanSparseArray.get(circlePostListBean
+                                                    .getUser_id().intValue()));
+                                            if (circlePostListBean.getComments() == null || circlePostListBean.getComments()
+                                                    .isEmpty()) {
+                                                continue;
                                             }
-                                        }
-                                    }
+                                            for (int i = 0; i < circlePostListBean.getComments().size(); i++) {
+                                                UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                        .get(i).getUser_id());
+                                                if (tmpUserinfo != null) {
+                                                    circlePostListBean.getComments().get(i).setCommentUser(tmpUserinfo);
+                                                }
+                                                if (circlePostListBean.getComments().get(i).getReply_to_user_id() == 0) {
+                                                    // 如果 reply_user_id = 0 回复动态
+                                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                                    userInfoBean.setUser_id(0L);
+                                                    circlePostListBean.getComments().get(i).setReplyUser(userInfoBean);
+                                                } else {
+                                                    if (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                            .get(i).getReply_to_user_id()) != null) {
+                                                        circlePostListBean.getComments().get(i).setReplyUser
+                                                                (userInfoBeanSparseArray.get((int) circlePostListBean.getComments()
+                                                                        .get(i).getReply_to_user_id()));
+                                                    }
+                                                }
+                                            }
 
-                                }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                return postListBeans;
-                            });
-                })
-                .observeOn(AndroidSchedulers.mainThread());
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                        return postListBeans;
+                                    });
+                        })
+                        .observeOn(AndroidSchedulers.mainThread());
     }
 }

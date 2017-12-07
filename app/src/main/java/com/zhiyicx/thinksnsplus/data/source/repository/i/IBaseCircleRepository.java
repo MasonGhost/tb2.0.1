@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -32,7 +33,17 @@ public interface IBaseCircleRepository {
 
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
 
-    Observable<List<CircleInfo>> getAllCircle(int limit, int offet);
+    /**
+     * 获取全部圈子
+     *
+     * @param limit       默认 15 ，数据返回条数 默认为15
+     * @param offet       默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param keyword     用于搜索圈子，按圈名搜索
+     * @param category_id 圈子分类id
+     * @return
+     */
+    Observable<List<CircleInfo>> getAllCircle(Integer limit, Integer offet, String keyword
+            , Integer category_id);
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 

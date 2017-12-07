@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainContract;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerContract;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainRepository extends BaseCircleRepository implements CircleMainContract.Repository {
+public class CircleMainRepository extends BaseCircleRepository implements CircleMainContract.Repository,CircleSearchContainerContract.Repository {
 
     @Inject
     public CircleMainRepository(ServiceManager serviceManager) {
