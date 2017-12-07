@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
@@ -65,6 +66,8 @@ public class CircleListItem extends BaseCircleItem {
 
         CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
 
+        TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
+
         Context context = circleSubscribe.getContext();
 
         // 设置封面
@@ -97,23 +100,25 @@ public class CircleListItem extends BaseCircleItem {
         circleSubscribe.setChecked(isJoined);
         circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
         circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-        circleSubscribe.setClickable(circleInfo.getAudit() == 1);
-        if (circleInfo.getAudit() == 1) {
-            RxView.clicks(circleSubscribe)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        if (mCircleItemItemEvent == null) {
-                            return;
-                        }
-                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                    });
-        } else {
-            if (mCircleItemItemEvent == null) {
-                return;
-            }
-            mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-        }
-
+        boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
+        circleSubscribeFrame.setEnabled(!canChange);
+        circleSubscribe.setEnabled(canChange);
+        RxView.clicks(circleSubscribe)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mCircleItemItemEvent == null) {
+                        return;
+                    }
+                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                });
+        RxView.clicks(circleSubscribeFrame)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mCircleItemItemEvent == null) {
+                        return;
+                    }
+                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                });
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

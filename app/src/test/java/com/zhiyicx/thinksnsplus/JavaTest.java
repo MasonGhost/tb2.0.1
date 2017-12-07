@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -100,6 +101,19 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testList2Map() {
+        CreateCircleBean createCircleBean = new CreateCircleBean();
+        CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(2);
+        CreateCircleBean.TagId tag = new CreateCircleBean.TagId(3);
+        List<CreateCircleBean.TagId> tags = new ArrayList<>();
+        tags.add(tag);
+        tags.add(tagId);
+        createCircleBean.setNotice("notice");
+        createCircleBean.setTags(tags);
+        System.out.print(DataDealUitls.transBean2MapWithArray(createCircleBean).toString());
     }
 
     @Test

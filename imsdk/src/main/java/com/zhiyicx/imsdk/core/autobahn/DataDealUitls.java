@@ -5,9 +5,11 @@ import org.msgpack.template.builder.beans.IntrospectionException;
 import org.msgpack.template.builder.beans.Introspector;
 import org.msgpack.template.builder.beans.PropertyDescriptor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +52,7 @@ public class DataDealUitls {
         if (obj == null) {
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
@@ -61,25 +63,63 @@ public class DataDealUitls {
                     // 得到property对应的getter方法
                     Method getter = property.getReadMethod();
                     Object value = getter.invoke(obj);
-                    if (value != null)
+                    if (value != null) {
                         map.put(key, value);
+                    }
                 }
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return map;
-
     }
+
+    public static Map<String, Object> transBean2MapWithArray(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        Map<String, Object> map = new HashMap<>();
+        Field[] fields = obj.getClass().getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.get(obj) instanceof List) {
+                    List<Object> list = (List) field.get(obj);
+                    int i = 0;
+                    for (Object innerObj : list) {
+                        // "tags[0][id]"
+                        // "tags[0][name]"
+                        StringBuilder test = new StringBuilder();
+                        test.append(field.getName() + "[" + i + "]");
+                        Field[] innerfields = innerObj.getClass().getDeclaredFields();
+                        for (Field innerfield : innerfields) {
+                            innerfield.setAccessible(true);
+                            test.append("[" + innerfield.getName() + "]");
+                            // 对应的单个
+                            map.put(test.toString(), innerfield.get(innerObj));
+                        }
+                        i++;
+                    }
+                } else {
+                    map.put(field.getName(), field.get(obj));
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
     /**
      * 使用java.beans.Introspector转换
+     *
      * @param object
      * @return map
      * @throws Exception
      */
-    public static Map<String, Object> obj2Map(Object object){
+    public static Map<String, Object> obj2Map(Object object) {
         Map<String, Object> map = new HashMap<String, Object>();
         // 获取Object对象
         BeanInfo beanInfo = null;
@@ -107,6 +147,5 @@ public class DataDealUitls {
         }
         return map;
     }
-
 
 }

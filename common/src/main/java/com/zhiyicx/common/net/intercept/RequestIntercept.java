@@ -29,6 +29,7 @@ import okio.BufferedSource;
 public class RequestIntercept implements Interceptor {
     private static final String TAG = "RequestIntercept";
     private RequestInterceptListener mListener;
+    private static final boolean USEERRORLOG = false;
 
     public RequestIntercept(RequestInterceptListener listener) {
         this.mListener = listener;
@@ -81,12 +82,13 @@ public class RequestIntercept implements Interceptor {
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
         LogUtils.json(TAG, bodyString);
-        // 服務器出錯時候打印
-        LogUtils.d(TAG, bodyString);
+        if (USEERRORLOG){
+            // 服務器出錯時候打印
+            LogUtils.d(TAG, bodyString);
+        }
 
-
-        if (mListener != null)//这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
-        {
+        //这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
+        if (mListener != null){
             return mListener.onHttpResponse(bodyString, chain, originalResponse);
         }
 

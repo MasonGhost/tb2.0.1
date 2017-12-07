@@ -76,4 +76,13 @@
         android:textColor="@color/selector_channel_list_subscrib_button_divider"
         android:textSize="@dimen/size_content_comment"/>
 
+    <TextView
+        android:id="@+id/tv_circle_subscrib_frame"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"/>
+
 </RelativeLayout>

@@ -32,6 +32,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     public static final int TITLEVOUNT = 2;
 
     private CircleMainHeader mCircleMainHeader;
+    private List<CircleInfo> mJoinedCircle;
 
     @Override
     protected boolean setUseCenterLoading() {
@@ -64,6 +65,16 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    public List<CircleInfo> getJoinedCircles() {
+        return mJoinedCircle;
+    }
+
+    @Override
+    public void setJoinedCircles(List<CircleInfo> circles) {
+        mJoinedCircle = circles;
+    }
+
+    @Override
     protected int setRightImg() {
         return R.mipmap.ico_createcircle;
     }
@@ -87,7 +98,6 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
-        startActivity(new Intent(getActivity(), MarkdownActivity.class));
     }
 
     @Override
@@ -129,7 +139,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
-
+        mPresenter.dealCircleJoinOrExit(position, circleInfo);
     }
 
     @Override

@@ -76,7 +76,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean) {
         Map<String, String> file = new HashMap<>();
         file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
-        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls.transBean2Map(createCircleBean)))
+        return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls.transBean2MapWithArray(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

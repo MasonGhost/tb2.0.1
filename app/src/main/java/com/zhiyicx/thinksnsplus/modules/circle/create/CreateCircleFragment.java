@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -104,8 +105,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     CheckBox mCbFree;
     @BindView(R.id.tv_notice)
     UserInfoInroduceInputView mTvNotice;
-    @BindView(R.id.ll_notice)
-    LinearLayout mLlNotice;
     @BindView(R.id.ll_container)
     LinearLayout mLlContainer;
 
@@ -223,6 +222,14 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         // 适配手机无法显示输入焦点
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            getActivity().finish();
         }
     }
 

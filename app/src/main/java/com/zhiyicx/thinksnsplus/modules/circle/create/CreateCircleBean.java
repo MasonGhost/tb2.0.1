@@ -179,7 +179,7 @@ public class CreateCircleBean {
                 ", mode='" + mode + '\'' +
                 ", allow_feed=" + allow_feed +
                 ", money='" + money + '\'' +
-                ", tags=" + tags +
+//                ", tags=" + tags +
                 '}';
     }
 }

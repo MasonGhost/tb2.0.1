@@ -6,6 +6,7 @@ import com.zhiyicx.common.net.listener.ProgressRequestBody;
 import com.zhiyicx.common.utils.FileUtils;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,18 +88,25 @@ public class UpLoadFile {
         builder.setType(MultipartBody.FORM);//表单类型
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
-                builder.addFormDataPart(entry.getKey(), entry.getValue().toString());//ParamKey.TOKEN 自定义参数key常量类，即参数名
+                if (entry.getValue() instanceof List){
+                    builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
+                }else{
+                    builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
+                }
+
             }
+
         }
         if (filePathList != null) {
             Set<String> filePathKey = filePathList.keySet();
             for (String fileParam : filePathKey) {
                 try {
-                    File file = new File(filePathList.get(fileParam));//filePath 图片地址
+                    File file = new File(filePathList.get(fileParam));
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
                             MediaType.parse( "multipart/form-data" ), file);
-                    builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
+                    //imgfile 后台接收图片流的参数名
+                    builder.addFormDataPart(fileParam, file.getName(), imageBody);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }

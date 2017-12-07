@@ -46,7 +46,7 @@ public class CircleTypeItem extends BaseCircleItem {
 
         if (circleInfo.getId() == RECOMMENDCIRCLE) {
             button.setRightImage(0);
-            Drawable change = button.getContext().getResources().getDrawable(R.mipmap.activity_ico_time);
+            Drawable change = button.getContext().getResources().getDrawable(R.mipmap.ico_circle_exchange);
             button.getCombinedButtonRightTextView().setCompoundDrawablePadding(ConvertUtils.dp2px(button.getContext(),4));
             button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(change, null, null, null);
         } else if (circleInfo.getId() == MYJOINEDCIRCLE) {

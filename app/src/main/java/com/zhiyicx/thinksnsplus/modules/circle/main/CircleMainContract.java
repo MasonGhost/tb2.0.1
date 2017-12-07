@@ -18,10 +18,16 @@ import rx.Observable;
 public interface CircleMainContract {
     interface View extends ITSListView<CircleInfo, Presenter> {
         void updateCircleCount(int count);
+
+        List<CircleInfo> getJoinedCircles();
+
+        void setJoinedCircles(List<CircleInfo> circles);
     }
 
     interface Presenter extends ITSListPresenter<CircleInfo> {
         void getRecommendCircle();
+
+        void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
     }
 
     interface Repository extends IBaseCircleRepository {

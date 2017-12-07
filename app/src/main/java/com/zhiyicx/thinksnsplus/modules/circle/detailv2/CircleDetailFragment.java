@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -58,6 +60,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
@@ -71,11 +74,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -329,63 +335,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         AndroidBug5497Workaround.assistActivity(getActivity());
         initToolBar();
-        mDrawer.setClipToPadding(false);
-        mDrawer.setClipChildren(false);
-        mDrawer.setScrimColor(Color.TRANSPARENT);
-        mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                View mContent = mDrawer.getChildAt(0);
-                ViewHelper.setTranslationX(mContent,
-                        -drawerView.getMeasuredWidth() * slideOffset);
-            }
-        };
-
-        mDrawer.addDrawerListener(mToggle);
-        mToggle.syncState();
-
-        myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
-                ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
-
-        myAppBarLayoutBehavoir.setOnRefreshChangeListener(new AppBarLayoutOverScrollViewBehavior.onRefreshChangeListener() {
-            @Override
-            public void onRefreshShow() {
-                mIvRefresh.setVisibility(View.VISIBLE);
-                ((AnimationDrawable) mIvRefresh.getDrawable()).start();
-            }
-
-            @Override
-            public void doRefresh() {
-                mPresenter.requestNetData(0L, false);
-            }
-        });
-        mIlvComment.setOnSendClickListener(this);
-    }
-
-    private void initToolBar() {
-        if (setUseStatusView()) {
-            // toolBar 设置状态栏高度的 marginTop
-            int height = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolbar.getLayoutParams();
-            layoutParams.setMargins(0, height, 0, 0);
-            mToolbar.setLayoutParams(layoutParams);
-        }
-        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) mLlCircleNavigationContainer.getLayoutParams();
-        params.width = DeviceUtils.getScreenWidth(getActivity()) / 2;
-        mLlCircleNavigationContainer.setLayoutParams(params);
-
+        initLisener();
     }
 
     @Override
@@ -401,7 +351,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
+        goPostDetail(position);
     }
 
     @Override
@@ -412,11 +362,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onMoreCommentClick(View view, CirclePostListBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
-        goPostDetail(position, true);
-    }
-
-    private void goPostDetail(int position, boolean b) {
-        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
+        goPostDetail(position);
     }
 
     @Override
@@ -730,6 +676,76 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         circlePostListBaseItem.setOnCommentClickListener(this);
         circlePostListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(circlePostListBaseItem);
+    }
+
+    private void initLisener() {
+        mDrawer.setClipToPadding(false);
+        mDrawer.setClipChildren(false);
+        mDrawer.setScrimColor(Color.TRANSPARENT);
+        mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                View mContent = mDrawer.getChildAt(0);
+                ViewHelper.setTranslationX(mContent,
+                        -drawerView.getMeasuredWidth() * slideOffset);
+            }
+        };
+
+        RxView.clicks(mBtnSendPost)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> startActivity(new Intent(getActivity(), MarkdownActivity.class)));
+
+
+        mDrawer.addDrawerListener(mToggle);
+        mToggle.syncState();
+
+        myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
+                ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
+
+        myAppBarLayoutBehavoir.setOnRefreshChangeListener(new AppBarLayoutOverScrollViewBehavior.onRefreshChangeListener() {
+            @Override
+            public void onRefreshShow() {
+                mIvRefresh.setVisibility(View.VISIBLE);
+                ((AnimationDrawable) mIvRefresh.getDrawable()).start();
+            }
+
+            @Override
+            public void doRefresh() {
+                mPresenter.requestNetData(0L, false);
+            }
+        });
+        mIlvComment.setOnSendClickListener(this);
+    }
+
+    private void initToolBar() {
+        if (setUseStatusView()) {
+            // toolBar 设置状态栏高度的 marginTop
+            int height = getResources().getDimensionPixelSize(R.dimen.spacing_large);
+            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolbar.getLayoutParams();
+            layoutParams.setMargins(0, height, 0, 0);
+            mToolbar.setLayoutParams(layoutParams);
+        }
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) mLlCircleNavigationContainer.getLayoutParams();
+        params.width = DeviceUtils.getScreenWidth(getActivity()) / 2;
+        mLlCircleNavigationContainer.setLayoutParams(params);
+
+    }
+
+    private void goPostDetail(int position) {
+        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
