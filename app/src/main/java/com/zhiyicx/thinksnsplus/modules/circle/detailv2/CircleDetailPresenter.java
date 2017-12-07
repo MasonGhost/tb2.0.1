@@ -72,41 +72,41 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (!isLoadMore) {
-            Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()),
-                    mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
-                    CircleZipBean::new)
-                    .map(circleZipBean -> {
-                        List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
-                        for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i).getMaxId().intValue());
-                            if (!circlePostCommentBeans.isEmpty()) {
-                                circlePostCommentBeans.addAll(data.get(i).getComments());
-                                data.get(i).getComments().clear();
-                                data.get(i).getComments().addAll(circlePostCommentBeans);
+        Subscription subscription =
+                Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()),
+                        mRepository.getPostListFromCircle(mRootView.getCircleId(), maxId),
+                        CircleZipBean::new)
+                        .map(circleZipBean -> {
+                            List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
+                            for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
+                                List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i).getMaxId().intValue());
+                                if (!circlePostCommentBeans.isEmpty()) {
+                                    circlePostCommentBeans.addAll(data.get(i).getComments());
+                                    data.get(i).getComments().clear();
+                                    data.get(i).getComments().addAll(circlePostCommentBeans);
+                                }
                             }
-                        }
-                        return circleZipBean;
-                    })
-                    .subscribe(new BaseSubscribeForV2<CircleZipBean>() {
-                        @Override
-                        protected void onSuccess(CircleZipBean data) {
-                            mCirclePostListBeanGreenDao.saveMultiData(data.getCirclePostListBeanList());
-                            mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
-                            mRootView.allDataReady(data);
-                        }
+                            return circleZipBean;
+                        })
+                        .subscribe(new BaseSubscribeForV2<CircleZipBean>() {
+                            @Override
+                            protected void onSuccess(CircleZipBean data) {
+                                mCirclePostListBeanGreenDao.saveMultiData(data.getCirclePostListBeanList());
+                                mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
+                                mRootView.allDataReady(data);
+                            }
 
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                        }
+                            @Override
+                            protected void onFailure(String message, int code) {
+                                super.onFailure(message, code);
+                            }
 
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                        }
-                    });
-        }
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                super.onException(throwable);
+                            }
+                        });
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
     public void handleSendComment(CirclePostCommentBean circlePostCommentBean) {
-        Observable.just(circlePostCommentBean)
+        Subscription subscription=Observable.just(circlePostCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostCommentBean1 -> {
@@ -281,6 +281,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     }
 
                 }, throwable -> throwable.printStackTrace());
+
+        addSubscrebe(subscription);
 
     }
 

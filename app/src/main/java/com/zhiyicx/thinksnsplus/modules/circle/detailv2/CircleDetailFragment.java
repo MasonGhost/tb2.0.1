@@ -54,6 +54,8 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.CircleDetailRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
@@ -66,10 +68,12 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.rank.adapter.TypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
@@ -78,12 +82,14 @@ import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
+import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -108,7 +114,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         CirclePostNoPullRecyclerView.OnCommentStateClickListener<CirclePostCommentBean>, CirclePostListCommentView.OnCommentClickListener,
         CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         CirclePostListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
-        , PhotoSelectorImpl.IPhotoBackListener {
+        , PhotoSelectorImpl.IPhotoBackListener, PostTypeChoosePopAdapter.OnTypeChoosedListener {
 
     public static final String CIRCLE_ID = "circle_id";
 
@@ -201,6 +207,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
     private boolean updateHeadImg;
+
+    private PostTypeChoosePopAdapter.MyPostTypeEnum mPostTypeEnum = PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
 
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
@@ -365,6 +373,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         AndroidBug5497Workaround.assistActivity(getActivity());
         initToolBar();
         initLisener();
+        initTypePop(mPostTypeEnum);
     }
 
     @Override
@@ -535,6 +544,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
+    @Override
+    public void onChoosed(PostTypeChoosePopAdapter.MyPostTypeEnum type) {
+
+    }
+
     /**
      * 初始化重发评论选择弹框
      */
@@ -564,7 +578,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
      * @param commentPosition    current comment position
      */
     private void initDeletCommentPopWindow(final CirclePostListBean circlePostListBean, final int dynamicPositon, final int commentPosition) {
-
 
 
         mDeletCommentPopWindow = ActionPopupWindow.builder()
@@ -795,6 +808,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) mLlCircleNavigationContainer.getLayoutParams();
         params.width = DeviceUtils.getScreenWidth(getActivity()) / 2;
         mLlCircleNavigationContainer.setLayoutParams(params);
+
+    }
+
+
+    private void initTypePop(PostTypeChoosePopAdapter.MyPostTypeEnum postType) {
+        CommonAdapter commonAdapter = new PostTypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
+                .personal_dynamic_typpe)), postType, this);
+        mTypeChoosePopupWindow = TypeChoosePopupWindow.Builder()
+                .with(mActivity)
+                .adapter(commonAdapter)
+                .asVertical()
+                .alpha(1.0f)
+                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.divider_line))
+                .parentView(mTvCirclePostOrder)
+                .build();
 
     }
 

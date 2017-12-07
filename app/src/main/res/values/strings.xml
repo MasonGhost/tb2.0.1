@@ -261,6 +261,15 @@
     <string name="circle_detail_usercount">成员：	%d</string>
     <string name="circle_detail_postcount">%d个帖子</string>
 
+    <string-array name="post_typpe_array">
+        <item>全部帖子</item>
+        <item>最新帖子</item>
+        <item>最新回复</item>
+    </string-array>
+    <string name="post_typpe_all">全部帖子</string>
+    <string name="post_typpe_new">最新帖子</string>
+    <string name="post_typpe_reply">最新回复</string>
+
     <string name="create_circle">创建圈子</string>
     <string name="create_circle_notice">选填</string>
     <string name="create_circle_nolocation">不显示位置</string>

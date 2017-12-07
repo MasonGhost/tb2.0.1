@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -267,6 +268,18 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             }
         }
         super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RewardType.POST.id) {
+                if (mCirclePostDetailBean != null) {
+                    mPresenter.updateRewardData();
+                }
+            }
+        }
     }
 
     class ItemOnCommentListener implements PostDetailCommentItem.OnCommentItemListener {

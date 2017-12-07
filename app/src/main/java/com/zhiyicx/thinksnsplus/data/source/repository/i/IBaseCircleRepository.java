@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -48,7 +50,9 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo);
 
-    Observable<List<RewardsListBean>> getPostRewardList(long postId, int limit, long offet);
+    Observable<List<RewardsListBean>> getPostRewardList(long post_id,  Integer limit,
+                                                        Integer offset, String order,
+                                                        String order_type);
 
     Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet);
 

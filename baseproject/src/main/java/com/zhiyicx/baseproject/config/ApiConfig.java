@@ -526,11 +526,6 @@ public class ApiConfig {
     public static final String APP_PATH_LIKE_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/likes";
 
     /**
-     * 帖子打赏
-     */
-    public static final String APP_PATH_LIKEREWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
-
-    /**
      * 帖子置顶
      */
     public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";

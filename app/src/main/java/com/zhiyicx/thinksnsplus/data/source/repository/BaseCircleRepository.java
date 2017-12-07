@@ -112,8 +112,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<RewardsListBean>> getPostRewardList(long postId, int limit, long offet) {
-        return mCircleClient.getPostRewardList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+    public Observable<List<RewardsListBean>> getPostRewardList(long post_id, Integer limit, Integer offset, String order, String order_type) {
+        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offset,order,order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

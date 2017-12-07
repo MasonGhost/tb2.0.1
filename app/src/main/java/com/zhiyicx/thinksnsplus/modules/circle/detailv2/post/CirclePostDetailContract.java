@@ -53,6 +53,8 @@ public interface CirclePostDetailContract {
         void handleCollect(boolean isUnCollected, long id);
 
         void sendComment(long replyUserId, String text);
+
+        void updateRewardData();
     }
 
     interface Repository extends IBaseCircleRepository {
