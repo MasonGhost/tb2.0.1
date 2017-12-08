@@ -48,6 +48,8 @@
     <string name="fans">粉丝</string>
     <string name="system_info">系统消息</string>
     <string name="my_qr_code_content">uid=%d</string>
+    <string name="qr_scan_alert">扫描二维码，添加关注</string>
+    <string name="qr_scan_failed_alert">扫码失败，请重新扫描</string>
 
     <!--发现-->
     <string name="information">资讯</string>

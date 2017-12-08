@@ -1,18 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.scan;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.home.mine.previewuser.UserPreViewActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 
@@ -55,13 +53,17 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
 
     @Override
     public void onStop() {
-        mZxScan.stopCamera();
+        if (mZxScan != null){
+            mZxScan.stopCamera();
+        }
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mZxScan.onDestroy();
+        if (mZxScan != null){
+            mZxScan.onDestroy();
+        }
         super.onDestroy();
     }
 
@@ -80,11 +82,17 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
         mZxScan.stopCamera();
         mZxScan.stopSpot();
         vibrate();
-        ToastUtils.showToast(result);
+        // 扫描到结果后直接跳转到预览页面
+        Bundle bundle = new Bundle();
+        bundle.putString(UserPreViewActivity.BUNDLE_USER_ID, result);
+        Intent intent = new Intent(getContext(), UserPreViewActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override
     public void onScanQRCodeOpenCameraError() {
-        ToastUtils.showToast("失败");
+        showSnackErrorMessage(getString(R.string.qr_scan_failed_alert));
     }
 }
