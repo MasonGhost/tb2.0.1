@@ -185,6 +185,11 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
+    public String getType() {
+        return "";
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         setAdapter(adapter, new CirclePostListItemForZeroImage(getContext()));
