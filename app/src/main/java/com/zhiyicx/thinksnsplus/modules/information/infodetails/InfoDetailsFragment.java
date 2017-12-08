@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
@@ -109,6 +110,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
     private RewardsCountBean mRewardsCountBean;
+    private boolean mIsClose;
 
     public static InfoDetailsFragment newInstance(Bundle params) {
         InfoDetailsFragment fragment = new InfoDetailsFragment();
@@ -168,14 +170,23 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void deleteInfo(boolean deleting, boolean success, String message) {
         if (deleting) {
-            showSnackLoadingMessage(getString(R.string.info_deleting));
+//            showSnackLoadingMessage(getString(R.string.info_deleting));
         } else {
             if (success) {
                 EventBus.getDefault().post(mInfoMation, EVENT_UPDATE_LIST_DELETE);
-                getActivity().finish();
+                showSnackSuccessMessage(getString(R.string.has_apply));
+                mIsClose = true;
             } else {
                 showSnackErrorMessage(message);
             }
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (getActivity() != null && Prompt.SUCCESS == prompt && mIsClose) {
+            getActivity().finish();
         }
     }
 
