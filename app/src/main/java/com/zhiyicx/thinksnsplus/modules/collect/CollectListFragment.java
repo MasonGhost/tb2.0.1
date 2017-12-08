@@ -62,16 +62,19 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
-        Fragment infoListFragment = CollectInformationListFragment.newInstance();
-        Fragment albumListFragment = CollectAlbumListFragment.newInstance();
-        Fragment groupDynamicListFragment = CollectGroupDynamicListFragment.newInstance(new Bundle());
-        return Arrays.asList(
-                dynamicListFragment
-                , infoListFragment
-                , albumListFragment
-                , groupDynamicListFragment
-        );
+        if (mFragmentList == null) {
+            Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
+            Fragment infoListFragment = CollectInformationListFragment.newInstance();
+            Fragment albumListFragment = CollectAlbumListFragment.newInstance();
+            Fragment groupDynamicListFragment = CollectGroupDynamicListFragment.newInstance(new Bundle());
+            mFragmentList = Arrays.asList(
+                    dynamicListFragment
+                    , infoListFragment
+                    , albumListFragment
+                    , groupDynamicListFragment
+            );
+        }
+        return mFragmentList;
     }
 
     @Override

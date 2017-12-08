@@ -24,9 +24,12 @@ public class DraftContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment questionDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_QUESTION);
-        Fragment answerDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER);
-        return Arrays.asList(questionDraft, answerDraft);
+        if (mFragmentList == null) {
+            Fragment questionDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_QUESTION);
+            Fragment answerDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER);
+            mFragmentList = Arrays.asList(questionDraft, answerDraft);
+        }
+        return mFragmentList;
     }
 
     @Override

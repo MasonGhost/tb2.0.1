@@ -64,12 +64,14 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_HOT);
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_NEW);
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_RECOMMENT);
-        fragmentList.add(FindSomeOneNearbyListFragment.initFragment());
-        return fragmentList;
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_HOT);
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_NEW);
+            getFragment(mFragmentList, FindSomeOneListFragment.TYPE_RECOMMENT);
+            mFragmentList.add(FindSomeOneNearbyListFragment.initFragment());
+        }
+        return mFragmentList;
     }
 
     private void getFragment(List<Fragment> fragmentList, int type) {

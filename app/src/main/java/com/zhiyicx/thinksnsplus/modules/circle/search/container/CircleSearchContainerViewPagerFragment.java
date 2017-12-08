@@ -90,10 +90,12 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
 
     @Override
     protected List<Fragment> initFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(SearchCircleFragment.newInstance(false));
-        fragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH));
-        return fragmentList;
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(SearchCircleFragment.newInstance(false));
+            mFragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH));
+        }
+        return mFragmentList;
     }
 
     /**

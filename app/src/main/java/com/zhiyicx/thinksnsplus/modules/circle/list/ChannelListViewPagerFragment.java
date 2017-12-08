@@ -39,13 +39,15 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
 
     @Override
     protected List<Fragment> initFragments() {
-        Bundle subscripChannelBundle = new Bundle();
-        subscripChannelBundle.putInt(PAGE_TYPE, PAGE_MY_SUBSCRIB_CHANNEL_LIST);
-        Fragment subscripChannelFragment = ChannelListFragment.newInstance(subscripChannelBundle);
-        Bundle allChannelBundle = new Bundle();
-        allChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
-        Fragment allChannelFragment = ChannelListFragment.newInstance(allChannelBundle);
-        mFragmentList = Arrays.asList(subscripChannelFragment, allChannelFragment);
+        if (mFragmentList == null) {
+            Bundle subscripChannelBundle = new Bundle();
+            subscripChannelBundle.putInt(PAGE_TYPE, PAGE_MY_SUBSCRIB_CHANNEL_LIST);
+            Fragment subscripChannelFragment = ChannelListFragment.newInstance(subscripChannelBundle);
+            Bundle allChannelBundle = new Bundle();
+            allChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
+            Fragment allChannelFragment = ChannelListFragment.newInstance(allChannelBundle);
+            mFragmentList = Arrays.asList(subscripChannelFragment, allChannelFragment);
+        }
         return mFragmentList;
     }
 

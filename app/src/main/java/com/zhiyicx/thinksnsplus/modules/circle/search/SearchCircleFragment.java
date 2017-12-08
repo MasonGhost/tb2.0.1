@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
@@ -47,7 +48,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Date 2017/12/6
  * @Contact master.jungle68@gmail.com
  */
-public class SearchCircleFragment extends BaseCircleListFragment implements  ISearchListener {
+public class SearchCircleFragment extends BaseCircleListFragment implements ISearchListener {
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
@@ -77,7 +78,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
 
     @Override
     protected int getBodyLayoutId() {
-         return R.layout.fragment_circle_search_list;
+        return R.layout.fragment_circle_search_list;
     }
 
     @Override
@@ -137,7 +138,8 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
             }
 
             @Override
-            public void convert(ViewHolder holder, CircleSearchHistoryBean qaSearchHistoryBean, CircleSearchHistoryBean lastT, int position, int itemCounts) {
+            public void convert(ViewHolder holder, CircleSearchHistoryBean qaSearchHistoryBean, CircleSearchHistoryBean lastT, int position, int
+                    itemCounts) {
                 holder.setText(R.id.tv_content, qaSearchHistoryBean.getContent());
                 RxView.clicks(holder.getView(R.id.tv_content))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -180,7 +182,8 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
                             if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
                                 mHistoryData.clear();
                                 mHistoryData.addAll(mPresenter.getAllSearchHistory());
-                                mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean.TYPE_DEFAULT));
+                                mHistoryData.add(new CircleSearchHistoryBean(getString(R.string.clear_all_history), CircleSearchHistoryBean
+                                        .TYPE_DEFAULT));
                                 mHsitoryAdapter.notifyDataSetChanged();
 
                             } else { // 清空历史
@@ -211,11 +214,13 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
     }
 
     private void checkEmptyView() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(View.GONE);
+        }
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {
             mLlEmpty.setVisibility(View.GONE);
-            mEmptyView.setVisibility(View.GONE);
         }
     }
 
@@ -253,6 +258,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
     @OnClick(R.id.bt_do)
     public void onViewClicked() {
         // 创建圈子
-        startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
     }
 }
