@@ -542,13 +542,21 @@ public class ZBLLivePlayActivity extends ZBLBaseActivity implements LivePlayView
     @Override
     protected void onResume() {
         super.onResume();
-        mZBPlayClient.onResume();
+//        mZBPlayClient.onResume();
+        if (mediaController != null) {
+            ((MediaController) mediaController).show();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mVideoPlayer.pause();
         mZBPlayClient.onPause();
+        if (mediaController != null) {
+            ((MediaController) mediaController).pausePlayer();
+        }
+
     }
 
     @Override

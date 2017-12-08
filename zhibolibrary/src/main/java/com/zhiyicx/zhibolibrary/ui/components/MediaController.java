@@ -637,6 +637,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     {
         if (mPlayer != null) {
             mPlayer.pause();
+            updatePausePlay(false);//更新播放按钮图片状态
         }
     }
 
@@ -645,6 +646,7 @@ public class MediaController extends FrameLayout implements ZBMediaController {
     {
         if (mPlayer != null) {
             mPlayer.start();
+            updatePausePlay(true);//更新播放按钮图片状态
         }
     }
 }
