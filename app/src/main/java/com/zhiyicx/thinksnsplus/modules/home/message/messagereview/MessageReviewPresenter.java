@@ -61,7 +61,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 observable = mRepository.getNewsReviewComment(maxId.intValue());
                 break;
             case TOP_POST_COMMENT:
-//                observable = mRepository.getPostReviewComment(maxId.intValue());
+                observable = mRepository.getPostReviewComment(maxId.intValue());
                 break;
             default:
                 observable = mRepository.getDynamicReviewComment(maxId.intValue());

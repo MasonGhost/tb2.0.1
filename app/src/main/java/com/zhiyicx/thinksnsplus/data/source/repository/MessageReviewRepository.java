@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -58,6 +59,13 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     @Override
     public Observable<List<TopNewsCommentListBean>> getNewsReviewComment(int after) {
         return dealNewsCommentBean(mInfoMainClient.getNewsReviewComment(after, TSListFragment.DEFAULT_PAGE_SIZE));
+    }
+
+    @Override
+    public Observable<List<TopPostCommentListBean>> getPostReviewComment(int after) {
+        return mCircleClient.getPostReviewComment(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

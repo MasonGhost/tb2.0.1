@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
 
@@ -44,6 +45,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CI
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_TOP_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
@@ -349,5 +351,14 @@ public interface CircleClient {
      */
     @PATCH(APP_PATH_REFUSE_POST_COMMENT)
     Observable<BaseJsonV2> refusePostTopComment(@Path("comment_id") Integer commentId);
+
+    /**
+     * 获取资讯评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_TOP_POST_COMMENT)
+    Observable<List<TopPostCommentListBean>> getPostReviewComment(@Query("after") Integer after, @Query("limit")
+            Integer limit, @Query("group") Integer group);
 }
 

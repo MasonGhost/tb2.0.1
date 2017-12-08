@@ -548,6 +548,11 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}";
 
     /**
+     * 帖子评论置顶申请列表
+     */
+    public static final String APP_PATH_GET_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments";
+
+    /**
      * 同意帖子评论置顶
      */
     public static final String APP_PATH_APPROVED_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/accept";
