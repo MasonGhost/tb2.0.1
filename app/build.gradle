@@ -197,6 +197,7 @@ dependencies {
     compile project(':contacts')
     compile project(':appupdate')
     compile project(':bigimage')
+    // markdown编辑器
     compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao

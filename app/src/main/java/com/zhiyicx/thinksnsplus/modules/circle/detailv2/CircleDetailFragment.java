@@ -201,8 +201,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     // 类型选择框
     private TypeChoosePopupWindow mTypeChoosePopupWindow;
 
-    private int mCurrentPostion;// 当前评论的动态位置
-    private long mReplyToUserId;// 被评论者的 id
+    private int mCurrentPostion;
+
+    private long mReplyToUserId;
+
     private PhotoSelectorImpl mPhotoSelector;
 
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
@@ -296,7 +298,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public String getType() {
-        return LATEST_POST.value;
+        return mPostTypeEnum.value;
     }
 
     @Override
@@ -576,7 +578,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 break;
             case LATEST_COMMENT:
                 mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_reply));
-
                 break;
             default:
 
@@ -584,6 +585,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (mTypeChoosePopupWindow != null) {
             mTypeChoosePopupWindow.dismiss();
         }
+        mPostTypeEnum = type;
         requestNetData(0L, false);
     }
 

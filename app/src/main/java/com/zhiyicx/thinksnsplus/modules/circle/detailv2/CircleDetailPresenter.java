@@ -91,7 +91,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
-                            for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            for (int i = 0; i < data.size(); i++) {
                                 List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
                                         .getMaxId().intValue());
                                 if (!circlePostCommentBeans.isEmpty()) {
