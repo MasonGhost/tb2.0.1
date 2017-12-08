@@ -184,13 +184,17 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
-        mToolbarRight.setEnabled(false);
+        checkNextBtEnabel(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
         RelativeLayout.LayoutParams layout = (RelativeLayout.LayoutParams) mImPic.getLayoutParams();
         layout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         mImPic.setLayoutParams(layout);
         mImSetting.setVisibility(View.GONE);
+    }
+
+    private void checkNextBtEnabel(boolean enabled) {
+        mToolbarRight.setEnabled(enabled && !TextUtils.isEmpty(mEtInfoTitle.getInputContent()));
     }
 
     @Override
@@ -249,7 +253,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void onPareseBodyEnd(boolean hasContent) {
-        mToolbarRight.setEnabled(hasContent);
+        checkNextBtEnabel(hasContent);
         mRicheTest.setHasContent(hasContent);
     }
 
@@ -296,7 +300,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void onContentChange(boolean hasContent) {
-        mToolbarRight.setEnabled(hasContent);
+        checkNextBtEnabel(hasContent);
     }
 
     /**
@@ -374,7 +378,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mPbImageUpload.setOnTouchListener((v, event) -> true);
 
         mEtInfoTitle.setContentChangedListener(s ->
-                mToolbarRight.setEnabled(s.length() > 0 && mRicheTest.isHasContent())
+                checkNextBtEnabel(s.length() > 0 && mRicheTest.isHasContent())
         );
         mRicheTest.setOnContentEmptyListener(this);
     }
