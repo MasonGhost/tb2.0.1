@@ -71,6 +71,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean> {
         userInfoBean.setFollower(expertBean.isFollower());
         userInfoBean.setName(expertBean.getName());
         userInfoBean.setVerified(expertBean.getVerified());
+        userInfoBean.setAvatar(expertBean.getAvatar());
         if (mIsShowFollow) {
             // 不是不要 是邀请才不要
             subscrib.setVisibility(userInfoBean.getUser_id() != AppApplication.getMyUserIdWithdefault() ? View.VISIBLE : View.GONE);
