@@ -83,7 +83,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
             case RankTypeConfig.RANK_DYNAMIC_WEEK:
             case RankTypeConfig.RANK_DYNAMIC_MONTH:
                 format = mContext.getString(R.string.rank_type_like_count);
-                count=userInfoBean.getExtra().getLikes_count();
+                count=userInfoBean.getExtra().getCount();
 
                 break;
             case RankTypeConfig.RANK_INFORMATION_DAY:
