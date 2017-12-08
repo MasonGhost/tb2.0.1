@@ -415,7 +415,7 @@ public class IconTextView extends View {
             case BOTTOM:
                 mDrawable.draw(canvas);
                 canvas.drawText(mText, 0, mText.length(),
-                        mCacheBound.left + (mCacheBound.width() - mTextBound.width()) / 2,
+                        80,
                         mIconBound.top - mGap, mPaint);  // 文字的起点是第一个文字的左下角位置开始
                 break;
             default:
