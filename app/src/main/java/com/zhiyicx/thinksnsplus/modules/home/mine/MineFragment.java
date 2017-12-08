@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
@@ -190,7 +191,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), ScanCodeActivity.class));
+        startActivity(new Intent(getActivity(), MyCodeActivity.class));
         mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
     }
 

@@ -47,6 +47,7 @@
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
     <string name="system_info">系统消息</string>
+    <string name="my_qr_code_content">uid=%d</string>
 
     <!--发现-->
     <string name="information">资讯</string>
