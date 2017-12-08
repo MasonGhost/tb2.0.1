@@ -70,6 +70,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePo
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -210,6 +211,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private PostTypeChoosePopAdapter.MyPostTypeEnum mPostTypeEnum = LATEST_POST;
 
+    private CircleInfoDetail mCircleInfoDetail;
+
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
         Bundle bundle = new Bundle();
@@ -304,6 +307,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mIvRefresh.setVisibility(View.INVISIBLE);
 
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
+        mCircleInfoDetail = detail;
         mTvCircleTitle.setText(detail.getName());
         mTvCircleSubscrib.setVisibility(detail.getJoined() != null ? View.GONE : View.VISIBLE);
 
@@ -807,7 +811,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         RxView.clicks(mBtnSendPost)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> startActivity(new Intent(getActivity(), MarkdownActivity.class)));
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(getActivity(), MarkdownActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfoDetail.getId());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
 
         RxView.clicks(mTvCirclePostOrder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

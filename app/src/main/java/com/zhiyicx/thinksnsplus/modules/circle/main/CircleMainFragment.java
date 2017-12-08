@@ -106,7 +106,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(true,getContext(),this));
+        adapter.addItemViewDelegate(new CircleListItem(false,getContext(),this));
         adapter.addItemViewDelegate(new CircleTypeItem(this));
         return adapter;
     }

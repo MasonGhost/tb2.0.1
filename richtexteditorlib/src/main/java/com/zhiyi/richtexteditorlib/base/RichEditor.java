@@ -86,7 +86,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnMarkdownWordResultListener {
-        void onMarkdownWordResult(String markdwon, String noMarkdown);
+        void onMarkdownWordResult(String title,String markdwon, String noMarkdown);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -525,9 +525,9 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void resultWords(String markdown, String noMarkdownWords) {
+        public void resultWords(String title,String markdown, String noMarkdownWords) {
             if (mOnMarkdownWordResultListener != null) {
-                mOnMarkdownWordResultListener.onMarkdownWordResult(markdown, noMarkdownWords);
+                mOnMarkdownWordResultListener.onMarkdownWordResult(title,markdown, noMarkdownWords);
             }
         }
 

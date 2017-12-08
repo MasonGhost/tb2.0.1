@@ -134,6 +134,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         return circleDetailFragment;
     }
 
+    @Override
+    public String getType() {
+        return null;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

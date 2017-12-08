@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
@@ -41,6 +42,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         SimpleRichEditor.OnEditorClickListener, View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener,
         MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
 
+    public static final String SOURCEID = "sourceId";
+
     @BindView(R.id.lu_bottom_menu)
     BottomMenu mBottomMenu;
     @BindView(R.id.rich_text_view)
@@ -56,8 +59,12 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     private PostPublishBean mPostPublishBean;
     private List<Integer> mImages = new ArrayList();
 
-    public static MarkdownFragment newInstance() {
-        return new MarkdownFragment();
+    private long sourceId;
+
+    public static MarkdownFragment newInstance(Bundle bundle) {
+        MarkdownFragment markdownFragment = new MarkdownFragment();
+        markdownFragment.setArguments(bundle);
+        return markdownFragment;
     }
 
     @Override
@@ -73,12 +80,14 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
-    public void onMarkdownWordResult(String markdwon, String noMarkdown) {
+    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown) {
+
+        mPostPublishBean.setTitle(title);
         mPostPublishBean.setBody(markdwon);
         mPostPublishBean.setSummary(noMarkdown);
-        mPostPublishBean.setCircle_id(2);
+        mPostPublishBean.setCircle_id(sourceId);
         mPostPublishBean.setSync_feed(0);
-        mPostPublishBean.setTitle("first");
+
         mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
         mPresenter.publishPost(mPostPublishBean);
     }

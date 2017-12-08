@@ -7,7 +7,7 @@ public class MarkdownActivity extends TSActivity<MarkdownPresenter, MarkdownFrag
 
     @Override
     protected MarkdownFragment getFragment() {
-        return MarkdownFragment.newInstance();
+        return MarkdownFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

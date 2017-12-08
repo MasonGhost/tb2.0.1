@@ -20,6 +20,9 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -98,6 +101,12 @@ public class AuthRepository implements IAuthRepository {
     AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
     @Inject
     UserTagBeanGreenDaoImpl mUserTagBeanGreenDaoimpl;
+    @Inject
+    CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
+    @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
+    @Inject
+    CircleInfoGreenDaoImpl mCircleInfoGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -187,6 +196,9 @@ public class AuthRepository implements IAuthRepository {
         mDynamicToolBeanGreenDao.clearTable();
         mTopDynamicBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
+        mCirclePostListBeanGreenDao.clearTable();
+        mCirclePostCommentBeanGreenDao.clearTable();
+        mCircleInfoGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(mContext).delDataBase();

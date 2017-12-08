@@ -197,9 +197,14 @@ var RE = {
         AndroidInterface.markdownWords(content);
         return content;
     },
+    getTitle: function getTitle() {
+            var title = _self.cache.title.value;
+            return title;
+    },
+
     resultWords: function resultWords() {
         var _self = this;
-        AndroidInterface.resultWords(_self.markdownWords(),_self.noMarkdownWords());
+        AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords());
     },
 	saveRange: function saveRange() {
 		//保存节点位置
