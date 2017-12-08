@@ -85,6 +85,42 @@ public class LiveListHolder extends ZBLBaseHolder<SearchResult> {
                 })
                 .into(mCover);
 
+//        List<Integer> ids = new ArrayList<>();
+//        ids.add(data.im.cid);
+//        ZBPlayClient.getInstance().mc(ids);
+//        ZBPlayClient.getInstance().setOnImListener(new OnImListener() {
+//            @Override
+//            public void onBanned(long gag) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageReceived(Message message) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageACK(Message message) {
+//
+//            }
+//
+//            @Override
+//            public void onMcReceived(ChatRoomContainer chatRoomContainer) {
+//                if (chatRoomContainer.mChatRooms.size() == 0 || chatRoomContainer.mChatRooms.get(0).cid != mData.im.cid)
+//                    return;//丢去不是当前房间的消息
+//                if (chatRoomContainer.err == SocketService.SUCCESS_CODE) {//没有发生错误
+//                    mUserCount.setText(Math.max(chatRoomContainer.mChatRooms.get(0).mc - 1, 0) + "");
+//                }
+//                else {
+//                    LogUtils.debugInfo(TAG, chatRoomContainer.err + "");
+//                }
+//            }
+//
+//            @Override
+//            public void onConvrEnd(Conver conver) {
+//
+//            }
+//        });
 
     }
 
