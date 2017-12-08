@@ -208,6 +208,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
 
     @Override
     public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore) {
+        checkEmptyView();
     }
 
     @Override
@@ -217,6 +218,9 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     private void checkEmptyView() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(View.GONE);
+        }
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {
