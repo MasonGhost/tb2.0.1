@@ -49,7 +49,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
+import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE_UPDATE;
@@ -193,7 +195,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     @Override
     public void setCollect(boolean isCollected) {
-
+        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_3);
     }
 
     @Override
@@ -235,6 +237,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mPostDetailHeaderView.updateDigList(data);
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
+        initBottomToolData(data);
     }
 
     @Override
@@ -253,7 +256,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         mPostDetailHeaderView.updateReward(mCirclePostDetailBean.getId(), mRewardsListBeen,
-                mRewardsCountBean, RewardType.QA_ANSWER, mPresenter.getGoldName());
+                mRewardsCountBean, RewardType.POST, mPresenter.getGoldName());
     }
 
     @Override
@@ -265,6 +268,18 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             }
         }
         super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RewardType.POST.id) {
+                if (mCirclePostDetailBean != null) {
+                    mPresenter.updateRewardData();
+                }
+            }
+        }
     }
 
     class ItemOnCommentListener implements PostDetailCommentItem.OnCommentItemListener {
@@ -342,7 +357,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mPresenter.shareInfo(bitmap);
                     break;
                 // 更多
-                case DynamicDetailMenuView.ITEM_POSITION_3:
+                case ITEM_POSITION_3:
                     initDealPostPopupWindow(mCirclePostDetailBean, mCirclePostDetailBean.getCollected());
                     mDealPostPopWindow.show();
                     break;
@@ -394,10 +409,18 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         if (mCirclePostDetailBean.getUserInfoBean() == null) {
             return;
         }
+        initBottomToolData(mCirclePostDetailBean);
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = mCirclePostDetailBean.getUserInfoBean();
         mTvToolbarCenter.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
+    }
+
+    private void initBottomToolData(CirclePostListBean circlePostDetailBean) {
+        // 设置是否喜欢
+        mDdDynamicTool.setItemIsChecked(circlePostDetailBean.getLiked(), DynamicDetailMenuView.ITEM_POSITION_0);
+        //设置是否收藏
+        mDdDynamicTool.setItemIsChecked(circlePostDetailBean.getCollected(), ITEM_POSITION_3);
     }
 
     /**
@@ -417,7 +440,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     // 跳转置顶页面
                     mDeletCommentPopWindow.hide();
                     Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);// 资源类型
                     bundle.putLong(StickTopFragment.PARENT_ID, mCirclePostDetailBean.getId());// 资源id
                     bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
@@ -465,7 +488,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                         // 跳转置顶页面
                         Bundle bundle = new Bundle();
                         // 资源类型
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
                         // 资源id
                         bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
                         Intent intent = new Intent(getActivity(), StickTopActivity.class);

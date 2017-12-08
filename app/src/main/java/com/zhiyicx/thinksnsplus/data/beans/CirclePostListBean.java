@@ -524,6 +524,30 @@ public class CirclePostListBean extends BaseListBean implements Serializable{
         }
     };
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CirclePostListBean that = (CirclePostListBean) o;
+
+        if (group_id != that.group_id) {
+            return false;
+        }
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + (int) (group_id ^ (group_id >>> 32));
+        return result;
+    }
+
     public static class CirclePostImageConvert extends BaseConvert<List<ImagesBean>> {
     }
 

@@ -20,7 +20,9 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -191,6 +193,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         if (progress == 100) {
             mImages.add(imgeId);
         }
+    }
+
+    @Override
+    public void sendPostSuccess(CirclePostListBean data) {
+        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId());
     }
 
     @Override

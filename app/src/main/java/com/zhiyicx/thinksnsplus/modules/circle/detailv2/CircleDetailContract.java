@@ -27,6 +27,8 @@ public interface CircleDetailContract {
         long getCircleId();
         void allDataReady(CircleZipBean circleZipBean);
 
+        String getType();
+
         /**
          * 是否需要头信息
          * @return true 需要
@@ -62,6 +64,8 @@ public interface CircleDetailContract {
         List<CircleSearchHistoryBean>  getAllSearchHistory();
 
         void cleaerAllSearchHistory();
+
+        void handleViewCount(Long id, int position);
     }
 
     interface Repository extends IBaseCircleRepository {

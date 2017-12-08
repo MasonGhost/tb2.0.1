@@ -42,6 +42,10 @@ public class TypeChoosePopAdapter extends CommonAdapter<String> {
         this.mOnTypeChoosedListener = onTypeChoosedListener;
     }
 
+    public TypeChoosePopAdapter(Context context, List<String> datas) {
+        super(context, R.layout.item_type_choose_pop, datas);
+    }
+
     @Override
     protected void convert(ViewHolder holder, String str, int position) {
         AppCompatCheckedTextView textView = holder.getView(R.id.tv_title);

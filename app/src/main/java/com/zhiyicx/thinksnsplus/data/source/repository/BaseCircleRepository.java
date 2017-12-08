@@ -101,7 +101,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<Object>> sendCirclePost(PostPublishBean publishBean) {
+    public Observable<BaseJsonV2<CirclePostListBean>> sendCirclePost(PostPublishBean publishBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson()
                 .toJson(publishBean));
         return mCircleClient.publishPost(publishBean.getCircle_id(), body)
@@ -142,8 +142,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<RewardsListBean>> getPostRewardList(long postId, int limit, long offet) {
-        return mCircleClient.getPostRewardList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+    public Observable<List<RewardsListBean>> getPostRewardList(long post_id, Integer limit, Integer offset, String order, String order_type) {
+        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offset, order, order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -305,8 +305,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId)
+    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId,String type) {
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
@@ -358,7 +358,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                             circlePostListBean.getComments().get(i).setCommentUser(tmpUserinfo);
                                         }
                                         if (circlePostListBean.getComments().get(i).getReply_to_user_id() == 0) {
-                                            // ��� reply_user_id = 0 �ظ���̬
+                                            // 如果 reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
                                             circlePostListBean.getComments().get(i).setReplyUser(userInfoBean);

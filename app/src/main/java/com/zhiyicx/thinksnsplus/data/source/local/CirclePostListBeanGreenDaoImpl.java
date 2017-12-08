@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -32,6 +33,9 @@ public class CirclePostListBeanGreenDaoImpl extends CommonCacheImpl<CirclePostLi
 
     @Override
     public void saveMultiData(List<CirclePostListBean> multiData) {
+        if (multiData.isEmpty()) {
+            return;
+        }
         getWDaoSession().getCirclePostListBeanDao().insertOrReplaceInTx(multiData);
     }
 
@@ -75,11 +79,17 @@ public class CirclePostListBeanGreenDaoImpl extends CommonCacheImpl<CirclePostLi
         return getWDaoSession().getCirclePostListBeanDao().insertOrReplace(newData);
     }
 
-    public List<CirclePostListBean> getDataWithComments() {
-        List<CirclePostListBean> data = getRDaoSession().getCirclePostListBeanDao().loadAll();
+    public List<CirclePostListBean> getDataWithComments(long circleId) {
+        List<CirclePostListBean> data = getPostListByCircleId(circleId);
         for (CirclePostListBean postListBean : data) {
             postListBean.setComments(mCirclePostCommentBeanGreenDao.getCommentByPostId(postListBean.getId()));
         }
         return data;
+    }
+
+    public List<CirclePostListBean> getPostListByCircleId(long circleId) {
+        return getRDaoSession().getCirclePostListBeanDao().queryBuilder()
+                .where(CirclePostListBeanDao.Properties.Group_id.eq(circleId))
+                .build().list();
     }
 }

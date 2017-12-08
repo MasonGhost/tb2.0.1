@@ -44,6 +44,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     public static final String TYPE_DYNAMIC = "dynamic"; // value 动态置顶
     public static final String TYPE_INFO = "info";  // value 资讯置顶
+    public static final String TYPE_POST = "post";  // value 帖子置顶
     public static final String TYPE = "type";    // 置顶的 key
 
     @BindView(R.id.rb_one)

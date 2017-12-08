@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
@@ -16,6 +17,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -41,12 +43,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CI
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKEREWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 
 /**
@@ -193,7 +195,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_POSTLIST)
-    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet);
+    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet ,@Query("type") String type);
 
 
     /**
@@ -243,7 +245,7 @@ public interface CircleClient {
      */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(APP_PATH_PUBLISH_POST)
-    Observable<BaseJsonV2<Object>> publishPost(@Path("circle_id") long circleId, @Body RequestBody body);
+    Observable<BaseJsonV2<CirclePostListBean>> publishPost(@Path("circle_id") long circleId, @Body RequestBody body);
 
     /**
      * 获取帖子详情
@@ -278,13 +280,53 @@ public interface CircleClient {
     Observable<List<PostDigListBean>> getPostDigList(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") long offet);
 
     /**
-     * 获取帖子打赏列表
+     * 置顶帖子
      *
-     * @param postId
-     * @param limit
-     * @param offet
+     * @param parent_id
+     * @param amount
+     * @param day
      * @return
      */
-    @GET(APP_PATH_LIKEREWARD_POST)
-    Observable<List<RewardsListBean>> getPostRewardList(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") long offet);
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_POST)
+    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("post_id") Long parent_id, @Field("amount") Long amount, @Field("day") Integer day);
+
+    /**
+     * 置顶帖子评论
+     *
+     * @param parent_id
+     * @param child_id
+     * @param amount
+     * @param day
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_POST_COMMENT)
+    Observable<BaseJsonV2<Integer>> stickTopInfoComment(Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long amount, @Field("day") Integer day);
+
+    /**
+     * 帖子打赏
+     *
+     * @param postId
+     * @param amount
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_REWARD_POST)
+    Observable<Object> rewardPost(@Path("post_id") Long postId, @Field("amount") Long amount);
+
+    /**
+     * 帖子打赏列表
+     *
+     * @param post_id    帖子 id
+     * @param limit      列表返回数据条数
+     * @param offset     翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
+     * @return
+     */
+    @GET(APP_PATH_REWARD_POST)
+    Observable<List<RewardsListBean>> getPostRewardList(@Path("post_id") long post_id, @Query("limit") Integer limit,
+                                                        @Query("offset") Integer offset, @Query("order") String order,
+                                                        @Query("order_type") String order_type);
 }

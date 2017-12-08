@@ -15,8 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,14 +30,17 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -61,21 +66,26 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
+import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -87,6 +97,7 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -100,7 +111,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         CirclePostNoPullRecyclerView.OnCommentStateClickListener<CirclePostCommentBean>, CirclePostListCommentView.OnCommentClickListener,
         CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         CirclePostListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
-        , PhotoSelectorImpl.IPhotoBackListener {
+        , PhotoSelectorImpl.IPhotoBackListener, PostTypeChoosePopAdapter.OnTypeChoosedListener {
 
     public static final String CIRCLE_ID = "circle_id";
 
@@ -158,6 +169,20 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     LinearLayout mLlReportContainer;
     @BindView(R.id.ll_circle_navigation_container)
     LinearLayout mLlCircleNavigationContainer;
+    @BindView(R.id.ll_dynamic_count_container)
+    LinearLayout mLlDynamicCountContainer;
+    @BindView(R.id.tv_top_tip_text)
+    TextView mTvTopTipText;
+    @BindView(R.id.fl_top_tip_container)
+    FrameLayout mFlTopTipContainer;
+    @BindView(R.id.swipe_target)
+    RecyclerView mSwipeTarget;
+    @BindView(R.id.refreshlayout)
+    SmartRefreshLayout mRefreshlayout;
+    @BindView(R.id.empty_view)
+    EmptyView mEmptyView;
+    @BindView(R.id.container)
+    CoordinatorLayout mContainer;
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
@@ -182,6 +207,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
     private boolean updateHeadImg;
+
+    private PostTypeChoosePopAdapter.MyPostTypeEnum mPostTypeEnum = LATEST_POST;
 
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
@@ -262,6 +289,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public long getCircleId() {
         return getArguments().getLong(CIRCLE_ID);
+    }
+
+    @Override
+    public String getType() {
+        return LATEST_POST.value;
     }
 
     @Override
@@ -350,6 +382,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     protected void initData() {
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
+        initTypePop(mPostTypeEnum);
     }
 
     @Override
@@ -528,6 +561,28 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
+    @Override
+    public void onChoosed(PostTypeChoosePopAdapter.MyPostTypeEnum type) {
+        switch (type) {
+            case ALL:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_all));
+                break;
+            case LATEST_POST:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_new));
+                break;
+            case LATEST_COMMENT:
+                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_reply));
+
+                break;
+            default:
+
+        }
+        if (mTypeChoosePopupWindow != null) {
+            mTypeChoosePopupWindow.dismiss();
+        }
+        requestNetData(0L, false);
+    }
+
     /**
      * 初始化重发评论选择弹框
      */
@@ -557,8 +612,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
      * @param commentPosition    current comment position
      */
     private void initDeletCommentPopWindow(final CirclePostListBean circlePostListBean, final int dynamicPositon, final int commentPosition) {
+
+
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Str(BuildConfig.USE_TOLL && circlePostListBean.getState() == CirclePostListBean
+                        .SEND_SUCCESS && !circlePostListBean
+                        .getComments().get(commentPosition).getPinned() ? getString(R
+                        .string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -567,7 +628,25 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteComment(circlePostListBean, dynamicPositon, circlePostListBean.getComments().get(commentPosition).getId(), commentPosition);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID, circlePostListBean
+                            .getComments().get(commentPosition).getId());// 该资源的评论id,非评论置顶不传这个
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+
+                    showBottomView(true);
+
+                })
+                .item2ClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    showDeleteTipPopupWindow(getString(R.string.delete_comment), () -> {
+                        mPresenter.deleteComment(circlePostListBean, dynamicPositon, circlePostListBean.getComments().get(commentPosition).getId(), commentPosition);
+                        showBottomView(true);
+                    }, true);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
@@ -730,6 +809,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> startActivity(new Intent(getActivity(), MarkdownActivity.class)));
 
+        RxView.clicks(mTvCirclePostOrder)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mTypeChoosePopupWindow.show());
+
 
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -766,14 +850,32 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
+
+    private void initTypePop(PostTypeChoosePopAdapter.MyPostTypeEnum postType) {
+        CommonAdapter commonAdapter = new PostTypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
+                .post_typpe_array)), postType, this);
+        mTypeChoosePopupWindow = TypeChoosePopupWindow.Builder()
+                .with(mActivity)
+                .adapter(commonAdapter)
+                .asVertical()
+                .alpha(1.0f)
+                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.divider_line))
+                .parentView(mTvCirclePostOrder)
+                .build();
+
+    }
+
     private void goPostDetail(int position) {
         CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
-            R.id.ll_permission_container, R.id.ll_report_container})
+            R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
+            R.id.iv_share, R.id.iv_setting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+
             case R.id.ll_member_container:
                 break;
             case R.id.ll_detail_container:
@@ -783,6 +885,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             case R.id.ll_permission_container:
                 break;
             case R.id.ll_report_container:
+                break;
+
+            case R.id.iv_back:
+                setLeftClick();
+                break;
+            case R.id.iv_serach:
+                break;
+            case R.id.iv_share:
+                break;
+            case R.id.iv_setting:
+                boolean isOpen = mDrawer.isDrawerOpen(mLlCircleNavigationContainer);
+                if (isOpen) {
+                    return;
+                }
+                mDrawer.openDrawer(Gravity.RIGHT);
                 break;
             default:
         }
@@ -802,4 +919,5 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public String getSearchInput() {
         return "";
     }
+
 }

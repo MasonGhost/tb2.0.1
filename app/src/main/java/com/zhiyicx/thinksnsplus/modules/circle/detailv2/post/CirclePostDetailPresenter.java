@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -73,64 +74,104 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (!isLoadMore) {
-            Subscription subscription = Observable.zip(mRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
-                    mRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
-                    mRepository.getPostRewardList(mRootView.getPostId(), 0, maxId.intValue()),
-                    mRepository.getPostDigList(mRootView.getPostId(), 0, maxId.intValue()),
-                    (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
-                        circlePostDetailBean.setComments(circlePostCommentBeans);
-                        circlePostDetailBean.setDigList(postDigListBeans);
-                        Observable.empty()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new rx.Subscriber<Object>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
-                                                "" + PayConfig.realCurrency2GameCurrency(circlePostDetailBean.getReward_amount(), getRatio()),
-                                                getGoldName()), postRewardList);
-                                    }
 
-                                    @Override
-                                    public void onError(Throwable e) {
+        Subscription subscription = Observable.zip(mRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
+                mRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
+                mRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null, null),
+                mRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue()),
+                (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
+                    circlePostDetailBean.setComments(circlePostCommentBeans);
+                    circlePostDetailBean.setDigList(postDigListBeans);
+                    Observable.empty()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new rx.Subscriber<Object>() {
+                                @Override
+                                public void onCompleted() {
+                                    mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
+                                            "" + PayConfig.realCurrency2GameCurrency(circlePostDetailBean.getReward_amount(), getRatio()),
+                                            getGoldName()), postRewardList);
+                                }
 
-                                    }
+                                @Override
+                                public void onError(Throwable e) {
 
-                                    @Override
-                                    public void onNext(Object o) {
+                                }
 
-                                    }
-                                });
-                        return circlePostDetailBean;
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BaseSubscribeForV2<CirclePostListBean>() {
-                        @Override
-                        protected void onSuccess(CirclePostListBean data) {
-                            mRootView.allDataReady(data);
-                            mIsAllDataReady = true;
-                        }
+                                @Override
+                                public void onNext(Object o) {
 
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                        }
+                                }
+                            });
+                    return circlePostDetailBean;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<CirclePostListBean>() {
+                    @Override
+                    protected void onSuccess(CirclePostListBean data) {
+                        mRootView.allDataReady(data);
+                        mIsAllDataReady = true;
+                    }
 
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                            mRootView.onResponseError(throwable, isLoadMore);
-                        }
-                    });
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            addSubscrebe(subscription);
-        }
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
+
+        addSubscrebe(subscription);
+
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
 
+    }
+
+    /**
+     * 更新打赏信息
+     */
+    @Override
+    public void updateRewardData() {
+
+        Subscription subscription = Observable.zip(mRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId())
+                , mRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , (currenPost, rewardsListBeens) -> {
+                    Observable.empty()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new rx.Subscriber<Object>() {
+                                @Override
+                                public void onCompleted() {
+                                    mRootView.updateReWardsView(new RewardsCountBean(currenPost.getReward_number(),
+                                            "" + PayConfig.realCurrency2GameCurrency(currenPost.getReward_amount(), getRatio()),
+                                            getGoldName()), rewardsListBeens);
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(Object o) {
+
+                                }
+                            });
+                    return currenPost;
+
+                }).subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+
+            }
+        });
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -248,7 +289,6 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mIsNeedDynamicListRefresh = true;
         mRootView.setCollect(isUnCollected);
         mRootView.getCurrentePost().setCollected(isUnCollected);
-        mRootView.setCollect(isUnCollected);
         mCirclePostListBeanGreenDao.updateSingleData(mRootView.getCurrentePost());
         EventBus.getDefault().post(mRootView.getCurrentePost(), POST_LIST_COLLECT_UPDATE);
         mRepository.dealCollect(isUnCollected, id);

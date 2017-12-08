@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
@@ -21,6 +22,8 @@ public interface MarkdownContract {
         void onUploading(long id, String filePath, int progress,int imageId);
 
         void onFailed(String filePath, long id);
+
+        void sendPostSuccess(CirclePostListBean data);
     }
 
     interface Presenter extends IBaseTouristPresenter {

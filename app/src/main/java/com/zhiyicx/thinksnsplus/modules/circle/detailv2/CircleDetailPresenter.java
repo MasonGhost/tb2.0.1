@@ -22,10 +22,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleSearchHistoryBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
@@ -89,8 +87,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         if (mRootView.isNeedHeaderInfo()) {
             if (!isLoadMore) {
                 Subscription subscribe = Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle
-                                (mRootView.getCircleId(),
-                                        maxId),
+                                (mRootView.getCircleId(), maxId, mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
@@ -194,16 +191,12 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        try {
-            mRootView.onCacheResponseSuccess(mCirclePostListBeanGreenDao.getDataWithComments(), isLoadMore);
-        } catch (Exception e) {
-            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-        }
+        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
+        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
-        mCirclePostListBeanGreenDao.saveMultiData(data);
         return isLoadMore;
     }
 
@@ -313,6 +306,16 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
     @Override
+    public void handleViewCount(Long postId, int position) {
+        if (postId == null || postId == 0) {
+            return;
+        }
+        mRootView.getListDatas().get(position).setViews_count(mRootView.getListDatas().get(position).getViews_count() + 1);
+        mCirclePostListBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
+        mRootView.refreshData(position);
+    }
+
+    @Override
     public int getCurrenPosiotnInDataList(Long id) {
         int position = -1;
         int size = mRootView.getListDatas().size();
@@ -327,7 +330,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
     public void handleSendComment(CirclePostCommentBean circlePostCommentBean) {
-        Observable.just(circlePostCommentBean)
+        Subscription subscription = Observable.just(circlePostCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostCommentBean1 -> {
@@ -358,6 +361,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     }
 
                 }, throwable -> throwable.printStackTrace());
+
+        addSubscrebe(subscription);
 
     }
 

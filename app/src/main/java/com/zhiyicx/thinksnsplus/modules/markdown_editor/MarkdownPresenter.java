@@ -2,12 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 
 import javax.inject.Inject;
 
@@ -32,6 +35,12 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
         super(repository, rootView);
     }
 
+    /**
+     * 上传图片，进度监听
+     *
+     * @param filePath
+     * @param tagId
+     */
     @Override
     public void uploadPic(String filePath, long tagId) {
         mUpLoadRepository.upLoadFileWithProgress(filePath, "", true, 0, 0, (bytesWritten,
@@ -77,12 +86,27 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
 
     @Override
     public void publishPost(PostPublishBean postPublishBean) {
-        mRepository.sendCirclePost(postPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<Object> data) {
+        mRepository.sendCirclePost(postPublishBean)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.info_publishing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<CirclePostListBean>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<CirclePostListBean> data) {
+                        mRootView.dismissSnackBar();
+                        mRootView.sendPostSuccess(data.getData());
+                    }
 
-            }
-        });
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.info_publishfailed));
+                    }
+                });
     }
 
     @Override

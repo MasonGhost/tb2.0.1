@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author Jliuer
  * @Date 2017/11/21/16:29
@@ -32,7 +34,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getCircleList(mRootView.getCategoryId(), maxId)
+        Subscription subscription=mRepository.getCircleList(mRootView.getCategoryId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
 
                     @Override
@@ -52,6 +54,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override
