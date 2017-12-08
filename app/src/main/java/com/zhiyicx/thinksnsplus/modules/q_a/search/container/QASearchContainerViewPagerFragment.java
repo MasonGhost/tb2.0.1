@@ -80,10 +80,13 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(QASearchListFragment.newInstance(getArguments()));
-        fragmentList.add(QATopicSearchListFragment.newInstance(getArguments()));
-        return fragmentList;
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(QASearchListFragment.newInstance(getArguments()));
+            mFragmentList.add(QATopicSearchListFragment.newInstance(getArguments()));
+        }
+
+        return mFragmentList;
     }
 
     /**
@@ -110,7 +113,7 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
      */
     public void onSearhChanged(String string) {
         this.mCurrentSearchContent = string;
-        if (tsViewPagerAdapter == null || mVpFragment == null|| TextUtils.isEmpty(string)) {
+        if (tsViewPagerAdapter == null || mVpFragment == null || TextUtils.isEmpty(string)) {
             return;
         }
         try {

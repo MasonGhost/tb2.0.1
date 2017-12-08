@@ -22,8 +22,10 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
@@ -251,5 +253,6 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     @OnClick(R.id.bt_do)
     public void onViewClicked() {
         // 创建圈子帖子
+        startActivity(new Intent(getActivity(), MarkdownActivity.class));
     }
 }

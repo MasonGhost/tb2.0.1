@@ -95,9 +95,9 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
+            mFragments.add(MessageFragment.newInstance());
+            mFragments.add(new NotificationFragment().instance());
         }
-        mFragments.add(MessageFragment.newInstance());
-        mFragments.add(new NotificationFragment().instance());
         return mFragments;
     }
 

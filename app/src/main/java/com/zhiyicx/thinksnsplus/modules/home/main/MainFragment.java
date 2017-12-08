@@ -38,7 +38,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
     View mVShadow;
-    List<Fragment> fragments = new ArrayList<>();
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -89,7 +88,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
         // 适配非6.0以上、非魅族系统、非小米系统状态栏
         if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
@@ -121,7 +121,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    ((DynamicContract.View) fragments.get(mVpFragment.getCurrentItem())).closeInputView();
+                    ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
                 }
             }
         });
@@ -144,16 +144,18 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected List<Fragment> initFragments() {
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-        // 游客处理
-        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
-            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
-        } else {
-            // 用于viewpager 占位
-            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+        if (mFragmentList == null) {
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            // 游客处理
+            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
+                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+            } else {
+                // 用于viewpager 占位
+                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+            }
         }
-        return fragments;
+        return mFragmentList;
     }
 
 

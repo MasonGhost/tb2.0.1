@@ -58,10 +58,13 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment publishedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_DONE);
-        Fragment publishingFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ING);
-        Fragment publishfailedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ERROR);
-        return Arrays.asList(publishedFragment, publishingFragment, publishfailedFragment);
+        if (mFragmentList == null) {
+            Fragment publishedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_DONE);
+            Fragment publishingFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ING);
+            Fragment publishfailedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ERROR);
+            mFragmentList = Arrays.asList(publishedFragment, publishingFragment, publishfailedFragment);
+        }
+        return mFragmentList;
     }
 
     @Override

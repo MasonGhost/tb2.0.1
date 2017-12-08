@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
@@ -253,6 +254,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements  ISe
     @OnClick(R.id.bt_do)
     public void onViewClicked() {
         // 创建圈子
-        startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
     }
 }
