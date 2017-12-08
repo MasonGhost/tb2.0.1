@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
@@ -152,6 +153,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected String setRightTitle() {
+        return "扫码";
+    }
+
+    @Override
     protected int setLeftImg() {
         return 0;
     }
@@ -184,7 +190,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+        startActivity(new Intent(getActivity(), ScanCodeActivity.class));
         mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
     }
 

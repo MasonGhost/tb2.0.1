@@ -97,6 +97,10 @@ dependencies {
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     compile dataDependences.playServices
+    // 扫码
+    compile dataDependences.zxing
+    compile dataDependences.bgaQrcodecore
+    compile dataDependences.bgaZxing
     annotationProcessor dataDependences.daggerCompiler
     // Project
     compile project(':common')

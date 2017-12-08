@@ -607,6 +607,11 @@
         </activity>
         <activity android:name=".modules.register.rule.UserRuleActivity">
         </activity>
+        <!--扫码相关页面-->
+        <activity android:name=".modules.home.mine.scan.ScanCodeActivity"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
+                android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

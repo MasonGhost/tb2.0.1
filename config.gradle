@@ -144,7 +144,12 @@ ext {
 
             // 环信相关
             playServices                 : 'com.google.android.gms:play-services-gcm:9.4.0',
-            hyphenate                    : 'com.hyphenate:hyphenate-sdk:3.3.7'
+            hyphenate                    : 'com.hyphenate:hyphenate-sdk:3.3.7',
+
+            // 扫码相关
+            zxing                        : 'com.google.zxing:core:3.3.0',
+            bgaQrcodecore                : 'cn.bingoogolapple:bga-qrcodecore:1.1.9@aar',
+            bgaZxing                     : 'cn.bingoogolapple:bga-zxing:1.1.9@aar',
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",
