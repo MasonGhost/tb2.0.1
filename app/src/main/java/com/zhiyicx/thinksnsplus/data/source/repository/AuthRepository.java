@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -290,25 +291,29 @@ public class AuthRepository implements IAuthRepository {
 //        ZBIMClient.getInstance().login(getIMConfig());
         // 此处替换为环信的登陆
         IMConfig imConfig = getIMConfig();
+        UserInfoBean user = getAuthBean().getUser();
         //回调
-        EMClient.getInstance().login("", imConfig.getToken(), new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                EMClient.getInstance().groupManager().loadAllGroups();
-                EMClient.getInstance().chatManager().loadAllConversations();
-                LogUtils.d("main", "登录聊天服务器成功！");
-            }
+        if (user != null){
+            EMClient.getInstance().login(user.getName(), getAuthBean().getToken(), new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    EMClient.getInstance().groupManager().loadAllGroups();
+                    EMClient.getInstance().chatManager().loadAllConversations();
+                    LogUtils.d("main", "登录聊天服务器成功！");
+                }
 
-            @Override
-            public void onProgress(int progress, String status) {
+                @Override
+                public void onProgress(int progress, String status) {
 
-            }
+                }
 
-            @Override
-            public void onError(int code, String message) {
-                LogUtils.d("main", "登录聊天服务器失败！");
-            }
-        });
+                @Override
+                public void onError(int code, String message) {
+                    LogUtils.d("main", "登录聊天服务器失败！");
+                }
+            });
+        }
+
     }
 
 
