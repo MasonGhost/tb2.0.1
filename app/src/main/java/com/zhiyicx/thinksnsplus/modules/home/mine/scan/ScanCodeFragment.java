@@ -3,14 +3,15 @@ package com.zhiyicx.thinksnsplus.modules.home.mine.scan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.mine.previewuser.UserPreViewActivity;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
 
@@ -27,6 +28,8 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
 
     @BindView(R.id.zx_scan)
     ZXingView mZxScan;
+    @BindView(R.id.iv_light)
+    AppCompatImageView mIvLight;
 
     @Override
     public void setPresenter(ScanCodeContract.Presenter presenter) {
@@ -40,6 +43,11 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
 
     @Override
     protected void initData() {
+
+    }
+
+    @OnClick({R.id.iv_light})
+    public void onClick(View view){
 
     }
 
@@ -82,13 +90,13 @@ public class ScanCodeFragment extends TSFragment<ScanCodeContract.Presenter> imp
         mZxScan.stopCamera();
         mZxScan.stopSpot();
         vibrate();
-        // 扫描到结果后直接跳转到预览页面
+        // 扫描到结果后直接跳转到个人中心
         Bundle bundle = new Bundle();
         bundle.putString(UserPreViewActivity.BUNDLE_USER_ID, result);
-        Intent intent = new Intent(getContext(), UserPreViewActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        getActivity().finish();
+//        Intent intent = new Intent(getContext(), UserPreViewActivity.class);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+//        getActivity().finish();
     }
 
     @Override
