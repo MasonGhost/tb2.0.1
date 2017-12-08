@@ -145,6 +145,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Override
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
+            mFragmentList = new ArrayList();
             mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
             mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
             // 游客处理
