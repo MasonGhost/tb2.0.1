@@ -28,7 +28,7 @@
             android:textSize="@dimen/size_content_assist"
             android:visibility="invisible"/>
 
-    <ImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_dig_head1"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
@@ -37,7 +37,7 @@
             android:src="@mipmap/pic_default_secret"
             android:layout_centerVertical="true"/>
 
-    <ImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_dig_head2"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
@@ -46,7 +46,7 @@
             android:src="@mipmap/pic_default_secret"
             android:layout_centerVertical="true"/>
 
-    <ImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_dig_head3"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
@@ -55,7 +55,7 @@
             android:src="@mipmap/pic_default_secret"
             android:layout_centerVertical="true"/>
 
-    <ImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_dig_head4"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
@@ -64,7 +64,7 @@
             android:src="@mipmap/pic_default_secret"
             android:layout_centerVertical="true"/>
 
-    <ImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_dig_head5"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
