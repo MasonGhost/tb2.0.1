@@ -13,4 +13,6 @@
     <dimen name="circle_detail_header_magin">100dp</dimen>
     <!--圈子详情头像宽度-->
     <dimen name="circle_detail_head_iamge_height">66dp</dimen>
+    <!--圈子成员管理头像-->
+    <dimen name="circle_member_head">38dp</dimen>
 </resources>

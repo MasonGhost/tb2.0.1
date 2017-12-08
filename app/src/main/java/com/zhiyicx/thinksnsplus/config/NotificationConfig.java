@@ -128,6 +128,7 @@ public class NotificationConfig {
      */
     public static final String TOP_DYNAMIC_COMMENT = "comment";
     public static final String TOP_NEWS_COMMENT = "news:comment";
+    public static final String TOP_POST_COMMENT = "post:comment";
 
 
 }

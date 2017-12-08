@@ -30,6 +30,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
@@ -48,6 +49,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 
@@ -195,15 +197,15 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_POSTLIST)
-    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet ,@Query("type") String type);
+    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet, @Query("type") String type);
 
 
     /**
      * 获取我的帖子列表
      *
-     * @param limit 默认 15 ，数据返回条数 默认为15
+     * @param limit  默认 15 ，数据返回条数 默认为15
      * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
-     * @param type  参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+     * @param type   参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
      * @return
      */
     @GET(APP_PATH_GET_MINE_POSTLIST)
@@ -289,7 +291,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_POST)
-    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("post_id") Long parent_id, @Field("amount") Long amount, @Field("day") Integer day);
+    Observable<BaseJsonV2<Integer>> stickTopPost(@Path("post_id") Long parent_id, @Field("amount") Long amount, @Field("day") Integer day);
 
     /**
      * 置顶帖子评论
@@ -302,7 +304,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_POST_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopInfoComment(Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long amount, @Field("day") Integer day);
+    Observable<BaseJsonV2<Integer>> stickTopPostComment(@Field("post_id") Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long amount, @Field("day") Integer day);
 
     /**
      * 帖子打赏
@@ -329,4 +331,23 @@ public interface CircleClient {
     Observable<List<RewardsListBean>> getPostRewardList(@Path("post_id") long post_id, @Query("limit") Integer limit,
                                                         @Query("offset") Integer offset, @Query("order") String order,
                                                         @Query("order_type") String order_type);
+
+    /**
+     * 同意帖子评论置顶
+     *
+     * @param commentId
+     * @return
+     */
+    @PATCH(APP_PATH_APPROVED_POST_COMMENT)
+    Observable<BaseJsonV2> approvedPostTopComment(@Path("comment_id") Integer commentId);
+
+    /**
+     * 拒绝帖子评论置顶
+     *
+     * @param commentId
+     * @return
+     */
+    @PATCH(APP_PATH_REFUSE_POST_COMMENT)
+    Observable<BaseJsonV2> refusePostTopComment(@Path("comment_id") Integer commentId);
 }
+

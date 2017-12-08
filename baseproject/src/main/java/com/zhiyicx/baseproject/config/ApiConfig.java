@@ -548,6 +548,21 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}";
 
     /**
+     * 同意帖子评论置顶
+     */
+    public static final String APP_PATH_APPROVED_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/accept";
+
+    /**
+     * 拒绝帖子评论置顶
+     */
+    public static final String APP_PATH_REFUSE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/reject";
+
+    /**
+     * 圈子成员列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_MEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members";
+
+    /**
      * 帖子收藏
      */
     public static final String APP_PATH_COLLECT_POST_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/collections";

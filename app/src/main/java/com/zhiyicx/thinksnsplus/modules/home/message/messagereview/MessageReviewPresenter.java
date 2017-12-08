@@ -21,6 +21,7 @@ import rx.Subscription;
 
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_DYNAMIC_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST_COMMENT;
 
 
 /**
@@ -58,6 +59,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 break;
             case TOP_NEWS_COMMENT:
                 observable = mRepository.getNewsReviewComment(maxId.intValue());
+                break;
+            case TOP_POST_COMMENT:
+//                observable = mRepository.getPostReviewComment(maxId.intValue());
                 break;
             default:
                 observable = mRepository.getDynamicReviewComment(maxId.intValue());
@@ -110,6 +114,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_NEWS_COMMENT:
                 observable = mRepository.approvedNewsTopComment(feedId, commentId, pinnedId);
                 break;
+            case TOP_POST_COMMENT:
+                observable = mRepository.approvedPostTopComment(commentId);
+                break;
                 default:
         }
         if(observable==null){
@@ -150,6 +157,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_NEWS_COMMENT:
                 TopNewsCommentListBean data=(TopNewsCommentListBean)result;
                 observable = mRepository.refuseNewsTopComment(data.getNews().getId(),data.getComment().getId(),pinned_id);
+                break;
+            case TOP_POST_COMMENT:
+                observable = mRepository.refusePostTopComment(pinned_id);
                 break;
                 default:
         }

@@ -368,8 +368,8 @@
     <string name="stick_type_dynamic_commnet_message">对你的动态进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
     <string name="stick_type_news_commnet_message">对你的文章进行了“%1$s”评论并申请置顶，请及时审核。</string>
-    <string name="stick_type_group_commnet">圈子帖子置顶</string>
-    <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
+    <string name="stick_type_group_commnet">帖子评论置顶</string>
+    <string name="stick_type_group_commnet_message">对你的帖子进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_group_join">圈子加入申请</string>
     <string name="stick_type_group_join_message">申请加入你创建的圈子“%1$s”，请及时审核。</string>
 

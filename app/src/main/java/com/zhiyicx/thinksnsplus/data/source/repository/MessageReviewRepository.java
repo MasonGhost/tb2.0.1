@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -34,6 +35,7 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
 
     DynamicClient mDynamicClient;
     InfoMainClient mInfoMainClient;
+    CircleClient mCircleClient;
 
     @Inject
     UserInfoRepository mUserInfoRepository;
@@ -45,6 +47,7 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     public MessageReviewRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
         mInfoMainClient = serviceManager.getInfoMainClient();
+        mCircleClient = serviceManager.getCircleClient();
     }
 
     @Override
@@ -82,10 +85,24 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
-    public Observable<BaseJsonV2> refuseNewsTopComment(int news_id,Long comment_id, int pinned_id) {
-        return mInfoMainClient.refuseNewsTopComment(news_id,comment_id,pinned_id)
+    public Observable<BaseJsonV2> refuseNewsTopComment(int news_id, Long comment_id, int pinned_id) {
+        return mInfoMainClient.refuseNewsTopComment(news_id, comment_id, pinned_id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> approvedPostTopComment(Integer comment_id) {
+        return mCircleClient.approvedPostTopComment(comment_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> refusePostTopComment(Integer comment_id) {
+        return mCircleClient.refusePostTopComment(comment_id)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 

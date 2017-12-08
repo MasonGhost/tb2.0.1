@@ -50,7 +50,7 @@ public class StickTopRepsotory implements StickTopContract.Repository {
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopInfo(parent_id, (long) amount, day)
+            return mCircleClient.stickTopPost(parent_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -73,7 +73,7 @@ public class StickTopRepsotory implements StickTopContract.Repository {
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_POST)) {
-            return mCircleClient.stickTopInfoComment(parent_id, child_id, (long) amount, day)
+            return mCircleClient.stickTopPostComment(parent_id, child_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
