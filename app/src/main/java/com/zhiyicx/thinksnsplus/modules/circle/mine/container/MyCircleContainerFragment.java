@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,9 +14,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyAnswerContainerFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyFollowContainerFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyPublishQuestionContainerFragment;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -70,9 +66,9 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
+            mFragmentList.add(new MyCircleContentContainerFragment());
+            mFragmentList.add(new MyCirclePostContentContainerFragment());
         }
-        mFragmentList.add(new MyCircleContentContainerFragment());
-        mFragmentList.add(new MyCirclePostContentContainerFragment());
         return mFragmentList;
     }
 
@@ -142,7 +138,7 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
         };
     }
 
-    private void initMagicIndicator(){
+    private void initMagicIndicator() {
         mMgIndicator.setBackgroundResource(R.drawable.shape_question_tool_bg);
         CommonNavigator commonNavigator = new CommonNavigator(getContext());
         commonNavigator.setAdapter(getCommonNavigatorAdapter(initTitles()));

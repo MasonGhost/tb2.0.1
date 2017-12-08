@@ -122,8 +122,6 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     private long mReplyToUserId;// 被评论者的 id
     private PhotoSelectorImpl mPhotoSelector;
 
-    private boolean updateHeadImg;
-
     private BaseCircleRepository.CircleMinePostType mCircleMinePostType = BaseCircleRepository.CircleMinePostType.PUBLISH;
 
     public static BaseCircleDetailFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
@@ -188,10 +186,11 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void allDataReady(CircleZipBean circleZipBean) {
         closeLoadingView();
-        CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
-        if (!updateHeadImg) {
-            updateHeadImg = true;
-        }
+    }
+
+    @Override
+    public String getType() {
+        return "";
     }
 
     @Override

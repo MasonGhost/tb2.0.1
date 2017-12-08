@@ -319,6 +319,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {
 
         return observable
+                .observeOn(Schedulers.io())
                 .flatMap(postListBeans -> {
                     final List<Object> user_ids = new ArrayList<>();
                     List<CirclePostCommentBean> comments = new ArrayList<>();
@@ -375,6 +376,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return postListBeans;
                             });
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
