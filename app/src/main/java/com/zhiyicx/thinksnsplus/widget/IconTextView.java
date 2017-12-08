@@ -17,7 +17,7 @@ import com.zhiyicx.thinksnsplus.R;
 
 
 /**
- * @Author Jliuer
+ * @author Jliuer
  * @Date 2017/3/30/14:18
  * @Email Jliuer@aliyun.com
  * @Description 带图标的文本空间
@@ -40,6 +40,7 @@ public class IconTextView extends View {
     private int mIconHeight;
 
     private Drawable mDrawable;
+    // 图片的方位
     private Direction mDirection;
 
     private Paint mPaint;
@@ -165,6 +166,7 @@ public class IconTextView extends View {
 
         if (!mText.equals(text)) {
             mText = text;
+            mPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
             requestLayout();
             invalidate();
         }
@@ -396,8 +398,7 @@ public class IconTextView extends View {
         switch (mDirection) {
             case TOP:
                 mDrawable.draw(canvas);
-                canvas.drawText(mText, 0, mText.length(), mCacheBound.left + (mCacheBound.width()
-                                - mTextBound.width()) / 2,
+                canvas.drawText(mText, 0, mText.length(), mCacheBound.centerX()-mTextBound.width()/2,
                         mIconBound.bottom + mGap + mTextBound.height(), mPaint);
                 break;
             case LEFT:
@@ -415,7 +416,7 @@ public class IconTextView extends View {
             case BOTTOM:
                 mDrawable.draw(canvas);
                 canvas.drawText(mText, 0, mText.length(),
-                        -50,
+                        mCacheBound.centerX()-mTextBound.width()/2,
                         mIconBound.top - mGap, mPaint);  // 文字的起点是第一个文字的左下角位置开始
                 break;
             default:
