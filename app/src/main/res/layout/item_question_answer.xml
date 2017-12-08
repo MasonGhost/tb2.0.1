@@ -12,19 +12,14 @@
         android:layout_margin="@dimen/spacing_normal"
         android:orientation="horizontal">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_normal">
-
-            <com.zhiyicx.baseproject.widget.UserAvatarView
-                android:id="@+id/iv_portrait"
-                android:layout_width="@dimen/answer_list_portrait_width"
-                android:layout_height="@dimen/answer_list_portrait_width"
-                android:layout_marginTop="@dimen/spacing_tiny"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/pic_default_secret"/>
-        </FrameLayout>
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_portrait"
+            android:layout_width="@dimen/answer_list_portrait_width"
+            android:layout_height="@dimen/answer_list_portrait_width"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/pic_default_secret"/>
 
 
         <RelativeLayout
@@ -104,12 +99,13 @@
 
     <!--工具栏-->
     <LinearLayout
+        android:id="@+id/ll_tool_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/question_detail_reward_type_height"
         android:layout_marginLeft="@dimen/spacing_bigger_large_48"
-        android:paddingBottom="@dimen/spacing_normal"
+        android:gravity="center_vertical"
         android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal">
+        >
 
         <TextView
             android:id="@+id/tv_like_count"
