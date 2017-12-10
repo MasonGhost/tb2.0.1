@@ -500,4 +500,30 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .bottomClickListener(() -> mDealPostPopWindow.hide())
                 .build();
     }
+
+    @Override
+    public void onPause() {
+        mPostDetailHeaderView.getContentWebView().onPause();
+        mPostDetailHeaderView.getContentWebView().pauseTimers();
+        mPostDetailHeaderView.getContentSubWebView().onPause();
+        mPostDetailHeaderView.getContentSubWebView().pauseTimers();
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResume() {
+        mPostDetailHeaderView.getContentWebView().onResume();
+        mPostDetailHeaderView.getContentWebView().resumeTimers();
+        mPostDetailHeaderView.getContentSubWebView().onResume();
+        mPostDetailHeaderView.getContentSubWebView().resumeTimers();
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPostDetailHeaderView.destroyedWeb();
+    }
 }

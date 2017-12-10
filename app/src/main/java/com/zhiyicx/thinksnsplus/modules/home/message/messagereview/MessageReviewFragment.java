@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UnhandlePinnedBean;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopNewsCommentItem;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPostCommentItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import butterknife.BindView;
@@ -80,8 +81,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(), mPresenter);
         TopNewsCommentItem newsCommentItem = new TopNewsCommentItem(getActivity(), mPresenter);
+        TopPostCommentItem postCommentItem=new TopPostCommentItem(getActivity(), mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(newsCommentItem);
+        multiItemTypeAdapter.addItemViewDelegate(postCommentItem);
         return multiItemTypeAdapter;
     }
 

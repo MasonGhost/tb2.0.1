@@ -96,6 +96,11 @@
         layout="@layout/advert_details"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small_3dp"
+        android:background="@color/general_for_bg_light"/>
+
     <!--评论数-->
     <FrameLayout
         android:id="@+id/info_detail_comment"
