@@ -32,6 +32,8 @@
                     android:clipToPadding="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
+                    <include layout="@layout/circle_head_bg"/>
+
                     <include layout="@layout/circle_head"/>
 
                     <android.support.v7.widget.Toolbar

@@ -22,12 +22,10 @@ import android.view.ViewGroup;
  */
 public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "overScroll";
-    private static final String CIRCLE = "circle";
     private static final String TAG_TOOLBAR = "toolbar";
     private static final String TAG_MIDDLE = "middle";
     private static final float TARGET_HEIGHT = 1500;
     private View mTargetView;
-    private View mCircleView;
     private int mParentHeight;
     private int mTargetViewHeight;
     private float mTotalDy;
@@ -66,7 +64,6 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         // 需要在调用过super.onLayoutChild()方法之后获取
         if (mTargetView == null) {
             mTargetView = parent.findViewWithTag(TAG);
-            mCircleView = parent.findViewWithTag(CIRCLE);
             if (mTargetView != null) {
                 initial(abl);
             }
@@ -120,7 +117,6 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         mTargetViewHeight = mTargetView.getHeight();
         mMiddleHeight = middleLayout.getHeight();
         mFirstTop = middleLayout.getTop();
-        mSeccondTop = mCircleView.getTop();
     }
 
     private void scale(AppBarLayout abl, View target, int dy) {
@@ -136,13 +132,9 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
 
 
         float top = mFirstTop * mLastScale;
-        float top_ = mSeccondTop * mLastScale;
-        middleLayout.setTranslationY(top - mFirstTop);
+        middleLayout.setTranslationY(mLastBottom-mParentHeight);
 
-        
 
-        mCircleView.setTranslationY(top - mFirstTop);
-//        mCircleView.setTranslationY(top_ - mSeccondTop);
 
         if (onRefreshChangeListener != null) {
             float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
@@ -190,10 +182,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
                             abl.setBottom(ablBottom);
 
                             float top = mFirstTop * value;
-                            float top_ = mSeccondTop * value;
-                            middleLayout.setTranslationY(top - mFirstTop);
-                            mCircleView.setTranslationY(top - mFirstTop);
-//                            mCircleView.setTranslationY(top_ - mSeccondTop);
+                            middleLayout.setTranslationY(ablBottom-mParentHeight);
                         }
                 );
                 anim.addListener(new Animator.AnimatorListener() {
