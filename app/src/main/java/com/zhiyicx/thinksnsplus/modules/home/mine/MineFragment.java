@@ -54,8 +54,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
-import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
@@ -154,8 +152,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_code;
+    }
+
+    @Override
     protected String setRightTitle() {
-        return "扫码";
+        return "";
     }
 
     @Override
@@ -346,7 +349,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setNewSystemInfo(boolean isShow) {
-        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
+//        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
     @Override
