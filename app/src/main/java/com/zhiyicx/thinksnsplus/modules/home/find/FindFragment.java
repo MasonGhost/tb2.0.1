@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
@@ -21,6 +22,9 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import javax.inject.Inject;
@@ -146,11 +150,13 @@ public class FindFragment extends TSFragment {
                  极铺
                  */
             case R.id.find_buy:
-                if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
-                } else {
-                    showLoginPop();
-                }
+                ReportFragment.startReportActivity(getContext(), new ReportResourceBean("1", "测试", "http:baidu.com/343/4.jpg", "我想去看看", ReportType
+                        .CIRCLE));
+//                if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
+//                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+//                } else {
+//                    showLoginPop();
+//                }
                 break;
                 /*
                  找人
