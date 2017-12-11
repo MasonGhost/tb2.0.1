@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContain
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import javax.inject.Inject;
@@ -119,7 +120,9 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+//                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                    startActivity(new Intent(getActivity(), CircleMainActivity.class));
+
                 } else {
                     showLoginPop();
                 }
@@ -178,8 +181,7 @@ public class FindFragment extends TSFragment {
                  排行榜
                  */
             case R.id.find_rank:
-//                startActivity(new Intent(getActivity(), RankIndexActivity.class));
-                startActivity(new Intent(getActivity(), CircleMainActivity.class));
+                startActivity(new Intent(getActivity(), RankIndexActivity.class));
                 break;
             default:
                 break;
