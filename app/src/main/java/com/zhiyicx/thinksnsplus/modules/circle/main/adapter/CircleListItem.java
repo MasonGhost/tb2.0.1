@@ -127,6 +127,7 @@ public class CircleListItem extends BaseCircleItem {
                     .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
             boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
             circleSubscribeFrame.setEnabled(!canChange);
+            circleSubscribeFrame.setVisibility(!canChange ? View.VISIBLE : View.GONE);
             circleSubscribe.setEnabled(canChange);
 
             RxView.clicks(circleSubscribe)

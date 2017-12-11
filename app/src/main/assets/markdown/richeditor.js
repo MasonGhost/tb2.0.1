@@ -198,8 +198,9 @@ var RE = {
         return content;
     },
     getTitle: function getTitle() {
-            var title = _self.cache.title.value;
-            return title;
+        var _self = this;
+        var title = _self.cache.title.value;
+        return title;
     },
 
     resultWords: function resultWords() {

@@ -529,6 +529,7 @@ public abstract class RichEditor extends WebView {
             if (mOnMarkdownWordResultListener != null) {
                 mOnMarkdownWordResultListener.onMarkdownWordResult(title,markdown, noMarkdownWords);
             }
+            LogUtils.d("resultWords:::" + title);
         }
 
     }

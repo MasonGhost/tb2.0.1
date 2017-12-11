@@ -81,11 +81,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onMarkdownWordResult(String title, String markdwon, String noMarkdown) {
-
+        if (getArguments() == null) {
+            return;
+        }
         mPostPublishBean.setTitle(title);
         mPostPublishBean.setBody(markdwon);
         mPostPublishBean.setSummary(noMarkdown);
-        mPostPublishBean.setCircle_id(sourceId);
+        mPostPublishBean.setCircle_id(getArguments().getLong(SOURCEID, 1L));
         mPostPublishBean.setSync_feed(0);
 
         mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
@@ -207,6 +209,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void sendPostSuccess(CirclePostListBean data) {
         CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId());
+        getActivity().finish();
     }
 
     @Override

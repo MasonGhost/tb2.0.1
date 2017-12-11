@@ -10,6 +10,9 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * @Author Jliuer
@@ -28,6 +31,10 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
     @Override
     public void createCircle(CreateCircleBean createCircleBean) {
         Subscription subscription = mRepository.createCircle(createCircleBean)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CircleInfo>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<CircleInfo> data) {
@@ -37,11 +44,13 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
         addSubscrebe(subscription);
