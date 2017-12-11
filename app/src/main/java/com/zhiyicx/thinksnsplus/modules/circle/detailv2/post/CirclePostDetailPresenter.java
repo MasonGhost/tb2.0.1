@@ -1,13 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -48,7 +58,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Description
  */
 public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetailContract.Repository, CirclePostDetailContract.View>
-        implements CirclePostDetailContract.Presenter {
+        implements CirclePostDetailContract.Presenter,OnShareCallbackListener {
 
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
@@ -280,8 +290,21 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Override
-    public void shareInfo(Bitmap bitmap) {
-
+    public void shareInfo(Bitmap shareBitMap) {
+        CirclePostListBean circlePostListBean=mRootView.getCurrentePost();
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setContent(TextUtils.isEmpty(circlePostListBean.getSummary()) ? mContext.getString(R.string
+                .share_dynamic) : circlePostListBean.getSummary());
+        if (shareBitMap != null) {
+            shareContent.setBitmap(shareBitMap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
     @Override
@@ -329,5 +352,24 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
                 }, throwable -> throwable.printStackTrace());
         addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void onStart(Share share) {
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 }

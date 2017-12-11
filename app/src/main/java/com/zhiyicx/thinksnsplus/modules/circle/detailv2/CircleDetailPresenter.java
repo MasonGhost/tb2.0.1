@@ -281,8 +281,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         } else {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUNP_DYNAMIC, circlePostListBean.getId()
-                == null ? "" : circlePostListBean.getId()));
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -411,22 +410,21 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void onStart(Share share) {
-
     }
 
     @Override
     public void onSuccess(Share share) {
-
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 
     @Override
     public void onError(Share share, Throwable throwable) {
-
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
     }
 
     @Override
     public void onCancel(Share share) {
-
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 
     /**
