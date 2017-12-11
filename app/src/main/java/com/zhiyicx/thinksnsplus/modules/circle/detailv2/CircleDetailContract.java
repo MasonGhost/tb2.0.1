@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -66,6 +67,8 @@ public interface CircleDetailContract {
         void cleaerAllSearchHistory();
 
         void handleViewCount(Long id, int position);
+
+        void dealCircleJoinOrExit(CircleInfo circleInfo);
     }
 
     interface Repository extends IBaseCircleRepository {

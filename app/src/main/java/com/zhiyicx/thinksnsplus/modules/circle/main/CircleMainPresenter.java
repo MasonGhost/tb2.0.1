@@ -138,6 +138,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
         }
         // 更改数据源，切换订阅状态
         mCircleInfoGreenDao.updateSingleData(circleInfo);
-        mRootView.refreshData(position);
+
+        mRootView.refreshData();
     }
 }

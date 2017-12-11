@@ -49,6 +49,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -884,7 +885,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
-            R.id.iv_share, R.id.iv_setting})
+            R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 
@@ -912,6 +913,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     return;
                 }
                 mDrawer.openDrawer(Gravity.RIGHT);
+                break;
+            case R.id.tv_circle_subscrib:
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
+                mCircleInfoDetail.setJoined(new CircleInfoDetail.JoinedBean());
+                mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count()+1);
+                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail.getUsers_count()));
+                mTvCircleSubscrib.setVisibility(View.GONE);
                 break;
             default:
         }

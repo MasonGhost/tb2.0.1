@@ -487,6 +487,11 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.id = id;
     }
 
+    public CircleInfo(long id, JoinedBean joined) {
+        this.id = id;
+        this.joined = joined;
+    }
+
 
     protected CircleInfo(Parcel in) {
         super(in);
@@ -516,9 +521,9 @@ public class CircleInfo extends BaseListBean implements Serializable {
 
     @Generated(hash = 198916784)
     public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
-            int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
-            int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
-            String updated_at, JoinedBean joined) {
+                      int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
+                      int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
+                      String updated_at, JoinedBean joined) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;

@@ -112,15 +112,25 @@ var RE = {
 		screenWidth: 0,
 		margin: 20
 	},
+	titleLimit:{
+        txtNote:null,//文本框
+        txtLimit:null,//提示字数的input
+        limitCount:20,//限制的字数
+        txtlength:0//到达限制时，字符串的长度
+	},
+
 	imageCache: new HashMap(),
 	init: function init() {
 		//初始化内部变量
 		var _self = this;
 		_self.initCache();
 		_self.initSetting();
+		_self.initLimit();
 		_self.bind();
 		_self.focus();
+
 	},
+
 	bind: function bind() {
 		var _self = this;
 
@@ -158,6 +168,10 @@ var RE = {
 		_self.cache.editor.addEventListener('input', function () {
 			AndroidInterface.setHtmlContent(_self.getHtml());
 		}, false);
+
+		_self.titleLimit.txtNote.addEventListener('input', function () {
+            _self.wordsLimit();
+        }, false);
 	},
 	initCache: function initCache() {
 		var _self = this;
@@ -169,6 +183,12 @@ var RE = {
 	initSetting: function initSetting() {
 		var _self = this;
 		_self.setting.screenWidth = window.innerWidth - 20;
+	},
+	initLimit: function initLimit(){
+	    var _self = this;
+	    _self.titleLimit.txtNote=document.getElementById("title");
+	    _self.titleLimit.txtLimit=document.getElementById("txtCount");
+
 	},
 	focus: function focus() {
 		//聚焦
@@ -374,6 +394,30 @@ var RE = {
 			imgBlock.removeChild(process);
 		}
 	},
+    wordsLimit: function wordsLimit(){
+        var _self = this;
+        var noteCount=_self.titleLimit.txtNote.value.length;
+        var limitCount=_self.titleLimit.limitCount;
+        var InPut=document.getElementById("title").value.length;
+        if(InPut<1){
+            document.getElementById("stay").style.display="none";
+            return
+        }
+        if(InPut>=10){
+            document.getElementById("stay").style.display="inline";
+            document.getElementById("stay").style.color="green";
+        }
+        if(InPut>15){
+            document.getElementById("stay").style.color="red";
+        }
+        if(noteCount>limitCount){
+            _self.titleLimit.txtNote.value=_self.titleLimit.txtNote.value.substring(0,limitCount);
+        }else{
+            _self.titleLimit.txtLimit.innerText=noteCount;
+        }
+        _self.titleLimit.txtlength=_self.titleLimit.txtNote.value.length;//记录每次输入后的长度
+    },
+
 	removeImage: function removeImage(id) {
 		var _self = this;
 		var block = _self.imageCache.get(id);

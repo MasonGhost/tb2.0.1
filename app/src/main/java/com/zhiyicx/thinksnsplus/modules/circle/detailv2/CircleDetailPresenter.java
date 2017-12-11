@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -326,6 +327,11 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             }
         }
         return position;
+    }
+
+    @Override
+    public void dealCircleJoinOrExit(CircleInfo circleInfo) {
+        mRepository.dealCircleJoinOrExit(circleInfo);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)

@@ -101,7 +101,7 @@ public class CircleListItem extends BaseCircleItem {
                 .format();
         circleMemberCount.setText(followString);
 
-        // 我加入的圈子，不需要加入操作
+        // 界面标记---我加入的圈子，不需要加入操作
         if (mIsMineJoined) {
             TextView tvRole = holder.getView(R.id.tv_role);
             if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals(circleInfo.getJoined().getRole())) {
@@ -115,12 +115,26 @@ public class CircleListItem extends BaseCircleItem {
             }
             // 未加入的，需要申请加入
         } else {
+            boolean isJoined = circleInfo.getJoined() != null;
+            if (isJoined) {
+                TextView tvRole = holder.getView(R.id.tv_role);
+                if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals(circleInfo.getJoined().getRole())) {
+                    tvRole.setVisibility(View.VISIBLE);
+                    tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
+                } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR.value.equals(circleInfo.getJoined().getRole())) {
+                    tvRole.setVisibility(View.VISIBLE);
+                    tvRole.setText(tvRole.getResources().getString(R.string.administrator));
+                } else {
+                    tvRole.setVisibility(View.GONE);
+                }
+            }
+
             TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
 
             CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
-            circleSubscribe.setVisibility(View.VISIBLE);
+            circleSubscribe.setVisibility(!isJoined ? View.VISIBLE : View.GONE);
             // 设置订阅状态
-            boolean isJoined = circleInfo.getJoined() != null;
+
             circleSubscribe.setChecked(isJoined);
             circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
             circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources()
