@@ -618,6 +618,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.report.ReportActivity"
+            android:windowSoftInputMode="adjustPan|stateVisible"
             android:screenOrientation="portrait"/>
     </application>
 

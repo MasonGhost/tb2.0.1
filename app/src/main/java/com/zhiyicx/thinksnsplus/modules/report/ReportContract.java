@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.report;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 
 /**
@@ -12,6 +13,11 @@ import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
  */
 public interface ReportContract {
     interface View extends IBaseView<Presenter> {
+        /**
+         * 举报提交成功
+         * @param data
+         */
+        void reportSuccess(ReportResultBean data);
     }
 
     interface Presenter extends IBasePresenter {

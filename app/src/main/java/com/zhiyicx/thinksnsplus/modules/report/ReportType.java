@@ -31,6 +31,11 @@ public enum ReportType {
     /**
      * 问答回答
      */
-    QA_ANSWER
+    QA_ANSWER,
+
+    /**
+     * 评论
+     */
+    COMMENT
 
 }

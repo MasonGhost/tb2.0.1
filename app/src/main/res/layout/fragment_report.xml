@@ -36,23 +36,25 @@
                 android:layout_height="wrap_content"
                 android:background="@color/bgColor"
                 android:orientation="horizontal"
+
                 android:padding="@dimen/spacing_small">
 
                 <com.zhiyicx.baseproject.widget.imageview.SquareImageView
-                    android:layout_width="@dimen/report_resource_img"
                     android:id="@+id/iv_img"
+                    android:layout_width="@dimen/report_resource_img"
                     android:layout_height="@dimen/report_resource_img"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
                     android:src="@drawable/shape_default_image"/>
 
+
                 <TextView
+                    android:id="@+id/tv_des"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:ellipsize="end"
                     android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
                     android:maxLines="2"
                     android:textColor="@color/normal_for_assist_text"
-                    android:id="@+id/tv_des"
                     android:textSize="@dimen/size_content_assist"
                     tools:text="佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分"/>
             </LinearLayout>
@@ -63,6 +65,7 @@
                 style="@style/style_edit_cursor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_mid"
                 android:padding="@dimen/spacing_normal"
                 app:hintContent="@string/hint_feed_back"

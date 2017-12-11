@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.report;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.klinker.android.link_builder.Link;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.imageview.SquareImageView;
@@ -20,6 +22,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -55,6 +58,8 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
     UserInfoInroduceInputView mEtReportContent;
     @BindView(R.id.bt_report)
     LoadingButton mBtReport;
+    AnimationDrawable mLoginAnimationDrawable;
+
 
     private ReportResourceBean mReportResourceBean;
 
@@ -71,7 +76,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
      */
     public static void startReportActivity(Context context, ReportResourceBean reportResourceBean) {
 
-        Intent intent = new Intent(context, RewardActivity.class);
+        Intent intent = new Intent(context, ReportActivity .class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(BUNDLE_REPORT_RESOURCE_DATA, reportResourceBean);
         intent.putExtras(bundle);
@@ -112,6 +117,8 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
 
         if (!TextUtils.isEmpty(mReportResourceBean.getTitle())) {
             mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle()));
+            // title 点击
+            ConvertUtils.stringLinkConvert(mTvTitle, setLiknks(), true);
         }
         if (!TextUtils.isEmpty(mReportResourceBean.getDes())) {
             mTvDes.setText(mReportResourceBean.getDes());
@@ -119,8 +126,41 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
         if (!TextUtils.isEmpty(mReportResourceBean.getImg())) {
             ImageUtils.loadImageDefault(mIvImg, mReportResourceBean.getImg());
         }
+
     }
 
+    @Override
+    public void showLoading() {
+        super.showLoading();
+        mBtReport.handleAnimation(true);
+        mBtReport.setEnabled(!TextUtils.isEmpty(mEtReportContent.getInputContent()));
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideLoading();
+        mBtReport.handleAnimation(false);
+        mBtReport.setEnabled(!TextUtils.isEmpty(mEtReportContent.getInputContent()));
+    }
+
+    /**
+     * 举报成功回调
+     *
+     * @param data
+     */
+    @Override
+    public void reportSuccess(ReportResultBean data) {
+
+        showSnackSuccessMessage(getString(R.string.report_success_tip));
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (getActivity() != null && Prompt.SUCCESS == prompt) {
+            getActivity().finish();
+        }
+    }
 
     private void initListener() {
 
@@ -130,7 +170,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
         RxTextView.textChanges(mEtReportContent.getEtContent())
                 .map(charSequence -> charSequence.toString().replaceAll(" ", "").length() > 0)
                 .subscribe(aBoolean ->
-                        mToolbarRight.setEnabled(aBoolean)
+                        mBtReport.setEnabled(aBoolean)
                 );
         // 举报点击
         RxView.clicks(mBtReport)
@@ -138,7 +178,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtReportContent.getEtContent());
-                    mPresenter.report(mEtReportContent.getInputContent(),mReportResourceBean);
+                    mPresenter.report(mEtReportContent.getInputContent(), mReportResourceBean);
                 });
         // 资源点击
         RxView.clicks(mLlResourceContianer)
@@ -148,17 +188,16 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
                     goDetail();
 
                 });
-        // title 点击
-        ConvertUtils.stringLinkConvert(mTvTitle, setLiknks(), true);
+
 
     }
 
     private List<Link> setLiknks() {
         List<Link> links = new ArrayList<>();
         if (!TextUtils.isEmpty(mReportResourceBean.getTitle())) {
-            Link commentNameLink = new Link(mReportResourceBean.getTitle())
+            Link link = new Link(mReportResourceBean.getTitle())
                     .setTextColor(ContextCompat.getColor(getContext(), R.color
-                            .important_for_content))
+                            .themeColor))
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                             .themeColor))
                     .setHighlightAlpha(.8f)
@@ -166,7 +205,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
                     .setOnClickListener((clickedText, linkMetadata) -> {
                         goDetail();
                     });
-            links.add(commentNameLink);
+            links.add(link);
         }
         return links;
     }
