@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
@@ -24,6 +25,8 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @author Catherine
@@ -45,9 +48,13 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     @BindView(R.id.empty_view)
     EmptyView mEmptyView;
 
+    private ActionPopupWindow mScanCodePopupWindow;
+    private Bitmap mShareBitmap;
+
     @Override
     protected void initView(View rootView) {
         setCenterTextColor(R.color.white);
+        initScanCodePopupWindow();
     }
 
     @Override
@@ -63,7 +70,8 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getContext(), ScanCodeActivity.class));
+        // 弹起弹框 选择分享或者扫码
+        mScanCodePopupWindow.show();
     }
 
     @Override
@@ -103,6 +111,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            mShareBitmap = resource;
                             mPresenter.createUserCodePic(resource);
                         }
                     });
@@ -112,6 +121,31 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     @Override
     public EmptyView getEmptyView() {
         return mEmptyView;
+    }
+
+    /**
+     * 初始化扫码更多的弹框
+     */
+    private void initScanCodePopupWindow(){
+        mScanCodePopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.my_qr_code_title))
+                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 扫一扫
+                    startActivity(new Intent(getContext(), ScanCodeActivity.class));
+                })
+                .item2ClickListener(() -> {
+                    // 分享
+                    mPresenter.shareMyQrCode(mShareBitmap);
+                    mScanCodePopupWindow.hide();
+                })
+                .bottomClickListener(() -> mScanCodePopupWindow.hide())
+                .build();
     }
 
 }

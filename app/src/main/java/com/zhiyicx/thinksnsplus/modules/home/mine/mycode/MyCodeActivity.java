@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.mycode;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
@@ -21,6 +22,7 @@ public class MyCodeActivity extends TSActivity<MyCodePresenter, MyCodeFragment>{
         DaggerMyCodeComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .myCodePresenterModule(new MyCodePresenterModule(mContanierFragment))
+                .shareModule(new ShareModule(MyCodeActivity.this))
                 .build()
                 .inject(this);
     }

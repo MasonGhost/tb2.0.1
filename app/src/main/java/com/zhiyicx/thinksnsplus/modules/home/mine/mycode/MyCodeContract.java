@@ -46,6 +46,11 @@ public interface MyCodeContract {
          * 获取用户信息
          */
         void getUserInfo();
+
+        /**
+         * 分享二维码
+         */
+        void shareMyQrCode(Bitmap bitmap);
     }
 
     interface Repository {
