@@ -623,8 +623,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Str(BuildConfig.USE_TOLL && circlePostListBean.getState() == CirclePostListBean
-                        .SEND_SUCCESS && !circlePostListBean
+                .item1Str(BuildConfig.USE_TOLL && circlePostListBean
+                        .getComments().get(commentPosition).getId() != -1L && !circlePostListBean
                         .getComments().get(commentPosition).getPinned() ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -635,12 +635,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-
                     Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());// 资源id
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
+                    bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
                     bundle.putLong(StickTopFragment.CHILD_ID, circlePostListBean
-                            .getComments().get(commentPosition).getId());// 该资源的评论id,非评论置顶不传这个
+                            .getComments().get(commentPosition).getId());
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -917,7 +916,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             case R.id.tv_circle_subscrib:
                 mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
                 mCircleInfoDetail.setJoined(new CircleInfoDetail.JoinedBean());
-                mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count()+1);
+                mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail.getUsers_count()));
                 mTvCircleSubscrib.setVisibility(View.GONE);
                 break;
