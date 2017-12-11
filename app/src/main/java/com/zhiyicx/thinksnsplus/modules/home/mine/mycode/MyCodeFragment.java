@@ -103,16 +103,20 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     public void setUserInfo(UserInfoBean userInfo) {
         if (userInfo != null){
             mTvUserName.setText(userInfo.getName());
-            mTvUserIntro.setText(userInfo.getIntro());
+            mTvUserIntro.setText(String.format(getString(R.string.default_intro_format), userInfo.getIntro()));
             ImageUtils.loadCircleUserHeadPic(userInfo, mUserAvatar);
             Glide.with(getContext())
                     .load(userInfo.getAvatar())
                     .asBitmap()
+                    .error(ImageUtils.getDefaultAvatar(userInfo))
+                    .placeholder(ImageUtils.getDefaultAvatar(userInfo))
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            mShareBitmap = resource;
-                            mPresenter.createUserCodePic(resource);
+                            if (resource != null){
+                                mShareBitmap = resource;
+                                mPresenter.createUserCodePic(resource);
+                            }
                         }
                     });
         }

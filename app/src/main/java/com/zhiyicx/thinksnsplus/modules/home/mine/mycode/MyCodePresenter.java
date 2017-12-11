@@ -57,10 +57,10 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository,
     public void createUserCodePic(Bitmap logo) {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         if (userInfoBean != null) {
+            mRootView.getEmptyView().setErrorType(EmptyView.STATE_NETWORK_LOADING);
             // 生成用户二维码，二维码的内容为uid=xx的格式
             String qrCodeContent = String.format(mContext.getString(R.string.my_qr_code_content), userInfoBean.getUser_id());
             Observable.just(qrCodeContent)
-                    .doOnSubscribe(() -> mRootView.getEmptyView().setErrorType(EmptyView.STATE_NETWORK_LOADING))
                     .subscribeOn(Schedulers.newThread())
                     .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"), logo))
                     .observeOn(AndroidSchedulers.mainThread())
