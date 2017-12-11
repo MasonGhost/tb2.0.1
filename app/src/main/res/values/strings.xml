@@ -816,5 +816,6 @@
     <string name="report">举报</string>
     <string name="report_title_format">举报 %s</string>
     <string name="report_success_tip">举报信息提交成功</string>
+    <string name="hint_report">填写举报原因</string>
 
 </resources>

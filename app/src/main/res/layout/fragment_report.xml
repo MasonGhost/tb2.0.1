@@ -68,9 +68,9 @@
                 android:layout_marginBottom="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_mid"
                 android:padding="@dimen/spacing_normal"
-                app:hintContent="@string/hint_feed_back"
-                app:limitSize="@integer/feed_back_content_max_size"
-                app:showLimitSize="@integer/feed_back_content_input_size"
+                app:hintContent="@string/hint_report"
+                app:limitSize="@integer/report_content_max_size"
+                app:showLimitSize="@integer/report_content_input_size"
                 app:showLines="@integer/dynamic_content_show_lines"/>
         </LinearLayout>
 
