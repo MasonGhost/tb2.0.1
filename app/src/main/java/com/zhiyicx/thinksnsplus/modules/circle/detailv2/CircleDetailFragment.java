@@ -76,6 +76,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
+import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
@@ -143,6 +144,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvCircleMember;
     @BindView(R.id.tv_circle_dec)
     TextView mTvCircleDec;
+    @BindView(R.id.tv_circle_owner)
+    TextView mTvOwnerName;
+    @BindView(R.id.tv_introduce_content)
+    ExpandableTextView mTvCircleIntroduce;
     @BindView(R.id.tv_circle_subscrib)
     CheckBox mTvCircleSubscrib;
     @BindView(R.id.iv_back)
@@ -317,6 +322,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
+
+        mTvOwnerName.setText(detail.getUser().getName());
+        mTvCircleIntroduce.setText(detail.getSummary());
 
         if (!updateHeadImg) {
             updateHeadImg = true;

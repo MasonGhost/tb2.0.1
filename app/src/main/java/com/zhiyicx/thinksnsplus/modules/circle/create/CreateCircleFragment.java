@@ -160,7 +160,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         });
 
         mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
+            if (!isChecked) {
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
             } else {

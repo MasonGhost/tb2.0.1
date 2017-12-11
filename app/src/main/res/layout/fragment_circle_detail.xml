@@ -32,13 +32,7 @@
                     android:clipToPadding="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-                    <include layout="@layout/circle_head_bg"/>
-
-                    <include layout="@layout/circle_head"
-                             android:layout_width="match_parent"
-                             android:layout_height="wrap_content"
-                             android:layout_marginBottom="@dimen/spacing_mid"
-                             android:layout_marginTop="@dimen/circle_detail_header_magin"/>
+                    <include layout="@layout/circle_head"/>
 
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/toolbar"

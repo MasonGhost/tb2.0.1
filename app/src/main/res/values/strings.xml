@@ -282,7 +282,9 @@
 
     <string name="change_circle_head_icon">上传圈子头像</string>
     <string name="circle_name">圈名</string>
+    <string name="circle_owner">圈主</string>
     <string name="circle_type">分类</string>
+    <string name="circle_chat">私聊</string>
     <string name="edit_circle_name">设置圈名</string>
     <string name="edit_circle_type">设置圈子类别</string>
     <string name="edit_circle_location">设置圈子位置</string>

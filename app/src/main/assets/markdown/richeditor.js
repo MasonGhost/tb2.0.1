@@ -404,7 +404,7 @@ var RE = {
             return
         }
         if(InPut>=10){
-            document.getElementById("stay").style.display="inline";
+            document.getElementById("stay").style.display="block";
             document.getElementById("stay").style.color="green";
         }
         if(InPut>15){

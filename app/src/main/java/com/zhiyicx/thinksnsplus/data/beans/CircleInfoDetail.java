@@ -50,7 +50,7 @@ public class CircleInfoDetail {
     private String mode;
     private int money;
     private String summary;
-    private Object notice;
+    private String notice;
     private int users_count;
     private int posts_count;
     private int audit;
@@ -173,11 +173,11 @@ public class CircleInfoDetail {
         this.summary = summary;
     }
 
-    public Object getNotice() {
+    public String getNotice() {
         return notice;
     }
 
-    public void setNotice(Object notice) {
+    public void setNotice(String notice) {
         this.notice = notice;
     }
 

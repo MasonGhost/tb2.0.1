@@ -10,7 +10,7 @@
     <!--创建圈子-位置-->
     <dimen name="create_circle_location">58dp</dimen>
     <!--圈子详情顶部距离-->
-    <dimen name="circle_detail_header_magin">100dp</dimen>
+    <dimen name="circle_detail_header_magin">70dp</dimen>
     <!--圈子详情头像宽度-->
     <dimen name="circle_detail_head_iamge_height">66dp</dimen>
     <!--圈子成员管理头像-->
