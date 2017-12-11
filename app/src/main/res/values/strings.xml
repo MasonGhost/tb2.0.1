@@ -805,6 +805,7 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="has_apply">已提交申请</string>
     <string name="create_wait_audit">创建待审核</string>
     <string name="join_wait_audit">申请加入待审核</string>
     <string name="not_find_circle_post_to_publish">未找到相关帖子~</string>
