@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_normal">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingTop="@dimen/spacing_mid"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="举报 街角光影 的帖子"/>
+
+            <LinearLayout
+                android:id="@+id/ll_resource_contianer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bgColor"
+                android:orientation="horizontal"
+
+                android:padding="@dimen/spacing_small">
+
+                <com.zhiyicx.baseproject.widget.imageview.SquareImageView
+                    android:id="@+id/iv_img"
+                    android:layout_width="@dimen/report_resource_img"
+                    android:layout_height="@dimen/report_resource_img"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:src="@drawable/shape_default_image"/>
+
+
+                <TextView
+                    android:id="@+id/tv_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+                    android:maxLines="2"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_content_assist"
+                    tools:text="佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分"/>
+            </LinearLayout>
+
+
+            <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+                android:id="@+id/et_report_content"
+                style="@style/style_edit_cursor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_mid"
+                android:padding="@dimen/spacing_normal"
+                app:hintContent="@string/hint_report"
+                app:limitSize="@integer/report_content_max_size"
+                app:showLimitSize="@integer/report_content_input_size"
+                app:showLines="@integer/dynamic_content_show_lines"/>
+        </LinearLayout>
+
+        <com.zhiyicx.baseproject.widget.button.LoadingButton
+            android:id="@+id/bt_report"
+            style="@style/style_login_button"
+            android:layout_marginTop="@dimen/spacing_big_large"
+            android:enabled="false"
+            app:text="@string/report"/>
+    </LinearLayout>
+</com.wcy.overscroll.OverScrollLayout>

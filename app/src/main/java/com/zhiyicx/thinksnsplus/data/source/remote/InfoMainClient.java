@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
@@ -26,6 +27,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECTION_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DELETE;
@@ -35,6 +37,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DIG_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
@@ -45,7 +48,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
  * @Author Jliuer
  * @Date 2017/03/14
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 资讯相关接口
  */
 public interface InfoMainClient {
 
@@ -146,7 +149,8 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long
+            amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 
@@ -167,12 +171,13 @@ public interface InfoMainClient {
      *
      * @param news_id    咨询 id
      * @param limit      列表返回数据条数
-     * @param offset      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param offset     翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
      * @param order_type 排序规则 date-按时间 amount-按金额
      */
     @GET(APP_PATH_INFO_REWARDS_USER_LIST)
-    Observable<List<RewardsListBean>> rewardInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("offset") Integer offset, @Query("order") String order, @Query("order_type") String order_type);
+    Observable<List<RewardsListBean>> rewardInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("offset") Integer offset,
+                                                     @Query("order") String order, @Query("order_type") String order_type);
 
     /**
      * 资讯打赏统计
@@ -206,7 +211,7 @@ public interface InfoMainClient {
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_UPDATE_INFO)
-    Observable<BaseJsonV2<Object>> updateInfo(@Path("category_id") long cates_id, @Path("news_id") int news_id,@Body RequestBody requestBody);
+    Observable<BaseJsonV2<Object>> updateInfo(@Path("category_id") long cates_id, @Path("news_id") int news_id, @Body RequestBody requestBody);
 
     /**
      * 拒绝资讯评论置顶 V2
@@ -214,5 +219,18 @@ public interface InfoMainClient {
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_REFUSE_INFO_COMMENT)
-    Observable<BaseJsonV2> refuseNewsTopComment(@Path("news_id") int news_id,@Path("comment_id") long comment_id,@Path("pinned_id") int pinned_id);
+    Observable<BaseJsonV2> refuseNewsTopComment(@Path("news_id") int news_id, @Path("comment_id") long comment_id, @Path("pinned_id") int pinned_id);
+
+    /*******************************************  举报  *********************************************/
+
+    /**
+     * 举报一条资讯
+     *
+     * @param newsId 资讯 id
+     * @param reason 举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_INFO_REPORT)
+    Observable<ReportResultBean> reportInfo(@Path("news_id") String newsId, @Field("reason") String reason);
 }

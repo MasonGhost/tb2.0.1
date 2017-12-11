@@ -814,5 +814,10 @@
     <string name="to_publish_circle_post">去发帖</string>
     <string name="not_find_circle_to_publish">未找到相关圈子，创建属于自己的圈子吧</string>
     <string name="to_publish_circle">创建圈子</string>
+    <!--举报-->
+    <string name="report">举报</string>
+    <string name="report_title_format">举报 %s</string>
+    <string name="report_success_tip">举报信息提交成功</string>
+    <string name="hint_report">填写举报原因</string>
 
 </resources>
