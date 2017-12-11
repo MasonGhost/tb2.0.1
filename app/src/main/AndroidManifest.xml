@@ -586,6 +586,7 @@
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:name=".modules.circle.detailv2.CircleDetailActivity"
             android:screenOrientation="portrait"/>
         <activity

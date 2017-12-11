@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -402,8 +403,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected void initView(View rootView) {
+
         super.initView(rootView);
-        AndroidBug5497Workaround.assistActivity(getActivity());
         initToolBar();
         initLisener();
     }
@@ -854,6 +855,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             }
         });
         mIlvComment.setOnSendClickListener(this);
+        mVShadow.setOnClickListener(v -> closeInputView());
     }
 
     private void initToolBar() {
@@ -888,6 +890,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private void goPostDetail(int position) {
         CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
+    }
+
+    private void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
