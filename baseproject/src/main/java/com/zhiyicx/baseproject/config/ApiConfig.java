@@ -198,7 +198,8 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
     // 动态打赏用户列表
     public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
-
+    // 举报动态
+    public static final String APP_PATH_DYNAMIC_REPORT = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/reports";
 
     /**
      * 资讯相关
@@ -215,7 +216,6 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
 
 
-
     //置顶资讯、评论
     public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
     public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds";
@@ -224,6 +224,8 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
     // 打赏用户列表
     public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 咨询举报
+    public static final String APP_PATH_INFO_REPORT = "/api/" + API_VERSION_2 + "/news/{news_id}/reports";
     // 资讯打赏统计
     public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
 
@@ -355,6 +357,13 @@ public class ApiConfig {
     public static final String APP_PATH_QA_ANSWER_LOOK = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/onlookers";
     // 获取回答打赏列表
     public static final String APP_PATH_QA_ANSWER_REWARD_USER_LIST = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+    // 问答问题举报
+    public static final String APP_PATH_QA_REPORT = "api/" + API_VERSION_2 + "/qquestions/{question_id}/reports";
+
+    // 问答回答举报
+    public static final String APP_PATH_QA_ANSWER_REPORT = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/reports";
+
+
     // 评论答案
     public static final String APP_PATH_COMMENT_QA_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments";
     // 删除答案评论
@@ -584,6 +593,19 @@ public class ApiConfig {
      */
     public static final String APP_PATH_DELETE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments/{comment_id}";
     public static final String APP_PATH_DELETE_POST_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/plus-group/group-posts/%s/comments/%s";
+
+    /**
+     * 举报圈子
+     */
+    public static final String APP_PATH_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/groups/{group_id}/reports";
+    /**
+     * 举报圈子中的帖子
+     */
+    public static final String APP_PATH_CIRCLE_POST_REPOT = "api/" + API_VERSION_2 + "/reports/posts/{post_id}";
+    /**
+     * 举报评论
+     */
+    public static final String APP_PATH_COMMENT_REPOT = "api/" + API_VERSION_2 + "/reports/comments/{comment_id}";
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）

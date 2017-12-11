@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
@@ -32,7 +33,10 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
@@ -51,6 +55,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
@@ -199,7 +204,8 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_POSTLIST)
-    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet, @Query("type") String type);
+    Observable<CirclePostBean> getPostListFromCircle(@Path("circle_id") long circleId, @Query("limit") int limit, @Query("offet") int offet, @Query
+            ("type") String type);
 
 
     /**
@@ -306,7 +312,8 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_POST_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopPostComment(@Field("post_id") Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long amount, @Field("day") Integer day);
+    Observable<BaseJsonV2<Integer>> stickTopPostComment(@Field("post_id") Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long
+            amount, @Field("day") Integer day);
 
     /**
      * 帖子打赏
@@ -360,5 +367,41 @@ public interface CircleClient {
     @GET(APP_PATH_GET_TOP_POST_COMMENT)
     Observable<List<TopPostCommentListBean>> getPostReviewComment(@Query("after") Integer after, @Query("limit")
             Integer limit, @Query("group") Integer group);
+
+
+    /*******************************************  举报  *********************************************/
+
+    /**
+     * 举报圈子
+     *
+     * @param groupId 圈子 id
+     * @param reason  举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_CIRCLE_REPOT)
+    Observable<ReportResultBean> reportCircle(@Path("group_id") String groupId, @Field("reason") String reason);
+
+    /**
+     * 举报圈子中的帖子
+     *
+     * @param postId 帖子 id
+     * @param reason 举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_CIRCLE_POST_REPOT)
+    Observable<ReportResultBean> reportCirclePost(@Path("post_id") String postId, @Field("reason") String reason);
+
+    /**
+     * 举报评论
+     *
+     * @param commentId 评论 id
+     * @param reason    举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_COMMENT_REPOT)
+    Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("reason") String reason);
 }
 
