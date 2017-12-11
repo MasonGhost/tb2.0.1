@@ -22,6 +22,8 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.DigListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.adapter.BaseDigItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
@@ -250,11 +252,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 && circlePostDetailBean.getDigList().size() > 0) {
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
-                Intent intent = new Intent(mContext, InfoDigListActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, circlePostDetailBean);
-                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
-                mContext.startActivity(intent);
+                DigListActivity.startDigActivity(mContext,circlePostDetailBean.getId(), BaseDigItem.DigTypeEnum.POST);
             });
         }
     }

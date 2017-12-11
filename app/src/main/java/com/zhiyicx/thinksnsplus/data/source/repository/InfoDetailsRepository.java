@@ -99,7 +99,6 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     @Override
     public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
         return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
-                .observeOn(Schedulers.io())
                 .flatMap(infoDigListBeen -> {
                     List<Object> user_ids = new ArrayList<>();
                     for (InfoDigListBean digListBean : infoDigListBeen) {
@@ -123,6 +122,7 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                 return infoDigListBeen;
                             });
                 })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
