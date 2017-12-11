@@ -2,11 +2,86 @@
 <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/themeColor">
 
-    <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/iv_user_code"
-            android:layout_width="@dimen/qa_search_empty_bt_with"
-            android:layout_height="@dimen/qa_search_empty_bt_with"/>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_normal_large"
+            android:paddingTop="@dimen/spacing_large"
+            android:paddingRight="@dimen/spacing_large"
+            android:paddingLeft="@dimen/spacing_large"
+            android:background="@drawable/shape_bg_qr_code_view">
+
+        <!--用户信息-->
+        <!--头像-->
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+                android:id="@+id/user_avatar"
+                android:layout_width="@dimen/qr_code_user_avatar_width"
+                android:layout_height="@dimen/qr_code_user_avatar_width"
+                app:ts_avatare_size="@dimen/qr_code_user_avatar_width"
+                app:pressShape="circle"/>
+        <!--用户名-->
+        <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_sub_title"
+                android:textColor="@color/important_for_content"
+                android:layout_toRightOf="@+id/user_avatar"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                tools:text="xxxxxx"/>
+        <!--简介-->
+        <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_user_intro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/normal_for_assist_text"
+                android:layout_toRightOf="@+id/user_avatar"
+                android:layout_below="@+id/tv_user_name"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="xxxxxx"/>
+
+        <!--二维码-->
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_user_code"
+                android:layout_width="@dimen/qr_code_width"
+                android:layout_height="@dimen/qr_code_width"
+                android:layout_below="@+id/user_avatar"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/qr_code_content_padding_top"/>
+
+        <com.zhiyicx.baseproject.widget.EmptyView
+                android:id="@+id/empty_view"
+                android:layout_width="@dimen/qr_code_width"
+                android:layout_height="@dimen/qr_code_width"
+                android:layout_below="@+id/user_avatar"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/qr_code_content_padding_top"/>
+
+        <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/general_for_loading_more"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/iv_user_code"
+                android:layout_marginBottom="@dimen/qr_code_content_padding_bottom"
+                android:layout_marginTop="@dimen/spacing_big_large"
+                android:text="@string/qr_scan_alert"/>
+
+    </RelativeLayout>
+
+
 
 </android.support.constraint.ConstraintLayout>
