@@ -40,6 +40,7 @@
 
                 <com.zhiyicx.baseproject.widget.imageview.SquareImageView
                     android:layout_width="@dimen/report_resource_img"
+                    android:id="@+id/iv_img"
                     android:layout_height="@dimen/report_resource_img"
                     android:src="@drawable/shape_default_image"/>
 
@@ -51,6 +52,7 @@
                     android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
                     android:maxLines="2"
                     android:textColor="@color/normal_for_assist_text"
+                    android:id="@+id/tv_des"
                     android:textSize="@dimen/size_content_assist"
                     tools:text="佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分"/>
             </LinearLayout>
@@ -70,7 +72,7 @@
         </LinearLayout>
 
         <com.zhiyicx.baseproject.widget.button.LoadingButton
-            android:id="@+id/bt_login_login"
+            android:id="@+id/bt_report"
             style="@style/style_login_button"
             android:layout_marginTop="@dimen/spacing_big_large"
             android:enabled="false"

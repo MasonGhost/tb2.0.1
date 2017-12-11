@@ -814,5 +814,6 @@
     <string name="to_publish_circle">创建圈子</string>
     <!--举报-->
     <string name="report">举报</string>
+    <string name="report_title_format">举报 %s</string>
 
 </resources>
