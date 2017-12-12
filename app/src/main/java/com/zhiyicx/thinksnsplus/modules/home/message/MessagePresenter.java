@@ -3,6 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -25,8 +28,10 @@ import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -46,12 +51,15 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
@@ -134,7 +142,22 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        creatTsHelperConversation();
+        getAllConversationV2(isLoadMore);
+    }
+
+    /**
+     * 获取环信的
+     * @param isLoadMore
+     */
+    private void getAllConversationV2(boolean isLoadMore){
+        List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+        LogUtils.d("Cathy", tsHlepers);
+        Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(messageItemBeanV2s -> {
+                    mRootView.getMessageListSuccess(messageItemBeanV2s);
+                });
+        addSubscrebe(subscribe);
     }
 
     /**
@@ -209,9 +232,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     /**
      * 没有加载更多，一次全部取出
      *
-     * @param maxId
      * @param isLoadMore 加载状态
-     * @return
      */
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
@@ -221,8 +242,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-            creatTsHelperConversation();
-
+//            creatTsHelperConversation();
+            getAllConversationV2(isLoadMore);
         }
     }
 
@@ -280,8 +301,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 删除对话信息
-     *
-     * @param position
      */
     @Override
     public void deletConversation(int position) {
@@ -474,8 +493,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 新对话创建回调
-     *
-     * @param messageItemBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
     private void onConversationCreated(MessageItemBean messageItemBean) {
@@ -488,8 +505,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 推送相关
-     *
-     * @param jpushMessageBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST)
     private void onJpushMessageRecieved(JpushMessageBean jpushMessageBean) {
@@ -516,8 +531,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 处理聊天推送
-     *
-     * @param jpushMessageBean
      */
     private void handleIMPush(JpushMessageBean jpushMessageBean) {
         String extras = jpushMessageBean.getExtras();
@@ -535,8 +548,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 处理 获取用户收到的最新消息
-     *
-     * @return
      */
     @Override
     public void handleFlushMessage() {
@@ -643,10 +654,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     /**
      * 获取用户文字显示  张三、李四评论了我
-     *
-     * @param commentsNoti
-     * @param maxNum
-     * @return
      */
     private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
         StringBuilder stringBuilder = new StringBuilder();

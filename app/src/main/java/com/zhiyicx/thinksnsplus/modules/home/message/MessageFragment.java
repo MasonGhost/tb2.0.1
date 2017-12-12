@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -29,6 +30,8 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReview
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -42,12 +45,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean>
-        implements MessageContract.View, MessageAdapter.OnSwipItemClickListener,
+        implements MessageContract.View, MessageAdapterV2.OnSwipeItemClickListener,
         OnUserInfoClickListener {
     private View mHeaderView;
 
     @Inject
     protected MessagePresenter mMessagePresenter;
+
+    private List<MessageItemBeanV2> messageItemBeanList;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
@@ -129,17 +134,16 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
+        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-
+        messageItemBeanList = new ArrayList<>();
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout
-                .item_message_list, mListDatas);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
@@ -340,6 +344,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public BaseFragment getCureenFragment() {
         return this;
+    }
+
+    @Override
+    public void getMessageListSuccess(List<MessageItemBeanV2> list) {
+        messageItemBeanList.addAll(list);
+        mAdapter.notifyDataSetChanged();
     }
 
 
