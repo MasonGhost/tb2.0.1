@@ -253,6 +253,7 @@
     <string name="group_joined">已加入</string>
     <string name="group_mine">我的圈子</string>
     <string name="group_count">%d个兴趣小组，等待你的加入！</string>
+    <string name="circle">圈子</string>
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
     <string name="create">创建</string>
@@ -606,6 +607,8 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
+    <string name="qa">问题</string>
+    <string name="qa_answer">回答</string>
     <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
     <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
@@ -820,7 +823,7 @@
     <string name="to_publish_circle">创建圈子</string>
     <!--举报-->
     <string name="report">举报</string>
-    <string name="report_title_format">举报 %s</string>
+    <string name="report_title_format">举报 %1$s 的%2$s</string>
     <string name="report_success_tip">举报信息提交成功</string>
     <string name="hint_report">填写举报原因</string>
 

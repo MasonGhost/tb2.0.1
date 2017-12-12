@@ -45,7 +45,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class ReportFragment extends TSFragment<ReportContract.Presenter> implements ReportContract.View {
 
-    private static final String BUNDLE_REPORT_RESOURCE_DATA = "report_resource_data";
+    public static final String BUNDLE_REPORT_RESOURCE_DATA = "report_resource_data";
     @BindView(R.id.tv_title)
     TextView mTvTitle;
     @BindView(R.id.tv_des)
@@ -67,24 +67,6 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
         ReportFragment reportFragment = new ReportFragment();
         reportFragment.setArguments(bundle);
         return reportFragment;
-    }
-
-
-    /**
-     * @param context            not application context clink
-     * @param reportResourceBean report data {@link ReportResourceBean}
-     */
-    public static void startReportActivity(Context context, ReportResourceBean reportResourceBean) {
-
-        Intent intent = new Intent(context, ReportActivity .class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BUNDLE_REPORT_RESOURCE_DATA, reportResourceBean);
-        intent.putExtras(bundle);
-        if (context instanceof Activity) {
-            context.startActivity(intent);
-        } else {
-            throw new IllegalAccessError("context must instance of Activity");
-        }
     }
 
     @Override
@@ -115,16 +97,43 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
     @Override
     protected void initData() {
 
-        if (!TextUtils.isEmpty(mReportResourceBean.getTitle())) {
-            mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle()));
-            // title 点击
-            ConvertUtils.stringLinkConvert(mTvTitle, setLiknks(), true);
+        if (TextUtils.isEmpty(mReportResourceBean.getTitle())) {
+            mReportResourceBean.setTitle(getString(R.string.default_delete_user_name));
         }
+        switch (mReportResourceBean.getType()) {
+            case INFO:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.collect_info)));
+                break;
+            case DYNAMIC:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.collect_dynamic)));
+                break;
+            case QA:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.qa)));
+                break;
+            case QA_ANSWER:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.qa_answer)));
+                break;
+            case CIRCLE:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.circle)));
+                break;
+            case CIRCLE_POST:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.circle_post)));
+                break;
+            case COMMENT:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getTitle(), getString(R.string.comment)));
+                break;
+            default:
+        }
+        // title 点击
+        ConvertUtils.stringLinkConvert(mTvTitle, setLiknks(), true);
+
         if (!TextUtils.isEmpty(mReportResourceBean.getDes())) {
             mTvDes.setText(mReportResourceBean.getDes());
         }
         if (!TextUtils.isEmpty(mReportResourceBean.getImg())) {
             ImageUtils.loadImageDefault(mIvImg, mReportResourceBean.getImg());
+        } else {
+            mIvImg.setVisibility(View.GONE);
         }
 
     }
@@ -134,6 +143,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
         super.showLoading();
         mBtReport.handleAnimation(true);
         mBtReport.setEnabled(!TextUtils.isEmpty(mEtReportContent.getInputContent()));
+        mLoginAnimationDrawable = mBtReport.getAnimationDrawable();
     }
 
     @Override
@@ -157,8 +167,8 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (getActivity() != null && Prompt.SUCCESS == prompt) {
-            getActivity().finish();
+        if (mActivity != null && Prompt.SUCCESS == prompt) {
+            mActivity.finish();
         }
     }
 
@@ -235,8 +245,18 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
             case CIRCLE_POST:
 
                 break;
+            case COMMENT:
+
+                break;
             default:
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mLoginAnimationDrawable != null && mLoginAnimationDrawable.isRunning()) {
+            mLoginAnimationDrawable.stop();
+        }
+    }
 }

@@ -77,6 +77,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
@@ -771,8 +772,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportFragment.startReportActivity(getContext(), new ReportResourceBean(String.valueOf(circlePostListBean.getId()),
-                            circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                    String name = "";
+                    if (circlePostListBean.getUser() != null) {
+                        name = circlePostListBean.getUser().getName();
+                    }
+                    ReportActivity.startReportActivity(getContext(), new ReportResourceBean(String.valueOf(circlePostListBean.getId()),
+                            name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -965,7 +970,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
                 mCircleInfoDetail.setJoined(new CircleInfoDetail.JoinedBean());
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
-                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail.getUsers_count()));
+                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
+                        .getUsers_count()));
                 mTvCircleSubscrib.setVisibility(View.GONE);
                 break;
             default:

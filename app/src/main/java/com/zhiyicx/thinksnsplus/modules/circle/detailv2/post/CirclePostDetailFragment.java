@@ -29,11 +29,15 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -463,11 +467,28 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
                 .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
+                .item3Str(isMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
+                .item3ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    String name = "";
+                    if (circlePostListBean.getUser() != null) {
+                        name = circlePostListBean.getUser().getName();
+                    }
+                    ReportActivity.startReportActivity(getContext(), new ReportResourceBean(String.valueOf(circlePostListBean.getId()),
+                            name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                    mDealPostPopWindow.hide();
+                })
                 .item2ClickListener(() -> {
                     // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
