@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
@@ -61,6 +62,8 @@ public interface MessageContract {
         void closeTopRightLoading();
 
         BaseFragment getCureenFragment();
+
+        void getMessageListSuccess(List<MessageItemBeanV2> list);
     }
 
     /**
@@ -74,6 +77,8 @@ public interface MessageContract {
          * @return
          */
         Observable<List<MessageItemBean>> getConversationList(int user_id);
+
+        Observable<List<MessageItemBeanV2>> getConversationListV2(int user_id);
 
         /**
          * 通过 对话 id 获取对话信息

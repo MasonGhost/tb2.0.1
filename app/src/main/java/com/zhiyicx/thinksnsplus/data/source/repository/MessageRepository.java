@@ -4,6 +4,9 @@ import android.app.Application;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -14,6 +17,7 @@ import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -25,6 +29,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.MessageContract;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -145,6 +150,71 @@ public class MessageRepository implements MessageContract.Repository {
                 })
                 .observeOn(AndroidSchedulers.mainThread());
 
+    }
+
+    /**
+     * 获取环信的会话列表
+     *
+     * @param user_id 用户id
+     * @return Observable<List<MessageItemBeanV2>>
+     */
+    @Override
+    public Observable<List<MessageItemBeanV2>> getConversationListV2(final int user_id) {
+        Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
+        Observable<List<MessageItemBeanV2>> observable = Observable.just(conversations)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(stringEMConversationMap -> {
+                    // 先将环信返回的数据转换为model 然后根据type来处理是否需要获取用户信息，如果不需要则直接返回数据
+                    List<MessageItemBeanV2> list = new ArrayList<>();
+                    for (Map.Entry<String, EMConversation> entry : stringEMConversationMap.entrySet()) {
+                        MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                        itemBeanV2.setConversation(entry.getValue());
+                        itemBeanV2.setEmKey(entry.getKey());
+                        list.add(itemBeanV2);
+                    }
+                    return list;
+                })
+                .flatMap(messageItemBeanV2s -> {
+                    List<Object> users = new ArrayList<>();
+                    for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s) {
+                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                            // 单聊处理用户信息
+                            if (itemBeanV2.getEmKey().equals("admin")) {
+                                users.add(1L);
+                            } else {
+                                users.add(itemBeanV2.getEmKey());
+                            }
+                        }
+                    }
+                    if (users.isEmpty()) {
+                        return Observable.just(messageItemBeanV2s);
+                    } else {
+                        return mUserInfoRepository.getUserInfo(users)
+                                .map(userInfoBeans -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < messageItemBeanV2s.size(); i++) {
+                                        // 只有单聊才给用户信息
+                                        if (messageItemBeanV2s.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                                            int key;
+                                            if (messageItemBeanV2s.get(i).getEmKey().equals("admin")) {
+                                                key = 1;
+                                            } else {
+                                                key = Integer.parseInt(messageItemBeanV2s.get(i).getEmKey());
+                                            }
+                                            messageItemBeanV2s.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                        }
+                                    }
+                                    return messageItemBeanV2s;
+                                });
+                    }
+
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+        return observable;
     }
 
     /**
