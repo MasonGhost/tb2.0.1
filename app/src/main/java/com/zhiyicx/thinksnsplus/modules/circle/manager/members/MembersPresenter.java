@@ -52,11 +52,12 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CircleMembers> data, boolean isLoadMore) {
         return false;
     }
+
 }

@@ -226,7 +226,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setLocation(mTvLocation.getText().toString());
         mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
-        mCreateCircleBean.setMode(mWcBlock.isChecked() ? MODE_PRIVATE : (mCbToll.isChecked() ? MODE_PAID : MODE_PUBLIC));
+        mCreateCircleBean.setMode(mCbToll.isChecked() ? MODE_PAID : (mWcBlock.isChecked() ? MODE_PRIVATE : MODE_PUBLIC));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
         mCreateCircleBean.setMoney(mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
         mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());

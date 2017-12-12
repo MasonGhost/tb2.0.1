@@ -48,14 +48,26 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    protected void initData() {
+        super.initData();
+    }
+
+    @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
+
         return new StickySectionDecoration(getActivity(), position -> {
-            int groupId = position / 2;
-            int index = position % 2;
-            StickySectionDecoration.GroupInfo groupInfo = new StickySectionDecoration.GroupInfo(groupId, groupId + "");
-            groupInfo.setGroupLength(2);
-            groupInfo.setPosition(index);
-            return groupInfo;
+
+            CircleMembers members = mListDatas.get(position);
+            StickySectionDecoration.GroupInfo groupInfo;
+            if (CircleMembers.FOUNDER.equals(members.getRole()) || CircleMembers.ADMINISTRATOR.equals(members.getRole())) {
+                int groupId = 1;
+                groupInfo = new StickySectionDecoration.GroupInfo(groupId, groupId + "");
+                groupInfo.setPosition(position);
+                groupInfo.setGroupLength(2);
+                return groupInfo;
+            }
+
+            return null;
         });
     }
 }

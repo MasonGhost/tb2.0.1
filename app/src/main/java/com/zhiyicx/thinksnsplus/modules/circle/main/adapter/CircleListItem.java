@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -19,8 +20,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainContract;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -41,9 +44,20 @@ public class CircleListItem extends BaseCircleItem {
      */
     private boolean mIsMineJoined;
 
+    private CircleMainContract.Presenter mPresenter;
+    private Activity mContext;
+
     public CircleListItem(boolean isMineJoined, Context context, CircleItemItemEvent circleItemItemEvent) {
         super(circleItemItemEvent);
         mIsMineJoined = isMineJoined;
+        mPayDrawable = UIUtils.getCompoundDrawables(context, R.mipmap.musici_pic_pay02);
+    }
+
+    public CircleListItem(boolean isMineJoined, Activity context, CircleItemItemEvent circleItemItemEvent, CircleMainContract.Presenter presenter) {
+        super(circleItemItemEvent);
+        mContext = context;
+        mIsMineJoined = isMineJoined;
+        mPresenter = presenter;
         mPayDrawable = UIUtils.getCompoundDrawables(context, R.mipmap.musici_pic_pay02);
     }
 
@@ -148,6 +162,10 @@ public class CircleListItem extends BaseCircleItem {
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        if (!isJoined && mContext != null && CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
+                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName(), R.string.buy_pay_words_desc);
                             return;
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);

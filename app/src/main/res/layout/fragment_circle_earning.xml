@@ -53,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/circle_earningn_member"
+                app:rightTextColor="@color/money_gold_light"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--提现-->
@@ -61,6 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/circle_earningn_top"
+                app:rightTextColor="@color/money_gold_light"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>

@@ -1,19 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.circle.earning;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+
+import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * @Author Jliuer
@@ -24,6 +23,7 @@ import butterknife.Unbinder;
 public class CircleEarningFragment extends TSFragment<CircleEarningContract.Presenter>
         implements CircleEarningContract.View {
 
+    public static final String DATA = "data";
 
     @BindView(R.id.tv_account_unit)
     TextView mTvAccountUnit;
@@ -34,14 +34,27 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     @BindView(R.id.bt_top)
     CombinationButton mBtTop;
 
+    private CircleInfoDetail mCircleInfoDetail;
+
+    public static CircleEarningFragment newInstance(Bundle bundle) {
+        CircleEarningFragment circleEarningFragment = new CircleEarningFragment();
+        circleEarningFragment.setArguments(bundle);
+        return circleEarningFragment;
+    }
+
     @Override
     protected void initView(View rootView) {
-
+        setCenterTextColor(R.color.white);
+        setRightText(getString(R.string.detail));
+        mTvAccountUnit.setText(String.format(Locale.getDefault(), getString(R.string.circle_earningn_total), mPresenter.getGoldName()));
+        mCircleInfoDetail = getArguments().getParcelable(DATA);
     }
 
     @Override
     protected void initData() {
-
+        mBtMember.setRightText(mCircleInfoDetail.getJoin_income_count() + "");
+        mBtTop.setRightText(mCircleInfoDetail.getPinned_income_count() + "");
+        mTvMineMoney.setText(String.valueOf(mCircleInfoDetail.getJoin_income_count() + mCircleInfoDetail.getPinned_income_count()));
     }
 
     @Override

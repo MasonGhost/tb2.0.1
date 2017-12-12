@@ -70,6 +70,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -939,6 +940,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfoDetail);
                 break;
             case R.id.ll_earnings_container:
+                CircleEarningActivity.startActivity(mActivity, mCircleInfoDetail);
                 break;
             case R.id.ll_permission_container:
                 break;
