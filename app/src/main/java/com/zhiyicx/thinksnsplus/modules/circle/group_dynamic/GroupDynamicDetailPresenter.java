@@ -514,7 +514,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             mRootView.getListDatas().clear();
         }
         Bundle bundle = mRootView.getArgumentsBundle();
-        if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
+        if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA) && mRootView.getCurrentDynamic() != null) {
             mRootView.getCurrentDynamic().setCommentslist(mRootView.getListDatas());
             bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
             bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
