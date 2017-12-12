@@ -748,5 +748,6 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="camera_permission_tip">相机权限已被您禁止使用，请前往权限管理中心修改设置！</string>
 
 </resources>

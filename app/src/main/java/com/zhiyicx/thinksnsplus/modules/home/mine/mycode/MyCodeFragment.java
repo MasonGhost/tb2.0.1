@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.mycode;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tbruyelle.rxpermissions.Permission;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -25,6 +29,7 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
@@ -68,6 +73,11 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         // 弹起弹框 选择分享或者扫码
@@ -101,7 +111,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
 
     @Override
     public void setUserInfo(UserInfoBean userInfo) {
-        if (userInfo != null){
+        if (userInfo != null) {
             mTvUserName.setText(userInfo.getName());
             mTvUserIntro.setText(String.format(getString(R.string.default_intro_format), userInfo.getIntro()));
             ImageUtils.loadCircleUserHeadPic(userInfo, mUserAvatar);
@@ -113,7 +123,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            if (resource != null){
+                            if (resource != null) {
                                 mShareBitmap = resource;
                                 mPresenter.createUserCodePic(resource);
                             }
@@ -130,7 +140,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     /**
      * 初始化扫码更多的弹框
      */
-    private void initScanCodePopupWindow(){
+    private void initScanCodePopupWindow() {
         mScanCodePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.my_qr_code_title))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
@@ -141,7 +151,22 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     // 扫一扫
-                    startActivity(new Intent(getContext(), ScanCodeActivity.class));
+                    // 添加相机权限设置
+                    mRxPermissions
+                            .requestEach(Manifest.permission.CAMERA)
+                            .subscribe(permission -> {
+                                if (permission.granted) {
+                                    // 权限被允许
+                                    startActivity(new Intent(getContext(), ScanCodeActivity.class));
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    // 权限没有被彻底禁止
+                                } else {
+                                    // 权限被彻底禁止
+                                    showSnackWarningMessage(getString(R.string.camera_permission_tip));
+                                }
+                            });
+
+
                 })
                 .item2ClickListener(() -> {
                     // 分享
