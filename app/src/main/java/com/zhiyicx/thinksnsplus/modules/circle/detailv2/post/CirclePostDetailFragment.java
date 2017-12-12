@@ -485,7 +485,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     if (circlePostListBean.getUser() != null) {
                         name = circlePostListBean.getUser().getName();
                     }
-                    ReportActivity.startReportActivity(getContext(), new ReportResourceBean(String.valueOf(circlePostListBean.getId()),
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
+                            (circlePostListBean.getId()),
                             name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mDealPostPopWindow.hide();
                 })

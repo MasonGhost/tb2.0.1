@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -22,6 +24,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
@@ -30,13 +33,17 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -431,11 +438,35 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
                 .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
+                // 是我的，或者是广告就没举报
+                .item3Str(isMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
+                .item3ClickListener(() -> {                    // 举报资讯
+                    String img = "";
+                    if (infoMation.getImage() != null) {
+                        img = ImageUtils.imagePathConvertV2(infoMation.getImage().getId(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                ImageZipConfig.IMAGE_80_ZIP);
+                    } else {
+                        int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoMation.getContent());
+                        if (id > 0) {
+                            img = ImageUtils.imagePathConvertV2(id, getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    ImageZipConfig.IMAGE_80_ZIP);
+                        }
+                    }
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(infoMation.getUser_id());
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(userInfoBean, String.valueOf(infoMation.getId()),
+                            infoMation.getTitle(), img, infoMation.getSubject(), ReportType.INFO));
+                    mDealInfoMationPopWindow.hide();
+                })
                 .item2ClickListener(() -> {
                     // 收藏
                     // 如果是自己发布的，则不能收藏只能删除

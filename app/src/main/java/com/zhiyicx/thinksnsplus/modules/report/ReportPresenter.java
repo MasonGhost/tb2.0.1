@@ -4,14 +4,17 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ReportRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -24,6 +27,9 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
 
     @Inject
     ReportRepository mReportRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public ReportPresenter(ReportContract.Repository repository, ReportContract.View rootView) {
@@ -99,5 +105,37 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
                 });
         addSubscrebe(subscribe);
 
+    }
+
+    /**
+     *
+     * @param userId 需要获取的用户 id
+     */
+    @Override
+    public void getUserInfoById(Long userId) {
+        Subscription subscribe = mUserInfoRepository.getLocalUserInfoBeforeNet(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mRootView.getUserInfoResult(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.getUserInfoResult(null);
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.getUserInfoResult(null);
+
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 }

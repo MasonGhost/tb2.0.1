@@ -30,13 +30,12 @@
                 android:textSize="@dimen/size_content"
                 tools:text="举报 街角光影 的帖子"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_resource_contianer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/bgColor"
                 android:orientation="horizontal"
-
                 android:padding="@dimen/spacing_small">
 
                 <com.zhiyicx.baseproject.widget.imageview.SquareImageView
@@ -48,16 +47,30 @@
 
 
                 <TextView
-                    android:id="@+id/tv_des"
+                    android:id="@+id/tv_resource_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/iv_img"
                     android:ellipsize="end"
-                    android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-                    android:maxLines="2"
+                    android:maxLines="1"
+                    android:paddingBottom="@dimen/spacing_small"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_assist"
                     tools:text="佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分"/>
-            </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_resource_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_resource_title"
+                    android:layout_toRightOf="@id/iv_img"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_big"
+                    android:maxLines="1"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_icon_assist"
+                    tools:text="佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分"/>
+            </RelativeLayout>
 
 
             <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
