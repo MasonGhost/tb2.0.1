@@ -273,6 +273,7 @@
     <string name="post_typpe_reply">最新回复</string>
 
     <string name="create_circle">创建圈子</string>
+    <string name="edit_circle">详细信息</string>
     <string name="create_circle_notice">选填</string>
     <string name="create_circle_nolocation">不显示位置</string>
 

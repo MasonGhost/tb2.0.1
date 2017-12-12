@@ -323,6 +323,7 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/ll_charge"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/create_circle_button_height"
@@ -361,6 +362,7 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/ll_free"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -410,6 +412,7 @@
                     android:text="@string/edit_circle_notice"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_sub_title"/>
+
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/tv_notice"
                     style="@style/style_edit_cursor"

@@ -141,7 +141,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
         GroupInfo getGroupInfo(int position);
     }
 
-    public class GroupInfo {
+    public static class GroupInfo {
 
         private int mGroupID;
 

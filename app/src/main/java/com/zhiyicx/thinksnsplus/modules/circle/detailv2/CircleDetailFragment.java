@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -42,7 +41,6 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -57,6 +55,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForFiveImage;
@@ -70,6 +69,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
@@ -464,7 +465,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
-        DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+        DeviceUtils.showSoftKeyboard(mActivity, mIlvComment.getEtContent());
     }
 
     @Override
@@ -610,7 +611,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
+                .with(mActivity)
                 .item1ClickListener(() -> {
                     mReSendCommentPopWindow.hide();
                     //mCurrentPostion, mReplyToUserId, text
@@ -641,7 +642,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
+                .with(mActivity)
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     Bundle bundle = new Bundle();
@@ -649,7 +650,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
                     bundle.putLong(StickTopFragment.CHILD_ID, circlePostListBean
                             .getComments().get(commentPosition).getId());
-                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    Intent intent = new Intent(mActivity, StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
 
@@ -685,7 +686,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
+                .with(mActivity)
                 .item2ClickListener(() -> {// 收藏
                     mMyPostPopWindow.hide();
                     handleCollect(position);
@@ -713,13 +714,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mIlvComment.setVisibility(View.GONE);
             mIlvComment.clearFocus();
             mIlvComment.setSendButtonVisiable(false);
-            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+            DeviceUtils.hideSoftKeyboard(mActivity, mIlvComment.getEtContent());
         } else {
             mVShadow.setVisibility(View.VISIBLE);
             mIlvComment.setVisibility(View.VISIBLE);
             mIlvComment.getFocus();
             mIlvComment.setSendButtonVisiable(true);
-            DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+            DeviceUtils.showSoftKeyboard(mActivity, mIlvComment.getEtContent());
         }
     }
 
@@ -752,7 +753,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
+                .with(mActivity)
                 .item2ClickListener(() -> {// 收藏
                     handleCollect(position);
                     mOtherPostPopWindow.hide();
@@ -823,7 +824,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    Intent intent = new Intent(getActivity(), MarkdownActivity.class);
+                    Intent intent = new Intent(mActivity, MarkdownActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfoDetail.getId());
                     intent.putExtras(bundle);
@@ -888,14 +889,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void goPostDetail(int position) {
-        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position));
+        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position));
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
     private void closeInputView() {
         if (mIlvComment.getVisibility() == View.VISIBLE) {
             mIlvComment.setVisibility(View.GONE);
-            DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+            DeviceUtils.hideSoftKeyboard(mActivity, mIlvComment.getEtContent());
         }
         mVShadow.setVisibility(View.GONE);
     }
@@ -907,8 +908,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         switch (view.getId()) {
 
             case R.id.ll_member_container:
+                Intent intent = new Intent(mActivity, MembersListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfoDetail.getId());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.ll_detail_container:
+                CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfoDetail);
                 break;
             case R.id.ll_earnings_container:
                 break;

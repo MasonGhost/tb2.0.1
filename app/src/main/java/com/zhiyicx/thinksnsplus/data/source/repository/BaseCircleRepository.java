@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -20,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -60,6 +62,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
+    @Inject
+    protected CircleTypeBeanGreenDaoImpl mCircleTypeBeanGreenDao;
 
     /**
      * 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
@@ -93,8 +97,22 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean) {
         Map<String, String> file = new HashMap<>();
-        file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
+        if (createCircleBean.getFilePath() != null) {
+            file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
+        }
         return mCircleClient.createCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
+                .transBean2MapWithArray(createCircleBean)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<CircleInfo>> updateCircle(CreateCircleBean createCircleBean) {
+        Map<String, String> file = new HashMap<>();
+        if (createCircleBean.getFilePath() != null) {
+            file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
+        }
+        return mCircleClient.updateCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
                 .transBean2MapWithArray(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -305,8 +323,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId,String type) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId,type)
+    public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
@@ -314,6 +332,16 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                     data.addAll(circlePostBean.getPosts());
                     return data;
                 }));
+    }
+
+    public void saveCircleType() {
+        getCategroiesList(0, 0)
+                .subscribe(new BaseSubscribeForV2<List<CircleTypeBean>>() {
+                    @Override
+                    protected void onSuccess(List<CircleTypeBean> data) {
+                        mCircleTypeBeanGreenDao.saveMultiData(data);
+                    }
+                });
     }
 
     private Observable<List<CirclePostListBean>> dealWithPostList(Observable<List<CirclePostListBean>> observable) {

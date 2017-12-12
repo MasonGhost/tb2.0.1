@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
@@ -42,6 +43,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEMEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
@@ -236,6 +238,19 @@ public interface CircleClient {
             , @Query("group_id") Integer group_id);
 
     /**
+     * 获取圈子成员列表
+     * @param limit
+     * @param after
+     * @param type
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLEMEMBERS)
+    Observable<List<CircleMembers>> getCircleMemberList(@Path("circle_id") Long circle_id,@Query("limit") Integer limit
+            , @Query("after") Integer after
+            , @Query("type") String type);
+
+
+    /**
      * 创建圈子
      *
      * @param categoryId 圈子类别id
@@ -245,6 +260,17 @@ public interface CircleClient {
     @Multipart
     @Headers({"Accept:application/json;charset=UTF-8"})
     Observable<BaseJsonV2<CircleInfo>> createCircle(@Path("category_id") long categoryId, @Part List<MultipartBody.Part> params);
+
+    /**
+     * 修改圈子信息
+     * @param circleId
+     * @param params
+     * @return
+     */
+    @Multipart
+    @Headers({"Accept:application/json;charset=UTF-8"})
+    @PATCH(APP_PATH_GET_CIRCLEDETAIL)
+    Observable<BaseJsonV2<CircleInfo>> updateCircle(@Path("circle_id") Long circleId, @Part List<MultipartBody.Part> params);
 
     /**
      * 发帖

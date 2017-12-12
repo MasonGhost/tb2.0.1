@@ -183,7 +183,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
         TopPostCommentListBean postCommentListBean = (TopPostCommentListBean) data;
         postCommentListBean.setExpires_at(TimeUtils.getCurrenZeroTimeStr());
         postCommentListBean.setState(TopNewsCommentListBean.TOP_REFUSE);
-        mPresenter.refuseTopComment(postCommentListBean.getId().intValue(), data, position);
+        mPresenter.refuseTopComment(postCommentListBean.getComment().getId().intValue(), data, position);
     }
 
     @Override

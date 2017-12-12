@@ -94,7 +94,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
+        CreateCircleActivity.startCreateActivity(getActivity());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(false,getContext(),this));
+        adapter.addItemViewDelegate(new CircleListItem(false, getContext(), this));
         adapter.addItemViewDelegate(new CircleTypeItem(this));
         return adapter;
     }

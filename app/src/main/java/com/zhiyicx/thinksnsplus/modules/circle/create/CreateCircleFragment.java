@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -26,6 +28,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationActivity;
@@ -60,6 +63,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public static final String MODE_PUBLIC = "public";
     public static final String MODE_PRIVATE = "private";
     public static final String MODE_PAID = "paid";
+
+    public static final String CIRCLEINFO = "circleinfo";
+    public static final String CANUPDATE = "canupdate";
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -122,9 +128,18 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private String mHeadImage = "";
     private PoiItem mPoiItem;
 
+    private CircleInfoDetail mCircleInfoDetail;
+    private boolean canUpdate = true;
+
+    public static CreateCircleFragment newInstance(Bundle bundle) {
+        CreateCircleFragment createCircleFragment = new CreateCircleFragment();
+        createCircleFragment.setArguments(bundle);
+        return createCircleFragment;
+    }
+
     @Override
     protected String setRightTitle() {
-        return getString(R.string.create);
+        return getString(mCircleInfoDetail == null ? R.string.create : R.string.save);
     }
 
     @Override
@@ -134,7 +149,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.create_circle);
+        return getString(mCircleInfoDetail == null ? R.string.create_circle : R.string.edit_circle);
     }
 
     private void initListener() {
@@ -171,6 +186,37 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     @Override
+    protected void initData() {
+        setRightTitle();
+        setCenterTitle();
+        if (mCircleInfoDetail == null) {
+            return;
+        }
+        Glide.with(getActivity())
+                .load(mCircleInfoDetail.getAvatar())
+                .into(mIvHeadIcon);
+        mHeadImage = null;
+        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfoDetail.getLatitude()),
+                Double.parseDouble(mCircleInfoDetail.getLongitude())), "", "");
+        mPoiItem.setAdCode(mCircleInfoDetail.getGeo_hash());
+        mCircleTypeBean = mCircleInfoDetail.getCategory();
+
+        mUserTagBeens.addAll(mCircleInfoDetail.getTags());
+        mUserInfoTagsAdapter.notifyDataChanged();
+        mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
+
+        mEtCircleName.setText(mCircleInfoDetail.getName());
+        mTvCircleType.setText(mCircleInfoDetail.getCategory().getName());
+        mTvLocation.setText(mCircleInfoDetail.getLocation());
+        mTvNotice.setText(mCircleInfoDetail.getNotice());
+        mEtCircleIntroduce.setText(mCircleInfoDetail.getSummary());
+        mWcSynchro.setChecked(mCircleInfoDetail.getAllow_feed() == 1);
+        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfoDetail.getMode()));
+        mCbToll.setChecked(MODE_PAID.equals(mCircleInfoDetail.getMode()));
+        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfoDetail.getMode()));
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         mCreateCircleBean = new CreateCircleBean();
@@ -192,7 +238,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setTags(tags);
         mCreateCircleBean.setCategoryId(mCircleTypeBean.getId());
         mCreateCircleBean.setFilePath(mHeadImage);
-        mPresenter.createCircle(mCreateCircleBean);
+        if (mCircleInfoDetail == null) {
+            mPresenter.createCircle(mCreateCircleBean);
+        } else {
+            mPresenter.updateCircle(mCreateCircleBean);
+        }
+
     }
 
     @Override
@@ -222,6 +273,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         // 适配手机无法显示输入焦点
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
+        }
+        if (getArguments() != null) {
+            canUpdate = getArguments().getBoolean(CANUPDATE, true);
+            mCircleInfoDetail = getArguments().getParcelable(CIRCLEINFO);
         }
     }
 
@@ -266,11 +321,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void getPhotoFailure(String errorMsg) {
-
-    }
-
-    @Override
-    protected void initData() {
 
     }
 

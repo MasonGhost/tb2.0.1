@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -49,6 +50,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     AccountBeanGreenDaoImpl mAccountBeanGreenDao;
     @Inject
     WalletRepository mWalletRepository;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     @Inject
     public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
@@ -70,7 +73,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .map((Func1<AuthBean, Boolean>) data -> {
+                .map(data -> {
                     mAuthRepository.clearAuthBean();
                     // 登录成功跳转
                     // 保存auth信息
@@ -83,6 +86,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                     if (data.getUser().getWallet() != null) {
                         mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
                     }
+
+//                    mBaseCircleRepository.saveCircleType(); // 保存圈子分组信息
                     mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
                     return true;
                 })

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Jliuer
@@ -11,7 +12,7 @@ import java.io.Serializable;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleInfoDetail {
+public class CircleInfoDetail implements Parcelable{
 
     /**
      * id : 1
@@ -60,6 +61,24 @@ public class CircleInfoDetail {
     private int pinned_income_count;
     private UserInfoBean user;
     private JoinedBean joined;
+    private List<UserTagBean> tags;
+    private CircleTypeBean category;
+
+    public CircleTypeBean getCategory() {
+        return category;
+    }
+
+    public void setCategory(CircleTypeBean category) {
+        this.category = category;
+    }
+
+    public List<UserTagBean> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<UserTagBean> tags) {
+        this.tags = tags;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -375,4 +394,82 @@ public class CircleInfoDetail {
             }
         };
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.avatar);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.category_id);
+        dest.writeString(this.location);
+        dest.writeString(this.longitude);
+        dest.writeString(this.latitude);
+        dest.writeString(this.geo_hash);
+        dest.writeInt(this.allow_feed);
+        dest.writeString(this.mode);
+        dest.writeInt(this.money);
+        dest.writeString(this.summary);
+        dest.writeString(this.notice);
+        dest.writeInt(this.users_count);
+        dest.writeInt(this.posts_count);
+        dest.writeInt(this.audit);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeInt(this.join_income_count);
+        dest.writeInt(this.pinned_income_count);
+        dest.writeParcelable(this.user, flags);
+        dest.writeParcelable(this.joined, flags);
+        dest.writeTypedList(this.tags);
+        dest.writeParcelable(this.category, flags);
+    }
+
+    public CircleInfoDetail() {
+    }
+
+    protected CircleInfoDetail(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.avatar = in.readString();
+        this.user_id = in.readInt();
+        this.category_id = in.readInt();
+        this.location = in.readString();
+        this.longitude = in.readString();
+        this.latitude = in.readString();
+        this.geo_hash = in.readString();
+        this.allow_feed = in.readInt();
+        this.mode = in.readString();
+        this.money = in.readInt();
+        this.summary = in.readString();
+        this.notice = in.readString();
+        this.users_count = in.readInt();
+        this.posts_count = in.readInt();
+        this.audit = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.join_income_count = in.readInt();
+        this.pinned_income_count = in.readInt();
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.category = in.readParcelable(CircleTypeBean.class.getClassLoader());
+    }
+
+    public static final Creator<CircleInfoDetail> CREATOR = new Creator<CircleInfoDetail>() {
+        @Override
+        public CircleInfoDetail createFromParcel(Parcel source) {
+            return new CircleInfoDetail(source);
+        }
+
+        @Override
+        public CircleInfoDetail[] newArray(int size) {
+            return new CircleInfoDetail[size];
+        }
+    };
 }

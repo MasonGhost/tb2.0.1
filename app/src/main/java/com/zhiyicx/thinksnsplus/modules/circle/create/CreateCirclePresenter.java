@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 
 import javax.inject.Inject;
 
@@ -24,8 +25,16 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
         implements CreateCircleContract.Presenter {
 
     @Inject
+    CircleTypeBeanGreenDaoImpl mCircleTypeBeanGreenDao;
+
+    @Inject
     public CreateCirclePresenter(CreateCircleContract.Repository repository, CreateCircleContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    public String getCircleCategoryName(int category) {
+        return mCircleTypeBeanGreenDao.getCategoryNameById(category);
     }
 
     @Override
@@ -56,4 +65,31 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
         addSubscrebe(subscription);
     }
 
+    @Override
+    public void updateCircle(CreateCircleBean createCircleBean) {
+        Subscription subscription = mRepository.updateCircle(createCircleBean)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<CircleInfo>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<CircleInfo> data) {
+                        mRootView.showSnackMessage(mContext.getString(R.string.create_reviewing), Prompt.DONE);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
+        addSubscrebe(subscription);
+    }
 }

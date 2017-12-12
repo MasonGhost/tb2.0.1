@@ -28,6 +28,13 @@ public interface IBaseCircleRepository {
 
     Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean);
 
+    /**
+     * 修改圈子信息
+     * @param createCircleBean
+     * @return
+     */
+    Observable<BaseJsonV2<CircleInfo>> updateCircle(CreateCircleBean createCircleBean);
+
     Observable<BaseJsonV2<CirclePostListBean>> sendCirclePost(PostPublishBean publishBean);
 
     Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type);

@@ -97,6 +97,9 @@ public class DataDealUitls {
                             innerfield.setAccessible(true);
                             test.append("[" + innerfield.getName() + "]");
                             // 对应的单个
+                            if (innerfield.get(innerObj) == null) {
+                                continue;
+                            }
                             map.put(test.toString(), innerfield.get(innerObj));
                         }
                         i++;

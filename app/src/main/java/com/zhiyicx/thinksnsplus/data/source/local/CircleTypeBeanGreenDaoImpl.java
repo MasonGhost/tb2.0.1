@@ -75,4 +75,13 @@ public class CircleTypeBeanGreenDaoImpl extends CommonCacheImpl<CircleTypeBean> 
     public long insertOrReplace(CircleTypeBean newData) {
         return 0;
     }
+
+    public String getCategoryNameById(int id) {
+        CircleTypeBean data = mCircleTypeBeanRDao.queryBuilder().where(CircleTypeBeanDao.Properties.Id.eq(id)).unique();
+        if (data == null) {
+            return "";
+        } else {
+            return data.getName();
+        }
+    }
 }

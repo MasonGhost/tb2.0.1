@@ -1,26 +1,20 @@
-package com.zhiyicx.thinksnsplus.modules.circle.create;
+package com.zhiyicx.thinksnsplus.modules.circle.earning;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @Author Jliuer
- * @Date 2017/11/21/16:58
+ * @Date 2017/12/12/11:32
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface CreateCircleContract {
+public interface CircleEarningContract {
     interface View extends IBaseView<Presenter> {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-        void createCircle(CreateCircleBean createCircleBean);
-        void updateCircle(CreateCircleBean createCircleBean);
-        String getCircleCategoryName(int category);
     }
 
     interface Repository extends IBaseCircleRepository {

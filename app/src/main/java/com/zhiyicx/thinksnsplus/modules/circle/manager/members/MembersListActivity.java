@@ -8,7 +8,7 @@ public class MembersListActivity extends TSActivity<MembersPresenter, MemberList
 
     @Override
     protected MemberListFragment getFragment() {
-        return null;
+        return MemberListFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

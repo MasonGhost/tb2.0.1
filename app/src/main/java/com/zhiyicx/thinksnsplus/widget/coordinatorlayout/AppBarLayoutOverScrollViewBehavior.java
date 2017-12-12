@@ -129,15 +129,12 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         abl.setBottom(mLastBottom);
         // RecyclerView does not support scrolling to an absolute position. Use scrollToPosition instead
 //         target . setScrollY(0);
-
-
-        float top = mFirstTop * mLastScale;
-        middleLayout.setTranslationY(mLastBottom-mParentHeight);
-
+        middleLayout.setTranslationY(mLastBottom - mParentHeight);
 
 
         if (onRefreshChangeListener != null) {
-            float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);//计算0~1的进度
+            //计算0~1的进度
+            float progress = Math.min((mLastScale - 1) / MAX_REFRESH_LIMIT, 1);
             if (progress >= 0.6 && !isRefreshing && progress < 0.7 && !isRecovering) {
                 isRefreshing = true;
                 onRefreshChangeListener.onRefreshShow();
@@ -180,9 +177,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
 
                             int ablBottom = (int) (mLastBottom - (mLastBottom - mParentHeight) * animation.getAnimatedFraction());
                             abl.setBottom(ablBottom);
-
-                            float top = mFirstTop * value;
-                            middleLayout.setTranslationY(ablBottom-mParentHeight);
+                            middleLayout.setTranslationY(ablBottom - mParentHeight);
                         }
                 );
                 anim.addListener(new Animator.AnimatorListener() {

@@ -586,9 +586,9 @@
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:name=".modules.circle.detailv2.CircleDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.circle.create.CreateCircleActivity"
             android:screenOrientation="portrait"/>
@@ -622,8 +622,10 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.report.ReportActivity"
-            android:windowSoftInputMode="adjustPan|stateVisible"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
+        <activity android:name=".modules.circle.earning.CircleEarningActivity">
+        </activity>
     </application>
 
 </manifest>
