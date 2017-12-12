@@ -34,8 +34,8 @@ public class PhotoViewActivity extends TSActivity {
     }
 
     @Override
-    protected void initView() {
-        super.initView();
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
     }
 
     @Override
