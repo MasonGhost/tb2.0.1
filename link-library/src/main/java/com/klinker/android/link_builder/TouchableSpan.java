@@ -86,11 +86,13 @@ public class TouchableSpan extends TouchableBaseSpan {
             List<String> splitTextList = new ArrayList<>();
             if (link.getLinkMetadata() != null) {
                 String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg = "((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?";
+                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
                     String result = targetStr.substring(matcher1.start(), matcher1.end());
+                    result=result.replaceFirst("<", "");
+                    result=result.replaceFirst(">", "");
                     splitTextList.add(result);
                 }
             }
@@ -112,11 +114,13 @@ public class TouchableSpan extends TouchableBaseSpan {
             List<String> splitTextList = new ArrayList<>();
             if (link.getLinkMetadata() != null) {
                 String targetStr = link.getLinkMetadata().getString(LinkMetadata.METADATA_KEY_COTENT);
-                String reg = "((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?";
+                String reg = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
-                    String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+                    String result = targetStr.substring(matcher1.start(), matcher1.end());
+                    result=result.replaceFirst("<", "");
+                    result=result.replaceFirst(">", "");
                     splitTextList.add(result);
                 }
             }

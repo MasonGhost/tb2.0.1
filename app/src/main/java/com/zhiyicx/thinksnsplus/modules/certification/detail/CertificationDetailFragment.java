@@ -203,8 +203,6 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             toll.setToll_money(0);// 付费金额
             toll.setToll_type_string("");// 付费类型
             toll.setPaid_node(0);// 付费节点
-            imageBean.setWidth(DeviceUtils.getScreenWidth(getContext()));
-            imageBean.setHeight(DeviceUtils.getScreenWidth(getContext())/4*3);
             imageBean.setToll(toll);
             imageBean.setStorage_id(mInfo.getData().getFiles().get(i));// 图片附件id
             imageBeanList.add(imageBean);
