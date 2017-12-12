@@ -602,15 +602,15 @@ public class ApiConfig {
     /**
      * 举报圈子
      */
-    public static final String APP_PATH_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/groups/{group_id}/reports";
+    public static final String APP_PATH_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/groups/{group_id}/reports";
     /**
      * 举报圈子中的帖子
      */
-    public static final String APP_PATH_CIRCLE_POST_REPOT = "api/" + API_VERSION_2 + "/reports/posts/{post_id}";
+    public static final String APP_PATH_CIRCLE_POST_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/posts/{post_id}";
     /**
      * 举报评论
      */
-    public static final String APP_PATH_COMMENT_REPOT = "api/" + API_VERSION_2 + "/reports/comments/{comment_id}";
+    public static final String APP_PATH_COMMENT_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/comments/{comment_id}";
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
