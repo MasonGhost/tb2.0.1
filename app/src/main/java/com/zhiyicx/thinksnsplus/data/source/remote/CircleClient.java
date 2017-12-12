@@ -417,7 +417,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_CIRCLE_POST_REPOT)
-    Observable<ReportResultBean> reportCirclePost(@Path("post_id") String postId, @Field("reason") String reason);
+    Observable<ReportResultBean> reportCirclePost(@Path("post_id") String postId, @Field("content") String reason);
 
     /**
      * 举报评论
@@ -428,6 +428,6 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_COMMENT_REPOT)
-    Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("reason") String reason);
+    Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("content") String reason);
 }
 

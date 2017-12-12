@@ -91,8 +91,8 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
 
                     }
