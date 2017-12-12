@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,13 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), CreateCircleActivity.class));
+        CreateCircleActivity.startCreateActivity(mActivity);
+    }
+
+    @Override
+    protected void setRightLeftClick() {
+        super.setRightLeftClick();
+        startActivity(new Intent(mActivity, CircleSearchContainerActivity.class));
     }
 
     @Override

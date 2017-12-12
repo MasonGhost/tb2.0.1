@@ -94,13 +94,13 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        CreateCircleActivity.startCreateActivity(getActivity());
+        CreateCircleActivity.startCreateActivity(mActivity);
     }
 
     @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
-        startActivity(new Intent(getActivity(), CircleSearchContainerActivity.class));
+        startActivity(new Intent(mActivity, CircleSearchContainerActivity.class));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected void initData() {
-        mCircleMainHeader = new CircleMainHeader(getActivity(), null, 2341);
+        mCircleMainHeader = new CircleMainHeader(mActivity, null, 2341);
         mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
         super.initData();
         mPresenter.requestNetData(0L, false);
@@ -135,7 +135,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         if (mListDatas.size() <= TITLEVOUNT) {
             return;
         }
-        Intent intent = new Intent(getActivity(), MyJoinedCircleActivity.class);
+        Intent intent = new Intent(mActivity, MyJoinedCircleActivity.class);
         startActivity(intent);
     }
 
@@ -154,7 +154,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void toCircleDetail(CircleInfo circleInfo) {
-        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
+        Intent intent = new Intent(mActivity, CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
         startActivity(intent);
     }
