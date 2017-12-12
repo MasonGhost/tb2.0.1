@@ -28,6 +28,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
 
     @Inject
     CircleListPresenter mCircleListPresenter;
+    private CircleListItem mCircleListItem;
 
     @Override
     protected boolean showToolbar() {
@@ -69,7 +70,8 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(false,getContext(),this));
+        mCircleListItem = new CircleListItem(false, mActivity, this, mPresenter);
+        adapter.addItemViewDelegate(mCircleListItem);
         return adapter;
     }
 
@@ -81,6 +83,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
                 .circleListPresenterModule(new CircleListPresenterModule(this))
                 .build().inject(this);
         super.initData();
+        mCircleListItem.setPresenter(mPresenter);
     }
 
     @Override

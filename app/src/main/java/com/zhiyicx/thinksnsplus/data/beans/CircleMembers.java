@@ -14,7 +14,8 @@ public class CircleMembers extends BaseListBean {
 
     public static final String FOUNDER = "founder";
     public static final String ADMINISTRATOR = "administrator";
-    public static final String MEMBER = "member ";
+    public static final String MEMBER = "member";
+    public static final String BLACKLIST = "blacklist";
 
     /**
      * id : 4
@@ -25,7 +26,14 @@ public class CircleMembers extends BaseListBean {
      * disabled : 0
      * created_at :
      * updated_at :
-     * user : {"id":2,"name":"大牛","bio":"策四","sex":2,"location":null,"created_at":"2017-10-23 01:17:34","updated_at":"2017-12-01 03:46:14","avatar":"http://thinksns-plus.dev/api/v2/users/2/avatar","bg":null,"verified":{"type":"user","icon":"http://thinksns-plus.dev/storage/certifications/000/000/0us/er.png","description":"认证测试"},"extra":{"user_id":2,"likes_count":10,"comments_count":40,"followers_count":3,"followings_count":5,"updated_at":"2017-11-16 08:24:44","feeds_count":25,"questions_count":16,"answers_count":16,"checkin_count":7,"last_checkin_count":1}}
+     * user : {"id":2,"name":"大牛","bio":"策四","sex":2,"location":null,"created_at":"2017-10-23
+     * 01:17:34","updated_at":"2017-12-01 03:46:14","avatar":"http://thinksns-plus
+     * .dev/api/v2/users/2/avatar","bg":null,"verified":{"type":"user",
+     * "icon":"http://thinksns-plus.dev/storage/certifications/000/000/0us/er.png",
+     * "description":"认证测试"},"extra":{"user_id":2,"likes_count":10,"comments_count":40,
+     * "followers_count":3,"followings_count":5,"updated_at":"2017-11-16 08:24:44",
+     * "feeds_count":25,"questions_count":16,"answers_count":16,"checkin_count":7,
+     * "last_checkin_count":1}}
      */
 
     private Long id;

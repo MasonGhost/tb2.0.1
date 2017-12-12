@@ -19,6 +19,8 @@ public interface MembersContract {
 
     interface View extends ITSListView<CircleMembers, Presenter> {
         long getCIrcleId();
+
+        void setGroupLengh(int[] grouLengh);
     }
 
     interface Presenter extends ITSListPresenter<CircleMembers> {

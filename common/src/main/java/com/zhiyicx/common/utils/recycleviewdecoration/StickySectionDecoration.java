@@ -84,35 +84,37 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
             if (mCallback != null) {
 
                 GroupInfo groupinfo = mCallback.getGroupInfo(index);
-                int left = parent.getPaddingLeft();
-                int right = parent.getWidth() - parent.getPaddingRight();
+                if (groupinfo!=null){
+                    int left = parent.getPaddingLeft();
+                    int right = parent.getWidth() - parent.getPaddingRight();
 
-                //屏幕上第一个可见的 ItemView 时，i == 0;
-                if (i != 0) {
-                    //只有组内的第一个ItemView之上才绘制
-                    if (groupinfo.isFirstViewInGroup()) {
-                        int top = view.getTop() - mHeaderHeight;
-                        int bottom = view.getTop();
+                    //屏幕上第一个可见的 ItemView 时，i == 0;
+                    if (i != 0) {
+                        //只有组内的第一个ItemView之上才绘制
+                        if (groupinfo.isFirstViewInGroup()) {
+                            int top = view.getTop() - mHeaderHeight;
+                            int bottom = view.getTop();
+                            drawHeaderRect(c, groupinfo, left, top, right, bottom);
+                        }
+                    } else {
+                        //当 ItemView 是屏幕上第一个可见的View 时，不管它是不是组内第一个View
+                        //它都需要绘制它对应的 StickyHeader。
+
+                        // 还要判断当前的 ItemView 是不是它组内的最后一个 View
+
+                        int top = parent.getPaddingTop();
+                        if (groupinfo.isLastViewInGroup()) {
+                            int suggestTop = view.getBottom() - mHeaderHeight;
+                            // 当 ItemView 与 Header 底部平齐的时候，判断 Header 的顶部是否小于
+                            // parent 顶部内容开始的位置，如果小于则对 Header.top 进行位置更新，
+                            //否则将继续保持吸附在 parent 的顶部
+                            if (suggestTop < top) {
+                                top = suggestTop;
+                            }
+                        }
+                        int bottom = top + mHeaderHeight;
                         drawHeaderRect(c, groupinfo, left, top, right, bottom);
                     }
-                } else {
-                    //当 ItemView 是屏幕上第一个可见的View 时，不管它是不是组内第一个View
-                    //它都需要绘制它对应的 StickyHeader。
-
-                    // 还要判断当前的 ItemView 是不是它组内的最后一个 View
-
-                    int top = parent.getPaddingTop();
-                    if (groupinfo.isLastViewInGroup()) {
-                        int suggestTop = view.getBottom() - mHeaderHeight;
-                        // 当 ItemView 与 Header 底部平齐的时候，判断 Header 的顶部是否小于
-                        // parent 顶部内容开始的位置，如果小于则对 Header.top 进行位置更新，
-                        //否则将继续保持吸附在 parent 的顶部
-                        if (suggestTop < top) {
-                            top = suggestTop;
-                        }
-                    }
-                    int bottom = top + mHeaderHeight;
-                    drawHeaderRect(c, groupinfo, left, top, right, bottom);
                 }
 
             }

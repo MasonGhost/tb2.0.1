@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -44,16 +45,18 @@ public class CircleListItem extends BaseCircleItem {
      */
     private boolean mIsMineJoined;
 
-    private CircleMainContract.Presenter mPresenter;
+
     private Activity mContext;
 
-    public CircleListItem(boolean isMineJoined, Context context, CircleItemItemEvent circleItemItemEvent) {
+    public CircleListItem(boolean isMineJoined, Context context, CircleItemItemEvent
+            circleItemItemEvent) {
         super(circleItemItemEvent);
         mIsMineJoined = isMineJoined;
         mPayDrawable = UIUtils.getCompoundDrawables(context, R.mipmap.musici_pic_pay02);
     }
 
-    public CircleListItem(boolean isMineJoined, Activity context, CircleItemItemEvent circleItemItemEvent, CircleMainContract.Presenter presenter) {
+    public CircleListItem(boolean isMineJoined, Activity context, CircleItemItemEvent
+            circleItemItemEvent, IBaseTouristPresenter presenter) {
         super(circleItemItemEvent);
         mContext = context;
         mIsMineJoined = isMineJoined;
@@ -72,14 +75,16 @@ public class CircleListItem extends BaseCircleItem {
     }
 
     @Override
-    public void convert(ViewHolder holder, CircleInfo circleInfo, CircleInfo lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, CircleInfo circleInfo, CircleInfo lastT, int position,
+                        int itemCounts) {
 
         // 封面
         ImageView circleCover = holder.getView(R.id.iv_circle_cover);
 
         // 名字
         TextView circleName = holder.getView(R.id.tv_circle_name);
-        circleName.setCompoundDrawables(null, null, CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode()) ? mPayDrawable : null, null);
+        circleName.setCompoundDrawables(null, null, CircleInfo.CirclePayMode.PAID.value.equals
+                (circleInfo.getMode()) ? mPayDrawable : null, null);
 
         // 帖子数量
         TextView circleFeedCount = holder.getView(R.id.tv_circle_feed_count);
@@ -100,7 +105,8 @@ public class CircleListItem extends BaseCircleItem {
         circleName.setText(circleInfo.getName());
 
         String feedCountNumber = ConvertUtils.numberConvert(circleInfo.getPosts_count());
-        String feedContent = context.getString(R.string.circle_post) + " " + "<" + feedCountNumber + ">";
+        String feedContent = context.getString(R.string.circle_post) + " " + "<" +
+                feedCountNumber + ">";
         CharSequence feedString = ColorPhrase.from(feedContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
@@ -108,7 +114,8 @@ public class CircleListItem extends BaseCircleItem {
         circleFeedCount.setText(feedString);
         // 设置订阅人数
         String followCountNumber = ConvertUtils.numberConvert(circleInfo.getUsers_count());
-        String followContent = context.getString(R.string.circle_member) + " " + "<" + followCountNumber + ">";
+        String followContent = context.getString(R.string.circle_member) + " " + "<" +
+                followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(context, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
@@ -118,10 +125,12 @@ public class CircleListItem extends BaseCircleItem {
         // 界面标记---我加入的圈子，不需要加入操作
         if (mIsMineJoined) {
             TextView tvRole = holder.getView(R.id.tv_role);
-            if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals(circleInfo.getJoined().getRole())) {
+            if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals
+                    (circleInfo.getJoined().getRole())) {
                 tvRole.setVisibility(View.VISIBLE);
                 tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
-            } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR.value.equals(circleInfo.getJoined().getRole())) {
+            } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR
+                    .value.equals(circleInfo.getJoined().getRole())) {
                 tvRole.setVisibility(View.VISIBLE);
                 tvRole.setText(tvRole.getResources().getString(R.string.administrator));
             } else {
@@ -132,10 +141,12 @@ public class CircleListItem extends BaseCircleItem {
             boolean isJoined = circleInfo.getJoined() != null;
             if (isJoined) {
                 TextView tvRole = holder.getView(R.id.tv_role);
-                if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals(circleInfo.getJoined().getRole())) {
+                if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals
+                        (circleInfo.getJoined().getRole())) {
                     tvRole.setVisibility(View.VISIBLE);
                     tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
-                } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR.value.equals(circleInfo.getJoined().getRole())) {
+                } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR
+                        .value.equals(circleInfo.getJoined().getRole())) {
                     tvRole.setVisibility(View.VISIBLE);
                     tvRole.setText(tvRole.getResources().getString(R.string.administrator));
                 } else {
@@ -150,10 +161,13 @@ public class CircleListItem extends BaseCircleItem {
             // 设置订阅状态
 
             circleSubscribe.setChecked(isJoined);
-            circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context.getString(R.string.join_group));
-            circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R.dimen.spacing_small) : context.getResources()
+            circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context
+                    .getString(R.string.join_group));
+            circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R
+                    .dimen.spacing_small) : context.getResources()
                     .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-            boolean canChange = circleInfo.getAudit() == 1 && circleInfo.getUser_id() != AppApplication.getMyUserIdWithdefault();
+            boolean canChange = circleInfo.getAudit() == 1 && !isJoined&&!CreateCircleFragment
+                    .MODE_PAID.equals(circleInfo.getMode());
             circleSubscribeFrame.setEnabled(!canChange);
             circleSubscribeFrame.setVisibility(!canChange ? View.VISIBLE : View.GONE);
             circleSubscribe.setEnabled(canChange);
@@ -164,8 +178,11 @@ public class CircleListItem extends BaseCircleItem {
                         if (mCircleItemItemEvent == null) {
                             return;
                         }
-                        if (!isJoined && mContext != null && CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
-                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName(), R.string.buy_pay_words_desc);
+                        if (mPresenter != null&&CreateCircleFragment
+                                .MODE_PAID.equals(circleInfo.getMode())) {
+                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
+                                    (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
+                                    .buy_pay_words_desc);
                             return;
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);

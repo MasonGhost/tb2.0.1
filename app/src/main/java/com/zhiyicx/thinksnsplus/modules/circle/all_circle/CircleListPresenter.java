@@ -63,10 +63,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        if (circleInfo.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-            mRootView.showSnackErrorMessage(mContext.getString(R.string.exit_circle));
-            return;
-        }
+
         mRepository.dealCircleJoinOrExit(circleInfo);
         boolean isJoined = circleInfo.getJoined() != null;
         if (isJoined) {

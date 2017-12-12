@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
 import android.app.Activity;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -21,6 +22,7 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
     public static final long MYJOINEDCIRCLE = -1L;
     public static final long RECOMMENDCIRCLE = -2L;
     protected PayPopWindow mPayPopWindow;
+    protected IBaseTouristPresenter mPresenter;
 
     public BaseCircleItem() {
     }
@@ -90,6 +92,10 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
                 .build();
         mPayPopWindow.show();
 
+    }
+
+    public void setPresenter(IBaseTouristPresenter presenter) {
+        mPresenter = presenter;
     }
 
     public CircleItemItemEvent getCircleItemItemEvent() {
