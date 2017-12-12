@@ -1,13 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.circle.earning;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 
-public class CircleEarningActivity extends TSActivity {
+public class CircleEarningActivity extends TSActivity<CircleEarningPresenter, CircleEarningFragment> {
 
     @Override
-    protected Fragment getFragment() {
+    protected CircleEarningFragment getFragment() {
         return null;
     }
 

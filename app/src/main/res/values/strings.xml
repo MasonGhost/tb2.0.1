@@ -300,6 +300,9 @@
 
     <string name="circle_detail">详细信息</string>
     <string name="circle_earnings">圈子收益</string>
+    <string name="circle_earningn_member">成员费</string>
+    <string name="circle_earningn_total">总收益(%s)</string>
+    <string name="circle_earningn_top">置顶收益</string>
     <string name="circle_permission">发帖权限</string>
     <string name="circle_report">举报管理</string>
     <string name="circle_more">更多操作</string>
