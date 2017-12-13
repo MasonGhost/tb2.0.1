@@ -73,7 +73,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -155,6 +155,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 ItemOnCommentListener());
         multiItemTypeAdapter.addItemViewDelegate(answerDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerDetailCommentEmptyItem());
+        multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
 
@@ -519,37 +520,80 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         closeLoadingView();
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        comment(position);
+
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+        return true;
+    }
+
     class ItemOnCommentListener implements AnswerDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
-            AnswerCommentListBean infoCommentListBean = mListDatas.get(position);
-            if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
-                if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
-                        .getUser_id()) {// 自己的评论
-//                if (mListDatas.get(position).getId() != -1) {
-                    initDeleteCommentPopupWindow(infoCommentListBean);
-                    mDeletCommentPopWindow.show();
-//                } else {
-//
-//                    return;
-//                }
-                } else {
-                    mReplyUserId = infoCommentListBean.getUser_id().intValue();
-                    showCommentView();
-                    String contentHint = getString(R.string.default_input_hint);
-                    if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
-                        contentHint = getString(R.string.reply, infoCommentListBean
-                                .getFromUserInfoBean().getName());
-                    }
-                    mIlvComment.setEtContentHint(contentHint);
-                }
-            }
+            comment(position);
+        }
+
+        @Override
+        public void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+            goReportComment(position);
         }
 
         @Override
         public void onUserInfoClick(UserInfoBean userInfoBean) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        }
+    }
+
+    /**
+     * 评论
+     * @param position
+     */
+    private void comment(int position) {
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        AnswerCommentListBean infoCommentListBean = mListDatas.get(position);
+        if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
+            if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
+                    .getUser_id()) {// 自己的评论
+//                if (mListDatas.get(position).getId() != -1) {
+                initDeleteCommentPopupWindow(infoCommentListBean);
+                mDeletCommentPopWindow.show();
+//                } else {
+//
+//                    return;
+//                }
+            } else {
+                mReplyUserId = infoCommentListBean.getUser_id().intValue();
+                showCommentView();
+                String contentHint = getString(R.string.default_input_hint);
+                if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
+                    contentHint = getString(R.string.reply, infoCommentListBean
+                            .getFromUserInfoBean().getName());
+                }
+                mIlvComment.setEtContentHint(contentHint);
+            }
+        }
+    }
+
+    /**
+     * 举报
+     * @param position
+     */
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getFromUserInfoBean(), mListDatas.get
+                    (position).getId().toString(),
+                    null, null, mListDatas.get(position).getBody(), ReportType.COMMENT));
+
+        } else {
+
         }
     }
 

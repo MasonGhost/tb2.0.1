@@ -17,7 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
 
 /**
- * @Author Jliuer
+ * @Author Jliuer 发布答案
  * @Date 2017/08/15/16:11
  * @Email Jliuer@aliyun.com
  * @Description
