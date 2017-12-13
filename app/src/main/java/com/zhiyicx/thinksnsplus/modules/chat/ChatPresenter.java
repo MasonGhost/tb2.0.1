@@ -3,6 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.EMError;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -20,6 +27,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -27,6 +35,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +43,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
@@ -87,6 +98,24 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         return data;
     }
 
+    @Override
+    public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize) {
+        List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), pageSize);
+        Subscription subscribe = Observable.just(data)
+                .observeOn(Schedulers.io())
+                .subscribe(chatItemBeen -> {
+                    for (ChatItemBean chatItemBean : chatItemBeen) {
+                        if (!chatItemBean.getLastMessage().getIs_read()) {
+                            // 把消息更新为已经读
+                            MessageDao.getInstance(mContext).readMessage(chatItemBean.getLastMessage().getMid());
+                        }
+                    }
+                });
+        addSubscrebe(subscribe);
+        mRootView.hideLoading();
+        return data;
+    }
+
     /*******************************************
      * IM 相关
      *********************************************/
@@ -112,10 +141,51 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         updateMessage(message);
     }
 
+    @Override
+    public void sendTextMessageV2(String content, String userId) {
+        // 环信的发送消息
+        //创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
+        EMMessage message = EMMessage.createTxtSendMessage(content, userId);
+        //如果是群聊，设置chattype，默认是单聊
+//        if (chatType == CHATTYPE_GROUP){
+//            message.setChatType(ChatType.GroupChat);
+//        }
+        //发送消息
+        EMClient.getInstance().chatManager().sendMessage(message);
+        message.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                // 发送成功 需要刷新页面
+                updateMessageV2(message);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                // 这个错误也太多了 先随便写点吧_(:з」∠)_  具体的查看官方API EMError
+                switch (code) {
+                    case EMError.SERVER_BUSY:
+                        // 服务器繁忙
+                        break;
+                    case EMError.NETWORK_ERROR:
+                        // 网络异常
+                        break;
+                    case EMError.SERVER_NOT_REACHABLE:
+                        // 无法访问到服务器
+                        break;
+                    default:
+                }
+
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+        });
+    }
+
     /**
      * 消息重发
-     *
-     * @param chatItemBean
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
@@ -132,39 +202,28 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        final String uids = AppApplication.getMyUserIdWithdefault() + "," + userInfoBean.getUser_id();
-        final String pair = AppApplication.getMyUserIdWithdefault() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
-        Subscription subscribe = mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
-                .subscribe(new BaseSubscribeForV2<Conversation>() {
-                    @Override
-                    protected void onSuccess(Conversation data) {
-                        data.setIm_uid((int) AppApplication.getMyUserIdWithdefault());
-                        data.setUsids(uids);
-                        data.setPair(pair);
-                        mRepository.insertOrUpdateConversation(data);
-                        mRootView.updateConversation(data);
-                        if (!TextUtils.isEmpty(text)) {
-                            sendTextMessage(text, data.getCid());
-                        }
-                        MessageItemBean messageItemBean = new MessageItemBean();
-                        messageItemBean.setConversation(data);
-                        messageItemBean.setUserInfo(userInfoBean);
-                        // 通知会话列表
-                        EventBus.getDefault().post(messageItemBean, EVENT_IM_ONCONVERSATIONCRATED);
-
+        // 替换为环信的创建会话
+        MessageItemBeanV2 itemBeanV2 = mRootView.getMessItemBean();
+        Subscription subscription = Observable.just(itemBeanV2)
+                .map(messageItemBeanV2 -> {
+                    // 创建会话的 conversation 要传入用户名 ts+采用用户Id作为用户名，聊天类型 单聊
+                    EMConversation conversation =
+                            EMClient.getInstance().chatManager().getConversation(itemBeanV2.getEmKey(), EMConversation.EMConversationType.Chat, true);
+                    if (!TextUtils.isEmpty(text)) {
+                        // 发送信息的时候 如果没有会话信息，则创建一个
                     }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
+                    messageItemBeanV2.setConversation(conversation);
+                    return messageItemBeanV2;
+                })
+                .subscribe(messageItemBeanV2 -> {
+                    if (messageItemBeanV2.getConversation() != null) {
+                        // 通知会话列表
+                        EventBus.getDefault().post(messageItemBeanV2, EVENT_IM_ONCONVERSATIONCRATED);
+                    } else {
                         mRootView.showSnackWarningMessage(mContext.getString(R.string.im_not_work));
                     }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
-                    }
                 });
-        addSubscrebe(subscribe);
+        addSubscrebe(subscription);
     }
 
     /**
@@ -177,8 +236,6 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     /**
      * 收到消息
-     *
-     * @param message
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
     private void onMessageReceived(Message message) {
@@ -214,6 +271,25 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);
+        mRootView.reFreshMessage(chatItemBean);
+    }
+
+    /**
+     * 更新消息 基于环信
+     *
+     * @param message 消息体
+     */
+    private void updateMessageV2(EMMessage message) {
+        ChatItemBean chatItemBean = new ChatItemBean();
+        chatItemBean.setMessage(message);
+        // 消息的来源与当前用户不一致，则证明非当前用户
+        String currentUser = String.valueOf(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
+        if (!message.getFrom().equals(currentUser)){
+            // 当前这个版本还没有群聊呢，要快速出版本，暂时不考虑群聊的情况，后面需要根据来源查找用户信息
+            chatItemBean.setUserInfo(mRootView.getMessItemBean().getUserInfo());
+        } else {
+            chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
+        }
         mRootView.reFreshMessage(chatItemBean);
     }
 

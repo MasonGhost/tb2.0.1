@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.jakewharton.rxbinding.view.RxView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -24,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
@@ -45,7 +49,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener {
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener, EMMessageListener {
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
 
     @BindView(R.id.message_list)
@@ -57,12 +61,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     private ActionPopupWindow mDeletCommentPopWindow;
 
     private List<ChatItemBean> mDatas = new ArrayList<>();
-    private MessageItemBean mMessageItemBean;
+    private MessageItemBeanV2 mMessageItemBean;
     private boolean mKeyboradIsOpen;// 软键盘是否打开
 
-    public static ChatFragment newInstance(MessageItemBean messageItemBean) {
+    public static ChatFragment newInstance(MessageItemBeanV2 messageItemBean) {
         Bundle args = new Bundle();
-        args.putParcelable(BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+        args.putSerializable(BUNDLE_MESSAGEITEMBEAN, messageItemBean);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -95,26 +99,33 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 退出的时候移除监听器
+        EMClient.getInstance().chatManager().removeMessageListener(this);
+    }
+
+    @Override
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
-        mIlvContainer.setSendButtonVisiable(true); // 保持显示
+        // 保持显示
+        mIlvContainer.setSendButtonVisiable(true);
+        // 绑定监听器
+        EMClient.getInstance().chatManager().addMessageListener(this);
         mIlvContainer.getFocus();
         // 软键盘控制区
         RxView.globalLayouts(mRlContainer)
-                .flatMap(new Func1<Void, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Void aVoid) {
-                        if (mRlContainer==null) {
-                            return Observable.just(false);
-                        }
-                        Rect rect = new Rect();
-                        //获取root在窗体的可视区域
-                        mRlContainer.getWindowVisibleDisplayFrame(rect);
-                        //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                        int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
-                        int dispayHeight = UIUtils.getWindowHeight(getContext());
-                        return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
+                .flatMap(aVoid -> {
+                    if (mRlContainer==null) {
+                        return Observable.just(false);
                     }
+                    Rect rect = new Rect();
+                    //获取root在窗体的可视区域
+                    mRlContainer.getWindowVisibleDisplayFrame(rect);
+                    //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
+                    int rootInvisibleHeight = mRlContainer.getRootView().getHeight() - rect.bottom;
+                    int dispayHeight = UIUtils.getWindowHeight(getContext());
+                    return Observable.just(rootInvisibleHeight > (dispayHeight * (1f / 3)));
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -287,6 +298,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
+    public MessageItemBeanV2 getMessItemBean() {
+        return mMessageItemBean;
+    }
+
+    @Override
     public void onRefresh(RefreshLayout refreshlayout) {
         if (mMessageItemBean.getConversation() == null) {
             hideLoading();
@@ -335,4 +351,32 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mPresenter.reSendText(chatItemBean);
     }
 
+    @Override
+    public void onMessageReceived(List<EMMessage> messages) {
+        //收到消息
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> messages) {
+        //收到透传消息
+    }
+
+    @Override
+    public void onMessageRead(List<EMMessage> messages) {
+        //收到已读回执
+    }
+
+    @Override
+    public void onMessageDelivered(List<EMMessage> message) {
+        //收到已送达回执
+    }
+    @Override
+    public void onMessageRecalled(List<EMMessage> messages) {
+        //消息被撤回
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage message, Object change) {
+        //消息状态变动
+    }
 }

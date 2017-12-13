@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -70,38 +71,25 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
     @Override
     public void convert(final ViewHolder holder, final ChatItemBean chatItemBean, ChatItemBean lastChatItemBean, int position, int itemCounts) {
 
-        if (position == itemCounts - 1) { // 为最后一项加上间距
+        if (position == itemCounts - 1) {
+            // 为最后一项加上间距
             holder.getConvertView().setPadding(holder.getConvertView().getPaddingLeft(), holder.getConvertView().getPaddingTop(), holder.getConvertView().getPaddingRight(), holder.getConvertView().getResources().getDimensionPixelSize(R.dimen.spacing_mid));
         } else {
             holder.getConvertView().setPadding(holder.getConvertView().getPaddingLeft(), holder.getConvertView().getPaddingTop(), holder.getConvertView().getPaddingRight(), 0);
         }
-//        holder.getView(R.id.rl_chat_bubble).setBackgroundDrawable(mBubbleBg);
         // 显示时间的，最大间隔时间；当两条消息间隔 > MAX_SPACING_TIME 时显示时间
-        if (lastChatItemBean == null || (chatItemBean.getLastMessage().getCreate_time() - lastChatItemBean.getLastMessage().getCreate_time()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
-            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForChat(chatItemBean.getLastMessage().getCreate_time()));
+        if (lastChatItemBean == null || (chatItemBean.getMessage().getMsgTime() - lastChatItemBean.getMessage().getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+            holder.setText(R.id.tv_chat_time, TimeUtils.getTimeFriendlyForChat(chatItemBean.getMessage().getMsgTime()));
             holder.setVisible(R.id.tv_chat_time, View.VISIBLE);
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
         // 消息状态
-        switch (chatItemBean.getLastMessage().getSend_status()) { //当前只需要失败状态，不需要发送状态，故去掉加载动画
-            case MessageStatus.SENDING:
-//                holder.setImageResource(R.id.msg_status, R.drawable.frame_loading_grey);
-//                holder.setVisible(R.id.msg_status, View.VISIBLE);
-//                ((AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable()).start();
-//                break;
-            case MessageStatus.SEND_SUCCESS:
-//                AnimationDrawable animationD = (AnimationDrawable) ((ImageView) holder.getView(R.id.msg_status)).getDrawable();
-//                if (animationD != null) {
-//                    animationD.stop();
-//                }
-                holder.setVisible(R.id.msg_status, View.GONE);
-                break;
-            case MessageStatus.SEND_FAIL:
-                holder.setImageResource(R.id.msg_status, R.mipmap.msg_box_remind);
-                holder.setVisible(R.id.msg_status, View.VISIBLE);
-                break;
-            default:
+        if (chatItemBean.getMessage().status() ==  EMMessage.Status.FAIL){
+            holder.setImageResource(R.id.msg_status, R.mipmap.msg_box_remind);
+            holder.setVisible(R.id.msg_status, View.VISIBLE);
+        } else {
+            holder.setVisible(R.id.msg_status, View.GONE);
         }
         if (chatItemBean.getUserInfo() == null) {
             return;
@@ -109,14 +97,16 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         // 是否需要显示名字
         if (mIsShowName) {
             holder.setVisible(R.id.tv_chat_name, View.VISIBLE);
-            holder.setText(R.id.tv_chat_name, chatItemBean.getUserInfo().getName());// 测试数据，暂时使用
+            // 测试数据，暂时使用
+            holder.setText(R.id.tv_chat_name, chatItemBean.getUserInfo().getName());
         } else {
             holder.setVisible(R.id.tv_chat_name, View.GONE);
         }
         // 是否需要显示头像
         if (mIsShowAvatar) {
             holder.setVisible(R.id.iv_chat_headpic, View.VISIBLE);
-            if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) { // TS 助手
+            // TS 助手
+            if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) {
                 ((ImageView) holder.getView(R.id.iv_chat_headpic)).setImageResource(R.mipmap.ico_ts_assistant);
             } else {
                 ImageUtils.loadCircleUserHeadPic(chatItemBean.getUserInfo(), holder.getView(R.id.iv_chat_headpic));

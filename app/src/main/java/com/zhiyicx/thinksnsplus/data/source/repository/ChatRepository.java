@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -13,6 +15,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
@@ -181,6 +184,40 @@ public class ChatRepository implements ChatContract.Repository {
             chatItemBeen.add(itemBean);
         }
         return chatItemBeen;
+    }
+
+    @Override
+    public List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, int pageSize) {
+        EMConversation conversation = itemBeanV2.getConversation();
+        List<EMMessage> msgs = conversation.getAllMessages();
+        if (msgs == null){
+            msgs = new ArrayList<>();
+        }
+        int msgCount = msgs.size();
+        if (msgCount < conversation.getAllMsgCount() && msgCount < pageSize) {
+            String msgId = null;
+            if (msgs.size() > 0) {
+                msgId = msgs.get(0).getMsgId();
+            }
+            msgs.addAll(conversation.loadMoreMsgFromDB(msgId, pageSize - msgCount));
+        }
+        if (!msgs.isEmpty()){
+            List<ChatItemBean> list = new ArrayList<>();
+            for (EMMessage message : msgs){
+                ChatItemBean chatItemBean = new ChatItemBean();
+                chatItemBean.setMessage(message);
+                UserInfoBean userInfoBean;
+                if (!message.getFrom().equals(String.valueOf(AppApplication.getMyUserIdWithdefault()))) {
+                    // 对方发的
+                    userInfoBean = itemBeanV2.getUserInfo();
+                } else {
+                    userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+                }
+                chatItemBean.setUserInfo(userInfoBean);
+            }
+            return list;
+        }
+        return new ArrayList<>();
     }
 
 
