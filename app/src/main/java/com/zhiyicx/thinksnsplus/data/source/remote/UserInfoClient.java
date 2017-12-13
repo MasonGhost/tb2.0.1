@@ -67,10 +67,10 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
- * @author LiuChao
+ * @author Jungle68
  * @describe 用户信息相关的网络请求
  * @date 2017/1/9
- * @contact email:450127106@qq.com
+ * @contact email:master.jungle68@gmail.com
  */
 
 public interface UserInfoClient {
