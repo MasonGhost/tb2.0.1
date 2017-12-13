@@ -352,6 +352,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public List<MessageItemBeanV2> getRealMessageList() {
+        return messageItemBeanList;
+    }
+
 
     @Override
     public void refreshData() {
@@ -393,10 +398,27 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
+    /**
+     * 进入聊天页
+     *
+     * @param messageItemBean 当前 item 内容
+     * @param positon         当前点击位置
+     */
+    private void toChatV2(MessageItemBeanV2 messageItemBean, int positon) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
+            return;
+        }
+        Intent to = new Intent(getActivity(), ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+        to.putExtras(bundle);
+        startActivity(to);
+    }
+
     @Override
     public void onLeftClick(int position) {
         position = position - 1;// 减去 header
-        toChat(mListDatas.get(position), position);
+//        toChat(mListDatas.get(position), position);
     }
 
     @Override

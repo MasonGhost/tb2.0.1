@@ -6,6 +6,8 @@ import android.util.SparseArray;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -15,6 +17,7 @@ import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -56,6 +59,8 @@ public class MessageRepository implements MessageContract.Repository {
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public MessageRepository(ServiceManager serviceManager) {
@@ -67,7 +72,6 @@ public class MessageRepository implements MessageContract.Repository {
      * 获取当前用户的对话信息
      *
      * @param user_id 用户 id
-     * @return
      */
     @Override
     public Observable<List<MessageItemBean>> getConversationList(final int user_id) {
@@ -153,7 +157,7 @@ public class MessageRepository implements MessageContract.Repository {
     }
 
     /**
-     * 获取环信的会话列表
+     * 获取环信的会话列表，需要手动加个小助手
      *
      * @param user_id 用户id
      * @return Observable<List<MessageItemBeanV2>>
@@ -161,7 +165,7 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<List<MessageItemBeanV2>> getConversationListV2(final int user_id) {
         Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
-        Observable<List<MessageItemBeanV2>> observable = Observable.just(conversations)
+        return Observable.just(conversations)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(stringEMConversationMap -> {
@@ -172,6 +176,39 @@ public class MessageRepository implements MessageContract.Repository {
                         itemBeanV2.setConversation(entry.getValue());
                         itemBeanV2.setEmKey(entry.getKey());
                         list.add(itemBeanV2);
+                    }
+                    // 再在第一条插入ts助手，前提是当前消息列表中没有小助手的消息
+                    List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+                    // 需要手动插入的小助手，本地查找不到会话才插入聊天信息
+                    List<SystemConfigBean.ImHelperBean> needAddedHelpers = new ArrayList<>();
+                    if (!tsHlepers.isEmpty()) {
+                        for (SystemConfigBean.ImHelperBean imHelperBean : tsHlepers){
+                            if (EMClient.getInstance().chatManager().getConversation(imHelperBean.getUid()) == null){
+                                needAddedHelpers.add(imHelperBean);
+                            }
+                        }
+                        List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
+                        for (SystemConfigBean.ImHelperBean imHelperBean : needAddedHelpers) {
+                            MessageItemBeanV2 tsHelper = new MessageItemBeanV2();
+                            tsHelper.setEmKey(String.valueOf(imHelperBean.getUid()));
+                            tsHelper.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(imHelperBean.getUid())));
+                            // 创建会话的 conversation 要传入用户名 ts+采用用户Id作为用户名，聊天类型 单聊
+                            EMConversation conversation =
+                                    EMClient.getInstance().chatManager().getConversation(tsHelper.getEmKey(), EMConversation.EMConversationType.Chat, true);
+                            // 给这个会话插入一条自定义的消息 文本类型的
+                            EMMessage welcomeMsg = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
+                            // 消息体
+                            EMTextMessageBody textBody = new EMTextMessageBody(mContext.getString(R.string.ts_helper_default_tip));
+                            welcomeMsg.addBody(textBody);
+                            // 来自 用户名
+                            welcomeMsg.setFrom(tsHelper.getEmKey());
+                            // 当前时间
+                            welcomeMsg.setMsgTime(System.currentTimeMillis());
+                            conversation.insertMessage(welcomeMsg);
+                            tsHelper.setConversation(conversation);
+                            messageItemBeanList.add(tsHelper);
+                        }
+                        list.addAll(0, messageItemBeanList);
                     }
                     return list;
                 })
@@ -214,14 +251,12 @@ public class MessageRepository implements MessageContract.Repository {
 
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        return observable;
     }
 
     /**
      * 通过 cid 获取当前对话信息 ，暂未适配群聊
      *
      * @param cid 对话 id
-     * @return
      */
     @Override
     public Observable<MessageItemBean> getSingleConversation(int cid) {

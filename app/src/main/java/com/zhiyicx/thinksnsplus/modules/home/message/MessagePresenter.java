@@ -150,13 +150,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @param isLoadMore
      */
     private void getAllConversationV2(boolean isLoadMore){
-        List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
-        LogUtils.d("Cathy", tsHlepers);
         Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(messageItemBeanV2s -> {
-                    mRootView.getMessageListSuccess(messageItemBeanV2s);
-                });
+                .subscribe(messageItemBeanV2s -> mRootView.getMessageListSuccess(messageItemBeanV2s));
         addSubscrebe(subscribe);
     }
 
@@ -304,37 +300,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void deletConversation(int position) {
-        final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
-        // ts 助手标记为已删除
-        Subscription subscribe = Observable.empty()
-                .observeOn(Schedulers.newThread())
-                .subscribe(new rx.Subscriber<Object>() {
-                    @Override
-                    public void onCompleted() {
-                        String[] uidsTmp = messageItemBean.getConversation().getUsids().split(",");
-                        long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1]
-                                : uidsTmp[0]));
-                        SystemRepository.updateTsHelperDeletStatus(mContext, toChatUser_id, true);
-                        MessageDao.getInstance(mContext).delEverMessageByCid(messageItemBean.getConversation().getCid());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-
-                    }
+        // 改为环信的删除
+        MessageItemBeanV2 messageItemBeanV2 = mRootView.getRealMessageList().get(position);
+        Subscription subscription = Observable.just(messageItemBeanV2)
+                .map(messageItemBeanV21 -> {
+                    // 删除和某个user会话，如果需要保留聊天记录，传false
+                    EMClient.getInstance().chatManager().deleteConversation(messageItemBeanV21.getEmKey(), true);
+                    return true;
+                })
+                .subscribe(aBoolean -> {
+                    LogUtils.d("Cathy", "deletConversation" + aBoolean);
+                    mRootView.getRealMessageList().remove(position);
+                    checkBottomMessageTip();
                 });
-
-        // 删除对话信息
-        ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType
-                ());
-        mRootView.getListDatas().remove(position);
-        checkBottomMessageTip();
-        addSubscrebe(subscribe);
+        addSubscrebe(subscription);
     }
 
     @Override

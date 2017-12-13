@@ -147,52 +147,52 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
 
     @Override
     public void openItem(int position) {
-
+        mItemManger.openItem(position);
     }
 
     @Override
     public void closeItem(int position) {
-
+        mItemManger.closeItem(position);
     }
 
     @Override
     public void closeAllExcept(SwipeLayout layout) {
-
+        mItemManger.closeAllExcept(layout);
     }
 
     @Override
     public void closeAllItems() {
-
+        mItemManger.closeAllItems();
     }
 
     @Override
     public List<Integer> getOpenItems() {
-        return null;
+        return mItemManger.getOpenItems();
     }
 
     @Override
     public List<SwipeLayout> getOpenLayouts() {
-        return null;
+        return mItemManger.getOpenLayouts();
     }
 
     @Override
     public void removeShownLayouts(SwipeLayout layout) {
-
+        mItemManger.removeShownLayouts(layout);
     }
 
     @Override
     public boolean isOpen(int position) {
-        return false;
+        return mItemManger.isOpen(position);
     }
 
     @Override
     public Attributes.Mode getMode() {
-        return null;
+        return mItemManger.getMode();
     }
 
     @Override
     public void setMode(Attributes.Mode mode) {
-
+        mItemManger.setMode(mode);
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {

@@ -32,22 +32,16 @@ public interface MessageContract {
     interface View extends ITSListView<MessageItemBean, Presenter> {
         /**
          * 更新评论的
-         *
-         * @param messageItemBean
          */
         void updateCommnetItemData(MessageItemBean messageItemBean);
 
         /**
          * 更新喜欢的
-         *
-         * @param messageItemBean
          */
         void updateLikeItemData(MessageItemBean messageItemBean);
 
         /**
          * 更新置顶的
-         *
-         * @param messageItemBean
          */
         void updateReviewItemData(MessageItemBean messageItemBean);
 
@@ -63,7 +57,19 @@ public interface MessageContract {
 
         BaseFragment getCureenFragment();
 
+        /**
+         * 获取环信消息列表成功
+         *
+         * @param list 消息列表
+         */
         void getMessageListSuccess(List<MessageItemBeanV2> list);
+
+        /**
+         * 获取环信的消息列表
+         *
+         * @return list
+         */
+        List<MessageItemBeanV2> getRealMessageList();
     }
 
     /**
@@ -74,7 +80,6 @@ public interface MessageContract {
          * 获取对话列表信息
          *
          * @param user_id 用户 id
-         * @return
          */
         Observable<List<MessageItemBean>> getConversationList(int user_id);
 
@@ -84,14 +89,11 @@ public interface MessageContract {
          * 通过 对话 id 获取对话信息
          *
          * @param cid 对话 id
-         * @return
          */
         Observable<MessageItemBean> getSingleConversation(int cid);
 
         /**
          * 未读通知数量检查
-         *
-         * @return
          */
         Observable<Void> ckeckUnreadNotification();
 
@@ -99,42 +101,27 @@ public interface MessageContract {
         /**
          * 获取用户未读消息
          *
-         * @return
          * @see {https://slimkit.github.io/plus-docs/v2/core/users/unread#用户未读消息}
          */
         Observable<UnReadNotificaitonBean> getUnreadNotificationData();
 
         /**
          * 获取通知列表
-         *
-         * @param notification
-         * @param type
-         * @param limit
-         * @param offset
-         * @return
          */
         Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset);
 
         /**
          * 读取通知
-         *
-         * @param notificationId
-         * @return
          */
         Observable<TSPNotificationBean> getNotificationDetail(String notificationId);
 
         /**
          * 标记通知阅读
-         *
-         * @param notificationId
-         * @return
          */
         Observable<Object> makeNotificationReaded(String notificationId);
 
         /**
          * 标记所有通知阅读
-         *
-         * @return
          */
         Observable<Object> makeNotificationAllReaded();
     }
@@ -154,8 +141,6 @@ public interface MessageContract {
 
         /**
          * 删除本地对话
-         *
-         * @param position
          */
         void deletConversation(int position);
 
@@ -163,7 +148,6 @@ public interface MessageContract {
          * 通过 对话 id 获取对话信息
          *
          * @param cid 对话 id
-         * @return
          */
         void getSingleConversation(int cid);
 
