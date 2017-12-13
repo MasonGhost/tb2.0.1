@@ -31,6 +31,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
     private Paint.FontMetrics mFontMetrics;
 
     private float mTextOffsetX;
+    private GroupInfo lastGroupinfo;
 
     public StickySectionDecoration(Context context, GroupInfoCallback callback) {
         this.mCallback = callback;
@@ -41,13 +42,14 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
         mHeaderHeight = (int) Math.max(mHeaderHeight, mTextSize);
 
         mTextPaint = new TextPaint();
-        mTextPaint.setColor(Color.BLACK);
+        mTextPaint.setColor(Color.parseColor("#999999"));
         mTextPaint.setTextSize(mTextSize);
+        mTextPaint.setAntiAlias(true);
         mFontMetrics = mTextPaint.getFontMetrics();
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.YELLOW);
+        mPaint.setColor(Color.parseColor("#f4f5f5"));
 
     }
 
@@ -61,11 +63,13 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
             GroupInfo groupInfo = mCallback.getGroupInfo(position);
 
             //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
-            if (groupInfo != null && groupInfo.isFirstViewInGroup()) {
+            if (groupInfo != null && (groupInfo.isFirstViewInGroup()||(lastGroupinfo==null||groupInfo.position==lastGroupinfo.mGroupLength))) {
                 outRect.top = mHeaderHeight;
+                lastGroupinfo = groupInfo;
             } else {
                 outRect.top = mDividerHeight;
             }
+
         }
     }
 
@@ -77,21 +81,21 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View view = parent.getChildAt(i);
-
+            mTextOffsetX = view.getPaddingLeft();
             int index = parent.getChildAdapterPosition(view);
 
 
             if (mCallback != null) {
 
                 GroupInfo groupinfo = mCallback.getGroupInfo(index);
-                if (groupinfo!=null){
+                if (groupinfo != null) {
                     int left = parent.getPaddingLeft();
                     int right = parent.getWidth() - parent.getPaddingRight();
 
                     //屏幕上第一个可见的 ItemView 时，i == 0;
                     if (i != 0) {
                         //只有组内的第一个ItemView之上才绘制
-                        if (groupinfo.isFirstViewInGroup()) {
+                        if (groupinfo.isFirstViewInGroup()||(lastGroupinfo==null||groupinfo.position==lastGroupinfo.mGroupLength)) {
                             int top = view.getTop() - mHeaderHeight;
                             int bottom = view.getTop();
                             drawHeaderRect(c, groupinfo, left, top, right, bottom);
@@ -126,7 +130,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
         c.drawRect(left, top, right, bottom, mPaint);
 
         float titleX = left + mTextOffsetX;
-        float titleY = bottom - mFontMetrics.descent;
+        float titleY = bottom + mFontMetrics.ascent + -mFontMetrics.descent / 2;
         //绘制Title
         c.drawText(groupinfo.getTitle(), titleX, titleY, mTextPaint);
     }
@@ -185,6 +189,10 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
 
         public void setPosition(int position) {
             this.position = position;
+        }
+
+        public int getPosition() {
+            return position;
         }
 
         public void setGroupLength(int groupLength) {

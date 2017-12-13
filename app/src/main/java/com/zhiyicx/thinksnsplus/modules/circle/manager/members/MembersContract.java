@@ -21,12 +21,15 @@ public interface MembersContract {
         long getCIrcleId();
 
         void setGroupLengh(int[] grouLengh);
+
+        int[] getGroupLengh();
     }
 
     interface Presenter extends ITSListPresenter<CircleMembers> {
+        void dealCircleMember(MembersPresenter.MemberHandleType type, CircleMembers members);
     }
 
     interface Repository extends IBaseCircleRepository {
-        Observable<List<CircleMembers>> getCircleMemberList(long circleId,int after,int limit,String type);
+        Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
     }
 }

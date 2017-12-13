@@ -30,6 +30,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
     private String mCancel;
     private String mItem1Str;
     private String mItem2Str;
+    private String mItem3Str;
     protected boolean isOutsideTouch;
     private OnItemChooseListener mItemClickListener;
     private int mWidth;
@@ -51,6 +52,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
         this.mHeight = builder.mHeight;
         this.mItem1Str = builder.mItem1Str;
         this.mItem2Str = builder.mItem2Str;
+        this.mItem3Str = builder.mItem3Str;
         this.mItemLayout = builder.mItemLayout;
         this.mItemClickListener = builder.mItemChooseListener;
         initView();
@@ -74,22 +76,32 @@ public class ChooseBindPopupWindow extends PopupWindow {
 
     private void initLayout() {
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_choose_bind, null);
-        TextView chooseToCompleteAccount = (TextView) mContentView.findViewById(R.id.choose_to_complete_account);
-        TextView chooseToBindAccount = (TextView) mContentView.findViewById(R.id.choose_to_bind_account);
-        if (!TextUtils.isEmpty(mItem1Str)) {
-            chooseToCompleteAccount.setText(mItem1Str);
-        }
-        if (!TextUtils.isEmpty(mItem2Str)) {
-            chooseToBindAccount.setText(mItem2Str);
-        }
-        chooseToCompleteAccount.setOnClickListener(v -> {
+        TextView item1 = (TextView) mContentView.findViewById(R.id.item_1);
+        TextView item2 = (TextView) mContentView.findViewById(R.id.item_2);
+        TextView item3 = (TextView) mContentView.findViewById(R.id.item_3);
+
+        item1.setVisibility(!TextUtils.isEmpty(mItem1Str)?View.VISIBLE:View.GONE);
+        item1.setText(mItem1Str);
+
+        item2.setVisibility(!TextUtils.isEmpty(mItem2Str)?View.VISIBLE:View.GONE);
+        item2.setText(mItem2Str);
+
+        item3.setVisibility(!TextUtils.isEmpty(mItem3Str)?View.VISIBLE:View.GONE);
+        item3.setText(mItem3Str);
+
+        item1.setOnClickListener(v -> {
             if (mItemClickListener != null) {
                 mItemClickListener.onItemChose(0);
             }
         });
-        chooseToBindAccount.setOnClickListener(v -> {
+        item2.setOnClickListener(v -> {
             if (mItemClickListener != null) {
                 mItemClickListener.onItemChose(1);
+            }
+        });
+        item3.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemChose(2);
             }
         });
         setOnDismissListener(() -> setWindowAlpha(1.0f));
@@ -107,6 +119,11 @@ public class ChooseBindPopupWindow extends PopupWindow {
         showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.CENTER, 0, 0);
     }
 
+    public void showLeft() {
+        setWindowAlpha(mAlpha);
+        showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.LEFT, 0, 0);
+    }
+
     public void hide() {
         dismiss();
     }
@@ -120,12 +137,13 @@ public class ChooseBindPopupWindow extends PopupWindow {
         private View mParentView;
         private float mAlpha;
         private int mWidth = 0;
-        protected boolean isOutsideTouch = false;// 默认为false
+        protected boolean isOutsideTouch = false;
         private int mHeight = 0;
         private int mItemLayout = 0;
         private String mCancel;
         private String mItem1Str;
         private String mItem2Str;
+        private String mItem3Str;
         private OnItemChooseListener mItemChooseListener;
 
         private Builder() {
@@ -176,6 +194,11 @@ public class ChooseBindPopupWindow extends PopupWindow {
             return this;
         }
 
+        public ChooseBindPopupWindow.Builder item3Str(String item3Str) {
+            this.mItem3Str = item3Str;
+            return this;
+        }
+
         public ChooseBindPopupWindow.Builder alpha(float alpha) {
             this.mAlpha = alpha;
             return this;
@@ -196,7 +219,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
     }
 
     public void canNotRegiterByThirdPlatform(boolean openThirdRegister) {
-        mContentView.findViewById(R.id.choose_to_complete_account).setVisibility(openThirdRegister ? View.VISIBLE : View.GONE);
+        mContentView.findViewById(R.id.item_2).setVisibility(openThirdRegister ? View.VISIBLE : View.GONE);
     }
 
 }

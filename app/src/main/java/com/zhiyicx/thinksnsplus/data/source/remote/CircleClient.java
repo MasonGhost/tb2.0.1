@@ -34,11 +34,14 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANCEL_CIRCLE_MEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DEAL_CIRCLE_BLACKLIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DEAL_CIRCLE_MANAGER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
@@ -181,6 +184,40 @@ public interface CircleClient {
     Observable<BaseJsonV2<Object>> exitCircle(@Path("circle_id") long circleId);
 
     /**
+     * 将某个成员踢出圈子
+     *
+     * @return
+     */
+    @DELETE(APP_PATH_CANCEL_CIRCLE_MEMBERS)
+    Observable<BaseJsonV2<Object>> cancleCircleMember(@Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    /**
+     * 指定/撤销圈子管理员职位
+     *
+     * @param circleId
+     * @param memberId
+     * @return
+     */
+    @PUT(APP_PATH_DEAL_CIRCLE_MANAGER)
+    Observable<BaseJsonV2<Object>> appointCircleManager(@Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    @DELETE(APP_PATH_DEAL_CIRCLE_MANAGER)
+    Observable<BaseJsonV2<Object>> cancleCircleManager(@Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    /**
+     * 加入/移除圈子黑名单
+     *
+     * @param circleId
+     * @param memberId
+     * @return
+     */
+    @PUT(APP_PATH_DEAL_CIRCLE_BLACKLIST)
+    Observable<BaseJsonV2<Object>> appointCircleBlackList(@Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    @DELETE(APP_PATH_DEAL_CIRCLE_BLACKLIST)
+    Observable<BaseJsonV2<Object>> cancleCircleBlackList(@Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    /**
      * 设置圈子权限
      *
      * @return
@@ -239,13 +276,14 @@ public interface CircleClient {
 
     /**
      * 获取圈子成员列表
+     *
      * @param limit
      * @param after
      * @param type
      * @return
      */
     @GET(APP_PATH_GET_CIRCLEMEMBERS)
-    Observable<List<CircleMembers>> getCircleMemberList(@Path("circle_id") Long circle_id,@Query("limit") Integer limit
+    Observable<List<CircleMembers>> getCircleMemberList(@Path("circle_id") Long circle_id, @Query("limit") Integer limit
             , @Query("after") Integer after
             , @Query("type") String type);
 
@@ -263,6 +301,7 @@ public interface CircleClient {
 
     /**
      * 修改圈子信息
+     *
      * @param circleId
      * @param params
      * @return

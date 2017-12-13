@@ -3,14 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/spacing_mid">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/uv_member_head"
         android:layout_width="@dimen/circle_member_head"
         android:layout_height="@dimen/circle_member_head"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_mid"/>
 
     <TextView
@@ -23,6 +24,7 @@
 
     <TextView
         android:id="@+id/tv_member_tag"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_bg_circle_radus_gold"
@@ -39,6 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_mid"
-        android:src="@mipmap/topbar_more_white"/>
+        android:src="@mipmap/topbar_more_black"/>
 
 </LinearLayout>

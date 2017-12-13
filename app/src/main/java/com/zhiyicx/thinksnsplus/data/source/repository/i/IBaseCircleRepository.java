@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
@@ -30,6 +31,7 @@ public interface IBaseCircleRepository {
 
     /**
      * 修改圈子信息
+     *
      * @param createCircleBean
      * @return
      */
@@ -94,5 +96,34 @@ public interface IBaseCircleRepository {
                                                         String order_type);
 
     Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet);
+
+    /**
+     * 将某个成员踢出圈子
+     *
+     * @return
+     */
+    Observable<BaseJsonV2<Object>> cancleCircleMember(long circleId, long memberId);
+
+    /**
+     * 指定/撤销圈子管理员职位
+     *
+     * @param circleId
+     * @param memberId
+     * @return
+     */
+    Observable<BaseJsonV2<Object>> appointCircleManager(long circleId, long memberId);
+
+    Observable<BaseJsonV2<Object>> cancleCircleManager(long circleId, long memberId);
+
+    /**
+     * 加入/移除圈子黑名单
+     *
+     * @param circleId
+     * @param memberId
+     * @return
+     */
+    Observable<BaseJsonV2<Object>> appointCircleBlackList(long circleId, long memberId);
+
+    Observable<BaseJsonV2<Object>> cancleCircleBlackList(long circleId, long memberId);
 
 }

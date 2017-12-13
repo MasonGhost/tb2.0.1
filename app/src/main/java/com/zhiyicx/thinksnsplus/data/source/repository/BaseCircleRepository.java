@@ -276,21 +276,34 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<BaseJsonV2<Object>> dealCircleJoinOrExit(CircleInfo circleInfo) {
+
         boolean isJoined = circleInfo.getJoined() != null;
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+
+        Observable<BaseJsonV2<Object>> observable;
+
         if (isJoined) {
-            // 已经订阅，变为未订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE_V2);
-            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_EXIT_CIRCLE_FROMAT, String.valueOf(circleInfo.getId())));
+            observable = mCircleClient.exitCircle(circleInfo.getId());
         } else {
-            // 未订阅，变为已订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
-            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_JOIN_CIRCLE_FORMAT, String.valueOf(circleInfo.getId())));
+            observable = mCircleClient.joinCircle(circleInfo.getId());
         }
-        // 启动后台任务
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        return null;
+        return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+
+//        BackgroundRequestTaskBean backgroundRequestTaskBean;
+//        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+//        if (isJoined) {
+//            // 已经订阅，变为未订阅
+//            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE_V2);
+//            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_EXIT_CIRCLE_FROMAT, String.valueOf(circleInfo.getId())));
+//        } else {
+//            // 未订阅，变为已订阅
+//            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
+//            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_PUT_JOIN_CIRCLE_FORMAT, String.valueOf(circleInfo.getId())));
+//        }
+//        // 启动后台任务
+//        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+//        return null;
     }
 
     /**
@@ -332,6 +345,41 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                     data.addAll(circlePostBean.getPosts());
                     return data;
                 }));
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> cancleCircleMember(long circleId, long memberId) {
+        return mCircleClient.cancleCircleMember(circleId, memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> appointCircleManager(long circleId, long memberId) {
+        return mCircleClient.appointCircleManager(circleId, memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> cancleCircleManager(long circleId, long memberId) {
+        return mCircleClient.cancleCircleManager(circleId, memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> appointCircleBlackList(long circleId, long memberId) {
+        return mCircleClient.appointCircleBlackList(circleId, memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> cancleCircleBlackList(long circleId, long memberId) {
+        return mCircleClient.cancleCircleBlackList(circleId, memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void saveCircleType() {

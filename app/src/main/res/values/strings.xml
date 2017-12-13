@@ -242,6 +242,7 @@
 
     <!--圈子-->
     <string name="circle_master">圈主</string>
+    <string name="circle_dealing">操作中</string>
     <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
     <string name="more_group">查看更多</string>
@@ -262,6 +263,9 @@
     <string name="circle_detail_location">位置：	%s</string>
     <string name="circle_detail_usercount">成员：	%d</string>
     <string name="circle_detail_postcount">%d个帖子</string>
+    <string name="circle_manager_format">管理员(%d)</string>
+    <string name="circle_member_format">成员(%d)</string>
+    <string name="circle_blacklist_format">黑名单(%d)</string>
 
     <string-array name="post_typpe_array">
         <item>全部帖子</item>
@@ -284,6 +288,7 @@
     <string name="change_circle_head_icon">上传圈子头像</string>
     <string name="circle_name">圈名</string>
     <string name="circle_owner">圈主</string>
+    <string name="circle_manager">管理员</string>
     <string name="circle_type">分类</string>
     <string name="circle_chat">私聊</string>
     <string name="edit_circle_name">设置圈名</string>
@@ -307,6 +312,12 @@
     <string name="circle_report">举报管理</string>
     <string name="circle_more">更多操作</string>
     <string name="circle_exit">退出圈子</string>
+    <string name="cancel_manager">移出圈管理</string>
+    <string name="cancle_circle">移出圈子</string>
+    <string name="cancle_blacklist">移出黑名单</string>
+    <string name="appoint_manager">设为圈管理员</string>
+    <string name="appoint_blacklist">加入黑名单</string>
+    <string name="appoint_circle">设为圈管理员</string>
     <string-array name="circle_mine_type">
         <item>@string/joined_group</item>
         <item>待审核的</item>

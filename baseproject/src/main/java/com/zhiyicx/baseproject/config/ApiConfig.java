@@ -482,6 +482,21 @@ public class ApiConfig {
     public static final String APP_PATH_PUT_JOIN_CIRCLE_FORMAT = "api/" + API_VERSION_2 + "/plus-group/groups/%s";
 
     /**
+     * 指定/撤销圈子管理员职位
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_MANAGER = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/managers/{member_id}";
+
+    /**
+     * 踢出圈子
+     */
+    public static final String APP_PATH_CANCEL_CIRCLE_MEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members/{member_id}";
+
+    /**
+     * 加入/移除圈子黑名单
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_BLACKLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/blacklist/{member_id}";
+
+    /**
      * 退出圈子
      */
     public static final String APP_PATH_PUT_EXIT_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/exit";

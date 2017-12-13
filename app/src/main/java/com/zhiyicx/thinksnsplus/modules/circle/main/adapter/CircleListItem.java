@@ -18,13 +18,11 @@ import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainContract;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -166,7 +164,7 @@ public class CircleListItem extends BaseCircleItem {
             circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R
                     .dimen.spacing_small) : context.getResources()
                     .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-            boolean canChange = circleInfo.getAudit() == 1 && !isJoined&&!CreateCircleFragment
+            boolean canChange = circleInfo.getAudit() == 1 && !isJoined && !CreateCircleFragment
                     .MODE_PAID.equals(circleInfo.getMode());
             circleSubscribeFrame.setEnabled(!canChange);
             circleSubscribeFrame.setVisibility(!canChange ? View.VISIBLE : View.GONE);
@@ -178,7 +176,7 @@ public class CircleListItem extends BaseCircleItem {
                         if (mCircleItemItemEvent == null) {
                             return;
                         }
-                        if (mPresenter != null&&CreateCircleFragment
+                        if (mPresenter != null && CreateCircleFragment
                                 .MODE_PAID.equals(circleInfo.getMode())) {
                             initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
                                     (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
@@ -191,6 +189,13 @@ public class CircleListItem extends BaseCircleItem {
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         if (mCircleItemItemEvent == null) {
+                            return;
+                        }
+                        if (mPresenter != null && CreateCircleFragment
+                                .MODE_PAID.equals(circleInfo.getMode())) {
+                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
+                                    (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
+                                    .buy_pay_words_desc);
                             return;
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
