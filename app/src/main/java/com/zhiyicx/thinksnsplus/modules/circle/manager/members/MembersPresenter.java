@@ -102,7 +102,6 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
         if (type == null) {
             return;
         }
-        int grouLengh[] = new int[4];
         long circleId = members.getGroup_id();
         long memberId = members.getId();
         Observable<BaseJsonV2<Object>> observable = null;
@@ -165,20 +164,16 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                             for (CircleMembers members1 : mRootView.getListDatas()) {
                                 switch (members1.getRole()) {
                                     case CircleMembers.FOUNDER:
-                                        grouLengh[0]++;
                                         manager.add(0, members1);
                                         break;
                                     case CircleMembers.ADMINISTRATOR:
                                         manager.add(members1);
-                                        grouLengh[1]++;
                                         break;
                                     case CircleMembers.MEMBER:
                                         member.add(members1);
-                                        grouLengh[2]++;
                                         break;
                                     case CircleMembers.BLACKLIST:
                                         blacklist.add(members1);
-                                        grouLengh[3]++;
                                         break;
                                     default:
                                 }
@@ -188,7 +183,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                             return manager;
                         })
                         .subscribe(circleMembers -> {
-                            mRootView.setGroupLengh(grouLengh);
+                            mRootView.setGroupLengh(groupLengh);
                             mRootView.refreshData();
                         });
             }
