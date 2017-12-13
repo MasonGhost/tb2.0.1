@@ -84,7 +84,8 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
 
 
     protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
-        String content = handleName(dynamicCommentBean);
+        // 评论后加空格占位
+        String content = handleName(dynamicCommentBean)+" ";
         // 不是置顶的评论则不用处理
         if (!dynamicCommentBean.getPinned()) {
             return content;
