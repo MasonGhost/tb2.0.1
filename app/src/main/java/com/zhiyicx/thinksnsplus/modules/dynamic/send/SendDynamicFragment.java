@@ -112,6 +112,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private List<ImageBean> selectedPhotos;// 已经选择的图片
     private CommonAdapter<ImageBean> mCommonAdapter;
+    private List<ImageBean> cachePhotos;
 
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
@@ -367,7 +368,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        if (isPhotoListChanged(selectedPhotos, photoList)) {
+        if (isPhotoListChanged(cachePhotos, photoList)) {
             hasTollPic = false;
             selectedPhotos.clear();
             selectedPhotos.addAll(photoList);
@@ -407,7 +408,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
         if (mPhotoSelector != null) {
-            if (data != null) {// 图片选择器界面数据保存操作
+            // 图片选择器界面数据保存操作
+            if (data != null) {
                 Bundle tollBundle = new Bundle();
                 data.putExtra("tollBundle", tollBundle);
                 List<ImageBean> oldData = mCommonAdapter.getDatas();
@@ -443,7 +445,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void setRightClick() {
         com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mToolbarRight);
-        if (isFromGroup) {// 圈子
+        // 圈子
+        if (isFromGroup) {
             mPresenter.sendGroupDynamic(packageGroupDynamicData());
         } else {
             mPresenter.sendDynamicV2(packageDynamicData());
@@ -757,6 +760,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         }
                         ArrayList<ImageBean> datas = new ArrayList<>();
                         datas.addAll(selectedPhotos);
+                        cachePhotos = new ArrayList<>(selectedPhotos);
                         PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
                                 photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
                                 position, isToll, datas);
@@ -831,8 +835,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 for (int i = 0; i < newList.size(); i++) {
                     ImageBean newImageBean = newList.get(i);
                     ImageBean oldImageBean = oldList.get(i);
-                    if ((!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl()))
-                            || newImageBean.getToll_type() != oldImageBean.getToll_type()) {
+
+                    if (!oldImageBean.equals(newImageBean) || !newImageBean.getToll().equals(oldImageBean.getToll())) {
                         return true;
                     }
                 }

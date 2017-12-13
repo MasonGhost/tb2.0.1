@@ -102,6 +102,34 @@ public class Toll implements Parcelable, Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Toll toll = (Toll) o;
+
+        if (toll_type != toll.toll_type) {
+            return false;
+        }
+        if (toll_money != toll.toll_money) {
+            return false;
+        }
+        return custom_money == toll.custom_money;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = toll_type;
+        result = 31 * result + (int) (toll_money ^ (toll_money >>> 32));
+        result = 31 * result + (int) (custom_money ^ (custom_money >>> 32));
+        return result;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

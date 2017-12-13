@@ -86,7 +86,7 @@ public class PhotoViewFragment extends TSFragment {
 
     private int currentItem = 0;// 点击第几张图片进入的预览界面
 
-    private ArrayList<ImageBean> tolls = new ArrayList<>();
+    private ArrayList<ImageBean> tolls;
 
     // 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择
     private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
