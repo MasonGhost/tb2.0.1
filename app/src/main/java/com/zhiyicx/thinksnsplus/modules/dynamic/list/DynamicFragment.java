@@ -660,6 +660,30 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    /**
+     * 评论长按
+     *
+     * @param dynamicBean
+     * @param position
+     */
+    @Override
+    public void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getComment_id().toString(),
+                    null,null,dynamicBean.getComments().get(position).getComment_content(),ReportType.COMMENT));
+
+        } else {
+
+        }
+    }
+
     private void showCommentView() {
         showBottomView(false);
 

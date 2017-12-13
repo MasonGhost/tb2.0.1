@@ -26,9 +26,6 @@ public class ReportResourceBean implements Serializable{
     private String des;
     private ReportType type;
 
-    public ReportResourceBean() {
-    }
-
     public ReportResourceBean(UserInfoBean user,String id, String title, String img, String des, ReportType type) {
         this.user=user;
         this.id = id;

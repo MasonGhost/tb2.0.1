@@ -102,6 +102,17 @@ public class DynamicListCommentView extends LinearLayout {
 
             }
         });
+        mDynamicNoPullRecycleView.setOnIitemLongClickListener((view, position) -> {
+            if (!mIsUserNameClick) {
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
+                }
+            } else {
+                mIsUserNameClick = false;
+
+            }
+
+        });
         mDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
             if (!mIsUserNameClick) {
                 mIsUserNameClick = true;
@@ -164,6 +175,8 @@ public class DynamicListCommentView extends LinearLayout {
         void onCommentUserInfoClick(UserInfoBean userInfoBean);
 
         void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position);
+
+        void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position);
     }
 
 }

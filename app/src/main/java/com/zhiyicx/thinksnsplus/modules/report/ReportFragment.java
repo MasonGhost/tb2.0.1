@@ -133,8 +133,15 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
             case CIRCLE_POST:
                 mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), getString(R.string.circle_post)));
                 break;
+            case CIRCLE_COMMENT:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), getString(R.string.comment)));
+                break;
             case COMMENT:
                 mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), getString(R.string.comment)));
+                break;
+            case USER:
+                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), ""));
+
                 break;
             default:
         }
@@ -287,7 +294,14 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
             case CIRCLE_POST:
 
                 break;
+            case CIRCLE_COMMENT:
+
+                break;
             case COMMENT:
+
+                break;
+
+            case USER:
 
                 break;
             default:

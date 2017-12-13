@@ -50,6 +50,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVER
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_COMMON_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
@@ -294,6 +295,6 @@ public interface CommonClient {
      * @return
      */
     @FormUrlEncoded
-    @POST(APP_PATH_REPORT_USER)
+    @POST(APP_PATH_REPORT_COMMON_COMMENT)
     Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("reason") String reason);
 }

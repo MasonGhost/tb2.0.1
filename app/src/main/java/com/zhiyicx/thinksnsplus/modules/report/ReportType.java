@@ -25,6 +25,10 @@ public enum ReportType {
      */
     CIRCLE_POST,
     /**
+     * 圈子中的评论
+     */
+    CIRCLE_COMMENT,
+    /**
      * 问答问题
      */
     QA,
@@ -34,8 +38,13 @@ public enum ReportType {
     QA_ANSWER,
 
     /**
-     * 评论
+     * 通用评论
      */
-    COMMENT
+    COMMENT,
+    /**
+     * 用户
+     */
+    USER
+
 
 }

@@ -46,7 +46,7 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
     @Override
     public void report(String inputContent, ReportResourceBean reportResourceBean) {
         mRootView.showLoading();
-        Observable<ReportResultBean> observable;
+        Observable<ReportResultBean> observable = null;
         switch (reportResourceBean.getType()) {
             case INFO:
                 observable = mReportRepository.reportInfo(reportResourceBean.getId(), inputContent);
@@ -73,13 +73,26 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
                 observable = mReportRepository.reportCirclePost(reportResourceBean.getId(), inputContent);
 
                 break;
-            case COMMENT:
+
+            case CIRCLE_COMMENT:
                 observable = mReportRepository.reportCircleComment(reportResourceBean.getId(), inputContent);
+                break;
+            case COMMENT:
+                observable = mReportRepository.reportComment(reportResourceBean.getId(), inputContent);
+
+                break;
+
+            case USER:
+                observable = mReportRepository.reportUser(reportResourceBean.getId(), inputContent);
 
                 break;
             default:
-                observable = mReportRepository.reportCircleComment(reportResourceBean.getId(), inputContent);
 
+        }
+        if (observable == null) {
+            mRootView.hideLoading();
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.not_support_report));
+            return;
         }
 
         Subscription subscribe = observable
@@ -108,7 +121,6 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
     }
 
     /**
-     *
      * @param userId 需要获取的用户 id
      */
     @Override
