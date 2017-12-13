@@ -628,10 +628,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     if (mSavingTSnackbar != null) {
                         mSavingTSnackbar.dismiss();
                     }
-                    TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
-                            .setPromptThemBackground(Prompt.SUCCESS)
-                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
-                            .show();
+                  showSnackSuccessMessage(result);
                 });
     }
 
