@@ -101,9 +101,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 tag.setText(isOwner ? R.string.circle_owner : R.string.circle_manager);
                 RxView.clicks(more)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(aVoid -> {
-                            initPopWindow(more, position, circleMembers);
-                        });
+                        .subscribe(aVoid -> initPopWindow(more, position, circleMembers));
             }
         };
     }
@@ -185,26 +183,26 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                     if (isManager) {
                         type = MembersPresenter.MemberHandleType.CANCLE_MANAFER;
                     }
-                    if ((isMember && pos == 1) || (isBlackList && pos == 0)) {
+                    if ((isMember && position == 1) || (isBlackList && position == 0)) {
                         type = MembersPresenter.MemberHandleType.CANCLE_MEMBER;
                     }
 
-                    if (isMember && pos == 0) {
+                    if (isMember && position == 0) {
                         type = MembersPresenter.MemberHandleType.APPOINT_MANAFER;
                     }
 
-                    if (isMember && pos == 2) {
+                    if (isMember && position == 2) {
                         type = MembersPresenter.MemberHandleType.CANCLE_BLACKLIST;
                     }
 
-                    if (isBlackList && pos == 1) {
+                    if (isBlackList && position == 1) {
                         type = MembersPresenter.MemberHandleType.CANCLE_BLACKLIST;
                     }
                     mPresenter.dealCircleMember(type, members);
                     mPopupWindow.hide();
                 })
                 .build();
-        mPopupWindow.showAsDropDown(v);
+        mPopupWindow.showLeft();
     }
 
     private void filterData(CharSequence filterStr) {

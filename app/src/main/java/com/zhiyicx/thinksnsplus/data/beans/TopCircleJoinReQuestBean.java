@@ -12,7 +12,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  */
 public class TopCircleJoinReQuestBean extends BaseListBean {
 
-
+    public static final int TOP_REVIEW = 0;
+    public static final int TOP_SUCCESS = 1;
+    public static final int TOP_REFUSE = 2;
     /**
      * id : 34
      * group_id : 3
@@ -36,6 +38,15 @@ public class TopCircleJoinReQuestBean extends BaseListBean {
     private String updated_at;
     private CircleInfo group;
     private UserInfoBean user;
+    private int state;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public Long getId() {
         return id;
@@ -130,6 +141,7 @@ public class TopCircleJoinReQuestBean extends BaseListBean {
         dest.writeLong(this.group_id);
         dest.writeLong(this.user_id);
         dest.writeInt(this.audit);
+        dest.writeInt(this.state);
         dest.writeString(this.role);
         dest.writeInt(this.disabled);
         dest.writeString(this.created_at);
@@ -147,6 +159,7 @@ public class TopCircleJoinReQuestBean extends BaseListBean {
         this.group_id = in.readLong();
         this.user_id = in.readLong();
         this.audit = in.readInt();
+        this.state = in.readInt();
         this.role = in.readString();
         this.disabled = in.readInt();
         this.created_at = in.readString();

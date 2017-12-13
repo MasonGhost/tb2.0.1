@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
@@ -42,6 +43,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DEAL_CIRCLE_BLACKLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DEAL_CIRCLE_MANAGER;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DEAL_CIRCLE_MEMBER_JOIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEDETAIL;
@@ -49,6 +51,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEMEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_MEMBER_JOIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
@@ -425,6 +428,15 @@ public interface CircleClient {
     Observable<BaseJsonV2> refusePostTopComment(@Path("comment_id") Integer commentId);
 
     /**
+     * 审核圈子加入请求
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_DEAL_CIRCLE_MEMBER_JOIN)
+    Observable<BaseJsonV2> dealCircleJoin(@Field("status") Integer status, @Path("circle_id") long circleId, @Path("member_id") long memberId);
+
+    /**
      * 获取资讯评论置顶审核列表 V2
      *
      * @return
@@ -432,6 +444,15 @@ public interface CircleClient {
     @GET(APP_PATH_GET_TOP_POST_COMMENT)
     Observable<List<TopPostCommentListBean>> getPostReviewComment(@Query("after") Integer after, @Query("limit")
             Integer limit, @Query("group") Integer group);
+
+    /**
+     * 圈子待审核成员列表
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLE_MEMBER_JOIN)
+    Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(@Query("after") Integer after, @Query("limit")
+            Integer limit);
 
 
     /*******************************************  举报  *********************************************/

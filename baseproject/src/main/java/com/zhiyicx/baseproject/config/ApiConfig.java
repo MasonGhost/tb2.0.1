@@ -479,6 +479,16 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CIRCLE_COUNT = "api/" + API_VERSION_2 + "/plus-group/groups/count";
 
     /**
+     * 圈子待审核成员列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/user-group-audit-members";
+
+    /**
+     * 审核圈子加入请求
+     */
+    public static final String APP_PATH_DEAL_CIRCLE_MEMBER_JOIN = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members/{member_id}/audit";
+
+    /**
      * 加入圈子
      */
     public static final String APP_PATH_PUT_JOIN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}";

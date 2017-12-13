@@ -198,6 +198,9 @@ public class CircleListItem extends BaseCircleItem {
                                     .buy_pay_words_desc);
                             return;
                         }
+                        if (isJoined) {
+                            mCircleItemItemEvent.toCircleDetail(circleInfo);
+                        }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
                     });
         }

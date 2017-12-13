@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_CIRCLE_MEMBER;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_DYNAMIC_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_NEWS_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST_COMMENT;
@@ -62,6 +63,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 break;
             case TOP_POST_COMMENT:
                 observable = mRepository.getPostReviewComment(maxId.intValue());
+                break;
+            case TOP_CIRCLE_MEMBER:
+                observable = mRepository.getCircleJoinRequest(maxId.intValue());
                 break;
             default:
                 observable = mRepository.getDynamicReviewComment(maxId.intValue());
@@ -117,6 +121,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_POST_COMMENT:
                 observable = mRepository.approvedPostTopComment(commentId);
                 break;
+            case TOP_CIRCLE_MEMBER:
+                observable = mRepository.approvedCircleJoin(feedId,commentId);
+                break;
                 default:
         }
         if(observable==null){
@@ -161,6 +168,8 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_POST_COMMENT:
                 observable = mRepository.refusePostTopComment(pinned_id);
                 break;
+            case TOP_CIRCLE_MEMBER:
+                observable = mRepository.refuseCircleJoin(result);
                 default:
         }
         if(observable==null){

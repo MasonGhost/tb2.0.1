@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UnhandlePinnedBean;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopCircleJoinRequestItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopNewsCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPostCommentItem;
@@ -82,9 +83,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(), mPresenter);
         TopNewsCommentItem newsCommentItem = new TopNewsCommentItem(getActivity(), mPresenter);
         TopPostCommentItem postCommentItem=new TopPostCommentItem(getActivity(), mPresenter);
+        TopCircleJoinRequestItem topCircleJoinRequestItem=new TopCircleJoinRequestItem(getActivity(), mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(newsCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(postCommentItem);
+        multiItemTypeAdapter.addItemViewDelegate(topCircleJoinRequestItem);
         return multiItemTypeAdapter;
     }
 

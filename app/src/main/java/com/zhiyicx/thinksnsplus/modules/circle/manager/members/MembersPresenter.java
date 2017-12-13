@@ -132,10 +132,12 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                 int[] groupLengh = mRootView.getGroupLengh();
                 switch (type) {
                     case APPOINT_MANAFER:
+                        members.setRole(CircleMembers.ADMINISTRATOR);
                         groupLengh[1]++;
                         groupLengh[2]--;
                         break;
                     case CANCLE_MANAFER:
+                        members.setRole(CircleMembers.MEMBER);
                         groupLengh[1]--;
                         groupLengh[2]++;
                         break;
@@ -144,10 +146,12 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                         mRootView.getListDatas().remove(members);
                         break;
                     case APPOINT_BLACKLIST:
+                        members.setRole(CircleMembers.BLACKLIST);
                         groupLengh[3]++;
                         groupLengh[2]--;
                         break;
                     case CANCLE_BLACKLIST:
+                        members.setRole(CircleMembers.MEMBER);
                         groupLengh[2]++;
                         groupLengh[3]--;
                         break;

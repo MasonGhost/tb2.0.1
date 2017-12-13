@@ -11,6 +11,9 @@ import android.view.View;
 
 import com.zhiyicx.common.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Jliuer
  * @Date 17/12/08 15:34
@@ -31,6 +34,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
     private Paint.FontMetrics mFontMetrics;
 
     private float mTextOffsetX;
+    private int id[] = new int[]{-1, -1};
     private GroupInfo lastGroupinfo;
 
     public StickySectionDecoration(Context context, GroupInfoCallback callback) {
@@ -63,9 +67,16 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
             GroupInfo groupInfo = mCallback.getGroupInfo(position);
 
             //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
-            if (groupInfo != null && (groupInfo.isFirstViewInGroup()||(lastGroupinfo==null||groupInfo.position==lastGroupinfo.mGroupLength))) {
+            if (groupInfo != null && (groupInfo.isFirstViewInGroup() || (lastGroupinfo == null || groupInfo.position == id[0]))) {
                 outRect.top = mHeaderHeight;
                 lastGroupinfo = groupInfo;
+                if (id[0] < 0) {
+                    id[0] = groupInfo.position;
+                    id[1] = -1;
+                } else {
+                    id[1] = groupInfo.position;
+                    id[0] = -1;
+                }
             } else {
                 outRect.top = mDividerHeight;
             }
@@ -95,7 +106,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
                     //屏幕上第一个可见的 ItemView 时，i == 0;
                     if (i != 0) {
                         //只有组内的第一个ItemView之上才绘制
-                        if (groupinfo.isFirstViewInGroup()||(lastGroupinfo==null||groupinfo.position==lastGroupinfo.mGroupLength)) {
+                        if (groupinfo.isFirstViewInGroup() || (lastGroupinfo == null || groupinfo.position == id[1])) {
                             int top = view.getTop() - mHeaderHeight;
                             int bottom = view.getTop();
                             drawHeaderRect(c, groupinfo, left, top, right, bottom);

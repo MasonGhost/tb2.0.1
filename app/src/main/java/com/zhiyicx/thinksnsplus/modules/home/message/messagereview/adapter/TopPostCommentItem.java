@@ -107,7 +107,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                     .string.review_content_deleted));
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                     holder.itemView.getContext().getString(R.string
-                            .stick_type_dynamic_commnet_message), " "));
+                            .stick_type_group_commnet_message), " "));
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .message_badge_bg));
             review_flag.setText(holder.itemView.getResources().getString(postCommentListBean

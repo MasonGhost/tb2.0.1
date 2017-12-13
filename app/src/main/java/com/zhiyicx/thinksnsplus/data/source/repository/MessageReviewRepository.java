@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
@@ -69,6 +70,13 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
+    public Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after) {
+        return mCircleClient.getCircleJoinRequest(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id) {
         return mDynamicClient.approvedDynamicTopComment(feed_id, comment_id, pinned_id)
                 .subscribeOn(Schedulers.io())
@@ -115,30 +123,42 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
+    public Observable<BaseJsonV2> refuseCircleJoin(BaseListBean result) {
+        TopCircleJoinReQuestBean data=(TopCircleJoinReQuestBean)result;
+        return mCircleClient.dealCircleJoin(2,data.getGroup_id(),data.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> approvedCircleJoin(Long circleId, int memberId) {
+        return mCircleClient.dealCircleJoin(1,circleId.intValue(),memberId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<BaseJsonV2> deleteTopComment(Long feed_id, int comment_id) {
         return null;
     }
 
     private Observable<List<TopDynamicCommentBean>> dealDynamicCommentBean(Observable<List<TopDynamicCommentBean>> data) {
-        return data.flatMap(new Func1<List<TopDynamicCommentBean>, Observable<List<TopDynamicCommentBean>>>() {
-            @Override
-            public Observable<List<TopDynamicCommentBean>> call(List<TopDynamicCommentBean> rechargeListBeen) {
-                final List<Object> user_ids = new ArrayList<>();
-                for (TopDynamicCommentBean TopDynamicCommentBean : rechargeListBeen) {
-                    user_ids.add(TopDynamicCommentBean.getUser_id());
-                }
-                return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                    for (UserInfoBean userInfoBean : userinfobeans) {
-                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                    }
-                    for (int i = 0; i < rechargeListBeen.size(); i++) {
-                        rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
-                    }
-                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                    return rechargeListBeen;
-                });
+        return data.flatMap(rechargeListBeen -> {
+            final List<Object> user_ids = new ArrayList<>();
+            for (TopDynamicCommentBean TopDynamicCommentBean : rechargeListBeen) {
+                user_ids.add(TopDynamicCommentBean.getUser_id());
             }
+            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                for (UserInfoBean userInfoBean : userinfobeans) {
+                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                }
+                for (int i = 0; i < rechargeListBeen.size(); i++) {
+                    rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
+                }
+                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                return rechargeListBeen;
+            });
         }).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
