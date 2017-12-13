@@ -2,10 +2,12 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IReportRepository;
 import com.zhiyicx.thinksnsplus.modules.report.ReportContract;
 
@@ -27,6 +29,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     private DynamicClient mDynamicClient;
     private QAClient mQAClient;
     private CircleClient mCircleClient;
+    private UserInfoClient mUserInfoClient;
+    private CommonClient mCommonClient;
 
 
     @Inject
@@ -35,9 +39,13 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
         mDynamicClient = serviceManager.getDynamicClient();
         mQAClient = serviceManager.getQAClient();
         mCircleClient = serviceManager.getCircleClient();
+        mUserInfoClient = serviceManager.getUserInfoClient();
+        mCommonClient = serviceManager.getCommonClient();
     }
 
     /**
+     * 举报动态
+     *
      * @param feedId 动态 id
      * @param reason 举报原因
      * @return
@@ -50,6 +58,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 举报资讯
+     *
      * @param newsId 资讯 id
      * @param reason 举报原因
      * @return
@@ -62,6 +72,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 举报问题
+     *
      * @param questionId 动态 id
      * @param reason     举报原因
      * @return
@@ -74,6 +86,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 举报问题答案
+     *
      * @param answerId 动态 id
      * @param reason   举报原因
      * @return
@@ -86,6 +100,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 举报圈子
+     *
      * @param groupId 圈子 id
      * @param reason  举报原因
      * @return
@@ -98,6 +114,8 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 举报圈子帖子
+     *
      * @param postId 帖子 id
      * @param reason 举报原因
      * @return
@@ -110,13 +128,43 @@ public class ReportRepository implements IReportRepository, ReportContract.Repos
     }
 
     /**
+     * 圈子评论举报
+     *
+     * @param commentId 评论 id
+     * @param reason    举报原因
+     * @return
+     */
+    @Override
+    public Observable<ReportResultBean> reportCircleComment(String commentId, String reason) {
+        return mCircleClient.reportComment(commentId, reason)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 通用评论举报
+     *
      * @param commentId 评论 id
      * @param reason    举报原因
      * @return
      */
     @Override
     public Observable<ReportResultBean> reportComment(String commentId, String reason) {
-        return mCircleClient.reportComment(commentId, reason)
+        return mCommonClient.reportComment(commentId, reason)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 举报用户
+     *
+     * @param userId 用户 id
+     * @param reason 举报原因
+     * @return
+     */
+    @Override
+    public Observable<ReportResultBean> reportUser(String userId, String reason) {
+        return mUserInfoClient.reportUser(userId, reason)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

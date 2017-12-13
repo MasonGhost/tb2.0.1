@@ -2,7 +2,13 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 
 /**
  * @Describe
@@ -72,11 +78,32 @@ public interface IReportRepository {
     Observable<ReportResultBean> reportCirclePost(String postId, String reason);
 
     /**
-     * 举报评论
+     * 举报圈子中的评论
+     *
+     * @param commentId 评论 id
+     * @param reason    举报原因
+     * @return
+     */
+    Observable<ReportResultBean> reportCircleComment(String commentId, String reason);
+
+
+    /**
+     * 举报评论，举报信息只有管理员在后台可以看到
      *
      * @param commentId 评论 id
      * @param reason    举报原因
      * @return
      */
     Observable<ReportResultBean> reportComment(String commentId, String reason);
+
+
+    /**
+     * 举报用户，举报信息只有管理员在后台可以看到
+     *
+     * @param userId 用户 id
+     * @param reason 举报原因
+     * @return
+     */
+    Observable<ReportResultBean> reportUser(String userId, String reason);
+
 }

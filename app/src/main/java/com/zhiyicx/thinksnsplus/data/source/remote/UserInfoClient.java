@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
@@ -60,6 +61,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
@@ -101,7 +103,8 @@ public interface UserInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_SPECIFIED_USER_INFO)
-    Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following") Long followingUserId, @Query("follower") Long followerUserId);
+    Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following") Long followingUserId, @Query("follower") Long
+            followerUserId);
 
     /**
      * 批量获取用户信息
@@ -114,7 +117,8 @@ public interface UserInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_BATCH_SPECIFIED_USER_INFO)
-    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("id") String user_ids, @Query("name") String name, @Query("since") Integer since, @Query("order") String order, @Query("limit") Integer limit);
+    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("id") String user_ids, @Query("name") String name, @Query("since") Integer
+            since, @Query("order") String order, @Query("limit") Integer limit);
 
     /**
      * 获取 IM 信息
@@ -145,6 +149,7 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
                                                   @Query("limit") int limit);
+
     /**
      * 未读通知数量检查
      *
@@ -175,7 +180,8 @@ public interface UserInfoClient {
      * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
      */
     @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_LIST)
-    Observable<List<TSPNotificationBean>> getNotificationList(@Query("notification") String notification, @Query("type") String type, @Query("limit") Integer limit, @Query("offset") Integer offset);
+    Observable<List<TSPNotificationBean>> getNotificationList(@Query("notification") String notification, @Query("type") String type, @Query
+            ("limit") Integer limit, @Query("offset") Integer offset);
 
     /**
      * 读取通知
@@ -354,7 +360,6 @@ public interface UserInfoClient {
     Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
 
     /**
-     *
      * @return 后台推荐用户 最多200
      */
     @GET(APP_PATH_GET_RECOMMENT_USER_INFO)
@@ -368,7 +373,8 @@ public interface UserInfoClient {
      * @return
      */
     @GET(APP_PATH_SEARCH_RECOMMENT_USER)
-    Observable<List<UserInfoBean>> searchUserinfoWithRecommend(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("keyword") String keyword);
+    Observable<List<UserInfoBean>> searchUserinfoWithRecommend(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("keyword")
+            String keyword);
 
     /**
      * phone 推荐用户
@@ -402,7 +408,8 @@ public interface UserInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_USER_AROUND)
-    Observable<List<NearbyBean>> getNearbyData(@Query("longitude") double longitude, @Query("latitude") double latitude, @Query("radius") Integer radius, @Query("limit") Integer limit, @Query("page") Integer page);
+    Observable<List<NearbyBean>> getNearbyData(@Query("longitude") double longitude, @Query("latitude") double latitude, @Query("radius") Integer
+            radius, @Query("limit") Integer limit, @Query("page") Integer page);
 
     /*******************************************  签到  *********************************************/
 
@@ -497,5 +504,16 @@ public interface UserInfoClient {
      */
     @DELETE(APP_PATH_CANDEL_BIND)
     Observable<Object> cancelBind(@Path("provider") String provider);
+
+    /**
+     * 举报用户，举报信息只有管理员在后台可以看到
+     *
+     * @param userId 用户 id
+     * @param reason 举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_REPORT_USER)
+    Observable<ReportResultBean> reportUser(@Path("user_id") String userId, @Field("reason") String reason);
 
 }

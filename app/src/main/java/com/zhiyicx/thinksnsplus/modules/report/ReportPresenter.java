@@ -74,11 +74,11 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
 
                 break;
             case COMMENT:
-                observable = mReportRepository.reportComment(reportResourceBean.getId(), inputContent);
+                observable = mReportRepository.reportCircleComment(reportResourceBean.getId(), inputContent);
 
                 break;
             default:
-                observable = mReportRepository.reportComment(reportResourceBean.getId(), inputContent);
+                observable = mReportRepository.reportCircleComment(reportResourceBean.getId(), inputContent);
 
         }
 
