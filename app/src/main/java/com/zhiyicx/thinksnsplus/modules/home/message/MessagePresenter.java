@@ -305,13 +305,17 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         Subscription subscription = Observable.just(messageItemBeanV2)
                 .map(messageItemBeanV21 -> {
                     // 删除和某个user会话，如果需要保留聊天记录，传false
-                    EMClient.getInstance().chatManager().deleteConversation(messageItemBeanV21.getEmKey(), true);
-                    return true;
+                    return EMClient.getInstance().chatManager().deleteConversation(messageItemBeanV21.getEmKey(), true);
                 })
                 .subscribe(aBoolean -> {
                     LogUtils.d("Cathy", "deletConversation" + aBoolean);
-                    mRootView.getRealMessageList().remove(position);
-                    checkBottomMessageTip();
+                    if (aBoolean){
+                        mRootView.getRealMessageList().remove(position);
+                        checkBottomMessageTip();
+                    } else {
+                        // 删除失败
+                    }
+
                 });
         addSubscrebe(subscription);
     }
