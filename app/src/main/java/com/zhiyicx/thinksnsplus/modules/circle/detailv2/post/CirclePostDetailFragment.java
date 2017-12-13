@@ -310,10 +310,33 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         }
 
         @Override
+        public void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+            goReportComment(position);
+        }
+
+        @Override
         public void onUserInfoClick(UserInfoBean userInfoBean) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
+    /**
+     * 举报
+     * @param position
+     */
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getCommentUser(), mListDatas.get
+                    (position).getId().toString(),
+                    null, null, mListDatas.get(position).getContent(), ReportType.CIRCLE_COMMENT));
+
+        } else {
+
+        }
+    }
+
 
     private void initHeaderView() {
         mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());

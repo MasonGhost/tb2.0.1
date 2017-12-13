@@ -41,6 +41,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -414,6 +415,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         initToolBar();
         initLisener();
+        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override
@@ -462,6 +464,24 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
+        }
+    }
+
+    @Override
+    public void onCommentContentLongClick(CirclePostListBean dynamicBean, int position) {
+        if ( mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getId().toString(),
+                    null,null,dynamicBean.getComments().get(position).getContent(),ReportType.CIRCLE_COMMENT));
+
+        } else {
+
         }
     }
 

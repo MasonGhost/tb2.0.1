@@ -373,7 +373,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             requestData();
         }
         super.initData();
-        // 支持魅族手机首页状太栏文字白色问题
     }
 
     /**
