@@ -813,6 +813,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 图片列表返回后，判断图片列表内容以及顺序是否发生变化，如果没变，就可以不用刷新
      */
     private boolean isPhotoListChanged(List<ImageBean> oldList, List<ImageBean> newList) {
+        if (!newList.isEmpty()) {
+            return true;
+        }
         if (oldList == null || oldList.isEmpty()) {
             return false;
         }
