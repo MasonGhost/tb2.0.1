@@ -6,6 +6,8 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/fragment_search_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"

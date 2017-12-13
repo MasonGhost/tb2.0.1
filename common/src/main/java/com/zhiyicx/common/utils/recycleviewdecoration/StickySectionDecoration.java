@@ -10,6 +10,7 @@ import android.text.TextPaint;
 import android.view.View;
 
 import com.zhiyicx.common.R;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +35,12 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
     private Paint.FontMetrics mFontMetrics;
 
     private float mTextOffsetX;
-    private int id[] = new int[]{-1, -1};
-    private GroupInfo lastGroupinfo;
+    private int groupId;
 
     public StickySectionDecoration(Context context, GroupInfoCallback callback) {
         this.mCallback = callback;
-        mDividerHeight = context.getResources().getDimensionPixelOffset(R.dimen.header_divider_height);
+        mDividerHeight = context.getResources().getDimensionPixelOffset(R.dimen
+                .header_divider_height);
         mHeaderHeight = context.getResources().getDimensionPixelOffset(R.dimen.header_height);
         mTextSize = context.getResources().getDimensionPixelOffset(R.dimen.header_textsize);
 
@@ -58,29 +59,23 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State
+            state) {
         super.getItemOffsets(outRect, view, parent, state);
 
         int position = parent.getChildAdapterPosition(view);
-
         if (mCallback != null) {
             GroupInfo groupInfo = mCallback.getGroupInfo(position);
-
+            if (groupInfo == null) {
+                return;
+            }
             //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
-            if (groupInfo != null && (groupInfo.isFirstViewInGroup() || (lastGroupinfo == null || groupInfo.position == id[0]))) {
+            if (groupInfo.isFirstViewInGroup() || groupInfo.mGroupID != groupId) {
                 outRect.top = mHeaderHeight;
-                lastGroupinfo = groupInfo;
-                if (id[0] < 0) {
-                    id[0] = groupInfo.position;
-                    id[1] = -1;
-                } else {
-                    id[1] = groupInfo.position;
-                    id[0] = -1;
-                }
             } else {
                 outRect.top = mDividerHeight;
             }
-
+            groupId = groupInfo.mGroupID;
         }
     }
 
@@ -91,6 +86,9 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
+            if (i == 0) {
+                groupId = 0;
+            }
             View view = parent.getChildAt(i);
             mTextOffsetX = view.getPaddingLeft();
             int index = parent.getChildAdapterPosition(view);
@@ -102,11 +100,11 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
                 if (groupinfo != null) {
                     int left = parent.getPaddingLeft();
                     int right = parent.getWidth() - parent.getPaddingRight();
-
+                    LogUtils.d("onDrawOver::" + groupinfo.position);
                     //屏幕上第一个可见的 ItemView 时，i == 0;
                     if (i != 0) {
                         //只有组内的第一个ItemView之上才绘制
-                        if (groupinfo.isFirstViewInGroup() || (lastGroupinfo == null || groupinfo.position == id[1])) {
+                        if (groupinfo.isFirstViewInGroup() || groupinfo.mGroupID != groupId) {
                             int top = view.getTop() - mHeaderHeight;
                             int bottom = view.getTop();
                             drawHeaderRect(c, groupinfo, left, top, right, bottom);
@@ -130,13 +128,15 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
                         int bottom = top + mHeaderHeight;
                         drawHeaderRect(c, groupinfo, left, top, right, bottom);
                     }
+                    groupId = groupinfo.mGroupID;
                 }
 
             }
         }
     }
 
-    private void drawHeaderRect(Canvas c, GroupInfo groupinfo, int left, int top, int right, int bottom) {
+    private void drawHeaderRect(Canvas c, GroupInfo groupinfo, int left, int top, int right, int
+            bottom) {
         //绘制Header
         c.drawRect(left, top, right, bottom, mPaint);
 

@@ -93,11 +93,13 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 holder.setText(R.id.tv_member_name, circleMembers.getUser().getName());
                 ImageView more = holder.getImageViwe(R.id.iv_member_more);
                 TextView tag = holder.getTextView(R.id.tv_member_tag);
-                more.setVisibility(CircleMembers.FOUNDER.equals(circleMembers.getRole()) ? View.INVISIBLE : View.VISIBLE);
+                more.setVisibility(CircleMembers.FOUNDER.equals(circleMembers.getRole()) ? View
+                        .INVISIBLE : View.VISIBLE);
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
                 tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);
-                tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R.drawable.shape_bg_circle_radus_gray);
+                tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R
+                        .drawable.shape_bg_circle_radus_gray);
                 tag.setText(isOwner ? R.string.circle_owner : R.string.circle_manager);
                 RxView.clicks(more)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -109,7 +111,9 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData(charSequence));
+        mFragmentInfoSearchEdittext.setHint(getString(R.string.info_search));
+        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData
+                (charSequence));
     }
 
     @Override
@@ -131,8 +135,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-
-        return new StickySectionDecoration(getActivity(), position -> {
+        return new StickySectionDecoration(mActivity, position -> {
             if (mListDatas.isEmpty() || position >= mListDatas.size() || isSearch) {
                 return null;
             }
@@ -142,19 +145,22 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 case CircleMembers.FOUNDER:
                 case CircleMembers.ADMINISTRATOR:
                     groupInfo = new StickySectionDecoration.GroupInfo(1,
-                            String.format(Locale.getDefault(), mActivity.getString(R.string.circle_manager_format), mFrouLengh[0] + mFrouLengh[1]));
+                            String.format(Locale.getDefault(), mActivity.getString(R.string
+                                    .circle_manager_format), mFrouLengh[0] + mFrouLengh[1]));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[0] + mFrouLengh[1]);
                     break;
                 case CircleMembers.MEMBER:
                     groupInfo = new StickySectionDecoration.GroupInfo(2,
-                            String.format(Locale.getDefault(), mActivity.getString(R.string.circle_member_format), mFrouLengh[2]));
+                            String.format(Locale.getDefault(), mActivity.getString(R.string
+                                    .circle_member_format), mFrouLengh[2]));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[2]);
                     break;
                 case CircleMembers.BLACKLIST:
                     groupInfo = new StickySectionDecoration.GroupInfo(3,
-                            String.format(Locale.getDefault(), mActivity.getString(R.string.circle_blacklist_format), mFrouLengh[3]));
+                            String.format(Locale.getDefault(), mActivity.getString(R.string
+                                    .circle_blacklist_format), mFrouLengh[3]));
                     groupInfo.setPosition(position);
                     groupInfo.setGroupLength(mFrouLengh[3]);
                     break;
@@ -173,9 +179,12 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .itemlStr(mActivity.getString(isManager ? R.string.cancel_manager : (isMember ? R.string.appoint_manager : R.string.cancle_circle)))
-                .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string.cancle_circle : R.string.cancle_blacklist)))
-                .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string.appoint_blacklist : R.string.empty)))
+                .itemlStr(mActivity.getString(isManager ? R.string.cancel_manager : (isMember ? R
+                        .string.appoint_manager : R.string.cancle_circle)))
+                .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
+                        .cancle_circle : R.string.cancle_blacklist)))
+                .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
+                        .appoint_blacklist : R.string.empty)))
                 .isOutsideTouch(true)
                 .itemListener(position -> {
                     MembersPresenter.MemberHandleType type = null;
@@ -192,7 +201,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                     }
 
                     if (isMember && position == 2) {
-                        type = MembersPresenter.MemberHandleType.CANCLE_BLACKLIST;
+                        type = MembersPresenter.MemberHandleType.APPOINT_BLACKLIST;
                     }
 
                     if (isBlackList && position == 1) {
@@ -202,7 +211,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                     mPopupWindow.hide();
                 })
                 .build();
-        mPopupWindow.showLeft();
+        mPopupWindow.showAsDropDown(v);
     }
 
     private void filterData(CharSequence filterStr) {
@@ -216,7 +225,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             for (CircleMembers sortModel : mListDatas) {
                 String name = sortModel.getUser().getName();
                 if (name.contains(filterStr.toString()) ||
-                        HanziToPinyin.getInstance().getSpellStr(name).startsWith(filterStr.toString())) {
+                        HanziToPinyin.getInstance().getSpellStr(name).startsWith(HanziToPinyin.getInstance().getSpellStr(filterStr
+                                .toString()))) {
                     result.add(sortModel);
                 }
             }

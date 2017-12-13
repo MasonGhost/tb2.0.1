@@ -188,7 +188,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                         })
                         .subscribe(circleMembers -> {
                             mRootView.setGroupLengh(groupLengh);
-                            mRootView.refreshData();
+                            mRootView.onNetResponseSuccess(circleMembers,false);
                         });
             }
 
