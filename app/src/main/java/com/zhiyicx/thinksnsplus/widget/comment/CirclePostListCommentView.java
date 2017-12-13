@@ -91,6 +91,17 @@ public class CirclePostListCommentView extends LinearLayout {
 
             }
         });
+        mCirclePostNoPullRecyclerView.setOnIitemLongClickListener((view, position) -> {
+
+            if (!mIsUserNameClick) {
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onCommentContentLongClick(mDynamicBean, position);
+                }
+            } else {
+                mIsUserNameClick = false;
+
+            }
+        });
         mCirclePostNoPullRecyclerView.setOnUserNameLongClickListener(userInfoBean -> {
             if (!mIsUserNameClick) {
                 mIsUserNameClick = true;
@@ -151,5 +162,7 @@ public class CirclePostListCommentView extends LinearLayout {
         void onCommentUserInfoClick(UserInfoBean userInfoBean);
 
         void onCommentContentClick(CirclePostListBean dynamicBean, int position);
+
+        void onCommentContentLongClick(CirclePostListBean dynamicBean, int position);
     }
 }

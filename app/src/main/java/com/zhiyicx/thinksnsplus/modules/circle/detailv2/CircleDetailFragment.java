@@ -41,6 +41,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -77,6 +78,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
@@ -413,6 +415,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         initToolBar();
         initLisener();
+        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override
@@ -461,6 +464,24 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
+        }
+    }
+
+    @Override
+    public void onCommentContentLongClick(CirclePostListBean dynamicBean, int position) {
+        if ( mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getId().toString(),
+                    null,null,dynamicBean.getComments().get(position).getContent(),ReportType.CIRCLE_COMMENT));
+
+        } else {
+
         }
     }
 
@@ -771,8 +792,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportFragment.startReportActivity(getContext(), new ReportResourceBean(String.valueOf(circlePostListBean.getId()),
-                            circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                    String name = "";
+                    if (circlePostListBean.getUser() != null) {
+                        name = circlePostListBean.getUser().getName();
+                    }
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(),String.valueOf(circlePostListBean.getId()),
+                            name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -965,7 +990,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
                 mCircleInfoDetail.setJoined(new CircleInfoDetail.JoinedBean());
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
-                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail.getUsers_count()));
+                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
+                        .getUsers_count()));
                 mTvCircleSubscrib.setVisibility(View.GONE);
                 break;
             default:

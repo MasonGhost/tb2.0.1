@@ -46,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
@@ -62,6 +63,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
@@ -267,6 +270,24 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
+        }
+    }
+
+    @Override
+    public void onCommentContentLongClick(CirclePostListBean dynamicBean, int position) {
+        if ( mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getId().toString(),
+                    null,null,dynamicBean.getComments().get(position).getContent(), ReportType.CIRCLE_COMMENT));
+
+        } else {
+
         }
     }
 

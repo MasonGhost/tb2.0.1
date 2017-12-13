@@ -150,13 +150,11 @@ public class FindFragment extends TSFragment {
                  极铺
                  */
             case R.id.find_buy:
-                ReportFragment.startReportActivity(getContext(), new ReportResourceBean("1", "逗比一个", "http:baidu.com/343/4.jpg", "佛说：你我本无缘，全靠你有钱。世界那么大，我也想去看看，我带上你，你带上钱，我们一起去缔造我们的缘分", ReportType
-                        .CIRCLE));
-//                if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
-//                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
-//                } else {
-//                    showLoginPop();
-//                }
+                if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+                } else {
+                    showLoginPop();
+                }
                 break;
                 /*
                  找人

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.beans.report;
 
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 
 import java.io.Serializable;
@@ -18,16 +19,15 @@ public class ReportResourceBean implements Serializable{
      * img 要举报资源的图片资源
      * des 要举报资源的内容
      */
+    private UserInfoBean user;
     private String id;
     private String title;
     private String img;
     private String des;
     private ReportType type;
 
-    public ReportResourceBean() {
-    }
-
-    public ReportResourceBean(String id, String title, String img, String des, ReportType type) {
+    public ReportResourceBean(UserInfoBean user,String id, String title, String img, String des, ReportType type) {
+        this.user=user;
         this.id = id;
         this.title = title;
         this.img = img;
@@ -35,8 +35,13 @@ public class ReportResourceBean implements Serializable{
         this.type = type;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+
+    public UserInfoBean getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfoBean user) {
+        this.user = user;
     }
 
     public String getId() {

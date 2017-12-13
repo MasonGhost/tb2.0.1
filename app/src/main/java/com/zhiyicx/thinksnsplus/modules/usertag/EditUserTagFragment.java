@@ -282,7 +282,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         };
 //        mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
 //            @Override
-//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+//            public void onCommentTextClick(View view, RecyclerView.ViewHolder holder, int position) {
 //                if (position < 0) {
 //                    return;
 //                }

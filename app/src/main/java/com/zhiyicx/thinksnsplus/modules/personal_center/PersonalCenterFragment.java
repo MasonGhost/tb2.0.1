@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -63,6 +64,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -370,7 +373,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             requestData();
         }
         super.initData();
-        // 支持魅族手机首页状太栏文字白色问题
     }
 
     /**
@@ -676,6 +678,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
+        }
+    }
+
+    @Override
+    public void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getComment_id().toString(),
+                    null,null,dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
+
+        } else {
+
         }
     }
 

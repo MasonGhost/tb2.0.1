@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
@@ -57,9 +58,12 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -509,6 +513,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
+        // 是广告
         if (detailBeanV2.getFeed_from() == -1) {
             toAdvert(detailBeanV2.getDeleted_at(), detailBeanV2.getFeed_content());
             return;
@@ -655,6 +660,30 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    /**
+     * 评论长按
+     *
+     * @param dynamicBean
+     * @param position
+     */
+    @Override
+    public void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(),dynamicBean.getComments().get
+                    (position).getComment_id().toString(),
+                    null,null,dynamicBean.getComments().get(position).getComment_content(),ReportType.COMMENT));
+
+        } else {
+
+        }
+    }
+
     private void showCommentView() {
         showBottomView(false);
 
@@ -756,6 +785,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             position,
                                              boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                // 广告不处理
+                .item3Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
                 .item1Str(getString(R.string.dynamic_list_share_dynamic))
@@ -764,6 +795,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
+                .item3ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+                    if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                            .getId()),
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
                 .item2ClickListener(() -> {// 收藏
                     if (!TouristConfig.DYNAMIC_CAN_COLLECT && mPresenter.handleTouristControl
                             ()) {

@@ -4,14 +4,17 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ReportRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -24,6 +27,9 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
 
     @Inject
     ReportRepository mReportRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public ReportPresenter(ReportContract.Repository repository, ReportContract.View rootView) {
@@ -40,7 +46,7 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
     @Override
     public void report(String inputContent, ReportResourceBean reportResourceBean) {
         mRootView.showLoading();
-        Observable<ReportResultBean> observable;
+        Observable<ReportResultBean> observable = null;
         switch (reportResourceBean.getType()) {
             case INFO:
                 observable = mReportRepository.reportInfo(reportResourceBean.getId(), inputContent);
@@ -67,13 +73,26 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
                 observable = mReportRepository.reportCirclePost(reportResourceBean.getId(), inputContent);
 
                 break;
+
+            case CIRCLE_COMMENT:
+                observable = mReportRepository.reportCircleComment(reportResourceBean.getId(), inputContent);
+                break;
             case COMMENT:
                 observable = mReportRepository.reportComment(reportResourceBean.getId(), inputContent);
 
                 break;
-            default:
-                observable = mReportRepository.reportComment(reportResourceBean.getId(), inputContent);
 
+            case USER:
+                observable = mReportRepository.reportUser(reportResourceBean.getId(), inputContent);
+
+                break;
+            default:
+
+        }
+        if (observable == null) {
+            mRootView.hideLoading();
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.not_support_report));
+            return;
         }
 
         Subscription subscribe = observable
@@ -99,5 +118,36 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
                 });
         addSubscrebe(subscribe);
 
+    }
+
+    /**
+     * @param userId 需要获取的用户 id
+     */
+    @Override
+    public void getUserInfoById(Long userId) {
+        Subscription subscribe = mUserInfoRepository.getLocalUserInfoBeforeNet(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mRootView.getUserInfoResult(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.getUserInfoResult(null);
+
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.getUserInfoResult(null);
+
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 }

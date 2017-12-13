@@ -735,4 +735,9 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     public void onCommentTextClick(int position) {
         handleItemClick(position);
     }
+
+    @Override
+    public void onCommentTextLongClick(int position) {
+
+    }
 }
