@@ -436,7 +436,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
         if (mIsLookMore && getListDatas().size() >= DynamicListCommentView.SHOW_MORE_COMMENT_SIZE_LIMIT) {
-            mRvList.post(() -> ((LinearLayoutManager)layoutManager).scrollToPositionWithOffset(0,-mDynamicDetailHeader.scrollCommentToTop()));
+            mRvList.post(() -> ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(0, -mDynamicDetailHeader.scrollCommentToTop()));
         }
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
         long user_id = mDynamicBean.getUser_id();
@@ -591,18 +591,23 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+
+        return false;
+    }
+
+    private void goReportComment(int position) {
         // 减去 header
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
-
         // 举报
         if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(mListDatas.get(position).getCommentUser(),mListDatas.get(position).getComment_id().toString(),
-                    null,null,mListDatas.get(position).getComment_content(),ReportType.COMMENT));
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getCommentUser(), mListDatas.get
+                    (position).getComment_id().toString(),
+                    null, null, mListDatas.get(position).getComment_content(), ReportType.COMMENT));
 
         } else {
 
         }
-        return false;
     }
 
     @Override
@@ -671,7 +676,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(),String.valueOf(dynamicBean.getId()),
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                            .getId()),
                             "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
                     mOtherDynamicPopWindow.hide();
                 })
@@ -809,6 +815,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onCommentTextClick(int position) {
         handleItemClick(position);
+    }
+
+    @Override
+    public void onCommentTextLongClick(int position) {
+        goReportComment(position);
     }
 
     @Override

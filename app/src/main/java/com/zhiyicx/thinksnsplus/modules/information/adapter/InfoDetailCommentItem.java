@@ -88,6 +88,12 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
                 mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onItemLongClick(v, holder, position);
+            }
+            return true;
+        });
         setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());
         setUserInfoClick(holder.getView(R.id.iv_headpic), infoCommentListBean.getFromUserInfoBean());
     }
@@ -147,6 +153,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     public interface OnCommentItemListener {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
+        void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position);
 
         void onUserInfoClick(UserInfoBean userInfoBean);
     }
