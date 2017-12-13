@@ -56,6 +56,8 @@ public class PhotoViewFragment extends TSFragment {
 
     public final static int REQUEST_CODE = 100;
 
+    public static PhotoViewDataCacheBean sPhotoViewDataCacheBean;
+
     @BindView(R.id.vp_photos)
     ViewPager mViewPager;
     @BindView(R.id.rb_select_photo)
@@ -168,7 +170,9 @@ public class PhotoViewFragment extends TSFragment {
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
                 maxCount));
         // 初始化选择checkbox
-        mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
+        if (!allPaths.isEmpty()) {
+            mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
+        }
         mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
         });
@@ -250,22 +254,20 @@ public class PhotoViewFragment extends TSFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PhotoViewDataCacheBean photoViewDataCacheBean = SharePreferenceUtils.getObject(getContext().getApplicationContext(),
-                SharePreferenceTagConfig.SHAREPREFERENCE_TAG_PHOTO_VIEW_INTNET_CACHE);
 
-        if (photoViewDataCacheBean != null) {
-            seletedPaths = photoViewDataCacheBean.getSelectedPhoto();
+        if (sPhotoViewDataCacheBean != null) {
+            seletedPaths = sPhotoViewDataCacheBean.getSelectedPhoto();
             checkImagePath.addAll(seletedPaths);
             seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
-            allPaths = photoViewDataCacheBean.getAllPhotos();
-            currentItem = photoViewDataCacheBean.getCurrentPosition();
-            hasRightTitle = photoViewDataCacheBean.isToll();
-            rectList = photoViewDataCacheBean.getAnimationRectBeanArrayList();
-            maxCount = photoViewDataCacheBean.getMaxCount();
-            tolls = photoViewDataCacheBean.getSelectedPhotos();
+            allPaths = sPhotoViewDataCacheBean.getAllPhotos();
+            currentItem = sPhotoViewDataCacheBean.getCurrentPosition();
+            hasRightTitle = sPhotoViewDataCacheBean.isToll();
+            rectList = sPhotoViewDataCacheBean.getAnimationRectBeanArrayList();
+            maxCount = sPhotoViewDataCacheBean.getMaxCount();
+            tolls = sPhotoViewDataCacheBean.getSelectedPhotos();
             removePlaceHolder(tolls);
+            mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         }
-        mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
 
     @Override
@@ -278,6 +280,9 @@ public class PhotoViewFragment extends TSFragment {
         seletedPaths = null;
         if (mViewPager != null) {
             mViewPager.setAdapter(null);
+        }
+        if (sPhotoViewDataCacheBean != null) {
+            sPhotoViewDataCacheBean = null;
         }
     }
 
