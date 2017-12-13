@@ -15,8 +15,8 @@ public class CircleSearchHistoryBeanTest extends AbstractDaoTestLongPk<CircleSea
     protected CircleSearchHistoryBean createEntity(Long key) {
         CircleSearchHistoryBean entity = new CircleSearchHistoryBean();
         entity.setId(key);
-        entity.setCreate_time();
-        entity.setType();
+        entity.setCreate_time(1);
+        entity.setType(2);
         return entity;
     }
 

@@ -164,27 +164,12 @@ public class CircleListItem extends BaseCircleItem {
             circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R
                     .dimen.spacing_small) : context.getResources()
                     .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
-            boolean canChange = circleInfo.getAudit() == 1 && !isJoined && !CreateCircleFragment
-                    .MODE_PAID.equals(circleInfo.getMode());
-            circleSubscribeFrame.setEnabled(!canChange);
-            circleSubscribeFrame.setVisibility(!canChange ? View.VISIBLE : View.GONE);
-            circleSubscribe.setEnabled(canChange);
+            circleSubscribe.setEnabled(false);
 
-            RxView.clicks(circleSubscribe)
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        if (mCircleItemItemEvent == null) {
-                            return;
-                        }
-                        if (mPresenter != null && CreateCircleFragment
-                                .MODE_PAID.equals(circleInfo.getMode())) {
-                            initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
-                                    (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
-                                    .buy_pay_words_desc);
-                            return;
-                        }
-                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
-                    });
+            boolean canChange = circleInfo.getAudit() == 1 && !isJoined;
+
+            circleSubscribeFrame.setVisibility(canChange ? View.VISIBLE : View.GONE);
+
             RxView.clicks(circleSubscribeFrame)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
@@ -197,9 +182,6 @@ public class CircleListItem extends BaseCircleItem {
                                     (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
                                     .buy_pay_words_desc);
                             return;
-                        }
-                        if (isJoined) {
-                            mCircleItemItemEvent.toCircleDetail(circleInfo);
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
                     });
