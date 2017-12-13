@@ -74,6 +74,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.circle.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
@@ -161,8 +163,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     CheckBox mTvCircleSubscrib;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
-    @BindView(R.id.iv_serach)
-    ImageView mIvSerach;
     @BindView(R.id.iv_share)
     ImageView mIvShare;
     @BindView(R.id.iv_setting)
@@ -976,6 +976,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 setLeftClick();
                 break;
             case R.id.iv_serach:
+                CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE_POST);
                 break;
             case R.id.iv_share:
                 break;
