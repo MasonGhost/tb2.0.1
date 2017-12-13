@@ -264,6 +264,9 @@ public class PhotoViewFragment extends TSFragment {
             maxCount = photoViewDataCacheBean.getMaxCount();
             tolls = photoViewDataCacheBean.getSelectedPhotos();
             removePlaceHolder(tolls);
+        } else {
+            seletedPaths = new ArrayList<>();
+            allPaths = new ArrayList<>();
         }
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
