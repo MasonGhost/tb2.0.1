@@ -281,7 +281,7 @@ public interface CircleClient {
     Observable<List<CirclePostListBean>> getAllePostList(@Query("limit") Integer limit
             , @Query("offset") Integer offset
             , @Query("keyword") String keyword
-            , @Query("group_id") Integer group_id);
+            , @Query("group_id") Long group_id);
 
     /**
      * 获取圈子成员列表

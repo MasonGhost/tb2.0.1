@@ -67,14 +67,14 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     private MultiItemTypeAdapter mHsitoryAdapter;
     private List<CircleSearchHistoryBean> mHistoryData = new ArrayList<>();
 
-
     private IHistoryCententClickListener mIHistoryCententClickListener;
 
 
-    public static SearchCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
+    public static SearchCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType, long circleGroupId) {
         SearchCirclePostFragment circleDetailFragment = new SearchCirclePostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(CIRCLE_TYPE, circleMinePostType);
+        bundle.putLong(CIRCLE_ID, circleGroupId);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
     }
@@ -82,6 +82,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_search_post_list;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -117,6 +122,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
         refreshHistory();
     }
 
+    @Override
+    protected float getItemDecorationSpacing() {
+        return DEFAULT_LIST_ITEM_SPACING;
+    }
+
     private void refreshHistory() {
         mHsitoryAdapter.notifyDataSetChanged();
         if (mHistoryData.isEmpty()) {
@@ -148,10 +158,9 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
-                                onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
-
+                            onEditChanged(qaSearchHistoryBean.getContent());
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -238,15 +247,13 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
         if (TextUtils.isEmpty(str)) {
             return;
         }
-        // 请求网络数据，就隐藏历史
-        mRvSearchHistory.setVisibility(View.GONE);
-
-
         if (mRefreshlayout.isRefreshing()) {
             onRefresh(mRefreshlayout);
         } else {
             mRefreshlayout.autoRefresh();
         }
+        // 请求网络数据，就隐藏历史
+        mRvSearchHistory.setVisibility(View.GONE);
     }
 
     @Override

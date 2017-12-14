@@ -61,7 +61,7 @@ public interface IBaseCircleRepository {
      * @return
      */
     @GET(APP_PATH_GET_ALL_POSTLIST)
-    Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Integer group_id);
+    Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id);
 
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
 

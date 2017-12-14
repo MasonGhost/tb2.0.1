@@ -36,7 +36,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean.SEND_ING;
  */
 @FragmentScoped
 public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentContract.Repository, QuestionCommentContract.View>
-        implements QuestionCommentContract.Presenter{
+        implements QuestionCommentContract.Presenter {
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -64,7 +64,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-       mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -122,6 +122,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.getListDatas().remove(position);
+                        mRootView.getCurrentQuestion().setComments_count(mRootView.getCurrentQuestion().getComments_count() - 1);
                         mRootView.refreshData();
                         mRootView.setLoading(false, true, mContext.getString(R.string.qa_question_comment_delete_success));
                     }

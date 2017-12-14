@@ -37,7 +37,7 @@
         android:layout_toLeftOf="@+id/iv_share"
         android:paddingLeft="@dimen/spacing_small"
         android:paddingRight="@dimen/spacing_small"
-        android:src="@mipmap/ico_search"/>
+        android:src="@mipmap/ico_search_white"/>
 
     <ImageView
         android:id="@+id/iv_share"

@@ -26,6 +26,10 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment {
+    public static final String BUNDLE_PAGE = "PAGE";
+
+    public static final int PAGE_CIRCLE = 0;
+    public static final int PAGE_CIRCLE_POST = 1;
 
     private String mCurrentSearchContent = "";
 
@@ -51,6 +55,9 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
+        if (getArguments() != null) {
+            mVpFragment.setCurrentItem(getArguments().getInt(BUNDLE_PAGE));
+        }
         mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -68,6 +75,7 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
 
             }
         });
+
     }
 
     @Override
@@ -93,7 +101,7 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
             mFragmentList.add(SearchCircleFragment.newInstance(false));
-            mFragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH));
+            mFragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH,0));
         }
         return mFragmentList;
     }

@@ -25,7 +25,7 @@ import rx.Observable;
  */
 public interface CircleDetailContract {
     interface View extends ITSListView<CirclePostListBean, Presenter> {
-        long getCircleId();
+        Long getCircleId();
         void allDataReady(CircleZipBean circleZipBean);
 
         String getType();

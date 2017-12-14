@@ -616,7 +616,7 @@
         <activity
             android:name=".modules.circle.search.container.CircleSearchContainerActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.circle.manager.members.MembersListActivity"
             android:screenOrientation="portrait"/>
@@ -630,6 +630,9 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.circle.manager.earning.record.EarningListActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.search.onlypost.CirclePostSearchActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize|stateVisible"/>
     </application>
 
 </manifest>

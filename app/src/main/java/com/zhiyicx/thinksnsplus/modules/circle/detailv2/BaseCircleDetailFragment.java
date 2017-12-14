@@ -177,7 +177,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
 
     @Override
-    public long getCircleId() {
+    public Long getCircleId() {
+        if (getArguments() == null || getArguments().getLong(CIRCLE_ID) == 0) {
+            return null;
+        }
         return getArguments().getLong(CIRCLE_ID);
     }
 
@@ -216,8 +219,16 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        AndroidBug5497Workaround.assistActivity(getActivity());
         mIlvComment.setOnSendClickListener(this);
+        mVShadow.setOnClickListener(v -> closeInputView());
+    }
+
+    private void closeInputView() {
+        if (mIlvComment.getVisibility() == View.VISIBLE) {
+            mIlvComment.setVisibility(View.GONE);
+            DeviceUtils.hideSoftKeyboard(mActivity, mIlvComment.getEtContent());
+        }
+        mVShadow.setVisibility(View.GONE);
     }
 
     @Override
@@ -275,16 +286,16 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onCommentContentLongClick(CirclePostListBean dynamicBean, int position) {
-        if ( mPresenter.handleTouristControl()) {
+        if (mPresenter.handleTouristControl()) {
             return;
         }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
         // 举报
         if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
-                    (position).getCommentUser(),dynamicBean.getComments().get
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getId().toString(),
-                    null,null,dynamicBean.getComments().get(position).getContent(), ReportType.CIRCLE_COMMENT));
+                    null, null, dynamicBean.getComments().get(position).getContent(), ReportType.CIRCLE_COMMENT));
 
         } else {
 
