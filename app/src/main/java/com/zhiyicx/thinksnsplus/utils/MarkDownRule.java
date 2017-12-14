@@ -6,6 +6,7 @@ import br.tiagohm.markdownview.css.styles.Github;
 
 /**
  * @author LeiYan
+ * @describe MarkDown 规范css 样式
  * @date 2017/12/14
  * @contact email:907238552@qq.com
  */
@@ -19,6 +20,7 @@ public class MarkDownRule {
      */
     public static StyleSheet generateStandardStyle() {
         InternalStyleSheet css = new Github();
+        css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify","text-align-last:left");
         css.addRule("body", "line-height: 1.59", "padding: 0px", "font-size: 17px", "color: #333333");
         css.addRule("h1", "color: #333333", "size: 25px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
         css.addRule("h2", "color: #333333", "size: 23px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
