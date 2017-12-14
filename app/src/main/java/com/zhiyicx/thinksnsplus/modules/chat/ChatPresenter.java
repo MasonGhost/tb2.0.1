@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -43,6 +45,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -56,7 +59,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
+public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter, EMMessageListener{
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
@@ -230,6 +233,35 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         return mSystemRepository.checkTShelper(user_id);
     }
 
+    @Override
+    public EMMessageListener getMessageListener() {
+        return this;
+    }
+
+    @Override
+    public void bindMessageListener() {
+        // 退出的时候移除监听器
+        EMClient.getInstance().chatManager().addMessageListener(this);
+    }
+
+    @Override
+    public void removeMessageListener() {
+        // 绑定监听器
+        EMClient.getInstance().chatManager().removeMessageListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bindMessageListener();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        removeMessageListener();
+    }
+
     /**
      * 收到消息
      */
@@ -286,7 +318,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         } else {
             chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
         }
-        mRootView.reFreshMessage(chatItemBean);
+        Subscription subscription = Observable.just(chatItemBean)
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(chatItemBean1 -> mRootView.reFreshMessage(chatItemBean1));
+        addSubscrebe(subscription);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_AUTHSUCESSED)
@@ -314,5 +350,50 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     private void onMessageTimeout(Message message) {
         LogUtils.d(" 超时   message = " + message);
         mRootView.updateMessageStatus(message);
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> list) {
+        //收到消息
+        LogUtils.d("Cathy", " 收到消息 :" + list);
+        if (!list.isEmpty()){
+            for (EMMessage message : list){
+                if (message.conversationId().equals(mRootView.getMessItemBean().getEmKey())){
+                    // 这才是本聊天组的消息哦
+                    updateMessageV2(message);
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> messages) {
+        // 收到透传消息
+        LogUtils.d("Cathy", " 收到透传消息 :" + messages);
+    }
+
+    @Override
+    public void onMessageRead(List<EMMessage> messages) {
+        // 收到已读回执
+        LogUtils.d("Cathy", " 收到已读回执 :" + messages);
+    }
+
+    @Override
+    public void onMessageDelivered(List<EMMessage> message) {
+        // 收到已送达回执
+        LogUtils.d("Cathy", " 收到已送达回执 :" + message);
+    }
+
+    @Override
+    public void onMessageRecalled(List<EMMessage> messages) {
+        // 消息被撤回
+        LogUtils.d("Cathy", " 消息被撤回 :" + messages);
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage message, Object change) {
+        // 消息状态变动
+        LogUtils.d("Cathy", " 消息状态变动 :" + message + "change : " + change);
     }
 }

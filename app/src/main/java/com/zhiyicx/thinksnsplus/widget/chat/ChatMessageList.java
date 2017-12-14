@@ -282,9 +282,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     public void refreshSoomthBottom() {
         if (messageAdapter != null) {
             messageAdapter.notifyDataSetChanged();
-//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount()-1);
             smoothScrollToBottom();
-
         }
     }
 

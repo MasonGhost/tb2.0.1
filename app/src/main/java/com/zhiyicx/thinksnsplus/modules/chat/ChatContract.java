@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMConversation;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -116,8 +117,8 @@ public interface ChatContract {
          * 获取环信的聊天记录列表
          *
          * @param itemBeanV2 会话信息
-         * @param msgId    当前的第一条的消息id
-         * @param pageSize 一页数量
+         * @param msgId      当前的第一条的消息id
+         * @param pageSize   一页数量
          * @return List<ChatItemBean>
          */
         List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize);
@@ -180,5 +181,22 @@ public interface ChatContract {
         void createChat(UserInfoBean userInfoBean, String text);
 
         String checkTShelper(long user_id);
+
+        /**
+         * 获取消息的监听方法
+         *
+         * @return EMMessageListener
+         */
+        EMMessageListener getMessageListener();
+
+        /**
+         * 绑定消息监听器
+         */
+        void bindMessageListener();
+
+        /**
+         * 移除监听器
+         */
+        void removeMessageListener();
     }
 }

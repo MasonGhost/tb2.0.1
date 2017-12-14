@@ -51,10 +51,11 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Date 2017/01/06
  * @Contact master.jungle68@gmail.com
  */
-public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener, EMMessageListener {
+public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener{
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
     public static final String BUNDLE_CHAT_ID = "bundle_chat_id";
     public static final String BUNDLE_CHAT_USER = "bundle_chat_user";
+    public static final int DEFAULT_PAGE_SIZE = 10;
     /**
      * 聊天列表
      */
@@ -112,19 +113,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 退出的时候移除监听器
-        EMClient.getInstance().chatManager().removeMessageListener(this);
-    }
-
-    @Override
     protected void initView(View rootView) {
         mIlvContainer.setOnSendClickListener(this);
         // 保持显示
         mIlvContainer.setSendButtonVisiable(true);
-        // 绑定监听器
-        EMClient.getInstance().chatManager().addMessageListener(this);
         mIlvContainer.getFocus();
         // 软键盘控制区
         RxView.globalLayouts(mRlContainer)
@@ -308,7 +300,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             hideLoading();
             return;
         }
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), 10);
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
         mDatas.addAll(0, chatItemBeen);
         mMessageList.refresh();
     }
@@ -332,7 +324,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     public void initMessageList() {
-        mDatas.addAll(mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), 10));
+        mDatas.addAll(mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE));
         mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
@@ -360,35 +352,5 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     private void onResendClick(ChatItemBean chatItemBean) {
         mPresenter.reSendText(chatItemBean);
-    }
-
-    @Override
-    public void onMessageReceived(List<EMMessage> messages) {
-        //收到消息
-    }
-
-    @Override
-    public void onCmdMessageReceived(List<EMMessage> messages) {
-        //收到透传消息
-    }
-
-    @Override
-    public void onMessageRead(List<EMMessage> messages) {
-        //收到已读回执
-    }
-
-    @Override
-    public void onMessageDelivered(List<EMMessage> message) {
-        //收到已送达回执
-    }
-
-    @Override
-    public void onMessageRecalled(List<EMMessage> messages) {
-        //消息被撤回
-    }
-
-    @Override
-    public void onMessageChanged(EMMessage message, Object change) {
-        //消息状态变动
     }
 }
