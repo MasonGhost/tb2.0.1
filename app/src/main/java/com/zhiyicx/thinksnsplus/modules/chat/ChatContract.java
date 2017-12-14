@@ -114,11 +114,13 @@ public interface ChatContract {
 
         /**
          * 获取环信的聊天记录列表
-         * @param itemBeanV2
-         * @param pageSize
-         * @return
+         *
+         * @param itemBeanV2 会话信息
+         * @param msgId    当前的第一条的消息id
+         * @param pageSize 一页数量
+         * @return List<ChatItemBean>
          */
-        List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, int pageSize);
+        List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize);
 
     }
 

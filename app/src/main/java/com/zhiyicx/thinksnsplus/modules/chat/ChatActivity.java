@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 
 /**
  * @Describe
@@ -26,10 +27,10 @@ public class ChatActivity extends TSActivity<ChatPresenter, ChatFragment> {
 
     @Override
     protected ChatFragment getFragment() {
-        MessageItemBean messageItemBean =  getIntent().getExtras().getParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN);
-        if (messageItemBean ==null)
+        if (getIntent().getExtras() == null){
             throw new IllegalArgumentException("messageItemBean not be null ");
-        return ChatFragment.newInstance(messageItemBean);
+        }
+        return ChatFragment.newInstance(getIntent().getExtras());
     }
 
 }

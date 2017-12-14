@@ -187,19 +187,15 @@ public class ChatRepository implements ChatContract.Repository {
     }
 
     @Override
-    public List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, int pageSize) {
+    public List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize) {
         EMConversation conversation = itemBeanV2.getConversation();
-        List<EMMessage> msgs = conversation.getAllMessages();
-        if (msgs == null){
-            msgs = new ArrayList<>();
-        }
-        int msgCount = msgs.size();
-        if (msgCount < conversation.getAllMsgCount() && msgCount < pageSize) {
-            String msgId = null;
-            if (msgs.size() > 0) {
-                msgId = msgs.get(0).getMsgId();
-            }
-            msgs.addAll(conversation.loadMoreMsgFromDB(msgId, pageSize - msgCount));
+        List<EMMessage> msgs = new ArrayList<>();
+        if ("0".equals(msgId)){
+            // 表示是第一次拿消息，本地第一次只有20条
+            msgs = conversation.getAllMessages();
+        } else {
+            // 从传过来的msgId开始取出历史消息
+            msgs.addAll(conversation.loadMoreMsgFromDB(msgId, pageSize));
         }
         if (!msgs.isEmpty()){
             List<ChatItemBean> list = new ArrayList<>();
@@ -214,6 +210,7 @@ public class ChatRepository implements ChatContract.Repository {
                     userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
                 }
                 chatItemBean.setUserInfo(userInfoBean);
+                list.add(chatItemBean);
             }
             return list;
         }

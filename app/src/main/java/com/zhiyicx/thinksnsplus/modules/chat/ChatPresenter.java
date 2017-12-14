@@ -100,19 +100,14 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 
     @Override
     public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize) {
-        List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), pageSize);
-        Subscription subscribe = Observable.just(data)
+        List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
+        Subscription subscribe = Observable.just(pageSize)
                 .observeOn(Schedulers.io())
-                .subscribe(chatItemBeen -> {
-                    for (ChatItemBean chatItemBean : chatItemBeen) {
-                        if (!chatItemBean.getLastMessage().getIs_read()) {
-                            // 把消息更新为已经读
-                            MessageDao.getInstance(mContext).readMessage(chatItemBean.getLastMessage().getMid());
-                        }
-                    }
+                .map(integer -> mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, integer)).subscribe(chatItemBeans -> {
+                    //
+                    mRootView.hideLoading();
                 });
         addSubscrebe(subscribe);
-        mRootView.hideLoading();
         return data;
     }
 
@@ -156,6 +151,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             @Override
             public void onSuccess() {
                 // 发送成功 需要刷新页面
+                LogUtils.d("Cathy", "发送成功"+ message.getBody().toString());
                 updateMessageV2(message);
             }
 
@@ -174,7 +170,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         break;
                     default:
                 }
-
+                mRootView.showSnackErrorMessage(error);
             }
 
             @Override

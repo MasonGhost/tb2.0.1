@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.jakewharton.rxbinding.view.RxView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -28,6 +29,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
@@ -51,24 +53,35 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  */
 public class ChatFragment extends TSFragment<ChatContract.Presenter> implements ChatContract.View, InputLimitView.OnSendClickListener, OnRefreshListener, ChatMessageList.MessageListItemClickListener, EMMessageListener {
     public static final String BUNDLE_MESSAGEITEMBEAN = "MessageItemBean";
-
+    public static final String BUNDLE_CHAT_ID = "bundle_chat_id";
+    public static final String BUNDLE_CHAT_USER = "bundle_chat_user";
+    /**
+     * 聊天列表
+     */
     @BindView(R.id.message_list)
-    ChatMessageList mMessageList; // 聊天列表
+    ChatMessageList mMessageList;
+    /**
+     * 输入控件
+     */
     @BindView(R.id.ilv_container)
-    InputLimitView mIlvContainer; // 输入控件
+    InputLimitView mIlvContainer;
+    /**
+     * 页面容器
+     */
     @BindView(R.id.rl_container)
-    RelativeLayout mRlContainer;  // 页面容器
+    RelativeLayout mRlContainer;
     private ActionPopupWindow mDeletCommentPopWindow;
 
     private List<ChatItemBean> mDatas = new ArrayList<>();
     private MessageItemBeanV2 mMessageItemBean;
-    private boolean mKeyboradIsOpen;// 软键盘是否打开
+    /**
+     * 软键盘是否打开
+     */
+    private boolean mKeyboradIsOpen;
 
-    public static ChatFragment newInstance(MessageItemBeanV2 messageItemBean) {
-        Bundle args = new Bundle();
-        args.putSerializable(BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+    public static ChatFragment newInstance(Bundle bundle) {
         ChatFragment fragment = new ChatFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -116,7 +129,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         // 软键盘控制区
         RxView.globalLayouts(mRlContainer)
                 .flatMap(aVoid -> {
-                    if (mRlContainer==null) {
+                    if (mRlContainer == null) {
                         return Observable.just(false);
                     }
                     Rect rect = new Rect();
@@ -130,7 +143,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
-                    if (mMessageList==null) {
+                    if (mMessageList == null) {
                         return;
                     }
                     //若不可视区域高度大于1/3屏幕高度，则键盘显示
@@ -157,8 +170,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         getIntentData();
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.setRefreshListener(this);
-        if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
-            Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids((int) AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
+        if (mMessageItemBean.getConversation() == null) {
+            // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
+            EMConversation conversation = (EMClient.getInstance().chatManager().getConversation(mMessageItemBean.getEmKey()));
             if (conversation == null) {
                 mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {
@@ -178,8 +192,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 发送按钮被点击
-     *
-     * @param text
      */
     @Override
     public void onSendClick(View v, String text) {
@@ -187,7 +199,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             return;
         }
         if (mMessageItemBean.getConversation() != null) {
-            mPresenter.sendTextMessage(text, mMessageItemBean.getConversation().getCid());
+            mPresenter.sendTextMessageV2(text, mMessageItemBean.getEmKey());
         } else {
             mPresenter.createChat(mMessageItemBean.getUserInfo(), text);
         }
@@ -197,8 +209,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 发送状态点击
-     *
-     * @param chatItemBean
      */
     @Override
     public void onStatusClick(ChatItemBean chatItemBean) {
@@ -208,8 +218,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 聊天气泡点击
-     *
-     * @param message
      */
     @Override
     public void onBubbleClick(ChatItemBean message) {
@@ -220,9 +228,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 聊天气泡长按
-     *
-     * @param message
-     * @return
      */
     @Override
     public boolean onBubbleLongClick(ChatItemBean message) {
@@ -233,8 +238,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 用户信息点击
-     *
-     * @param chatItemBean
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
@@ -243,9 +246,6 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     /**
      * 用户信息长按
-     *
-     * @param chatItemBean
-     * @return
      */
     @Override
     public boolean onUserInfoLongClick(ChatItemBean chatItemBean) {
@@ -276,7 +276,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public int getCurrentChatCid() {
-        return mMessageItemBean.getConversation().getCid();
+        return 0;
     }
 
     @Override
@@ -293,8 +293,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void updateConversation(Conversation conversation) {
-        mMessageItemBean.setConversation(conversation);
-        initMessageList();
+//        mMessageItemBean.setConversation(conversation);
+//        initMessageList();
     }
 
     @Override
@@ -308,21 +308,32 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             hideLoading();
             return;
         }
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), mDatas.size() > 0 ? mDatas.get(0).getLastMessage().getCreate_time() : (System.currentTimeMillis() + ConstantConfig.DAY));
-        chatItemBeen.addAll(mDatas);
-        mDatas.clear();
-        mDatas.addAll(chatItemBeen);
+        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), 10);
+        mDatas.addAll(0, chatItemBeen);
         mMessageList.refresh();
     }
 
+    /**
+     * 获取当前信息的第一条聊天id
+     *
+     * @return msgId
+     */
+    private String getCurrentFirstItemId() {
+        return mDatas.isEmpty() ? "0" : mDatas.get(0).getMessage().getMsgId();
+    }
+
     private void getIntentData() {
-        mMessageItemBean = getArguments().getParcelable(BUNDLE_MESSAGEITEMBEAN);
+        UserInfoBean userInfoBean = (UserInfoBean) getArguments().getSerializable(BUNDLE_CHAT_USER);
+        String id = getArguments().getString(BUNDLE_CHAT_ID);
+        mMessageItemBean = new MessageItemBeanV2();
+        mMessageItemBean.setEmKey(id);
+        mMessageItemBean.setUserInfo(userInfoBean);
         setChatTitle(mMessageItemBean.getUserInfo().getName());
     }
 
     public void initMessageList() {
-        mDatas.addAll(mPresenter.getHistoryMessages(mMessageItemBean.getConversation().getCid(), (System.currentTimeMillis() + ConstantConfig.DAY)));
-        mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
+        mDatas.addAll(mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), 10));
+        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
     }
@@ -370,6 +381,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     public void onMessageDelivered(List<EMMessage> message) {
         //收到已送达回执
     }
+
     @Override
     public void onMessageRecalled(List<EMMessage> messages) {
         //消息被撤回
