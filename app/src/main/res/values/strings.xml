@@ -374,6 +374,7 @@
     <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该内容已被删除</string>
+    <string name="resource_deleted_format">该%s已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
     <string name="review_comment_deleted">该评论已被删除</string>
     <string name="review_description">支付%1$.2f申请置顶评论“%2$s”</string>
@@ -618,7 +619,7 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
-    <string name="qa">问题</string>
+    <string name="qa">@string/question</string>
     <string name="qa_answer">回答</string>
     <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
@@ -838,5 +839,7 @@
     <string name="report_success_tip">举报信息提交成功</string>
     <string name="hint_report">填写举报原因</string>
     <string name="not_support_report">不支持的举报类型</string>
+    <string name="post">帖子</string>
+    <string name="question">问题</string>
 
 </resources>
