@@ -410,20 +410,23 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         }
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
+        bundle.putString(ChatFragment.BUNDLE_CHAT_ID, messageItemBean.getEmKey());
         to.putExtras(bundle);
         startActivity(to);
     }
 
     @Override
     public void onLeftClick(int position) {
-        position = position - 1;// 减去 header
-//        toChat(mListDatas.get(position), position);
+        // 减去 header
+        position = position - 1;
+        toChatV2(messageItemBeanList.get(position), position);
     }
 
     @Override
     public void onRightClick(int position) {
-        position = position - 1;// 减去 header
+        // 减去 header
+        position = position - 1;
         mPresenter.deletConversation(position);
         refreshData();
     }

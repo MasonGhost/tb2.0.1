@@ -44,6 +44,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -298,11 +299,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         RxView.clicks(mLlChatContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    MessageItemBean messageItemBean = new MessageItemBean();
+                    MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
                     messageItemBean.setUserInfo(mUserInfoBean);
                     Intent to = new Intent(getActivity(), ChatActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+                    bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, mUserInfoBean);
+                    bundle.putString(ChatFragment.BUNDLE_CHAT_ID, String.valueOf(mUserInfoBean.getUser_id()));
                     to.putExtras(bundle);
                     startActivity(to);
                 });
