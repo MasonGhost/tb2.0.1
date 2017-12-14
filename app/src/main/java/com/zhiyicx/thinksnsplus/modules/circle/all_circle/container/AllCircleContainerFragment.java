@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -8,8 +9,13 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.widget.TabSelectView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
@@ -18,6 +24,11 @@ import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchCont
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
 /**
  * @Author Jliuer
@@ -30,6 +41,11 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     private List<String> mTitle;
     public static final String RECOMMEND_INFO = "1";
+
+
+    private UserCertificationInfo mUserCertificationInfo;
+    private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
+
 
     @Override
     protected boolean showToolBarDivider() {
@@ -81,7 +97,12 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        CreateCircleActivity.startCreateActivity(mActivity);
+        // 发布提示 1、首先需要认证 2、需要付费
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        mPresenter.checkCertification();
+
     }
 
     @Override
@@ -124,5 +145,86 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected void initData() {
         mPresenter.getCategroiesList(0, 0);
+    }
+
+
+    /**
+     * 认证检查回调
+     *
+     * @param userCertificationInfo
+     */
+    @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+        mUserCertificationInfo = userCertificationInfo;
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+        if (mSystemConfigBean.getCircleGroup() != null && mSystemConfigBean.getCircleGroup()
+                .isNeed_verified() && userCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.PASS.value) {
+            showCerificationPopWindow();
+        } else {
+            CreateCircleActivity.startCreateActivity(mActivity);
+        }
+
+    }
+
+    /**
+     * 认证提示弹窗
+     */
+    private void showCerificationPopWindow() {
+
+        if (mCertificationAlertPopWindow == null) {
+            mCertificationAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item2Str(getString(R.string.certification_personage))
+                    .item3Str(getString(R.string.certification_company))
+                    .desStr(getString(R.string.info_publish_hint_certification))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
+                    .item2ClickListener(() -> {// 个人认证
+                        mCertificationAlertPopWindow.hide();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 0);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
+                    })
+                    .item3ClickListener(() -> {// 企业认证
+                        mCertificationAlertPopWindow.hide();
+                        if (mUserCertificationInfo != null // 待审核
+                                && mUserCertificationInfo.getId() != 0
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
+
+                            Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                            Bundle bundleData = new Bundle();
+                            bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                            bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                            intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                            startActivity(intentToDetail);
+                        } else {
+                            Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(BUNDLE_TYPE, 1);
+                            intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                            startActivity(intent);
+                        }
+                    })
+                    .build();
+        }
+        mCertificationAlertPopWindow.show();
+
     }
 }

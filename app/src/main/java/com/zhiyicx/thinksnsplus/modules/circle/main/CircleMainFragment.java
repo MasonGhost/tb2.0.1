@@ -183,7 +183,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         startActivity(intent);
     }
 
-
+    /**
+     * 认证检查回调
+     *
+     * @param userCertificationInfo
+     */
     @Override
     public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
         mUserCertificationInfo = userCertificationInfo;

@@ -115,7 +115,11 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     public void checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         UserCertificationInfo userCertificationInfo = mUserCertificationInfoDao.getInfoByUserId();
-
+        if (getSystemConfigBean() != null && getSystemConfigBean().getCircleGroup() != null && userCertificationInfo != null &&
+                userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
+            mRootView.setUserCertificationInfo(userCertificationInfo);
+            return;
+        }
 //        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
 //            mRootView.setUserCertificationInfo(userCertificationInfo);
 //        } else {

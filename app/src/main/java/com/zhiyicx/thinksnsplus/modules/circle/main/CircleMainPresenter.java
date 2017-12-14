@@ -162,13 +162,20 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
         mRootView.refreshData();
     }
 
-
+    /**
+     * 检查认证状态信息
+     */
     @Override
     public void checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         UserCertificationInfo userCertificationInfo = mUserCertificationInfoDao.getInfoByUserId();
+        if (getSystemConfigBean() != null && getSystemConfigBean().getCircleGroup() != null && userCertificationInfo != null &&
+                userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
+            mRootView.setUserCertificationInfo(userCertificationInfo);
+            return;
+        }
 
-        Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
+        Subscription subscribe = Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
                 (systemConfigBean, userCertificationInfo1) -> {
                     Map data = new HashMap();
                     data.put("systemConfigBean", systemConfigBean);
@@ -212,5 +219,6 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 }
