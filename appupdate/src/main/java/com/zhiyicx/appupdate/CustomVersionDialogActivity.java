@@ -120,8 +120,17 @@ public class CustomVersionDialogActivity extends VersionDialogActivity implement
         //可以使用之前从service传过来的一些参数比如：title。msg，downloadurl，parambundle
         tvTitle.setText(getVersionTitle());
         InternalStyleSheet css = new Github();
-        css.addRule("body", "line-height: 1.6", "padding: 10px");
-        css.addRule(".container", "padding-right:0", ";padding-left:0");
+        css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify","text-align-last:left", "letter-spacing: 0.3px");
+        css.addRule("body", "line-height: 1.59", "padding: 0px", "font-size: 17px", "color: #333333");
+        css.addRule("h1", "color: #333333", "size: 25px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
+        css.addRule("h2", "color: #333333", "size: 23px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
+        css.addRule("h3", "color: #333333", "size: 21px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
+        css.addRule("h4", "color: #333333", "size: 19px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
+        css.addRule("img", "margin-top: 20px", "margin-bottom: 20px","align:center", "margin: 0 auto","max-width: 100%", "display: block");
+        /*设置 a 标签文字颜色，不知道为什么，要这样混合才能有效*/
+        css.addMedia("color: #59b6d7; a:link {color: #59b6d7}");
+        css.endMedia();
+        css.addRule("a", "font-weight: bold");
         mdMsg.addStyleSheet(css);
         mdMsg.loadMarkdown(appVersionBean.getDescription());
         WebViewClient mWebViewClient = new WebViewClient() {

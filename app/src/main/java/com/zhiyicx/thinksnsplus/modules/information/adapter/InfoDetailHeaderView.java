@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActiv
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -148,23 +149,15 @@ public class InfoDetailHeaderView extends BaseWebLoad {
             // 引用
             if (!TextUtils.isEmpty(infoMain.getSubject())) {
                 infoMain.setSubject(InfoPublishBean.DEFALUT_SUBJECT + infoMain.getSubject() + "\n\n");
-                InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding:0px", "margin:0px");
-                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
-                css.addRule("p", "margin:0px", "padding:10px");
                 mContentSubject.setVisibility(VISIBLE);
-                mContentSubject.addStyleSheet(css);
+                mContentSubject.addStyleSheet(MarkDownRule.generateStandardQuoteStyle());
                 mContentSubject.loadMarkdown(infoMain.getSubject());
             } else {
                 mContentSubject.setVisibility(GONE);
             }
             // 资讯contente
             if (!TextUtils.isEmpty(infoMain.getContent())) {
-                InternalStyleSheet css = new Github();
-                css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
-                mContent.addStyleSheet(css);
+                mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setWebChromeClient(mWebChromeClient);
 
