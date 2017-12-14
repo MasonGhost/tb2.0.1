@@ -12,6 +12,7 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -129,8 +130,10 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     private List<Link> setLiknks(ViewHolder holder, final CommentedBean commentedBean) {
         List<Link> links = new ArrayList<>();
         Link nameLink = new Link(commentedBean.getCommentUserInfo().getName())
-                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional,
+                // defaults to holo blue
                 .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                 .setUnderlined(false)                                       // optional, defaults to true
                 .setOnClickListener((clickedText, linkMetadata) -> {
@@ -138,10 +141,13 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                     toUserCenter(commentedBean.getCommentUserInfo());
                 });
         links.add(nameLink);
-        if (commentedBean.getReplyUserInfo() != null && commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0 && commentedBean.getReplyUserInfo().getName() != null) {
+        if (commentedBean.getReplyUserInfo() != null && commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0 &&
+                commentedBean.getReplyUserInfo().getName() != null) {
             Link replyNameLink = new Link(commentedBean.getReplyUserInfo().getName())
-                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                    // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) //
+                    // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
                     .setOnClickListener((clickedText, linkMetadata) -> {
@@ -161,7 +167,8 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             if (AppApplication.getMyUserIdWithdefault() == commentedBean.getReply_user()) {
                 result = getContext().getResources().getString(R.string.comment_format_reply_you, commentedBean.getCommentUserInfo().getName());
             } else {
-                result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(), commentedBean.getReplyUserInfo().getName());
+                result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(),
+                        commentedBean.getReplyUserInfo().getName());
             }
             return result;
         }
@@ -187,7 +194,8 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
                 break;
             case ApiConfig.APP_QUESTIONS_ANSWER:
-                result = getContext().getResources().getString(R.string.comment_format_questions_answer, commentedBean.getCommentUserInfo().getName());
+                result = getContext().getResources().getString(R.string.comment_format_questions_answer, commentedBean.getCommentUserInfo().getName
+                        ());
 
                 break;
             default:
@@ -211,6 +219,9 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
      * @param commentedBean
      */
     private void toDetail(CommentedBean commentedBean) {
+        if (commentedBean.getIsDelete()) {
+            return;
+        }
         Intent intent;
         Bundle bundle = new Bundle();
         bundle.putLong(BUNDLE_SOURCE_ID, commentedBean.getTarget_id());
