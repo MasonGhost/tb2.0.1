@@ -74,14 +74,12 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.circle.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.search.onlypost.CirclePostSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
-import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -307,7 +305,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
-    public long getCircleId() {
+    public Long getCircleId() {
         return getArguments().getLong(CIRCLE_ID);
     }
 
@@ -976,7 +974,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 setLeftClick();
                 break;
             case R.id.iv_serach:
-                CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE_POST);
+                CirclePostSearchActivity.startCircelPostSearchActivity(mActivity, mCircleInfoDetail.getId());
                 break;
             case R.id.iv_share:
                 break;

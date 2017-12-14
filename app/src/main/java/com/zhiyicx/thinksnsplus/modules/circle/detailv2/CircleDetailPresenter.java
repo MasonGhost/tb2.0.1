@@ -160,7 +160,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mRootView.hideRefreshState(isLoadMore);
                         return;
                     }
-                    mSearchSub = mRepository.getAllePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, null)
+                    mSearchSub = mRepository.getAllePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, mRootView
+                            .getCircleId())
                             .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
                                 @Override
                                 protected void onSuccess(List<CirclePostListBean> data) {
@@ -192,6 +193,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
+        if (mRootView.getCircleId() == null) {
+            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+            return;
+        }
         List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
         mRootView.onCacheResponseSuccess(data, isLoadMore);
     }

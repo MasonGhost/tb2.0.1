@@ -329,7 +329,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      * @return
      */
     @Override
-    public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Integer group_id) {
+    public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id) {
         return mCircleClient.getAllePostList(limit, offset, keyword, group_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -101,7 +101,7 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
             mFragmentList.add(SearchCircleFragment.newInstance(false));
-            mFragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH));
+            mFragmentList.add(SearchCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH,0));
         }
         return mFragmentList;
     }

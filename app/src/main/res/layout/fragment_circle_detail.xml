@@ -38,9 +38,9 @@
 
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/toolbar"
-                        android:layout_marginTop="@dimen/spacing_large"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/toolbar_height"
+                        android:layout_marginTop="@dimen/spacing_large"
                         android:background="@android:color/transparent"
                         android:tag="toolbar"
                         app:layout_collapseMode="pin"
@@ -56,6 +56,15 @@
             </android.support.design.widget.AppBarLayout>
 
             <include layout="@layout/circle_content"/>
+
+            <ImageView
+                android:id="@+id/btn_send_post"
+                android:layout_width="@dimen/channel_detail_float_btn_height"
+                android:layout_height="@dimen/channel_detail_float_btn_height"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/floating_button_bottom_margin"
+                android:scaleType="fitXY"
+                android:src="@mipmap/channel_btn_suspension"/>
 
             <View
                 android:id="@+id/v_shadow"
@@ -77,14 +86,6 @@
 
             </com.zhiyicx.baseproject.widget.InputLimitView>
 
-            <ImageView
-                android:id="@+id/btn_send_post"
-                android:layout_width="@dimen/channel_detail_float_btn_height"
-                android:layout_height="@dimen/channel_detail_float_btn_height"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/floating_button_bottom_margin"
-                android:scaleType="fitXY"
-                android:src="@mipmap/channel_btn_suspension" />
 
         </android.support.design.widget.CoordinatorLayout>
     </LinearLayout>

@@ -61,7 +61,7 @@ public class CircleSearchContainerFragment extends TSFragment<CircleSearchContai
 
     @Override
     protected void initView(View rootView) {
-        mFindSomeOneContainerViewPagerFragment = CircleSearchContainerViewPagerFragment.initFragment(getActivity().getIntent().getExtras());
+        mFindSomeOneContainerViewPagerFragment = CircleSearchContainerViewPagerFragment.initFragment(getArguments());
 
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager()
                 , mFindSomeOneContainerViewPagerFragment

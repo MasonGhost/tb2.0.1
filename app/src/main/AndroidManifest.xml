@@ -623,9 +623,12 @@
         <activity
             android:name=".modules.report.ReportActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateVisible"/>
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
         <activity android:name=".modules.circle.earning.CircleEarningActivity">
         </activity>
+        <activity android:name=".modules.circle.search.onlypost.CirclePostSearchActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize|stateVisible"/>
     </application>
 
 </manifest>
