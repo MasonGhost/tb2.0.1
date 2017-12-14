@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
@@ -53,6 +54,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLELIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEMEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_EARNINGLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_MEMBER_JOIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_REPOTS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
@@ -351,6 +353,23 @@ public interface CircleClient {
     Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int offet);
 
     /**
+     * 圈子收入记录
+     *
+     * @param circleId 圈子id
+     * @param start 秒级时间戳，起始筛选时间
+     * @param end 秒级时间戳，结束筛选时间
+     * @param after 默认 0 ，翻页标识。
+     * @param limit 默认 15 ，数据返回条数 默认为15
+     * @param type  默认 all, all-全部 join-成员加入 pinned-帖子置顶
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLE_EARNINGLIST)
+    Observable<List<CircleEarningListBean>> getCircleEarningList(@Path("circle_id") long circleId,
+                                                           @Query("start") Long start, @Query("end") Long end,
+                                                           @Query("after") Long after, @Query("limit") Long limit,
+                                                           @Query("type") String type);
+
+    /**
      * 获取帖子点赞列表
      *
      * @param postId
@@ -496,14 +515,15 @@ public interface CircleClient {
 
     /**
      * 圈子举报列表
+     *
      * @param groupId 圈子id
      * @param after
      * @param limit
-     * @param status 状态 默认全部，0-未处理 1-已处理 2-已驳回
+     * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
      * @return
      */
     @GET(APP_PATH_GET_CIRCLE_REPOTS)
-    Observable<List<CircleReportListBean>> getCircleReportList(@Query("group_id") Long groupId,@Query("status") Integer status, @Query("after") Integer after, @Query("limit")
+    Observable<List<CircleReportListBean>> getCircleReportList(@Query("group_id") Long groupId, @Query("status") Integer status, @Query("after") Integer after, @Query("limit")
             Integer limit);
 
     /**

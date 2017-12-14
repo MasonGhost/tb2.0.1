@@ -624,10 +624,12 @@
             android:name=".modules.report.ReportActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateVisible"/>
-        <activity android:name=".modules.circle.manager.earning.CircleEarningActivity">
-        </activity>
-        <activity android:name=".modules.circle.manager.report.ReportReviewActivity">
-        </activity>
+        <activity android:name=".modules.circle.manager.earning.CircleEarningActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.manager.report.ReportReviewActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.manager.earning.record.EarningListActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

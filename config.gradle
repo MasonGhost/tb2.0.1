@@ -30,6 +30,7 @@ ext {
     androidSupportSdkVersion = '25.3.1'
     refreshVersion = '1.0.4'
     clickSpanLinkVersion = '1.5.2'
+    pickerViewVersion='3.2.7'
 
     //Testing
     robolectricVersion = '3.1.4'
@@ -141,6 +142,8 @@ ext {
             refresh                      : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3',
             refreshHeader                : 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3',
             gifView                      : 'pl.droidsonroids.gif:android-gif-drawable:1.2.3',
+
+            pickerView                   : "com.contrarywind:Android-PickerView:${pickerViewVersion}",
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",

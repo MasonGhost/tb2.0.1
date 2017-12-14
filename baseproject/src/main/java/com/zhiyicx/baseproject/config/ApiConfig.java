@@ -526,6 +526,11 @@ public class ApiConfig {
     public static final String APP_PATH_CREATE_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups";
 
     /**
+     * 圈子收入记录
+     */
+    public static final String APP_PATH_GET_CIRCLE_EARNINGLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/incomes";
+
+    /**
      * 获取圈子列表
      */
     public static final String APP_PATH_GET_CIRCLELIST = "api/" + API_VERSION_2 + "/plus-group/categories/{category_id}/groups ";

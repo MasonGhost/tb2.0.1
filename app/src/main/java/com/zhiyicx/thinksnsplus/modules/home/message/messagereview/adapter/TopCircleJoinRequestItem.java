@@ -132,7 +132,7 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
     public void onReviewApprovedClick(BaseListBean data, int position) {
         TopCircleJoinReQuestBean circleJoinReQuestBean = (TopCircleJoinReQuestBean) data;
         circleJoinReQuestBean.setAudit(TopCircleJoinReQuestBean.TOP_SUCCESS);
-        mPresenter.approvedTopComment(circleJoinReQuestBean.getGroup_id(), (int) circleJoinReQuestBean.getUser_id(), 0, null, position);
+        mPresenter.approvedTopComment(circleJoinReQuestBean.getGroup_id(), circleJoinReQuestBean.getId().intValue(), 0, circleJoinReQuestBean, position);
     }
 
     @Override

@@ -470,16 +470,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onCommentContentLongClick(CirclePostListBean dynamicBean, int position) {
-        if ( mPresenter.handleTouristControl()) {
+        if (mPresenter.handleTouristControl()) {
             return;
         }
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
         // 举报
         if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
-                    (position).getCommentUser(),dynamicBean.getComments().get
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getId().toString(),
-                    null,null,dynamicBean.getComments().get(position).getContent(),ReportType.CIRCLE_COMMENT));
+                    null, null, dynamicBean.getComments().get(position).getContent(), ReportType.CIRCLE_COMMENT));
 
         } else {
 
@@ -586,7 +586,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 int user_id = mListDatas.get(dataPosition).getUser_id().intValue();
                 int current_id = (int) AppApplication.getMyUserIdWithdefault();
                 if (user_id == current_id) {
-                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
+                    initMyPostPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .hasCollected(), shareBitMap);
                     mMyPostPopWindow.show();
                 } else {
@@ -697,19 +697,20 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     /**
-     * 初始化我的动态操作弹窗
+     * 初始化我的帖子操作弹窗
      *
-     * @param circlePostListBean curent dynamic
-     * @param position           curent dynamic postion
+     * @param circlePostListBean curent post
+     * @param position           curent post postion
      */
-    private void initMyDynamicPopupWindow(final CirclePostListBean circlePostListBean, final int position, boolean isCollected,
-                                          final Bitmap shareBitMap) {
+    private void initMyPostPopupWindow(final CirclePostListBean circlePostListBean, final int position, boolean isCollected,
+                                       final Bitmap shareBitMap) {
         Long feed_id = circlePostListBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
                 .item4Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item3Str(!feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -720,6 +721,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     mMyPostPopWindow.hide();
                     handleCollect(position);
                     showBottomView(true);
+                })
+                .item3ClickListener(() -> {// 置顶
+                    mMyPostPopWindow.hide();
+                    showBottomView(true);
+                    StickTopFragment.startSticTopActivity(mActivity, StickTopFragment.TYPE_POST, circlePostListBean.getId());
                 })
                 .item4ClickListener(() -> {// 删除
                     mMyPostPopWindow.hide();
@@ -797,7 +803,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (circlePostListBean.getUser() != null) {
                         name = circlePostListBean.getUser().getName();
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(),String.valueOf(circlePostListBean.getId()),
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf(circlePostListBean.getId()),
                             name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);

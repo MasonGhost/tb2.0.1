@@ -60,7 +60,6 @@ buildscript {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     def dataDependences = rootProject.ext.dataDependencies
     def testDependences = rootProject.ext.testDependencies
     // Test
@@ -74,11 +73,9 @@ dependencies {
     androidTestCompile testDependences.mockito
     androidTestCompile testDependences.dexmaker
     androidTestCompile testDependences.dexmakerMockito
-
     annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
-
     compile dataDependences.swipeLayout
     compile(dataDependences.recyclerviewAnimator) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -96,10 +93,10 @@ dependencies {
     compile project(':imsdk')
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
-    compile project(':pickerview')
     compile project(':PhotoPicker')
     compile project(':overscrolllib')
     compile dataDependences.refresh
+    compile dataDependences.pickerView
     compile dataDependences.refreshHeader
 }
 

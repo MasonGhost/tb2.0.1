@@ -125,7 +125,7 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     @Override
     public Observable<BaseJsonV2> refuseCircleJoin(BaseListBean result) {
         TopCircleJoinReQuestBean data = (TopCircleJoinReQuestBean) result;
-        return mCircleClient.dealCircleJoin(TopCircleJoinReQuestBean.TOP_REFUSE, data.getGroup_id(), data.getUser_id())
+        return mCircleClient.dealCircleJoin(TopCircleJoinReQuestBean.TOP_REFUSE, data.getGroup_id(), data.getId().intValue())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

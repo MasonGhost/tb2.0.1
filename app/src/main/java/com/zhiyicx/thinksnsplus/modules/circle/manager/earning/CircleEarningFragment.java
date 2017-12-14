@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.earning;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +9,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.record.EarningListActivity;
 
 import java.util.Locale;
 
@@ -43,6 +45,27 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     }
 
     @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 0);
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.topbar_back_white;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.themeColor;
+    }
+
+    @Override
     protected void initView(View rootView) {
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
@@ -52,8 +75,8 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
 
     @Override
     protected void initData() {
-        mBtMember.setRightText(mCircleInfoDetail.getJoin_income_count() + "");
-        mBtTop.setRightText(mCircleInfoDetail.getPinned_income_count() + "");
+        mBtMember.setRightText(mCircleInfoDetail.getJoin_income_count() + ".0");
+        mBtTop.setRightText(mCircleInfoDetail.getPinned_income_count() + ".0");
         mTvMineMoney.setText(String.valueOf(mCircleInfoDetail.getJoin_income_count() + mCircleInfoDetail.getPinned_income_count()));
     }
 
@@ -66,8 +89,10 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_member:
+                EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 1);
                 break;
             case R.id.bt_top:
+                EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 2);
                 break;
             default:
         }
