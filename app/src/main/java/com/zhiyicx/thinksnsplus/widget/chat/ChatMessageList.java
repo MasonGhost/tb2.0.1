@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.hyphenate.chat.EMConversation;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -50,7 +51,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     protected RecyclerView mRecyclerView;
     protected Conversation conversation;
-    protected int chatType;
+    protected EMConversation.EMConversationType chatType;
     protected String toChatUsername;
     protected MultiItemTypeAdapter messageAdapter;
     protected boolean showUserNick;
@@ -220,7 +221,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      * @param toChatUsername
      * @param chatType
      */
-    public void init(String toChatUsername, int chatType, List<ChatItemBean> datas) {
+    public void init(String toChatUsername, EMConversation.EMConversationType chatType, List<ChatItemBean> datas) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
@@ -316,7 +317,9 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      * 直接滑动到底部
      */
     public void scrollToBottom() {
-        mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        if (messageAdapter != null){
+            mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        }
     }
 
     public RecyclerView getListView() {

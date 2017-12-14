@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageBody;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.chat.adapter.message.EMATextMessageBody;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -65,7 +68,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
      */
     @Override
     public boolean isForViewType(ChatItemBean item, int position) {
-        return item.getLastMessage().getType() == MessageType.MESSAGE_TYPE_TEXT;
+        return item.getMessage().getType() ==  EMMessage.Type.TXT;
     }
 
     @Override
@@ -114,8 +117,12 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         } else {
             holder.setVisible(R.id.iv_chat_headpic, View.GONE);
         }
-
-        holder.setText(R.id.tv_chat_content, chatItemBean.getLastMessage().getTxt());
+        EMMessageBody body = chatItemBean.getMessage().getBody();
+        if (body instanceof EMTextMessageBody){
+            holder.setText(R.id.tv_chat_content, ((EMTextMessageBody) body).getMessage());
+        } else {
+            holder.setText(R.id.tv_chat_content, body.toString());
+        }
         // 响应事件
         if (mMessageListItemClickListener != null) {
             View.OnClickListener mStatusClick = v -> mMessageListItemClickListener.onStatusClick(chatItemBean);
