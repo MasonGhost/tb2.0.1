@@ -176,7 +176,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
                     .item1Str(getString(R.string.info_publish_hint))
                     .item2Str(getString(R.string.certification_personage))
                     .item3Str(getString(R.string.certification_company))
-                    .desStr(getString(R.string.info_publish_hint_certification))
+                    .desStr(getString(R.string.circle_publish_hint_certification))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
