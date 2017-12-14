@@ -62,12 +62,12 @@ public abstract class TSActivity<P extends BasePresenter, F extends Fragment> ex
 
     }
 
-    ///解决重叠，方法去除状态保存，不推荐使用，故使用 if (mContanierFragment == null) {
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        //如果用以下这种做法则不保存状态，再次进来的话会显示默认tab
-//        //super.onSaveInstanceState(outState);
-//    }
+    ///解决重叠，方法去除状态保存
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //如果用以下这种做法则不保存状态，再次进来的话会显示默认tab
+        //super.onSaveInstanceState(outState);
+    }
 
     /**
      * @return 当前页的Fragment
