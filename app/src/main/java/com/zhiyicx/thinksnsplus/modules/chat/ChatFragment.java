@@ -174,7 +174,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         } else {
             initMessageList();
         }
-
+        // 设置消息内容已读
+        mMessageItemBean.getConversation().markAllMessagesAsRead();
     }
 
     @Override
