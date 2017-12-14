@@ -219,7 +219,6 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        AndroidBug5497Workaround.assistActivity(getActivity());
         mIlvComment.setOnSendClickListener(this);
         mVShadow.setOnClickListener(v -> closeInputView());
     }

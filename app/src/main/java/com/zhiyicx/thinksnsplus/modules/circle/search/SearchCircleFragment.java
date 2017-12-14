@@ -80,7 +80,10 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_search_list;
     }
-
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

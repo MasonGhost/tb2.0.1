@@ -83,7 +83,7 @@ public class CircleSearchContainerFragment extends TSFragment<CircleSearchContai
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
                     mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
-                    DeviceUtils.hideSoftKeyboard(getContext(),mFragmentInfoSearchEdittext);
+                    DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
                 }
             }
         });
@@ -105,7 +105,10 @@ public class CircleSearchContainerFragment extends TSFragment<CircleSearchContai
      * @param content
      */
     public void onHistoryContentUpdate(String content) {
-        mFragmentInfoSearchEdittext.setText(content);
+        if (!TextUtils.isEmpty(content)) {
+            mFragmentInfoSearchEdittext.setText(content);
+            mFragmentInfoSearchEdittext.setSelection(content.length());
+        }
     }
 
 }

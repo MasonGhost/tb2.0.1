@@ -70,11 +70,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     private IHistoryCententClickListener mIHistoryCententClickListener;
 
 
-    public static SearchCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType,long circleGroupId) {
+    public static SearchCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType, long circleGroupId) {
         SearchCirclePostFragment circleDetailFragment = new SearchCirclePostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(CIRCLE_TYPE, circleMinePostType);
-        bundle.putLong(CIRCLE_ID,circleGroupId);
+        bundle.putLong(CIRCLE_ID, circleGroupId);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
     }
@@ -82,6 +82,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_search_post_list;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -234,7 +239,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
 
 
     @Override
-    public void  onEditChanged(String str) {
+    public void onEditChanged(String str) {
         if (mSearchContent.equals(str)) {
             return;
         }

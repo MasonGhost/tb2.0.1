@@ -58,10 +58,7 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
         return true;
     }
 
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
-    }
+
 
     @Override
     protected View getRightViewOfMusicWindow() {
