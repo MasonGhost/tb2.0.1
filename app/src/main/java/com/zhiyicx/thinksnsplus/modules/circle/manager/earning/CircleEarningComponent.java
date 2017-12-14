@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.earning;
+package com.zhiyicx.thinksnsplus.modules.circle.manager.earning;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

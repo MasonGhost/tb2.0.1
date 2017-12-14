@@ -631,6 +631,22 @@ public class ApiConfig {
      * 举报圈子
      */
     public static final String APP_PATH_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/groups/{group_id}/reports";
+
+    /**
+     * 拒绝举报
+     */
+    public static final String APP_PATH_REFUSE_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/{report_id}/reject";
+
+    /**
+     * 同意举报
+     */
+    public static final String APP_PATH_APPROVE_CIRCLE_REPOT = "api/" + API_VERSION_2 + "/plus-group/reports/{report_id}/accept";
+
+    /**
+     * 圈子举报列表
+     */
+    public static final String APP_PATH_GET_CIRCLE_REPOTS = "api/" + API_VERSION_2 + "/plus-group/reports";
+
     /**
      * 举报圈子中的帖子
      */

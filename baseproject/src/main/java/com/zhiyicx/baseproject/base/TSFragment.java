@@ -126,7 +126,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
         // 添加音乐悬浮窗
-        if (getParentFragment() == null) {
+        if (getParentFragment() == null && needMusicWindowView()) {
             mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
             musicWindowContainer = new FrameLayout(getActivity());
             musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
@@ -241,14 +241,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         boolean isshow = WindowUtils.getIsShown();
         musicWindowsStatus(isshow);
         WindowUtils.setWindowDismisslistener(this);
-        if (!this.getClass().getSimpleName().equals("InfoListFragment") && isshow) {
-            if (mMusicWindowView != null) {
-                mMusicWindowView.setVisibility(View.VISIBLE);
-                RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
-                        .music_window_rotate);
-                mMusicWindowView.setAnimation(mRotateAnimation);
-                mRotateAnimation.start();
-            }
+        if (isshow && mMusicWindowView != null) {
+            mMusicWindowView.setVisibility(View.VISIBLE);
+            RotateAnimation mRotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(getActivity(), R.anim
+                    .music_window_rotate);
+            mMusicWindowView.setAnimation(mRotateAnimation);
+            mRotateAnimation.start();
         }
     }
 
@@ -570,6 +568,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 是否显示toolbar,默认显示
      */
     protected boolean showToolbar() {
+        return true;
+    }
+
+    protected boolean needMusicWindowView() {
         return true;
     }
 

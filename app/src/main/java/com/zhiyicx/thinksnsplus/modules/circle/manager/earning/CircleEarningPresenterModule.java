@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.earning;
+package com.zhiyicx.thinksnsplus.modules.circle.manager.earning;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.CircleEarningRepository;
 

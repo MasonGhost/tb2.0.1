@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -81,7 +84,7 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
         String commentBody = circleJoinReQuestBean.getGroup().getName();
         holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                 holder.itemView.getContext().getString(R.string
-                        .stick_type_news_commnet_message), TextUtils.isEmpty(commentBody) ? "" +
+                        .stick_type_group_join_message), TextUtils.isEmpty(commentBody) ? "" +
                         " " : commentBody));
         List<Link> links = setLinks(holder.itemView.getContext());
         if (!links.isEmpty()) {
@@ -147,5 +150,28 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
         Intent intent = new Intent(mContext, CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
         mContext.startActivity(intent);
+    }
+
+    @Override
+    protected void initReviewPopWindow(BaseListBean dataBean, int position) {
+        mReviewPopWindow = ActionPopupWindow.builder()
+                .item1Str(mContext.getString(R.string.circle_report_agree))
+                .item2Str(mContext.getString(R.string.circle_report_disagree))
+                .bottomStr(mContext.getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with((Activity) mContext)
+                .item1ClickListener(() -> {
+                    onReviewApprovedClick(dataBean, position);
+                    mReviewPopWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    onReviewRefuseClick(dataBean, position);
+                    mReviewPopWindow.hide();
+                })
+                .bottomClickListener(() -> mReviewPopWindow.hide())
+                .build();
+        mReviewPopWindow.show();
     }
 }

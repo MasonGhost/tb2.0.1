@@ -100,7 +100,6 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
                 if (groupinfo != null) {
                     int left = parent.getPaddingLeft();
                     int right = parent.getWidth() - parent.getPaddingRight();
-                    LogUtils.d("onDrawOver::" + groupinfo.position);
                     //屏幕上第一个可见的 ItemView 时，i == 0;
                     if (i != 0) {
                         //只有组内的第一个ItemView之上才绘制

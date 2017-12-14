@@ -319,6 +319,14 @@
     <string name="appoint_manager">设为圈管理员</string>
     <string name="appoint_blacklist">加入黑名单</string>
     <string name="appoint_circle">设为圈管理员</string>
+    <string name="circle_report_more">[查看更多]</string>
+    <string name="circle_report_post">%1$s 举报 %1$s 的帖子：</string>
+    <string name="circle_report_comment">%1$s 举报 %2$s 的评论：</string>
+    <string name="circle_report_done">已处理</string>
+    <string name="circle_report_doing">未处理</string>
+    <string name="circle_report_refuse">已反驳</string>
+    <string name="circle_report_agree">同意</string>
+    <string name="circle_report_disagree">驳回</string>
     <string-array name="circle_mine_type">
         <item>@string/joined_group</item>
         <item>待审核的</item>

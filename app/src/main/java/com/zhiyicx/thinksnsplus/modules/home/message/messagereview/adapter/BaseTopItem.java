@@ -59,9 +59,13 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
         this.mPresenter = presenter;
     }
 
+    public BaseTopItem(Context context) {
+        mContext = context;
+    }
+
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_message_review_list_v2;
+        return R.layout.item_message_review_list;
     }
 
     @Override

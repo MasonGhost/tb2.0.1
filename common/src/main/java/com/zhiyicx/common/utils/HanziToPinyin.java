@@ -567,8 +567,6 @@ public class HanziToPinyin {
                 }
             }
         }
-        String result = sb.toString().toUpperCase();
-        LogUtils.d("getSpellStr::" + result);
-        return result;
+        return sb.toString().toUpperCase();
     }
 }  

@@ -71,15 +71,16 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.earning.CircleEarningActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReportReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
-import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
@@ -970,6 +971,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             case R.id.ll_permission_container:
                 break;
             case R.id.ll_report_container:
+
+                Intent intent1 = new Intent(mActivity, ReportReviewActivity.class);
+                Bundle bundle1 = new Bundle();
+                bundle1.putLong(ReporReviewFragment.SOURCEID, mCircleInfoDetail.getId());
+                intent1.putExtras(bundle1);
+                startActivity(intent1);
                 break;
 
             case R.id.iv_back:

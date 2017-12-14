@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.circle.earning.CircleEarningContract;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningContract;
 
 import javax.inject.Inject;
 

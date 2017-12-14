@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
@@ -35,6 +36,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVE_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANCEL_CIRCLE_MEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
@@ -52,6 +54,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLEMEMBER
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_CATEGROIES;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_MEMBER_JOIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_REPOTS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
@@ -64,6 +67,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
@@ -489,5 +493,35 @@ public interface CircleClient {
     @FormUrlEncoded
     @POST(APP_PATH_COMMENT_REPOT)
     Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("content") String reason);
+
+    /**
+     * 圈子举报列表
+     * @param groupId 圈子id
+     * @param after
+     * @param limit
+     * @param status 状态 默认全部，0-未处理 1-已处理 2-已驳回
+     * @return
+     */
+    @GET(APP_PATH_GET_CIRCLE_REPOTS)
+    Observable<List<CircleReportListBean>> getCircleReportList(@Query("group_id") Long groupId,@Query("status") Integer status, @Query("after") Integer after, @Query("limit")
+            Integer limit);
+
+    /**
+     * 同意举报
+     *
+     * @param reportId 舉報的id
+     * @return
+     */
+    @PATCH(APP_PATH_APPROVE_CIRCLE_REPOT)
+    Observable<BaseJsonV2> approvedCircleReport(@Path("report_id") Long reportId);
+
+    /**
+     * 拒绝举报
+     *
+     * @param reportId 舉報的id
+     * @return
+     */
+    @PATCH(APP_PATH_REFUSE_CIRCLE_REPOT)
+    Observable<BaseJsonV2> refuseCircleReport(@Path("report_id") Long reportId);
 }
 
