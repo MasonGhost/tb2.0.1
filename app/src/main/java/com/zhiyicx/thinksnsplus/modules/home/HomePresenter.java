@@ -2,11 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
@@ -38,13 +41,17 @@ import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -56,7 +63,7 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
-        ImStatusListener, ImTimeoutListener, EMConnectionListener {
+        ImStatusListener, ImTimeoutListener, EMConnectionListener, EMMessageListener {
     @Inject
     AuthRepository mAuthRepository;
 
@@ -83,9 +90,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
         if (isLogin()) {
             mAuthRepository.loginIM();
             EMClient.getInstance().addConnectionListener(this);
-//            ChatClient.getInstance(mContext).setImMsgReceveListener(this);
-//            ChatClient.getInstance(mContext).setImStatusListener(this);
-//            ChatClient.getInstance(mContext).setImTimeoutListener(this);
+            EMClient.getInstance().chatManager().addMessageListener(this);
         }
     }
 
@@ -195,17 +200,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
 
     @Override
     public void onDisconnected(int error) {
-        if(error == EMError.USER_REMOVED){
-            // 显示帐号已经被移除
-        }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-            // 显示帐号在其他设备登录
-        } else {
-            if (NetUtils.hasNetwork(mContext)){
-                //连接不到聊天服务器
-            } else{
-                //当前网络不可用，请检查网络设置
-            }
-        }
+        EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
     }
 
     @Override
@@ -335,6 +330,52 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EMClient.getInstance().chatManager().removeMessageListener(this);
         ChatClient.getInstance(mContext).onDestroy();
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> list) {
+        LogUtils.d("Cathy", " 收到消息 :" + list);
+        // 通知栏消息 等用户信息费方案确定了再来说推送的事情哦
+        Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(messageList -> {
+                    setMessageTipVisable(true);
+                    // 收到消息，更新会话列表
+                    EventBus.getDefault().post(messageList, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
+                });
+
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> list) {
+        // 收到透传消息
+        LogUtils.d("Cathy", " 收到透传消息 :" + list);
+    }
+
+    @Override
+    public void onMessageRead(List<EMMessage> messages) {
+        // 收到已读回执
+        LogUtils.d("Cathy", " 收到已读回执 :" + messages);
+    }
+
+    @Override
+    public void onMessageDelivered(List<EMMessage> message) {
+        // 收到已送达回执
+        LogUtils.d("Cathy", " 收到已送达回执 :" + message);
+    }
+
+    @Override
+    public void onMessageRecalled(List<EMMessage> messages) {
+        // 消息被撤回
+        LogUtils.d("Cathy", " 消息被撤回 :" + messages);
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage message, Object change) {
+        // 消息状态变动
+        LogUtils.d("Cathy", " 消息状态变动 :" + message + "change : " + change);
     }
 }
