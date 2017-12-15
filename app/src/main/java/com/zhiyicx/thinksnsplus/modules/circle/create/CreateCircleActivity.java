@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 
 import javax.inject.Inject;
 
@@ -33,15 +34,24 @@ public class CreateCircleActivity extends TSActivity<CreateCirclePresenter, Crea
     }
 
     public static void startCreateActivity(Context context) {
-        context.startActivity(new Intent(context, CreateCircleActivity.class));
+        Intent intent = new Intent(context, CreateCircleActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CreateCircleFragment.CANUPDATE, true);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     public static void startUpdateActivity(Context context, CircleInfoDetail circleInfoDetail) {
         Intent intent = new Intent(context, CreateCircleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CreateCircleFragment.CIRCLEINFO, circleInfoDetail);
-        boolean canUpdate = circleInfoDetail.getUser_id() == AppApplication.getMyUserIdWithdefault();
-        bundle.putBoolean(CreateCircleFragment.CANUPDATE, canUpdate);
+        boolean isJoined = circleInfoDetail.getJoined() != null;
+        boolean canNotUpdate = !isJoined || CircleMembers.MEMBER.equals(circleInfoDetail.getJoined().getRole());
+        boolean isOwner = circleInfoDetail.getUser_id() == AppApplication.getMyUserIdWithdefault();
+        boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(circleInfoDetail.getJoined().getRole());
+        bundle.putBoolean(CreateCircleFragment.CANUPDATE, !canNotUpdate);
+        bundle.putBoolean(CreateCircleFragment.PERMISSION_MANAGER, isManager);
+        bundle.putBoolean(CreateCircleFragment.PERMISSION_OWNER, isOwner);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

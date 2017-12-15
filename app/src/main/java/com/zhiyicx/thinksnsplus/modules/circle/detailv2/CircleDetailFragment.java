@@ -1033,8 +1033,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private void setVisiblePermission(CircleInfoDetail detail) {
         boolean isJoined = detail.getJoined() != null;
+        boolean isOwner = isJoined && CircleMembers.FOUNDER.equals(detail.getJoined().getRole());
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
-        mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setVisibility(!isJoined || isOwner ? View.GONE : View.VISIBLE);
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);

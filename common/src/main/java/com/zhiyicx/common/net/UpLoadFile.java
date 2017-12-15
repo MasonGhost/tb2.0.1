@@ -88,9 +88,12 @@ public class UpLoadFile {
         builder.setType(MultipartBody.FORM);//表单类型
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
-                if (entry.getValue() instanceof List){
+                if (entry.getValue() == null) {
+                    continue;
+                }
+                if (entry.getValue() instanceof List) {
                     builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
-                }else{
+                } else {
                     builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
                 }
 
@@ -104,7 +107,7 @@ public class UpLoadFile {
                     File file = new File(filePathList.get(fileParam));
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
-                            MediaType.parse( "multipart/form-data" ), file);
+                            MediaType.parse("multipart/form-data"), file);
                     //imgfile 后台接收图片流的参数名
                     builder.addFormDataPart(fileParam, file.getName(), imageBody);
                 } catch (NullPointerException e) {
@@ -138,7 +141,7 @@ public class UpLoadFile {
 
                     RequestBody imageBody = RequestBody.create(
 //                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
-                            MediaType.parse( "multipart/form-data" ), file);
+                            MediaType.parse("multipart/form-data"), file);
 
                     builder.addFormDataPart(fileParam, file.getName(), new ProgressRequestBody(imageBody, listener));//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {
@@ -157,7 +160,7 @@ public class UpLoadFile {
         return upLoadFileAndParams(filePathList, null);
     }
 
-    public static List<MultipartBody.Part> upLoadFileAndProgress(Map<String, String> filePathList,ProgressRequestBody.ProgressRequestListener listener) {
-        return upLoadFileAndProgress(filePathList, null,listener);
+    public static List<MultipartBody.Part> upLoadFileAndProgress(Map<String, String> filePathList, ProgressRequestBody.ProgressRequestListener listener) {
+        return upLoadFileAndProgress(filePathList, null, listener);
     }
 }

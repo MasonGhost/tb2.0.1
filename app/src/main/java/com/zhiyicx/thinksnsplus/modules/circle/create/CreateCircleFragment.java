@@ -28,6 +28,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -66,6 +67,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     public static final String CIRCLEINFO = "circleinfo";
     public static final String CANUPDATE = "canupdate";
+    public static final String PERMISSION_OWNER = "permission_owner";
+    public static final String PERMISSION_MANAGER = "permission_manager";
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -129,7 +132,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private PoiItem mPoiItem;
 
     private CircleInfoDetail mCircleInfoDetail;
-    private boolean canUpdate = true;
+    private boolean canUpdate;
+    boolean isOwner;
+    boolean isManager;
 
     public static CreateCircleFragment newInstance(Bundle bundle) {
         CreateCircleFragment createCircleFragment = new CreateCircleFragment();
@@ -152,106 +157,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         return getString(mCircleInfoDetail == null ? R.string.create_circle : R.string.edit_circle);
     }
 
-    private void initListener() {
-        Observable.combineLatest(
-                RxTextView.textChanges(mEtCircleName),
-                RxTextView.textChanges(mTvCircleType),
-                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()),
-                RxTextView.textChanges(mTvLocation),
-                RxTextView.textChanges(mTvNotice.getEtContent()), (charSequence, charSequence2, charSequence3, charSequence4, charSequence5) ->
-                        charSequence5.length() * charSequence.length() * charSequence2.length() * charSequence3.length() * charSequence4.length() != 0)
-                .subscribe((Boolean aBoolean) -> mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean));
-
-        mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                mCbFree.setChecked(!isChecked);
-            }
-        });
-
-        mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                mCbToll.setChecked(!isChecked);
-            }
-        });
-
-        mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
-                mLlCharge.setVisibility(View.GONE);
-                mLlFree.setVisibility(View.GONE);
-            } else {
-                mLlFree.setVisibility(View.VISIBLE);
-                mLlCharge.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    @Override
-    protected void initData() {
-        if (mCircleInfoDetail == null) {
-            return;
-        }
-        setRightTitle();
-        setCenterTitle();
-        Glide.with(getActivity())
-                .load(mCircleInfoDetail.getAvatar())
-                .into(mIvHeadIcon);
-        mHeadImage = null;
-        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfoDetail.getLatitude()),
-                Double.parseDouble(mCircleInfoDetail.getLongitude())), "", "");
-        mPoiItem.setAdCode(mCircleInfoDetail.getGeo_hash());
-        mCircleTypeBean = mCircleInfoDetail.getCategory();
-
-        mUserTagBeens.addAll(mCircleInfoDetail.getTags());
-        mUserInfoTagsAdapter.notifyDataChanged();
-        mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
-
-        mEtCircleName.setText(mCircleInfoDetail.getName());
-        mTvCircleType.setText(mCircleInfoDetail.getCategory().getName());
-        mTvLocation.setText(mCircleInfoDetail.getLocation());
-        mTvNotice.setText(mCircleInfoDetail.getNotice());
-        mEtCircleIntroduce.setText(mCircleInfoDetail.getSummary());
-        mWcSynchro.setChecked(mCircleInfoDetail.getAllow_feed() == 1);
-        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfoDetail.getMode()));
-        mCbToll.setChecked(MODE_PAID.equals(mCircleInfoDetail.getMode()));
-        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfoDetail.getMode()));
-    }
-
-    @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        mCreateCircleBean = new CreateCircleBean();
-        mCreateCircleBean.setName(mEtCircleName.getText().toString());
-        mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
-        mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
-        mCreateCircleBean.setLocation(mTvLocation.getText().toString());
-        mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
-        mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
-        mCreateCircleBean.setMode(mCbToll.isChecked() ? MODE_PAID : (mWcBlock.isChecked() ? MODE_PRIVATE : MODE_PUBLIC));
-        mCreateCircleBean.setNotice(mTvNotice.getInputContent());
-        mCreateCircleBean.setMoney(mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
-        mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
-        List<CreateCircleBean.TagId> tags = new ArrayList<>();
-        for (UserTagBean tagBean : mUserTagBeens) {
-            CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(tagBean.getId());
-            tags.add(tagId);
-        }
-        mCreateCircleBean.setTags(tags);
-        mCreateCircleBean.setCategoryId(mCircleTypeBean.getId());
-        mCreateCircleBean.setFilePath(mHeadImage);
-        if (mCircleInfoDetail == null) {
-            mPresenter.createCircle(mCreateCircleBean);
-        } else {
-            mPresenter.updateCircle(mCreateCircleBean);
-        }
-
-    }
-
-    @Override
-    protected boolean usePermisson() {
-        return true;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initView(View rootView) {
         mPhotoSelector = DaggerPhotoSelectorImplComponent
@@ -259,25 +164,36 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
-
         initListener();
-
-        mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
-        mFlTags.setAdapter(mUserInfoTagsAdapter);
-        mFlTags.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                jumpToEditUserTag();
-            }
-            return true;
-        });
         // 适配手机无法显示输入焦点
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
         if (getArguments() != null) {
-            canUpdate = getArguments().getBoolean(CANUPDATE, true);
+            canUpdate = getArguments().getBoolean(CANUPDATE, false);
+            isOwner = getArguments().getBoolean(PERMISSION_OWNER, false);
+            isManager = getArguments().getBoolean(PERMISSION_MANAGER, false);
             mCircleInfoDetail = getArguments().getParcelable(CIRCLEINFO);
         }
+    }
+
+    @Override
+    protected void initData() {
+        if (mCircleInfoDetail == null) {
+            return;
+        }
+        restoreData();
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        packageDataAndHandle();
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     @Override
@@ -329,9 +245,48 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         return R.layout.fragment_create_circle;
     }
 
-    /**
-     * 初始化图片选择弹框
-     */
+    private void initListener() {
+        Observable.combineLatest(
+                RxTextView.textChanges(mEtCircleName),
+                RxTextView.textChanges(mTvCircleType),
+                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()),
+                RxTextView.textChanges(mTvLocation),
+                RxTextView.textChanges(mTvNotice.getEtContent()), (charSequence, charSequence2, charSequence3, charSequence4, charSequence5) ->
+                        charSequence5.length() * charSequence.length() * charSequence2.length() * charSequence3.length() * charSequence4.length() != 0)
+                .subscribe((Boolean aBoolean) -> mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean));
+
+        mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mCbFree.setChecked(!isChecked);
+            }
+        });
+
+        mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mCbToll.setChecked(!isChecked);
+            }
+        });
+
+        mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                mLlCharge.setVisibility(View.GONE);
+                mLlFree.setVisibility(View.GONE);
+            } else {
+                mLlFree.setVisibility(View.VISIBLE);
+                mLlCharge.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
+        mFlTags.setAdapter(mUserInfoTagsAdapter);
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                jumpToEditUserTag();
+            }
+            return true;
+        });
+    }
+
     private void initPhotoPopupWindow() {
         if (mPhotoPopupWindow != null) {
             return;
@@ -357,39 +312,76 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
-
-    /**
-     * 设置城市
-     */
-    private void setCity(String city) {
-        mCurrentShowLocation = city;
-        try {
-            String[] data = city.split("，");
-            city = "";
-            if (data.length > 2) {
-                city = data[1] + " " + data[2];
-            } else {
-                StringBuilder cityBuilder = new StringBuilder(city);
-                for (String aData : data) {
-                    cityBuilder.append(aData).append(" ");
-                }
-                city = cityBuilder.toString();
-            }
-        } catch (Exception ignored) {
-
+    private void packageDataAndHandle() {
+        mCreateCircleBean = new CreateCircleBean();
+        mCreateCircleBean.setName(mEtCircleName.getText().toString());
+        mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
+        mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
+        mCreateCircleBean.setLocation(mTvLocation.getText().toString());
+        mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+        mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
+        mCreateCircleBean.setMode(mCbToll.isChecked() ? MODE_PAID : (mWcBlock.isChecked() ? MODE_PRIVATE : MODE_PUBLIC));
+        mCreateCircleBean.setNotice(mTvNotice.getInputContent());
+        mCreateCircleBean.setMoney(mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
+        mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
+        List<CreateCircleBean.TagId> tags = new ArrayList<>();
+        for (UserTagBean tagBean : mUserTagBeens) {
+            CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(tagBean.getId());
+            tags.add(tagId);
         }
-        try {
-            String[] locatons = city.split(" ");
-            if (locatons.length > 2) {
-                city = locatons[locatons.length - 2] + " " + locatons[locatons.length - 1];
-            }
-        } catch (Exception ignored) {
+        mCreateCircleBean.setTags(tags);
+        mCreateCircleBean.setCategoryId(mCircleTypeBean.getId());
+        mCreateCircleBean.setFilePath(mHeadImage);
+        if (mCircleInfoDetail == null) {
+            mPresenter.createCircle(mCreateCircleBean);
+        } else {
+            mPresenter.updateCircle(mCreateCircleBean);
         }
-        mTvLocation.setText(city);
     }
 
     private void jumpToEditUserTag() {
         EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.CREATE_CIRCLE, (ArrayList<UserTagBean>) mUserTagBeens);
+    }
+
+    private void restoreData() {
+        mToolbarRight.setText(setRightTitle());
+        mToolbarCenter.setText(setCenterTitle());
+        Glide.with(getActivity())
+                .load(mCircleInfoDetail.getAvatar())
+                .into(mIvHeadIcon);
+        mHeadImage = null;
+        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfoDetail.getLatitude()),
+                Double.parseDouble(mCircleInfoDetail.getLongitude())), "", "");
+        mPoiItem.setAdCode(mCircleInfoDetail.getGeo_hash());
+        mCircleTypeBean = mCircleInfoDetail.getCategory();
+
+        mUserTagBeens.addAll(mCircleInfoDetail.getTags());
+        mUserInfoTagsAdapter.notifyDataChanged();
+        mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
+
+        mEtCircleName.setText(mCircleInfoDetail.getName());
+        mTvCircleType.setText(mCircleInfoDetail.getCategory().getName());
+        mTvLocation.setText(mCircleInfoDetail.getLocation());
+        mTvNotice.setText(mCircleInfoDetail.getNotice());
+        mEtCircleIntroduce.setText(mCircleInfoDetail.getSummary());
+        mWcSynchro.setChecked(mCircleInfoDetail.getAllow_feed() == 1);
+        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfoDetail.getMode()));
+        mCbToll.setChecked(MODE_PAID.equals(mCircleInfoDetail.getMode()));
+        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfoDetail.getMode()));
+
+        mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
+        mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);
+        mLlTypeContainer.setEnabled(canUpdate && !isManager);
+        mLlTagContainer.setEnabled(canUpdate && !isManager);
+        mLlLocationContainer.setEnabled(canUpdate && !isManager);
+        mEtCircleIntroduce.setEnabled(canUpdate);
+        mWcSynchro.setEnabled(canUpdate && !isManager);
+        mWcBlock.setEnabled(canUpdate && !isManager);
+        mCbFree.setEnabled(canUpdate && !isManager);
+        mCbToll.setEnabled(canUpdate && !isManager);
+        mEtCircleAmount.setEnabled(canUpdate && !isManager);
+        mTvNotice.setEnabled(canUpdate);
+
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container, R.id.ll_synchro, R.id.ll_block})
