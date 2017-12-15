@@ -28,6 +28,8 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.types.ChooseCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
@@ -190,7 +192,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
     }
 
     @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic, R.id.send_words_question, R.id.open_zhibo, R
-            .id.send_info})
+            .id.send_info, R.id.send_circle_post})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -233,6 +235,10 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                 // 投稿
                 // 发布提示 1、首先需要认证 2、需要付费
                 mPresenter.checkCertification();
+                break;
+            case R.id.send_circle_post:
+                startActivity(new Intent(getActivity(), MarkdownActivity.class));
+                closeActivity();
                 break;
             default:
         }

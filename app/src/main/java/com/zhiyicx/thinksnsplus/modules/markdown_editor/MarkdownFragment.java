@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zhiyi.richtexteditorlib.SimpleRichEditor;
 import com.zhiyi.richtexteditorlib.base.RichEditor;
@@ -21,9 +23,12 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.types.ChooseCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.types.ChooseCircleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -48,6 +53,10 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     BottomMenu mBottomMenu;
     @BindView(R.id.rich_text_view)
     SimpleRichEditor mRichTextView;
+    @BindView(R.id.ll_circle_container)
+    LinearLayout mLlCircleContainer;
+    @BindView(R.id.tv_name)
+    TextView mCircleName;
 
     private HashMap<Long, String> mInsertedImages;
     private HashMap<Long, String> mFailedImages;
@@ -81,7 +90,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onMarkdownWordResult(String title, String markdwon, String noMarkdown) {
-        if (getArguments() == null) {
+        if (sourceId <= 0) {
             return;
         }
         mPostPublishBean.setTitle(title);
@@ -106,17 +115,35 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         }
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
-        init();
+        initListener();
         mRichTextView.load();
     }
 
-    private void init() {
+    @Override
+    protected void initData() {
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+        if (getArguments() == null) {
+            mLlCircleContainer.setVisibility(View.VISIBLE);
+            return;
+        }
+        sourceId = getArguments().getLong(SOURCEID, 1L);
+    }
+
+    private void initListener() {
         mRichTextView.setOnEditorClickListener(this);
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
         mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
+        mLlCircleContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(mActivity, ChooseCircleActivity.class);
+            mActivity.startActivityForResult(intent, ChooseCircleFragment.CHOOSE_CIRCLE);
+        });
     }
 
     @Override
@@ -166,15 +193,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
-    protected void initData() {
-        mPhotoSelector = DaggerPhotoSelectorImplComponent
-                .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .NO_CRAFT))
-                .build().photoSelectorImpl();
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_markd_down;
     }
@@ -182,7 +200,15 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ChooseCircleFragment.CHOOSE_CIRCLE) {
+            if (data != null) {
+                CircleInfo circleInfo = data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE);
+                sourceId = circleInfo.getId();
+                mCircleName.setText(circleInfo.getName());
+            }
+        } else {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

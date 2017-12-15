@@ -192,6 +192,7 @@
     <string name="send_words_dynamic">文字</string>
     <string name="send_image_dynamic">图片</string>
     <string name="send_question">提问</string>
+    <string name="send_post">发帖</string>
     <string name="send_info">投稿</string>
     <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
@@ -257,6 +258,7 @@
     <string name="circle">圈子</string>
     <string name="circle_post">帖子</string>
     <string name="circle_member">成员</string>
+    <string name="select_circle">选择圈子</string>
     <string name="create">创建</string>
     <string name="create_reviewing">已经提交申请，请等待审核</string>
     <string name="exit_circle">你是圈子创始人，不能进行退圈</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_circle_navigation_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,6 +25,7 @@
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>
 
+    <!--成员-->
     <LinearLayout
         android:id="@+id/ll_member_container"
         android:layout_width="match_parent"
@@ -65,6 +67,7 @@
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>
 
+    <!--详细信息-->
     <LinearLayout
         android:id="@+id/ll_detail_container"
         android:layout_width="match_parent"
@@ -94,10 +97,12 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/line_detail"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>
 
+    <!--圈子收益-->
     <LinearLayout
         android:id="@+id/ll_earnings_container"
         android:layout_width="match_parent"
@@ -127,10 +132,12 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/line_earning"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>
 
+    <!--发帖权限-->
     <LinearLayout
         android:id="@+id/ll_permission_container"
         android:layout_width="match_parent"
@@ -160,10 +167,12 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/line_permission"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>
 
+    <!--举报管理-->
     <LinearLayout
         android:id="@+id/ll_report_container"
         android:layout_width="match_parent"
@@ -193,6 +202,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/line_report"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"/>

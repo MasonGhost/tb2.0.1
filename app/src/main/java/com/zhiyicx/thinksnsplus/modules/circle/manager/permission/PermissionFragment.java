@@ -66,6 +66,11 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.circle_post_permission);
     }
@@ -96,7 +101,6 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
     @OnClick({R.id.tv_permission_all, R.id.tv_permission_owner, R.id.tv_permission_manager})
     public void onViewClicked(View view) {
         mPermissionType.clear();
-        mFrame.setVisibility(View.VISIBLE);
         switch (view.getId()) {
             case R.id.tv_permission_all:
                 if (mDefaultPermission == PERMISSION_ALL) {
@@ -106,6 +110,7 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
                 mPermissionType.add(CircleMembers.MEMBER);
+                mFrame.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_permission_owner:
                 if (mDefaultPermission == PERMISSION_OWNER) {
@@ -113,6 +118,7 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
                 }
                 setCheckPosition(PERMISSION_OWNER);
                 mPermissionType.add(CircleMembers.FOUNDER);
+                mFrame.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_permission_manager:
                 if (mDefaultPermission == PERMISSION_MANAGER) {
@@ -121,6 +127,7 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
                 setCheckPosition(PERMISSION_MANAGER);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
+                mFrame.setVisibility(View.VISIBLE);
                 break;
             default:
         }

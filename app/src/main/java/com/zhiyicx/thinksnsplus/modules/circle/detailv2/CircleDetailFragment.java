@@ -16,7 +16,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -98,6 +100,7 @@ import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
+import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -115,7 +118,9 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -214,6 +219,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
+    @BindView(R.id.iv_serach)
+    ImageView mIvSerach;
+    @BindView(R.id.line_detail)
+    View mLineDetail;
+    @BindView(R.id.line_earning)
+    View mLineEarning;
+    @BindView(R.id.line_permission)
+    View mLinePermission;
+    @BindView(R.id.line_report)
+    View mLineReport;
 
     private ActionBarDrawerToggle mToggle;
 
@@ -1040,6 +1055,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLineDetail.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLineEarning.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLinePermission.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLineReport.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
@@ -1090,7 +1109,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mDrawer.openDrawer(Gravity.RIGHT);
                 break;
             case R.id.tv_circle_subscrib:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(),mCircleInfoDetail.getAudit(), null));
                 mCircleInfoDetail.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
@@ -1099,7 +1118,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mTvExitCircle.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_exit_circle:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), new CircleJoinedBean(mCircleInfoDetail.getJoined().getRole())));
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(),mCircleInfoDetail.getAudit(), new CircleJoinedBean(mCircleInfoDetail.getJoined().getRole())));
                 mCircleInfoDetail.setJoined(null);
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() - 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
@@ -1147,6 +1166,5 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .bottomClickListener(() -> mAuditTipPop.hide()).build();
         mAuditTipPop.show();
     }
-
 
 }
