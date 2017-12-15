@@ -66,7 +66,7 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas){
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), mListDatas){
             @Override
             protected int getRatio() {
                 return mPresenter.getRatio();
