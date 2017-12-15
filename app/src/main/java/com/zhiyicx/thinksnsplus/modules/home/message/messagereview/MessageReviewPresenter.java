@@ -100,9 +100,17 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         return true;
     }
 
+    /**
+     * 同意置顶
+     * @param feedId
+     * @param commentId
+     * @param pinnedId
+     * @param result
+     * @param position
+     */
     @Override
     public void approvedTopComment(Long feedId, int commentId, int pinnedId, BaseListBean result, int position) {
-        Observable observable = null;
+        Observable<BaseJsonV2> observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
                 observable = mRepository.approvedTopComment(feedId, commentId, pinnedId);
@@ -139,10 +147,16 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         addSubscrebe(subscription);
     }
 
+    /**
+     * 拒绝置顶
+     * @param pinned_id
+     * @param result
+     * @param position
+     */
     @Override
     public void refuseTopComment(int pinned_id, BaseListBean result, int position) {
 
-        Observable observable = null;
+        Observable<BaseJsonV2> observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
                 observable = mRepository.refuseTopComment(pinned_id);
