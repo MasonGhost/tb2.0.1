@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -236,9 +237,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     /**
      * 收到消息
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
-    private void onMessageReceived(List<EMMessage> list) {
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
+    private void onMessageReceived(Bundle bundle) {
         //收到消息
+        if (bundle == null){
+            return;
+        }
+        List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
         LogUtils.d("Cathy", " 收到消息 :" + list);
         if (!list.isEmpty()){
             for (EMMessage message : list){

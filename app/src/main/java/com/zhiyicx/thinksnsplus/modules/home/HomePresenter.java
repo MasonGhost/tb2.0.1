@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
+import android.os.Bundle;
+import android.os.Parcelable;
+
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
@@ -240,14 +243,16 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onMessageReceived(List<EMMessage> list) {
         LogUtils.d("Cathy", " 收到消息 :" + list);
-        // 通知栏消息 等用户信息费方案确定了再来说推送的事情哦
+        // 通知栏消息 等用户信息方案确定了再来说推送的事情哦
+        // 收到消息，更新会话列表
         Observable.just(list)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(messageList -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2, (ArrayList<? extends Parcelable>) messageList);
+                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
                     setMessageTipVisable(true);
-                    // 收到消息，更新会话列表
-                    EventBus.getDefault().post(messageList, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
                 });
         // 应用在后台，则推送通知
 //        if (!BackgroundUtil.getAppIsForegroundStatus()) {
