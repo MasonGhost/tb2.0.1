@@ -6,11 +6,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -24,29 +24,26 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -202,12 +199,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        if (mRootView.getCircleId() == null) {
-            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-            return;
-        }
-        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
-        mRootView.onCacheResponseSuccess(data, isLoadMore);
+
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+
+//        if (mRootView.getCircleId() == null) {
+//            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
+//            return;
+//        }
+//        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
+//        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -301,6 +301,23 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
     @Override
+    public void shareCircle(CircleInfoDetail circleInfoDetail, Bitmap shareBitMap) {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setContent(TextUtils.isEmpty(circleInfoDetail.getName()) ? mContext.getString(R.string
+                .share_dynamic) : circleInfoDetail.getName());
+        if (shareBitMap != null) {
+            shareContent.setBitmap(shareBitMap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_GROUP);
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
     public void handleLike(boolean isLiked, Long postId, int dataPosition) {
         if (postId == 0) {
             return;
@@ -344,7 +361,44 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void dealCircleJoinOrExit(CircleInfo circleInfo) {
-        mRepository.dealCircleJoinOrExit(circleInfo);
+        if (circleInfo.getAudit() != 1) {
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
+            return;
+        }
+        boolean isJoined = circleInfo.getJoined() != null;
+
+        mRepository.dealCircleJoinOrExit(circleInfo)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        if (isJoined) {
+                            circleInfo.setJoined(null);
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
+                        } else {
+                            if (CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
+
+                                return;
+                            }
+                            circleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+                        }
+                        mRootView.getCircleInfoDetail().setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
     }
 
 

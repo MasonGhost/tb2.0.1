@@ -609,4 +609,9 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     public String getSearchInput() {
         return "";
     }
+
+    @Override
+    public CircleInfoDetail getCircleInfoDetail() {
+        return null;
+    }
 }

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.JoinedBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -138,7 +139,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
     private String created_at;
     private String updated_at;
     @Convert(columnType = String.class, converter = JoinedBeanConvert.class)
-    private JoinedBean joined;
+    private CircleJoinedBean joined;
 
     public String getAvatar() {
         return avatar;
@@ -308,145 +309,13 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
     }
 
-    public JoinedBean getJoined() {
+    public CircleJoinedBean getJoined() {
         return joined;
     }
 
-    public void setJoined(JoinedBean joined) {
+    public void setJoined(CircleJoinedBean joined) {
         this.joined = joined;
     }
-
-    public static class JoinedBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = -2874474992456690897L;
-        /**
-         * id : 2
-         * group_id : 3
-         * user_id : 18
-         * audit : 0
-         * role : founder
-         * disabled : 0
-         * created_at : 2017-11-29 17:08:16
-         * updated_at : 2017-11-29 17:08:17
-         */
-
-        private int id;
-        private int group_id;
-        private int user_id;
-        private int audit;
-        private String role;
-        private int disabled;
-        private String created_at;
-        private String updated_at;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getGroup_id() {
-            return group_id;
-        }
-
-        public void setGroup_id(int group_id) {
-            this.group_id = group_id;
-        }
-
-        public int getUser_id() {
-            return user_id;
-        }
-
-        public void setUser_id(int user_id) {
-            this.user_id = user_id;
-        }
-
-        public int getAudit() {
-            return audit;
-        }
-
-        public void setAudit(int audit) {
-            this.audit = audit;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public void setRole(String role) {
-            this.role = role;
-        }
-
-        public int getDisabled() {
-            return disabled;
-        }
-
-        public void setDisabled(int disabled) {
-            this.disabled = disabled;
-        }
-
-        public String getCreated_at() {
-            return created_at;
-        }
-
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeInt(this.group_id);
-            dest.writeInt(this.user_id);
-            dest.writeInt(this.audit);
-            dest.writeString(this.role);
-            dest.writeInt(this.disabled);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-        }
-
-        public JoinedBean() {
-        }
-
-        protected JoinedBean(Parcel in) {
-            this.id = in.readInt();
-            this.group_id = in.readInt();
-            this.user_id = in.readInt();
-            this.audit = in.readInt();
-            this.role = in.readString();
-            this.disabled = in.readInt();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<JoinedBean> CREATOR = new Creator<JoinedBean>() {
-            @Override
-            public JoinedBean createFromParcel(Parcel source) {
-                return new JoinedBean(source);
-            }
-
-            @Override
-            public JoinedBean[] newArray(int size) {
-                return new JoinedBean[size];
-            }
-        };
-    }
-
 
     @Override
     public int describeContents() {
@@ -487,7 +356,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.id = id;
     }
 
-    public CircleInfo(long id, JoinedBean joined) {
+    public CircleInfo(long id, CircleJoinedBean joined) {
         this.id = id;
         this.joined = joined;
     }
@@ -516,14 +385,14 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.audit = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
-        this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
+        this.joined = in.readParcelable(CircleJoinedBean.class.getClassLoader());
     }
 
-    @Generated(hash = 198916784)
+    @Generated(hash = 818221949)
     public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
-                      int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
-                      int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
-                      String updated_at, JoinedBean joined) {
+            int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
+            int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
+            String updated_at, CircleJoinedBean joined) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
@@ -547,7 +416,6 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
         this.joined = joined;
     }
-
 
     public static final Creator<CircleInfo> CREATOR = new Creator<CircleInfo>() {
         @Override
@@ -578,8 +446,5 @@ public class CircleInfo extends BaseListBean implements Serializable {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
-    }
-
-    public static class JoinedBeanConvert extends BaseConvert<JoinedBean> {
     }
 }

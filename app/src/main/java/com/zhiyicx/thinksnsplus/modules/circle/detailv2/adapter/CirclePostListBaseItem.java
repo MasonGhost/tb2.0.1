@@ -198,8 +198,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                         .getLikes_count()), circlePostListBean.hasLiked(), 0);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean
                         .getComments_count()), false, 1);
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean
-                                .getViews_count() == 0 ? 1 : circlePostListBean.getViews_count()),
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(circlePostListBean.getViews_count()),
                         false, 2);// 浏览量没有 0
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);

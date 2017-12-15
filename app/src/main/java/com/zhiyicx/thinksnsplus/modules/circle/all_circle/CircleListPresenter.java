@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 
@@ -81,7 +82,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
 
                                 return;
                             }
-                            circleInfo.setJoined(new CircleInfo.JoinedBean());
+                            circleInfo.setJoined(new CircleJoinedBean());
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }
                         mCircleInfoGreenDao.updateSingleData(circleInfo);

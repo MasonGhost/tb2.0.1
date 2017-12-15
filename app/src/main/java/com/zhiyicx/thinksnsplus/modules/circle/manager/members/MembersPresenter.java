@@ -40,8 +40,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
-        mRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(), TSListFragment
-                .DEFAULT_ONE_PAGE_SIZE, TYPE_ALL)
+        mRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(), Integer.MAX_VALUE, TYPE_ALL)
                 .flatMap(circleMembers -> {
                     List<CircleMembers> manager = new ArrayList<>();
                     List<CircleMembers> member = new ArrayList<>();

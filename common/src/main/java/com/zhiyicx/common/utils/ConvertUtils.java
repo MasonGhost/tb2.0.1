@@ -12,7 +12,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.FloatRange;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -843,7 +842,21 @@ public class ConvertUtils {
      * @return bitmap
      */
     public static Bitmap drawable2Bitmap(Drawable drawable) {
-        return drawable == null ? null : ((BitmapDrawable) drawable).getBitmap();
+        Bitmap bitmap = null;
+        try {
+            bitmap = drawable == null ? null : ((BitmapDrawable) drawable).getBitmap();
+        } catch (Exception e) {
+            int w = drawable.getIntrinsicWidth();
+            int h = drawable.getIntrinsicHeight();
+            Bitmap.Config config =
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.RGB_565
+                            : Bitmap.Config.RGB_565;
+            bitmap = Bitmap.createBitmap(w, h, config);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, w, h);
+            drawable.draw(canvas);
+        }
+        return bitmap;
     }
 
     /**
@@ -1073,11 +1086,12 @@ public class ConvertUtils {
 
     /**
      * emoji 所占的长度
+     *
      * @param emojiNUm emoji 个数
      * @return
      */
     public static int emojiStrLenght(int emojiNUm) {
-        return 2*emojiNUm;
+        return 2 * emojiNUm;
     }
 
     private static boolean isEmojiCharacter(char codePoint) {
@@ -1087,10 +1101,10 @@ public class ConvertUtils {
 
     /**
      * @param color 处理的颜色
-     * @param i 处理的步长
-     * @return  处理完后较深的颜色
+     * @param i     处理的步长
+     * @return 处理完后较深的颜色
      */
-    public static int getDarkerColor(int color , @FloatRange(from = 0,to = 1) float i){
+    public static int getDarkerColor(int color, @FloatRange(from = 0, to = 1) float i) {
         float redrate = 0.299f;
         float greenrate = 0.587f;
         float bluerate = 0.114f;
@@ -1099,9 +1113,9 @@ public class ConvertUtils {
         int green = (color >> 8) & 0xFF;
         int blue = color & 0xFF;
 
-        return Color.rgb((int) Math.max(red - redrate * i * 0xFF,0),
-                (int) Math.max(green - greenrate * i * 0xFF,0),
-                (int) Math.max(blue - bluerate * i *0xFF , 0));
+        return Color.rgb((int) Math.max(red - redrate * i * 0xFF, 0),
+                (int) Math.max(green - greenrate * i * 0xFF, 0),
+                (int) Math.max(blue - bluerate * i * 0xFF, 0));
     }
 
     public static String toBase64(Bitmap bitmap) {
@@ -1138,7 +1152,9 @@ public class ConvertUtils {
         return System.currentTimeMillis();
     }
 
-    /** 生成漂亮的颜色 */
+    /**
+     * 生成漂亮的颜色
+     */
     public static int generateBeautifulColor() {
         Random random = new Random();
         //为了让生成的颜色不至于太黑或者太白，所以对3个颜色的值进行限定
@@ -1148,7 +1164,9 @@ public class ConvertUtils {
         return Color.rgb(red, green, blue);//使用r,g,b混合生成一种新的颜色
     }
 
-    /** 获得状态栏的高度 */
+    /**
+     * 获得状态栏的高度
+     */
     public static int getStatusHeight(Context context) {
         int statusHeight = -1;
         try {
@@ -1162,7 +1180,7 @@ public class ConvertUtils {
         return statusHeight;
     }
 
-    public static String converInt2HexColor(int color){
+    public static String converInt2HexColor(int color) {
         return "#" + Integer.toHexString(color).substring(2);
     }
 

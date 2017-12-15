@@ -39,6 +39,8 @@ public interface CircleDetailContract {
         BaseCircleRepository.CircleMinePostType getCircleMinePostType();
 
         String getSearchInput();
+
+        CircleInfoDetail getCircleInfoDetail();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
@@ -53,6 +55,8 @@ public interface CircleDetailContract {
         void deletePost(CirclePostListBean circlePostListBean, int position);
 
         void sharePost(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
+
+        void shareCircle(CircleInfoDetail circleInfoDetail, Bitmap shareBitMap);
 
         void handleLike(boolean b,Long id, int dataPosition);
 

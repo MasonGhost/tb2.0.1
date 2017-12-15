@@ -3,12 +3,14 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
@@ -17,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -142,24 +145,41 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
-        if (circleInfo.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-            mRootView.showSnackErrorMessage(mContext.getString(R.string.exit_circle));
-            return;
-        }
-
-        mRepository.dealCircleJoinOrExit(circleInfo);
         boolean isJoined = circleInfo.getJoined() != null;
-        if (isJoined) {
-            circleInfo.setJoined(null);
-            circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
-        } else {
-            circleInfo.setJoined(new CircleInfo.JoinedBean());
-            circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
-        }
-        // 更改数据源，切换订阅状态
-        mCircleInfoGreenDao.updateSingleData(circleInfo);
 
-        mRootView.refreshData();
+        mRepository.dealCircleJoinOrExit(circleInfo)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        if (isJoined) {
+                            circleInfo.setJoined(null);
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
+                        } else {
+                            if (CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
+
+                                return;
+                            }
+                            circleInfo.setJoined(new CircleJoinedBean());
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+                        }
+                        mCircleInfoGreenDao.updateSingleData(circleInfo);
+                        mRootView.refreshData(position);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
     }
 
     /**

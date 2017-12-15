@@ -81,13 +81,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -689,10 +687,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         // 举报
         if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
-                    (position).getCommentUser(),dynamicBean.getComments().get
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getComment_id().toString(),
-                    null,null,dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
+                    null, null, dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
 
         } else {
 

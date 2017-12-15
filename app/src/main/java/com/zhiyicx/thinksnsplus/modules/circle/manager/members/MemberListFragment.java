@@ -261,6 +261,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             case R.id.fragment_search_back:
                 break;
             case R.id.fragment_search_cancle:
+                setLeftClick();
                 break;
             default:
         }

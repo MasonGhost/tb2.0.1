@@ -6,12 +6,11 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListContract;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -142,7 +141,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
         }
         // 更改数据源，切换订阅状态
-        circleInfo.setJoined(new CircleInfo.JoinedBean());
+        circleInfo.setJoined(new CircleJoinedBean());
         mCircleInfoGreenDao.updateSingleData(circleInfo);
         mRepository.dealCircleJoinOrExit(circleInfo);
         mRootView.refreshData(position);
@@ -163,7 +162,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE,QASearchHistoryBean.TYPE_QA);
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA);
     }
 
     @Override

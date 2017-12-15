@@ -53,6 +53,7 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
 
     private List<String> mPermissionType = new ArrayList<>();
     private long mCircleId;
+    private int mDefaultPermission;
     private StringBuilder mPermissions;
 
     @Inject
@@ -98,16 +99,25 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
         mFrame.setVisibility(View.VISIBLE);
         switch (view.getId()) {
             case R.id.tv_permission_all:
+                if (mDefaultPermission == PERMISSION_ALL) {
+                    return;
+                }
                 setCheckPosition(PERMISSION_ALL);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
                 mPermissionType.add(CircleMembers.MEMBER);
                 break;
             case R.id.tv_permission_owner:
+                if (mDefaultPermission == PERMISSION_OWNER) {
+                    return;
+                }
                 setCheckPosition(PERMISSION_OWNER);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 break;
             case R.id.tv_permission_manager:
+                if (mDefaultPermission == PERMISSION_MANAGER) {
+                    return;
+                }
                 setCheckPosition(PERMISSION_MANAGER);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
@@ -118,6 +128,7 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
     }
 
     public void setCheckPosition(int checkPosition) {
+        mDefaultPermission = checkPosition;
         switch (checkPosition) {
             case PERMISSION_ALL:
                 mTvPermissionAll.setChecked(true);

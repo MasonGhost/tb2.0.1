@@ -146,7 +146,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
         holder.setTextColorRes(R.id.tv_name, R.color.normal_for_assist_text);
         List<Link> links = setLinks(mContext, circleReportListBean.getUser(), circleReportListBean.getTarget());
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_name), links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_name), links, false);
         }
 
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circleReportListBean

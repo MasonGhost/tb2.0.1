@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class CircleInfoDetail implements Parcelable {
 
-    public enum CircleRoleEnum{
+    public enum CircleRoleEnum {
         FOUNDER("founder"),
         ADMINISTRATOR("administrator"),
         MEMBER("member");
@@ -76,7 +75,7 @@ public class CircleInfoDetail implements Parcelable {
     private int join_income_count;
     private int pinned_income_count;
     private UserInfoBean user;
-    private JoinedBean joined;
+    private CircleJoinedBean joined;
     private List<UserTagBean> tags;
     private CircleTypeBean category;
 
@@ -104,11 +103,11 @@ public class CircleInfoDetail implements Parcelable {
         this.avatar = avatar;
     }
 
-    public JoinedBean getJoined() {
+    public CircleJoinedBean getJoined() {
         return joined;
     }
 
-    public void setJoined(JoinedBean joined) {
+    public void setJoined(CircleJoinedBean joined) {
         this.joined = joined;
     }
 
@@ -288,166 +287,6 @@ public class CircleInfoDetail implements Parcelable {
         this.user = user;
     }
 
-    public static class JoinedBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = -2874474992456690897L;
-
-        /**
-         * 0 待审核 1已审核 2驳回
-         */
-        public enum AuditStatus {
-            REJECTED(2),
-            REVIEWING(0),
-            PASS(1);
-            public int value;
-
-            AuditStatus(int value) {
-                this.value = value;
-            }
-        }
-
-        /**
-         * 是否被拉黑禁用 1-禁用 0-正常
-         */
-        public enum DisableStatus {
-            DISABLE(1),
-            NORMAL(0);
-            public int value;
-
-            DisableStatus(int value) {
-                this.value = value;
-            }
-        }
-
-        /**
-         * id : 2
-         * group_id : 3
-         * user_id : 18
-         * audit : 0
-         * role : founder
-         * disabled : 0
-         * created_at : 2017-11-29 17:08:16
-         * updated_at : 2017-11-29 17:08:17
-         */
-
-        private int id;
-        private int group_id;
-        private int user_id;
-        private int audit;
-        private String role;
-        private int disabled;
-        private String created_at;
-        private String updated_at;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getGroup_id() {
-            return group_id;
-        }
-
-        public void setGroup_id(int group_id) {
-            this.group_id = group_id;
-        }
-
-        public int getUser_id() {
-            return user_id;
-        }
-
-        public void setUser_id(int user_id) {
-            this.user_id = user_id;
-        }
-
-        public int getAudit() {
-            return audit;
-        }
-
-        public void setAudit(int audit) {
-            this.audit = audit;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public void setRole(String role) {
-            this.role = role;
-        }
-
-        public int getDisabled() {
-            return disabled;
-        }
-
-        public void setDisabled(int disabled) {
-            this.disabled = disabled;
-        }
-
-        public String getCreated_at() {
-            return created_at;
-        }
-
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeInt(this.group_id);
-            dest.writeInt(this.user_id);
-            dest.writeInt(this.audit);
-            dest.writeString(this.role);
-            dest.writeInt(this.disabled);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-        }
-
-        public JoinedBean() {
-        }
-
-        protected JoinedBean(Parcel in) {
-            this.id = in.readInt();
-            this.group_id = in.readInt();
-            this.user_id = in.readInt();
-            this.audit = in.readInt();
-            this.role = in.readString();
-            this.disabled = in.readInt();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<JoinedBean> CREATOR = new Creator<JoinedBean>() {
-            @Override
-            public JoinedBean createFromParcel(Parcel source) {
-                return new JoinedBean(source);
-            }
-
-            @Override
-            public JoinedBean[] newArray(int size) {
-                return new JoinedBean[size];
-            }
-        };
-    }
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -510,7 +349,7 @@ public class CircleInfoDetail implements Parcelable {
         this.join_income_count = in.readInt();
         this.pinned_income_count = in.readInt();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.joined = in.readParcelable(JoinedBean.class.getClassLoader());
+        this.joined = in.readParcelable(CircleJoinedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.category = in.readParcelable(CircleTypeBean.class.getClassLoader());
     }

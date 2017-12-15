@@ -126,6 +126,23 @@
                 zhiyi:itv_text="@string/send_question"
                 zhiyi:itv_textColor="@color/dyanmic_send"
                 zhiyi:itv_textSize="@dimen/size_content_assist"/>
+
+            <!--发帖-->
+            <com.zhiyicx.thinksnsplus.widget.IconTextView
+                android:id="@+id/send_circle_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_large"
+                android:paddingRight="@dimen/spacing_large"
+                zhiyi:itv_direction="TOP"
+                zhiyi:itv_gap="@dimen/spacing_normal"
+                zhiyi:itv_icon="@mipmap/ico_question"
+                zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+                zhiyi:itv_text="@string/send_question"
+                zhiyi:itv_textColor="@color/dyanmic_send"
+                zhiyi:itv_textSize="@dimen/size_content_assist"/>
+
         </LinearLayout>
 
     </LinearLayout>

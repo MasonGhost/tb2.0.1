@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -27,14 +26,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GaussianBlurTrasnform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
@@ -45,6 +43,7 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -53,13 +52,17 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForEightImage;
@@ -152,6 +155,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     ImageView mIvCircleHead;
     @BindView(R.id.tv_dynamic_count)
     TextView mTvCirclePostCount;
+    @BindView(R.id.tv_circle_tag)
+    TextView mTvCircleFounder;
     @BindView(R.id.tv_type)
     TextView mTvCirclePostOrder;
     @BindView(R.id.tv_circle_title)
@@ -333,10 +338,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
         mCircleInfoDetail = detail;
-
-        setCircleData(mCircleInfoDetail);
         setVisiblePermission(mCircleInfoDetail);
-
+        setCircleData(mCircleInfoDetail);
     }
 
     @Override
@@ -868,17 +871,17 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (mCircleInfoDetail.getJoined() == null) {
                         showAuditTipPopupWindow(getString(R.string.please_join_circle_first));
                         // 已经申请了加入，但被拒绝了
-                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleInfoDetail.JoinedBean.AuditStatus.REJECTED.value) {
+                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleJoinedBean.AuditStatus.REJECTED.value) {
                         showAuditTipPopupWindow(getString(R.string.circle_join_rejected));
                         // 已经申请了加入，审核中
-                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleInfoDetail.JoinedBean.AuditStatus.REVIEWING.value) {
+                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleJoinedBean.AuditStatus.REVIEWING.value) {
                         showAuditTipPopupWindow(getString(R.string.circle_join_reviewing));
                         // 通过了
                     } else {
                         // 当前角色可用
                         if (mCircleInfoDetail.getPermissions().contains(mCircleInfoDetail.getJoined().getRole())) {
                             if (mCircleInfoDetail.getJoined()
-                                    .getDisabled() == CircleInfoDetail.JoinedBean.DisableStatus.NORMAL.value) {
+                                    .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
                                 Intent intent = new Intent(mActivity, MarkdownActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfoDetail.getId());
@@ -911,6 +914,26 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mTypeChoosePopupWindow.show());
 
+        RxView.clicks(mIvShare)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.shareCircle(mCircleInfoDetail,
+                        ConvertUtils.drawable2BitmapWithWhiteBg(mActivity, mIvCircleHead.getDrawable(), R.mipmap.icon)));
+
+        RxView.clicks(mTvCircleFounder)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mCircleInfoDetail.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
+                        return;
+                    }
+                    MessageItemBean messageItemBean = new MessageItemBean();
+                    messageItemBean.setUserInfo(mCircleInfoDetail.getUser());
+                    Intent to = new Intent(getActivity(), ChatActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+                    to.putExtras(bundle);
+                    startActivity(to);
+                });
 
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -990,25 +1013,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     .load(detail.getAvatar())
                     .error(R.drawable.shape_default_image)
                     .placeholder(R.drawable.shape_default_image)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            mIvCircleHeadBg.setImageResource(R.mipmap.default_pic_personal);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource.getIntrinsicHeight());
+                            mIvCircleHeadBg.setImageBitmap(bitmap);
+                            return false;
+                        }
+                    })
                     .into(mIvCircleHead);
-
-            Glide.with(mActivity)
-                    .load(detail.getAvatar())
-                    .placeholder(R.drawable.shape_default_image)
-                    .transform(new GaussianBlurTrasnform(mActivity))
-                    .error(R.drawable.shape_default_image)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            mIvCircleHeadBg.setImageDrawable(resource);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            mIvCircleHeadBg.setImageDrawable(errorDrawable);
-                        }
-                    });
         }
     }
 
@@ -1071,7 +1090,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 break;
             case R.id.tv_circle_subscrib:
                 mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), null));
-                mCircleInfoDetail.setJoined(new CircleInfoDetail.JoinedBean());
+                mCircleInfoDetail.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
                         .getUsers_count()));
@@ -1079,7 +1098,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mTvExitCircle.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_exit_circle:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), new CircleInfo.JoinedBean()));
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), new CircleJoinedBean(mCircleInfoDetail.getJoined().getRole())));
                 mCircleInfoDetail.setJoined(null);
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() - 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
@@ -1089,6 +1108,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 break;
             default:
         }
+    }
+
+    @Override
+    public CircleInfoDetail getCircleInfoDetail() {
+        return mCircleInfoDetail;
     }
 
     @Override

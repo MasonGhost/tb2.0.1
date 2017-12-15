@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginRight="@dimen/spacing_normal"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/default_pic_personal"/>
 
         <TextView
             android:id="@+id/tv_circle_title"

@@ -187,11 +187,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected void initData() {
-        setRightTitle();
-        setCenterTitle();
         if (mCircleInfoDetail == null) {
             return;
         }
+        setRightTitle();
+        setCenterTitle();
         Glide.with(getActivity())
                 .load(mCircleInfoDetail.getAvatar())
                 .into(mIvHeadIcon);
