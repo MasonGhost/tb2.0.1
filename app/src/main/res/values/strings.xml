@@ -750,4 +750,6 @@
     <string name="delete_info">删除资讯</string>
     <string name="camera_permission_tip">相机权限已被您禁止使用，请前往权限管理中心修改设置！</string>
 
+    <!--聊天-->
+    <string name="chat_delete_conversation_failed">删除聊天失败</string>
 </resources>

@@ -12,6 +12,7 @@ import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
@@ -28,6 +29,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
@@ -45,6 +47,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
+import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -307,21 +310,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         MessageItemBeanV2 messageItemBeanV2 = mRootView.getRealMessageList().get(position);
         Subscription subscription = Observable.just(messageItemBeanV2)
                 .observeOn(Schedulers.io())
-                .map(messageItemBeanV21 -> {
-                    // 删除和某个user会话，如果需要保留聊天记录，传false
-                    return EMClient.getInstance().chatManager().deleteConversation(messageItemBeanV21.getEmKey(), true);
-                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aBoolean -> {
-                    LogUtils.d("Cathy", "deletConversation" + aBoolean);
-                    if (aBoolean){
-                        mRootView.getRealMessageList().remove(position);
-                        mRootView.refreshData();
-                        checkBottomMessageTip();
-                    } else {
-                        // 删除失败
-                    }
-
+                .subscribe(itemBeanV2 -> {
+                    LogUtils.d("Cathy", "deletConversation");
+                    mRootView.getRealMessageList().remove(itemBeanV2);
+                    mRootView.refreshData();
+                    checkBottomMessageTip();
+                    EMClient.getInstance().chatManager().deleteConversation(itemBeanV2.getEmKey(), true);
                 });
         addSubscrebe(subscription);
     }

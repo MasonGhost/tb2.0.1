@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
@@ -62,8 +63,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
-        ImStatusListener, ImTimeoutListener, EMConnectionListener, EMMessageListener {
+class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, EMConnectionListener, EMMessageListener {
     @Inject
     AuthRepository mAuthRepository;
 
@@ -98,38 +98,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
      * 聊天相关回调
      *********************************************/
 
-    @Override
-    public void onMessageReceived(final Message message) {
-        if (message.getIs_read()) {
-            return;
-        }
-        setMessageTipVisable(true);
-        EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
-        // 应用在后台
-        if (!BackgroundUtil.getAppIsForegroundStatus()) {
-            Subscription subscribe = mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
-                    .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
-                        @Override
-                        protected void onSuccess(UserInfoBean data) {
-                            JpushMessageBean jpushMessageBean = new JpushMessageBean();
-                            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
-                            jpushMessageBean.setMessage(data.getName() + ":" + message.getTxt());
-                            jpushMessageBean.setNofity(false);
-                            NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
-                        }
-
-                        @Override
-                        protected void onFailure(String message, int code) {
-                        }
-
-                        @Override
-                        protected void onException(Throwable throwable) {
-                        }
-                    });
-            addSubscrebe(subscribe);
-        }
-    }
-
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE)
     public void setMessageTipVisable(boolean isShow) {
         mRootView.setMessageTipVisable(isShow);
@@ -138,37 +106,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE)
     public void setMineTipVisable(boolean isShow) {
         mRootView.setMineTipVisable(isShow);
-    }
-
-    @Override
-    public void onMessageACKReceived(Message message) {
-        EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED);
-    }
-
-    @Override
-    public void onConversationJoinACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationLeaveACKReceived(ChatRoomContainer chatRoomContainer) {
-
-    }
-
-    @Override
-    public void onConversationMCACKReceived(List<Conversation> conversations) {
-
-    }
-
-    @Override
-    public void synchronousInitiaMessage(int limit) {
-
-    }
-
-    @Override
-    public void onAuthSuccess(AuthData authData) {
-        EventBus.getDefault().post(authData, EventBusTagConfig.EVENT_IM_AUTHSUCESSED);
-        synIMMessage(authData);
     }
 
     /**
@@ -201,40 +138,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onDisconnected(int error) {
         EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
-    }
-
-    @Override
-    public void onDisconnect(int code, String reason) {
-        EventBus.getDefault().post(code, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
-
-    }
-
-    @Override
-    public void onError(Exception error) {
-        if (error == null) {
-            error = new Exception("null data");
-        }
-        EventBus.getDefault().post(error, EventBusTagConfig.EVENT_IM_ONERROR);
-    }
-
-    @Override
-    public void onMessageTimeout(Message message) {
-        EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGETIMEOUT);
-    }
-
-    @Override
-    public void onConversationJoinTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationLeaveTimeout(int roomId) {
-
-    }
-
-    @Override
-    public void onConversationMcTimeout(List<Integer> roomIds) {
-
     }
 
     @Override
@@ -346,7 +249,16 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
                     // 收到消息，更新会话列表
                     EventBus.getDefault().post(messageList, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
                 });
-
+        // 应用在后台，则推送通知
+//        if (!BackgroundUtil.getAppIsForegroundStatus()) {
+//            for (EMMessage message : list){
+//                JpushMessageBean jpushMessageBean = new JpushMessageBean();
+//                jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+//                jpushMessageBean.setMessage(itemBeanV2.getUserInfo().getName() + ":" + message.getTxt());
+//                jpushMessageBean.setNofity(false);
+//                NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
+//            }
+//        }
     }
 
     @Override
