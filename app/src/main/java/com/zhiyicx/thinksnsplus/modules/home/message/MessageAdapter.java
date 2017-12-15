@@ -222,7 +222,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
      * @return true 有被划开的
      */
     public boolean hasItemOpend() {
-        return mItemManger != null && !mItemManger.getOpenItems().isEmpty();
+        List<Integer> data = mItemManger.getOpenItems();
+        return mItemManger != null && !data.isEmpty() && data.get(0) > -1;
     }
 
     public interface OnSwipItemClickListener {
