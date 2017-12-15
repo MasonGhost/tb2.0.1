@@ -316,6 +316,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     LogUtils.d("Cathy", "deletConversation" + aBoolean);
                     if (aBoolean){
                         mRootView.getRealMessageList().remove(position);
+                        mRootView.refreshData();
                         checkBottomMessageTip();
                     } else {
                         // 删除失败

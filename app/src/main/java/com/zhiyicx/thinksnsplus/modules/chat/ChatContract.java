@@ -181,22 +181,5 @@ public interface ChatContract {
         void createChat(UserInfoBean userInfoBean, String text);
 
         String checkTShelper(long user_id);
-
-        /**
-         * 获取消息的监听方法
-         *
-         * @return EMMessageListener
-         */
-        EMMessageListener getMessageListener();
-
-        /**
-         * 绑定消息监听器
-         */
-        void bindMessageListener();
-
-        /**
-         * 移除监听器
-         */
-        void removeMessageListener();
     }
 }
