@@ -13,6 +13,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = ReportReviewPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = ReportReviewPresenterModule.class)
 public interface ReportReviewComponent extends InjectComponent<ReportReviewActivity> {
 }

@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.record.EarningListActivity;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -83,6 +84,11 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_earning;
+    }
+
+    @Override
+    public void permissionResult(List<String> permission) {
+
     }
 
     @OnClick({R.id.bt_member, R.id.bt_top})

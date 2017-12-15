@@ -296,7 +296,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
             mPoiItem = data.getExtras().getParcelable(CircleLocationFragment.BUNDLE_DATA);
             if (mPoiItem != null) {
-                mTvLocation.setText(mPoiItem.getTitle());//更新位置
+                mTvLocation.setText(mPoiItem.getTitle());
             }
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
@@ -385,7 +385,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             }
         } catch (Exception ignored) {
         }
-        mTvLocation.setText(city);//更新位置
+        mTvLocation.setText(city);
     }
 
     private void jumpToEditUserTag() {

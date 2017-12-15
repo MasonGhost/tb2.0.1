@@ -327,6 +327,7 @@
     <string name="circle_report_refuse">已反驳</string>
     <string name="circle_report_agree">同意</string>
     <string name="circle_report_disagree">驳回</string>
+    <string name="circle_post_permission">发帖权限设置</string>
     <string-array name="circle_mine_type">
         <item>@string/joined_group</item>
         <item>待审核的</item>

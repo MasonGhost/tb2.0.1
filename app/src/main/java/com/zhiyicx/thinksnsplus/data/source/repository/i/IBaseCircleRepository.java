@@ -11,11 +11,14 @@ import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
 
 import java.util.List;
 
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.Path;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 
 /**
  * @author Jliuer
@@ -76,6 +79,13 @@ public interface IBaseCircleRepository {
      */
     Observable<List<CircleInfo>> getAllCircle(Integer limit, Integer offet, String keyword
             , Integer category_id);
+
+    /**
+     * 设置圈子权限
+     *
+     * @return
+     */
+    Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId,List<String> permissions);
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 

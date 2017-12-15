@@ -382,6 +382,13 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId,List<String> permissions) {
+        return mCircleClient.setCirclePermissions(circleId,permissions)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public void saveCircleType() {
         getCategroiesList(0, 0)
                 .subscribe(new BaseSubscribeForV2<List<CircleTypeBean>>() {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/light_linear_driver"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_permission_all"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"/>
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_permission_owner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"/>
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_permission_manager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"/>
+
+</LinearLayout>

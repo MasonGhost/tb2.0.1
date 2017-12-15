@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionFragment;
 
 import dagger.Component;
 

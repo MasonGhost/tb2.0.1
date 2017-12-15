@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -233,7 +234,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_SET_CIRCLE_PERMISSIONS)
-    Observable<Object> setCirclePermissions();
+    Observable<BaseJsonV2<Object>> setCirclePermissions(@Path("circle_id") long circleId,  @Field("permissions[]") List<String> permissions);
 
     /**
      * 获取圈子详情
