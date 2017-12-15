@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerContract;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenterModule;
@@ -129,6 +130,11 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
         mCircleTypeBeans = circleTypeList;
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
+
     }
 
     @Override

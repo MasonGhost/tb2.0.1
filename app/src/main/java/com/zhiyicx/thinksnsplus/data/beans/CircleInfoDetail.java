@@ -12,7 +12,18 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleInfoDetail implements Parcelable{
+public class CircleInfoDetail implements Parcelable {
+
+    public enum CircleRoleEnum{
+        FOUNDER("founder"),
+        ADMINISTRATOR("administrator"),
+        MEMBER("member");
+        public String value;
+
+        CircleRoleEnum(String value) {
+            this.value = value;
+        }
+    }
 
     /**
      * id : 1
@@ -25,6 +36,7 @@ public class CircleInfoDetail implements Parcelable{
      * geo_hash : 1122tym
      * allow_feed : 0
      * mode : public
+     * "permissions": "member,administrator,founder",
      * money : 0
      * summary : 第一个圈子
      * notice : null
@@ -35,7 +47,10 @@ public class CircleInfoDetail implements Parcelable{
      * updated_at : 2017-11-28 02:30:38
      * join_income_count : 0
      * pinned_income_count : 0
-     * user : {"id":18,"name":"仨仨仨仨仨","location":null,"sex":1,"bio":"没有","created_at":"2017-04-10 02:10:22","updated_at":"2017-11-10 09:54:09","avatar":null,"bg":null,"verified":{"type":"user","icon":null,"description":"玄奘普法"},"extra":{"user_id":18,"likes_count":40,"comments_count":68,"followers_count":24,"followings_count":18,"updated_at":"2017-11-23 10:30:11","feeds_count":15,"questions_count":10,"answers_count":14,"checkin_count":2,"last_checkin_count":1,"live_zans_count":0,"live_zans_remain":0,"live_time":0}}
+     * user : {"id":18,"name":"仨仨仨仨仨","location":null,"sex":1,"bio":"没有","created_at":"2017-04-10 02:10:22","updated_at":"2017-11-10 09:54:09",
+     * "avatar":null,"bg":null,"verified":{"type":"user","icon":null,"description":"玄奘普法"},"extra":{"user_id":18,"likes_count":40,
+     * "comments_count":68,"followers_count":24,"followings_count":18,"updated_at":"2017-11-23 10:30:11","feeds_count":15,"questions_count":10,
+     * "answers_count":14,"checkin_count":2,"last_checkin_count":1,"live_zans_count":0,"live_zans_remain":0,"live_time":0}}
      */
 
     private Long id;
@@ -49,6 +64,7 @@ public class CircleInfoDetail implements Parcelable{
     private String geo_hash;
     private int allow_feed;
     private String mode;
+    private String permissions;
     private int money;
     private String summary;
     private String notice;
@@ -176,6 +192,14 @@ public class CircleInfoDetail implements Parcelable{
         this.mode = mode;
     }
 
+    public String getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(String permissions) {
+        this.permissions = permissions;
+    }
+
     public int getMoney() {
         return money;
     }
@@ -264,8 +288,36 @@ public class CircleInfoDetail implements Parcelable{
         this.user = user;
     }
 
-    public static class JoinedBean implements Parcelable,Serializable {
+    public static class JoinedBean implements Parcelable, Serializable {
         private static final long serialVersionUID = -2874474992456690897L;
+
+        /**
+         * 0 待审核 1已审核 2驳回
+         */
+        public enum AuditStatus {
+            REJECTED(2),
+            REVIEWING(0),
+            PASS(1);
+            public int value;
+
+            AuditStatus(int value) {
+                this.value = value;
+            }
+        }
+
+        /**
+         * 是否被拉黑禁用 1-禁用 0-正常
+         */
+        public enum DisableStatus {
+            DISABLE(1),
+            NORMAL(0);
+            public int value;
+
+            DisableStatus(int value) {
+                this.value = value;
+            }
+        }
+
         /**
          * id : 2
          * group_id : 3
@@ -414,6 +466,7 @@ public class CircleInfoDetail implements Parcelable{
         dest.writeString(this.geo_hash);
         dest.writeInt(this.allow_feed);
         dest.writeString(this.mode);
+        dest.writeString(this.permissions);
         dest.writeInt(this.money);
         dest.writeString(this.summary);
         dest.writeString(this.notice);
@@ -445,6 +498,7 @@ public class CircleInfoDetail implements Parcelable{
         this.geo_hash = in.readString();
         this.allow_feed = in.readInt();
         this.mode = in.readString();
+        this.permissions = in.readString();
         this.money = in.readInt();
         this.summary = in.readString();
         this.notice = in.readString();

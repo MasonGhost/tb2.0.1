@@ -69,6 +69,7 @@ public interface CircleDetailContract {
         void handleViewCount(Long id, int position);
 
         void dealCircleJoinOrExit(CircleInfo circleInfo);
+
     }
 
     interface Repository extends IBaseCircleRepository {

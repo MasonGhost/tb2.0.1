@@ -258,7 +258,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
                 if (mUserCertificationInfo != null
                         && mUserCertificationInfo.getId() != 0
-                        && mUserCertificationInfo.getStatus() != 2) {
+                        && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
@@ -341,11 +341,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void updateCertification(UserCertificationInfo data) {
         if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
-            if (data.getStatus() == 1) {
+            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
-            } else if (data.getStatus() == 0) {
+            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
-            } else if (data.getStatus() == 2) {
+            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {

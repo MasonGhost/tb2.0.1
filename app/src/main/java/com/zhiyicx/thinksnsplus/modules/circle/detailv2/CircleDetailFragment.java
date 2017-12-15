@@ -46,6 +46,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -78,6 +79,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragmen
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReportReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.onlypost.CirclePostSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -213,8 +215,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
 
+
     // 类型选择框
     private TypeChoosePopupWindow mTypeChoosePopupWindow;
+    private ActionPopupWindow mAuditTipPop;// 权限说明提示框
 
     private int mCurrentPostion;
 
@@ -873,15 +877,54 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             }
         };
 
+        /*
+         * 发帖
+         */
         RxView.clicks(mBtnSendPost)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    Intent intent = new Intent(mActivity, MarkdownActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfoDetail.getId());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    // TODO: 2017/12/14
+                    // 未申请加入
+                    if (mCircleInfoDetail.getJoined() == null) {
+                        showAuditTipPopupWindow(getString(R.string.please_join_circle_first));
+                        // 已经申请了加入，但被拒绝了
+                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleInfoDetail.JoinedBean.AuditStatus.REJECTED.value) {
+                        showAuditTipPopupWindow(getString(R.string.circle_join_rejected));
+                        // 已经申请了加入，审核中
+                    } else if (mCircleInfoDetail.getJoined().getAudit() == CircleInfoDetail.JoinedBean.AuditStatus.REVIEWING.value) {
+                        showAuditTipPopupWindow(getString(R.string.circle_join_reviewing));
+                        // 通过了
+                    } else {
+                        // 当前角色可用
+                        if (mCircleInfoDetail.getPermissions().contains(mCircleInfoDetail.getJoined().getRole())) {
+                            if (mCircleInfoDetail.getJoined()
+                                    .getDisabled() == CircleInfoDetail.JoinedBean.DisableStatus.NORMAL.value) {
+                                Intent intent = new Intent(mActivity, MarkdownActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfoDetail.getId());
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+
+                            } else {
+                                //被拉到了黑名单
+                                showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+
+                            }
+
+                        } else {
+                            // 没有权限发帖
+                            if (mCircleInfoDetail.getPermissions().contains(CircleInfoDetail.CircleRoleEnum.FOUNDER.value)) {
+                                showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfoDetail.getName(), getString(R
+                                        .string.circle_master)));
+                            } else {
+                                showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfoDetail.getName(), getString(R
+                                        .string.administrator)));
+                            }
+
+                        }
+                    }
+
                 });
 
         RxView.clicks(mTvCirclePostOrder)
@@ -1025,5 +1068,23 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public String getSearchInput() {
         return "";
     }
+
+
+    /**
+     * 权限说明提示弹框
+     */
+    private void showAuditTipPopupWindow(String tipStr) {
+        mAuditTipPop = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.info_publish_hint))
+                .desStr(tipStr)
+                .bottomStr(getString(R.string.i_know))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mAuditTipPop.hide()).build();
+        mAuditTipPop.show();
+    }
+
 
 }
