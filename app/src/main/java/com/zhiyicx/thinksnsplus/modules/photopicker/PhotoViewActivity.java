@@ -34,8 +34,8 @@ public class PhotoViewActivity extends TSActivity {
     }
 
     @Override
-    protected void initView() {
-        super.initView();
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
     }
 
     @Override
@@ -75,9 +75,7 @@ public class PhotoViewActivity extends TSActivity {
         photoViewDataCacheBean.setToll(isToll);
         photoViewDataCacheBean.setSelectedPhotos(tolls);
         // 处理传递数据过大
-        SharePreferenceUtils.saveObject(fragment.getContext(), SharePreferenceTagConfig
-                .SHAREPREFERENCE_TAG_PHOTO_VIEW_INTNET_CACHE, photoViewDataCacheBean);
-
+        PhotoViewFragment.sPhotoViewDataCacheBean = photoViewDataCacheBean;
         Intent it = new Intent(fragment.getContext(), PhotoViewActivity.class);
         fragment.startActivityForResult(it, COMPLETE_REQUEST_CODE);
     }

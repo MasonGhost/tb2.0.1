@@ -44,10 +44,8 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .width(200)
-                .height(240)
-                .itemlStr("编辑")
-                .item2Str("删除")
+                .itemlStr(mActivity.getString(R.string.edit))
+                .item2Str(mActivity.getString(R.string.info_delete))
                 .isOutsideTouch(true)
                 .itemListener(position -> {
                     if (position == 0) {

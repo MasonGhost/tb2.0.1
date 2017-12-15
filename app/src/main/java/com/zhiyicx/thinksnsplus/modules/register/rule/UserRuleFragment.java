@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.register.rule;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -21,6 +22,8 @@ public class UserRuleFragment extends TSFragment {
 
     @BindView(R.id.md_user_rule)
     MarkdownView mMarkdownView;
+    @BindView(R.id.tv_content)
+    TextView mTvContent;
 
     String mMarkDownRule;
 
@@ -43,7 +46,8 @@ public class UserRuleFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         mMarkDownRule = getArguments().getString(RULE, RULE);
-        mMarkdownView.loadMarkdown(mMarkDownRule);
+///        mMarkdownView.loadMarkdown(mMarkDownRule);
+        mTvContent.setText(mMarkDownRule);
     }
 
     @Override

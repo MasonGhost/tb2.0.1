@@ -25,15 +25,9 @@
                 layout="@layout/view_top_tip"
                 />
 
-            <com.wcy.overscroll.OverScrollLayout
-                android:id="@+id/overscroll"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <include
-                    layout="@layout/include_coodinator_refresh"
-                    />
-            </com.wcy.overscroll.OverScrollLayout>
+            <include
+                layout="@layout/include_coodinator_refresh"
+                />
         </LinearLayout>
 
         <com.zhiyicx.baseproject.widget.EmptyView
@@ -48,8 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_tip"
@@ -64,15 +58,15 @@
                 android:id="@+id/bt_do"
                 android:layout_width="@dimen/qa_search_empty_bt_with"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:background="@drawable/selector_button_corner_solid_small"
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing_normal"
                 android:paddingLeft="@dimen/spacing_huge"
-                android:layout_gravity="center_horizontal"
                 android:paddingRight="@dimen/spacing_huge"
                 android:paddingTop="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_large"
                 android:text="to_publish_qa"
-                android:background="@drawable/selector_button_corner_solid_small"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_sub_title"
 

@@ -38,6 +38,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class MessageAdapter extends CommonAdapter<MessageItemBean> implements SwipeItemMangerInterface, SwipeAdapterInterface {
+
     private SwipeItemMangerImpl mItemManger;
 
 
@@ -107,7 +108,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(messageItemBean.getConversation().getLast_message_time()));
         }
         try {
-            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean.getUnReadMessageNums())));
+            ((BadgeView) holder.getView(R.id.tv_tip)).setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(messageItemBean
+                    .getUnReadMessageNums())));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,14 +125,18 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         RxView.clicks(holder.getView(R.id.tv_right))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    mItemManger.closeAllItems();
                     if (mOnSwipItemClickListener != null) {
                         mOnSwipItemClickListener.onRightClick(position);
                     }
-                    mItemManger.closeAllItems();
                 });
         RxView.clicks(holder.getView(R.id.rl_left))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    if (hasItemOpend()) {
+                        closeAllItems();
+                        return;
+                    }
                     if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
                         mOnSwipItemClickListener.onLeftClick(position);
                     }
@@ -144,6 +150,10 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    if (hasItemOpend()) {
+                        closeAllItems();
+                        return;
+                    }
                     if (mOnUserInfoClickListener != null) {
                         mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
                     }
@@ -172,6 +182,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
 
     @Override
     public void closeAllItems() {
+        mItemManger.closeAllItems();
         mItemManger.closeAllItems();
     }
 
@@ -203,6 +214,15 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
     @Override
     public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
+    }
+
+    /**
+     * 是否有 item 被划开了
+     *
+     * @return true 有被划开的
+     */
+    public boolean hasItemOpend() {
+        return mItemManger != null && !mItemManger.getOpenItems().isEmpty();
     }
 
     public interface OnSwipItemClickListener {

@@ -257,7 +257,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             }
 
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
-
+            contentView.setOnClickListener(v -> holder.getConvertView().performClick());
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
             holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);

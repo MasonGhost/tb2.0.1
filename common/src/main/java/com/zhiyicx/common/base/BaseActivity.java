@@ -1,13 +1,10 @@
 package com.zhiyicx.common.base;
 
-import android.content.DialogInterface;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 
-import com.zhiyicx.common.R;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -18,8 +15,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import skin.support.app.SkinCompatActivity;
 
 /**
@@ -60,7 +55,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
         setContentView(getLayoutId());
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this);
-        initView();
+        initView(savedInstanceState);
         componentInject();// 依赖注入，必须放在initview后
         initData();
 
@@ -138,9 +133,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
     protected void onDestroy() {
         super.onDestroy();
         ActivityHandler.getInstance().removeActivity(this);
-        if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
+        if (mUnbinder != Unbinder.EMPTY) {
+            mUnbinder.unbind();
+        }
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        {
             EventBus.getDefault().unregister(this);
+        }
     }
 
     /**
@@ -159,8 +158,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
 
     /**
      * view 初始化
+     * @param savedInstanceState
      */
-    protected abstract void initView();
+    protected abstract void initView(Bundle savedInstanceState);
 
     /**
      * 数据初始化

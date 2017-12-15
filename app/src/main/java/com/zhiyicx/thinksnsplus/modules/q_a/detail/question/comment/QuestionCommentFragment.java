@@ -193,6 +193,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
             showSnackLoadingMessage(message);
         } else {
             if (isSuccess) {
+                updateCommentCount();
                 showSnackSuccessMessage(message);
             } else {
                 showSnackErrorMessage(message);

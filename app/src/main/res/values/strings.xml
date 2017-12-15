@@ -294,6 +294,7 @@
     <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该内容已被删除</string>
+    <string name="resource_deleted_format">该%s已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
     <string name="review_comment_deleted">该评论已被删除</string>
     <string name="review_description">支付%1$.2f申请置顶评论“%2$s”</string>
@@ -743,6 +744,9 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="has_apply">已提交申请</string>
+    <string name="post">帖子</string>
+    <string name="question">问题</string>
 
     <string name="find_live">直播</string>
     <string name="mine_live">我的直播</string>

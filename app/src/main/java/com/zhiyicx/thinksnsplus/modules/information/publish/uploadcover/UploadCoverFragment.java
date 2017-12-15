@@ -184,8 +184,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void initView(View rootView) {
         initListener();
-        mBtSure.setText(getString(mPresenter.getSystemConfigBean().getNewsContribute().hasPay()
-                ? R.string.publish_withpay_info : R.string.publish_info));
+
     }
 
     @Override
@@ -212,6 +211,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                     .centerCrop()
                     .into(mIvInfoCoverIamge);
         }
+        mBtSure.setText(getString(mPresenter.getSystemConfigBean().getNewsContribute().hasPay()
+                && !mInfoPublishBean.isRefuse() ? R.string.publish_withpay_info : R.string.publish_info));
+
     }
 
     @Override

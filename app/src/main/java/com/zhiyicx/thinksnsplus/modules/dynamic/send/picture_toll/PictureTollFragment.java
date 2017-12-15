@@ -189,7 +189,7 @@ public class PictureTollFragment extends TSFragment {
         if (mToll.getCustom_money() > 0) {
             mEtInput.setText(String.valueOf(mToll.getCustom_money()));
         } else {
-            int position = mSelectDays.indexOf(mToll.getToll_money());
+            int position = mSelectDays.indexOf((float)mToll.getToll_money());
             if (position != -1) {
                 mRbDaysGroup.check(tollMoney[position]);
             }

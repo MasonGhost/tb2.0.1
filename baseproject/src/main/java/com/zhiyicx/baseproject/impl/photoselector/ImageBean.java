@@ -206,4 +206,23 @@ public class ImageBean implements Parcelable, Serializable {
             return new ImageBean[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ImageBean imageBean = (ImageBean) o;
+
+        return imgUrl != null ? imgUrl.equals(imageBean.imgUrl) : imageBean.imgUrl == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return imgUrl != null ? imgUrl.hashCode() : 0;
+    }
 }

@@ -106,7 +106,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     @Override
     public void publishSuccess(AnswerInfoBean answerBean) {
         super.publishSuccess(answerBean);
-        AnswerDraftBean draftBean=new AnswerDraftBean();
+        AnswerDraftBean draftBean = new AnswerDraftBean();
         draftBean.setMark(getArguments().getLong(BUNDLE_SOURCE_MARK));
         mPresenter.deleteAnswer(draftBean);
     }
@@ -114,7 +114,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     @Override
     public void updateSuccess() {
         super.updateSuccess();
-        AnswerDraftBean draftBean=new AnswerDraftBean();
+        AnswerDraftBean draftBean = new AnswerDraftBean();
         draftBean.setMark(getArguments().getLong(BUNDLE_SOURCE_MARK));
         mPresenter.deleteAnswer(draftBean);
     }
@@ -129,7 +129,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setLeftClick() {
-        super.onBackPressed();
+        onBackPressed();
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -30,7 +31,7 @@ import java.util.List;
 public class HorizontalStackIconView extends FrameLayout {
 
     private Context mContext;
-    private ImageView[] mImageViews;
+    private UserAvatarView[] mImageViews;
     private TextView mTvExpertCount;
     private int mExpertCount;
 
@@ -52,12 +53,12 @@ public class HorizontalStackIconView extends FrameLayout {
     private void init(Context context) {
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.view_horizontal_icon_view, this);
-        mImageViews = new ImageView[5];
-        mImageViews[0] = (ImageView) findViewById(R.id.iv_dig_head1);
-        mImageViews[1] = (ImageView) findViewById(R.id.iv_dig_head2);
-        mImageViews[2] = (ImageView) findViewById(R.id.iv_dig_head3);
-        mImageViews[3] = (ImageView) findViewById(R.id.iv_dig_head4);
-        mImageViews[4] = (ImageView) findViewById(R.id.iv_dig_head5);
+        mImageViews = new UserAvatarView[5];
+        mImageViews[0] = (UserAvatarView) findViewById(R.id.iv_dig_head1);
+        mImageViews[1] = (UserAvatarView) findViewById(R.id.iv_dig_head2);
+        mImageViews[2] = (UserAvatarView) findViewById(R.id.iv_dig_head3);
+        mImageViews[3] = (UserAvatarView) findViewById(R.id.iv_dig_head4);
+        mImageViews[4] = (UserAvatarView) findViewById(R.id.iv_dig_head5);
         mTvExpertCount = (TextView) findViewById(R.id.tv_expert_count);
     }
 
@@ -72,16 +73,7 @@ public class HorizontalStackIconView extends FrameLayout {
                 // 需要显示的图片控件
                 if (i < expertList.size()) {
                     UserInfoBean userInfoBean = expertList.get(i);
-                    int defaultAvatar = ImageUtils.getDefaultAvatar(userInfoBean);
-                    AppApplication.AppComponentHolder.getAppComponent().imageLoader()
-                            .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
-                                    .placeholder(defaultAvatar)
-                                    .errorPic(defaultAvatar)
-                                    .imagerView(mImageViews[i])
-                                    .url(ImageUtils.getUserAvatar(userInfoBean))
-                                    .build()
-                            );
+                    ImageUtils.loadCircleUserHeadPic(userInfoBean,mImageViews[i]);
                     mImageViews[i].setVisibility(VISIBLE);
                 } else {// 没有显示的图片控件隐藏
                     mImageViews[i].setVisibility(GONE);

@@ -35,6 +35,12 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     protected LayoutInflater mLayoutInflater;
     public RxPermissions mRxPermissions;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity=activity;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +60,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mActivity = getActivity();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
         {
             EventBus.getDefault().register(this);// 注册到事件主线

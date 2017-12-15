@@ -67,7 +67,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         titleView.setText(infoBean.getSubject());
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyNormal(infoBean.getCreated_at()));
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
-                , infoBean.getWatchers_count(), infoBean.getAnswers_count())+"  ·  ");
+                , infoBean.getWatchers_count(), infoBean.getAnswers_count())+(infoBean.getAmount() > 0?"  ·  ":""));
         double rewardMoney = PayConfig.realCurrency2GameCurrency(infoBean.getAmount(), getRatio());
         String rewardstr ="<" +  rewardMoney + ">";
         CharSequence chars = ColorPhrase.from(rewardstr).withSeparator("<>")

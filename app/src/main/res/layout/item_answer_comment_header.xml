@@ -80,7 +80,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            tools:ignore="WebViewLayout"/>
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            tools:ignore="WebViewLayout"
+            android:layout_marginTop="@dimen/spacing_large"/>
 
         <!--用来占位的-->
         <ImageView
