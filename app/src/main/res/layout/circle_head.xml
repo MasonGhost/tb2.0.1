@@ -118,7 +118,10 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_mid"
             android:background="@drawable/shape_bg_circle_radus_gold"
-            android:text="@string/circle_chat"/>
+            android:gravity="center"
+            android:text="@string/circle_chat"
+            android:textColor="@color/general_for_bg_light"
+            android:textSize="@dimen/size_icon_assist"/>
 
     </LinearLayout>
 

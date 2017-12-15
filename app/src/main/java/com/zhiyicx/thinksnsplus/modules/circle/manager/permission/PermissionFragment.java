@@ -1,15 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.permission;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.view.View;
+import android.widget.Button;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailContract;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailPresenter;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningContract;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningPresenter;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningPresenterModule;
@@ -34,15 +36,24 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
     public static final String PERMISSION = "permission";
     public static final String CIRCLEID = "circleid";
 
+    public static final int PERMISSION_ALL = 0;
+    public static final int PERMISSION_OWNER = 1;
+    public static final int PERMISSION_MANAGER = 2;
+
+    public static final int PERMISSION_REQUEST = 1994;
+
     @BindView(R.id.tv_permission_all)
     AppCompatCheckedTextView mTvPermissionAll;
     @BindView(R.id.tv_permission_owner)
     AppCompatCheckedTextView mTvPermissionOwner;
     @BindView(R.id.tv_permission_manager)
     AppCompatCheckedTextView mTvPermissionManager;
+    @BindView(R.id.permission_frame)
+    Button mFrame;
 
     private List<String> mPermissionType = new ArrayList<>();
     private long mCircleId;
+    private StringBuilder mPermissions;
 
     @Inject
     CircleEarningPresenter mCircleDetailPresenter;
@@ -84,19 +95,20 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
     @OnClick({R.id.tv_permission_all, R.id.tv_permission_owner, R.id.tv_permission_manager})
     public void onViewClicked(View view) {
         mPermissionType.clear();
+        mFrame.setVisibility(View.VISIBLE);
         switch (view.getId()) {
             case R.id.tv_permission_all:
-                setCheckPosition(0);
+                setCheckPosition(PERMISSION_ALL);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
                 mPermissionType.add(CircleMembers.MEMBER);
                 break;
             case R.id.tv_permission_owner:
-                setCheckPosition(1);
+                setCheckPosition(PERMISSION_OWNER);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 break;
             case R.id.tv_permission_manager:
-                setCheckPosition(2);
+                setCheckPosition(PERMISSION_MANAGER);
                 mPermissionType.add(CircleMembers.FOUNDER);
                 mPermissionType.add(CircleMembers.ADMINISTRATOR);
                 break;
@@ -107,17 +119,17 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
 
     public void setCheckPosition(int checkPosition) {
         switch (checkPosition) {
-            case 0:
+            case PERMISSION_ALL:
                 mTvPermissionAll.setChecked(true);
                 mTvPermissionOwner.setChecked(false);
                 mTvPermissionManager.setChecked(false);
                 break;
-            case 1:
+            case PERMISSION_OWNER:
                 mTvPermissionAll.setChecked(false);
                 mTvPermissionOwner.setChecked(true);
                 mTvPermissionManager.setChecked(false);
                 break;
-            case 2:
+            case PERMISSION_MANAGER:
                 mTvPermissionAll.setChecked(false);
                 mTvPermissionOwner.setChecked(false);
                 mTvPermissionManager.setChecked(true);
@@ -128,6 +140,33 @@ public class PermissionFragment extends TSFragment<CircleEarningContract.Present
 
     @Override
     public void permissionResult(List<String> permission) {
+        mPermissions = new StringBuilder();
+        for (String str : permission) {
+            mPermissions.append(str + ",");
+        }
+        mFrame.setVisibility(View.GONE);
+    }
 
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mPermissions == null) {
+            mActivity.finish();
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra(PERMISSION, mPermissions.toString());
+        mActivity.setResult(Activity.RESULT_OK, intent);
+        mActivity.finish();
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        mFrame.setVisibility(View.GONE);
     }
 }

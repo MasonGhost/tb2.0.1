@@ -190,16 +190,19 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                             mRootView.setGroupLengh(groupLengh);
                             mRootView.onNetResponseSuccess(circleMembers,false);
                         });
+
             }
 
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(message);
             }
 
             @Override
             protected void onException(Throwable throwable) {
                 super.onException(throwable);
+                mRootView.showSnackErrorMessage(throwable.getMessage());
             }
         });
         addSubscrebe(subscription);

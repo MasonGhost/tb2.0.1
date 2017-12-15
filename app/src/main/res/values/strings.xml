@@ -328,6 +328,9 @@
     <string name="circle_report_agree">同意</string>
     <string name="circle_report_disagree">驳回</string>
     <string name="circle_post_permission">发帖权限设置</string>
+    <string name="circle_permission_all">所有成员</string>
+    <string name="circle_permission_owner">仅圈主</string>
+    <string name="circle_permission_manager">仅圈主和管理员</string>
     <string-array name="circle_mine_type">
         <item>@string/joined_group</item>
         <item>待审核的</item>

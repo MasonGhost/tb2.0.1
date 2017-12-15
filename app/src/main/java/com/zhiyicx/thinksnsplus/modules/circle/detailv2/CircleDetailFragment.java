@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -52,6 +53,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -75,11 +77,12 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReportReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.onlypost.CirclePostSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -159,6 +162,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvCircleDec;
     @BindView(R.id.tv_circle_owner)
     TextView mTvOwnerName;
+    @BindView(R.id.tv_exit_circle)
+    TextView mTvExitCircle;
     @BindView(R.id.tv_introduce_content)
     ExpandableTextView mTvCircleIntroduce;
     @BindView(R.id.tv_circle_subscrib)
@@ -326,46 +331,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         myAppBarLayoutBehavoir.setRefreshing(false);
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
-
         CircleInfoDetail detail = circleZipBean.getCircleInfoDetail();
         mCircleInfoDetail = detail;
-        mTvCircleTitle.setText(detail.getName());
-        mTvCircleSubscrib.setVisibility(detail.getJoined() != null ? View.GONE : View.VISIBLE);
 
-        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
-        mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
-        mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
+        setCircleData(mCircleInfoDetail);
+        setVisiblePermission(mCircleInfoDetail);
 
-        mTvOwnerName.setText(detail.getUser().getName());
-        mTvCircleIntroduce.setText(detail.getSummary());
-
-        if (!updateHeadImg) {
-            updateHeadImg = true;
-
-            Glide.with(mActivity)
-                    .load(detail.getAvatar())
-                    .error(R.drawable.shape_default_image)
-                    .placeholder(R.drawable.shape_default_image)
-                    .into(mIvCircleHead);
-
-            Glide.with(mActivity)
-                    .load(detail.getAvatar())
-                    .placeholder(R.drawable.shape_default_image)
-                    .transform(new GaussianBlurTrasnform(mActivity))
-                    .error(R.drawable.shape_default_image)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            mIvCircleHeadBg.setImageDrawable(resource);
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            mIvCircleHeadBg.setImageDrawable(errorDrawable);
-                        }
-                    });
-        }
     }
 
     @Override
@@ -407,6 +378,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PermissionFragment.PERMISSION_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            String permissions = data.getStringExtra(PermissionFragment.PERMISSION);
+            mCircleInfoDetail.setPermissions(permissions);
+        }
+    }
+
+    @Override
     protected void initData() {
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
@@ -415,7 +395,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     protected void initView(View rootView) {
-
         super.initView(rootView);
         initToolBar();
         initLisener();
@@ -836,7 +815,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private void handleCollect(int dataPosition) {
         // 先更新界面，再后台处理
         mPresenter.handleCollect(mListDatas.get(dataPosition));
-        boolean is_collection = mListDatas.get(dataPosition).hasCollected();// 旧状态
+        boolean is_collection = mListDatas.get(dataPosition).hasCollected();
         mListDatas.get(dataPosition).setCollected(!is_collection);
         refreshData(dataPosition);
     }
@@ -969,7 +948,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
-
     private void initTypePop(PostTypeChoosePopAdapter.MyPostTypeEnum postType) {
         CommonAdapter commonAdapter = new PostTypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
                 .post_typpe_array)), postType, this);
@@ -997,9 +975,56 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mVShadow.setVisibility(View.GONE);
     }
 
+    private void setCircleData(CircleInfoDetail detail) {
+        mTvCircleTitle.setText(detail.getName());
+        mTvCircleMemberCount.setText(String.valueOf(detail.getUsers_count()));
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
+        mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
+        mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
+        mTvOwnerName.setText(detail.getUser().getName());
+        mTvCircleIntroduce.setText(detail.getSummary());
+
+        if (!updateHeadImg) {
+            updateHeadImg = true;
+            Glide.with(mActivity)
+                    .load(detail.getAvatar())
+                    .error(R.drawable.shape_default_image)
+                    .placeholder(R.drawable.shape_default_image)
+                    .into(mIvCircleHead);
+
+            Glide.with(mActivity)
+                    .load(detail.getAvatar())
+                    .placeholder(R.drawable.shape_default_image)
+                    .transform(new GaussianBlurTrasnform(mActivity))
+                    .error(R.drawable.shape_default_image)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            mIvCircleHeadBg.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            mIvCircleHeadBg.setImageDrawable(errorDrawable);
+                        }
+                    });
+        }
+    }
+
+    private void setVisiblePermission(CircleInfoDetail detail) {
+        boolean isJoined = detail.getJoined() != null;
+        mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
+        boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
+        mLlEarningsContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
+        mLlPermissionContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
+    }
+
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
-            R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib})
+            R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 
@@ -1017,6 +1042,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 CircleEarningActivity.startActivity(mActivity, mCircleInfoDetail);
                 break;
             case R.id.ll_permission_container:
+                PermissionActivity.startActivity(mActivity, mCircleInfoDetail.getId(), mCircleInfoDetail.getPermissions());
                 break;
             case R.id.ll_report_container:
 
@@ -1049,6 +1075,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
                         .getUsers_count()));
                 mTvCircleSubscrib.setVisibility(View.GONE);
+                mTvExitCircle.setVisibility(View.VISIBLE);
+                break;
+            case R.id.tv_exit_circle:
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), new CircleInfo.JoinedBean()));
+                mCircleInfoDetail.setJoined(null);
+                mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() - 1);
+                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
+                        .getUsers_count()));
+                mTvCircleSubscrib.setVisibility(View.VISIBLE);
+                mTvExitCircle.setVisibility(View.GONE);
                 break;
             default:
         }

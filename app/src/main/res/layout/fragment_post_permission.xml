@@ -1,25 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/light_linear_driver"
-    android:orientation="vertical"
-    android:showDividers="middle">
+    android:background="@color/bgColor">
 
-    <android.support.v7.widget.AppCompatCheckedTextView
-        android:id="@+id/tv_permission_all"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/create_circle_button_height"/>
+        android:layout_height="wrap_content">
 
-    <android.support.v7.widget.AppCompatCheckedTextView
-        android:id="@+id/tv_permission_owner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/create_circle_button_height"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:divider="@drawable/light_linear_driver"
+            android:orientation="vertical"
+            android:showDividers="middle">
 
-    <android.support.v7.widget.AppCompatCheckedTextView
-        android:id="@+id/tv_permission_manager"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/create_circle_button_height"/>
+            <android.support.v7.widget.AppCompatCheckedTextView
+                android:id="@+id/tv_permission_all"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_circle_button_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:checkMark="@drawable/selector_circle_post_permission"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="@string/circle_permission_all"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
 
-</LinearLayout>
+                />
+
+            <android.support.v7.widget.AppCompatCheckedTextView
+                android:id="@+id/tv_permission_owner"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_circle_button_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:checkMark="@drawable/selector_circle_post_permission"
+                android:gravity="center_vertical"
+                android:text="@string/circle_permission_owner"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+
+            <android.support.v7.widget.AppCompatCheckedTextView
+                android:id="@+id/tv_permission_manager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_circle_button_height"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:checkMark="@drawable/selector_circle_post_permission"
+                android:gravity="center_vertical"
+                android:text="@string/circle_permission_manager"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/permission_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</com.wcy.overscroll.OverScrollLayout>
