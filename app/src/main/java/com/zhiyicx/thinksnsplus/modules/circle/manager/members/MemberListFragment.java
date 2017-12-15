@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -41,7 +40,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MemberListFragment extends TSListFragment<MembersContract.Presenter, CircleMembers>
         implements MembersContract.View {
 
-    public static final String CIRCLEID = "circleID";
+    public static final String CIRCLEID = "circleid";
+    public static final String ROLE = "permission";
 
     @BindView(R.id.fragment_search_back)
     ImageView mFragmentSearchBack;
@@ -58,10 +58,25 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     List<CircleMembers> cache = new ArrayList<>();
 
+    private long mCircleId;
+    private String mRole;
+
+    private boolean mPermissionManager;
+    private boolean mPermissionOwner;
+
     public static MemberListFragment newInstance(Bundle bundle) {
         MemberListFragment memberListFragment = new MemberListFragment();
         memberListFragment.setArguments(bundle);
         return memberListFragment;
+    }
+
+    @Override
+    protected void initData() {
+        mCircleId = getArguments().getLong(CIRCLEID);
+        mRole = getArguments().getString(ROLE);
+        mPermissionManager = CircleMembers.ADMINISTRATOR.equals(mRole);
+        mPermissionOwner = CircleMembers.FOUNDER.equals(mRole);
+        super.initData();
     }
 
     @Override
@@ -81,7 +96,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public long getCIrcleId() {
-        return getArguments().getLong(CIRCLEID);
+        return mCircleId;
     }
 
     @Override
@@ -93,10 +108,13 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 holder.setText(R.id.tv_member_name, circleMembers.getUser().getName());
                 ImageView more = holder.getImageViwe(R.id.iv_member_more);
                 TextView tag = holder.getTextView(R.id.tv_member_tag);
-                more.setVisibility(CircleMembers.FOUNDER.equals(circleMembers.getRole()) ? View
-                        .INVISIBLE : View.VISIBLE);
+
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
+
+                more.setVisibility(isOwner || mPermissionManager && isManager ? View
+                        .INVISIBLE : View.VISIBLE);
+
                 tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);
                 tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R
                         .drawable.shape_bg_circle_radus_gray);
@@ -176,10 +194,11 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         boolean isMember = CircleMembers.MEMBER.endsWith(members.getRole());
         boolean isBlackList = CircleMembers.BLACKLIST.equals(members.getRole());
 
+
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .itemlStr(mActivity.getString(isManager ? R.string.cancel_manager : (isMember ? R
+                .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager : (mPermissionOwner && isMember ? R
                         .string.appoint_manager : R.string.cancle_circle)))
                 .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .cancle_circle : R.string.cancle_blacklist)))

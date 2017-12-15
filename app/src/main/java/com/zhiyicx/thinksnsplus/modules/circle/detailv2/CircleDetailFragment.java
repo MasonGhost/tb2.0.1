@@ -1017,21 +1017,22 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
         mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
-        mLlEarningsContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
-        mLlPermissionContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(isNormalMember?View.GONE : View.VISIBLE);
+        mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle})
     public void onViewClicked(View view) {
+        boolean isJoing = mCircleInfoDetail.getJoined() != null;
         switch (view.getId()) {
-
             case R.id.ll_member_container:
                 Intent intent = new Intent(mActivity, MembersListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfoDetail.getId());
+                bundle.putString(MemberListFragment.ROLE, isJoing ? mCircleInfoDetail.getJoined().getRole() : "");
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
