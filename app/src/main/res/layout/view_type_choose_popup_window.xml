@@ -6,7 +6,6 @@
     android:layout_height="@dimen/question_list_type_height"
     android:elevation="@dimen/button_corner_tiny"
     android:orientation="vertical"
-    android:background="@color/bgColor"
     app:cardCornerRadius="@dimen/button_corner_small">
 
     <android.support.v7.widget.RecyclerView
@@ -14,5 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-       />
+        android:background="@drawable/shape_bg_radus_deepgrey_with_border"
+        />
 </android.support.v7.widget.CardView>
