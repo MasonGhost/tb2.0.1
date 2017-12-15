@@ -124,6 +124,8 @@ public interface MessageContract {
          * 标记所有通知阅读
          */
         Observable<Object> makeNotificationAllReaded();
+
+        Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {

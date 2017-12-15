@@ -72,8 +72,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_home_message_list;
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
@@ -113,9 +113,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();
-        // 通知的未读数检查
-        mPresenter.checkUnreadNotification();
-
     }
 
 
@@ -348,8 +345,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void getMessageListSuccess(List<MessageItemBeanV2> list) {
+        messageItemBeanList.clear();
         messageItemBeanList.addAll(list);
         mAdapter.notifyDataSetChanged();
+        hideLoading();
     }
 
     @Override

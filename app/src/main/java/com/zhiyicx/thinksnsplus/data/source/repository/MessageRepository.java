@@ -157,6 +157,54 @@ public class MessageRepository implements MessageContract.Repository {
     }
 
     /**
+     * 完善用户信息，传入消息列表，如果没有用户信息则完善信息，环信并没有返回用户信息
+     * @param list 消息列表
+     * @return
+     */
+    @Override
+    public Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list){
+        return Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(list1 -> {
+                    List<Object> users = new ArrayList<>();
+                    for (MessageItemBeanV2 itemBeanV2 : list1) {
+                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                            // 单聊处理用户信息
+                            if (itemBeanV2.getEmKey().equals("admin")) {
+                                users.add(1L);
+                            } else {
+                                users.add(itemBeanV2.getEmKey());
+                            }
+                        }
+                    }
+                    if (users.isEmpty()) {
+                        return Observable.just(list1);
+                    }
+                    return mUserInfoRepository.getUserInfo(users)
+                            .map(userInfoBeans -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                }
+                                for (int i = 0; i < list1.size(); i++) {
+                                    // 只有单聊才给用户信息
+                                    if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
+                                        int key;
+                                        if (list1.get(i).getEmKey().equals("admin")) {
+                                            key = 1;
+                                        } else {
+                                            key = Integer.parseInt(list1.get(i).getEmKey());
+                                        }
+                                        list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                    }
+                                }
+                                return list1;
+                            });
+                });
+    }
+
+    /**
      * 获取环信的会话列表，需要手动加个小助手
      *
      * @param user_id 用户id
@@ -168,7 +216,7 @@ public class MessageRepository implements MessageContract.Repository {
         return Observable.just(conversations)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .map(stringEMConversationMap -> {
+                .flatMap(stringEMConversationMap -> {
                     // 先将环信返回的数据转换为model 然后根据type来处理是否需要获取用户信息，如果不需要则直接返回数据
                     List<MessageItemBeanV2> list = new ArrayList<>();
                     for (Map.Entry<String, EMConversation> entry : stringEMConversationMap.entrySet()) {
@@ -210,45 +258,13 @@ public class MessageRepository implements MessageContract.Repository {
                         }
                         list.addAll(0, messageItemBeanList);
                     }
-                    return list;
-                })
-                .flatMap(messageItemBeanV2s -> {
-                    List<Object> users = new ArrayList<>();
-                    for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s) {
-                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
-                            // 单聊处理用户信息
-                            if (itemBeanV2.getEmKey().equals("admin")) {
-                                users.add(1L);
-                            } else {
-                                users.add(itemBeanV2.getEmKey());
-                            }
-                        }
-                    }
-                    if (users.isEmpty()) {
-                        return Observable.just(messageItemBeanV2s);
-                    } else {
-                        return mUserInfoRepository.getUserInfo(users)
-                                .map(userInfoBeans -> {
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userInfoBeans) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                    }
-                                    for (int i = 0; i < messageItemBeanV2s.size(); i++) {
-                                        // 只有单聊才给用户信息
-                                        if (messageItemBeanV2s.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
-                                            int key;
-                                            if (messageItemBeanV2s.get(i).getEmKey().equals("admin")) {
-                                                key = 1;
-                                            } else {
-                                                key = Integer.parseInt(messageItemBeanV2s.get(i).getEmKey());
-                                            }
-                                            messageItemBeanV2s.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
-                                        }
-                                    }
-                                    return messageItemBeanV2s;
-                                });
-                    }
-
+                    return completeEmConversation(list)
+                            .map(new Func1<List<MessageItemBeanV2>, List<MessageItemBeanV2>>() {
+                                @Override
+                                public List<MessageItemBeanV2> call(List<MessageItemBeanV2> list) {
+                                    return list;
+                                }
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }

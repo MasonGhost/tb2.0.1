@@ -200,7 +200,7 @@ public class DeviceUtils {
             if (pckInfo != null)
                 return true;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e("TDvice", e.getMessage());
+            LogUtils.e("TDvice", e.getMessage());
         }
         return false;
     }
@@ -244,12 +244,12 @@ public class DeviceUtils {
                 = activityManager.getRunningAppProcesses();
         for (int i = 0; i < processInfos.size(); i++) {
             if (processInfos.get(i).processName.equals(packageName)) {
-                Log.i(TAG,
+                LogUtils.i(TAG,
                         String.format("the %s is running, isAppAlive return true", packageName));
                 return true;
             }
         }
-        Log.i(TAG,
+        LogUtils.i(TAG,
                 String.format("the %s is not running, isAppAlive return false", packageName));
         return false;
     }
@@ -516,7 +516,7 @@ public class DeviceUtils {
             focusInMethod = InputMethodManager.class.getDeclaredMethod("focusIn", View.class);
             focusInMethod.setAccessible(true);
         } catch (NoSuchMethodException | NoSuchFieldException unexpected) {
-            Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
+            LogUtils.e("IMMLeaks", "Unexpected reflection exception", unexpected);
             return;
         }
 
@@ -644,7 +644,7 @@ public class DeviceUtils {
                     }
                 }
             } catch (IllegalAccessException | InvocationTargetException unexpected) {
-                Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
+                LogUtils.e("IMMLeaks", "Unexpected reflection exception", unexpected);
             }
         }
 

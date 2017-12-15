@@ -3,9 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.hyphenate.EMError;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -74,7 +77,7 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.D
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter{
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
@@ -303,10 +306,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         // 改为环信的删除
         MessageItemBeanV2 messageItemBeanV2 = mRootView.getRealMessageList().get(position);
         Subscription subscription = Observable.just(messageItemBeanV2)
+                .observeOn(Schedulers.io())
                 .map(messageItemBeanV21 -> {
                     // 删除和某个user会话，如果需要保留聊天记录，传false
                     return EMClient.getInstance().chatManager().deleteConversation(messageItemBeanV21.getEmKey(), true);
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
                     LogUtils.d("Cathy", "deletConversation" + aBoolean);
                     if (aBoolean){
@@ -405,39 +410,42 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     /**
      * 收到聊天消息
      *
-     * @param messageData 聊天类容
+     * @param list 聊天类容
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
-    private void onMessageReceived(Message messageData) {
-        Subscription subscribe = Observable.just(messageData)
+    private void onMessageReceived(List<EMMessage> list) {
+        Subscription subscribe = Observable.just(list)
                 .observeOn(Schedulers.io())
-                .map(message -> {
-                    int size = mRootView.getListDatas().size();
+                .flatMap(messageList -> {
+                    int size = mRootView.getRealMessageList().size();
                     // 对话是否存在
-                    for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
-                            mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                            // 加到第一个
-                            mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
-                            // 加上 header 的位置
-                            mRootView.getListDatas().remove(i + 1);
-                            return 0;
+                    // 用来装没有在列表中的会话item
+                    List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
+                    for (EMMessage emMessage : messageList){
+                        EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
+                        if (conversationNew != null){
+                            for (int i = 0; i < size; i++) {
+                                // 检测列表中是否已经存在了
+                                EMConversation conversationOld = mRootView.getRealMessageList().get(i).getConversation();
+                                if (conversationOld.conversationId().equals(conversationNew.conversationId())){
+                                    // 直接替换会话
+                                    mRootView.getRealMessageList().get(i).setConversation(conversationNew);
+                                    break;
+                                } else {
+                                    // 不存在，那就创建会话信息加入列表头
+                                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                                    itemBeanV2.setConversation(conversationNew);
+                                    itemBeanV2.setEmKey(conversationNew.conversationId());
+                                    messageItemBeanV2List.add(itemBeanV2);
+                                }
+                            }
                         }
                     }
-                    // 不存在本地对话，直接服务器获取
-                    return message.cid;
+                    return mRepository.completeEmConversation(messageItemBeanV2List)
+                            .map(list12 -> list12);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(cid -> {
-                    if (cid == 0) {
-                        mRootView.refreshData();
-                    } else {
-                        getSingleConversation(cid);
-                    }
-
-                }, Throwable::printStackTrace);
+                .subscribe(list1 -> mRootView.refreshData());
         addSubscrebe(subscribe);
 
 
@@ -462,6 +470,17 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
         mRootView.showStickyMessage(reason);
+        if(code == EMError.USER_REMOVED){
+            // 显示帐号已经被移除
+        }else if (code == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+            // 显示帐号在其他设备登录
+        } else {
+            if (NetUtils.hasNetwork(mContext)){
+                //连接不到聊天服务器
+            } else{
+                //当前网络不可用，请检查网络设置
+            }
+        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
@@ -712,8 +731,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         isShowMessgeTip = true;
                     }
                     if (!isShowMessgeTip) {
-                        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-                            if (messageItemBean.getUnReadMessageNums() > 0) {
+                        for (MessageItemBeanV2 messageItemBean : mRootView.getRealMessageList()) {
+                            if (messageItemBean.getConversation().getUnreadMsgCount() > 0) {
                                 isShowMessgeTip = true;
                                 break;
                             } else {
@@ -738,5 +757,4 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
 
     }
-
 }
