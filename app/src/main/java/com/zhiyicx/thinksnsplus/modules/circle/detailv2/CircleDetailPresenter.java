@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -25,20 +26,27 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -66,9 +74,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
-
     @Inject
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
+
+
     private Subscription mSearchSub;
 
     @Inject
@@ -337,6 +346,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void dealCircleJoinOrExit(CircleInfo circleInfo) {
         mRepository.dealCircleJoinOrExit(circleInfo);
     }
+
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST)
     public void handleSendComment(CirclePostCommentBean circlePostCommentBean) {

@@ -151,7 +151,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
         mUserCertificationInfo = userCertificationInfo;
         mSystemConfigBean = mPresenter.getSystemConfigBean();
         SystemConfigBean.NewsConfig mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
-        if (userCertificationInfo.getStatus() == 1 || !mPublishInfoConfig.hasVerified()) {
+        if (userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value || !mPublishInfoConfig.hasVerified()) {
             if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
                     && mPublishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
@@ -289,7 +289,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mCertificationAlertPopWindow.hide();
                         if (mUserCertificationInfo != null // 待审核
                                 && mUserCertificationInfo.getId() != 0
-                                && mUserCertificationInfo.getStatus() != 2) {
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                             Bundle bundleData = new Bundle();
                             bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
@@ -308,7 +308,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
                         mCertificationAlertPopWindow.hide();
                         if (mUserCertificationInfo != null // 待审核
                                 && mUserCertificationInfo.getId() != 0
-                                && mUserCertificationInfo.getStatus() != 2) {
+                                && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                             Bundle bundleData = new Bundle();

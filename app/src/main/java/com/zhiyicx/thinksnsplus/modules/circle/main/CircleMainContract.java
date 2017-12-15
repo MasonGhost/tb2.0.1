@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 import java.util.List;
@@ -22,12 +23,16 @@ public interface CircleMainContract {
         List<CircleInfo> getJoinedCircles();
 
         void setJoinedCircles(List<CircleInfo> circles);
+
+        void setUserCertificationInfo(UserCertificationInfo data);
     }
 
     interface Presenter extends ITSListPresenter<CircleInfo> {
         void getRecommendCircle();
 
         void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
+
+        void checkCertification();
     }
 
     interface Repository extends IBaseCircleRepository {

@@ -98,7 +98,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 });
         addSubscrebe(subscription);
 
-        mRepository.getInfoType()
+        Subscription subscribe = mRepository.getInfoType()
                 .subscribe(data -> {
                     for (InfoTypeCatesBean myCates : data.getMy_cates()) {
                         myCates.setIsMyCate(true);
@@ -108,6 +108,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 }, throwable -> {
 
                 });
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 //        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
 //            mRootView.setUserCertificationInfo(userCertificationInfo);
 //        } else {
-        Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
+        Subscription subscribe = Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
                 (systemConfigBean, userCertificationInfo1) -> {
                     Map data = new HashMap();
                     data.put("systemConfigBean", systemConfigBean);
@@ -162,6 +163,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscribe);
 //        }
     }
 

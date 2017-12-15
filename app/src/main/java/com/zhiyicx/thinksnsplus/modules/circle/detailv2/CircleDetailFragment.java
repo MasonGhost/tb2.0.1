@@ -873,6 +873,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             }
         };
 
+        /*
+         * 发帖
+         */
         RxView.clicks(mBtnSendPost)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
