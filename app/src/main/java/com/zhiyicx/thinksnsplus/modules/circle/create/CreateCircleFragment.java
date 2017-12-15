@@ -29,6 +29,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -199,9 +200,13 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-        if (prompt == Prompt.DONE) {
-            getActivity().finish();
-        }
+
+    }
+
+    @Override
+    public void setCircleInfo(CircleInfo data) {
+
+        getActivity().finish();
     }
 
     @Override
@@ -335,6 +340,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (mCircleInfoDetail == null) {
             mPresenter.createCircle(mCreateCircleBean);
         } else {
+            mCircleInfoDetail.setTags(mUserTagBeens);
+            mCircleInfoDetail.setCategory(mCircleTypeBean);
             mPresenter.updateCircle(mCreateCircleBean);
         }
     }

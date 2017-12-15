@@ -165,7 +165,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }
                         mCircleInfoGreenDao.updateSingleData(circleInfo);
-                        mRootView.refreshData(position);
+                        mRootView.refreshData();
                     }
 
                     @Override

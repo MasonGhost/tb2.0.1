@@ -75,7 +75,8 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CircleInfo>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<CircleInfo> data) {
-                        mRootView.showSnackMessage(mContext.getString(R.string.create_reviewing), Prompt.DONE);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.create_reviewing));
+                        mRootView.setCircleInfo(data.getData());
                     }
 
                     @Override
