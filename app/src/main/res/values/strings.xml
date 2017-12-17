@@ -271,6 +271,7 @@
     <string name="circle_blacklist_format">黑名单(%d)</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
     <string name="delete_post">删除帖子</string>
+    <string name="post_publishing">发贴中</string>
 
     <string-array name="post_typpe_array">
         <item>全部帖子</item>

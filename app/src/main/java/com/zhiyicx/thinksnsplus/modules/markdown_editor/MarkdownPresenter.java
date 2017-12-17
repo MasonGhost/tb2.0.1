@@ -88,7 +88,7 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
     public void publishPost(PostPublishBean postPublishBean) {
         mRepository.sendCirclePost(postPublishBean)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.info_publishing)))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.post_publishing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CirclePostListBean>>() {
