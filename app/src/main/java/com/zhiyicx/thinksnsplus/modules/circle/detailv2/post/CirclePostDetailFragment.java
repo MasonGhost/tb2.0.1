@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -42,6 +43,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -66,13 +68,16 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailContract.Presenter, CirclePostCommentBean>
-        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView.OnSendClickListener,
+public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailContract.Presenter,
+        CirclePostCommentBean>
+        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView
+        .OnSendClickListener,
         OnUserInfoClickListener {
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String POST_ID = "post_id";
     public static final String POST = "post";
+    public static final String LOOK_COMMENT_MORE = "look_comment_more";
 
     public static final String POST_LIST_NEED_REFRESH = "post_list_need_refresh";
     public static final String POST_DATA = "post_data";
@@ -112,6 +117,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     private RewardsCountBean mRewardsCountBean;
     private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
+    private boolean mIsLookMore;
 
     public static CirclePostDetailFragment newInstance(Bundle bundle) {
         CirclePostDetailFragment postDetailFragment = new CirclePostDetailFragment();
@@ -164,6 +170,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
                 mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
             }
+            mIsLookMore = getArguments().getBoolean(LOOK_COMMENT_MORE);
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -213,6 +220,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     @Override
     public void onLoadFinish() {
         closeLoadingView();
+        if (mIsLookMore && getListDatas().size() >= DynamicListCommentView
+                .SHOW_MORE_COMMENT_SIZE_LIMIT) {
+            mRvList.post(() -> ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset
+                    (0, -mPostDetailHeaderView.scrollCommentToTop()));
+        }
     }
 
     @Override
@@ -242,6 +254,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
+
     }
 
     @Override
@@ -264,7 +277,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<CirclePostCommentBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<CirclePostCommentBean> data, boolean
+            isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) {
                 CirclePostCommentBean emptyData = new CirclePostCommentBean();
@@ -291,7 +305,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             position = position - mHeaderAndFooterWrapper.getHeadersCount();
             CirclePostCommentBean circlePostCommentBean = mListDatas.get(position);
-            if (circlePostCommentBean != null && !TextUtils.isEmpty(circlePostCommentBean.getContent())) {
+            if (circlePostCommentBean != null && !TextUtils.isEmpty(circlePostCommentBean
+                    .getContent())) {
                 if (circlePostCommentBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                     if (mListDatas.get(position).getId() != -1) {
                         initDeleteCommentPopupWindow(circlePostCommentBean);
@@ -301,8 +316,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mReplyUserId = (int) circlePostCommentBean.getUser_id();
                     showCommentView();
                     String contentHint = getString(R.string.default_input_hint);
-                    if (circlePostCommentBean.getReply_to_user_id() != mCirclePostDetailBean.getId()) {
-                        contentHint = getString(R.string.reply, circlePostCommentBean.getCommentUser().getName());
+                    if (circlePostCommentBean.getReply_to_user_id() != mCirclePostDetailBean
+                            .getId()) {
+                        contentHint = getString(R.string.reply, circlePostCommentBean
+                                .getCommentUser().getName());
                     }
                     mIlvComment.setEtContentHint(contentHint);
                 }
@@ -319,8 +336,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
     }
+
     /**
      * 举报
+     *
      * @param position
      */
     private void goReportComment(int position) {
@@ -328,7 +347,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
         // 举报
         if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getCommentUser(), mListDatas.get
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get
+                    (position).getCommentUser(), mListDatas.get
                     (position).getId().toString(),
                     null, null, mListDatas.get(position).getContent(), ReportType.CIRCLE_COMMENT));
 
@@ -343,7 +363,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mPostDetailHeaderView.setWebLoadListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mPostDetailHeaderView.getInfoDetailHeader());
         View mFooterView = new View(getContext());
-        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -385,7 +406,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     break;
                 // 更多
                 case ITEM_POSITION_3:
-                    initDealPostPopupWindow(mCirclePostDetailBean, mCirclePostDetailBean.getCollected());
+                    initDealPostPopupWindow(mCirclePostDetailBean, mCirclePostDetailBean
+                            .getCollected());
                     mDealPostPopWindow.show();
                     break;
                 default:
@@ -445,7 +467,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     private void initBottomToolData(CirclePostListBean circlePostDetailBean) {
         // 设置是否喜欢
-        mDdDynamicTool.setItemIsChecked(circlePostDetailBean.getLiked(), DynamicDetailMenuView.ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(circlePostDetailBean.getLiked(), DynamicDetailMenuView
+                .ITEM_POSITION_0);
         //设置是否收藏
         mDdDynamicTool.setItemIsChecked(circlePostDetailBean.getCollected(), ITEM_POSITION_3);
     }
@@ -455,7 +478,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
      */
     private void initDeleteCommentPopupWindow(final CirclePostCommentBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string
+                        .dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -468,7 +492,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mDeletCommentPopWindow.hide();
                     Bundle bundle = new Bundle();
                     bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);// 资源类型
-                    bundle.putLong(StickTopFragment.PARENT_ID, mCirclePostDetailBean.getId());// 资源id
+                    bundle.putLong(StickTopFragment.PARENT_ID, mCirclePostDetailBean.getId());//
+                    // 资源id
                     bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
@@ -484,11 +509,14 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .build();
     }
 
-    private void initDealPostPopupWindow(final CirclePostListBean circlePostListBean, boolean isCollected) {
-        boolean isMine = circlePostListBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+    private void initDealPostPopupWindow(final CirclePostListBean circlePostListBean, boolean
+            isCollected) {
+        boolean isMine = circlePostListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
+                .getUser_id();
         mDealPostPopWindow = ActionPopupWindow.builder()
-                .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                .item1Str(isMine ? getString(R.string.post_apply_for_top) : "")
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R
+                        .string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
                 .item3Str(isMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
@@ -498,9 +526,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .with(getActivity())
                 .item3ClickListener(() -> {                    // 举报帖子
                     String img = "";
-                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
-                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
-                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                    if (circlePostListBean.getImages() != null && !circlePostListBean.getImages()
+                            .isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0)
+                                        .getFile_id(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                getResources()
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
@@ -508,7 +539,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     if (circlePostListBean.getUser() != null) {
                         name = circlePostListBean.getUser().getName();
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean
+                            (circlePostListBean.getUser(), String.valueOf
                             (circlePostListBean.getId()),
                             name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mDealPostPopWindow.hide();

@@ -234,7 +234,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void sendPostSuccess(CirclePostListBean data) {
-        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId());
+        CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
+                false);
         getActivity().finish();
     }
 

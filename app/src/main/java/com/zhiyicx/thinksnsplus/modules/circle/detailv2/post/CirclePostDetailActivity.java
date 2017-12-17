@@ -25,19 +25,21 @@ public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresent
                 .build().inject(this);
     }
 
-    public static void startActivity(Context context, long circleId, long postId) {
+    public static void startActivity(Context context, long circleId, long postId,boolean isLookMoreComment) {
         Intent intent = new Intent(context, CirclePostDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putLong(CirclePostDetailFragment.CIRCLE_ID, circleId);
         bundle.putLong(CirclePostDetailFragment.POST_ID, postId);
+        bundle.putBoolean(CirclePostDetailFragment.LOOK_COMMENT_MORE, isLookMoreComment);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, CirclePostListBean circlePostListBean) {
+    public static void startActivity(Context context, CirclePostListBean circlePostListBean,boolean isLookMoreComment) {
         Intent intent = new Intent(context, CirclePostDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CirclePostDetailFragment.POST,circlePostListBean);
+        bundle.putBoolean(CirclePostDetailFragment.LOOK_COMMENT_MORE, isLookMoreComment);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

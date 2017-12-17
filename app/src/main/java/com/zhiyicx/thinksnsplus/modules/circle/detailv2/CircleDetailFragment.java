@@ -16,9 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -100,7 +98,6 @@ import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
-import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
 import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -118,13 +115,12 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter
+        .MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -432,7 +428,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        goPostDetail(position);
+        goPostDetail(position,false);
     }
 
     @Override
@@ -443,7 +439,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onMoreCommentClick(View view, CirclePostListBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
-        goPostDetail(position);
+        goPostDetail(position,true);
     }
 
     @Override
@@ -709,8 +705,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item4Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(!feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(getString(R.string.delete_post))
+                .item3Str(!feedIdIsNull ? getString(R.string.post_apply_for_top) : null)
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -1000,8 +996,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
-    private void goPostDetail(int position) {
-        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position));
+    private void goPostDetail(int position,boolean isLookMoreComment) {
+        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position),isLookMoreComment);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 

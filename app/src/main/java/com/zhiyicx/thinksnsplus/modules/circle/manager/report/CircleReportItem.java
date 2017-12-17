@@ -172,7 +172,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
-                    toDetail(circleId, postId);
+                    toDetail(circleId, postId,isComment);
                 });
 
         RxView.clicks(review_flag)
@@ -224,8 +224,8 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
     protected void toDetail(CommentedBean commentedBean) {
     }
 
-    protected void toDetail(long circleId, long postId) {
-        CirclePostDetailActivity.startActivity(mContext, circleId, postId);
+    protected void toDetail(long circleId, long postId,boolean isLookMoreComment) {
+        CirclePostDetailActivity.startActivity(mContext, circleId, postId,isLookMoreComment);
     }
 
     @Override

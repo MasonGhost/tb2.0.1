@@ -244,7 +244,8 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position).getGroup_id(), mListDatas.get(position).getId());
+        CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position)
+                .getGroup_id(), mListDatas.get(position).getId(),false);
     }
 
     @Override

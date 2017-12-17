@@ -153,7 +153,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
-                    toDetail(postCommentListBean.getPost());
+                    toDetail(postCommentListBean.getPost(),true);
                 });
 
         RxView.clicks(review_flag)
@@ -190,7 +190,7 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
     protected void toDetail(CommentedBean commentedBean) {
     }
 
-    protected void toDetail(CirclePostListBean postListBean) {
-        CirclePostDetailActivity.startActivity(mContext,postListBean);
+    protected void toDetail(CirclePostListBean postListBean,boolean isLookMoreComment) {
+        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment);
     }
 }

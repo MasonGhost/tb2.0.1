@@ -78,6 +78,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
+    private View mRewardView;
 
     public View getInfoDetailHeader() {
         return mInfoDetailHeader;
@@ -104,6 +105,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
         mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
+        mRewardView = mInfoDetailHeader.findViewById(R.id.v_reward);
         initAdvert(context, adverts);
     }
 
@@ -314,6 +316,10 @@ public class PostDetailHeaderView extends BaseWebLoad {
         destryWeb(mContent);
         destryWeb(mContentSubject);
 
+    }
+
+    public int scrollCommentToTop() {
+        return mRewardView.getBottom();
     }
 
     public MarkdownView getContentWebView() {
