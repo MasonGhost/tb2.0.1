@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -39,7 +40,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleLocationFragment extends TSListFragment implements AMapLocationListener, PoiSearch.OnPoiSearchListener {
+public class CircleLocationFragment extends TSListFragment<CircleLocationContract.Presenter,
+        LocationBean>
+        implements CircleLocationContract.View,
+        AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
     public static final String BUNDLE_DATA = "DATA";
 
@@ -120,7 +124,8 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        mAdapter = new CommonAdapter<PoiItem>(getActivity(), R.layout.item_circle_location, mPoiItems) {
+        mAdapter = new CommonAdapter<PoiItem>(getActivity(), R.layout.item_circle_location,
+                mPoiItems) {
             @Override
             protected void convert(ViewHolder holder, PoiItem poiItem, int position) {
                 holder.setText(R.id.tv_location_name, poiItem.getTitle());
@@ -155,10 +160,12 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
                 PoiSearch.Query query = new PoiSearch.Query("", "生活服务", "");
                 query.setPageSize(20);
                 PoiSearch search = new PoiSearch(getContext(), query);
-                search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 10000));
+                search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude),
+                        10000));
                 search.setOnPoiSearchListener(this);
                 search.searchPOIAsyn();
-                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() + " " + aMapLocation.getCity();
+                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() +
+                        " " + aMapLocation.getCity();
                 mTvCurrentLocation.setText(aMapLocation.getCity());
 
             } else {
@@ -228,7 +235,9 @@ public class CircleLocationFragment extends TSListFragment implements AMapLocati
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //获取最近3s内精度最高的一次定位结果：
-        //设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
+        //设置setOnceLocationLatest(boolean b)
+        // 接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)
+        // 接口也会被设置为true，反之不会，默认为false。
         mLocationOption.setOnceLocationLatest(true);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);

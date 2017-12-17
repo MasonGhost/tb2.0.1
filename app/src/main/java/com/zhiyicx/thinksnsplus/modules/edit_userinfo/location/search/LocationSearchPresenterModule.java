@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishAddInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoContract;
-
 import dagger.Module;
 import dagger.Provides;
 
