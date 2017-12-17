@@ -55,6 +55,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     SimpleRichEditor mRichTextView;
     @BindView(R.id.ll_circle_container)
     LinearLayout mLlCircleContainer;
+    @BindView(R.id.line)
+    View mLine;
     @BindView(R.id.tv_name)
     TextView mCircleName;
 
@@ -128,6 +130,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 .build().photoSelectorImpl();
         if (getArguments() == null) {
             mLlCircleContainer.setVisibility(View.VISIBLE);
+            mLine.setVisibility(View.VISIBLE);
             return;
         }
         sourceId = getArguments().getLong(SOURCEID, 1L);
