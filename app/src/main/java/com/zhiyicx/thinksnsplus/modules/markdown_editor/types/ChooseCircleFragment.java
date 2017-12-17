@@ -47,7 +47,7 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     public static final int CHOOSE_CIRCLE = 1994;
 
     @BindView(R.id.fragment_channel_content_unsubscribe)
-    RecyclerView mFragmentChannelContentUnsubscribe;
+    RecyclerView mRvCircleList;
 
     private List<CircleInfo> mCircleInfos = new ArrayList<>();
     private CommonAdapter mAdapter;
@@ -90,12 +90,12 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
 
     @Override
     protected void initView(View rootView) {
-        mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
+        mRvCircleList.setLayoutManager(new GridLayoutManager(getActivity(),
                 DEFAULT_COLUMN));
-        initUnsubscribeAdapter();
+        mRvCircleList.setAdapter(initAdapter());
     }
 
-    private CommonAdapter initUnsubscribeAdapter() {
+    private CommonAdapter initAdapter() {
         mAdapter = new CommonAdapter<CircleInfo>(getActivity(),
                 R.layout.item_info_channel, mCircleInfos) {
             @Override

@@ -128,7 +128,7 @@ var RE = {
 		_self.initLimit();
 		_self.bind();
 		_self.focus();
-
+        _self.initTitle();
 	},
 
 	bind: function bind() {
@@ -138,7 +138,6 @@ var RE = {
 		    FOCUS_SCHEME = _self$schemeCache.FOCUS_SCHEME,
 		    STATE_SCHEME = _self$schemeCache.STATE_SCHEME,
 		    CALLBACK_SCHEME = _self$schemeCache.CALLBACK_SCHEME;
-
 
 		document.addEventListener('selectionchange', _self.saveRange, false);
 
@@ -172,6 +171,12 @@ var RE = {
 		_self.titleLimit.txtNote.addEventListener('input', function () {
             _self.wordsLimit();
         }, false);
+
+        _self.cache.title.addEventListener('input', function () {
+            var pre = document.getElementById('pre');
+            pre.textContent = _self.cache.title.value;
+            _self.cache.title.style.height = pre.offsetHeight + 'px';
+         }, false);
 	},
 	initCache: function initCache() {
 		var _self = this;
@@ -188,8 +193,13 @@ var RE = {
 	    var _self = this;
 	    _self.titleLimit.txtNote=document.getElementById("title");
 	    _self.titleLimit.txtLimit=document.getElementById("txtCount");
-
 	},
+	initTitle: function initTitle(){
+        var _self = this;
+        var pre = document.getElementById('pre');
+        pre.textContent = _self.cache.title.value;
+        _self.cache.title.style.height = pre.offsetHeight + 'px';
+    },
 	focus: function focus() {
 		//聚焦
 		var _self = this;
@@ -396,26 +406,25 @@ var RE = {
 	},
     wordsLimit: function wordsLimit(){
         var _self = this;
-        var noteCount=_self.titleLimit.txtNote.value.length;
+        var noteView=_self.titleLimit.txtNote;
         var limitCount=_self.titleLimit.limitCount;
-        var InPut=document.getElementById("title").value.length;
-        if(InPut<1){
+        var InPutView=document.getElementById("title");
+        if(InPutView.value.length<1){
             document.getElementById("stay").style.display="none";
             return
         }
-        if(InPut>=10){
+        if(InPutView.value.length>=10){
             document.getElementById("stay").style.display="block";
             document.getElementById("stay").style.color="green";
         }
-        if(InPut>15){
+        if(InPutView.value.length>15){
             document.getElementById("stay").style.color="red";
         }
-        if(noteCount>limitCount){
-            _self.titleLimit.txtNote.value=_self.titleLimit.txtNote.value.substring(0,limitCount);
-        }else{
-            _self.titleLimit.txtLimit.innerText=noteCount;
+        if(noteView.value.length>limitCount){
+            noteView.value=noteView.value.substring(0,limitCount);
         }
-        _self.titleLimit.txtlength=_self.titleLimit.txtNote.value.length;//记录每次输入后的长度
+        _self.titleLimit.txtLimit.innerText=noteView.value.length;
+        _self.titleLimit.txtlength=noteView.value.length;//记录每次输入后的长度
     },
 
 	removeImage: function removeImage(id) {

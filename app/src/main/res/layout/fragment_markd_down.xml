@@ -58,4 +58,11 @@
         android:layout_alignParentBottom="true">
     </com.zhiyi.richtexteditorlib.view.BottomMenu>
 
+    <View
+        android:layout_below="@+id/ll_circle_container"
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:background="@drawable/light_linear_driver"/>
+
 </RelativeLayout>
