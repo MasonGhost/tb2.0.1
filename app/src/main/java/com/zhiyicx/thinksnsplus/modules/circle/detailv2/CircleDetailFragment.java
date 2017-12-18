@@ -124,6 +124,7 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
 import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
@@ -420,6 +421,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         initToolBar();
         initLisener();
         AndroidBug5497Workaround.assistActivity(getActivity());
+        onChoosed(ALL);
     }
 
     @Override
