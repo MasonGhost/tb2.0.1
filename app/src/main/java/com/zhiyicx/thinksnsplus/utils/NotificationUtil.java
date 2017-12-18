@@ -99,11 +99,10 @@ public class NotificationUtil {
         Notification.Builder builder = new Notification.Builder(context);
         Intent intent = new Intent(context, ChatActivity.class);  //需要跳转指定的页面
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
-        messageItemBean.setUserInfo(userInfoBean);
-        messageItemBean.setEmKey(String.valueOf(userInfoBean.getUser_id()));
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean);
+        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, userInfoBean);
+        String emKey = String.valueOf(userInfoBean.getUser_id());
+        bundle.putString(ChatFragment.BUNDLE_CHAT_ID, "1".equals(emKey) ? "admin" : emKey);
         intent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
