@@ -123,6 +123,13 @@ public interface ChatContract {
          */
         List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize);
 
+        /**
+         * 根据每条聊天 来完善用户信息
+         *
+         * @return Observable<List<ChatItemBean>>
+         */
+        Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
+
     }
 
     interface Presenter extends IBasePresenter {

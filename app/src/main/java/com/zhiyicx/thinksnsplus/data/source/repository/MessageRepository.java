@@ -186,12 +186,14 @@ public class MessageRepository implements MessageContract.Repository {
                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                 for (UserInfoBean userInfoBean : userInfoBeans) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    // 更新数据库
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                                 }
                                 for (int i = 0; i < list1.size(); i++) {
                                     // 只有单聊才给用户信息
                                     if (list1.get(i).getConversation().getType() == EMConversation.EMConversationType.Chat) {
                                         int key;
-                                        if (list1.get(i).getEmKey().equals("admin")) {
+                                        if ("admin".equals(list1.get(i).getEmKey())) {
                                             key = 1;
                                         } else {
                                             key = Integer.parseInt(list1.get(i).getEmKey());

@@ -245,7 +245,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
         LogUtils.d("Cathy", " 收到消息 :" + list);
-        if (!list.isEmpty()){
+        if (list != null && !list.isEmpty()){
             for (EMMessage message : list){
                 if (message.conversationId().equals(mRootView.getMessItemBean().getEmKey())){
                     // 这才是本聊天组的消息哦
@@ -295,6 +295,15 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
         }
         Subscription subscription = Observable.just(chatItemBean)
+                .flatMap(chatItemBean12 -> {
+                    if (chatItemBean12.getUserInfo() == null){
+                        List<ChatItemBean> chatItemBeans = new ArrayList<>();
+                        chatItemBeans.add(chatItemBean12);
+                        return mRepository.completeUserInfo(chatItemBeans)
+                                .map(list -> list.get(0));
+                    }
+                    return Observable.just(chatItemBean12);
+                })
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(chatItemBean1 -> mRootView.reFreshMessage(chatItemBean1));

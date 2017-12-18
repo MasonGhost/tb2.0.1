@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.util.SparseArray;
 
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.MAX_RETRY_COUNTS;
@@ -51,6 +53,9 @@ public class ChatRepository implements ChatContract.Repository {
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     private ChatInfoClient mChatInfoClient;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public ChatRepository(ServiceManager serviceManager) {
@@ -215,6 +220,42 @@ public class ChatRepository implements ChatContract.Repository {
             return list;
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list) {
+        return Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(list1 -> {
+                    List<Object> users = new ArrayList<>();
+                    for (ChatItemBean chatItemBean : list1){
+                        if ("admin".equals(chatItemBean.getMessage().getFrom())) {
+                            users.add(1L);
+                        } else {
+                            users.add(chatItemBean.getMessage().getFrom());
+                        }
+                    }
+                    return mUserInfoRepository.getUserInfo(users)
+                            .map(userInfoBeans -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    // 更新数据库
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                                }
+                                for (int i = 0; i < list1.size(); i++) {
+                                    int key;
+                                    if ("admin".equals(list1.get(i).getMessage().getFrom())) {
+                                        key = 1;
+                                    } else {
+                                        key = Integer.parseInt(list1.get(i).getMessage().getFrom());
+                                    }
+                                    list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                }
+                                return list1;
+                            });
+                });
     }
 
 
