@@ -8,14 +8,16 @@
     android:layout_gravity="right"
     android:background="@color/circle_navigation_bg"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/spacing_mid"
-    android:paddingRight="@dimen/spacing_mid"
+    android:paddingLeft="@dimen/spacing_small"
+    android:paddingRight="@dimen/spacing_small"
     android:paddingTop="@dimen/spacing_huge_60">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_mid_small"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingStart="@dimen/spacing_large"
         android:text="@string/circle_more"
         android:textColor="@color/circle_navigation_txt_color"
         android:textSize="@dimen/size_content_comment"/>
@@ -23,189 +25,113 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
-
+        android:background="@drawable/circle_navigation_driver"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"/>
     <!--成员-->
-    <LinearLayout
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_member_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/ico_circle_member"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/circle_member"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <TextView
-            android:id="@+id/tv_circle_member_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="555"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:src="@mipmap/ic_arrow_smallgrey"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_report"
+        app:leftText="@string/circle_member"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:rightTextColor="@color/general_for_hint"
+        app:showLine="true"
+        />
 
     <!--详细信息-->
-    <LinearLayout
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_detail_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_details"
+        app:leftText="@string/circle_detail"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:rightTextColor="@color/general_for_hint"
+        app:showLine="true"
+        />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/ico_circle_details"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/circle_detail"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:src="@mipmap/ic_arrow_smallgrey"/>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/line_detail"
+    <!--举报圈子-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_report_circle"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
+        android:layout_height="@dimen/create_circle_button_height"
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_report"
+        app:leftText="@string/report_circle"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="true"
+        />
 
     <!--圈子收益-->
-    <LinearLayout
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_earnings_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/ico_circle_earnings"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/circle_earnings"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:src="@mipmap/ic_arrow_smallgrey"/>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/line_earning"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_earnings"
+        app:leftText="@string/circle_earnings"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="true"
+        />
 
     <!--发帖权限-->
-    <LinearLayout
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_permission_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/ico_circle_limits"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/circle_permission"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:src="@mipmap/ic_arrow_smallgrey"/>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/line_permission"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_limits"
+        app:leftText="@string/circle_permission"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="true"
+        />
 
     <!--举报管理-->
-    <LinearLayout
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_report_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:bgColor="@android:color/transparent"
+        app:dividerLeftMargin="@dimen/spacing_mid"
+        app:dividerRightMargin="@dimen/spacing_mid"
+        app:leftImage="@mipmap/ico_circle_report"
+        app:leftText="@string/circle_report"
+        app:leftTextColor="@color/general_for_hint"
+        app:lineColor="@color/circle_navigation_txt_color"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="true"
+        />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/ico_circle_report"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/circle_report"
-            android:textColor="@color/general_for_hint"
-            android:textSize="@dimen/size_content"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:src="@mipmap/ic_arrow_smallgrey"/>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/line_report"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:background="@drawable/circle_navigation_driver"/>
 
     <View
         android:layout_width="match_parent"
