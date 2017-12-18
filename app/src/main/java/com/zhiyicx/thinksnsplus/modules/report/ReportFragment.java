@@ -140,7 +140,7 @@ public class ReportFragment extends TSFragment<ReportContract.Presenter> impleme
                 mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), getString(R.string.comment)));
                 break;
             case USER:
-                mTvTitle.setText(getString(R.string.report_title_format, mReportResourceBean.getUser().getName(), ""));
+                mTvTitle.setText(getString(R.string.report_title_format_single, mReportResourceBean.getUser().getName()));
 
                 break;
             default:

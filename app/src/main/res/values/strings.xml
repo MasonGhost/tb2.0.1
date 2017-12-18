@@ -855,6 +855,7 @@
     <!--举报-->
     <string name="report">举报</string>
     <string name="report_title_format">举报 %1$s 的%2$s</string>
+    <string name="report_title_format_single">举报 %s</string>
     <string name="report_success_tip">举报信息提交成功</string>
     <string name="hint_report">填写举报原因</string>
     <string name="not_support_report">不支持的举报类型</string>

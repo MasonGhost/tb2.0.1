@@ -150,6 +150,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
+    private ActionPopupWindow mTopBarMorePopWindow;
     private PayPopWindow mPayImagePopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
@@ -552,7 +553,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-                mPresenter.shareUserInfo(mUserInfoBean);
+                showTopBarMorePopWindow();
                 break;
             default:
         }
@@ -829,6 +830,35 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
+    }
+
+
+    /**
+     * 顶部更多弹框
+     */
+    private void showTopBarMorePopWindow() {
+        if (mTopBarMorePopWindow == null) {
+            mTopBarMorePopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.share))
+                    .item2Str(AppApplication.getMyUserIdWithdefault() != mUserInfoBean.getUser_id() ? getString(R.string.report) : "")
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(() -> {
+                        mPresenter.shareUserInfo(mUserInfoBean);
+                        mTopBarMorePopWindow.hide();
+                    })
+                    .item2ClickListener(() -> {
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean,mUserInfoBean.getUser_id().toString(),mUserInfoBean
+                                .getName(),mUserInfoBean.getAvatar(),mUserInfoBean.getIntro(),ReportType.USER));
+                        mTopBarMorePopWindow.hide();
+                    })
+                    .bottomClickListener(() -> mTopBarMorePopWindow.hide())
+                    .build();
+        }
+        mTopBarMorePopWindow.show();
     }
 
     /**
