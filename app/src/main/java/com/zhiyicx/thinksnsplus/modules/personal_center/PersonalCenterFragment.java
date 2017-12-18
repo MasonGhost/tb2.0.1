@@ -851,8 +851,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                         mTopBarMorePopWindow.hide();
                     })
                     .item2ClickListener(() -> {
-                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean,mUserInfoBean.getUser_id().toString(),mUserInfoBean
-                                .getName(),mUserInfoBean.getAvatar(),mUserInfoBean.getIntro(),ReportType.USER));
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean, mUserInfoBean.getUser_id().toString(),
+                                mUserInfoBean
+                                .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
                         mTopBarMorePopWindow.hide();
                     })
                     .bottomClickListener(() -> mTopBarMorePopWindow.hide())
@@ -1058,4 +1059,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mPayImagePopWindow);
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDeletDynamicPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendDynamicPopWindow);
+        dismissPop(mTopBarMorePopWindow);
+    }
 }
