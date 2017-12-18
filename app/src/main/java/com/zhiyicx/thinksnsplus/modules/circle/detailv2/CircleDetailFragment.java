@@ -38,6 +38,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -121,6 +122,7 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
 import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
@@ -185,18 +187,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     Toolbar mToolbar;
     @BindView(R.id.btn_send_post)
     ImageView mBtnSendPost;
-    @BindView(R.id.tv_circle_member_count)
-    TextView mTvCircleMemberCount;
     @BindView(R.id.ll_member_container)
-    LinearLayout mLlMemberContainer;
-    @BindView(R.id.ll_detail_container)
-    LinearLayout mLlDetailContainer;
+    CombinationButton mLlMemberContainer;
     @BindView(R.id.ll_earnings_container)
-    LinearLayout mLlEarningsContainer;
+    CombinationButton mLlEarningsContainer;
+    @BindView(R.id.bt_report_circle)
+    CombinationButton mBtReportCircle;
     @BindView(R.id.ll_permission_container)
-    LinearLayout mLlPermissionContainer;
+    CombinationButton mLlPermissionContainer;
     @BindView(R.id.ll_report_container)
-    LinearLayout mLlReportContainer;
+    CombinationButton mLlReportContainer;
     @BindView(R.id.ll_circle_navigation_container)
     LinearLayout mLlCircleNavigationContainer;
     @BindView(R.id.ll_dynamic_count_container)
@@ -218,15 +218,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     CircleDetailPresenter mCircleDetailPresenter;
     @BindView(R.id.iv_serach)
     ImageView mIvSerach;
-    @BindView(R.id.line_detail)
-    View mLineDetail;
-    @BindView(R.id.line_earning)
-    View mLineEarning;
-    @BindView(R.id.line_permission)
-    View mLinePermission;
-    @BindView(R.id.line_report)
-    View mLineReport;
-
     private ActionBarDrawerToggle mToggle;
 
     private ActionPopupWindow mDeletCommentPopWindow;
@@ -284,6 +275,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     protected boolean setUseSatusbar() {
         return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
     }
 
     @Override
@@ -430,6 +426,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         initToolBar();
         initLisener();
         AndroidBug5497Workaround.assistActivity(getActivity());
+        onChoosed(ALL);
     }
 
     @Override
@@ -816,7 +813,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (circlePostListBean.getUser() != null) {
                         name = circlePostListBean.getUser().getName();
                     }
-                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf(circlePostListBean.getId()),
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
+                            (circlePostListBean.getId()),
                             name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
@@ -912,7 +910,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
                                 Intent intent = new Intent(mActivity, MarkdownActivity.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfo.getId());
+                                bundle.putSerializable(MarkdownFragment.BUNDLE_SOURCE_DATA, mCircleInfo);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
 
@@ -948,12 +946,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .subscribe(aVoid -> mPresenter.shareCircle(mCircleInfo,
                         ConvertUtils.drawable2BitmapWithWhiteBg(mActivity, mIvCircleHead.getDrawable(), R.mipmap.icon)));
 
+
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mCircleInfo.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-                        return;
-                    }
                     MessageItemBean messageItemBean = new MessageItemBean();
                     messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
                     Intent to = new Intent(getActivity(), ChatActivity.class);
@@ -1028,7 +1024,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private void setCircleData(CircleInfo detail) {
         mTvCircleTitle.setText(detail.getName());
-        mTvCircleMemberCount.setText(String.valueOf(detail.getUsers_count()));
+        mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
@@ -1049,8 +1045,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource.getIntrinsicHeight());
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+                                isFromMemoryCache, boolean isFirstResource) {
+                            Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
+                                    .getIntrinsicHeight());
                             mIvCircleHeadBg.setImageBitmap(bitmap);
                             return false;
                         }
@@ -1069,17 +1067,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLineDetail.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLineEarning.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLinePermission.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLineReport.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
-            R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle})
+            R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
         boolean isJoing = mCircleInfo.getJoined() != null;
         switch (view.getId()) {
@@ -1144,7 +1140,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {
-                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), new CircleJoinedBean(mCircleInfo.getJoined().getRole())));
+                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), new CircleJoinedBean(mCircleInfo
+                            .getJoined().getRole())));
                     mCircleInfo.setJoined(null);
                     mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() - 1);
                     mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
@@ -1152,6 +1149,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     mTvCircleSubscrib.setVisibility(View.VISIBLE);
                     mTvExitCircle.setVisibility(View.GONE);
                 }
+                break;
+                /*
+                  举报圈子
+                 */
+            case R.id.bt_report_circle:
+                ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getUser(), mCircleInfo.getId().toString
+                        (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
+
                 break;
             default:
         }
@@ -1194,4 +1199,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mAuditTipPop.show();
     }
 
+    /**
+     *
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDeletPostPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendPostPopWindow);
+        dismissPop(mOtherPostPopWindow);
+        dismissPop(mMyPostPopWindow);
+        dismissPop(mTypeChoosePopupWindow);
+        dismissPop(mAuditTipPop);
+    }
 }

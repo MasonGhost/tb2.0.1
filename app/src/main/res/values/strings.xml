@@ -871,6 +871,9 @@
     <string name="circle_join_reviewing">申请审核中</string>
     <string name="please_join_circle_first">需要先加入才可发帖</string>
     <string name="circle_member_added_blacklist">你被管理员加入到了黑名单。</string>
-    <string name="publish_circle_post_format">%1$s仅%2$s拥有发帖权限</string>
+    <string name="publish_circle_post_format">\&#034;%1$s\&#034;仅%2$s拥有发帖权限</string>
+    <string name="report_circle">举报圈子</string>
+    <string name="publish_post">发帖</string>
+    <string name="syn_to_dynamic">同步至动态</string>
 
 </resources>
