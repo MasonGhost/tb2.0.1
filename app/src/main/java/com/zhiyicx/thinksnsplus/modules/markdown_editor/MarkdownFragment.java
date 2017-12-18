@@ -191,6 +191,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
+    public void onTextStypeClick(boolean isSelect) {
+
+    }
+
+    @Override
     public void getPhotoFailure(String errorMsg) {
 
     }
