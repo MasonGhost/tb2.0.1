@@ -52,7 +52,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
@@ -81,8 +80,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionActivity;
@@ -905,7 +902,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
                                 Intent intent = new Intent(mActivity, MarkdownActivity.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putLong(MarkdownFragment.SOURCEID, mCircleInfo.getId());
+                                bundle.putSerializable(MarkdownFragment.BUNDLE_SOURCE_DATA, mCircleInfo);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
 

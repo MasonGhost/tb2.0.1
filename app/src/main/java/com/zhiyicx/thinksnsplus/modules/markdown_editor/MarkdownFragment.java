@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +51,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         SimpleRichEditor.OnEditorClickListener, View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener,
         MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
 
-    public static final String SOURCEID = "sourceId";
+    public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
     @BindView(R.id.lu_bottom_menu)
     BottomMenu mBottomMenu;
@@ -59,6 +61,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     LinearLayout mLlCircleContainer;
     @BindView(R.id.line)
     View mLine;
+    @BindView(R.id.cb_syn_to_dynamic)
+    CheckBox mCbSynToDynamic;
     @BindView(R.id.tv_name)
     TextView mCircleName;
 
@@ -72,7 +76,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     private PostPublishBean mPostPublishBean;
     private List<Integer> mImages = new ArrayList();
 
-    private long sourceId;
+    private CircleInfo mCircleInfo;
 
     public static MarkdownFragment newInstance(Bundle bundle) {
         MarkdownFragment markdownFragment = new MarkdownFragment();
@@ -94,15 +98,12 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onMarkdownWordResult(String title, String markdwon, String noMarkdown) {
-        if (sourceId <= 0) {
-            return;
-        }
+
         mPostPublishBean.setTitle(title);
         mPostPublishBean.setBody(markdwon);
         mPostPublishBean.setSummary(noMarkdown);
-        mPostPublishBean.setCircle_id(getArguments().getLong(SOURCEID, 1L));
-        mPostPublishBean.setSync_feed(0);
-
+        mPostPublishBean.setCircle_id(mCircleInfo.getId());
+        mPostPublishBean.setSync_feed(mCbSynToDynamic.isChecked() ? 1 : 0);
         mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
         mPresenter.publishPost(mPostPublishBean);
     }
@@ -110,6 +111,17 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     protected boolean usePermisson() {
         return true;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mCircleInfo = (CircleInfo) getArguments().getSerializable(BUNDLE_SOURCE_DATA);
+        }
+        if (mCircleInfo == null) {
+            throw new IllegalArgumentException("circle info is must");
+        }
     }
 
     @Override
@@ -121,6 +133,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mFailedImages = new HashMap<>();
         initListener();
         mRichTextView.load();
+        setSynToDynamicCbVisiable(true);
     }
 
     @Override
@@ -135,7 +148,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
             mLine.setVisibility(View.VISIBLE);
             return;
         }
-        sourceId = getArguments().getLong(SOURCEID, 1L);
     }
 
     private void initListener() {
@@ -207,10 +219,9 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ChooseCircleFragment.CHOOSE_CIRCLE) {
-            if (data != null) {
-                CircleInfo circleInfo = data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE);
-                sourceId = circleInfo.getId();
-                mCircleName.setText(circleInfo.getName());
+            if (data != null && data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
+                mCircleInfo = data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE);
+                mCircleName.setText(mCircleInfo.getName());
             }
         } else {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
@@ -255,6 +266,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         });
 
 
+    }
+
+    /**
+     * @param isVisiable true  显示
+     */
+    private void setSynToDynamicCbVisiable(boolean isVisiable) {
+        mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View.VISIBLE : View.GONE);
     }
 
     /**

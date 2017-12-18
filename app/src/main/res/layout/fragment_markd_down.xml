@@ -10,10 +10,10 @@
         android:id="@+id/ll_circle_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"
-        android:visibility="gone"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,9 +27,9 @@
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
-            android:gravity="right"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="right"
             android:hint="@string/select_circle"
             android:text=""
             android:textColor="@color/important_for_content"
@@ -45,12 +45,23 @@
 
     <com.zhiyi.richtexteditorlib.SimpleRichEditor
         android:id="@+id/rich_text_view"
-        android:layout_below="@+id/ll_circle_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lu_bottom_menu"
+        android:layout_above="@+id/cb_syn_to_dynamic"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ll_circle_container"/>
+
+    <CheckBox
+        android:id="@+id/cb_syn_to_dynamic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/create_circle_button_height"
+        android:layout_above="@+id/lu_bottom_menu"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:background="@color/white"
+        android:text="@string/syn_to_dynamic"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"/>
 
     <com.zhiyi.richtexteditorlib.view.BottomMenu
         android:id="@+id/lu_bottom_menu"
@@ -60,11 +71,11 @@
     </com.zhiyi.richtexteditorlib.view.BottomMenu>
 
     <View
-        android:layout_below="@+id/ll_circle_container"
         android:id="@+id/line"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:background="@drawable/light_linear_driver"/>
+        android:layout_below="@+id/ll_circle_container"
+        android:background="@drawable/light_linear_driver"
+        android:visibility="gone"/>
 
 </RelativeLayout>
