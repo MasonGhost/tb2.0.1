@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersContract;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -31,15 +32,24 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class AttornCircleFragment extends MemberListFragment implements MembersContract.View {
 
     public static final int ATTORNCIRCLECODE = 1995;
-    public static final String CIRCLEOWNER = "circleowner";
+    public static final String CIRCLE_OWNER = "circleowner";
+    public static final String CIRCLE_NAME = "circleName";
 
     private ActionPopupWindow mPopupWindow;
     private CircleMembers mNewFounder;
+
+    private String mCircleName;
 
     public static AttornCircleFragment newInstance(Bundle bundle) {
         AttornCircleFragment attornCircleFragment = new AttornCircleFragment();
         attornCircleFragment.setArguments(bundle);
         return attornCircleFragment;
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        mCircleName = getArguments().getString(CIRCLE_NAME);
     }
 
     @Override
@@ -96,7 +106,9 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
             return;
         }
         mPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.circle_manager_sure_attorn))
+                .item1Str(getString(R.string.info_publish_hint))
+                .desStr(String.format(Locale.getDefault(), getString(R.string.circle_manager_sure_attorn), mCircleName,
+                        circleMembers.getUser().getName()))
                 .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -123,7 +135,7 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
         if (prompt == Prompt.DONE) {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(CIRCLEOWNER, mNewFounder);
+            bundle.putParcelable(CIRCLE_OWNER, mNewFounder);
             intent.putExtras(bundle);
             mActivity.setResult(Activity.RESULT_OK, intent);
             mActivity.finish();

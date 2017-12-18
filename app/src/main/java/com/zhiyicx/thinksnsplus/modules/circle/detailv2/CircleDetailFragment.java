@@ -399,7 +399,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             String permissions = data.getStringExtra(PermissionFragment.PERMISSION);
             mCircleInfo.setPermissions(permissions);
         } else if (requestCode == AttornCircleFragment.ATTORNCIRCLECODE && resultCode == Activity.RESULT_OK && data != null) {
-            CircleMembers circleMembers = data.getExtras().getParcelable(AttornCircleFragment.CIRCLEOWNER);
+            CircleMembers circleMembers = data.getExtras().getParcelable(AttornCircleFragment.CIRCLE_OWNER);
             mCircleInfo.setUser(circleMembers.getUser());
             mCircleInfo.setUser_id((int) circleMembers.getUser_id());
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
@@ -1138,8 +1138,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 if (isOwner) {
                     Intent intent2 = new Intent(mActivity, AttornCircleActivity.class);
                     Bundle bundle2 = new Bundle();
-                    bundle2.putLong(MemberListFragment.CIRCLEID, mCircleInfo.getId());
-                    bundle2.putString(MemberListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
+                    bundle2.putLong(AttornCircleFragment.CIRCLEID, mCircleInfo.getId());
+                    bundle2.putString(AttornCircleFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
+                    bundle2.putString(AttornCircleFragment.CIRCLE_NAME,  mCircleInfo.getName());
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {

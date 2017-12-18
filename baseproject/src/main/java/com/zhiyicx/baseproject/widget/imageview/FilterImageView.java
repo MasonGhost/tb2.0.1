@@ -35,6 +35,9 @@ public class FilterImageView extends ImageView {
     private Bitmap mBitmap;
     private boolean mIshowLongTag;
 
+    private boolean mUseNumberShadow;
+    private String mNumber;
+
     public FilterImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
@@ -58,6 +61,7 @@ public class FilterImageView extends ImageView {
         array.recycle();
         mPaint = new TextPaint();
         mPaint.setColor(mPressedColor);
+        mPaint.setAntiAlias(true);
         mRect = new Rect();
     }
 
@@ -101,6 +105,11 @@ public class FilterImageView extends ImageView {
         postInvalidate();
     }
 
+    public void setUseNumberShadow(boolean useNumberShadow,int num) {
+        mUseNumberShadow = useNumberShadow;
+        mNumber=String.valueOf(num);
+        postInvalidate();
+    }
 
     public void showLongImageTag(boolean isShow) {
         this.mIshowLongTag = isShow;

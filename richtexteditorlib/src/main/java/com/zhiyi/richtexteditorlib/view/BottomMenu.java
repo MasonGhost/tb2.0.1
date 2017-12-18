@@ -52,14 +52,27 @@ public class BottomMenu extends ViewGroup {
 
     private HashMap<Long, AbstractBottomMenuItem> mBottomMenuItems;
 
-    private ArrayDeque<MenuItem> mPathRecord;//菜单展开路径栈,通过存储这个信息配合逻辑树恢复其他信息，时间换空间
+    /**
+     * 菜单展开路径栈,通过存储这个信息配合逻辑树恢复其他信息，时间换空间
+     */
+    private ArrayDeque<MenuItem> mPathRecord;
 
     private ArrayList<LinearLayout> mDisplayMenus;
 
-    private MenuItem mCurMenuItem;//当前聚焦项目集合的最顶层父请节点
+    /**
+     * 当前聚焦项目集合的最顶层父请节点
+     */
+    private MenuItem mCurMenuItem;
 
-    private int mDisplayRowNum = 0;//显示的菜单行数
-    private int mSingleRowHeight = 0;//每级菜单的高度
+    /**
+     * 显示的菜单行数
+     */
+    private int mDisplayRowNum = 0;
+
+    /**
+     * 每级菜单的高度
+     */
+    private int mSingleRowHeight = 0;
 
     private Paint mPaint;
     private ITheme mTheme;
@@ -123,6 +136,7 @@ public class BottomMenu extends ViewGroup {
             case MeasureSpec.EXACTLY:
                 mSingleRowHeight = Math.max(heightSize - getPaddingBottom() - getPaddingTop(), 0);
                 break;
+            default:
         }
 
         final int height;
@@ -270,7 +284,9 @@ public class BottomMenu extends ViewGroup {
         if (!menuItem.equals(mCurMenuItem)) {
             if (!menuItem.isLeafNode()) {
                 boolean isOldItemChild = menuItem.getDeep() > mCurMenuItem.getDeep();
-                boolean isOldItemElder = (!isOldItemChild && menuItem.isElderOf(mCurMenuItem));//直系父亲节点
+
+                //直系父亲节点
+                boolean isOldItemElder = (!isOldItemChild && menuItem.isElderOf(mCurMenuItem));
                 mCurMenuItem = menuItem;
 
                 if (isOldItemChild) {
@@ -386,7 +402,7 @@ public class BottomMenu extends ViewGroup {
             scrollView.setHorizontalScrollBarEnabled(false);
             menu.addView(scrollView, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             LinearLayout linearLayout = new LinearLayout(getContext());
-            for (MenuItem item :parent.getNextLevel()) {
+            for (MenuItem item : parent.getNextLevel()) {
                 AbstractBottomMenuItem bottomMenuItem = getBottomMenuItem(item);
                 bottomMenuItem.setOnItemClickListener(mInnerListener);
                 bottomMenuItem.setTheme(mTheme);

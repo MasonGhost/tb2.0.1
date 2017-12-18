@@ -47,9 +47,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class CircleLocationFragment extends TSListFragment<CircleLocationContract.Presenter, LocationBean>
         implements CircleLocationContract.View, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
-    public static final String BUNDLE_DATA = "DATA";
+    public static final String BUNDLE_DATA = "data";
 
-    public static final String LOCATION_DATA = "070000";
+    public static final String LOCATION_DATA = "地名地址信息";
 
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
@@ -101,11 +101,6 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_cricle_location;
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return true;
     }
 
     @Override
@@ -164,7 +159,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 query.setPageSize(20);
                 PoiSearch search = new PoiSearch(getContext(), query);
                 search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude),
-                        10000));
+                        1000));
                 search.setOnPoiSearchListener(this);
                 search.searchPOIAsyn();
                 mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() +
@@ -189,20 +184,17 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     @Override
     public void onPoiSearched(PoiResult result, int i) {
         mRefreshlayout.finishRefresh();
+        mRefreshlayout.setEnableRefresh(false);
         ArrayList<PoiItem> pois = result.getPois();
         if (pois.isEmpty()) {
             mEmptyView.setErrorImag(setEmptView());
             mEmptyView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mEmptyView.setVisibility(View.GONE);
         }
         mPoiItems.clear();
         mPoiItems.addAll(pois);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
-        for (PoiItem poi : pois) {
-            String name = poi.getCityName();
-            String snippet = poi.getSnippet();
-        }
     }
 
     @Override
@@ -311,7 +303,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 Observable.just(mTvSearch.getText().toString())
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(keyWords -> {
-                            mRefreshlayout.autoRefresh();
+                            mRefreshlayout.autoRefresh(0);
                             PoiSearch.Query query = new PoiSearch.Query(keyWords, LOCATION_DATA, "");
                             query.setPageSize(20);
                             PoiSearch search = new PoiSearch(getContext(), query);

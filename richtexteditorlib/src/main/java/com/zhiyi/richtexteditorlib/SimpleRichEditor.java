@@ -62,6 +62,8 @@ public class SimpleRichEditor extends RichEditor {
         void onLinkClick(String name, String url);
 
         void onImageClick(Long id);
+
+        void onTextStypeClick(boolean isSelect);
     }
 
     @SuppressWarnings("unused")
@@ -273,6 +275,10 @@ public class SimpleRichEditor extends RichEditor {
         }
     }
 
+    private void onTextStypeClick(boolean isSelect) {
+
+    }
+
     private void showImageClick(Long id) {
         if (mOnEditorClickListener != null) {
             mOnEditorClickListener.onImageClick(id);
@@ -361,104 +367,110 @@ public class SimpleRichEditor extends RichEditor {
             mFreeItems.add(ItemIndex.STRIKE_THROUGH);
         }
 
-        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A))
-                .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.BOLD,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setBold();
-                                LogUtils.d("onItemClick", item.getId() + "");
+        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A, new IBottomMenuItem.OnBottomItemClickListener() {
+            @Override
+            public boolean onItemClick(MenuItem item, boolean isSelected) {
+                onTextStypeClick(isSelected);
+                return isSelected;
+            }
+        }))
+            .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.BOLD,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setBold();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needItalic ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.ITALIC,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setItalic();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                            //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needItalic ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.ITALIC,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setItalic();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needStrikeThrough ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.STRIKE_THROUGH,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setStrikeThrough();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needStrikeThrough ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.STRIKE_THROUGH,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setStrikeThrough();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needBlockQuote ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.BLOCK_QUOTE,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setBlockquote(!isSelected);
-                                LogUtils.d("onItemClick", item.getId() + "");
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needBlockQuote ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.BLOCK_QUOTE,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setBlockquote(!isSelected);
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
+                            //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
 
-                .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.H1,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(1, !isSelected);
-                                LogUtils.d("onItemClick", item.getId() + "");
+            .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.H1,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setHeading(1, !isSelected);
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //mSelectController.changeState(ItemIndex.H1);
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.H2,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(2, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H2);
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.H3,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(3, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H3);
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null)
-                .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
-                        getContext(),
-                        ItemIndex.H4,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(4, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H4);
-                                return isInSelectController(item.getId());
-                            }
-                        }) : null);
+                            //mSelectController.changeState(ItemIndex.H1);
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.H2,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setHeading(2, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H2);
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.H3,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setHeading(3, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H3);
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null)
+            .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
+                    getContext(),
+                    ItemIndex.H4,
+                    new IBottomMenuItem.OnBottomItemClickListener() {
+                        @Override
+                        public boolean onItemClick(MenuItem item, boolean isSelected) {
+                            setHeading(4, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H4);
+                            return isInSelectController(item.getId());
+                        }
+                    }) : null);
         return this;
     }
 

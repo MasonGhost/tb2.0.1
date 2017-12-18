@@ -145,9 +145,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
     @Override
     public boolean isForViewType(CirclePostListBean item, int position) {
-        boolean isForViewType =
-                item.getId() != null && (item.getImages() != null && item.getImages().size
-                        () == getImageCounts());
+        boolean isForViewType = item.getId() != null && (item.getImages() != null && item.getImages().size
+                () == getImageCounts());
         return isForViewType;
     }
 
@@ -164,7 +163,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_name, circlePostListBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
                     .getCreated_at()));
-            holder.setText(R.id.tv_title,circlePostListBean.getTitle());
+            holder.setText(R.id.tv_title, circlePostListBean.getTitle());
 
             String content = circlePostListBean.getSummary();
             TextView contentView = holder.getView(R.id.tv_content);

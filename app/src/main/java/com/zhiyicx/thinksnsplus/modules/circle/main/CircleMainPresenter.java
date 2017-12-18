@@ -193,7 +193,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
         if (adverBean == null) {
             return null;
         } else {
-            return mAdvertListBeanGreenDao.getCircleTopAdvert().getMRealAdvertListBeen();
+            return adverBean.getMRealAdvertListBeen();
         }
     }
 

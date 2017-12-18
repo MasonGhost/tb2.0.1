@@ -257,11 +257,11 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
-        AllAdverListBean adverBean = mAdvertListBeanGreenDao.getCircleTopAdvert();
+        AllAdverListBean adverBean = mAdvertListBeanGreenDao.getCircleDetailAdvert();
         if (adverBean == null) {
             return null;
         } else {
-            return mAdvertListBeanGreenDao.getCircleTopAdvert().getMRealAdvertListBeen();
+            return adverBean.getMRealAdvertListBeen();
         }
     }
 
