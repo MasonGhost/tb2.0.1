@@ -26,8 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:background="@drawable/circle_navigation_driver"
-        android:paddingLeft="@dimen/spacing_large"
-        android:paddingRight="@dimen/spacing_large"/>
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginLeft="@dimen/spacing_large"
+        android:layout_marginRight="@dimen/spacing_large"
+        android:layout_marginEnd="@dimen/spacing_large"/>
     <!--成员-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/ll_member_container"
