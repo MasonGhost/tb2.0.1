@@ -112,7 +112,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         if (createCircleBean.getFilePath() != null) {
             file.put(createCircleBean.getFileName(), createCircleBean.getFilePath());
         }
-        return mCircleClient.updateCircle(createCircleBean.getCategoryId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
+        return mCircleClient.updateCircle(createCircleBean.getCircleId(), UpLoadFile.upLoadFileAndParams(file, DataDealUitls
                 .transBean2MapWithArray(createCircleBean)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

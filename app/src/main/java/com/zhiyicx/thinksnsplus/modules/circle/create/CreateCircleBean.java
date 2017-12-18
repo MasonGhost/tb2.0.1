@@ -27,9 +27,18 @@ public class CreateCircleBean {
     private String fileType = "multipart/form-data";
     @Expose(serialize = false)
     private long categoryId;
+    private Long circleId;
     private int allow_feed;
     private String money;
     private List<TagId> tags;
+
+    public Long getCircleId() {
+        return circleId;
+    }
+
+    public void setCircleId(Long circleId) {
+        this.circleId = circleId;
+    }
 
     public String getNotice() {
         return notice;

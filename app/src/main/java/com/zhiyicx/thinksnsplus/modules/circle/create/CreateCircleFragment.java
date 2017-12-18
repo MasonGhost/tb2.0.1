@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +28,6 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -59,6 +59,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private static final int REQUST_CODE_AREA = 8000;
     private static final int REQUST_CODE_CATEGORY = 5000;
+
+    public static final int REQUST_CODE_UPDATE = 1996;
 
     public static final String MODE_PUBLIC = "public";
     public static final String MODE_PRIVATE = "private";
@@ -202,7 +204,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void setCircleInfo(CircleInfo data) {
-        getActivity().finish();
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CIRCLEINFO, data);
+        intent.putExtras(bundle);
+        mActivity.setResult(Activity.RESULT_OK, intent);
+        mActivity.finish();
     }
 
     @Override
@@ -340,6 +347,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (mCircleInfo == null) {
             mPresenter.createCircle(mCreateCircleBean);
         } else {
+            mCreateCircleBean.setCircleId(mCircleInfo.getId());
             mCircleInfo.setTags(mUserTagBeens);
             mCircleInfo.setCategory(mCircleTypeBean);
             mPresenter.updateCircle(mCreateCircleBean);

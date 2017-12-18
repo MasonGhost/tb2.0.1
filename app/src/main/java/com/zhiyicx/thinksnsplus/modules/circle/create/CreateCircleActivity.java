@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,11 @@ public class CreateCircleActivity extends TSActivity<CreateCirclePresenter, Crea
         bundle.putBoolean(CreateCircleFragment.PERMISSION_MANAGER, isManager);
         bundle.putBoolean(CreateCircleFragment.PERMISSION_OWNER, isOwner);
         intent.putExtras(bundle);
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            activity.startActivityForResult(intent, CreateCircleFragment.REQUST_CODE_UPDATE);
+            return;
+        }
         context.startActivity(intent);
     }
 }

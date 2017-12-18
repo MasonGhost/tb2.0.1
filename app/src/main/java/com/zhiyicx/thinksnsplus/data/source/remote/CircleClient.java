@@ -330,7 +330,7 @@ public interface CircleClient {
      */
     @Multipart
     @Headers({"Accept:application/json;charset=UTF-8"})
-    @PATCH(APP_PATH_GET_CIRCLEDETAIL)
+    @POST(APP_PATH_GET_CIRCLEDETAIL)
     Observable<BaseJsonV2<CircleInfo>> updateCircle(@Path("circle_id") Long circleId, @Part List<MultipartBody.Part> params);
 
     /**
