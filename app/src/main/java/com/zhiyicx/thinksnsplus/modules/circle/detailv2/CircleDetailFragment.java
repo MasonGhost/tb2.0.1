@@ -279,6 +279,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
     protected boolean setUseStatusView() {
         return false;
     }
