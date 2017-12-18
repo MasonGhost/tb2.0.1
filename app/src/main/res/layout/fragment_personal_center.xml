@@ -156,7 +156,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_share_white"/>
+                android:src="@mipmap/topbar_more_white"/>
         </RelativeLayout>
 
         <include layout="@layout/include_horizontal_divider"/>

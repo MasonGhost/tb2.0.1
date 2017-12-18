@@ -362,7 +362,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                 .adapter(commonAdapter)
                 .asVertical()
                 .alpha(1.0f)
-                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.divider_line))
+                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.spacing_big_line))
                 .parentView(tv_type)
                 .build();
 
