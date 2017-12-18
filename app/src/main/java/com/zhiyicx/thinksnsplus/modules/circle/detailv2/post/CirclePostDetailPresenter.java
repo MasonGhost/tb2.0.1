@@ -22,13 +22,14 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -48,8 +49,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLECT_UPDATE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
 /**
  * @author Jliuer
@@ -58,7 +57,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Description
  */
 public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetailContract.Repository, CirclePostDetailContract.View>
-        implements CirclePostDetailContract.Presenter,OnShareCallbackListener {
+        implements CirclePostDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
@@ -68,6 +67,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
 
     private boolean mIsAllDataReady = false;
     private boolean mIsNeedDynamicListRefresh = false;
@@ -256,7 +257,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
-        return null;
+        AllAdverListBean adverBean = mAdvertListBeanGreenDao.getCircleTopAdvert();
+        if (adverBean == null) {
+            return null;
+        } else {
+            return mAdvertListBeanGreenDao.getCircleTopAdvert().getMRealAdvertListBeen();
+        }
     }
 
     @Override
@@ -291,7 +297,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Override
     public void shareInfo(Bitmap shareBitMap) {
-        CirclePostListBean circlePostListBean=mRootView.getCurrentePost();
+        CirclePostListBean circlePostListBean = mRootView.getCurrentePost();
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));

@@ -37,7 +37,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailC
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
-import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;

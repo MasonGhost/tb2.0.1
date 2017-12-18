@@ -137,7 +137,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected void initData() {
-        mCircleMainHeader = new CircleMainHeader(mActivity, null, 2341);
+        mCircleMainHeader = new CircleMainHeader(mActivity, mPresenter.getCircleTopAdvert(), 2341);
         mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
         super.initData();
         mPresenter.requestNetData(0L, false);

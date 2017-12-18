@@ -9,11 +9,14 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -52,6 +55,8 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     CertificationDetailRepository mCertificationDetailRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
 
 
     @Inject
@@ -180,6 +185,16 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+    }
+
+    @Override
+    public List<RealAdvertListBean> getCircleTopAdvert() {
+        AllAdverListBean adverBean = mAdvertListBeanGreenDao.getCircleTopAdvert();
+        if (adverBean == null) {
+            return null;
+        } else {
+            return mAdvertListBeanGreenDao.getCircleTopAdvert().getMRealAdvertListBeen();
+        }
     }
 
     /**

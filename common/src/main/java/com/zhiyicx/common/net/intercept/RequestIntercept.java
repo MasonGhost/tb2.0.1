@@ -29,7 +29,7 @@ import okio.BufferedSource;
 public class RequestIntercept implements Interceptor {
     private static final String TAG = "RequestIntercept";
     private RequestInterceptListener mListener;
-    private static final boolean USEERRORLOG = false;
+    private static final boolean USE_ERROR_LOG = true;
 
     public RequestIntercept(RequestInterceptListener listener) {
         this.mListener = listener;
@@ -82,7 +82,7 @@ public class RequestIntercept implements Interceptor {
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
         LogUtils.json(TAG, bodyString);
-        if (USEERRORLOG){
+        if (USE_ERROR_LOG){
             // 服務器出錯時候打印
             LogUtils.d(TAG, bodyString);
         }

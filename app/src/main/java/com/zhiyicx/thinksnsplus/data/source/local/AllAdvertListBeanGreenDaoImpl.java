@@ -142,5 +142,13 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
         return null;
     }
 
+    public AllAdverListBean getCircleTopAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_GROUP_TOP_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
 
 }

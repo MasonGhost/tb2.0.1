@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
@@ -33,6 +34,8 @@ public interface CircleMainContract {
         void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
 
         void checkCertification();
+
+        List<RealAdvertListBean> getCircleTopAdvert();
     }
 
     interface Repository extends IBaseCircleRepository {

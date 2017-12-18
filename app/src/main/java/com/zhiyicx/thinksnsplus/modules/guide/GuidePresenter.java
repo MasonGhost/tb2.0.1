@@ -88,7 +88,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
                                         String url=boot.getAdvertFormat().getImage().getImage();
-                                        LogUtils.d("getLaunchAdverts:::"+url);
                                         Glide.with(mContext)
                                                 .load(url)
                                                 .downloadOnly(DeviceUtils
