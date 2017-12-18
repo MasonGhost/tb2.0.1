@@ -939,12 +939,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .subscribe(aVoid -> mPresenter.shareCircle(mCircleInfo,
                         ConvertUtils.drawable2BitmapWithWhiteBg(mActivity, mIvCircleHead.getDrawable(), R.mipmap.icon)));
 
+
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mCircleInfo.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
-                        return;
-                    }
                     MessageItemBean messageItemBean = new MessageItemBean();
                     messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
                     Intent to = new Intent(getActivity(), ChatActivity.class);
@@ -1065,7 +1063,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-
+        mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
@@ -1134,7 +1132,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {
-                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), new CircleJoinedBean(mCircleInfo.getJoined().getRole())));
+                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), new CircleJoinedBean(mCircleInfo
+                            .getJoined().getRole())));
                     mCircleInfo.setJoined(null);
                     mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() - 1);
                     mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
@@ -1147,8 +1146,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                   举报圈子
                  */
             case R.id.bt_report_circle:
-                ReportActivity.startReportActivity(mActivity,new ReportResourceBean(mCircleInfo.getUser(),mCircleInfo.getId().toString
-                        (),mCircleInfo.getName(),mCircleInfo.getAvatar(),mCircleInfo.getSummary(),ReportType.CIRCLE));
+                ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getUser(), mCircleInfo.getId().toString
+                        (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
                 break;
             default:
@@ -1192,4 +1191,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mAuditTipPop.show();
     }
 
+    /**
+     *
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDeletPostPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendPostPopWindow);
+        dismissPop(mOtherPostPopWindow);
+        dismissPop(mMyPostPopWindow);
+        dismissPop(mTypeChoosePopupWindow);
+        dismissPop(mAuditTipPop);
+    }
 }
