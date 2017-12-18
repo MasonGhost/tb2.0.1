@@ -405,7 +405,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             CircleJoinedBean joinedBean = mCircleInfoDetail.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
             mCircleInfoDetail.setJoined(joinedBean);
-
             mTvOwnerName.setText(mCircleInfoDetail.getFounder().getUser().getName());
             setVisiblePermission(mCircleInfoDetail);
         }
@@ -918,7 +917,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
                         } else {
                             // 没有权限发帖
-                            if (mCircleInfoDetail.getPermissions().contains(CircleInfoDetail.CircleRoleEnum.FOUNDER.value)) {
+                            if (mCircleInfoDetail.getPermissions().contains(CircleMembers.FOUNDER)) {
                                 showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfoDetail.getName(), getString(R
                                         .string.circle_master)));
                             } else {

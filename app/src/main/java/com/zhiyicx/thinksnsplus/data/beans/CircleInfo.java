@@ -1,19 +1,20 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.CircleTypeBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.JoinedBeanConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserTagListBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
-
-import org.greenrobot.greendao.annotation.Generated;
+import java.util.List;
 
 /**
  * @author Jliuer
@@ -128,6 +129,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
     private String longitude;
     private String latitude;
     private String geo_hash;
+    private String permissions;
     private int allow_feed;
     private String mode;
     private int money;
@@ -140,6 +142,14 @@ public class CircleInfo extends BaseListBean implements Serializable {
     private String updated_at;
     @Convert(columnType = String.class, converter = JoinedBeanConvert.class)
     private CircleJoinedBean joined;
+    @Convert(columnType = String.class, converter = UserInfoBeanConvert.class)
+    private UserInfoBean user;
+    @Convert(columnType = String.class, converter = JoinedBeanConvert.class)
+    private CircleJoinedBean founder;
+    @Convert(columnType = String.class, converter = UserTagListBeanConvert.class)
+    private List<UserTagBean> tags;
+    @Convert(columnType = String.class, converter = CircleTypeBeanConvert.class)
+    private CircleTypeBean category;
 
     public String getAvatar() {
         return avatar;
@@ -317,38 +327,6 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.joined = joined;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.avatar);
-        dest.writeInt(this.user_id);
-        dest.writeInt(this.join_income_count);
-        dest.writeInt(this.pinned_income_count);
-        dest.writeInt(this.category_id);
-        dest.writeString(this.location);
-        dest.writeString(this.longitude);
-        dest.writeString(this.latitude);
-        dest.writeString(this.geo_hash);
-        dest.writeInt(this.allow_feed);
-        dest.writeString(this.mode);
-        dest.writeInt(this.money);
-        dest.writeString(this.summary);
-        dest.writeString(this.notice);
-        dest.writeInt(this.users_count);
-        dest.writeInt(this.posts_count);
-        dest.writeInt(this.audit);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeParcelable(this.joined, flags);
-    }
-
     public CircleInfo() {
     }
 
@@ -361,74 +339,6 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.audit = audit;
         this.joined = joined;
     }
-
-
-    protected CircleInfo(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.name = in.readString();
-        this.avatar = in.readString();
-        this.user_id = in.readInt();
-        this.join_income_count = in.readInt();
-        this.pinned_income_count = in.readInt();
-        this.category_id = in.readInt();
-        this.location = in.readString();
-        this.longitude = in.readString();
-        this.latitude = in.readString();
-        this.geo_hash = in.readString();
-        this.allow_feed = in.readInt();
-        this.mode = in.readString();
-        this.money = in.readInt();
-        this.summary = in.readString();
-        this.notice = in.readString();
-        this.users_count = in.readInt();
-        this.posts_count = in.readInt();
-        this.audit = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.joined = in.readParcelable(CircleJoinedBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 818221949)
-    public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
-                      int category_id, String location, String longitude, String latitude, String geo_hash, int allow_feed, String mode,
-                      int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
-                      String updated_at, CircleJoinedBean joined) {
-        this.id = id;
-        this.name = name;
-        this.avatar = avatar;
-        this.user_id = user_id;
-        this.join_income_count = join_income_count;
-        this.pinned_income_count = pinned_income_count;
-        this.category_id = category_id;
-        this.location = location;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.geo_hash = geo_hash;
-        this.allow_feed = allow_feed;
-        this.mode = mode;
-        this.money = money;
-        this.summary = summary;
-        this.notice = notice;
-        this.users_count = users_count;
-        this.posts_count = posts_count;
-        this.audit = audit;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.joined = joined;
-    }
-
-    public static final Creator<CircleInfo> CREATOR = new Creator<CircleInfo>() {
-        @Override
-        public CircleInfo createFromParcel(Parcel source) {
-            return new CircleInfo(source);
-        }
-
-        @Override
-        public CircleInfo[] newArray(int size) {
-            return new CircleInfo[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
@@ -448,4 +358,160 @@ public class CircleInfo extends BaseListBean implements Serializable {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    public UserInfoBean getUser() {
+        return this.user;
+    }
+
+    public void setUser(UserInfoBean user) {
+        this.user = user;
+    }
+
+    public CircleJoinedBean getFounder() {
+        return this.founder;
+    }
+
+    public void setFounder(CircleJoinedBean founder) {
+        this.founder = founder;
+    }
+
+    public List<UserTagBean> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(List<UserTagBean> tags) {
+        this.tags = tags;
+    }
+
+    public CircleTypeBean getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(CircleTypeBean category) {
+        this.category = category;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.avatar);
+        dest.writeInt(this.user_id);
+        dest.writeInt(this.join_income_count);
+        dest.writeInt(this.pinned_income_count);
+        dest.writeInt(this.category_id);
+        dest.writeString(this.location);
+        dest.writeString(this.longitude);
+        dest.writeString(this.latitude);
+        dest.writeString(this.geo_hash);
+        dest.writeString(this.permissions);
+        dest.writeInt(this.allow_feed);
+        dest.writeString(this.mode);
+        dest.writeInt(this.money);
+        dest.writeString(this.summary);
+        dest.writeString(this.notice);
+        dest.writeInt(this.users_count);
+        dest.writeInt(this.posts_count);
+        dest.writeInt(this.audit);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.joined, flags);
+        dest.writeParcelable(this.user, flags);
+        dest.writeParcelable(this.founder, flags);
+        dest.writeTypedList(this.tags);
+        dest.writeParcelable(this.category, flags);
+    }
+
+    public String getPermissions() {
+        return this.permissions;
+    }
+
+    public void setPermissions(String permissions) {
+        this.permissions = permissions;
+    }
+
+    protected CircleInfo(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.avatar = in.readString();
+        this.user_id = in.readInt();
+        this.join_income_count = in.readInt();
+        this.pinned_income_count = in.readInt();
+        this.category_id = in.readInt();
+        this.location = in.readString();
+        this.longitude = in.readString();
+        this.latitude = in.readString();
+        this.geo_hash = in.readString();
+        this.permissions = in.readString();
+        this.allow_feed = in.readInt();
+        this.mode = in.readString();
+        this.money = in.readInt();
+        this.summary = in.readString();
+        this.notice = in.readString();
+        this.users_count = in.readInt();
+        this.posts_count = in.readInt();
+        this.audit = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.joined = in.readParcelable(CircleJoinedBean.class.getClassLoader());
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.founder = in.readParcelable(CircleJoinedBean.class.getClassLoader());
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.category = in.readParcelable(CircleTypeBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 743179421)
+    public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
+            int category_id, String location, String longitude, String latitude, String geo_hash, String permissions, int allow_feed,
+            String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
+            String updated_at, CircleJoinedBean joined, UserInfoBean user, CircleJoinedBean founder, List<UserTagBean> tags,
+            CircleTypeBean category) {
+        this.id = id;
+        this.name = name;
+        this.avatar = avatar;
+        this.user_id = user_id;
+        this.join_income_count = join_income_count;
+        this.pinned_income_count = pinned_income_count;
+        this.category_id = category_id;
+        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.geo_hash = geo_hash;
+        this.permissions = permissions;
+        this.allow_feed = allow_feed;
+        this.mode = mode;
+        this.money = money;
+        this.summary = summary;
+        this.notice = notice;
+        this.users_count = users_count;
+        this.posts_count = posts_count;
+        this.audit = audit;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.joined = joined;
+        this.user = user;
+        this.founder = founder;
+        this.tags = tags;
+        this.category = category;
+    }
+
+    public static final Creator<CircleInfo> CREATOR = new Creator<CircleInfo>() {
+        @Override
+        public CircleInfo createFromParcel(Parcel source) {
+            return new CircleInfo(source);
+        }
+
+        @Override
+        public CircleInfo[] newArray(int size) {
+            return new CircleInfo[size];
+        }
+    };
 }

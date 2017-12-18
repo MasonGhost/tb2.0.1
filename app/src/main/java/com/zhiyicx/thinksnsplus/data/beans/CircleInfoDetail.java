@@ -13,17 +13,6 @@ import java.util.List;
  */
 public class CircleInfoDetail implements Parcelable {
 
-    public enum CircleRoleEnum {
-        FOUNDER("founder"),
-        ADMINISTRATOR("administrator"),
-        MEMBER("member");
-        public String value;
-
-        CircleRoleEnum(String value) {
-            this.value = value;
-        }
-    }
-
     /**
      * id : 1
      * name : tymss

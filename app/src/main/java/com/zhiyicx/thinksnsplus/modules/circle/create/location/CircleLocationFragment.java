@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
-import rx.Subscription;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -49,6 +48,8 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
         implements CircleLocationContract.View, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
     public static final String BUNDLE_DATA = "DATA";
+
+    public static final String LOCATION_DATA = "070000";
 
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
@@ -104,7 +105,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
 
     @Override
     protected boolean isRefreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -121,34 +122,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         mAnimationDrawable = (AnimationDrawable) mIvAnimation.getDrawable();
-
-        mRxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION)
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
-                        initLocation();
-                    } else {
-                        handleAnimation(false);
-                    }
-                });
-
-        RxView.clicks(mTvSearchCancel)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> setLeftClick());
-
-        RxTextView.editorActionEvents(mTvSearch).subscribe(textViewEditorActionEvent -> {
-            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                Observable.just(mTvSearch.getText().toString())
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(keyWords -> {
-                            PoiSearch.Query query = new PoiSearch.Query("", keyWords, "");
-                            query.setPageSize(20);
-                            PoiSearch search = new PoiSearch(getContext(), query);
-                            search.setOnPoiSearchListener(CircleLocationFragment.this);
-                            search.searchPOIAsyn();
-                            mRefreshlayout.autoRefresh();
-                        });
-            }
-        });
+        initListener();
     }
 
     @Override
@@ -186,7 +160,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 aMapLocation.getAccuracy();//获取精度信息
 
                 // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
-                PoiSearch.Query query = new PoiSearch.Query("", "生活服务", aMapLocation.getAdCode());
+                PoiSearch.Query query = new PoiSearch.Query("", LOCATION_DATA, aMapLocation.getAdCode());
                 query.setPageSize(20);
                 PoiSearch search = new PoiSearch(getContext(), query);
                 search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude),
@@ -209,18 +183,19 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     }
 
     @Override
-    protected void requestCacheData(Long maxId, boolean isLoadMore) {
-    }
-
-    @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
     }
 
     @Override
     public void onPoiSearched(PoiResult result, int i) {
         mRefreshlayout.finishRefresh();
-        PoiSearch.Query query = result.getQuery();
         ArrayList<PoiItem> pois = result.getPois();
+        if (pois.isEmpty()) {
+            mEmptyView.setErrorImag(setEmptView());
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else{
+            mEmptyView.setVisibility(View.GONE);
+        }
         mPoiItems.clear();
         mPoiItems.addAll(pois);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -305,5 +280,45 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 mIvAnimation.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void initListener() {
+        mRxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        initLocation();
+                    } else {
+                        handleAnimation(false);
+                    }
+                });
+
+        RxView.clicks(mTvSearchCancel)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> setLeftClick());
+
+        RxView.clicks(mTvNoLocation)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    intent.putExtras(bundle);
+                    getActivity().setResult(RESULT_OK, intent);
+                    getActivity().finish();
+                });
+
+        RxTextView.editorActionEvents(mTvSearch).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                Observable.just(mTvSearch.getText().toString())
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(keyWords -> {
+                            mRefreshlayout.autoRefresh();
+                            PoiSearch.Query query = new PoiSearch.Query(keyWords, LOCATION_DATA, "");
+                            query.setPageSize(20);
+                            PoiSearch search = new PoiSearch(getContext(), query);
+                            search.setOnPoiSearchListener(CircleLocationFragment.this);
+                            search.searchPOIAsyn();
+                        });
+            }
+        });
     }
 }

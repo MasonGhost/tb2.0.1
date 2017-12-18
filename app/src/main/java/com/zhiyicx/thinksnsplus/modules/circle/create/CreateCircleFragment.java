@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
@@ -200,12 +198,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
-
     }
 
     @Override
     public void setCircleInfo(CircleInfo data) {
-
         getActivity().finish();
     }
 
@@ -218,7 +214,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             mPoiItem = data.getExtras().getParcelable(CircleLocationFragment.BUNDLE_DATA);
             if (mPoiItem != null) {
                 mTvLocation.setText(mPoiItem.getTitle());
+                return;
             }
+            mTvLocation.setText(R.string.create_circle_nolocation);
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
             mTvCircleType.setText(mCircleTypeBean.getName());
@@ -320,10 +318,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private void packageDataAndHandle() {
         mCreateCircleBean = new CreateCircleBean();
         mCreateCircleBean.setName(mEtCircleName.getText().toString());
-        mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
-        mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
-        mCreateCircleBean.setLocation(mTvLocation.getText().toString());
-        mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+        if (mPoiItem != null) {
+            mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
+            mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
+            mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+            mCreateCircleBean.setLocation(mTvLocation.getText().toString());
+        }
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
         mCreateCircleBean.setMode(mCbToll.isChecked() ? MODE_PAID : (mWcBlock.isChecked() ? MODE_PRIVATE : MODE_PUBLIC));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
@@ -391,7 +391,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     }
 
-    @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container, R.id.ll_synchro, R.id.ll_block})
+    @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container,
+            R.id.ll_synchro, R.id.ll_block})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:

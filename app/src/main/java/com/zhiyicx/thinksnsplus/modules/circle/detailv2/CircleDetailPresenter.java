@@ -372,7 +372,6 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
