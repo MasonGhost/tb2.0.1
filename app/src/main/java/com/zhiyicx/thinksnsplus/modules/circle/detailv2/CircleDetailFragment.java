@@ -1057,9 +1057,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mBtReportCircle.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
+        mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
 
     }
 
@@ -1142,8 +1142,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                   举报圈子
                  */
             case R.id.bt_report_circle:
-                ReportActivity.startReportActivity(mActivity,new ReportResourceBean(mCircleInfoDetail.getUser(),mCircleInfoDetail.getId().toString
-                        (),mCircleInfoDetail.getName(),mCircleInfoDetail.getAvatar(),mCircleInfoDetail.getSummary(),ReportType.CIRCLE));
+                ReportActivity.startReportActivity(mActivity,new ReportResourceBean(mCircleInfo.getUser(),mCircleInfo.getId().toString
+                        (),mCircleInfo.getName(),mCircleInfo.getAvatar(),mCircleInfo.getSummary(),ReportType.CIRCLE));
 
                 break;
             default:
