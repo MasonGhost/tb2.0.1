@@ -301,13 +301,14 @@ var RE = {
 				AndroidInterface.noMarkdownWords(_self.noMarkdownWords());
 			}
 			var items = [];
+			var editor = _self.cache.editor;
 			_self.commandSet.forEach(function (item) {
-				if (document.queryCommandState(item)) {
+				if (editor.queryCommandState(item)) {
 					items.push(item);
 				}
 			});
-			if (document.queryCommandValue('formatBlock')) {
-				items.push(document.queryCommandValue('formatBlock'));
+			if (editor.queryCommandValue('formatBlock')) {
+				items.push(editor.queryCommandValue('formatBlock'));
 			}
 			window.location.href = STATE_SCHEME + encodeURI(items.join(','));
 		}
