@@ -119,9 +119,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         if (getArguments() != null) {
             mCircleInfo = (CircleInfo) getArguments().getSerializable(BUNDLE_SOURCE_DATA);
         }
-        if (mCircleInfo == null) {
-            throw new IllegalArgumentException("circle info is must");
-        }
     }
 
     @Override
@@ -133,7 +130,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mFailedImages = new HashMap<>();
         initListener();
         mRichTextView.load();
-        setSynToDynamicCbVisiable(true);
+        setSynToDynamicCbVisiable(mCircleInfo != null);
     }
 
     @Override
@@ -207,7 +204,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onTextStypeClick(boolean isSelect) {
-
+        setSynToDynamicCbVisiable(!isSelect);
     }
 
     @Override
