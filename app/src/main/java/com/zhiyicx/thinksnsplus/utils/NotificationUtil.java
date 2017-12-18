@@ -12,6 +12,10 @@ import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 
 /**
@@ -52,6 +56,19 @@ public class NotificationUtil {
     }
 
     /**
+     * 显示通知
+     *
+     * @param context
+     * @param jpushMessageBean
+     */
+    public static void showChatNotifyMessage(Context context, JpushMessageBean jpushMessageBean, UserInfoBean userInfoBean) {
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
+            NotificationUtil notiUtil = new NotificationUtil(context);
+            notiUtil.postChatNotification(jpushMessageBean, userInfoBean);
+        }
+    }
+
+    /**
      * 普通的Notification
      */
     public void postNotification(JpushMessageBean jpushMessageBean) {
@@ -60,6 +77,33 @@ public class NotificationUtil {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putParcelable(HomeActivity.BUNDLE_JPUSH_MESSAGE, jpushMessageBean);
+        intent.putExtras(bundle);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        builder.setSmallIcon(R.mipmap.icon);// 设置图标
+        builder.setContentTitle(context.getString(R.string.app_name));// 设置通知的标题
+        builder.setContentText(jpushMessageBean.getMessage());// 设置通知的内容
+        builder.setWhen(jpushMessageBean.getCreat_time());// 设置通知来到的时间
+        builder.setTicker("new message");// 第一次提示消失的时候显示在通知栏上的
+        builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setNumber(1);
+        Notification notification = builder.build();
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify((int) System.currentTimeMillis(), notification);
+    }
+
+    /**
+     * 普通的Notification
+     */
+    public void postChatNotification(JpushMessageBean jpushMessageBean, UserInfoBean userInfoBean) {
+        Notification.Builder builder = new Notification.Builder(context);
+        Intent intent = new Intent(context, ChatActivity.class);  //需要跳转指定的页面
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
+        messageItemBean.setUserInfo(userInfoBean);
+        messageItemBean.setEmKey(String.valueOf(userInfoBean.getUser_id()));
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean);
         intent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
