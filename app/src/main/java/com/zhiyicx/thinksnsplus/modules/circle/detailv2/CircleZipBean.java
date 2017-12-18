@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 
 import java.util.List;
@@ -13,20 +13,20 @@ import java.util.List;
  */
 public class CircleZipBean {
 
-    public CircleZipBean(CircleInfoDetail circleInfoDetail, List<CirclePostListBean> circlePostListBeanList) {
-        mCircleInfoDetail = circleInfoDetail;
+    public CircleZipBean(CircleInfo CircleInfo, List<CirclePostListBean> circlePostListBeanList) {
+        mCircleInfo = CircleInfo;
         mCirclePostListBeanList = circlePostListBeanList;
     }
 
-    private CircleInfoDetail mCircleInfoDetail;
+    private CircleInfo mCircleInfo;
     private List<CirclePostListBean> mCirclePostListBeanList;
 
-    public CircleInfoDetail getCircleInfoDetail() {
-        return mCircleInfoDetail;
+    public CircleInfo getCircleInfo() {
+        return mCircleInfo;
     }
 
-    public void setCircleInfoDetail(CircleInfoDetail circleInfoDetail) {
-        mCircleInfoDetail = circleInfoDetail;
+    public void setCircleInfo(CircleInfo CircleInfo) {
+        mCircleInfo = CircleInfo;
     }
 
     public List<CirclePostListBean> getCirclePostListBeanList() {

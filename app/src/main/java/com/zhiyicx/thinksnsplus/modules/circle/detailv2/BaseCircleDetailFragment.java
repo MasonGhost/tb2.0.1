@@ -42,7 +42,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -612,7 +612,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
-    public CircleInfoDetail getCircleInfoDetail() {
+    public CircleInfo getCircleInfo() {
         return null;
     }
 }

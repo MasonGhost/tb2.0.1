@@ -5,7 +5,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
@@ -244,7 +244,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_CIRCLEDETAIL)
-    Observable<CircleInfoDetail> getCircleInfoDetail(@Path("circle_id") long circleId);
+    Observable<CircleInfo> getCircleInfo(@Path("circle_id") long circleId);
 
     /**
      * 获取圈子下帖子列表

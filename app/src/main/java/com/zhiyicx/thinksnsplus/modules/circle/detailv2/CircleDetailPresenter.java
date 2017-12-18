@@ -24,7 +24,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
@@ -93,7 +93,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         // 需要头信息
         if (mRootView.isNeedHeaderInfo()) {
             if (!isLoadMore) {
-                Subscription subscribe = Observable.zip(mRepository.getCircleInfoDetail(mRootView.getCircleId()), mRepository.getPostListFromCircle
+                Subscription subscribe = Observable.zip(mRepository.getCircleInfo(mRootView.getCircleId()), mRepository.getPostListFromCircle
                                 (mRootView.getCircleId(), maxId, mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
@@ -301,12 +301,12 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
     @Override
-    public void shareCircle(CircleInfoDetail circleInfoDetail, Bitmap shareBitMap) {
+    public void shareCircle(CircleInfo CircleInfo, Bitmap shareBitMap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
-        shareContent.setContent(TextUtils.isEmpty(circleInfoDetail.getName()) ? mContext.getString(R.string
-                .share_dynamic) : circleInfoDetail.getName());
+        shareContent.setContent(TextUtils.isEmpty(CircleInfo.getName()) ? mContext.getString(R.string
+                .share_dynamic) : CircleInfo.getName());
         if (shareBitMap != null) {
             shareContent.setBitmap(shareBitMap);
         } else {
@@ -383,7 +383,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }
-                        mRootView.getCircleInfoDetail().setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
+                        mRootView.getCircleInfo().setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                     }
 
                     @Override

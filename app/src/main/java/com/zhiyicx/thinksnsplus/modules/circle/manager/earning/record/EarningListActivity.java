@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 
 public class EarningListActivity extends TSActivity<EarningListPresenter, EarningListFragment> {
 
@@ -23,10 +23,10 @@ public class EarningListActivity extends TSActivity<EarningListPresenter, Earnin
                 .build().inject(this);
     }
 
-    public static void startActivity(Context context, CircleInfoDetail circleInfoDetail, int type) {
+    public static void startActivity(Context context, CircleInfo CircleInfo, int type) {
         Intent intent = new Intent(context, EarningListActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EarningListFragment.CIRCLE, circleInfoDetail);
+        bundle.putParcelable(EarningListFragment.CIRCLE, CircleInfo);
         bundle.putInt(EarningListFragment.TYPE, type);
         intent.putExtras(bundle);
         context.startActivity(intent);

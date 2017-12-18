@@ -28,7 +28,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationActivity;
@@ -130,7 +130,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private String mHeadImage = "";
     private PoiItem mPoiItem;
 
-    private CircleInfoDetail mCircleInfoDetail;
+    private CircleInfo mCircleInfo;
     private boolean canUpdate;
     boolean isOwner;
     boolean isManager;
@@ -143,7 +143,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected String setRightTitle() {
-        return getString(mCircleInfoDetail == null ? R.string.create : R.string.save);
+        return getString(mCircleInfo == null ? R.string.create : R.string.save);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected String setCenterTitle() {
-        return getString(mCircleInfoDetail == null ? R.string.create_circle : R.string.edit_circle);
+        return getString(mCircleInfo == null ? R.string.create_circle : R.string.edit_circle);
     }
 
     @Override
@@ -172,13 +172,13 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             canUpdate = getArguments().getBoolean(CANUPDATE, false);
             isOwner = getArguments().getBoolean(PERMISSION_OWNER, false);
             isManager = getArguments().getBoolean(PERMISSION_MANAGER, false);
-            mCircleInfoDetail = getArguments().getParcelable(CIRCLEINFO);
+            mCircleInfo = getArguments().getParcelable(CIRCLEINFO);
         }
     }
 
     @Override
     protected void initData() {
-        if (mCircleInfoDetail == null) {
+        if (mCircleInfo == null) {
             return;
         }
         restoreData();
@@ -337,11 +337,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setTags(tags);
         mCreateCircleBean.setCategoryId(mCircleTypeBean.getId());
         mCreateCircleBean.setFilePath(mHeadImage);
-        if (mCircleInfoDetail == null) {
+        if (mCircleInfo == null) {
             mPresenter.createCircle(mCreateCircleBean);
         } else {
-            mCircleInfoDetail.setTags(mUserTagBeens);
-            mCircleInfoDetail.setCategory(mCircleTypeBean);
+            mCircleInfo.setTags(mUserTagBeens);
+            mCircleInfo.setCategory(mCircleTypeBean);
             mPresenter.updateCircle(mCreateCircleBean);
         }
     }
@@ -354,27 +354,27 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mToolbarRight.setText(setRightTitle());
         mToolbarCenter.setText(setCenterTitle());
         Glide.with(getActivity())
-                .load(mCircleInfoDetail.getAvatar())
+                .load(mCircleInfo.getAvatar())
                 .into(mIvHeadIcon);
         mHeadImage = null;
-        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfoDetail.getLatitude()),
-                Double.parseDouble(mCircleInfoDetail.getLongitude())), "", "");
-        mPoiItem.setAdCode(mCircleInfoDetail.getGeo_hash());
-        mCircleTypeBean = mCircleInfoDetail.getCategory();
+        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfo.getLatitude()),
+                Double.parseDouble(mCircleInfo.getLongitude())), "", "");
+        mPoiItem.setAdCode(mCircleInfo.getGeo_hash());
+        mCircleTypeBean = mCircleInfo.getCategory();
 
-        mUserTagBeens.addAll(mCircleInfoDetail.getTags());
+        mUserTagBeens.addAll(mCircleInfo.getTags());
         mUserInfoTagsAdapter.notifyDataChanged();
         mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
 
-        mEtCircleName.setText(mCircleInfoDetail.getName());
-        mTvCircleType.setText(mCircleInfoDetail.getCategory().getName());
-        mTvLocation.setText(mCircleInfoDetail.getLocation());
-        mTvNotice.setText(mCircleInfoDetail.getNotice());
-        mEtCircleIntroduce.setText(mCircleInfoDetail.getSummary());
-        mWcSynchro.setChecked(mCircleInfoDetail.getAllow_feed() == 1);
-        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfoDetail.getMode()));
-        mCbToll.setChecked(MODE_PAID.equals(mCircleInfoDetail.getMode()));
-        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfoDetail.getMode()));
+        mEtCircleName.setText(mCircleInfo.getName());
+        mTvCircleType.setText(mCircleInfo.getCategory().getName());
+        mTvLocation.setText(mCircleInfo.getLocation());
+        mTvNotice.setText(mCircleInfo.getNotice());
+        mEtCircleIntroduce.setText(mCircleInfo.getSummary());
+        mWcSynchro.setChecked(mCircleInfo.getAllow_feed() == 1);
+        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfo.getMode()));
+        mCbToll.setChecked(MODE_PAID.equals(mCircleInfo.getMode()));
+        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfo.getMode()));
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
         mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);

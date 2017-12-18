@@ -18,7 +18,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -171,8 +171,8 @@ public class EarningListFragment extends TSListFragment<EarningListContract.Pres
     protected void initData() {
         mTitles = new String[]{getString(R.string.withdraw_all), getString(R.string.circle_earningn_member), getString(R.string.circle_earningn_top)};
         setCenterTitle(getArguments().getInt(TYPE));
-        CircleInfoDetail circleInfoDetail = getArguments().getParcelable(CIRCLE);
-        circleId = circleInfoDetail.getId();
+        CircleInfo CircleInfo = getArguments().getParcelable(CIRCLE);
+        circleId = CircleInfo.getId();
         super.initData();
     }
 

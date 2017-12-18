@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.record.EarningListActivity;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     @BindView(R.id.bt_top)
     CombinationButton mBtTop;
 
-    private CircleInfoDetail mCircleInfoDetail;
+    private CircleInfo mCircleInfo;
 
     public static CircleEarningFragment newInstance(Bundle bundle) {
         CircleEarningFragment circleEarningFragment = new CircleEarningFragment();
@@ -48,7 +48,7 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 0);
+        EarningListActivity.startActivity(mActivity, mCircleInfo, 0);
     }
 
     @Override
@@ -71,14 +71,14 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
         setCenterTextColor(R.color.white);
         setRightText(getString(R.string.detail));
         mTvAccountUnit.setText(String.format(Locale.getDefault(), getString(R.string.circle_earningn_total), mPresenter.getGoldName()));
-        mCircleInfoDetail = getArguments().getParcelable(DATA);
+        mCircleInfo = getArguments().getParcelable(DATA);
     }
 
     @Override
     protected void initData() {
-        mBtMember.setRightText(mCircleInfoDetail.getJoin_income_count() + ".0");
-        mBtTop.setRightText(mCircleInfoDetail.getPinned_income_count() + ".0");
-        mTvMineMoney.setText(String.valueOf(mCircleInfoDetail.getJoin_income_count() + mCircleInfoDetail.getPinned_income_count()));
+        mBtMember.setRightText(mCircleInfo.getJoin_income_count() + ".0");
+        mBtTop.setRightText(mCircleInfo.getPinned_income_count() + ".0");
+        mTvMineMoney.setText(String.valueOf(mCircleInfo.getJoin_income_count() + mCircleInfo.getPinned_income_count()));
     }
 
     @Override
@@ -95,10 +95,10 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_member:
-                EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 1);
+                EarningListActivity.startActivity(mActivity, mCircleInfo, 1);
                 break;
             case R.id.bt_top:
-                EarningListActivity.startActivity(mActivity, mCircleInfoDetail, 2);
+                EarningListActivity.startActivity(mActivity, mCircleInfo, 2);
                 break;
             default:
         }

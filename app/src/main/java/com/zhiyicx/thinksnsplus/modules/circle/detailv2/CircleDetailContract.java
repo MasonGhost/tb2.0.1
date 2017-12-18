@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
@@ -40,7 +40,7 @@ public interface CircleDetailContract {
 
         String getSearchInput();
 
-        CircleInfoDetail getCircleInfoDetail();
+        CircleInfo getCircleInfo();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
@@ -56,7 +56,7 @@ public interface CircleDetailContract {
 
         void sharePost(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
 
-        void shareCircle(CircleInfoDetail circleInfoDetail, Bitmap shareBitMap);
+        void shareCircle(CircleInfo CircleInfo, Bitmap shareBitMap);
 
         void handleLike(boolean b,Long id, int dataPosition);
 
@@ -77,6 +77,6 @@ public interface CircleDetailContract {
     }
 
     interface Repository extends IBaseCircleRepository {
-        Observable<CircleInfoDetail> getCircleInfoDetail(long circleId);
+        Observable<CircleInfo> getCircleInfo(long circleId);
     }
 }

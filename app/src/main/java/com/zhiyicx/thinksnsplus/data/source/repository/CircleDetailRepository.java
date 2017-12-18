@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfoDetail;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailContract;
 
@@ -24,8 +24,8 @@ public class CircleDetailRepository extends BaseCircleRepository implements Circ
     }
 
     @Override
-    public Observable<CircleInfoDetail> getCircleInfoDetail(long circleId) {
-        return mCircleClient.getCircleInfoDetail(circleId)
+    public Observable<CircleInfo> getCircleInfo(long circleId) {
+        return mCircleClient.getCircleInfo(circleId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
