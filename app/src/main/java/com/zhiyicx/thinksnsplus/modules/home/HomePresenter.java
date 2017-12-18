@@ -8,6 +8,7 @@ import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -30,6 +31,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
@@ -37,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.login.LoginFragment;
@@ -77,6 +80,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
+    @Inject
+    ChatRepository mChatRepository;
 
     @Inject
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
@@ -243,7 +248,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onMessageReceived(List<EMMessage> list) {
         LogUtils.d("Cathy", " 收到消息 :" + list);
-        // 通知栏消息 等用户信息方案确定了再来说推送的事情哦
         // 收到消息，更新会话列表
         Observable.just(list)
                 .subscribeOn(Schedulers.io())
@@ -255,15 +259,44 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
                     setMessageTipVisable(true);
                 });
         // 应用在后台，则推送通知
-//        if (!BackgroundUtil.getAppIsForegroundStatus()) {
-//            for (EMMessage message : list){
-//                JpushMessageBean jpushMessageBean = new JpushMessageBean();
-//                jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
-//                jpushMessageBean.setMessage(itemBeanV2.getUserInfo().getName() + ":" + message.getTxt());
-//                jpushMessageBean.setNofity(false);
-//                NotificationUtil.showNotifyMessage(mContext, jpushMessageBean);
-//            }
-//        }
+        if (!BackgroundUtil.getAppIsForegroundStatus()) {
+            // 手动创建聊天item，从数据库取出用户信息
+            List<ChatItemBean> chatItemBeans = new ArrayList<>();
+            for (EMMessage message : list){
+                ChatItemBean chatItemBean = new ChatItemBean();
+                chatItemBean.setMessage(message);
+                chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache
+                        (Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom())));
+                chatItemBeans.add(chatItemBean);
+            }
+            // 遍历返回的信息，如果有用户信息为空的 证明数据库中没有此用户，从服务器取用户信息
+            for (ChatItemBean chatItemBean : chatItemBeans){
+                Observable.just(chatItemBean)
+                        .flatMap(chatItemBean1 -> {
+                            if (chatItemBean1.getUserInfo() == null){
+                                List<ChatItemBean> chatItemBeanList = new ArrayList<>();
+                                chatItemBeanList.add(chatItemBean1);
+                                return mChatRepository.completeUserInfo(chatItemBeanList)
+                                        .map(list1 -> list1.get(0));
+                            }
+                            return Observable.just(chatItemBean1);
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(chatItemBean12 -> {
+                            JpushMessageBean jpushMessageBean = new JpushMessageBean();
+                            jpushMessageBean.setType(JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM);
+                            String content = chatItemBean12.getMessage().getBody().toString();
+                            // 目前只有单聊，别的还没定
+                            if (chatItemBean12.getMessage().getBody() instanceof EMTextMessageBody){
+                                content = ((EMTextMessageBody) chatItemBean12.getMessage().getBody()).getMessage();
+                            }
+                            jpushMessageBean.setMessage(chatItemBean12.getUserInfo().getName() + ":" + content);
+                            jpushMessageBean.setNofity(false);
+                            NotificationUtil.showChatNotifyMessage(mContext, jpushMessageBean, chatItemBean12.getUserInfo());
+                        });
+            }
+        }
     }
 
     @Override
