@@ -1,7 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
@@ -16,8 +17,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -48,8 +47,10 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                     for (CircleMembers members : circleMembers) {
                         switch (members.getRole()) {
                             case CircleMembers.FOUNDER:
-                                grouLengh[0]++;
-                                manager.add(0, members);
+                                if (mRootView.needManager()) {
+                                    grouLengh[0]++;
+                                    manager.add(0, members);
+                                }
                                 break;
                             case CircleMembers.ADMINISTRATOR:
                                 manager.add(members);
@@ -60,8 +61,10 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                                 grouLengh[2]++;
                                 break;
                             case CircleMembers.BLACKLIST:
-                                blacklist.add(members);
-                                grouLengh[3]++;
+                                if (mRootView.needBlackList()){
+                                    blacklist.add(members);
+                                    grouLengh[3]++;
+                                }
                                 break;
                             default:
                         }
@@ -187,7 +190,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                         })
                         .subscribe(circleMembers -> {
                             mRootView.setGroupLengh(groupLengh);
-                            mRootView.onNetResponseSuccess(circleMembers,false);
+                            mRootView.onNetResponseSuccess(circleMembers, false);
                         });
 
             }
@@ -205,6 +208,34 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
             }
         });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void attornCircle(CircleMembers circleMembers) {
+        long circleId, userId;
+        circleId = circleMembers.getGroup_id();
+        userId = circleMembers.getUser_id();
+        mRepository.attornCircle(circleId, userId).subscribe(new BaseSubscribeForV2<CircleMembers>() {
+            @Override
+            protected void onSuccess(CircleMembers data) {
+                circleMembers.setRole(CircleMembers.FOUNDER);
+                mRootView.refreshData();
+                mRootView.attornSuccess(circleMembers);
+                mRootView.showSnackMessage(mContext.getString(R.string.circle_manager_attorn_success),Prompt.DONE);
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.message));
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.circle_manager_attorn_failed));
+            }
+        });
     }
 
     @Override

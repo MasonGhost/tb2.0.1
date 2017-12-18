@@ -18,8 +18,7 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleLocationPresenter extends AppBasePresenter<CircleLocationContract.Repository,
-        CircleLocationContract.View>
+public class CircleLocationPresenter extends AppBasePresenter<CircleLocationContract.Repository,CircleLocationContract.View>
         implements CircleLocationContract.Presenter {
 
     @Inject
@@ -33,9 +32,9 @@ public class CircleLocationPresenter extends AppBasePresenter<CircleLocationCont
 
     }
 
-
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
+        mRootView.onCacheResponseSuccess(null,isLoadMore);
     }
 
     @Override

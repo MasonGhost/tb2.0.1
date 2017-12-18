@@ -266,6 +266,10 @@
     <string name="circle_detail_location">位置：	%s</string>
     <string name="circle_detail_usercount">成员：	%d</string>
     <string name="circle_detail_postcount">%d个帖子</string>
+    <string name="circle_manager_attorn">选择新圈主</string>
+    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给 %2$s 使其成为新的圈主？</string>
+    <string name="circle_manager_attorn_success">圈子转让成功</string>
+    <string name="circle_manager_attorn_failed">圈子转让失败</string>
     <string name="circle_manager_format">管理员(%d)</string>
     <string name="circle_member_format">成员(%d)</string>
     <string name="circle_blacklist_format">黑名单(%d)</string>
@@ -318,6 +322,7 @@
     <string name="circle_report">举报管理</string>
     <string name="circle_more">更多操作</string>
     <string name="circle_exit">退出圈子</string>
+    <string name="circle_transfer">转让圈子</string>
     <string name="cancel_manager">移出圈管理</string>
     <string name="cancle_circle">移出圈子</string>
     <string name="cancle_blacklist">移出黑名单</string>

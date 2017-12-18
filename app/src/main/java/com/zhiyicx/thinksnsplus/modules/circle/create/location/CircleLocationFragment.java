@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +19,9 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
@@ -30,6 +33,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscription;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -40,15 +45,15 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleLocationFragment extends TSListFragment<CircleLocationContract.Presenter,
-        LocationBean>
-        implements CircleLocationContract.View,
-        AMapLocationListener, PoiSearch.OnPoiSearchListener {
+public class CircleLocationFragment extends TSListFragment<CircleLocationContract.Presenter, LocationBean>
+        implements CircleLocationContract.View, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
     public static final String BUNDLE_DATA = "DATA";
 
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;
+    @BindView(R.id.tv_toolbar_center)
+    DeleteEditText mTvSearch;
     @BindView(R.id.tv_nolocation)
     TextView mTvNoLocation;
     @BindView(R.id.tv_current_location)
@@ -108,6 +113,11 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mAnimationDrawable = (AnimationDrawable) mIvAnimation.getDrawable();
@@ -120,6 +130,25 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                         handleAnimation(false);
                     }
                 });
+
+        RxView.clicks(mTvSearchCancel)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> setLeftClick());
+
+        RxTextView.editorActionEvents(mTvSearch).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                Observable.just(mTvSearch.getText().toString())
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(keyWords -> {
+                            PoiSearch.Query query = new PoiSearch.Query("", keyWords, "");
+                            query.setPageSize(20);
+                            PoiSearch search = new PoiSearch(getContext(), query);
+                            search.setOnPoiSearchListener(CircleLocationFragment.this);
+                            search.searchPOIAsyn();
+                            mRefreshlayout.autoRefresh();
+                        });
+            }
+        });
     }
 
     @Override
@@ -157,7 +186,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                 aMapLocation.getAccuracy();//获取精度信息
 
                 // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
-                PoiSearch.Query query = new PoiSearch.Query("", "生活服务", "");
+                PoiSearch.Query query = new PoiSearch.Query("", "生活服务", aMapLocation.getAdCode());
                 query.setPageSize(20);
                 PoiSearch search = new PoiSearch(getContext(), query);
                 search.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude),
@@ -189,6 +218,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
 
     @Override
     public void onPoiSearched(PoiResult result, int i) {
+        mRefreshlayout.finishRefresh();
         PoiSearch.Query query = result.getQuery();
         ArrayList<PoiItem> pois = result.getPois();
         mPoiItems.clear();

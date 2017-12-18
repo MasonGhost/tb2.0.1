@@ -23,13 +23,22 @@ public interface MembersContract {
         void setGroupLengh(int[] grouLengh);
 
         int[] getGroupLengh();
+
+        boolean needManager();
+
+        boolean needBlackList();
+
+        void attornSuccess(CircleMembers circleMembers);
     }
 
     interface Presenter extends ITSListPresenter<CircleMembers> {
         void dealCircleMember(MembersPresenter.MemberHandleType type, CircleMembers members);
+        void attornCircle(CircleMembers circleMembers);
     }
 
     interface Repository extends IBaseCircleRepository {
         Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
+
+        Observable<CircleMembers> attornCircle(long circleId, long userId);
     }
 }

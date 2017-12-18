@@ -54,15 +54,15 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     private ChooseBindPopupWindow mPopupWindow;
 
-    private boolean isSearch;
+    protected boolean isSearch;
 
     List<CircleMembers> cache = new ArrayList<>();
 
     private long mCircleId;
     private String mRole;
 
-    private boolean mPermissionManager;
-    private boolean mPermissionOwner;
+    protected boolean mPermissionManager;
+    protected boolean mPermissionOwner;
 
     public static MemberListFragment newInstance(Bundle bundle) {
         MemberListFragment memberListFragment = new MemberListFragment();
@@ -142,6 +142,21 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     @Override
     public int[] getGroupLengh() {
         return mFrouLengh;
+    }
+
+    @Override
+    public boolean needManager() {
+        return true;
+    }
+
+    @Override
+    public boolean needBlackList() {
+        return true;
+    }
+
+    @Override
+    public void attornSuccess(CircleMembers circleMembers) {
+
     }
 
     @Override

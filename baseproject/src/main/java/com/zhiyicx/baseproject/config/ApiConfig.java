@@ -556,6 +556,11 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CIRCLEMEMBERS = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/members";
 
     /**
+     * 转让圈子
+     */
+    public static final String APP_PATH_ATTORN_CIRCLE = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/owner";
+
+    /**
      * 获取圈子下帖子列表
      */
     public static final String APP_PATH_GET_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/groups/{circle_id}/posts";

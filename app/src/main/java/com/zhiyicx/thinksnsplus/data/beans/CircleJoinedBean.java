@@ -54,6 +54,15 @@ public class CircleJoinedBean implements Parcelable, Serializable {
     private int disabled;
     private String created_at;
     private String updated_at;
+    private UserInfoBean user;
+
+    public UserInfoBean getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfoBean user) {
+        this.user = user;
+    }
 
     public int getId() {
         return id;
@@ -135,6 +144,7 @@ public class CircleJoinedBean implements Parcelable, Serializable {
         dest.writeInt(this.disabled);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
+        dest.writeParcelable(this.user, flags);
     }
 
     public CircleJoinedBean() {
@@ -153,6 +163,7 @@ public class CircleJoinedBean implements Parcelable, Serializable {
         this.disabled = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
     public static final Creator<CircleJoinedBean> CREATOR = new Creator<CircleJoinedBean>() {

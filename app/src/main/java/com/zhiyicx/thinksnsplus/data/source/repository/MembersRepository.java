@@ -34,8 +34,22 @@ public class MembersRepository extends BaseCircleRepository implements MembersCo
      * @return
      */
     @Override
-    public Observable<List<CircleMembers>> getCircleMemberList(long circleId,int after, int limit, String type) {
-        return mCircleClient.getCircleMemberList(circleId,limit, after, type)
+    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type) {
+        return mCircleClient.getCircleMemberList(circleId, limit, after, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 转让圈子
+     *
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @Override
+    public Observable<CircleMembers> attornCircle(long circleId, long userId) {
+        return mCircleClient.attornCircle(circleId, userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

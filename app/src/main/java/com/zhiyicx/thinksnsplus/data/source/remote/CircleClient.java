@@ -39,6 +39,7 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVE_CIRCLE_REPOT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ATTORN_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANCEL_CIRCLE_MEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
@@ -234,7 +235,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_SET_CIRCLE_PERMISSIONS)
-    Observable<BaseJsonV2<Object>> setCirclePermissions(@Path("circle_id") long circleId,  @Field("permissions[]") List<String> permissions);
+    Observable<BaseJsonV2<Object>> setCirclePermissions(@Path("circle_id") long circleId, @Field("permissions[]") List<String> permissions);
 
     /**
      * 获取圈子详情
@@ -297,6 +298,17 @@ public interface CircleClient {
             , @Query("after") Integer after
             , @Query("type") String type);
 
+    /**
+     * 转让圈子
+     *
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_ATTORN_CIRCLE)
+    Observable<CircleMembers> attornCircle(@Path("circle_id") Long circleId, @Field("target") long userId);
+
 
     /**
      * 创建圈子
@@ -357,18 +369,18 @@ public interface CircleClient {
      * 圈子收入记录
      *
      * @param circleId 圈子id
-     * @param start 秒级时间戳，起始筛选时间
-     * @param end 秒级时间戳，结束筛选时间
-     * @param after 默认 0 ，翻页标识。
-     * @param limit 默认 15 ，数据返回条数 默认为15
-     * @param type  默认 all, all-全部 join-成员加入 pinned-帖子置顶
+     * @param start    秒级时间戳，起始筛选时间
+     * @param end      秒级时间戳，结束筛选时间
+     * @param after    默认 0 ，翻页标识。
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param type     默认 all, all-全部 join-成员加入 pinned-帖子置顶
      * @return
      */
     @GET(APP_PATH_GET_CIRCLE_EARNINGLIST)
     Observable<List<CircleEarningListBean>> getCircleEarningList(@Path("circle_id") long circleId,
-                                                           @Query("start") Long start, @Query("end") Long end,
-                                                           @Query("after") Long after, @Query("limit") Long limit,
-                                                           @Query("type") String type);
+                                                                 @Query("start") Long start, @Query("end") Long end,
+                                                                 @Query("after") Long after, @Query("limit") Long limit,
+                                                                 @Query("type") String type);
 
     /**
      * 获取帖子点赞列表

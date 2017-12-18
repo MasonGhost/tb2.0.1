@@ -637,10 +637,15 @@
             android:name=".modules.circle.search.onlypost.CirclePostSearchActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
-        <activity android:name=".modules.circle.manager.permission.PermissionActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.markdown_editor.types.ChooseCircleActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.permission.PermissionActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.markdown_editor.types.ChooseCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.members.attorn.AttornCircleActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

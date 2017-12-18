@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
             android:id="@+id/tv_toolbar_center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -24,10 +24,12 @@
             android:drawableLeft="@mipmap/search_icon_search"
             android:drawablePadding="@dimen/spacing_small"
             android:gravity="start|center"
+            android:hint="@string/info_search"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
             android:maxLines="1"
             android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"
-            android:text="@string/info_search"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_icon_assist"
             app:compoundDrawableHeight="@dimen/headpic_for_assist"
@@ -48,29 +50,29 @@
     </LinearLayout>
 
     <include
-        layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+        layout="@layout/include_horizontal_divider_light"/>
 
     <TextView
-        android:background="@color/white"
         android:id="@+id/tv_nolocation"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:textSize="@dimen/size_content"
-        android:gravity="center_vertical"
-        android:textColor="@color/important_for_content"
-        android:text="@string/create_circle_nolocation"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/create_circle_head_width"/>
+        android:layout_height="@dimen/create_circle_head_width"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:text="@string/create_circle_nolocation"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"/>
 
     <include
-        layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+        layout="@layout/include_horizontal_divider_light"/>
 
     <LinearLayout
-
         android:id="@+id/ll_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -127,9 +129,6 @@
 
         </FrameLayout>
     </LinearLayout>
-
-    <include
-        layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
 
     <include layout="@layout/fragment_tslist"/>
 

@@ -80,6 +80,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailAct
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragment;
@@ -119,8 +121,7 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter
-        .MyPostTypeEnum.LATEST_POST;
+import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -397,6 +398,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (requestCode == PermissionFragment.PERMISSION_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             String permissions = data.getStringExtra(PermissionFragment.PERMISSION);
             mCircleInfoDetail.setPermissions(permissions);
+        } else if (requestCode == AttornCircleFragment.ATTORNCIRCLECODE && resultCode == Activity.RESULT_OK && data != null) {
+            CircleMembers circleMembers = data.getExtras().getParcelable(AttornCircleFragment.CIRCLEOWNER);
+            mCircleInfoDetail.setUser(circleMembers.getUser());
+            mCircleInfoDetail.setUser_id((int) circleMembers.getUser_id());
+            CircleJoinedBean joinedBean = mCircleInfoDetail.getJoined();
+            joinedBean.setRole(CircleMembers.MEMBER);
+            mCircleInfoDetail.setJoined(joinedBean);
+
+            mTvOwnerName.setText(mCircleInfoDetail.getFounder().getUser().getName());
+            setVisiblePermission(mCircleInfoDetail);
         }
     }
 
@@ -428,7 +439,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        goPostDetail(position,false);
+        goPostDetail(position, false);
     }
 
     @Override
@@ -439,7 +450,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onMoreCommentClick(View view, CirclePostListBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
-        goPostDetail(position,true);
+        goPostDetail(position, true);
     }
 
     @Override
@@ -938,7 +949,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                         return;
                     }
                     MessageItemBean messageItemBean = new MessageItemBean();
-                    messageItemBean.setUserInfo(mCircleInfoDetail.getUser());
+                    messageItemBean.setUserInfo(mCircleInfoDetail.getFounder().getUser());
                     Intent to = new Intent(getActivity(), ChatActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
@@ -996,8 +1007,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     }
 
-    private void goPostDetail(int position,boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position),isLookMoreComment);
+    private void goPostDetail(int position, boolean isLookMoreComment) {
+        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position), isLookMoreComment);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
@@ -1015,7 +1026,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
-        mTvOwnerName.setText(detail.getUser().getName());
+        mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
 
         if (!updateHeadImg) {
@@ -1046,7 +1057,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         boolean isJoined = detail.getJoined() != null;
         boolean isOwner = isJoined && CircleMembers.FOUNDER.equals(detail.getJoined().getRole());
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
-        mTvExitCircle.setVisibility(!isJoined || isOwner ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setVisibility(!isJoined && mCircleInfoDetail.getUsers_count() == 1 ? View.GONE : View.VISIBLE);
+        if (isOwner && mCircleInfoDetail.getUsers_count() > 1) {
+            mTvExitCircle.setText(R.string.circle_transfer);
+        }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
@@ -1105,7 +1119,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mDrawer.openDrawer(Gravity.RIGHT);
                 break;
             case R.id.tv_circle_subscrib:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(),mCircleInfoDetail.getAudit(), null));
+                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), mCircleInfoDetail.getAudit(), null));
                 mCircleInfoDetail.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                 mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() + 1);
                 mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
@@ -1114,13 +1128,23 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mTvExitCircle.setVisibility(View.VISIBLE);
                 break;
             case R.id.tv_exit_circle:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(),mCircleInfoDetail.getAudit(), new CircleJoinedBean(mCircleInfoDetail.getJoined().getRole())));
-                mCircleInfoDetail.setJoined(null);
-                mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() - 1);
-                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
-                        .getUsers_count()));
-                mTvCircleSubscrib.setVisibility(View.VISIBLE);
-                mTvExitCircle.setVisibility(View.GONE);
+                boolean isOwner = CircleMembers.FOUNDER.equals(mCircleInfoDetail.getJoined().getRole());
+                if (isOwner) {
+                    Intent intent2 = new Intent(mActivity, AttornCircleActivity.class);
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putLong(MemberListFragment.CIRCLEID, mCircleInfoDetail.getId());
+                    bundle2.putString(MemberListFragment.ROLE, isJoing ? mCircleInfoDetail.getJoined().getRole() : "");
+                    intent2.putExtras(bundle2);
+                    mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
+                } else {
+                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfoDetail.getId(), mCircleInfoDetail.getAudit(), new CircleJoinedBean(mCircleInfoDetail.getJoined().getRole())));
+                    mCircleInfoDetail.setJoined(null);
+                    mCircleInfoDetail.setUsers_count(mCircleInfoDetail.getUsers_count() - 1);
+                    mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfoDetail
+                            .getUsers_count()));
+                    mTvCircleSubscrib.setVisibility(View.VISIBLE);
+                    mTvExitCircle.setVisibility(View.GONE);
+                }
                 break;
             default:
         }

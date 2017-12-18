@@ -1,13 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor.types;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleListRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupContract;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
 
 import java.util.List;
@@ -22,7 +18,7 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ChooseCirclePresenter extends AppBasePresenter<BaseCircleListContract.Repository,ChooseCircleContract.View>
+public class ChooseCirclePresenter extends AppBasePresenter<BaseCircleListContract.Repository, ChooseCircleContract.View>
         implements ChooseCircleContract.Presenter {
 
     @Inject

@@ -76,8 +76,17 @@ public class CircleInfoDetail implements Parcelable {
     private int pinned_income_count;
     private UserInfoBean user;
     private CircleJoinedBean joined;
+    private CircleJoinedBean founder;
     private List<UserTagBean> tags;
     private CircleTypeBean category;
+
+    public CircleJoinedBean getFounder() {
+        return founder;
+    }
+
+    public void setFounder(CircleJoinedBean founder) {
+        this.founder = founder;
+    }
 
     public CircleTypeBean getCategory() {
         return category;
@@ -318,6 +327,7 @@ public class CircleInfoDetail implements Parcelable {
         dest.writeInt(this.pinned_income_count);
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.joined, flags);
+        dest.writeParcelable(this.founder, flags);
         dest.writeTypedList(this.tags);
         dest.writeParcelable(this.category, flags);
     }
@@ -350,6 +360,7 @@ public class CircleInfoDetail implements Parcelable {
         this.pinned_income_count = in.readInt();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.joined = in.readParcelable(CircleJoinedBean.class.getClassLoader());
+        this.founder = in.readParcelable(CircleJoinedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.category = in.readParcelable(CircleTypeBean.class.getClassLoader());
     }

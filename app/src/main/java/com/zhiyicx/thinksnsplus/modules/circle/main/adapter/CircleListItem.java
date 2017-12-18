@@ -126,11 +126,13 @@ public class CircleListItem extends BaseCircleItem {
             if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals
                     (circleInfo.getJoined().getRole())) {
                 tvRole.setVisibility(View.VISIBLE);
+                tvRole.setBackgroundResource(R.drawable.shape_bg_circle_radus_gold);
                 tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
             } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR
                     .value.equals(circleInfo.getJoined().getRole())) {
                 tvRole.setVisibility(View.VISIBLE);
                 tvRole.setText(tvRole.getResources().getString(R.string.administrator));
+                tvRole.setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
             } else {
                 tvRole.setVisibility(View.GONE);
             }
@@ -142,11 +144,13 @@ public class CircleListItem extends BaseCircleItem {
                 if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals
                         (circleInfo.getJoined().getRole())) {
                     tvRole.setVisibility(View.VISIBLE);
+                    tvRole.setBackgroundResource(R.drawable.shape_bg_circle_radus_gold);
                     tvRole.setText(tvRole.getResources().getString(R.string.circle_master));
                 } else if (circleInfo.getJoined() != null && CircleInfo.CircleRole.ADMINISTRATOR
                         .value.equals(circleInfo.getJoined().getRole())) {
                     tvRole.setVisibility(View.VISIBLE);
                     tvRole.setText(tvRole.getResources().getString(R.string.administrator));
+                    tvRole.setBackgroundResource(R.drawable.shape_bg_circle_radus_gray);
                 } else {
                     tvRole.setVisibility(View.GONE);
                 }
