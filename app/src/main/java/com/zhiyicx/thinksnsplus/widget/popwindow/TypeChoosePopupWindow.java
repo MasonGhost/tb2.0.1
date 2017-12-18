@@ -84,7 +84,7 @@ public class TypeChoosePopupWindow extends PopupWindow {
                 LinearLayoutManager verticalManager = new LinearLayoutManager(mActivity);
                 verticalManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(verticalManager);
-                recyclerView.addItemDecoration(new LinearDecoration(0, mItemSpacing, 0,0 ));
+                recyclerView.addItemDecoration(new LinearDecoration(0, mItemSpacing, 0,0 ,false));
                 break;
             case HORIZONTAL:
                 LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity);

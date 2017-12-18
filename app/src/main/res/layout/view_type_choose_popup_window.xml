@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/question_list_type_width"
     android:layout_height="@dimen/question_list_type_height"
-    android:elevation="@dimen/button_corner_tiny"
-    android:orientation="vertical"
-    app:cardCornerRadius="@dimen/button_corner_small">
+    android:background="@drawable/bg_wihte_pop_with_shadow"
+    android:padding="@dimen/spacing_big_line"
+    >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_popup_window"
@@ -15,4 +14,4 @@
         android:layout_gravity="center"
         android:background="@drawable/shape_bg_radus_deepgrey_with_border"
         />
-</android.support.v7.widget.CardView>
+</FrameLayout>
