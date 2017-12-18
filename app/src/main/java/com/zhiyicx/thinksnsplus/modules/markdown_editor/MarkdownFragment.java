@@ -21,7 +21,9 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -156,7 +158,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     protected String setCenterTitle() {
-        return "哈哈哈哈";
+        return getString(R.string.publish_post);
     }
 
     @Override
@@ -171,6 +173,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onInsertImageButtonClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         initPhotoPopupWindow();
     }
 
@@ -269,7 +272,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     // 选择相册，单张
@@ -299,7 +302,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item2ClickListener(() -> {
                     mCanclePopupWindow.hide();
@@ -360,5 +363,12 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         } else if (mFailedImages.containsKey(id)) {
             mFailedImages.remove(id);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mPhotoPopupWindow);
+        dismissPop(mCanclePopupWindow);
     }
 }

@@ -873,5 +873,6 @@
     <string name="circle_member_added_blacklist">你被管理员加入到了黑名单。</string>
     <string name="publish_circle_post_format">%1$s仅%2$s拥有发帖权限</string>
     <string name="report_circle">举报圈子</string>
+    <string name="publish_post">发帖</string>
 
 </resources>
