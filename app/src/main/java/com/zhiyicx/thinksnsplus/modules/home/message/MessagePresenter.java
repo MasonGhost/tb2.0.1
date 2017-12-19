@@ -163,7 +163,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private void getAllConversationV2(boolean isLoadMore){
         Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(messageItemBeanV2s -> mRootView.getMessageListSuccess(messageItemBeanV2s));
+                .subscribe(messageItemBeanV2s -> {
+                    mRootView.getMessageListSuccess(messageItemBeanV2s);
+                    checkBottomMessageTip();
+                });
         addSubscrebe(subscribe);
     }
 
@@ -284,25 +287,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    for (int i = 0; i < mRootView.getListDatas().size(); i++) {
-                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
-                                .getCid());
-                        if (message != null) {
-                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
-                                    .getListDatas().get(i).getConversation().getCid()));
-                        } else {
-                            mRootView.getListDatas().remove(i);
-                        }
-                    }
                     checkBottomMessageTip();
                     return mRootView.getListDatas();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    mRootView.refreshData();
-                }, Throwable::printStackTrace);
+                .subscribe(data -> mRootView.refreshData(), Throwable::printStackTrace);
         addSubscrebe(represhSu);
     }
 

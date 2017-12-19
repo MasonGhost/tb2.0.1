@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.NetUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -99,6 +101,12 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
             mAuthRepository.loginIM();
             EMClient.getInstance().addConnectionListener(this);
             EMClient.getInstance().chatManager().addMessageListener(this);
+            EMOptions options = new EMOptions();
+            // 设置是否需要已读回执
+            options.setRequireAck(true);
+            // 设置是否需要已送达回执
+            options.setRequireDeliveryAck(true);
+            EMClient.getInstance().init(mContext, options);
         }
     }
 
@@ -241,6 +249,7 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EMClient.getInstance().removeConnectionListener(this);
         EMClient.getInstance().chatManager().removeMessageListener(this);
         ChatClient.getInstance(mContext).onDestroy();
     }

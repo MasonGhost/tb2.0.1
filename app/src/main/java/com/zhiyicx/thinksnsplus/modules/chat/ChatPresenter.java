@@ -108,6 +108,23 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize) {
         List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
         Subscription subscribe = mRepository.completeUserInfo(data)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(list -> {
+                    // 未读的消息发送已读回执
+                     for (ChatItemBean chatItemBean : list){
+                         EMMessage message = chatItemBean.getMessage();
+                         // 收到的消息，自己发送的消息不处理
+                         if (!String.valueOf(AppApplication.getMyUserIdWithdefault()).equals(message.getFrom()) && !message.isUnread()){
+                             try {
+                                 EMClient.getInstance().chatManager().ackMessageRead(message.getFrom(), message.getMsgId());
+                             } catch (HyphenateException e) {
+                                 e.printStackTrace();
+                             }
+                         }
+                     }
+                    return list;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     mRootView.hideLoading();
