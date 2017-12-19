@@ -24,7 +24,7 @@ public class PostDraftBeanGreenDaoImpl extends CommonCacheImpl<PostDraftBean> {
 
     @Override
     public long saveSingleData(PostDraftBean singleData) {
-        return 0;
+        return insertOrReplace(singleData);
     }
 
     @Override

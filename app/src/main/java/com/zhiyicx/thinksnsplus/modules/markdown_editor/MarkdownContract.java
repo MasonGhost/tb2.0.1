@@ -3,8 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
@@ -32,6 +34,8 @@ public interface MarkdownContract {
         void publishPost(PostPublishBean postPublishBean);
 
         void pareseBody(String body);
+
+        void saveDraft(BaseDraftBean postDraftBean);
     }
 
     interface Repository extends IBaseCircleRepository {

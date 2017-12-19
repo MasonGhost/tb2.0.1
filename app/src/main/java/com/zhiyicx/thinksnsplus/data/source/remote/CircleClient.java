@@ -86,12 +86,13 @@ public interface CircleClient {
 
     /**
      * 我加入的圈子接口
-     * 默认: join, join 我加入 audit 待审核
+     * 默认: join, join 我加入 audit 待审核, allow_post 可以发帖的
      */
     enum MineCircleType {
         JOIN("join"),
         AUDIT("audit"),
-        SEARCH("search");
+        SEARCH("search"),
+        ALLOW("allow_post ");
         public String value;
 
         MineCircleType(String value) {

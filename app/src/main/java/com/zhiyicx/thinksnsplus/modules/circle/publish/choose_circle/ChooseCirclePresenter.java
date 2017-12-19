@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
 
 import java.util.List;
@@ -18,14 +18,16 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ChooseCirclePresenter extends AppBasePresenter<BaseCircleListContract.Repository, ChooseCircleContract.View>
+public class ChooseCirclePresenter extends AppBasePresenter<BaseCircleListContract.Repository,
+        ChooseCircleContract.View>
         implements ChooseCircleContract.Presenter {
 
     @Inject
-    GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
+    CircleInfoGreenDaoImpl mCircleInfoGreenDao;
 
     @Inject
-    public ChooseCirclePresenter(BaseCircleListContract.Repository repository, ChooseCircleContract.View rootView) {
+    public ChooseCirclePresenter(BaseCircleListContract.Repository repository,
+                                 ChooseCircleContract.View rootView) {
         super(repository, rootView);
     }
 
@@ -37,6 +39,7 @@ public class ChooseCirclePresenter extends AppBasePresenter<BaseCircleListContra
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
                         mRootView.onNetResponseSuccess(data);
+                        mCircleInfoGreenDao.saveMultiData(data);
                     }
 
                     @Override

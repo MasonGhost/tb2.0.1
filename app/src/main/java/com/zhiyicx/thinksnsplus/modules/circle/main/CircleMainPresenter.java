@@ -141,6 +141,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<CircleInfo> data, boolean isLoadMore) {
+        mCircleInfoGreenDao.saveMultiData(data);
         return false;
     }
 

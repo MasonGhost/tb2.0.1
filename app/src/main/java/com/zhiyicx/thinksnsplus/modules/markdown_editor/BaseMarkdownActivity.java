@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostFragment;
 
@@ -32,6 +33,20 @@ public abstract class BaseMarkdownActivity<F extends MarkdownFragment> extends T
     @Override
     public void onBackPressed() {
         mContanierFragment.onBackPressed();
+    }
+
+    /**
+     * 草稿箱发帖
+     * @param context
+     * @param draftBean
+     */
+    public static void startActivityForPublishPostInDraft(Context context, PostDraftBean draftBean) {
+        Intent intent = new Intent(context, PublishPostActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MarkdownFragment.BUNDLE_SOURCE_DATA, draftBean);
+        bundle.putBoolean(PublishPostFragment.BUNDLE_ISOUT_BOOLEAN, draftBean.getIsOutCircle());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     /**

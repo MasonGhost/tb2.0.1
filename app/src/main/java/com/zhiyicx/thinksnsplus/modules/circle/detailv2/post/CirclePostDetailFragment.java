@@ -253,6 +253,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
+        setToolBarInfo();
 
     }
 

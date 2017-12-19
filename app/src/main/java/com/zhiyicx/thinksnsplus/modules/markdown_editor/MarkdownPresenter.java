@@ -6,9 +6,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
+import com.zhiyicx.thinksnsplus.data.source.local.PostDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 
@@ -28,6 +31,8 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
 
     @Inject
     UpLoadRepository mUpLoadRepository;
+    @Inject
+    PostDraftBeanGreenDaoImpl mPostDraftBeanGreenDao;
 
     @Inject
     public MarkdownPresenter(MarkdownContract.Repository repository, MarkdownContract.View
@@ -88,7 +93,8 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
     public void publishPost(PostPublishBean postPublishBean) {
         mRepository.sendCirclePost(postPublishBean)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.post_publishing)))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.post_publishing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CirclePostListBean>>() {
@@ -107,9 +113,17 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.info_publishfailed));
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string
+                                .info_publishfailed));
                     }
                 });
+    }
+
+    @Override
+    public void saveDraft(BaseDraftBean postDraftBean) {
+        if (postDraftBean instanceof PostDraftBean) {
+            mPostDraftBeanGreenDao.saveSingleData((PostDraftBean) postDraftBean);
+        }
     }
 
     @Override

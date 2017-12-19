@@ -1,9 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.circle.publish;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
@@ -18,8 +23,10 @@ import java.util.ArrayList;
 public class PublishPostFragment extends MarkdownFragment {
 
     public static final String BUNDLE_ISOUT_BOOLEAN = "isout";
+    public static final String BUNDLE_DRAFT_DATA = "draft";
 
     protected CircleInfo mCircleInfo;
+    protected PostDraftBean mDraftBean;
     protected boolean isOutCirclePublish;
     protected PostPublishBean mPostPublishBean;
 
@@ -33,6 +40,7 @@ public class PublishPostFragment extends MarkdownFragment {
     protected void initBundleDataWhenOnCreate() {
         super.initBundleDataWhenOnCreate();
         mCircleInfo = (CircleInfo) getArguments().getSerializable(BUNDLE_SOURCE_DATA);
+        mDraftBean = (PostDraftBean) getArguments().getSerializable(BUNDLE_DRAFT_DATA);
         isOutCirclePublish = getArguments().getBoolean(BUNDLE_ISOUT_BOOLEAN);
     }
 
@@ -48,24 +56,37 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void initListener() {
         super.initListener();
-        mBottomMenu.setBottomMenuVisibleChangeListener(visible -> mCbSynToDynamic.setVisibility(visible ? View.VISIBLE : View.GONE));
+        mBottomMenu.setBottomMenuVisibleChangeListener(visible -> mCbSynToDynamic.setVisibility
+                (visible ? View.VISIBLE : View.GONE));
     }
 
     @Override
     protected boolean preHandlePublish() {
         mPostPublishBean = new PostPublishBean();
         mImages = new ArrayList<>();
+        if (mCircleInfo == null) {
+            showSnackErrorMessage(getString(R.string.post_publish_select_circle));
+        }
         return mCircleInfo != null;
     }
 
     @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
         super.handlePublish(title, markdwon, noMarkdown);
+        if (TextUtils.isEmpty(title)) {
+            showSnackErrorMessage(getString(R.string.post_publish_select_title));
+            return;
+        }
+        if (TextUtils.isEmpty(markdwon)) {
+            showSnackErrorMessage(getString(R.string.post_publish_select_content));
+            return;
+        }
         mPostPublishBean.setTitle(title);
         mPostPublishBean.setBody(markdwon);
         mPostPublishBean.setSummary(noMarkdown);
         mPostPublishBean.setCircle_id(mCircleInfo.getId());
         mPostPublishBean.setSync_feed(mCbSynToDynamic.isChecked() ? 1 : 0);
+        mPostPublishBean.setFeed_from(mCbSynToDynamic.isChecked() ? 4 : 0);
         mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
         mPresenter.publishPost(mPostPublishBean);
     }
@@ -80,6 +101,19 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void saveDraft(String html) {
         super.saveDraft(html);
+        PostDraftBean postDraftBean = new PostDraftBean();
+        long mark;
+        if (mDraftBean != null) {
+            mark = mDraftBean.getMark();
+        } else {
+            mark = Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                    .currentTimeMillis());
+        }
+        postDraftBean.setMark(mark);
+        postDraftBean.setCircleInfo(mCircleInfo);
+        postDraftBean.setHtml("<!DOCTYPE html>\n" + html);
+        postDraftBean.setIsOutCircle(isOutCirclePublish);
+        mPresenter.saveDraft(postDraftBean);
     }
 
     @Override
@@ -88,17 +122,12 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
-    protected void setRightClick() {
-        mPostPublishBean = new PostPublishBean();
-        mRichTextView.getResultWords(true);
-    }
-
-    @Override
     protected void setSynToDynamicCbVisiable(boolean isVisiable) {
         super.setSynToDynamicCbVisiable(isVisiable);
         if (mCircleInfo == null) {
             return;
         }
-        mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View.VISIBLE : View.GONE);
+        mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View
+                .VISIBLE : View.GONE);
     }
 }

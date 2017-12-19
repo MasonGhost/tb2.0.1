@@ -276,6 +276,9 @@
     <string name="post_apply_for_top">申请帖子置顶</string>
     <string name="delete_post">删除帖子</string>
     <string name="post_publishing">发贴中</string>
+    <string name="post_publish_select_circle">请选择一个圈子</string>
+    <string name="post_publish_select_title">标题还是要的!</string>
+    <string name="post_publish_select_content">你的内容涅..</string>
 
     <string-array name="post_typpe_array">
         <item>全部帖子</item>

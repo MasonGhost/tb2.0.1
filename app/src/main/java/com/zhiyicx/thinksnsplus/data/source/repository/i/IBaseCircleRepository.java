@@ -66,6 +66,13 @@ public interface IBaseCircleRepository {
     @GET(APP_PATH_GET_ALL_POSTLIST)
     Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id);
 
+    /**
+     * 获取我加入的圈子
+     * @param limit
+     * @param offet
+     * @param type 默认: join, join 我加入 audit 待审核 allow_post 可以发帖的
+     * @return
+     */
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
 
     /**

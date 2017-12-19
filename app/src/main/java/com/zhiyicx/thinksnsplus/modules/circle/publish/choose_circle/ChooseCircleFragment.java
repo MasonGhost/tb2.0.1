@@ -117,7 +117,7 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
 
     @Override
     public CircleClient.MineCircleType getMineCircleType() {
-        return CircleClient.MineCircleType.JOIN;
+        return CircleClient.MineCircleType.ALLOW;
     }
 
     @Override
