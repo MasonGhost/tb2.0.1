@@ -344,10 +344,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 mRicheTest.hideKeyBoard();
                 break;
             case R.id.im_pic:
+                mRicheTest.hideKeyBoard();
                 initPhotoPopupWindow();
                 break;
             case R.id.im_setting:
                 break;
+
+                default:
         }
     }
 

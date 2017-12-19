@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -17,6 +18,9 @@ import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyFollowQuestionAdapter
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.QuestionTopicAdapter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -76,7 +80,22 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
         }
         CommonAdapter adapter;
         if (mType.equals(TYPE_QUESTION)) {
-            adapter = new MyFollowQuestionAdapter(getContext(), mListDatas);
+            adapter = new MyFollowQuestionAdapter(getContext(), mListDatas) {
+                @Override
+                protected int getExcellentTag(boolean isExcellent) {
+                    return isExcellent ? R.mipmap.icon_choice : 0;
+                }
+
+                @Override
+                protected boolean isTourist() {
+                    return mPresenter.handleTouristControl();
+                }
+
+                @Override
+                protected int getRatio() {
+                    return mPresenter.getRatio();
+                }
+            };
         } else {
             adapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
         }
@@ -88,7 +107,7 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         if (mType.equals(TYPE_QUESTION)) {
             // 问题详情
-            if (mListDatas.get(position) instanceof QAListInfoBean){
+            if (mListDatas.get(position) instanceof QAListInfoBean) {
                 QAListInfoBean qaListInfoBean = (QAListInfoBean) mListDatas.get(position);
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
@@ -139,11 +158,11 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                 }
             }
             if (!qaTopicBean.getHas_follow()) {
-                if (position != -1){
+                if (position != -1) {
                     mListDatas.remove(position);
                 }
             } else {
-                if (position == -1){
+                if (position == -1) {
                     mListDatas.add(qaTopicBean);
                 }
             }

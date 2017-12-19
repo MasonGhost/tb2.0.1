@@ -68,17 +68,17 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @BindView(R.id.tv_name)
     TextView mCircleName;
 
-    private HashMap<Long, String> mInsertedImages;
-    private HashMap<Long, String> mFailedImages;
+    protected HashMap<Long, String> mInsertedImages;
+    protected HashMap<Long, String> mFailedImages;
 
-    private PhotoSelectorImpl mPhotoSelector;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
-    private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
+    protected PhotoSelectorImpl mPhotoSelector;
+    protected ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    protected ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    private PostPublishBean mPostPublishBean;
-    private List<Integer> mImages = new ArrayList();
+    protected PostPublishBean mPostPublishBean;
+    protected List<Integer> mImages = new ArrayList();
 
-    private CircleInfo mCircleInfo;
+    protected CircleInfo mCircleInfo;
 
     public static MarkdownFragment newInstance(Bundle bundle) {
         MarkdownFragment markdownFragment = new MarkdownFragment();
@@ -149,7 +149,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         }
     }
 
-    private void initListener() {
+    protected void initListener() {
         mRichTextView.setOnEditorClickListener(this);
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
@@ -276,7 +276,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     /**
      * @param isVisiable true  显示
      */
-    private void setSynToDynamicCbVisiable(boolean isVisiable) {
+    protected void setSynToDynamicCbVisiable(boolean isVisiable) {
         if (mCircleInfo==null){
             return;
         }
@@ -338,7 +338,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mCanclePopupWindow.show();
     }
 
-    private void showLinkDialog(final LinkDialog dialog, final boolean isChange) {
+    protected void showLinkDialog(final LinkDialog dialog, final boolean isChange) {
         dialog.setListener(new LinkDialog.OnDialogClickListener() {
             @Override
             public void onConfirmButtonClick(String name, String url) {
@@ -362,7 +362,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         dialog.show(getFragmentManager(), LinkDialog.Tag);
     }
 
-    private void showPictureClickDialog(final PictureHandleDialog dialog, CharSequence[] items) {
+    protected void showPictureClickDialog(final PictureHandleDialog dialog, CharSequence[] items) {
 
         dialog.setListener(new PictureHandleDialog.OnDialogClickListener() {
             @Override
@@ -383,7 +383,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         dialog.show(getFragmentManager(), PictureHandleDialog.Tag);
     }
 
-    private void removeFromLocalCache(long id) {
+    protected void removeFromLocalCache(long id) {
         if (mInsertedImages.containsKey(id)) {
             mInsertedImages.remove(id);
         } else if (mFailedImages.containsKey(id)) {

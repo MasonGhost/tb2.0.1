@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_mid"
-        android:textColor="@color/themeColor"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:textColor="@color/important_for_content"
         android:textSize="@dimen/info_title_size"
         tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_large"
         android:orientation="horizontal">
 
         <TextView
@@ -55,9 +55,9 @@
         android:id="@+id/info_content_subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_mid_small"
-        android:layout_marginRight="@dimen/spacing_mid_small"
-        android:layout_marginTop="@dimen/spacing_mid"/>
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_large"/>
 
 
     <FrameLayout
@@ -70,9 +70,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginRight="@dimen/spacing_mid_small"
-            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginTop="@dimen/spacing_large"
             android:visibility="visible"
             tools:ignore="WebViewLayout"/>
 

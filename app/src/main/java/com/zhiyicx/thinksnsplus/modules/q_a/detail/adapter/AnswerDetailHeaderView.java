@@ -41,6 +41,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigList
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
@@ -131,10 +132,7 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
         if (answerInfoBean != null) {
             // 资讯content
             if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
-                InternalStyleSheet css = new Github();
-                css.addRule("body", "line-height: 1.6", "padding: 10px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
-                mContent.addStyleSheet(css);
+                mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
