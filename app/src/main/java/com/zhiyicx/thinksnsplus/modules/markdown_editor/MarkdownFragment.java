@@ -277,7 +277,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      * @param isVisiable true  显示
      */
     private void setSynToDynamicCbVisiable(boolean isVisiable) {
-        if (mCircleInfo == null) {
+        if (mCircleInfo==null){
             return;
         }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View.VISIBLE : View.GONE);

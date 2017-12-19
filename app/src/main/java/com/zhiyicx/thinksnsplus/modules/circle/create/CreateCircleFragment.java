@@ -189,10 +189,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected void initData() {
+        mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
         if (mCircleInfo == null) {
             return;
         }
-        mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
         restoreData();
     }
 
@@ -214,6 +214,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void setCircleInfo(CircleInfo data) {
+        if (mCircleInfo == null) {
+            mActivity.finish();
+            return;
+        }
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putParcelable(CIRCLEINFO, data);
