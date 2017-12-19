@@ -196,12 +196,14 @@ public class ChatRepository implements ChatContract.Repository {
         EMConversation conversation = itemBeanV2.getConversation();
         List<EMMessage> msgs = new ArrayList<>();
         if ("0".equals(msgId)){
-            // 表示是第一次拿消息，本地第一次只有20条
+            // 表示是第一次拿消息，先取出有的，再给msgId赋值，取历史记录
             msgs = conversation.getAllMessages();
-        } else {
-            // 从传过来的msgId开始取出历史消息
-            msgs.addAll(conversation.loadMoreMsgFromDB(msgId, pageSize));
+            if (!msgs.isEmpty()){
+                msgId = msgs.get(0).getMsgId();
+            }
         }
+        // 从传过来的msgId开始取出历史消息
+        msgs.addAll(0, conversation.loadMoreMsgFromDB(msgId, pageSize));
         if (!msgs.isEmpty()){
             List<ChatItemBean> list = new ArrayList<>();
             for (EMMessage message : msgs){
