@@ -76,6 +76,14 @@ public interface ChatContract {
          */
         MessageItemBeanV2 getMessItemBean();
 
+        /**
+         * 获取历史聊天记录成功
+         *
+         * @param list 历史聊天记录
+         * @param isInit 是否为初始化
+         */
+        void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isInit);
+
     }
 
     interface Repository {

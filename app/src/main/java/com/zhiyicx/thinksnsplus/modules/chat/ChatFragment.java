@@ -169,10 +169,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {
                 mMessageItemBean.setConversation(conversation);
-                initMessageList();
+                mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
             }
         } else {
-            initMessageList();
+            mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
         }
         // 设置消息内容已读
         mMessageItemBean.getConversation().markAllMessagesAsRead();
@@ -296,14 +296,23 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    public void onRefresh(RefreshLayout refreshlayout) {
-        if (mMessageItemBean.getConversation() == null) {
-            hideLoading();
-            return;
+    public void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isInit) {
+        if (isInit){
+            // 初始化的
+            initMessageList(list);
+        } else {
+            if (mMessageItemBean.getConversation() == null) {
+                hideLoading();
+                return;
+            }
+            mDatas.addAll(0, list);
+            mMessageList.refresh();
         }
-        List<ChatItemBean> chatItemBeen = mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
-        mDatas.addAll(0, chatItemBeen);
-        mMessageList.refresh();
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshlayout) {
+        mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
     }
 
     /**
@@ -324,8 +333,8 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         setChatTitle(mMessageItemBean.getUserInfo().getName());
     }
 
-    public void initMessageList() {
-        mDatas.addAll(mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE));
+    public void initMessageList(List<ChatItemBean> list) {
+        mDatas.addAll(list);
         mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();

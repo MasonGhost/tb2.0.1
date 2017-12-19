@@ -10,6 +10,7 @@ import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
@@ -38,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +62,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter{
+public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
@@ -105,11 +107,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Override
     public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize) {
         List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
-        Subscription subscribe = Observable.just(pageSize)
-                .observeOn(Schedulers.io())
-                .map(integer -> mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, integer)).subscribe(chatItemBeans -> {
-                    //
+        Subscription subscribe = mRepository.completeUserInfo(data)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
                     mRootView.hideLoading();
+                    mRootView.getHistoryMessageSuccess(list, "0".equals(id));
                 });
         addSubscrebe(subscribe);
         return data;
@@ -155,7 +157,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
             @Override
             public void onSuccess() {
                 // 发送成功 需要刷新页面
-                LogUtils.d("Cathy", "发送成功"+ message.getBody().toString());
+                LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
                 updateMessageV2(message);
             }
 
@@ -240,14 +242,14 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
     private void onMessageReceived(Bundle bundle) {
         //收到消息
-        if (bundle == null){
+        if (bundle == null) {
             return;
         }
         List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
         LogUtils.d("Cathy", " 收到消息 :" + list);
-        if (list != null && !list.isEmpty()){
-            for (EMMessage message : list){
-                if (message.conversationId().equals(mRootView.getMessItemBean().getEmKey())){
+        if (list != null && !list.isEmpty()) {
+            for (EMMessage message : list) {
+                if (message.conversationId().equals(mRootView.getMessItemBean().getEmKey())) {
                     // 这才是本聊天组的消息哦
                     updateMessageV2(message);
                 }
@@ -288,7 +290,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         chatItemBean.setMessage(message);
         // 消息的来源与当前用户不一致，则证明非当前用户
         String currentUser = String.valueOf(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
-        if (!message.getFrom().equals(currentUser)){
+        if (!message.getFrom().equals(currentUser)) {
             // 当前这个版本还没有群聊呢，要快速出版本，暂时不考虑群聊的情况，后面需要根据来源查找用户信息
             chatItemBean.setUserInfo(mRootView.getMessItemBean().getUserInfo());
         } else {
@@ -296,7 +298,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         Subscription subscription = Observable.just(chatItemBean)
                 .flatMap(chatItemBean12 -> {
-                    if (chatItemBean12.getUserInfo() == null){
+                    if (chatItemBean12.getUserInfo() == null) {
                         List<ChatItemBean> chatItemBeans = new ArrayList<>();
                         chatItemBeans.add(chatItemBean12);
                         return mRepository.completeUserInfo(chatItemBeans)

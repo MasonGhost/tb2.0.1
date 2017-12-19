@@ -209,13 +209,8 @@ public class ChatRepository implements ChatContract.Repository {
             for (EMMessage message : msgs){
                 ChatItemBean chatItemBean = new ChatItemBean();
                 chatItemBean.setMessage(message);
-                UserInfoBean userInfoBean;
-                if (!message.getFrom().equals(String.valueOf(AppApplication.getMyUserIdWithdefault()))) {
-                    // 对方发的
-                    userInfoBean = itemBeanV2.getUserInfo();
-                } else {
-                    userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
-                }
+                long userId = Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom());
+                UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(userId);
                 chatItemBean.setUserInfo(userInfoBean);
                 list.add(chatItemBean);
             }
