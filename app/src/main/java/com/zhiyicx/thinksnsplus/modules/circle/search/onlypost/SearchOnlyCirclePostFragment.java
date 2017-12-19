@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.search.onlypost;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,12 +7,11 @@ import android.view.inputmethod.EditorInfo;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCirclePostFragment;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -47,7 +45,7 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
                     onEditChanged(mFragmentInfoSearchEdittext.getText().toString());
-                    DeviceUtils.hideSoftKeyboard(getContext(),mFragmentInfoSearchEdittext);
+                    DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
                 }
             }
         });
@@ -57,7 +55,6 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
     protected boolean setUseStatusView() {
         return true;
     }
-
 
 
     @Override
@@ -70,7 +67,7 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
         return R.layout.fragment_circle_search_only_post_list;
     }
 
-    @OnClick({R.id.fragment_search_cancle,R.id.bt_do})
+    @OnClick({R.id.fragment_search_cancle, R.id.bt_do})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fragment_search_cancle:
@@ -78,7 +75,7 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
                 break;
             case R.id.bt_do:
                 // 创建圈子帖子
-                startActivity(new Intent(getActivity(), MarkdownActivity.class));
+                BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
                 break;
             default:
         }

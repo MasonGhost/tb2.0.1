@@ -89,8 +89,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragmen
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReportReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.onlypost.CirclePostSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
@@ -900,12 +899,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                         if (mCircleInfo.getPermissions().contains(mCircleInfo.getJoined().getRole())) {
                             if (mCircleInfo.getJoined()
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
-                                Intent intent = new Intent(mActivity, MarkdownActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable(MarkdownFragment.BUNDLE_SOURCE_DATA, mCircleInfo);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-
+                                BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, mCircleInfo);
                             } else {
                                 //被拉到了黑名单
                                 showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));

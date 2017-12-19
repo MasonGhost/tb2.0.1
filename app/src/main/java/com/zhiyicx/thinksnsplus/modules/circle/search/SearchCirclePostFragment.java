@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.search;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,17 +15,12 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -264,6 +258,6 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     @OnClick(R.id.bt_do)
     public void onViewClicked() {
         // 创建圈子帖子
-        startActivity(new Intent(getActivity(), MarkdownActivity.class));
+        BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
     }
 }

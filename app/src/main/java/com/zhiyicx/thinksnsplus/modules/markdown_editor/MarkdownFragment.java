@@ -16,8 +16,6 @@ import com.zhiyi.richtexteditorlib.base.RichEditor;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyi.richtexteditorlib.view.dialogs.PictureHandleDialog;
-import com.zhiyi.richtexteditorlib.view.logiclist.MenuItem;
-import com.zhiyi.richtexteditorlib.view.menuitem.AbstractBottomMenuItem;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -31,10 +29,9 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.types.ChooseCircleActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.types.ChooseCircleFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle.ChooseCircleFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -50,35 +47,83 @@ import butterknife.BindView;
  * @Description
  */
 public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements
-        SimpleRichEditor.OnEditorClickListener, View.OnClickListener, PhotoSelectorImpl.IPhotoBackListener,
+        SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
         MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
     @BindView(R.id.lu_bottom_menu)
-    BottomMenu mBottomMenu;
+    protected BottomMenu mBottomMenu;
     @BindView(R.id.rich_text_view)
-    SimpleRichEditor mRichTextView;
+    protected SimpleRichEditor mRichTextView;
     @BindView(R.id.ll_circle_container)
-    LinearLayout mLlCircleContainer;
+    protected LinearLayout mLlCircleContainer;
     @BindView(R.id.line)
-    View mLine;
+    protected View mLine;
     @BindView(R.id.cb_syn_to_dynamic)
-    CheckBox mCbSynToDynamic;
+    protected CheckBox mCbSynToDynamic;
     @BindView(R.id.tv_name)
-    TextView mCircleName;
+    protected TextView mCircleName;
 
+    /**
+     * 记录上传成功的照片 键值对：时间戳(唯一) -- 图片地址
+     */
     protected HashMap<Long, String> mInsertedImages;
+
+    /**
+     * 记录上传失败的照片 同上
+     */
     protected HashMap<Long, String> mFailedImages;
 
+    /**
+     * 上传图片成功后返回的id
+     */
+    protected List<Integer> mImages;
+
     protected PhotoSelectorImpl mPhotoSelector;
-    protected ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
-    protected ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
 
-    protected PostPublishBean mPostPublishBean;
-    protected List<Integer> mImages = new ArrayList();
+    /**
+     * 图片选择弹出
+     */
+    protected ActionPopupWindow mPhotoPopupWindow;
 
-    protected CircleInfo mCircleInfo;
+    /**
+     * t保存草稿提示
+     */
+    protected ActionPopupWindow mEditWarningPopupWindow;
+
+    /**
+     * 发布资源之前的处理，比如封装数据
+     * @return 数据是否完整
+     */
+    protected boolean preHandlePublish() {
+        return false;
+    }
+
+    /**
+     * 发布
+     *
+     * @param title      标题
+     * @param markdwon   内容（含有格式）
+     * @param noMarkdown 内容（不含格式）
+     */
+    protected void handlePublish(String title, String markdwon, String noMarkdown) {
+    }
+
+    /**
+     * 初始化 传递过来的 参数
+     */
+    protected void initBundleDataWhenOnCreate() {
+    }
+
+    /**
+     * 圈外发表帖子 选择圈子的回掉
+     *
+     * @param circleInfo
+     */
+    protected void onActivityResultForChooseCircle(CircleInfo circleInfo) {
+
+    }
 
     public static MarkdownFragment newInstance(Bundle bundle) {
         MarkdownFragment markdownFragment = new MarkdownFragment();
@@ -87,27 +132,21 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            initBundleDataWhenOnCreate();
+        }
+    }
+
+    @Override
     protected String setRightTitle() {
         return getString(R.string.publish);
     }
 
     @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        mPostPublishBean = new PostPublishBean();
-        mRichTextView.getResultWords();
-    }
-
-    @Override
-    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown) {
-
-        mPostPublishBean.setTitle(title);
-        mPostPublishBean.setBody(markdwon);
-        mPostPublishBean.setSummary(noMarkdown);
-        mPostPublishBean.setCircle_id(mCircleInfo.getId());
-        mPostPublishBean.setSync_feed(mCbSynToDynamic.isChecked() ? 1 : 0);
-        mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
-        mPresenter.publishPost(mPostPublishBean);
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
@@ -116,10 +155,26 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mCircleInfo = (CircleInfo) getArguments().getSerializable(BUNDLE_SOURCE_DATA);
+    protected void setRightClick() {
+        super.setRightClick();
+        if (!preHandlePublish()) {
+            return;
+        }
+        mRichTextView.getResultWords(true);
+    }
+
+    @Override
+    public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish) {
+        if (isPublish) {
+            handlePublish(title, markdwon, noMarkdown);
+        } else {
+            DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
+            boolean canSaveDraft = !TextUtils.isEmpty(title + markdwon);
+            if (!canSaveDraft) {
+                mActivity.finish();
+                return;
+            }
+            initEditWarningPop(title, markdwon);
         }
     }
 
@@ -132,7 +187,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mFailedImages = new HashMap<>();
         initListener();
         mRichTextView.load();
-        setSynToDynamicCbVisiable(mCircleInfo != null);
     }
 
     @Override
@@ -142,11 +196,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-        if (getArguments() == null) {
-            mLlCircleContainer.setVisibility(View.VISIBLE);
-            mLine.setVisibility(View.VISIBLE);
-            return;
-        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        mRichTextView.getResultWords(false);
     }
 
     protected void initListener() {
@@ -171,11 +225,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     protected String setCenterTitle() {
         return getString(R.string.publish_post);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     @Override
@@ -225,8 +274,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ChooseCircleFragment.CHOOSE_CIRCLE) {
             if (data != null && data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE) != null) {
-                mCircleInfo = data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE);
-                mCircleName.setText(mCircleInfo.getName());
+                onActivityResultForChooseCircle(data.getExtras().getParcelable(ChooseCircleFragment.BUNDLE_CIRCLE));
             }
         } else {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
@@ -250,6 +298,9 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     public void onUploading(long id, String filePath, int progress, int imgeId) {
         getActivity().runOnUiThread(() -> mRichTextView.setImageUploadProcess(id, progress, imgeId));
         if (progress == 100) {
+            if (mImages == null) {
+                mImages = new ArrayList<>();
+            }
             mImages.add(imgeId);
         }
     }
@@ -263,24 +314,18 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onFailed(String filePath, long id) {
-
         getActivity().runOnUiThread(() -> {
             mRichTextView.setImageFailed(id);
             mInsertedImages.remove(id);
             mFailedImages.put(id, filePath);
         });
-
-
     }
 
     /**
      * @param isVisiable true  显示
      */
     protected void setSynToDynamicCbVisiable(boolean isVisiable) {
-        if (mCircleInfo==null){
-            return;
-        }
-        mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View.VISIBLE : View.GONE);
+
     }
 
     /**
@@ -314,28 +359,42 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mPhotoPopupWindow.show();
     }
 
-    /**
-     * 初始化取消选择弹框
-     */
-    private void initCanclePopupWindow() {
-        if (mCanclePopupWindow != null) {
-            mCanclePopupWindow.show();
+    protected void initEditWarningPop(String title, String markdwon) {
+        if (mEditWarningPopupWindow != null) {
+            mEditWarningPopupWindow.show();
             return;
         }
-        mCanclePopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_send_cancel_hint))
-                .item2Str(getString(R.string.determine))
+        mEditWarningPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.edit_quit))
+                .item2Str(getString(canSaveDraft() ? R.string.save_to_draft_box : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {
-                    mCanclePopupWindow.hide();
+                .item1ClickListener(() -> {
+                    cancleEdit();
+                    mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
-                .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
-        mCanclePopupWindow.show();
+                .item2ClickListener(() -> {
+                    saveDraft(markdwon);
+                    mEditWarningPopupWindow.hide();
+                    getActivity().finish();
+                })
+                .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
+        mEditWarningPopupWindow.show();
+    }
+
+    protected boolean canSaveDraft() {
+        return true;
+    }
+
+    protected void saveDraft(String html) {
+    }
+
+    protected void cancleEdit() {
+
     }
 
     protected void showLinkDialog(final LinkDialog dialog, final boolean isChange) {
@@ -395,6 +454,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mPhotoPopupWindow);
-        dismissPop(mCanclePopupWindow);
+        dismissPop(mEditWarningPopupWindow);
     }
 }

@@ -641,10 +641,13 @@
             android:name=".modules.circle.manager.permission.PermissionActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".modules.markdown_editor.types.ChooseCircleActivity"
+            android:name=".modules.circle.publish.choose_circle.ChooseCircleActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.circle.manager.members.attorn.AttornCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
     </application>
 

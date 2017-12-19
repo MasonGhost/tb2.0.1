@@ -85,6 +85,8 @@ public class BottomMenu extends ViewGroup {
 
     private AbstractBottomMenuItem.OnItemClickListener mInnerListener;
 
+    private BottomMenuVisibleChangeListener mBottomMenuVisibleChangeListener;
+
     public BottomMenu(Context context) {
         this(context, null);
     }
@@ -620,10 +622,12 @@ public class BottomMenu extends ViewGroup {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void show(long d) {
         AnimatorUtil.show(this, d);
+        mBottomMenuVisibleChangeListener.onVisibleChange(true);
     }
 
     public void hide(long d) {
         AnimatorUtil.hide(this, d);
+        mBottomMenuVisibleChangeListener.onVisibleChange(false);
     }
 
     public int isItemSelected2(MenuItem item) {
@@ -849,5 +853,13 @@ public class BottomMenu extends ViewGroup {
         public BottomMenu build() {
             return mBottomMenu;
         }
+    }
+
+    public interface BottomMenuVisibleChangeListener{
+        void onVisibleChange(boolean visible);
+    }
+
+    public void setBottomMenuVisibleChangeListener(BottomMenuVisibleChangeListener bottomMenuVisibleChangeListener) {
+        mBottomMenuVisibleChangeListener = bottomMenuVisibleChangeListener;
     }
 }

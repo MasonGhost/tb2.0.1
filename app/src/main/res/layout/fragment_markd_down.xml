@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ll_circle_container"
@@ -53,6 +52,7 @@
         android:layout_below="@+id/ll_circle_container"/>
 
     <CheckBox
+        android:visibility="gone"
         android:id="@+id/cb_syn_to_dynamic"
         android:layout_width="match_parent"
         android:layout_height="@dimen/create_circle_button_height"

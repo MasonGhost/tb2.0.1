@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.markdown_editor.types;
+package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;

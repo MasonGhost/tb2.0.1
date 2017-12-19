@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -19,6 +20,12 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 @SuppressWarnings({"unused"})
 public abstract class RichEditor extends WebView {
@@ -86,7 +93,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnMarkdownWordResultListener {
-        void onMarkdownWordResult(String title, String markdwon, String noMarkdown);
+        void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish);
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
@@ -131,7 +138,14 @@ public abstract class RichEditor extends WebView {
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
         setWebViewClient(createWebViewClient());
-        setWebChromeClient(new WebChromeClient());
+        setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                LogUtils.d("webview", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber()
+                        + " of " + consoleMessage.sourceId());
+                return super.onConsoleMessage(consoleMessage);
+            }
+        });
         mContentLength = 0;
         getSettings().setJavaScriptEnabled(true);
         load();
@@ -401,8 +415,8 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.markdownWords();");
     }
 
-    public void getResultWords() {
-        exec("javascript:RE.resultWords();");
+    public void getResultWords(boolean isPublish) {
+        exec("javascript:RE.resultWords(" + isPublish + ");");
     }
 
     public void focusEditor() {
@@ -530,11 +544,27 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void resultWords(String title, String markdown, String noMarkdownWords) {
-            if (mOnMarkdownWordResultListener != null) {
-                mOnMarkdownWordResultListener.onMarkdownWordResult(title, markdown, noMarkdownWords);
-            }
-            LogUtils.d("resultWords:::" + title);
+        public void resultWords(String title, String markdown, String noMarkdownWords, boolean isPublish) {
+            Observable.empty()
+                    .filter(o -> mOnMarkdownWordResultListener != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mOnMarkdownWordResultListener.onMarkdownWordResult(title, markdown, noMarkdownWords, isPublish);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+                    });
+
         }
 
     }

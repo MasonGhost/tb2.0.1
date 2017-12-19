@@ -1,8 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.markdown_editor.types;
+package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.CircleListRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.MyGroupRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupContract;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
 
 import dagger.Module;

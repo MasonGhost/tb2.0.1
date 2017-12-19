@@ -7,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -17,7 +16,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleCon
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.DaggerAllCircleContainerComponent;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;

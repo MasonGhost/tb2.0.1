@@ -21,14 +21,11 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;

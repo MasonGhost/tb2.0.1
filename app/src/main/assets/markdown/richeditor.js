@@ -233,9 +233,15 @@ var RE = {
         return title;
     },
 
-    resultWords: function resultWords() {
+    resultWords: function resultWords(boolean) {
         var _self = this;
-        AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords());
+        var value = boolean;
+        console.log("isPublish:::" + value);
+        if(value){
+            AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),value);
+        }else{
+            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.noMarkdownWords(),value);
+        }
     },
 	saveRange: function saveRange() {
 		//保存节点位置

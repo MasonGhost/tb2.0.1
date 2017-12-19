@@ -74,7 +74,7 @@ public class CircleInfoGreenDaoImpl extends CommonCacheImpl<CircleInfo> {
 
     @Override
     public long insertOrReplace(CircleInfo newData) {
-        return 0;
+        return saveSingleData(newData);
     }
 
     public List<CircleInfo> getCircleListByCategory(long categoryId) {

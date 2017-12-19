@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.markdown_editor.types;
+package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,25 +9,14 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerContract;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenterModule;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.DaggerAllCircleContainerComponent;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.MyGroupContract;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 

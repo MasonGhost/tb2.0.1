@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
@@ -73,7 +74,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public SharePolicy mSharePolicy;
     @Inject
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
-
+    @Inject
+    CircleInfoGreenDaoImpl mCircleInfoGreenDao;
 
     private Subscription mSearchSub;
 
@@ -113,6 +115,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             protected void onSuccess(CircleZipBean data) {
                                 mRootView.onNetResponseSuccess(data.getCirclePostListBeanList(), isLoadMore);
                                 mRootView.allDataReady(data);
+                                mCircleInfoGreenDao.insertOrReplace(data.getCircleInfo());
                             }
 
                             @Override
