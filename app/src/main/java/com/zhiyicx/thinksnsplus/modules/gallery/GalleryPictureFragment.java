@@ -336,7 +336,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // // 不从网络读取原图(cacheOnlyStreamLoader) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
                     .using(cacheOnlyStreamLoader)
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0, ImageZipConfig.IMAGE_70_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h,
+                            ImageZipConfig.IMAGE_100_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
                     .thumbnail(thumbnailBuilder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
