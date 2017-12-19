@@ -250,6 +250,15 @@ public class SimpleRichEditor extends RichEditor {
                 }
             }
         });
+
+        mBottomMenu.setOnItemClickListener(new AbstractBottomMenuItem.OnItemClickListener() {
+            @Override
+            public void onItemClick(MenuItem item) {
+                if (item.getId() == ItemIndex.A) {
+                    mOnEditorClickListener.onTextStypeClick(item.getSelected());
+                }
+            }
+        });
     }
 
     /**
@@ -369,13 +378,7 @@ public class SimpleRichEditor extends RichEditor {
             mFreeItems.add(ItemIndex.STRIKE_THROUGH);
         }
 
-        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A, new IBottomMenuItem.OnBottomItemClickListener() {
-            @Override
-            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                onTextStypeClick(isSelected);
-                return isSelected;
-            }
-        }))
+        mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(), ItemIndex.A))
                 .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.BOLD,

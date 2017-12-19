@@ -112,6 +112,7 @@ public abstract class AbstractBottomMenuItem<T extends View> implements IBottomM
 
     public final void setSelected(boolean selected) {
         if(selected != isSelected) {
+            mMenuItem.setSelected(selected);
             onSelectChange(selected);
         }
         isSelected = selected;

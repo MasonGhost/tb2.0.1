@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -26,6 +27,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -43,10 +45,14 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author Jliuer
@@ -81,6 +87,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     DeleteEditText mEtCircleName;
     @BindView(R.id.tv_circle_type)
     TextView mTvCircleType;
+    @BindView(R.id.tv_user_agreement)
+    TextView mTvUseAgreeMent;
     @BindView(R.id.ll_type_container)
     LinearLayout mLlTypeContainer;
     @BindView(R.id.fl_tags)
@@ -175,6 +183,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             isOwner = getArguments().getBoolean(PERMISSION_OWNER, false);
             isManager = getArguments().getBoolean(PERMISSION_MANAGER, false);
             mCircleInfo = getArguments().getParcelable(CIRCLEINFO);
+            mTvUseAgreeMent.setVisibility(canUpdate ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -183,6 +192,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (mCircleInfo == null) {
             return;
         }
+        mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
         restoreData();
     }
 
@@ -289,12 +299,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
-        mFlTags.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                jumpToEditUserTag();
-            }
-            return true;
-        });
     }
 
     private void initPhotoPopupWindow() {
@@ -386,16 +390,22 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
         mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);
+        mEtCircleName.setEnabled(canUpdate && !isManager);
         mLlTypeContainer.setEnabled(canUpdate && !isManager);
         mLlTagContainer.setEnabled(canUpdate && !isManager);
         mLlLocationContainer.setEnabled(canUpdate && !isManager);
-        mEtCircleIntroduce.setEnabled(canUpdate);
         mWcSynchro.setEnabled(canUpdate && !isManager);
         mWcBlock.setEnabled(canUpdate && !isManager);
         mCbFree.setEnabled(canUpdate && !isManager);
         mCbToll.setEnabled(canUpdate && !isManager);
         mEtCircleAmount.setEnabled(canUpdate && !isManager);
+
         mTvNotice.setEnabled(canUpdate);
+        mEtCircleIntroduce.setEnabled(canUpdate);
+        RxView.clicks(mFlTags)
+                .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .filter(aVoid -> canUpdate && !isManager)
+                .subscribe(aVoid -> jumpToEditUserTag());
 
     }
 

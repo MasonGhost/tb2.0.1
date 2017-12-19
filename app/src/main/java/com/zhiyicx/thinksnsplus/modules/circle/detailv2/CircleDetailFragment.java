@@ -94,7 +94,6 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
-import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CirclePostEmptyItem;
@@ -682,16 +681,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .with(mActivity)
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
-                    bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
-                    bundle.putLong(StickTopFragment.CHILD_ID, circlePostListBean
-                            .getComments().get(commentPosition).getId());
-                    Intent intent = new Intent(mActivity, StickTopActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
                     showBottomView(true);
+                    StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_POST, circlePostListBean.getId(), circlePostListBean
+                            .getComments().get(commentPosition).getId());
 
                 })
                 .item2ClickListener(() -> {
@@ -1025,7 +1017,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private void setCircleData(CircleInfo detail) {
         mTvCircleTitle.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
-        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation()));
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" : detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
@@ -1066,8 +1058,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mTvExitCircle.setText(R.string.circle_transfer);
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
+        boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
+        mBtReportCircle.setVisibility(isNormalMember || isManager ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
@@ -1136,7 +1129,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     Bundle bundle2 = new Bundle();
                     bundle2.putLong(AttornCircleFragment.CIRCLEID, mCircleInfo.getId());
                     bundle2.putString(AttornCircleFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
-                    bundle2.putString(AttornCircleFragment.CIRCLE_NAME,  mCircleInfo.getName());
+                    bundle2.putString(AttornCircleFragment.CIRCLE_NAME, mCircleInfo.getName());
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {

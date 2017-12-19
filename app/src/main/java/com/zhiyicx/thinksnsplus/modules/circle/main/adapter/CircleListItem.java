@@ -139,8 +139,9 @@ public class CircleListItem extends BaseCircleItem {
             // 未加入的，需要申请加入
         } else {
             boolean isJoined = circleInfo.getJoined() != null;
+            TextView tvRole = holder.getView(R.id.tv_role);
+            tvRole.setVisibility(View.GONE);
             if (isJoined) {
-                TextView tvRole = holder.getView(R.id.tv_role);
                 if (circleInfo.getJoined() != null && CircleInfo.CircleRole.FOUNDER.value.equals
                         (circleInfo.getJoined().getRole())) {
                     tvRole.setVisibility(View.VISIBLE);

@@ -80,6 +80,7 @@ public class CircleInfoGreenDaoImpl extends CommonCacheImpl<CircleInfo> {
     public List<CircleInfo> getCircleListByCategory(long categoryId) {
         return mCircleInfoRDao.queryBuilder()
                 .where(CircleInfoDao.Properties.Category_id.eq(categoryId))
+                .orderDesc(CircleInfoDao.Properties.Created_at)
                 .build()
                 .list();
     }

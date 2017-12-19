@@ -39,6 +39,11 @@ public class MenuItem implements Serializable {
      */
     private transient View contentView;
 
+    /**
+     * transient 不参与序列化，记录选中状态
+     */
+    private transient boolean isSelected;
+
     MenuItem(Long Id, View contentView) {
         this(null, Id, contentView);
     }
@@ -87,6 +92,14 @@ public class MenuItem implements Serializable {
 
     public void setId(Long id) {
         this.Id = id;
+    }
+
+    public boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     /**

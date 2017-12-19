@@ -16,6 +16,8 @@ import com.zhiyi.richtexteditorlib.base.RichEditor;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyi.richtexteditorlib.view.dialogs.PictureHandleDialog;
+import com.zhiyi.richtexteditorlib.view.logiclist.MenuItem;
+import com.zhiyi.richtexteditorlib.view.menuitem.AbstractBottomMenuItem;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -154,6 +156,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         });
         mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
+
         mLlCircleContainer.setOnClickListener(v -> {
             Intent intent = new Intent(mActivity, ChooseCircleActivity.class);
             mActivity.startActivityForResult(intent, ChooseCircleFragment.CHOOSE_CIRCLE);
@@ -193,13 +196,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onImageClick(Long id) {
-        if (mInsertedImages.containsKey(id)) {
-            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
-                    CharSequence[]{getString(R.string.delete)});
-        } else if (mFailedImages.containsKey(id)) {
-            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
-                    new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
-        }
+//        if (mInsertedImages.containsKey(id)) {
+//            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
+//                    CharSequence[]{getString(R.string.delete)});
+//        } else if (mFailedImages.containsKey(id)) {
+//            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
+//                    new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
+//        }
     }
 
     @Override
@@ -274,6 +277,9 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      * @param isVisiable true  显示
      */
     private void setSynToDynamicCbVisiable(boolean isVisiable) {
+        if (mCircleInfo == null) {
+            return;
+        }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View.VISIBLE : View.GONE);
     }
 
