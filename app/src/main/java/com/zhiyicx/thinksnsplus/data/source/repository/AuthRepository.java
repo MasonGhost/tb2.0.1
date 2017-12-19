@@ -286,33 +286,37 @@ public class AuthRepository implements IAuthRepository {
         return SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }
 
+    /**
+     *
+     */
     @Override
     public void loginIM() {
-//        ZBIMClient.getInstance().login(getIMConfig());
         // 此处替换为环信的登陆
-        IMConfig imConfig = getIMConfig();
-        UserInfoBean user = getAuthBean().getUser();
         //回调
-        // 暂时先写死了 在环信后台注册的账号
-        EMClient.getInstance().login("76", "123456", new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                EMClient.getInstance().groupManager().loadAllGroups();
-                EMClient.getInstance().chatManager().loadAllConversations();
-                LogUtils.d("main", "登录聊天服务器成功！");
-            }
+        if (getAuthBean() != null && getAuthBean().getUser() != null){
+            String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
+            String imPassword = getAuthBean().getUser().getIm_pwd_hash() + "";
+            EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    EMClient.getInstance().groupManager().loadAllGroups();
+                    EMClient.getInstance().chatManager().loadAllConversations();
+                    LogUtils.d("main", "登录聊天服务器成功！");
+                }
 
-            @Override
-            public void onProgress(int progress, String status) {
+                @Override
+                public void onProgress(int progress, String status) {
 
-            }
+                }
 
-            @Override
-            public void onError(int code, String message) {
-                LogUtils.d("main", "登录聊天服务器失败！");
-            }
-        });
-
+                @Override
+                public void onError(int code, String message) {
+                    LogUtils.d("main", "登录聊天服务器失败！");
+                }
+            });
+        } else {
+            LogUtils.d("main", "登录聊天服务器失败！");
+        }
     }
 
 
