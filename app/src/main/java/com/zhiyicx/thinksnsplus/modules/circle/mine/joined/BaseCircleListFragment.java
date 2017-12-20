@@ -112,6 +112,10 @@ public  class BaseCircleListFragment extends TSListFragment<BaseCircleListContra
 
     @Override
     public void toCircleDetail(CircleInfo circleInfo) {
+        if ((CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode()) && circleInfo.getJoined() == null)) {
+            showSnackErrorMessage(getString(R.string.circle_blocked));
+        }
         Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
         startActivity(intent);

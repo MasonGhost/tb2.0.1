@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
@@ -95,7 +96,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     public void toCircleDetail(CircleInfo circleInfo) {
         if ((CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
                 || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode()) && circleInfo.getJoined() == null)) {
-            
+            showSnackErrorMessage(getString(R.string.circle_blocked));
         }
         Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());

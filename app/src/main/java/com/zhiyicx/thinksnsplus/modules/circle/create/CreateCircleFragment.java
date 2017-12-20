@@ -146,7 +146,15 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     boolean isOwner;
     boolean isManager;
 
+    /**
+     * 圈子必须输入的字段数监听
+     */
     private int emptyFlag;
+
+    /**
+     * 有没有头像
+     */
+    private boolean hasHeadImage;
 
     public static CreateCircleFragment newInstance(Bundle bundle) {
         CreateCircleFragment createCircleFragment = new CreateCircleFragment();
@@ -267,6 +275,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .load(photoList.get(0).getImgUrl())
                 .into(mIvHeadIcon);
         mHeadImage = photoList.get(0).getImgUrl();
+        hasHeadImage = true;
+        createCirclepreHandle(emptyFlag != 0);
     }
 
     @Override
@@ -326,7 +336,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     private void createCirclepreHandle(Boolean aBoolean) {
-        mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean);
+        mToolbarRight.setEnabled(hasHeadImage && !mUserTagBeens.isEmpty() && aBoolean);
     }
 
     private void initPhotoPopupWindow() {
