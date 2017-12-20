@@ -123,14 +123,18 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         RxView.clicks(holder.getView(R.id.tv_right))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    mItemManger.closeAllItems();
                     if (mOnSwipeItemClickListener != null) {
                         mOnSwipeItemClickListener.onRightClick(position);
                     }
-                    mItemManger.closeAllItems();
                 });
         RxView.clicks(holder.getView(R.id.rl_left))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    if (hasItemOpend()) {
+                        closeAllItems();
+                        return;
+                    }
                     if (mOnSwipeItemClickListener != null && !mItemManger.isOpen(position)) {
                         mOnSwipeItemClickListener.onLeftClick(position);
                     }
@@ -162,6 +166,7 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
 
     @Override
     public void closeAllItems() {
+        mItemManger.closeAllItems();
         mItemManger.closeAllItems();
     }
 
@@ -199,10 +204,24 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
+                    if (hasItemOpend()) {
+                        closeAllItems();
+                        return;
+                    }
                     if (mOnUserInfoClickListener != null) {
                         mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
                     }
                 });
+    }
+
+    /**
+     * 是否有 item 被划开了
+     *
+     * @return true 有被划开的
+     */
+    public boolean hasItemOpend() {
+        List<Integer> data = mItemManger.getOpenItems();
+        return mItemManger != null && !data.isEmpty() && data.get(0) > -1;
     }
 
     public void setOnSwipItemClickListener(OnSwipeItemClickListener onSwipeItemClickListener) {

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -37,10 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -65,6 +60,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_home_message_list;
     }
 
     @Override
@@ -141,8 +141,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
-        if (mAdapter != null && ((MessageAdapter) mAdapter).hasItemOpend()) {
-            ((MessageAdapter) mAdapter).closeAllItems();
+        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
+            ((MessageAdapterV2) mAdapter).closeAllItems();
         }
     }
 
@@ -197,8 +197,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(rlCritical)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toCommentList();
@@ -211,8 +211,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(liked)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toLikeList();
@@ -224,8 +224,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(review)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toReviewList();
@@ -466,8 +466,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void onBlickClick() {
-        if (((MessageAdapter) mAdapter).hasItemOpend()) {
-            ((MessageAdapter) mAdapter).closeAllItems();
+        if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+            ((MessageAdapterV2) mAdapter).closeAllItems();
         }
     }
 }

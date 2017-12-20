@@ -1,40 +1,41 @@
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:id="@+id/rl_container"
-    android:layout_height="match_parent"
-    >
-
-    <include
-        layout="@layout/view_top_tip"
-        />
-
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/refreshlayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fl_top_tip_container"
-        app:srlAccentColor="@android:color/white"
-        app:srlEnablePureScrollMode="true"
-        app:srlEnablePreviewInEditMode="true">
+        >
 
-
-        <com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView
-            android:id="@+id/swipe_target"
+    <include
+            layout="@layout/view_top_tip"
+            />
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/refreshlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never"/>
+            android:layout_below="@+id/fl_top_tip_container"
+            app:srlAccentColor="@android:color/white"
+            app:srlEnablePreviewInEditMode="true">
 
+        <com.zhiyicx.baseproject.widget.refresh.TSRefreshHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
+        <com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView
+                android:id="@+id/swipe_target"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"/>
+
+        <com.zhiyicx.baseproject.widget.refresh.TSRefreshFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-
     <com.zhiyicx.baseproject.widget.EmptyView
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+            android:id="@+id/empty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
 </RelativeLayout>
