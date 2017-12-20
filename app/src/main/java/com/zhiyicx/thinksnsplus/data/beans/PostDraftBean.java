@@ -10,6 +10,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * @Author Jliuer
  * @Date 2017/12/19/14:48
@@ -17,8 +19,9 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class PostDraftBean extends BaseDraftBean implements Parcelable {
+public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializable{
 
+    private static final long serialVersionUID = -703234318472876036L;
     @Id
     private Long mark;
     private String html;

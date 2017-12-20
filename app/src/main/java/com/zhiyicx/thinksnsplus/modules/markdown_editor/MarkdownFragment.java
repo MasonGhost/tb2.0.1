@@ -167,7 +167,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        onBackPressed();
+        super.setLeftClick();
+//        onBackPressed();
     }
 
     @Override

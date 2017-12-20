@@ -39,8 +39,8 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void initBundleDataWhenOnCreate() {
         super.initBundleDataWhenOnCreate();
-        mCircleInfo = (CircleInfo) getArguments().getSerializable(BUNDLE_SOURCE_DATA);
-        mDraftBean = (PostDraftBean) getArguments().getSerializable(BUNDLE_DRAFT_DATA);
+        mCircleInfo = getArguments().getParcelable(BUNDLE_SOURCE_DATA);
+        mDraftBean = getArguments().getParcelable(BUNDLE_DRAFT_DATA);
         isOutCirclePublish = getArguments().getBoolean(BUNDLE_ISOUT_BOOLEAN);
     }
 
