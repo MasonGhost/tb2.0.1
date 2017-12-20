@@ -111,6 +111,8 @@ public class ApiConfig {
      * 聊天相关
      */
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION_2 + "/im/users";// 获取 IM 帐号信息
+    /**获取环信用户密码，在这个接口中，后端会去判断是否已经有用户，没有则注册*/
+    public static final String APP_PATH_GET_IM_INFO_V2 = "api/" + API_VERSION_2 + "/easemob/password";
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations";// 创建对话
     public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION_2 + "/im/conversations/list/all";// 获取登陆用户的对话列表
     public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations/{cid}";// 获取单个对话信息

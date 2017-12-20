@@ -55,6 +55,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RAN
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_USER_INFO;
@@ -123,6 +124,9 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_IM_INFO)
     Observable<IMBean> getIMInfo();
+
+    @GET(APP_PATH_GET_IM_INFO_V2)
+    Observable<IMBean> getIMInfoV2();
 
     /**
      * 获取用户收到的点赞
