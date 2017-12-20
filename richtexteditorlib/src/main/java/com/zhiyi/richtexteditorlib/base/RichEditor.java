@@ -97,9 +97,7 @@ public abstract class RichEditor extends WebView {
     }
 
     private static final String SETUP_HTML = "file:///android_asset/markdown/editor.html";
-    private static final String SETUP_BASEURL = "file:///android_asset/";
-    private static final String SETUP_CSS = "markdown/index.css";
-    private static final String SETUP_JS = "markdown/richeditor.js";
+    private static final String SETUP_BASEURL = "file:///android_asset/markdown/";
     private static final String CALLBACK_SCHEME = "callback://";
     private static final String STATE_SCHEME = "state://";
     private static final String LINK_CHANGE_SCHEME = "change://";
@@ -278,10 +276,9 @@ public abstract class RichEditor extends WebView {
         LogUtils.d("load", "after load");
     }
 
-    public void loadDraft(String html) {
+    public void loadDraft(String html,String test) {
         LogUtils.d("loadDraft", "before loadDraft");
-        loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", null);
-        loadCSS(SETUP_CSS,SETUP_JS);
+        loadDataWithBaseURL(SETUP_BASEURL, test, "text/html", "utf-8", null);
         LogUtils.d("loadDraft", "after loadDraft");
     }
 

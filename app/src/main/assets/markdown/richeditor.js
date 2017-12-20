@@ -240,9 +240,17 @@ var RE = {
         if(value){
             AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),value);
         }else{
-            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.markdownWords(),value);
+            AndroidInterface.resultWords(_self.getTitle(),_self.cache.editor.innerHTML,_self.markdownWords(),value);
         }
     },
+
+    restoreDraft: function restoreDraft(title,content){
+        var _self = this;
+        _self.cache.title.value = title;
+        _self.cache.editor.innerHTML = content;
+        _self.saveRange();
+    },
+
 	saveRange: function saveRange() {
 		//保存节点位置
 		var _self = this;
@@ -282,7 +290,8 @@ var RE = {
 		//执行指令
 		var _self = this;
 		if (_self.commandSet.indexOf(command) !== -1) {
-			document.execCommand(command, false, null);
+		    var editorDocument = document.getElementById("editor");
+			editorDocument.execCommand(command, false, null);
 		} else {
 			var value = '<' + command + '>';
 			document.execCommand('formatBlock', false, value);

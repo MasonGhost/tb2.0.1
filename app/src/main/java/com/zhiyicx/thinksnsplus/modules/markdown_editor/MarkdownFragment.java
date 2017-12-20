@@ -27,6 +27,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
@@ -130,19 +131,28 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      * 在这里初始化 编辑器
      */
     protected void editorPreLoad() {
-        String draft = getDraftData();
-        if (TextUtils.isEmpty(draft)) {
+        BaseDraftBean draft = getDraftData();
+        if (draft == null) {
             mRichTextView.load();
         } else {
-            mRichTextView.loadDraft(draft);
+            loadDraft(draft);
         }
     }
 
     /**
+     * 还原草稿
+     *
+     * @param draft
+     */
+    protected void loadDraft(BaseDraftBean draft) {
+    }
+
+    /**
      * 草稿内容
+     *
      * @return
      */
-    protected String getDraftData() {
+    protected BaseDraftBean getDraftData() {
         return null;
     }
 

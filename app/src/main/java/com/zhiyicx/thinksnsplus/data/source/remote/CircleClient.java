@@ -86,13 +86,14 @@ public interface CircleClient {
 
     /**
      * 我加入的圈子接口
-     * 默认: join, join 我加入 audit 待审核, allow_post 可以发帖的
+     * 默认: join, join 我加入 audit 待审核, allow_post 可以发帖的, random 随机
      */
     enum MineCircleType {
         JOIN("join"),
         AUDIT("audit"),
         SEARCH("search"),
-        ALLOW("allow_post ");
+        ALLOW("allow_post"),
+        RANDOM("random");
         public String value;
 
         MineCircleType(String value) {
@@ -125,12 +126,13 @@ public interface CircleClient {
     /**
      * 获取推荐的圈子
      *
-     * @param limit
-     * @param offet
+     * @param limit 默认 20 ，数据返回条数 默认为20
+     * @param offet 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param type  random 随机
      * @return
      */
     @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
-    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offet") int offet);
+    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offet") int offet,@Query("type") String type);
 
     /**
      * 获取已经加入的圈子

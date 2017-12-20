@@ -69,7 +69,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
         Subscription subscription = Observable.zip(mRepository.getCircleCount(),
                 mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
-                mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0),
+                mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
@@ -117,7 +117,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
     @Override
     public void getRecommendCircle() {
-        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0)
+        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {

@@ -27,8 +27,8 @@ public class CircleMainRepository extends BaseCircleRepository implements Circle
     }
 
     @Override
-    public Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet) {
-        return mCircleClient.getRecommendCircle(limit,offet)
+    public Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet,String type) {
+        return mCircleClient.getRecommendCircle(limit,offet,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

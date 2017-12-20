@@ -7,6 +7,7 @@ import android.view.View;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
@@ -74,6 +75,11 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
+    protected void loadDraft(BaseDraftBean draft) {
+        mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
+    }
+
+    @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
         super.handlePublish(title, markdwon, noMarkdown);
         if (TextUtils.isEmpty(title)) {
@@ -115,7 +121,7 @@ public class PublishPostFragment extends MarkdownFragment {
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
         postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());
-        postDraftBean.setHtml("<!DOCTYPE html>\n" + html);
+        postDraftBean.setContent(html);
         postDraftBean.setIsOutCircle(isOutCirclePublish);
         mPresenter.saveDraft(postDraftBean);
     }
@@ -126,11 +132,8 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
-    protected String getDraftData() {
-        if (mDraftBean != null) {
-            return mDraftBean.getHtml();
-        }
-        return null;
+    protected BaseDraftBean getDraftData() {
+        return mDraftBean;
     }
 
     @Override
