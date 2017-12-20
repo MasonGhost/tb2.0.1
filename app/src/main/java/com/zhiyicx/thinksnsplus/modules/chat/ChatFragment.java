@@ -170,6 +170,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             } else {
                 mMessageItemBean.setConversation(conversation);
                 mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
+                updateConversation(conversation);
             }
         } else {
             mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
@@ -285,9 +286,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    public void updateConversation(Conversation conversation) {
-//        mMessageItemBean.setConversation(conversation);
-//        initMessageList();
+    public void updateConversation(EMConversation conversation) {
+        mMessageItemBean.setConversation(conversation);
+        initMessageList(new ArrayList<>());
     }
 
     @Override

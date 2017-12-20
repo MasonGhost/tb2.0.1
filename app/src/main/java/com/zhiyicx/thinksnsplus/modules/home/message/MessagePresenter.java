@@ -524,9 +524,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 新对话创建回调
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
-    private void onConversationCreated(MessageItemBean messageItemBean) {
+    private void onConversationCreated(MessageItemBeanV2 messageItemBean) {
 
-        mRootView.getListDatas().add(0, messageItemBean);
+        mRootView.getRealMessageList().add(0, messageItemBean);
         mRootView.refreshData();
 
     }

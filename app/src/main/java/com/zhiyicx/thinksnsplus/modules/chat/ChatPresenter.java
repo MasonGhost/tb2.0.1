@@ -128,7 +128,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     mRootView.hideLoading();
-                    mRootView.getHistoryMessageSuccess(list, "0".equals(id));
+                    mRootView.getHistoryMessageSuccess(list, false);
                 });
         addSubscrebe(subscribe);
         return data;
@@ -231,7 +231,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                     if (!TextUtils.isEmpty(text)) {
                         // 发送信息的时候 如果没有会话信息，则创建一个
                     }
-                    messageItemBeanV2.setConversation(conversation);
+                    mRootView.getMessItemBean().setConversation(conversation);
+                    mRootView.updateConversation(conversation);
                     return messageItemBeanV2;
                 })
                 .subscribe(messageItemBeanV2 -> {

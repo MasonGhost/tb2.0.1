@@ -67,7 +67,7 @@ public interface ChatContract {
         /**
          * 更新对话信息
          */
-        void updateConversation(Conversation conversation);
+        void updateConversation(EMConversation conversation);
 
         /**
          * 获取会话的信息
