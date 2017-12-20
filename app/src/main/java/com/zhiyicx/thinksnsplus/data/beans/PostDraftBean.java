@@ -22,6 +22,10 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable {
     @Id
     private Long mark;
     private String html;
+    private String title;
+    private String content;
+    private String create_at;
+    private String updated_at;
     @Convert(converter = CircleInfoConvert.class, columnType = String.class)
     private CircleInfo circleInfo;
 
@@ -49,6 +53,38 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable {
 
     public void setHtml(String html) {
         this.html = html;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(String create_at) {
+        this.create_at = create_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 
     public boolean getOutCircle() {
@@ -84,55 +120,6 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.mark);
-        dest.writeString(this.html);
-        dest.writeParcelable(this.circleInfo, flags);
-        dest.writeByte(this.isOutCircle ? (byte) 1 : (byte) 0);
-        dest.writeValue(this.id);
-    }
-
-    public PostDraftBean() {
-    }
-
-    protected PostDraftBean(Parcel in) {
-        super(in);
-        this.mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.html = in.readString();
-        this.circleInfo = in.readParcelable(CircleInfo.class.getClassLoader());
-        this.isOutCircle = in.readByte() != 0;
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-    }
-
-    @Generated(hash = 866024632)
-    public PostDraftBean(Long mark, String html, CircleInfo circleInfo, boolean isOutCircle,
-            Long id) {
-        this.mark = mark;
-        this.html = html;
-        this.circleInfo = circleInfo;
-        this.isOutCircle = isOutCircle;
-        this.id = id;
-    }
-
-    public static final Creator<PostDraftBean> CREATOR = new Creator<PostDraftBean>() {
-        @Override
-        public PostDraftBean createFromParcel(Parcel source) {
-            return new PostDraftBean(source);
-        }
-
-        @Override
-        public PostDraftBean[] newArray(int size) {
-            return new PostDraftBean[size];
-        }
-    };
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -158,4 +145,66 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable {
 
     public static class CircleInfoConvert extends BaseConvert<CircleInfo> {
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.mark);
+        dest.writeString(this.html);
+        dest.writeString(this.title);
+        dest.writeString(this.content);
+        dest.writeString(this.create_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.circleInfo, flags);
+        dest.writeByte(this.isOutCircle ? (byte) 1 : (byte) 0);
+        dest.writeValue(this.id);
+    }
+
+    public PostDraftBean() {
+    }
+
+    protected PostDraftBean(Parcel in) {
+        super(in);
+        this.mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.html = in.readString();
+        this.title = in.readString();
+        this.content = in.readString();
+        this.create_at = in.readString();
+        this.updated_at = in.readString();
+        this.circleInfo = in.readParcelable(CircleInfo.class.getClassLoader());
+        this.isOutCircle = in.readByte() != 0;
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+    }
+
+    @Generated(hash = 350352856)
+    public PostDraftBean(Long mark, String html, String title, String content,
+            String create_at, String updated_at, CircleInfo circleInfo, boolean isOutCircle,
+            Long id) {
+        this.mark = mark;
+        this.html = html;
+        this.title = title;
+        this.content = content;
+        this.create_at = create_at;
+        this.updated_at = updated_at;
+        this.circleInfo = circleInfo;
+        this.isOutCircle = isOutCircle;
+        this.id = id;
+    }
+
+    public static final Creator<PostDraftBean> CREATOR = new Creator<PostDraftBean>() {
+        @Override
+        public PostDraftBean createFromParcel(Parcel source) {
+            return new PostDraftBean(source);
+        }
+
+        @Override
+        public PostDraftBean[] newArray(int size) {
+            return new PostDraftBean[size];
+        }
+    };
 }

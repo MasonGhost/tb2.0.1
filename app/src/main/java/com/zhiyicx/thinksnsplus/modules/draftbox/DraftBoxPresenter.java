@@ -1,16 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
-import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.PostDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -30,6 +29,9 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     @Inject
     AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
+    @Inject
+    PostDraftBeanGreenDaoImpl mPostDraftBeanGreenDao;
+
     @Override
     protected boolean useEventBus() {
         return super.useEventBus();
@@ -47,14 +49,16 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-      mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     public List<BaseDraftBean> requestCacheData() {
-        if (DraftBoxFragment.MY_DRAFT_TYPE_QUESTION.equals(mRootView.getDraftType())){
+        if (DraftBoxFragment.MY_DRAFT_TYPE_QUESTION.equals(mRootView.getDraftType())) {
             return mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
-        }else if(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER.equals(mRootView.getDraftType())){
+        } else if (DraftBoxFragment.MY_DRAFT_TYPE_ANSWER.equals(mRootView.getDraftType())) {
             return mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        } else if (DraftBoxFragment.MY_DRAFT_TYPE_POST.equals(mRootView.getDraftType())) {
+            return mPostDraftBeanGreenDao.getMultiBasetDraftDataFromCache();
         }
         return null;
     }
@@ -65,8 +69,11 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
             QAPublishBean deleteData = (QAPublishBean) draftBean;
             mQAPublishBeanGreenDaoImpl.deleteSingleCache(deleteData);
         } else if (draftBean instanceof AnswerDraftBean) {
-            AnswerDraftBean deleteData1 = (AnswerDraftBean) draftBean;
-            mAnswerDraftBeanGreenDaoImpl.deleteSingleCache(deleteData1);
+            AnswerDraftBean deleteData = (AnswerDraftBean) draftBean;
+            mAnswerDraftBeanGreenDaoImpl.deleteSingleCache(deleteData);
+        } else if (draftBean instanceof PostDraftBean) {
+            PostDraftBean deleteData = (PostDraftBean) draftBean;
+            mPostDraftBeanGreenDao.deleteSingleCache(deleteData);
         }
     }
 

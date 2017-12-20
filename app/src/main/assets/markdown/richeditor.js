@@ -240,7 +240,7 @@ var RE = {
         if(value){
             AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),value);
         }else{
-            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.noMarkdownWords(),value);
+            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.markdownWords(),value);
         }
     },
 	saveRange: function saveRange() {

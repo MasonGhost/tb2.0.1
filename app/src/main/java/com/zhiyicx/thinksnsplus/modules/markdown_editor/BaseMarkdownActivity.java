@@ -43,7 +43,8 @@ public abstract class BaseMarkdownActivity<F extends MarkdownFragment> extends T
     public static void startActivityForPublishPostInDraft(Context context, PostDraftBean draftBean) {
         Intent intent = new Intent(context, PublishPostActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(MarkdownFragment.BUNDLE_SOURCE_DATA, draftBean);
+        bundle.putParcelable(PublishPostFragment.BUNDLE_DRAFT_DATA, draftBean);
+        bundle.putParcelable(MarkdownFragment.BUNDLE_SOURCE_DATA, draftBean.getCircleInfo());
         bundle.putBoolean(PublishPostFragment.BUNDLE_ISOUT_BOOLEAN, draftBean.getIsOutCircle());
         intent.putExtras(bundle);
         context.startActivity(intent);

@@ -19,7 +19,7 @@ public class DraftContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.draft_type_questions), getString(R.string.draft_type_answers));
+        return Arrays.asList(getString(R.string.draft_type_questions), getString(R.string.draft_type_answers),getString(R.string.draft_type_circle));
     }
 
     @Override
@@ -27,7 +27,8 @@ public class DraftContainerFragment extends TSViewPagerFragment {
         if (mFragmentList == null) {
             Fragment questionDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_QUESTION);
             Fragment answerDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_ANSWER);
-            mFragmentList = Arrays.asList(questionDraft, answerDraft);
+            Fragment postDraft = DraftBoxFragment.getInstance(DraftBoxFragment.MY_DRAFT_TYPE_POST);
+            mFragmentList = Arrays.asList(questionDraft, answerDraft,postDraft);
         }
         return mFragmentList;
     }

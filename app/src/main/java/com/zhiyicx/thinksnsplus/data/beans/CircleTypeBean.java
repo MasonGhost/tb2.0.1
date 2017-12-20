@@ -8,6 +8,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.io.Serializable;
+
 /**
  * @author Jliuer
  * @Date 2017/11/27/16:56
@@ -15,8 +17,9 @@ import org.greenrobot.greendao.annotation.Id;
  * @Description
  */
 @Entity
-public class CircleTypeBean extends BaseListBean {
+public class CircleTypeBean extends BaseListBean implements Serializable{
 
+    private static final long serialVersionUID = -7537055682609009723L;
     @Id
     private Long id;
     private long sort_by;

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -50,6 +50,9 @@ public class PublishPostFragment extends MarkdownFragment {
         if (isOutCirclePublish) {
             mLlCircleContainer.setVisibility(View.VISIBLE);
             mLine.setVisibility(View.VISIBLE);
+            if (mCircleInfo != null) {
+                mCircleName.setText(mCircleInfo.getName());
+            }
         }
     }
 
@@ -99,8 +102,7 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
-    protected void saveDraft(String html) {
-        super.saveDraft(html);
+    protected void saveDraft(String title, String html) {
         PostDraftBean postDraftBean = new PostDraftBean();
         long mark;
         if (mDraftBean != null) {
@@ -110,7 +112,9 @@ public class PublishPostFragment extends MarkdownFragment {
                     .currentTimeMillis());
         }
         postDraftBean.setMark(mark);
+        postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
+        postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());
         postDraftBean.setHtml("<!DOCTYPE html>\n" + html);
         postDraftBean.setIsOutCircle(isOutCirclePublish);
         mPresenter.saveDraft(postDraftBean);
@@ -119,6 +123,14 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void cancleEdit() {
         super.cancleEdit();
+    }
+
+    @Override
+    protected String getDraftData() {
+        if (mDraftBean != null) {
+            return mDraftBean.getHtml();
+        }
+        return null;
     }
 
     @Override

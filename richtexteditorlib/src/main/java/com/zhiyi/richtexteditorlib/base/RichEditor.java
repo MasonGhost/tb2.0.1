@@ -277,7 +277,7 @@ public abstract class RichEditor extends WebView {
 
     public void loadDraft(String html) {
         LogUtils.d("loadDraft", "before load");
-        loadUrl(SETUP_HTML);
+        loadUrl(html);
         LogUtils.d("loadDraft", "after load");
     }
 

@@ -596,6 +596,7 @@
 
     <string name="draft_type_questions">提问</string>
     <string name="draft_type_answers">回答</string>
+    <string name="draft_type_circle">圈子</string>
 
 
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>

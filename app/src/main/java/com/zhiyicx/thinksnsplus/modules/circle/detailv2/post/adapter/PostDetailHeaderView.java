@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -125,7 +126,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
                 css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
-                mContent.addStyleSheet(css);
+                mContent.addStyleSheet(MarkDownRule.generateStandardQuoteStyle());
                 mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
 

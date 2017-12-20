@@ -94,6 +94,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     /**
      * 发布资源之前的处理，比如封装数据
+     *
      * @return 数据是否完整
      */
     protected boolean preHandlePublish() {
@@ -123,6 +124,26 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      */
     protected void onActivityResultForChooseCircle(CircleInfo circleInfo) {
 
+    }
+
+    /**
+     * 在这里初始化 编辑器
+     */
+    protected void editorPreLoad() {
+        String draft = getDraftData();
+        if (TextUtils.isEmpty(draft)) {
+            mRichTextView.load();
+        } else {
+            mRichTextView.loadDraft(draft);
+        }
+    }
+
+    /**
+     * 草稿内容
+     * @return
+     */
+    protected String getDraftData() {
+        return null;
     }
 
     public static MarkdownFragment newInstance(Bundle bundle) {
@@ -168,13 +189,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         if (isPublish) {
             handlePublish(title, markdwon, noMarkdown);
         } else {
-            DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
-            boolean canSaveDraft = !TextUtils.isEmpty(title + markdwon);
+            boolean canSaveDraft = !TextUtils.isEmpty(title + noMarkdown);
             if (!canSaveDraft) {
                 mActivity.finish();
                 return;
             }
             initEditWarningPop(title, markdwon);
+            DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         }
     }
 
@@ -186,7 +207,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
         initListener();
-        mRichTextView.load();
+        editorPreLoad();
     }
 
     @Override
@@ -378,11 +399,12 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
-                    saveDraft(markdwon);
+                    saveDraft(title, markdwon);
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
-                .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
+                .bottomClickListener(() -> mEditWarningPopupWindow.hide())
+                .build();
         mEditWarningPopupWindow.show();
     }
 
@@ -390,7 +412,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         return true;
     }
 
-    protected void saveDraft(String html) {
+    protected void saveDraft(String title, String html) {
     }
 
     protected void cancleEdit() {

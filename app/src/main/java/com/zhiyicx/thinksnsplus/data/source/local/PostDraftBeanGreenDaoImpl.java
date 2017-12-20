@@ -2,9 +2,12 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -70,5 +73,15 @@ public class PostDraftBeanGreenDaoImpl extends CommonCacheImpl<PostDraftBean> {
     @Override
     public long insertOrReplace(PostDraftBean newData) {
         return getWDaoSession().getPostDraftBeanDao().insertOrReplace(newData);
+    }
+
+    public List<BaseDraftBean> getMultiBasetDraftDataFromCache() {
+        List<PostDraftBean> realData = getMultiDataFromCache();
+        List<BaseDraftBean> needData = new ArrayList<>();
+        if (!realData.isEmpty()) {
+            needData.addAll(realData);
+        }
+        Collections.reverse(needData);
+        return needData;
     }
 }
