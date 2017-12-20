@@ -232,10 +232,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 点击发现
             case R.id.ll_find:
-                if (TouristConfig.FIND_CAN_LOOK) {
-                    throw new NullPointerException("----test------");
-                }
-
                 if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_FIND, false);
                 }
