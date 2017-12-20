@@ -78,7 +78,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
-                            if (CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
+                            if (CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
 
                                 return;
                             }

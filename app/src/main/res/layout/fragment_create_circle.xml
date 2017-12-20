@@ -92,6 +92,7 @@
                     android:hint="@string/edit_circle_name"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:maxLength="@integer/circle_name_input_max_size"
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
@@ -260,7 +261,7 @@
                     android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
                     app:hintContent="@string/edit_introduce"
-                    app:limitSize="@integer/introduce_input_max_size"
+                    app:limitSize="@integer/circle_introduce_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
 
@@ -424,7 +425,7 @@
                     android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
                     app:hintContent="@string/edit_circle_notice"
-                    app:limitSize="@integer/introduce_input_max_size"
+                    app:limitSize="@integer/circle_notice_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
 

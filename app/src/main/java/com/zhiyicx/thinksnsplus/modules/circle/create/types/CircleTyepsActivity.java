@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create.types;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.DaggerAllCircleContainerComponent;
 
 /**
  * @author Jliuer
@@ -10,14 +12,18 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleTyepsActivity extends TSActivity {
+public class CircleTyepsActivity extends TSActivity<AllCircleContainerPresenter, CircleTypesFragment> {
     @Override
-    protected Fragment getFragment() {
+    protected CircleTypesFragment getFragment() {
         return CircleTypesFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerAllCircleContainerComponent
+                .builder()
+                .allCircleContainerPresenterModule(new AllCircleContainerPresenterModule(mContanierFragment))
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .build().inject(this);
     }
 }

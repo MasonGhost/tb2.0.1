@@ -93,6 +93,10 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
 
     @Override
     public void toCircleDetail(CircleInfo circleInfo) {
+        if ((CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode()) && circleInfo.getJoined() == null)) {
+            
+        }
         Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
         startActivity(intent);

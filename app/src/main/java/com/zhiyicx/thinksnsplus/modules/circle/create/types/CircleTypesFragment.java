@@ -9,13 +9,10 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerContract;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenterModule;
-import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.DaggerAllCircleContainerComponent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -57,9 +54,6 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -137,11 +131,6 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
 
     @Override
     protected void initData() {
-        DaggerAllCircleContainerComponent
-                .builder()
-                .allCircleContainerPresenterModule(new AllCircleContainerPresenterModule(this))
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .build().inject(this);
         mCircleTypeBeans = mPresenter.getCircleTypesFormLocal();
         if (mCircleTypeBeans.isEmpty()) {
             mPresenter.getCategroiesList(0, 0);

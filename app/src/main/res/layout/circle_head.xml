@@ -77,7 +77,7 @@
             android:drawableLeft="@mipmap/channel_ico_add_white"
             android:drawablePadding="@dimen/spacing_small_3dp"
             android:paddingLeft="@dimen/spacing_normal"
-            android:text="订阅"
+            android:text="@string/join_group"
             android:textColor="@color/white"
             android:textSize="@dimen/size_content_comment"/>
 

@@ -96,11 +96,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.onResponseError(throwable,isLoadMore);
                     }
                 });
 
@@ -163,7 +165,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
-                            if (CreateCircleFragment.MODE_PAID.equals(circleInfo.getMode())) {
+                            if (CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
 
                                 return;
                             }

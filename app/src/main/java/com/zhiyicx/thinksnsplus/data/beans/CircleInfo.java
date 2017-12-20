@@ -151,6 +151,11 @@ public class CircleInfo extends BaseListBean implements Serializable {
     @Convert(columnType = String.class, converter = CircleTypeBeanConvert.class)
     private CircleTypeBean category;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public String getAvatar() {
         return avatar;
     }

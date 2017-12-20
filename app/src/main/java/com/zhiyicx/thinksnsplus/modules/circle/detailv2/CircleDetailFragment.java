@@ -460,17 +460,22 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
-    public void onCommentContentClick(CirclePostListBean dynamicBean, int position) {
-        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
-        if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
+    public void onCommentContentClick(CirclePostListBean postListBean, int position) {
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
+        boolean isJoined = mCircleInfo.getJoined() == null;
+        if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
+            showSnackErrorMessage(getString(R.string.circle_blacklist));
+            return;
+        }
+        if (postListBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            initDeletCommentPopWindow(postListBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
-            mReplyToUserId = dynamicBean.getComments().get(position).getUser_id();
+            mReplyToUserId = postListBean.getComments().get(position).getUser_id();
             String contentHint = getString(R.string.default_input_hint);
-            if (dynamicBean.getComments().get(position).getReply_to_user_id() != dynamicBean.getUser_id()) {
-                contentHint = getString(R.string.reply, dynamicBean.getComments().get(position).getCommentUser().getName());
+            if (postListBean.getComments().get(position).getReply_to_user_id() != postListBean.getUser_id()) {
+                contentHint = getString(R.string.reply, postListBean.getComments().get(position).getCommentUser().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
@@ -548,10 +553,17 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        boolean isJoined = mCircleInfo.getJoined() == null;
+        if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
+            showSnackErrorMessage(getString(R.string.circle_blacklist));
+            return;
+        }
+        // 减去 header
+        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = dataPosition;
         boolean canNotDeal;
-        switch (viewPosition) { // 0 1 2 3 代表 view item 位置
+        // 0 1 2 3 代表 view item 位置
+        switch (viewPosition) {
             // 喜欢
             case 0:
                 // 还未发送成功的动态列表不查看详情
@@ -574,14 +586,17 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 showCommentView();
                 mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                 mCurrentPostion = dataPosition;
-                mReplyToUserId = 0;// 0 代表评论动态
+                // 0 代表评论动态
+                mReplyToUserId = 0;
+                break;
+            // 浏览
+            case 2:
+                // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()));
                 break;
 
-            case 2: // 浏览
-                onItemClick(null, null, (dataPosition + 1)); // 加上 header
-                break;
-
-            case 3: // 更多
+            // 更多
+            case 3:
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
@@ -604,7 +619,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 }
                 break;
             default:
-                onItemClick(null, null, (dataPosition + 1)); // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()));
         }
     }
 

@@ -181,8 +181,7 @@ public class CircleListItem extends BaseCircleItem {
                         if (mCircleItemItemEvent == null) {
                             return;
                         }
-                        if (mPresenter != null && CreateCircleFragment
-                                .MODE_PAID.equals(circleInfo.getMode())) {
+                        if (mPresenter != null && CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                             initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
                                     (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
                                     .buy_pay_words_desc);
@@ -205,13 +204,5 @@ public class CircleListItem extends BaseCircleItem {
                 .subscribe(aVoid -> {
 
                 });
-    }
-
-    private void toChannelDetailPage(Context context, GroupInfoBean groupInfoBean) {
-        Intent intent = new Intent(context, ChannelDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChannelDetailFragment.CHANNEL_HEADER_INFO_DATA, groupInfoBean);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 }

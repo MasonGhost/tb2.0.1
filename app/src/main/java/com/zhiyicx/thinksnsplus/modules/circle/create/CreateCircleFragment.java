@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.text.InputFilter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -18,6 +20,7 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxCheckedTextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -29,6 +32,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
@@ -53,6 +57,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func4;
 
 /**
  * @author Jliuer
@@ -67,10 +72,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private static final int REQUST_CODE_CATEGORY = 5000;
 
     public static final int REQUST_CODE_UPDATE = 1996;
-
-    public static final String MODE_PUBLIC = "public";
-    public static final String MODE_PRIVATE = "private";
-    public static final String MODE_PAID = "paid";
 
     public static final String CIRCLEINFO = "circleinfo";
     public static final String CANUPDATE = "canupdate";
@@ -145,6 +146,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     boolean isOwner;
     boolean isManager;
 
+    private int emptyFlag;
+
     public static CreateCircleFragment newInstance(Bundle bundle) {
         CreateCircleFragment createCircleFragment = new CreateCircleFragment();
         createCircleFragment.setArguments(bundle);
@@ -187,9 +190,20 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         }
     }
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initData() {
         mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
+
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if (canUpdate && !isManager) {
+                    jumpToEditUserTag();
+                }
+            }
+            return true;
+        });
         if (mCircleInfo == null) {
             return;
         }
@@ -205,11 +219,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected boolean usePermisson() {
         return true;
-    }
-
-    @Override
-    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
-        super.snackViewDismissWhenTimeOut(prompt);
     }
 
     @Override
@@ -246,6 +255,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             mUserTagBeens.clear();
             mUserTagBeens.addAll(choosedTags);
             mUserInfoTagsAdapter.notifyDataChanged();
+            createCirclepreHandle(emptyFlag != 0);
             mTvTagHint.setVisibility(choosedTags.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
@@ -270,39 +280,53 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     private void initListener() {
+
         Observable.combineLatest(
                 RxTextView.textChanges(mEtCircleName),
                 RxTextView.textChanges(mTvCircleType),
-                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()),
-                RxTextView.textChanges(mTvLocation),
-                RxTextView.textChanges(mTvNotice.getEtContent()), (charSequence, charSequence2, charSequence3, charSequence4, charSequence5) ->
-                        charSequence5.length() * charSequence.length() * charSequence2.length() * charSequence3.length() * charSequence4.length() != 0)
-                .subscribe((Boolean aBoolean) -> mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean));
+                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()), (charSequence, charSequence2, charSequence3) -> {
+                    emptyFlag = charSequence.length() * charSequence2.length() * charSequence3.length();
+                    return emptyFlag != 0;
+                }).subscribe(this::createCirclepreHandle);
+
+        RxTextView.textChanges(mEtCircleAmount)
+                .filter(charSequence -> mCbToll.isChecked())
+                .subscribe(charSequence -> createCirclepreHandle(emptyFlag != 0 && !charSequence.toString().isEmpty()));
+
 
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mCbFree.setChecked(!isChecked);
+                mCbFree.setChecked(false);
+                createCirclepreHandle(emptyFlag != 0 && mEtCircleAmount.getText().toString().length() > 0);
             }
         });
 
         mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mCbToll.setChecked(!isChecked);
+                mCbToll.setChecked(false);
+                createCirclepreHandle(emptyFlag != 0);
             }
         });
 
         mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
+                createCirclepreHandle(emptyFlag != 0);
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
             } else {
+                createCirclepreHandle(emptyFlag != 0 && (mCbFree.isChecked() || mCbToll.isChecked()));
                 mLlFree.setVisibility(View.VISIBLE);
                 mLlCharge.setVisibility(View.VISIBLE);
             }
         });
 
+
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
+    }
+
+    private void createCirclepreHandle(Boolean aBoolean) {
+        mToolbarRight.setEnabled(!mUserTagBeens.isEmpty() && aBoolean);
     }
 
     private void initPhotoPopupWindow() {
@@ -340,9 +364,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             mCreateCircleBean.setLocation(mTvLocation.getText().toString());
         }
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
-        mCreateCircleBean.setMode(mCbToll.isChecked() ? MODE_PAID : (mWcBlock.isChecked() ? MODE_PRIVATE : MODE_PUBLIC));
+        mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
+                CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
-        mCreateCircleBean.setMoney(mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
+        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
         mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
         List<CreateCircleBean.TagId> tags = new ArrayList<>();
         for (UserTagBean tagBean : mUserTagBeens) {
@@ -383,14 +408,16 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
 
         mEtCircleName.setText(mCircleInfo.getName());
+        mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter()});
         mTvCircleType.setText(mCircleInfo.getCategory().getName());
         mTvLocation.setText(mCircleInfo.getLocation());
         mTvNotice.setText(mCircleInfo.getNotice());
         mEtCircleIntroduce.setText(mCircleInfo.getSummary());
         mWcSynchro.setChecked(mCircleInfo.getAllow_feed() == 1);
-        mWcBlock.setChecked(MODE_PRIVATE.equals(mCircleInfo.getMode()));
-        mCbToll.setChecked(MODE_PAID.equals(mCircleInfo.getMode()));
-        mCbFree.setChecked(MODE_PUBLIC.equals(mCircleInfo.getMode()));
+        mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()));
+        mCbToll.setChecked(CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode()));
+        mCbFree.setChecked(CircleInfo.CirclePayMode.PUBLIC.value.equals(mCircleInfo.getMode()));
+        mEtCircleAmount.setText(mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "");
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
         mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);
@@ -406,10 +433,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mTvNotice.setEnabled(canUpdate);
         mEtCircleIntroduce.setEnabled(canUpdate);
-        RxView.clicks(mFlTags)
-                .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .filter(aVoid -> canUpdate && !isManager)
-                .subscribe(aVoid -> jumpToEditUserTag());
 
     }
 
