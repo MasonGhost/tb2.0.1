@@ -308,6 +308,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
             }
             mDatas.addAll(0, list);
             mMessageList.refresh();
+            mMessageList.scrollToBottom();
         }
     }
 
