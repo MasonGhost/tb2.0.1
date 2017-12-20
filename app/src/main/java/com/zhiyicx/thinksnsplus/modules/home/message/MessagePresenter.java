@@ -473,6 +473,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                     mRootView.getRealMessageList().addAll(0, list1);
                     mRootView.refreshData();
+                    checkBottomMessageTip();
                 });
         addSubscrebe(subscribe);
     }

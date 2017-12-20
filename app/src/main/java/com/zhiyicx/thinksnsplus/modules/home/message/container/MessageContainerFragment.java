@@ -132,24 +132,24 @@ public class MessageContainerFragment extends TSViewPagerFragment {
      * @param position 位置 0-消息 1=通知
      */
     public void setNewMessageNoticeState(boolean isShow, int position) {
-        if (position < 0 && position > 1) {
+        if (position != 0 && position != 1) {
             return;
         }
         switch (position) {
             case 0:
                 if (isShow == mIsMessageTipShow) {
-                    return;
+//                    return;
                 } else {
                     mIsMessageTipShow = isShow;
                 }
-
+                break;
             case 1:
                 if (isShow == mIsNotificationTipShow) {
-                    return;
+//                    return;
                 } else {
                     mIsNotificationTipShow = isShow;
                 }
-
+                break;
             default:
         }
         BadgePagerTitleView badgePagerTitleView = mBadgePagerTitleViews.get(position);
