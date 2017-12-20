@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.View;
@@ -156,10 +157,26 @@ public class TextViewUtils {
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
+            mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
+            mTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if (mTextView.getLineCount() > mMaxLineNums) {
+                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
+                        if (mOriMsg.length() >= (endOfLastLine - 2)) {
+                            String result = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+                            mTextView.setText(result);
+                            mTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            });
             if (mOnTextSpanComplete != null) {
                 mOnTextSpanComplete.onComplete();
             }
         }
+
     }
 
     class SpanTextClickable extends ClickableSpan {
