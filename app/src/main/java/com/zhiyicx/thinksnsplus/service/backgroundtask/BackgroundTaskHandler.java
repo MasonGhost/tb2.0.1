@@ -655,7 +655,7 @@ public class BackgroundTaskHandler {
                         LogUtils.d("-----login-----imConfig--------" + data.toString());
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
-                        imConfig.setToken(data.getIm_password());
+                        imConfig.setToken(data.getIm_pwd_hash());
 
                         if (mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve().contains("ws:") || mSystemRepository
                                 .getBootstrappersInfoFromLocal().getIm_serve().contains("wss:")) {

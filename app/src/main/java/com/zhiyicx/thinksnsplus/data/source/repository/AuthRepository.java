@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -128,7 +129,7 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public Observable<IMBean> getImInfo() {
-        return mUserInfoClient.getIMInfo()
+        return mUserInfoClient.getIMInfoV2()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -295,10 +296,11 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public void loginIM() {
         // 此处替换为环信的登陆
+        IMConfig config = getIMConfig();
         //回调
-        if (getAuthBean() != null && getAuthBean().getUser() != null){
+        if (config != null && !TextUtils.isEmpty(config.getToken())){
             String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
-            String imPassword = getAuthBean().getUser().getIm_pwd_hash() + "";
+            String imPassword = config.getToken();
             EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {
                 @Override
                 public void onSuccess() {
