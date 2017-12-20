@@ -82,13 +82,16 @@ public class RequestIntercept implements Interceptor {
         String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
         LogUtils.json(TAG, bodyString);
-        if (USE_ERROR_LOG){
+        if (USE_ERROR_LOG) {
             // 服務器出錯時候打印
-            LogUtils.d(TAG, bodyString);
+            try {
+                LogUtils.d(TAG, bodyString);
+            } catch (Exception ignored) {
+            }
         }
 
         //这里可以比客户端提前一步拿到服务器返回的结果,可以做一些操作,比如token超时,重新获取
-        if (mListener != null){
+        if (mListener != null) {
             return mListener.onHttpResponse(bodyString, chain, originalResponse);
         }
 
