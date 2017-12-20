@@ -87,7 +87,6 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         } else {
             holder.setVisible(R.id.tv_chat_time, View.GONE);
         }
-        // 消息状态
         if (chatItemBean.getMessage().status() ==  EMMessage.Status.FAIL){
             holder.setImageResource(R.id.msg_status, R.mipmap.msg_box_remind);
             holder.setVisible(R.id.msg_status, View.VISIBLE);

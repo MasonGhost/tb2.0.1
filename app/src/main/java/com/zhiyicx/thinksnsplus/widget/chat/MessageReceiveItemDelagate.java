@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
  * @Describe 我发送的文本消息
@@ -35,5 +36,4 @@ public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
     public boolean isForViewType(ChatItemBean item, int position) {
         return item.getUserInfo() == null || item.getUserInfo().getUser_id() == null || item.getUserInfo().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id();
     }
-
 }
