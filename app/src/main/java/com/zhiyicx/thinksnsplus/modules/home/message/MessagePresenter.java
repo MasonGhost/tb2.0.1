@@ -576,9 +576,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             TimeUtils
                                     .utc2LocalLong(data.getLikes().get(0).getTime()));
 
-                    String feedTime = data.getPinneds().getFeeds().getTime();
+                    String feedTime = data.getPinneds() != null && data.getPinneds().getFeeds() != null ? data.getPinneds().getFeeds().getTime() :
+                            null;
 
-                    String newTime = data.getPinneds().getNews().getTime();
+                    String newTime = data.getPinneds() != null && data.getPinneds().getNews() != null ? data.getPinneds().getNews().getTime() : null;
                     long reviewTime = 0;
                     if (feedTime != null) {
                         reviewTime = TimeUtils
