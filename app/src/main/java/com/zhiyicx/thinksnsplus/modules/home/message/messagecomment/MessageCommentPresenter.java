@@ -98,7 +98,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.comment_fail));
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override

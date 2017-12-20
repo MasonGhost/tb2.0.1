@@ -402,7 +402,8 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<Object> makeNotificationReaded(String notificationId) {
         return mUserInfoClient.makeNotificationReaded(notificationId)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
@@ -411,6 +412,7 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<Object> makeNotificationAllReaded() {
         return mUserInfoClient.makeNotificationAllReaded()
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

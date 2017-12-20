@@ -9,6 +9,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListBaseInfoAdapter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -23,31 +24,14 @@ import java.util.regex.Pattern;
  * @contact email:648129313@qq.com
  */
 
-public class MyFollowQuestionAdapter extends CommonAdapter<BaseListBean>{
+public class MyFollowQuestionAdapter extends QAListBaseInfoAdapter<BaseListBean> {
 
     public MyFollowQuestionAdapter(Context context, List<BaseListBean> datas) {
-        super(context, R.layout.item_my_follow_question, datas);
+        super(context, R.layout.item_qa_content, datas);
     }
 
     @Override
-    protected void convert(ViewHolder holder, BaseListBean baseListBean, int position) {
-        QAListInfoBean qaListInfoBean = (QAListInfoBean) baseListBean;
-        holder.setText(R.id.tv_title, qaListInfoBean.getSubject());
-        holder.setText(R.id.tv_count, String.format(mContext.getString(R.string.qa_show_topic_followed),
-                qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
-        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_count), setLinks(qaListInfoBean), false);
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(qaListInfoBean.getCreated_at()));
-    }
-
-    private List<Link> setLinks(QAListInfoBean qaListInfoBean) {
-        List<Link> links = new ArrayList<>();
-        Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(numberCountLink);
-        return links;
+    protected boolean isNeedShowAnswer() {
+        return false;
     }
 }

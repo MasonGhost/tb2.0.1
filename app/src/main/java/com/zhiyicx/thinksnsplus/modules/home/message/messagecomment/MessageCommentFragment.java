@@ -95,7 +95,7 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected CommonAdapter<CommentedBean> getAdapter() {
-        CommonAdapter commonAdapter = new MessageCommentAdapter(getActivity(), R.layout
+        CommonAdapter commonAdapter = new MessageCommentAdapter(mActivity, R.layout
                 .item_message_comment_list, mListDatas);
         commonAdapter.setOnItemClickListener(this);
         return commonAdapter;

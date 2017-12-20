@@ -120,7 +120,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint))
                     // optional, defaults to .15f
                     .setHighlightAlpha(.5f)
-                    .setBold(true)
+                    .setBold(false)
                     // optional, defaults to true
                     .setUnderlined(false)
                     .setOnLongClickListener((clickedText, linkMetadata) -> {

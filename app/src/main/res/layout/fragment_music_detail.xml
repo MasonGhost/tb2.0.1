@@ -65,7 +65,7 @@
                     app:itv_direction="TOP"
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_playvolume"
-                    app:itv_text="6567"
+                    app:itv_text="7"
                     app:itv_textColor="@color/white"/>
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView
@@ -76,7 +76,7 @@
                     app:itv_direction="TOP"
                     app:itv_gap="@dimen/spacing_small_4dp"
                     app:itv_icon="@mipmap/music_ico_share"
-                    app:itv_text="6567"
+                    app:itv_text="56"
                     app:itv_textColor="@color/white"/>
 
                 <com.zhiyicx.thinksnsplus.widget.IconTextView

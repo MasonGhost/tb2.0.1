@@ -108,6 +108,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
             options.setRequireDeliveryAck(true);
             EMClient.getInstance().init(mContext, options);
         }
+        LogUtils.e("-----------" + AppApplication.getMyUserIdWithdefault());
+        LogUtils.e("userinfo : " + mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
     }
 
     /*******************************************
