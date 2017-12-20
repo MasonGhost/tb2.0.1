@@ -1,17 +1,27 @@
 package com.zhiyicx.baseproject.base;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.crashhandler.CrashHandler;
+import com.zhiyicx.baseproject.crashhandler.CrashClient;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+
+import java.util.Observable;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -21,14 +31,27 @@ import com.zhiyicx.common.utils.SharePreferenceUtils;
  */
 
 public abstract class TSApplication extends BaseApplication {
+    private static final int DEFAULT_TOAST_SHORT_DISPLAY_TIME = 2_000;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        /// 处理app崩溃异常,打开后保存本地处理，
-        CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init();
+        /// 处理app崩溃异常
+        CrashClient.init(new CrashClient.CrashListener() {
+            @SuppressLint("MyToastHelper")
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
+                rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
+                        .subscribe(new Action1<Long>() {
+                            @Override
+                            public void call(Long aLong) {
+                                ActivityHandler.getInstance().AppExit();
+                            }
+                        });
+            }
+        });
         // 友盟
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);

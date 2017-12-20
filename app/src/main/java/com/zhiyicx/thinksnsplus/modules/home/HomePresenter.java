@@ -83,8 +83,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
             ChatClient.getInstance(mContext).setImStatusListener(this);
             ChatClient.getInstance(mContext).setImTimeoutListener(this);
         }
-        LogUtils.e("-----------" + AppApplication.getMyUserIdWithdefault());
-        LogUtils.e("userinfo : " + mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
     }
 
     /*******************************************

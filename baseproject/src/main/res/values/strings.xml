@@ -185,4 +185,5 @@
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
     <string name="please_install_app">请先安装应用</string>
+    <string name="app_crash_tip">很抱歉,程序出现异常,请重新打开使用!</string>
 </resources>

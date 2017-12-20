@@ -232,6 +232,10 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 点击发现
             case R.id.ll_find:
+                if (TouristConfig.FIND_CAN_LOOK) {
+                    throw new NullPointerException("----test------");
+                }
+
                 if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_FIND, false);
                 }
@@ -332,7 +336,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void initViewPager() {
         //设置缓存的个数
-        mVpHome.setOffscreenPageLimit(PAGE_NUMS-1);
+        mVpHome.setOffscreenPageLimit(PAGE_NUMS - 1);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));

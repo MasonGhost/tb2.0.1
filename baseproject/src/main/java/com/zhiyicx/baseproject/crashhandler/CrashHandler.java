@@ -1,5 +1,6 @@
 package com.zhiyicx.baseproject.crashhandler;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -34,7 +36,7 @@ import rx.schedulers.Schedulers;
 /**
  * @author LiuChao
  * @describe 处理程序异常崩溃的情况
- * @date 2017/1/14
+ * @date 2017/1/14 CrashHandler
  * @contact email:450127106@qq.com
  */
 
@@ -83,7 +85,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (!handleException(throwable) && mUncaughtExceptionHandler != null) {
             mUncaughtExceptionHandler.uncaughtException(thread, throwable);
         } else {
-            ActivityHandler.getInstance().AppExit();
+            ActivityHandler.getInstance().AppExitWithSleep();
         }
 
     }
@@ -112,14 +114,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         saveCrashInfo2File(ex);
         //使用Toast来显示异常信息,也可以做些其他的
         new Thread() {
+            @SuppressLint("MyToastHelper")
             @Override
             public void run() {
                 if (Looper.myLooper() == null) {
                     Looper.prepare();
                 }
-                Toast.makeText(BaseApplication.getContext(), "很抱歉,程序出现异常,请重新打开使用!", Toast.LENGTH_LONG).show();
+                Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
+                LogUtils.e("-----------------2--------------end--");
                 Looper.loop();
-                ActivityHandler.getInstance().AppExit();
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
         }.start();
         return true;
