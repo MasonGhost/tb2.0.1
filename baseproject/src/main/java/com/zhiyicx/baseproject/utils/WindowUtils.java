@@ -1,12 +1,15 @@
 package com.zhiyicx.baseproject.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -24,6 +28,11 @@ import java.math.BigDecimal;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 
 /**
@@ -62,12 +71,30 @@ public class WindowUtils {
      * 隐藏弹出框
      */
     public static void hidePopupWindow() {
-        isShown = false;
-        for (OnWindowDismisslistener windowDismisslistener : sDismisslistenerLists) {
-            if (windowDismisslistener != null) {
-                windowDismisslistener.onMusicWindowDismiss();
-            }
-        }
+        Observable.empty()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        try {
+                            isShown = false;
+                            for (OnWindowDismisslistener windowDismisslistener : sDismisslistenerLists) {
+                                if (windowDismisslistener != null) {
+                                    windowDismisslistener.onMusicWindowDismiss();
+                                }
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                })
+                .subscribe();
+
     }
 
     public static Boolean getIsShown() {

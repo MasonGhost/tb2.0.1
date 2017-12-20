@@ -51,6 +51,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -155,7 +157,8 @@ public class AuthRepository implements IAuthRepository {
                         // 获取了最新的token，将这些信息保存起来
                         saveAuthBean(data);
                         // 刷新im信息
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.GET_IM_INFO));
                     }
 
                     @Override
