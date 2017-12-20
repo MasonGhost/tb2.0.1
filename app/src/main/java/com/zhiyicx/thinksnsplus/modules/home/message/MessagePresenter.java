@@ -557,8 +557,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
                     int pinnedNums = 0;
-                    if (data.getPinneds() != null && (data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount()) > 0) {
-                        pinnedNums = data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount();
+                    if (data.getPinneds() != null) {
+                        pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
+                                + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount());
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {
                         mItemBeanReview.setUnReadMessageNums(0);
