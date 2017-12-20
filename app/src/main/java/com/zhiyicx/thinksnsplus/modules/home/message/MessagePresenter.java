@@ -161,13 +161,22 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @param isLoadMore
      */
     private void getAllConversationV2(boolean isLoadMore){
-        Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(messageItemBeanV2s -> {
-                    mRootView.getMessageListSuccess(messageItemBeanV2s);
-                    checkBottomMessageTip();
-                });
-        addSubscrebe(subscribe);
+        // 已连接才去获取
+        if (EMClient.getInstance().isConnected()){
+            Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(messageItemBeanV2s -> {
+                        mRootView.getMessageListSuccess(messageItemBeanV2s);
+                        mRootView.hideStickyMessage();
+                        checkBottomMessageTip();
+                    });
+            addSubscrebe(subscribe);
+        } else {
+            mRootView.showStickyMessage("聊天服务器未连接");
+            mRootView.hideLoading();
+            // 尝试重新登录，在homepresenter接收
+           mAuthRepository.loginIM();
+        }
     }
 
     /**

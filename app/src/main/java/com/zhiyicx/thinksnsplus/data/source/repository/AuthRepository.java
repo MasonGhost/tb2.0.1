@@ -18,6 +18,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -45,6 +46,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.Map;
 
@@ -302,6 +305,7 @@ public class AuthRepository implements IAuthRepository {
                     EMClient.getInstance().groupManager().loadAllGroups();
                     EMClient.getInstance().chatManager().loadAllConversations();
                     LogUtils.d("main", "登录聊天服务器成功！");
+                    EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
                 }
 
                 @Override
@@ -311,7 +315,7 @@ public class AuthRepository implements IAuthRepository {
 
                 @Override
                 public void onError(int code, String message) {
-                    LogUtils.d("main", "登录聊天服务器失败！");
+                    LogUtils.d("main", "登录聊天服务器失败！error message: " + message);
                 }
             });
         } else {
