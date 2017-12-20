@@ -471,9 +471,8 @@ public abstract class RichEditor extends WebView {
     private class EditorWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
-            isReady = url.equalsIgnoreCase(SETUP_HTML);
+            isReady = url.equalsIgnoreCase(SETUP_HTML)||url.equalsIgnoreCase(SETUP_BASEURL);
             LogUtils.d("load", "after onPageFinished");
-
             if (mLoadListener != null) {
                 mLoadListener.onAfterInitialLoad(isReady);
             }

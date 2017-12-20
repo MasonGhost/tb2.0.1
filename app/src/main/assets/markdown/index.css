@@ -14,21 +14,21 @@ p {
   margin-right: 10px;
 }
 .hide{
- position: absolute;
- z-index: -100;
- visibility: hidden;
- word-wrap: break-word;
- width: 100%;
- min-height: 30px;
- font-size: 24px;
- border: none;
- outline: none;
- resize: none;
- line-height:30px;
- overflow: hidden;
- background-color: transparent;
- color: inherit;
- border-color: inherit;
+  position: absolute;
+  z-index: -100;
+  visibility: hidden;
+  word-wrap: break-word;
+  width: 100%;
+  min-height: 30px;
+  font-size: 24px;
+  border: none;
+  outline: none;
+  resize: none;
+  line-height:30px;
+  overflow: hidden;
+  background-color: transparent;
+  color: inherit;
+  border-color: inherit;
 }
 .content .title {
   width: 100%;

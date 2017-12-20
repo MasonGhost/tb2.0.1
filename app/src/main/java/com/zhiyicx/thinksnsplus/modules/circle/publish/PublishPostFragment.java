@@ -76,7 +76,7 @@ public class PublishPostFragment extends MarkdownFragment {
 
     @Override
     protected void loadDraft(BaseDraftBean draft) {
-        mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
+        mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getContent());
     }
 
     @Override
@@ -121,7 +121,8 @@ public class PublishPostFragment extends MarkdownFragment {
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
         postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());
-        postDraftBean.setContent(html);
+        postDraftBean.setContent("<!DOCTYPE html>\n"+html);
+        postDraftBean.setHtml(html);
         postDraftBean.setIsOutCircle(isOutCirclePublish);
         mPresenter.saveDraft(postDraftBean);
     }

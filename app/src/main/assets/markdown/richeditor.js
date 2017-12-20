@@ -129,6 +129,7 @@ var RE = {
 		_self.bind();
 		_self.focus();
         _self.initTitle();
+        console.log("command:::" + _self.commandSet);
 	},
 
 	bind: function bind() {
@@ -138,7 +139,6 @@ var RE = {
 		    FOCUS_SCHEME = _self$schemeCache.FOCUS_SCHEME,
 		    STATE_SCHEME = _self$schemeCache.STATE_SCHEME,
 		    CALLBACK_SCHEME = _self$schemeCache.CALLBACK_SCHEME;
-
 		document.addEventListener('selectionchange', _self.saveRange, false);
 
 		_self.cache.title.addEventListener('focus', function () {
@@ -240,15 +240,14 @@ var RE = {
         if(value){
             AndroidInterface.resultWords(_self.getTitle(),_self.markdownWords(),_self.noMarkdownWords(),value);
         }else{
-            AndroidInterface.resultWords(_self.getTitle(),_self.cache.editor.innerHTML,_self.markdownWords(),value);
+            // document.documentElement.outerHTML
+            AndroidInterface.resultWords(_self.getTitle(),document.documentElement.outerHTML,_self.markdownWords(),value);
         }
     },
 
     restoreDraft: function restoreDraft(title,content){
         var _self = this;
         _self.cache.title.value = title;
-        _self.cache.editor.innerHTML = content;
-        _self.saveRange();
     },
 
 	saveRange: function saveRange() {
@@ -289,9 +288,9 @@ var RE = {
 	exec: function exec(command) {
 		//执行指令
 		var _self = this;
+		console.log("command:::" + command);
 		if (_self.commandSet.indexOf(command) !== -1) {
-		    var editorDocument = document.getElementById("editor");
-			editorDocument.execCommand(command, false, null);
+			document.execCommand(command, false, null);
 		} else {
 			var value = '<' + command + '>';
 			document.execCommand('formatBlock', false, value);
@@ -305,7 +304,6 @@ var RE = {
 		    STATE_SCHEME = _self$schemeCache2.STATE_SCHEME,
 		    CHANGE_SCHEME = _self$schemeCache2.CHANGE_SCHEME,
 		    IMAGE_SCHEME = _self$schemeCache2.IMAGE_SCHEME;
-
 		if (evt.target && evt.target.tagName === 'A') {
 			_self.cache.currentLink = evt.target;
 			var name = evt.target.innerText;
@@ -316,14 +314,13 @@ var RE = {
 				AndroidInterface.noMarkdownWords(_self.noMarkdownWords());
 			}
 			var items = [];
-			var editor = _self.cache.editor;
 			_self.commandSet.forEach(function (item) {
-				if (editor.queryCommandState(item)) {
+				if (document.queryCommandState(item)) {
 					items.push(item);
 				}
 			});
-			if (editor.queryCommandValue('formatBlock')) {
-				items.push(editor.queryCommandValue('formatBlock'));
+			if (document.queryCommandValue('formatBlock')) {
+				items.push(document.queryCommandValue('formatBlock'));
 			}
 			window.location.href = STATE_SCHEME + encodeURI(items.join(','));
 		}
@@ -440,7 +437,7 @@ var RE = {
             noteView.value=noteView.value.substring(0,limitCount);
         }
         _self.titleLimit.txtLimit.innerText=noteView.value.length;
-        _self.titleLimit.txtlength=noteView.value.length;//记录每次输入后的长度
+        _self.titleLimit.txtlength = noteView.value.length;//记录每次输入后的长度
     },
 
 	removeImage: function removeImage(id) {

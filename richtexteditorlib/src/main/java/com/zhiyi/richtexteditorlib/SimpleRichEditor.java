@@ -542,6 +542,9 @@ public class SimpleRichEditor extends RichEditor {
                     @Override
                     public boolean onItemClick(MenuItem item, boolean isSelected) {
                         insertHr();
+                        InputMethodManager imm = (InputMethodManager) getContext()
+                                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
                         return false;
                     }
                 }));
