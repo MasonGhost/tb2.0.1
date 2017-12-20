@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
@@ -115,6 +116,7 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
             mTvUserName.setText(userInfo.getName());
             mTvUserIntro.setText(String.format(getString(R.string.default_intro_format), userInfo.getIntro()));
             ImageUtils.loadCircleUserHeadPic(userInfo, mUserAvatar);
+            mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar().getDrawable(), R.mipmap.icon);
             Glide.with(getContext())
                     .load(userInfo.getAvatar())
                     .asBitmap()
@@ -124,7 +126,6 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             if (resource != null) {
-                                mShareBitmap = resource;
                                 mPresenter.createUserCodePic(resource);
                             }
                         }

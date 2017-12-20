@@ -86,13 +86,11 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository,
             ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
             ShareContent shareContent = new ShareContent();
             shareContent.setTitle(userInfoBean.getName());
-            shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext
-                    .getString(R.string.my_qr_code_share) : userInfoBean.getIntro());
-            if (bitmap != null) {
+            shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro());
+            if (null != bitmap) {
                 shareContent.setBitmap(bitmap);
             } else {
-                shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
-                        .decodeResource(mContext.getResources(), R.mipmap.icon)));
+                shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
             }
             shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()
                     == null ? "" : userInfoBean.getUser_id()));
