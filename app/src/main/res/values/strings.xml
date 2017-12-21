@@ -280,7 +280,7 @@
     <string name="post_publishing">发贴中</string>
     <string name="post_publish_select_circle">请选择一个圈子</string>
     <string name="post_publish_select_title">标题还是要的!</string>
-    <string name="post_publish_select_content">你的内容涅..</string>
+    <string name="post_publish_select_content">你的内容呢..</string>
 
     <string-array name="post_typpe_array">
         <item>全部帖子</item>

@@ -145,6 +145,15 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     /**
+     * 是否开启保存草稿
+     *
+     * @return
+     */
+    protected boolean openDraft() {
+        return true;
+    }
+
+    /**
      * 还原草稿
      *
      * @param draft
@@ -213,7 +222,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
             handlePublish(title, markdwon, noMarkdown);
         } else {
             boolean canSaveDraft = !TextUtils.isEmpty(title + noMarkdown);
-            if (!canSaveDraft) {
+            if (!canSaveDraft || !openDraft()) {
                 mActivity.finish();
                 return;
             }

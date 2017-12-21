@@ -84,6 +84,11 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
+    protected boolean openDraft() {
+        return false;
+    }
+
+    @Override
     protected void loadDraft(BaseDraftBean draft) {
         mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getContent());
     }
