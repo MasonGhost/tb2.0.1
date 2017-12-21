@@ -231,7 +231,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/npc"/>
+                    android:src="@drawable/shape_default_image"/>
 
                 <TextView
                     android:id="@+id/tv_numshadow"

@@ -1,10 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态列表 五张图的时候的 item
@@ -47,6 +54,9 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
         initImageView(holder, holder.getView(R.id.siv_6), dynamicBean, 6,1);
         initImageView(holder, holder.getView(R.id.siv_7), dynamicBean, 7,1);
         initImageView(holder, holder.getView(R.id.siv_8), dynamicBean, 8,1);
+
+        TextView size = holder.getTextView(R.id.tv_numshadow);
+        size.setVisibility(View.GONE);
     }
 
 }

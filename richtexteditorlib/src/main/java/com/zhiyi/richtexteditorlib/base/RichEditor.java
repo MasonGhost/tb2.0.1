@@ -529,9 +529,26 @@ public abstract class RichEditor extends WebView {
         @JavascriptInterface
         public void setHtmlContent(int htmlContentLength) {
             mContents = htmlContentLength + "";
-            if (mTextChangeListener != null) {
-                mTextChangeListener.onTextChange(htmlContentLength);
-            }
+            Observable.empty()
+                    .filter(o -> mTextChangeListener != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mTextChangeListener.onTextChange(htmlContentLength);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+                    });
+
         }
 
         @JavascriptInterface

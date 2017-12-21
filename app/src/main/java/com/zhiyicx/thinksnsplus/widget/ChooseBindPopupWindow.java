@@ -67,6 +67,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
             setWidth(mWidth);
             setHeight(mHeight);
         }
+
         setFocusable(false);
         setOutsideTouchable(isOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);
@@ -80,14 +81,28 @@ public class ChooseBindPopupWindow extends PopupWindow {
         TextView item2 = (TextView) mContentView.findViewById(R.id.item_2);
         TextView item3 = (TextView) mContentView.findViewById(R.id.item_3);
 
-        item1.setVisibility(!TextUtils.isEmpty(mItem1Str)?View.VISIBLE:View.GONE);
+        int itemHeight = mContentView.getContext().getResources().getDimensionPixelOffset(R.dimen.pop_choose_third_type_height);
+        int space = mContentView.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        item1.setVisibility(!TextUtils.isEmpty(mItem1Str) ? View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(mItem1Str)) {
+            mHeight += itemHeight;
+        }
         item1.setText(mItem1Str);
 
-        item2.setVisibility(!TextUtils.isEmpty(mItem2Str)?View.VISIBLE:View.GONE);
+        item2.setVisibility(!TextUtils.isEmpty(mItem2Str) ? View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(mItem2Str)) {
+            mHeight += itemHeight;
+        }
         item2.setText(mItem2Str);
 
-        item3.setVisibility(!TextUtils.isEmpty(mItem3Str)?View.VISIBLE:View.GONE);
+        item3.setVisibility(!TextUtils.isEmpty(mItem3Str) ? View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(mItem3Str)) {
+            mHeight += itemHeight;
+        }
         item3.setText(mItem3Str);
+
+        mHeight += space;
+        mWidth = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         item1.setOnClickListener(v -> {
             if (mItemClickListener != null) {

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -47,6 +49,9 @@ public class PersonalCenterDynamicListItemForNineImage extends PersonalCenterDyn
         initImageView(holder, holder.getView(R.id.siv_6), dynamicBean, 6,1);
         initImageView(holder, holder.getView(R.id.siv_7), dynamicBean, 7,1);
         initImageView(holder, holder.getView(R.id.siv_8), dynamicBean, 8,1);
+
+        TextView size = holder.getTextView(R.id.tv_numshadow);
+        size.setVisibility(View.GONE);
     }
 
 }

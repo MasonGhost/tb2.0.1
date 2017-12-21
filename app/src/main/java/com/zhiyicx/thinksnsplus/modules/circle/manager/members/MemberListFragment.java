@@ -151,7 +151,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public boolean needBlackList() {
-        return true;
+        return !CircleMembers.BLACKLIST.equals(mRole) || !CircleMembers.MEMBER.equals(mRole);
     }
 
     @Override
