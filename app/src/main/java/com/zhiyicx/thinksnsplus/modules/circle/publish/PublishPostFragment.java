@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -60,8 +61,16 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void initListener() {
         super.initListener();
-        mBottomMenu.setBottomMenuVisibleChangeListener(visible -> mCbSynToDynamic.setVisibility
-                (visible ? View.VISIBLE : View.GONE));
+        mBottomMenu.setBottomMenuVisibleChangeListener(this::setSynToDynamicCbVisiable);
+        RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength >0));
+    }
+
+    @Override
+    protected void setRightClickable(boolean clickable) {
+        super.setRightClickable(clickable);
+        if (isOutCirclePublish) {
+            mToolbarRight.setEnabled(clickable && mCircleName.getText().toString().length() > 0);
+        }
     }
 
     @Override
@@ -108,7 +117,7 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
-    protected void saveDraft(String title, String html) {
+    protected void saveDraft(String title, String html, String noMarkdown) {
         PostDraftBean postDraftBean = new PostDraftBean();
         long mark;
         if (mDraftBean != null) {
@@ -121,8 +130,8 @@ public class PublishPostFragment extends MarkdownFragment {
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
         postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());
-        postDraftBean.setContent("<!DOCTYPE html>\n"+html);
-        postDraftBean.setHtml(html);
+        postDraftBean.setContent(noMarkdown);
+        postDraftBean.setHtml("<!DOCTYPE html>\n" + html);
         postDraftBean.setIsOutCircle(isOutCirclePublish);
         mPresenter.saveDraft(postDraftBean);
     }

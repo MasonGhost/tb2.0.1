@@ -13,7 +13,6 @@ import com.zhiyi.richtexteditorlib.factories.BaseItemFactory;
 import com.zhiyi.richtexteditorlib.factories.DefaultItemFactory;
 import com.zhiyi.richtexteditorlib.utils.SelectController;
 import com.zhiyi.richtexteditorlib.view.BottomMenu;
-import com.zhiyi.richtexteditorlib.view.api.IBottomMenuItem;
 import com.zhiyi.richtexteditorlib.view.api.ITheme;
 import com.zhiyi.richtexteditorlib.view.logiclist.MenuItem;
 import com.zhiyi.richtexteditorlib.view.menuitem.AbstractBottomMenuItem;
@@ -64,6 +63,8 @@ public class SimpleRichEditor extends RichEditor {
         void onImageClick(Long id);
 
         void onTextStypeClick(boolean isSelect);
+
+        void onInputListener(int length);
     }
 
     @SuppressWarnings("unused")
@@ -190,64 +191,40 @@ public class SimpleRichEditor extends RichEditor {
 
     private void initRichTextViewListeners() {
 
-        setOnDecorationChangeListener(new OnStateChangeListener() {
-            @Override
-            public void onStateChangeListener(String text, List<Type> types) {
-                onStateChange(text, types);
+        setOnDecorationChangeListener((text, types) -> {
+            onStateChange(text, types);
 
-                for (long id : mFreeItems) {
-                    mBottomMenu.setItemSelected(id, false);
-                }
-                mSelectController.reset();
-                for (RichEditor.Type t :
-                        types) {
-                    if (!mSelectController.contain(t.getTypeCode())) {
-                        mBottomMenu.setItemSelected(t.getTypeCode(), true);
-                    } else {
-                        mSelectController.changeState(t.getTypeCode());
-                    }
-                }
-
+            for (long id : mFreeItems) {
+                mBottomMenu.setItemSelected(id, false);
             }
-        });
-        setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
-            @Override
-            public void onTextChange(String text) {
-                LogUtils.d("onTextChange", text);
-            }
-        });
-        setOnFocusChangeListener(new RichEditor.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(boolean isFocus) {
-                if (!isFocus) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        mBottomMenu.show(200);
-                    }
+            mSelectController.reset();
+            for (Type t :
+                    types) {
+                if (!mSelectController.contain(t.getTypeCode())) {
+                    mBottomMenu.setItemSelected(t.getTypeCode(), true);
                 } else {
-                    mBottomMenu.hide(200);
+                    mSelectController.changeState(t.getTypeCode());
                 }
+            }
 
-            }
         });
-        setOnLinkClickListener(new RichEditor.OnLinkClickListener() {
-            @Override
-            public void onLinkClick(String linkName, String url) {
-                showChangeLinkDialog(linkName, url);
-            }
-        });
-        setOnImageClickListener(new RichEditor.OnImageClickListener() {
-            @Override
-            public void onImageClick(Long id) {
-                showImageClick(id);
-            }
-        });
-
-        setOnInitialLoadListener(new RichEditor.AfterInitialLoadListener() {
-            @Override
-            public void onAfterInitialLoad(boolean isReady) {
-                if (isReady) {
-                    focusEditor();
+        setOnTextChangeListener(text -> mOnEditorClickListener.onInputListener(text));
+        setOnFocusChangeListener(isFocus -> {
+            if (!isFocus) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    mBottomMenu.show(200);
                 }
+            } else {
+                mBottomMenu.hide(200);
+            }
+
+        });
+        setOnLinkClickListener((linkName, url) -> showChangeLinkDialog(linkName, url));
+        setOnImageClickListener(id -> showImageClick(id));
+
+        setOnInitialLoadListener(isReady -> {
+            if (isReady) {
+                focusEditor();
             }
         });
 
@@ -323,32 +300,29 @@ public class SimpleRichEditor extends RichEditor {
     public void setTheme(final ITheme theme) {
         mBottomMenu.setTheme(theme);
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                String backgroundColor = ConvertUtils.converInt2HexColor(theme.getBackGroundColors()[0]);
-                //从高亮色和基础色中找出和背景明度差异大的作为字体颜色
-                double backgroundLum = ColorUtils.calculateLuminance(theme.getBackGroundColors()
-                        [0]);
-                double normalLum = ColorUtils.calculateLuminance(theme.getNormalColor());
-                double accentLum = ColorUtils.calculateLuminance(theme.getAccentColor());
+        post(() -> {
+            String backgroundColor = ConvertUtils.converInt2HexColor(theme.getBackGroundColors()[0]);
+            //从高亮色和基础色中找出和背景明度差异大的作为字体颜色
+            double backgroundLum = ColorUtils.calculateLuminance(theme.getBackGroundColors()
+                    [0]);
+            double normalLum = ColorUtils.calculateLuminance(theme.getNormalColor());
+            double accentLum = ColorUtils.calculateLuminance(theme.getAccentColor());
 
-                int fontColorInt;
-                if (Math.abs(normalLum - backgroundLum) > Math.abs(accentLum - backgroundLum)) {
-                    fontColorInt = theme.getNormalColor();
-                } else {
-                    fontColorInt = theme.getAccentColor();
-                }
-
-                String fontColor = ConvertUtils.converInt2HexColor(fontColorInt);
-                //找出背景色和字体色的中间色作为引用块底色
-                //unused
-                int color = ColorUtils.blendARGB(fontColorInt, theme.getBackGroundColors()[0],
-                        0.5f);
-
-                exec("javascript:RE.setBackgroundColor('" + backgroundColor + "');");
-                exec("javascript:RE.setFontColor('" + fontColor + "');");
+            int fontColorInt;
+            if (Math.abs(normalLum - backgroundLum) > Math.abs(accentLum - backgroundLum)) {
+                fontColorInt = theme.getNormalColor();
+            } else {
+                fontColorInt = theme.getAccentColor();
             }
+
+            String fontColor = ConvertUtils.converInt2HexColor(fontColorInt);
+            //找出背景色和字体色的中间色作为引用块底色
+            //unused
+            int color = ColorUtils.blendARGB(fontColorInt, theme.getBackGroundColors()[0],
+                    0.5f);
+
+            exec("javascript:RE.setBackgroundColor('" + backgroundColor + "');");
+            exec("javascript:RE.setFontColor('" + fontColor + "');");
         });
 
         //do something
@@ -382,99 +356,75 @@ public class SimpleRichEditor extends RichEditor {
                 .addItem(ItemIndex.A, needBold ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.BOLD,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setBold();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            setBold();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
-                                return isInSelectController(item.getId());
-                            }
+                            //不拦截不在选择控制器中的元素让Menu自己控制选择显示效果
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needItalic ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.ITALIC,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setItalic();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            setItalic();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                return isInSelectController(item.getId());
-                            }
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needStrikeThrough ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.STRIKE_THROUGH,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setStrikeThrough();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            setStrikeThrough();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                return isInSelectController(item.getId());
-                            }
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needBlockQuote ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.BLOCK_QUOTE,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setBlockquote(!isSelected);
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            setBlockquote(!isSelected);
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
-                                return isInSelectController(item.getId());
-                            }
+                            //mSelectController.changeState(ItemIndex.BLOCK_QUOTE);
+                            return isInSelectController(item.getId());
                         }) : null)
 
                 .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.H1,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(1, !isSelected);
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            setHeading(1, !isSelected);
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                //mSelectController.changeState(ItemIndex.H1);
-                                return isInSelectController(item.getId());
-                            }
+                            //mSelectController.changeState(ItemIndex.H1);
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.H2,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(2, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H2);
-                                return isInSelectController(item.getId());
-                            }
+                        (item, isSelected) -> {
+                            setHeading(2, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H2);
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.H3,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(3, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H3);
-                                return isInSelectController(item.getId());
-                            }
+                        (item, isSelected) -> {
+                            setHeading(3, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H3);
+                            return isInSelectController(item.getId());
                         }) : null)
                 .addItem(ItemIndex.A, needH ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.H4,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                setHeading(4, !isSelected);
-                                //mSelectController.changeState(ItemIndex.H4);
-                                return isInSelectController(item.getId());
-                            }
+                        (item, isSelected) -> {
+                            setHeading(4, !isSelected);
+                            //mSelectController.changeState(ItemIndex.H4);
+                            return isInSelectController(item.getId());
                         }) : null);
         return this;
     }
@@ -488,14 +438,11 @@ public class SimpleRichEditor extends RichEditor {
         addRootCustomItem(ItemIndex.ARROW, getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.ARROW,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        InputMethodManager imm = (InputMethodManager) getContext()
-                                .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
-                        return true;
-                    }
+                (item, isSelected) -> {
+                    InputMethodManager imm = (InputMethodManager) getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
+                    return true;
                 }));
         return this;
     }
@@ -506,12 +453,9 @@ public class SimpleRichEditor extends RichEditor {
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.INSERT_IMAGE,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        showImagePicker();
-                        return true;
-                    }
+                (item, isSelected) -> {
+                    showImagePicker();
+                    return true;
                 }));
         return this;
     }
@@ -522,12 +466,9 @@ public class SimpleRichEditor extends RichEditor {
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.LINK,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        showLinkDialog();
-                        return false;
-                    }
+                (item, isSelected) -> {
+                    showLinkDialog();
+                    return false;
                 }));
         return this;
     }
@@ -538,15 +479,12 @@ public class SimpleRichEditor extends RichEditor {
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.HALVING_LINE,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        insertHr();
-                        InputMethodManager imm = (InputMethodManager) getContext()
-                                .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
-                        return false;
-                    }
+                (item, isSelected) -> {
+                    insertHr();
+                    InputMethodManager imm = (InputMethodManager) getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(SimpleRichEditor.this.getWindowToken(), 0);
+                    return false;
                 }));
         return this;
     }
@@ -561,26 +499,20 @@ public class SimpleRichEditor extends RichEditor {
                 .addItem(ItemIndex.MORE, needHalvingLine ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.HALVING_LINE,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                insertHr();
-                                LogUtils.d("onItemClick", item.getId() + "");
-                                return false;
-                            }
+                        (item, isSelected) -> {
+                            insertHr();
+                            LogUtils.d("onItemClick", item.getId() + "");
+                            return false;
                         }
                 ) : null)
                 .addItem(ItemIndex.MORE, needLink ? getBaseItemFactory().generateItem(
                         getContext(),
                         ItemIndex.LINK,
-                        new IBottomMenuItem.OnBottomItemClickListener() {
-                            @Override
-                            public boolean onItemClick(MenuItem item, boolean isSelected) {
-                                showLinkDialog();
-                                LogUtils.d("onItemClick", item.getId() + "");
+                        (item, isSelected) -> {
+                            showLinkDialog();
+                            LogUtils.d("onItemClick", item.getId() + "");
 
-                                return false;
-                            }
+                            return false;
                         }
                 ) : null);
         return this;
@@ -592,12 +524,9 @@ public class SimpleRichEditor extends RichEditor {
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(
                 getContext(),
                 ItemIndex.UNDO,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        undo();
-                        return false;
-                    }
+                (item, isSelected) -> {
+                    undo();
+                    return false;
                 }));
         return this;
     }
@@ -607,12 +536,9 @@ public class SimpleRichEditor extends RichEditor {
 
         mBottomMenu.addRootItem(getBaseItemFactory().generateItem(getContext(),
                 ItemIndex.REDO,
-                new IBottomMenuItem.OnBottomItemClickListener() {
-                    @Override
-                    public boolean onItemClick(MenuItem item, boolean isSelected) {
-                        redo();
-                        return false;
-                    }
+                (item, isSelected) -> {
+                    redo();
+                    return false;
                 }));
         return this;
     }

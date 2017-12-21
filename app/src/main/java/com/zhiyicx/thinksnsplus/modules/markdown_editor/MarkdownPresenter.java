@@ -52,7 +52,7 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                                                                             contentLength, done) ->
         {
             LogUtils.d("bytesWritten::" + bytesWritten + "\n" +
-                    "contentLength::" + contentLength + "\n" +
+                    "mContentLength::" + contentLength + "\n" +
                     "done::" + done);
             float progress = 0f;
             if (contentLength > 0) {

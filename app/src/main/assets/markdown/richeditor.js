@@ -165,18 +165,20 @@ var RE = {
 		}, false);
 
 		_self.cache.editor.addEventListener('input', function () {
-			AndroidInterface.setHtmlContent(_self.getHtml());
+			AndroidInterface.setHtmlContent(_self.cache.title.value.length * _self.markdownWords().length);
 		}, false);
 
 		_self.titleLimit.txtNote.addEventListener('input', function () {
-            _self.wordsLimit();
-        }, false);
+			_self.wordsLimit();
+		}, false);
 
-        _self.cache.title.addEventListener('input', function () {
-            var pre = document.getElementById('pre');
-            pre.textContent = _self.cache.title.value;
-            _self.cache.title.style.height = pre.offsetHeight + 'px';
-         }, false);
+		_self.cache.title.addEventListener('input', function () {
+			var pre = document.getElementById('pre');
+			pre.textContent = _self.cache.title.value;
+			var content=_self.markdownWords();
+			AndroidInterface.setHtmlContent(pre.textContent.length * content.length);
+			_self.cache.title.style.height = pre.offsetHeight + 'px';
+		}, false);
 	},
 	initCache: function initCache() {
 		var _self = this;
@@ -345,6 +347,7 @@ var RE = {
 		var html = '<hr><div><br></div>';
 		_self.insertHtml(html);
 		_self.getEditItem({});
+		window.scrollTo(0,document.body.scrollHeight);
 	},
 	insertLink: function insertLink(name, url) {
 		var _self = this;
@@ -394,6 +397,7 @@ var RE = {
 			window.location.href = _self.schemeCache.IMAGE_SCHEME + encodeURI(id);
 		}, false);
 		_self.imageCache.put(id, imgBlock.parentNode);
+		window.scrollTo(0,document.body.scrollHeight);
 	},
 	changeProcess: function changeProcess(id, process,imageId) {
 		var _self = this;

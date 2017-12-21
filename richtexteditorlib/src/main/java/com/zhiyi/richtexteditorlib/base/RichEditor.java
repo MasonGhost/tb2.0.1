@@ -57,7 +57,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnTextChangeListener {
-        void onTextChange(String text);
+        void onTextChange(int textlength);
     }
 
     public interface OnStateChangeListener {
@@ -201,7 +201,7 @@ public abstract class RichEditor extends WebView {
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(mContents);
+            mTextChangeListener.onTextChange(mContents.length());
         }
     }
 
@@ -276,7 +276,7 @@ public abstract class RichEditor extends WebView {
         LogUtils.d("load", "after load");
     }
 
-    public void loadDraft(String html,String test) {
+    public void loadDraft(String html, String test) {
         LogUtils.d("loadDraft", "before loadDraft");
         loadDataWithBaseURL(SETUP_BASEURL, test, "text/html", "utf-8", null);
         LogUtils.d("loadDraft", "after loadDraft");
@@ -309,7 +309,7 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.setPlaceholder('" + placeholder + "');");
     }
 
-    public void loadCSS(String cssFile,String jsFile) {
+    public void loadCSS(String cssFile, String jsFile) {
         String jsCSSImport = "(function() {" +
                 "    var head  = document.getElementsByTagName(\"head\")[0];" +
 
@@ -471,7 +471,7 @@ public abstract class RichEditor extends WebView {
     private class EditorWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
-            isReady = url.equalsIgnoreCase(SETUP_HTML)||url.equalsIgnoreCase(SETUP_BASEURL);
+            isReady = url.equalsIgnoreCase(SETUP_HTML) || url.equalsIgnoreCase(SETUP_BASEURL);
             LogUtils.d("load", "after onPageFinished");
             if (mLoadListener != null) {
                 mLoadListener.onAfterInitialLoad(isReady);
@@ -527,10 +527,10 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void setHtmlContent(String htmlContent) {
-            mContents = htmlContent;
+        public void setHtmlContent(int htmlContentLength) {
+            mContents = htmlContentLength + "";
             if (mTextChangeListener != null) {
-                mTextChangeListener.onTextChange(htmlContent);
+                mTextChangeListener.onTextChange(htmlContentLength);
             }
         }
 

@@ -44,7 +44,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
         mUpLoadRepository.upLoadFileWithProgress(filePath, mimeType, true, photoWidth, photoHeight, (bytesWritten, contentLength, done) ->
         {
             LogUtils.d("bytesWritten::" + bytesWritten + "\n" +
-                    "contentLength::" + contentLength + "\n" +
+                    "mContentLength::" + contentLength + "\n" +
                     "done::" + done);
 
             LogUtils.d("currentThread::" +Thread.currentThread().getName());

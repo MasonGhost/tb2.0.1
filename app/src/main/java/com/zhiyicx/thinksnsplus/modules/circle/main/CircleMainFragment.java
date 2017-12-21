@@ -175,9 +175,13 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void toCircleDetail(CircleInfo circleInfo) {
-        if ((CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
-                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode()) && circleInfo.getJoined() == null)) {
+        boolean isClosedCircle = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())
+                || CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode());
+        boolean isJoined = circleInfo.getJoined() != null;
+
+        if (isClosedCircle && !isJoined) {
             showSnackErrorMessage(getString(R.string.circle_blocked));
+            return;
         }
         Intent intent = new Intent(mActivity, CircleDetailActivity.class);
         intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());

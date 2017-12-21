@@ -94,6 +94,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     protected ActionPopupWindow mEditWarningPopupWindow;
 
     /**
+     * 标题+文字 长度
+     */
+    protected int mContentLength;
+
+    /**
      * 发布资源之前的处理，比如封装数据
      *
      * @return 数据是否完整
@@ -177,8 +182,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-        super.setLeftClick();
-//        onBackPressed();
+//        super.setLeftClick();
+        onBackPressed();
     }
 
     @Override
@@ -195,6 +200,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mRichTextView.getResultWords(true);
     }
 
+    /**
+     * @param title      标题
+     * @param markdwon   markdown 格式内容
+     * @param noMarkdown 纯文字内容
+     * @param isPublish  是否是发送
+     *                   如果不是发送：markdwon → 全部 html 格式内容
+     */
     @Override
     public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish) {
         if (isPublish) {
@@ -205,7 +217,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                 mActivity.finish();
                 return;
             }
-            initEditWarningPop(title, markdwon);
+            initEditWarningPop(title, markdwon, noMarkdown);
             DeviceUtils.hideSoftKeyboard(mActivity.getApplication(), mRichTextView);
         }
     }
@@ -215,6 +227,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
+        mToolbarRight.setEnabled(false);
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
         initListener();
@@ -289,6 +302,16 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onTextStypeClick(boolean isSelect) {
         setSynToDynamicCbVisiable(!isSelect);
+    }
+
+    @Override
+    public void onInputListener(int length) {
+        mContentLength = length;
+        setRightClickable(length > 0);
+    }
+
+    protected void setRightClickable(boolean clickable) {
+        mToolbarRight.setEnabled(clickable);
     }
 
     @Override
@@ -391,7 +414,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mPhotoPopupWindow.show();
     }
 
-    protected void initEditWarningPop(String title, String markdwon) {
+    protected void initEditWarningPop(String title, String html, String noMarkdown) {
         if (mEditWarningPopupWindow != null) {
             mEditWarningPopupWindow.show();
             return;
@@ -410,7 +433,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
-                    saveDraft(title, markdwon);
+                    saveDraft(title, html, noMarkdown);
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
@@ -423,7 +446,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         return true;
     }
 
-    protected void saveDraft(String title, String html) {
+    protected void saveDraft(String title, String html, String noMarkdown) {
     }
 
     protected void cancleEdit() {
