@@ -33,7 +33,7 @@ public class MessageReceiveItemDelagate extends MessageTextItemDelagate {
      */
     @Override
     public boolean isForViewType(ChatItemBean item, int position) {
-        return item.getUserInfo() == null || item.getUserInfo().getUser_id() == null || item.getUserInfo().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id();
+        return item.getUserInfo() == null || item.getUserInfo().getUser_id() == null || item.getUserInfo().getUser_id() != AppApplication.getMyUserIdWithdefault();
     }
 
 }

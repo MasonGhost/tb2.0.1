@@ -374,7 +374,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected void requestCacheData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestCacheData(mMaxId, isLoadMore);
+        if (mPresenter != null) {
+            mPresenter.requestCacheData(mMaxId, isLoadMore);
+        }
     }
 
     @Override
@@ -562,7 +564,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore);
+        if (mPresenter != null) {
+            mPresenter.requestNetData(maxId, isLoadMore);
+        }
     }
 
     /**

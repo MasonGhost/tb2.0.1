@@ -468,7 +468,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onCommentContentClick(CirclePostListBean postListBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
-        boolean isJoined = mCircleInfo.getJoined() == null;
+        boolean isJoined = mCircleInfo.getJoined() != null;
         if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
             showSnackErrorMessage(getString(R.string.circle_blacklist));
             return;
@@ -559,7 +559,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        boolean isJoined = mCircleInfo.getJoined() == null;
+        boolean isJoined = mCircleInfo.getJoined() != null;
         if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
             showSnackErrorMessage(getString(R.string.circle_blacklist));
             return;
@@ -1051,7 +1051,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
-        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" : detail.getLocation()));
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" :
+                detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());

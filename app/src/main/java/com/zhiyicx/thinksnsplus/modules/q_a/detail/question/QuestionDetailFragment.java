@@ -487,8 +487,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter.getRatio())
-                            , mPresenter.getGoldName()))
+                            mPresenter != null ? PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter
+                                    .getRatio()) : ""
+                            , mPresenter != null ? mPresenter.getGoldName() : ""))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))

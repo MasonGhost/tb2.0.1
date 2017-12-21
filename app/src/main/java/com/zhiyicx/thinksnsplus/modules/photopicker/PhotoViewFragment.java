@@ -365,13 +365,19 @@ public class PhotoViewFragment extends TSFragment {
                 .canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addUpdateListener(animation -> mViewPager.setBackground(backgroundColor));
+            bgAnim.addUpdateListener(animation -> {
+                if (mViewPager != null) {
+                    mViewPager.setBackground(backgroundColor);
+                }
+            });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    setResult(true);
-                    getActivity().overridePendingTransition(-1, -1);
+                    if (mActivity != null) {
+                        setResult(true);
+                        mActivity.overridePendingTransition(-1, -1);
+                    }
                 }
             });
             mPhotoViewPictureContainerFragment.animationExit(bgAnim);
