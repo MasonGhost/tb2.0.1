@@ -25,6 +25,7 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -513,9 +514,15 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             isCollected) {
         boolean isMine = circlePostListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
                 .getUser_id();
+        boolean isManager = false;
+        if (circlePostListBean.getGroup().getJoined() != null) {
+            isManager = CircleMembers.FOUNDER.equals(circlePostListBean.getGroup().getJoined().getRole()) ||
+                    CircleMembers.ADMINISTRATOR.equals(circlePostListBean.getGroup().getJoined().getRole());
+        }
+
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.post_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R
+                .item2Str(isMine || isManager ? getString(R.string.info_delete) : getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
                 .item3Str(isMine ? "" : getString(R.string.report))
@@ -541,8 +548,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean
                             (circlePostListBean.getUser(), String.valueOf
-                            (circlePostListBean.getId()),
-                            name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                    (circlePostListBean.getId()),
+                                    name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mDealPostPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
