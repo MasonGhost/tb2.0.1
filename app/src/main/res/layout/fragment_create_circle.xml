@@ -342,6 +342,7 @@
                     android:textSize="@dimen/size_content"/>
 
                 <EditText
+                    android:digits="0123456789"
                     android:id="@+id/et_circle_amount"
                     style="@style/style_dynamic_editext"
                     android:maxLength="@integer/money_input_max_size"

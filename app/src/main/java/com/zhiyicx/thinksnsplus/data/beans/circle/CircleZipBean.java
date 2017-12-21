@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
+package com.zhiyicx.thinksnsplus.data.beans.circle;
 
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;

@@ -203,7 +203,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected void initData() {
         mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
-
+        mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter()});
         mFlTags.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 if (canUpdate && !isManager) {
@@ -419,14 +419,16 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mTvTagHint.setVisibility(mUserTagBeens.isEmpty() ? View.VISIBLE : View.GONE);
 
         mEtCircleName.setText(mCircleInfo.getName());
-        mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter()});
         mTvCircleType.setText(mCircleInfo.getCategory().getName());
         mTvLocation.setText(mCircleInfo.getLocation());
         mTvNotice.setText(mCircleInfo.getNotice());
         mEtCircleIntroduce.setText(mCircleInfo.getSummary());
         mWcSynchro.setChecked(mCircleInfo.getAllow_feed() == 1);
-        mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()));
-        mCbToll.setChecked(CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode()));
+
+        boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+
+        mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()) || isPaidCircle);
+        mCbToll.setChecked(isPaidCircle);
         mCbFree.setChecked(CircleInfo.CirclePayMode.PUBLIC.value.equals(mCircleInfo.getMode()));
         mEtCircleAmount.setText(mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "");
 
@@ -437,10 +439,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mLlTagContainer.setEnabled(canUpdate && !isManager);
         mLlLocationContainer.setEnabled(canUpdate && !isManager);
         mWcSynchro.setEnabled(canUpdate && !isManager);
-        mWcBlock.setEnabled(canUpdate && !isManager);
-        mCbFree.setEnabled(canUpdate && !isManager);
-        mCbToll.setEnabled(canUpdate && !isManager);
-        mEtCircleAmount.setEnabled(canUpdate && !isManager);
+        mWcBlock.setEnabled(canUpdate && !isManager && !isPaidCircle);
+        mCbFree.setEnabled(canUpdate && !isManager && !isPaidCircle);
+        mCbToll.setEnabled(canUpdate && !isManager && !isPaidCircle);
+        mEtCircleAmount.setEnabled(canUpdate && !isManager && !isPaidCircle);
 
         mTvNotice.setEnabled(canUpdate);
         mEtCircleIntroduce.setEnabled(canUpdate);

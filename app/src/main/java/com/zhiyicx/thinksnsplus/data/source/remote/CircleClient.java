@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -15,7 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
 
 import java.util.List;
@@ -70,7 +68,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;

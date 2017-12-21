@@ -27,7 +27,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CirclePostBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
-import retrofit2.http.PUT;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
