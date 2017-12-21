@@ -38,7 +38,7 @@
         app:bgColor="@android:color/transparent"
         app:dividerLeftMargin="@dimen/spacing_mid"
         app:dividerRightMargin="@dimen/spacing_mid"
-        app:leftImage="@mipmap/ico_circle_report"
+        app:leftImage="@mipmap/ico_circle_member"
         app:leftText="@string/circle_member"
         app:leftTextColor="@color/general_for_hint"
         app:lineColor="@color/circle_navigation_txt_color"

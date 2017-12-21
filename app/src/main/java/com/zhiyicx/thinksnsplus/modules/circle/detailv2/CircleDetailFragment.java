@@ -1089,10 +1089,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
-        mLlEarningsContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mBtReportCircle.setVisibility(isNormalMember || isManager ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(!isNormalMember ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
