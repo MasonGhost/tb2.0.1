@@ -132,49 +132,12 @@ public class TextViewUtils {
         mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
-            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
-            // dealTextViewClickEvent
-            mTextView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mTextView.getLineCount() > mMaxLineNums) {
-                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
-                        mTextView.setText(getSpannableString(result));
-                        mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete != null) {
-                            mOnTextSpanComplete.onComplete();
-                        }
-                    } else {
-                        mTextView.setText(getSpannableString(mTextView.getText()));
-                        mTextView.setVisibility(View.VISIBLE);
-                        if (mOnTextSpanComplete != null) {
-                            mOnTextSpanComplete.onComplete();
-                        }
-                    }
-                }
-            });
             dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
-            mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
-            mTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    if (mTextView.getLineCount() > mMaxLineNums) {
-                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        if (mOriMsg.length() >= (endOfLastLine - 2)) {
-                            String result = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
-                            mTextView.setText(result);
-                            mTextView.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-            });
-            if (mOnTextSpanComplete != null) {
-                mOnTextSpanComplete.onComplete();
-            }
+        }
+        if (mOnTextSpanComplete != null) {
+            mOnTextSpanComplete.onComplete();
         }
 
     }

@@ -570,8 +570,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
-        setEmptyView();
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        if (mHeaderAndFooterWrapper != null) {
+            setEmptyView();
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
+        }
     }
 
     private void setEmptyView() {
