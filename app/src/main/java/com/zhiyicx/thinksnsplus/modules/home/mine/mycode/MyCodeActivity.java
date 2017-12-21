@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.mycode;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
@@ -25,5 +28,17 @@ public class MyCodeActivity extends TSActivity<MyCodePresenter, MyCodeFragment>{
                 .shareModule(new ShareModule(MyCodeActivity.this))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UmengSharePolicyImpl.onDestroy(this);
     }
 }

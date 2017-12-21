@@ -81,9 +81,9 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository,
 
     @Override
     public void shareMyQrCode(Bitmap bitmap) {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         if (userInfoBean != null) {
-            ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
             ShareContent shareContent = new ShareContent();
             shareContent.setTitle(userInfoBean.getName());
             shareContent.setContent(TextUtils.isEmpty(userInfoBean.getIntro()) ? mContext.getString(R.string.intro_default) : userInfoBean.getIntro());
@@ -97,7 +97,6 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository,
             mSharePolicy.setShareContent(shareContent);
             mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
         }
-
     }
 
     @Override
