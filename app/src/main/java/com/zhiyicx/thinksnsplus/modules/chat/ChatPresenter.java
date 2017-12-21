@@ -310,10 +310,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         String currentUser = String.valueOf(AppApplication.getmCurrentLoginAuth() != null ? (int) AppApplication.getMyUserIdWithdefault() : 0);
         if (!message.getFrom().equals(currentUser)) {
             // 当前这个版本还没有群聊呢，要快速出版本，暂时不考虑群聊的情况，后面需要根据来源查找用户信息
-            chatItemBean.setUserInfo(mRootView.getMessItemBean().getUserInfo());
-        } else {
-            chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
+            currentUser = message.getFrom();
         }
+        chatItemBean.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(currentUser)));
+        // 如果没有用户信息则去完善用户信息，之后如果有群聊也可以直接这样，
+        // 但是有个问题，如果用户信息更新了，数据库没有更新，那么是不会更新的
         Subscription subscription = Observable.just(chatItemBean)
                 .flatMap(chatItemBean12 -> {
                     if (chatItemBean12.getUserInfo() == null) {
