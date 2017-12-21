@@ -533,6 +533,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
+    @Override
     public void paySuccess() {
 
     }
@@ -674,10 +680,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         // 举报
         if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
-            ReportActivity.startReportActivity(mActivity,new ReportResourceBean(dynamicBean.getComments().get
-                    (position).getCommentUser(),dynamicBean.getComments().get
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getComment_id().toString(),
-                    null,null,dynamicBean.getComments().get(position).getComment_content(),ReportType.COMMENT));
+                    null, null, dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
 
         } else {
 

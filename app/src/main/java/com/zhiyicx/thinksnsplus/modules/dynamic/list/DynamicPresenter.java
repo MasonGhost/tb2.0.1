@@ -325,8 +325,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         }
         mRootView.getListDatas().get(position).setFeed_view_count(mRootView.getListDatas().get(position).getFeed_view_count() + 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-//        mRepository.handleDynamicViewCount(feed_id);
-        mRootView.refreshData();
     }
 
     @Override
@@ -543,15 +541,17 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
 
                         if (isImage) {
-                            DynamicDetailBeanV2.ImagesBean imageBean=mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
+                            DynamicDetailBeanV2.ImagesBean imageBean = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
                             imageBean.setPaid(true);
-                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean.getCurrentWith(),
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean
+                                            .getCurrentWith(),
                                     imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link
+                                        .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
                                 }

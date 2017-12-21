@@ -798,6 +798,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
     /**
      * 初始化评论删除选择弹框
      *
@@ -853,7 +859,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                     .item2ClickListener(() -> {
                         ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean, mUserInfoBean.getUser_id().toString(),
                                 mUserInfoBean
-                                .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
+                                        .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
                         mTopBarMorePopWindow.hide();
                     })
                     .bottomClickListener(() -> mTopBarMorePopWindow.hide())
