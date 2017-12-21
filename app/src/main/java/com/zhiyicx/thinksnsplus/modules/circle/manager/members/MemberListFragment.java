@@ -63,6 +63,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     protected boolean mPermissionManager;
     protected boolean mPermissionOwner;
+    protected boolean mPermissionMember;
 
     public static MemberListFragment newInstance(Bundle bundle) {
         MemberListFragment memberListFragment = new MemberListFragment();
@@ -76,6 +77,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         mRole = getArguments().getString(ROLE);
         mPermissionManager = CircleMembers.ADMINISTRATOR.equals(mRole);
         mPermissionOwner = CircleMembers.FOUNDER.equals(mRole);
+        mPermissionMember = CircleMembers.MEMBER.equals(mRole);
         super.initData();
     }
 
@@ -112,7 +114,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
 
-                more.setVisibility(isOwner || mPermissionManager && isManager ? View
+
+                more.setVisibility((mPermissionMember || isOwner) || (isManager && mPermissionManager) ? View
                         .INVISIBLE : View.VISIBLE);
 
                 tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);

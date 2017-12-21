@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
@@ -201,6 +202,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     LinearLayout mLlCircleNavigationContainer;
     @BindView(R.id.ll_dynamic_count_container)
     LinearLayout mLlDynamicCountContainer;
+    @BindView(R.id.ll_intro_container)
+    LinearLayout mLlIntroCountContainer;
     @BindView(R.id.tv_top_tip_text)
     TextView mTvTopTipText;
     @BindView(R.id.fl_top_tip_container)
@@ -1052,6 +1055,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
+        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
+
 
         if (!updateHeadImg) {
             updateHeadImg = true;

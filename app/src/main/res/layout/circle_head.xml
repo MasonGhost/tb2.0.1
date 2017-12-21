@@ -137,6 +137,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
         android:minHeight="@dimen/create_circle_button_height"
         android:orientation="horizontal">
 
