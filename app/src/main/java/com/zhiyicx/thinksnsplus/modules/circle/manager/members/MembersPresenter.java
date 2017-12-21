@@ -45,6 +45,9 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                     List<CircleMembers> member = new ArrayList<>();
                     List<CircleMembers> blacklist = new ArrayList<>();
                     for (CircleMembers members : circleMembers) {
+                        if (members.getDisabled() == 1) {
+                            members.setRole(CircleMembers.BLACKLIST);
+                        }
                         switch (members.getRole()) {
                             case CircleMembers.FOUNDER:
                                 if (mRootView.needManager()) {
@@ -61,7 +64,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                                 grouLengh[2]++;
                                 break;
                             case CircleMembers.BLACKLIST:
-                                if (mRootView.needBlackList()){
+                                if (mRootView.needBlackList()) {
                                     blacklist.add(members);
                                     grouLengh[3]++;
                                 }
@@ -221,7 +224,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                 circleMembers.setRole(CircleMembers.FOUNDER);
                 mRootView.refreshData();
                 mRootView.attornSuccess(circleMembers);
-                mRootView.showSnackMessage(mContext.getString(R.string.circle_manager_attorn_success),Prompt.DONE);
+                mRootView.showSnackMessage(mContext.getString(R.string.circle_manager_attorn_success), Prompt.DONE);
             }
 
             @Override
