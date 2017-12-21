@@ -66,7 +66,7 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
                     .dyanmic_top_flag));
             review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
         } else {
-            if (circleJoinReQuestBean.getState() == TopCircleJoinReQuestBean.TOP_REFUSE) {
+            if (circleJoinReQuestBean.getAudit() == TopCircleJoinReQuestBean.TOP_REFUSE) {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .message_badge_bg));
                 review_flag.setText(holder.itemView.getResources().getString(R.string
