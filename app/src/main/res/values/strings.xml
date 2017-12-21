@@ -756,4 +756,5 @@
 
     <!--聊天-->
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
+    <string name="chat_unconnected">聊天服务器未连接</string>
 </resources>

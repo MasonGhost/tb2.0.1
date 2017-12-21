@@ -72,7 +72,7 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.D
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter{
+public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
@@ -144,12 +144,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     /**
-     * 获取环信的
-     * @param isLoadMore
+     * 获取环信的所有会话列表
+     * @param isLoadMore 是否加载更多
      */
-    private void getAllConversationV2(boolean isLoadMore){
+    private void getAllConversationV2(boolean isLoadMore) {
         // 已连接才去获取
-        if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()){
+        if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
             Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
@@ -159,10 +159,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     });
             addSubscrebe(subscribe);
         } else {
-            mRootView.showStickyMessage("聊天服务器未连接");
+            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
             mRootView.hideLoading();
             // 尝试重新登录，在homepresenter接收
-           mAuthRepository.loginIM();
+            mAuthRepository.loginIM();
         }
     }
 
@@ -248,7 +248,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-//            creatTsHelperConversation();
             getAllConversationV2(isLoadMore);
         }
     }
@@ -405,7 +404,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
     private void onNewMessageReceived(Bundle bundle) {
-        if (bundle == null){
+        if (bundle == null) {
             return;
         }
         LogUtils.d("Cathy", "MessagePresenter onMessageReceived" + bundle);
@@ -418,19 +417,22 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     // 对话是否存在
                     // 用来装新的会话item
                     List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
-                    for (EMMessage emMessage : messageList){
+                    for (EMMessage emMessage : messageList) {
+                        // 用收到的聊天的item的会话id去本地取出会话
                         EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
-                        if (conversationNew != null){
+                        if (conversationNew != null) {
+                            // 会话已经存在
                             for (int i = 0; i < size; i++) {
                                 // 检测列表中是否已经存在了
                                 EMConversation conversationOld = mRootView.getRealMessageList().get(i).getConversation();
-                                if (conversationOld.conversationId().equals(conversationNew.conversationId())){
+                                if (conversationOld.conversationId().equals(conversationNew.conversationId())) {
                                     // 直接替换会话
                                     MessageItemBeanV2 itemBeanV2 = mRootView.getRealMessageList().get(i);
                                     itemBeanV2.setConversation(conversationNew);
                                     messageItemBeanV2List.add(itemBeanV2);
                                     break;
-                                } else if (i == size - 1){
+                                } else if (i == size - 1) {
+                                    // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
                                     MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
                                     itemBeanV2.setConversation(conversationNew);
                                     itemBeanV2.setEmKey(conversationNew.conversationId());
@@ -439,6 +441,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             }
                         } else {
                             // 居然不存在 exm？？？
+                            // 那还能怎么办呢，当然新来一条的，不过这种情况目前没有遇到过的样子呢(*╹▽╹*)
                             EMConversation conversation =
                                     EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType.Chat, true);
                             conversation.insertMessage(emMessage);
@@ -453,13 +456,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list1 -> {
-                    for (MessageItemBeanV2 messageItemBeanV2 : list1){
-                        if (mRootView.getRealMessageList().indexOf(messageItemBeanV2) != -1){
+                    for (MessageItemBeanV2 messageItemBeanV2 : list1) {
+                        // 移除原来的
+                        if (mRootView.getRealMessageList().indexOf(messageItemBeanV2) != -1) {
                             mRootView.getRealMessageList().remove(messageItemBeanV2);
                         }
                     }
+                    // 加载到第一条
                     mRootView.getRealMessageList().addAll(0, list1);
                     mRootView.refreshData();
+                    // 小红点是否要显示
                     checkBottomMessageTip();
                 });
         addSubscrebe(subscribe);
@@ -484,14 +490,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
         mRootView.showStickyMessage(reason);
-        if(code == EMError.USER_REMOVED){
+        if (code == EMError.USER_REMOVED) {
             // 显示帐号已经被移除
-        }else if (code == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+        } else if (code == EMError.USER_LOGIN_ANOTHER_DEVICE) {
             // 显示帐号在其他设备登录
         } else {
-            if (NetUtils.hasNetwork(mContext)){
+            if (NetUtils.hasNetwork(mContext)) {
                 //连接不到聊天服务器
-            } else{
+            } else {
                 //当前网络不可用，请检查网络设置
             }
         }
