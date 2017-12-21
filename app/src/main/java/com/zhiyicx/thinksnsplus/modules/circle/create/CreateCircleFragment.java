@@ -402,6 +402,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     private void restoreData() {
+        hasHeadImage = true;
         mToolbarRight.setText(setRightTitle());
         mToolbarCenter.setText(setCenterTitle());
         Glide.with(getActivity())
