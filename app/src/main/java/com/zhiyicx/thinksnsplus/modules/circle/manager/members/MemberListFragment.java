@@ -216,8 +216,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         mPopupWindow = ChooseBindPopupWindow.Builder()
                 .with(mActivity)
                 .alpha(0.8f)
-                .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager : (mPermissionOwner && isMember ? R
-                        .string.appoint_manager : R.string.cancle_circle)))
+                .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager :
+                        (mPermissionOwner && isMember ? R.string.appoint_manager :mPermissionOwner? R.string.cancle_circle:R.string.empty)))
                 .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .cancle_circle : R.string.cancle_blacklist)))
                 .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
