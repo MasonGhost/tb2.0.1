@@ -332,7 +332,7 @@ public class SelectDynamicTypeFragment extends TSFragment<SelectDynamicTypeContr
             mPayAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
                     .item6Str(getString(R.string.info_publish_go_to_next))
-                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter.getGoldName()))
+                    .desStr(String.format(Locale.getDefault(), getString(R.string.info_publish_hint_pay), mPresenter!=null?mPresenter.getGoldName():""))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
                     .isFocus(true)
