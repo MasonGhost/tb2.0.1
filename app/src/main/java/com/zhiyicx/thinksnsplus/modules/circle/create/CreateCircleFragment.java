@@ -19,10 +19,7 @@ import android.widget.TextView;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
-import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCheckedTextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -30,7 +27,6 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -50,14 +46,10 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func4;
 
 /**
  * @author Jliuer
@@ -203,7 +195,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @Override
     protected void initData() {
         mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
-        mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter()});
+        mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter(),
+                new InputFilter.LengthFilter(getResources().getInteger(R.integer.dynamic_title_input_size))});
         mFlTags.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 if (canUpdate && !isManager) {
@@ -390,6 +383,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (mCircleInfo == null) {
             mPresenter.createCircle(mCreateCircleBean);
         } else {
+            boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+            if (isPaidCircle) {
+                mCreateCircleBean.setMode(null);
+                mCreateCircleBean.setMoney(null);
+            }
             mCreateCircleBean.setCircleId(mCircleInfo.getId());
             mCircleInfo.setTags(mUserTagBeens);
             mCircleInfo.setCategory(mCircleTypeBean);

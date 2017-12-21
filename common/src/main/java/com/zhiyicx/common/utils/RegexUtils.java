@@ -3,6 +3,8 @@ package com.zhiyicx.common.utils;
 import android.text.InputFilter;
 import android.text.Spanned;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -388,9 +390,9 @@ public class RegexUtils {
             }
 
             String reg = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
-            Pattern emoji = Pattern.compile(
-                    reg,
-                    Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            Pattern emoji = Pattern.compile(reg,Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
         };
+
+
     }
 }

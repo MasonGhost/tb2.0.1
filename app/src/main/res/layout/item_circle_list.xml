@@ -21,9 +21,9 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_toEndOf="@+id/iv_circle_cover"
-        android:layout_toLeftOf="@+id/tv_circle_subscrib"
+        android:layout_toLeftOf="@+id/tv_circle_subscrib_position"
         android:layout_toRightOf="@+id/iv_circle_cover"
-        android:layout_toStartOf="@+id/tv_circle_subscrib"
+        android:layout_toStartOf="@+id/tv_circle_subscrib_position"
         android:orientation="vertical">
 
         <TextView
@@ -63,6 +63,18 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:visibility="invisible"
+        android:id="@+id/tv_circle_subscrib_position"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:drawablePadding="@dimen/spacing_small_3dp"
+        android:paddingLeft="@dimen/spacing_normal"/>
+
     <CheckBox
         android:id="@+id/tv_circle_subscrib"
         android:layout_width="@dimen/channel_subscrib_btn_width"
@@ -89,6 +101,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/spacing_mid"
         android:gravity="center"
+        android:layout_marginLeft="@dimen/spacing_mid"
         android:textColor="@color/white"
         android:textSize="@dimen/size_note_assist"
         android:visibility="gone"
