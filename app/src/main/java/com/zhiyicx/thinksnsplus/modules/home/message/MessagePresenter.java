@@ -559,7 +559,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     int pinnedNums = 0;
                     if (data.getPinneds() != null) {
                         pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
-                                + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount());
+                                + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount())
+                                + (data.getPinneds().getGroupPosts() == null ? 0 : data.getPinneds().getGroupPosts().getCount())
+                                + (data.getPinneds().getGroupComments() == null ? 0 : data.getPinneds().getGroupComments().getCount());
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {
                         mItemBeanReview.setUnReadMessageNums(0);
@@ -578,18 +580,19 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     String feedTime = data.getPinneds() != null && data.getPinneds().getFeeds() != null ? data.getPinneds().getFeeds().getTime() :
                             null;
-
                     String newTime = data.getPinneds() != null && data.getPinneds().getNews() != null ? data.getPinneds().getNews().getTime() : null;
-                    long reviewTime = 0;
-                    if (feedTime != null) {
-                        reviewTime = TimeUtils
-                                .utc2LocalLong(feedTime);
-                    }
-                    if (newTime != null && TimeUtils.utc2LocalLong(newTime) > reviewTime) {
-                        reviewTime = TimeUtils.utc2LocalLong(newTime);
-                    }
+                    String groupPostsTime = data.getPinneds() != null && data.getPinneds().getGroupPosts() != null ? data.getPinneds().getGroupPosts()
+                            .getTime() : null;
+                    String groupCommentsTime = data.getPinneds() != null && data.getPinneds().getGroupComments() != null ? data.getPinneds()
+                            .getGroupComments().getTime
+                                    () : null;
+                    long lastTime = 0;
+                    lastTime = getLastTime(feedTime, lastTime);
+                    lastTime = getLastTime(newTime, lastTime);
+                    lastTime = getLastTime(groupPostsTime, lastTime);
+                    lastTime = getLastTime(groupCommentsTime, lastTime);
 
-                    mItemBeanReview.getConversation().setLast_message_time(reviewTime);
+                    mItemBeanReview.getConversation().setLast_message_time(lastTime);
 
                     /**
                      * 设置提示内容
@@ -641,6 +644,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         addSubscrebe(mUnreadNotiSub);
+    }
+
+    private long getLastTime(String newTime, long lastTime) {
+        if (newTime != null && TimeUtils.utc2LocalLong(newTime) > lastTime) {
+            lastTime = TimeUtils.utc2LocalLong(newTime);
+        }
+        return lastTime;
     }
 
     /**

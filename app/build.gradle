@@ -58,7 +58,8 @@ android {
     buildTypes {
 
         debug {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
             testCoverageEnabled false  // false 的时候 debug 才能看到成员变量的数据，true 用来导出代码覆盖率数据
@@ -67,7 +68,7 @@ android {
             minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
     repositories {
