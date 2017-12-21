@@ -137,7 +137,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
         android:minHeight="@dimen/create_circle_button_height"
         android:orientation="horizontal">
 
@@ -153,6 +152,7 @@
         <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
             android:id="@+id/tv_introduce_content"
             android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
             android:textColor="@color/normal_for_dynamic_list_content"
             android:textSize="@dimen/size_content"

@@ -342,8 +342,12 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
                     List<CirclePostListBean> data = circlePostBean.getPinneds();
-                    data.addAll(circlePostBean.getPosts());
-                    return data;
+                    if (data != null) {
+                        data.addAll(circlePostBean.getPosts());
+                        return data;
+                    } else {
+                        return circlePostBean.getPosts();
+                    }
                 }));
     }
 
@@ -383,8 +387,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId,List<String> permissions) {
-        return mCircleClient.setCirclePermissions(circleId,permissions)
+    public Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId, List<String> permissions) {
+        return mCircleClient.setCirclePermissions(circleId, permissions)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

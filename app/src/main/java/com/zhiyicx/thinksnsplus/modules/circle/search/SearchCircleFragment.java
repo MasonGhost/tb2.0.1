@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
@@ -80,17 +81,23 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_search_list;
     }
+
     @Override
     protected boolean showToolBarDivider() {
         return false;
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof IHistoryCententClickListener) {
             this.mIHistoryCententClickListener = (IHistoryCententClickListener) activity;
         }
+    }
 
+    @Override
+    protected boolean isMineJoined() {
+        return false;
     }
 
     @Override

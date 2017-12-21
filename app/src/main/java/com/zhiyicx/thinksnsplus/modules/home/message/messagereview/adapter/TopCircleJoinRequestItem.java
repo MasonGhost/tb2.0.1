@@ -70,12 +70,12 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .message_badge_bg));
                 review_flag.setText(holder.itemView.getResources().getString(R.string
-                        .review_refuse));
+                        .circle_report_disagree));
             } else {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .general_for_hint));
                 review_flag.setText(holder.itemView.getResources().getString(R.string
-                        .review_approved));
+                        .circle_report_agree));
             }
         }
 

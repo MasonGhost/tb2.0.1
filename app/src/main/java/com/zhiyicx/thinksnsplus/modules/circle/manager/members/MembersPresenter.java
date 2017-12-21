@@ -227,7 +227,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(mContext.getString(R.string.message));
+                mRootView.showSnackErrorMessage(message);
             }
 
             @Override

@@ -159,6 +159,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvCirclePostCount;
     @BindView(R.id.tv_circle_tag)
     TextView mTvCircleFounder;
+    @BindView(R.id.tv_circle_name)
+    TextView mTvCircleName;
     @BindView(R.id.tv_type)
     TextView mTvCirclePostOrder;
     @BindView(R.id.tv_circle_title)
@@ -977,7 +979,25 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             public void doRefresh() {
                 mPresenter.requestNetData(0L, false);
             }
+
+            @Override
+            public void alphaChange(float a) {
+                mTvCircleName.setAlpha(a);
+            }
         });
+
+        mTvCircleIntroduce.setExpandListener(new ExpandableTextView.OnExpandListener() {
+            @Override
+            public void onExpand(ExpandableTextView view) {
+                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+            }
+
+            @Override
+            public void onShrink(ExpandableTextView view) {
+                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+            }
+        });
+
         mIlvComment.setOnSendClickListener(this);
         mVShadow.setOnClickListener(v -> closeInputView());
     }
@@ -1025,6 +1045,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private void setCircleData(CircleInfo detail) {
         mTvCircleTitle.setText(detail.getName());
+        mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" : detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));

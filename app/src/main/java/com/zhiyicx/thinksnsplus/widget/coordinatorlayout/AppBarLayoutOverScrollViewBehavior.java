@@ -71,6 +71,9 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         abl.addOnOffsetChangedListener((appBarLayout, i) -> {
                     float point = Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange());
                     middleLayout.setAlpha(1f - point);
+                    if (onRefreshChangeListener != null) {
+                        onRefreshChangeListener.alphaChange(point);
+                    }
                 }
         );
         return handled;
@@ -111,7 +114,7 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         super.onStopNestedScroll(coordinatorLayout, abl, target);
     }
 
-    private void initial(AppBarLayout abl) {
+    public void initial(AppBarLayout abl) {
         abl.setClipChildren(false);
         mParentHeight = abl.getHeight();
         mTargetViewHeight = mTargetView.getHeight();
@@ -147,6 +150,8 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         void onRefreshShow();
 
         void doRefresh();
+
+        void alphaChange(float a);
     }
 
     public void setOnRefreshChangeListener(onRefreshChangeListener onRefreshChangeListener) {
