@@ -91,8 +91,8 @@
                     android:background="@color/white"
                     android:hint="@string/edit_circle_name"
                     android:inputType="text"
-                    android:maxLines="1"
                     android:maxLength="@integer/circle_name_input_max_size"
+                    android:maxLines="1"
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
@@ -250,6 +250,7 @@
                     android:text="@string/introduce"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_sub_title"/>
+
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/et_circle_introduce"
                     style="@style/style_edit_cursor"
@@ -262,7 +263,7 @@
                     android:visibility="visible"
                     app:hintContent="@string/edit_introduce"
                     app:limitSize="@integer/circle_introduce_max_size"
-                    app:showLimitSize="@integer/show_introduce_input_size"/>
+                    app:showLimitSize="@integer/circle__input_size"/>
             </LinearLayout>
 
             <include
@@ -324,13 +325,13 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/ll_charge"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/create_circle_button_height"
                 android:background="@color/white"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/cb_toll"
@@ -342,9 +343,9 @@
                     android:textSize="@dimen/size_content"/>
 
                 <EditText
-                    android:digits="0123456789"
                     android:id="@+id/et_circle_amount"
                     style="@style/style_dynamic_editext"
+                    android:digits="0123456789"
                     android:maxLength="@integer/money_input_max_size"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
@@ -364,12 +365,12 @@
                 layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/ll_free"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/cb_free"
@@ -427,7 +428,7 @@
                     android:visibility="visible"
                     app:hintContent="@string/edit_circle_notice"
                     app:limitSize="@integer/circle_notice_input_max_size"
-                    app:showLimitSize="@integer/show_introduce_input_size"/>
+                    app:showLimitSize="@integer/circle__input_size"/>
             </LinearLayout>
 
             <TextView

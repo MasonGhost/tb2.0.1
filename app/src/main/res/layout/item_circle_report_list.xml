@@ -43,6 +43,8 @@
         android:includeFontPadding="false"
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
         app:etv_MaxLinesOnShrink="2"
+        app:etv_ToExpandHintShow="true"
+        app:etv_IsNeedShrink="false"
         app:etv_ToExpandHint="@string/circle_report_more"
         android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/important_for_content"

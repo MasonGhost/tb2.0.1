@@ -42,6 +42,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
 
     public TopPostItem(Context context, MessageReviewContract.Presenter presenter) {
         super(context, presenter);
+        setTopReviewEvetnInterface(this);
     }
 
     @Override
@@ -160,7 +161,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
                 1000000));
         postListBean.setStatus(TopNewsCommentListBean.TOP_SUCCESS);
         BaseListBean result = postListBean;
-        mPresenter.approvedTopComment(postListBean.getId(),
+        mPresenter.approvedTopComment(postListBean.getPost().getId(),
                 0, 0, result, position);
     }
 
