@@ -16,8 +16,15 @@ public class BaseJsonV2<T> {
     protected boolean status;
     protected int code;
     protected int id = -1;
-    // 数据类型
-    @SerializedName(value = "data",alternate = {"answer","comment","count","post"})
+    /**
+     * 数据类型
+     * answer         --  问题回答
+     * comment        --  评论
+     * count          --  圈子总数
+     * post           --  圈子帖子
+     * group          --  圈子信息
+     */
+    @SerializedName(value = "data",alternate = {"answer","comment","count","post","group"})
     private T data;
     private Object message;
 

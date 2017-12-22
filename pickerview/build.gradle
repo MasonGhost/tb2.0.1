@@ -12,19 +12,18 @@ android {
         versionCode gConfig["versionCode"]
         versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath true
             }
         }
     }
+
     lintOptions {
         abortOnError false
-    }
-
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
+        // if true, only report errors.
+        ignoreWarnings true
     }
 }
 

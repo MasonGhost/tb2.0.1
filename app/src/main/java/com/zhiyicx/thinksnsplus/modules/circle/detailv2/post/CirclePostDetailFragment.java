@@ -522,16 +522,29 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.post_apply_for_top) : "")
-                .item2Str((isMine) ? getString(R.string.info_delete) : getString(isCollected ? R
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(isMine ? "" : getString(R.string.report))
+                .item3Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
+                .item4Str(isMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item3ClickListener(() -> {                    // 举报帖子
+                .item3ClickListener(() -> {
+                    // 管理员删除
+                    if (isMine) {
+                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+                        getActivity().finish();
+                    } else {
+                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
+                                circlePostListBean.getId());
+                    }
+                    mDealPostPopWindow.hide();
+                })
+                .item4ClickListener(() -> {
+                    // 举报
                     String img = "";
                     if (circlePostListBean.getImages() != null && !circlePostListBean.getImages()
                             .isEmpty()) {
@@ -564,8 +577,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     }
                     mDealPostPopWindow.hide();
                 })
-                // 申请置顶
                 .item1ClickListener(() -> {
+                    // 申请置顶
                     if (circlePostListBean.hasPinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
                     } else {
