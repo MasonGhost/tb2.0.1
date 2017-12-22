@@ -532,12 +532,18 @@ public interface CircleClient {
      * @param groupId 圈子id
      * @param after
      * @param limit
+     * * @param start    秒级时间戳，起始筛选时间
+     * @param end      秒级时间戳，结束筛选时间
      * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
      * @return
      */
     @GET(APP_PATH_GET_CIRCLE_REPOTS)
-    Observable<List<CircleReportListBean>> getCircleReportList(@Query("group_id") Long groupId, @Query("status") Integer status, @Query("after") Integer after, @Query("limit")
-            Integer limit);
+    Observable<List<CircleReportListBean>> getCircleReportList(@Query("group_id") Long groupId,
+                                                               @Query("status") Integer status,
+                                                               @Query("after") Integer after,
+                                                               @Query("limit") Integer limit,
+                                                               @Query("start") Long start,
+                                                               @Query("end")Long end);
 
     /**
      * 同意举报

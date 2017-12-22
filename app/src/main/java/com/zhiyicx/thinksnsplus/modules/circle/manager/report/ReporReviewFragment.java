@@ -5,13 +5,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.bigkoo.pickerview.TimePickerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 
@@ -22,7 +27,7 @@ import butterknife.BindView;
  * @Description
  */
 public class ReporReviewFragment extends TSListFragment<ReporReviewContract.Presenter, CircleReportListBean>
-        implements ReporReviewContract.View {
+        implements ReporReviewContract.View, TimePickerView.OnTimeSelectListener {
 
     public static final String SOURCEID = "sourceid";
     private ActionPopupWindow mActionPopupWindow;
@@ -32,10 +37,31 @@ public class ReporReviewFragment extends TSListFragment<ReporReviewContract.Pres
     @BindView(R.id.v_shadow)
     View mVshadow;
 
+    private TimePickerView mTimePickerView;
+    private Long mStartTime;
+    private Long mEndTime;
+
     public static ReporReviewFragment newInstance(Bundle bundle) {
         ReporReviewFragment memberListFragment = new ReporReviewFragment();
         memberListFragment.setArguments(bundle);
         return memberListFragment;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        initTimepicker();
+    }
+
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_circle_screen;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mTimePickerView.show();
     }
 
     @Override
@@ -89,6 +115,37 @@ public class ReporReviewFragment extends TSListFragment<ReporReviewContract.Pres
         return adapter;
     }
 
+    @Override
+    public void onTimeSelect(Date date, View v) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date);
+        // 将时分秒,毫秒域清零
+        cal1.set(Calendar.DAY_OF_MONTH, cal1.getActualMinimum(Calendar.DAY_OF_MONTH));
+        cal1.set(Calendar.HOUR_OF_DAY, cal1.getActualMinimum(Calendar.HOUR_OF_DAY));
+        cal1.set(Calendar.MINUTE, cal1.getActualMinimum(Calendar.MINUTE));
+        cal1.set(Calendar.SECOND, cal1.getActualMinimum(Calendar.SECOND));
+        cal1.set(Calendar.MILLISECOND, cal1.getActualMinimum(Calendar.MILLISECOND));
+        mStartTime = cal1.getTimeInMillis() / 1000;
+
+        cal1.set(Calendar.DAY_OF_MONTH, cal1.getActualMaximum(Calendar.DAY_OF_MONTH));
+        cal1.set(Calendar.HOUR_OF_DAY, cal1.getActualMaximum(Calendar.HOUR_OF_DAY));
+        cal1.set(Calendar.MINUTE, cal1.getActualMaximum(Calendar.MINUTE));
+        cal1.set(Calendar.SECOND, cal1.getActualMaximum(Calendar.SECOND));
+        cal1.set(Calendar.MILLISECOND, cal1.getActualMaximum(Calendar.MILLISECOND));
+        mEndTime = cal1.getTimeInMillis() / 1000;
+        requestNetData(0L, false);
+    }
+
+    @Override
+    public Long getStartTime() {
+        return mStartTime;
+    }
+
+    @Override
+    public Long getEndTime() {
+        return mEndTime;
+    }
+
     private void initTopPopWindow() {
         mActionPopupWindow = ActionPopupWindow.builder()
                 .with(getActivity())
@@ -134,5 +191,35 @@ public class ReporReviewFragment extends TSListFragment<ReporReviewContract.Pres
         if (mActionPopupWindow != null) {
             mActionPopupWindow.hide();
         }
+    }
+
+    private void initTimepicker() {
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        Calendar selectedDate = Calendar.getInstance();
+        //正确设置方式 原因：注意事项有说明
+        startDate.set(2000, 0, 1);
+        endDate.set(2020, 11, 31);
+
+        mTimePickerView = new TimePickerView.Builder(mActivity, this)
+                .setDate(selectedDate)
+                .setRangDate(startDate, endDate)
+                .setLayoutRes(R.layout.pickerview_custom_time, v -> {
+                    TextView tvSubmit = (TextView) v.findViewById(R.id.btnSubmit);
+                    TextView ivCancel = (TextView) v.findViewById(R.id.btnCancel);
+                    tvSubmit.setOnClickListener(v12 -> {
+                        mTimePickerView.returnData();
+                        mTimePickerView.dismiss();
+                    });
+                    ivCancel.setOnClickListener(v1 -> mTimePickerView.dismiss());
+                })
+                .setContentSize(18)
+                .setType(new boolean[]{true, true, false, false, false, false})
+                .setLabel("年", "月", "日", "时", "分", "秒")
+                .setLineSpacingMultiplier(1.5f)
+                //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .isCenterLabel(false)
+//                .setDividerColor(0xFF24AD9D)
+                .build();
     }
 }

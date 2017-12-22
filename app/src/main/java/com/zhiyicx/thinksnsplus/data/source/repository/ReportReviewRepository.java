@@ -30,8 +30,9 @@ public class ReportReviewRepository implements ReporReviewContract.Repository {
     }
 
     @Override
-    public Observable<List<CircleReportListBean>> getCircleReportList(Long groupId, Integer status, Integer after, Integer limit) {
-        return mCircleClient.getCircleReportList(groupId,status,after,limit)
+    public Observable<List<CircleReportListBean>> getCircleReportList(Long groupId, Integer status,
+                                                                      Integer after, Integer limit,Long start, Long end) {
+        return mCircleClient.getCircleReportList(groupId,status,after,limit,start,end)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
