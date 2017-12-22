@@ -2,9 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,10 +17,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
-import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailFragment;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;

@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -121,7 +122,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     protected void setRightLeftClick() {
         super.setRightLeftClick();
         CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
+    }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
     @Override

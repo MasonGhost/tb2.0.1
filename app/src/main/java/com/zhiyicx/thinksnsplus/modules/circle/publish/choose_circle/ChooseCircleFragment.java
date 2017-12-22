@@ -139,8 +139,4 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
         mPresenter.getMyJoinedCircleList();
     }
 
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(getActivity(), HomeActivity.class));
-    }
 }
