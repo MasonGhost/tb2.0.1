@@ -22,7 +22,6 @@ android {
                 AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf", // 高德三方配置
         ]
         multiDexEnabled true
-
     }
     buildTypes {
         release {
@@ -38,13 +37,6 @@ android {
         abortOnError false
         // if true, only report errors.
         ignoreWarnings true
-    }
-
-    sourceSets {
-        main {
-            //jni库的调用会到资源文件夹下libs里面找so文件
-            jniLibs.srcDirs = ['libs']
-        }
     }
 }
 
@@ -97,6 +89,7 @@ dependencies {
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     compile dataDependences.playServices
+    compile dataDependences.hyphenate
     // 扫码
     compile dataDependences.zxing
     compile dataDependences.bgaQrcodecore

@@ -28,7 +28,7 @@ android {
 
         ndk {
             //选择要添加的对应cpu类型的.so库。
-            abiFilters 'armeabi', 'x86'/*, 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'*/
+            abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'armeabi-v8a', 'x86_64', 'mips', 'mips64'
         }
         // 极光推送
         manifestPlaceholders = [
@@ -64,7 +64,7 @@ android {
             testCoverageEnabled false  // false 的时候 debug 才能看到成员变量的数据，true 用来导出代码覆盖率数据
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
@@ -114,6 +114,13 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+        pickFirst 'lib/x86/libsqlcipher.so'
+        pickFirst 'lib/armeabi/libsqlcipher.so'
+        pickFirst 'lib/armeabi-v7a/libsqlcipher.so'
+        pickFirst 'lib/armeabi-v8a/libsqlcipher.so'
+        pickFirst 'lib/x86_64/libsqlcipher.so'
+        pickFirst 'lib/mips/libsqlcipher.so'
+        pickFirst 'lib/mips64/libsqlcipher.so'
     }
     dexOptions {
         dexInProcess true
