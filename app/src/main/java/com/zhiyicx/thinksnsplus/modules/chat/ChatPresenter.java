@@ -7,30 +7,22 @@ import android.util.SparseArray;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
-import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
-import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.manage.ChatClient;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -39,7 +31,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +40,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
@@ -337,7 +326,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
-    private void onConnected() {
+    private void onConnected(String content) {
 //        mRootView.showSnackSuccessMessage("IM 聊天加载成功");
     }
 

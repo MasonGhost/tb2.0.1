@@ -298,7 +298,7 @@ public class AuthRepository implements IAuthRepository {
         // 此处替换为环信的登陆
         IMConfig config = getIMConfig();
         //回调，如果都取不出来聊天用户信息，那么则必须再去获取，如果有那么只需要再次登录即可
-        if (config != null && !TextUtils.isEmpty(config.getToken())){
+        if (config != null && !TextUtils.isEmpty(config.getToken()) && !EMClient.getInstance().isConnected()){
             String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
             String imPassword = config.getToken();
             EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {
@@ -320,7 +320,7 @@ public class AuthRepository implements IAuthRepository {
                     LogUtils.d("main", "登录聊天服务器失败！error message: " + message);
                 }
             });
-        } else {
+        } else if (!EMClient.getInstance().isConnected()){
             // 再次去请求聊天用户信息
             handleIMLogin();
         }

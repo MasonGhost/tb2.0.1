@@ -483,8 +483,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
-    private void onConnected() {
+    private void onConnected(String content) {
         mRootView.hideStickyMessage();
+        getAllConversationV2(false);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)

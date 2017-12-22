@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
-import com.squareup.leakcanary.LeakTraceElement;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
