@@ -209,6 +209,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             return;
         }
         restoreData();
+        mToolbarRight.setEnabled(false);
     }
 
     @Override
@@ -286,9 +287,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         Observable.combineLatest(
                 RxTextView.textChanges(mEtCircleName),
-                RxTextView.textChanges(mTvCircleType),
-                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()), (charSequence, charSequence2, charSequence3) -> {
-                    emptyFlag = charSequence.length() * charSequence2.length() * charSequence3.length();
+                RxTextView.textChanges(mTvCircleType), (charSequence, charSequence2) -> {
+                    emptyFlag = charSequence.length() * charSequence2.length();
                     return emptyFlag != 0;
                 }).subscribe(this::createCirclepreHandle);
 

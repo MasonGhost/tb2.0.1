@@ -18,13 +18,10 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -65,7 +62,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     private MultiItemTypeAdapter mHsitoryAdapter;
     private List<CircleSearchHistoryBean> mHistoryData = new ArrayList<>();
 
-
     private IHistoryCententClickListener mIHistoryCententClickListener;
 
 
@@ -104,7 +100,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     protected void initView(View rootView) {
         super.initView(rootView);
         initHistoryView();
-
     }
 
     private void initHistoryView() {
@@ -152,7 +147,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
                     itemCounts) {
                 holder.setText(R.id.tv_content, qaSearchHistoryBean.getContent());
                 RxView.clicks(holder.getView(R.id.tv_content))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
                                 onEditChanged(qaSearchHistoryBean.getContent());
@@ -161,7 +156,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
 
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             mPresenter.deleteSearchHistory(mHistoryData.get(position));
                             mHistoryData.remove(position);

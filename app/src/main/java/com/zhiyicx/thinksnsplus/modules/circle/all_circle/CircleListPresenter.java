@@ -7,7 +7,6 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,8 +14,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
 
 /**
  * @author Jliuer
@@ -67,8 +66,18 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
             return;
         }
         boolean isJoined = circleInfo.getJoined() != null;
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
+        Observable<BaseJsonV2<Object>> observable;
+        if (isPaid) {
+            observable = handleWalletBlance(circleInfo.getMoney())
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.pay_alert_ing)))
+                    .flatMap(o -> mRepository.dealCircleJoinOrExit(circleInfo));
+        } else {
+            observable = mRepository.dealCircleJoinOrExit(circleInfo);
+        }
+        Subscription subscription = observable
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -101,6 +110,8 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+
+        addSubscrebe(subscription);
     }
 
     @Override

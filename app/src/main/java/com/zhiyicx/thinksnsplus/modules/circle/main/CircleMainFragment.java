@@ -146,6 +146,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         closeLoadingView();
     }
 
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        mCircleMainHeader.getAdvertHeader().hideAdvert();
+    }
+
     /**
      * 查看我加入的
      *

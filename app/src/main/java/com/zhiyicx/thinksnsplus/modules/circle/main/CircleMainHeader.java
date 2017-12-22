@@ -79,6 +79,10 @@ public class CircleMainHeader {
         mCircleCount.setLeftText(countSpan);
     }
 
+    public DynamicDetailAdvertHeader getAdvertHeader() {
+        return mDynamicDetailAdvertHeader;
+    }
+
     private void toAdvert(Context context, String link, String title) {
         CustomWEBActivity.startToWEBActivity(context, link, title);
     }

@@ -44,14 +44,13 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
     }
 
     /**
-     *
      * @param context
      * @param position
      * @param circleInfo
-     * @param amout 金额
-     * @param ratio 转换率
-     * @param goldName 单位名称
-     * @param strRes 描述文字
+     * @param amout      金额
+     * @param ratio      转换率
+     * @param goldName   单位名称
+     * @param strRes     描述文字
      */
     protected void initPayPopWindow(Activity context, final int position, CircleInfo circleInfo,
                                     long amout, int ratio, String goldName, int strRes) {
@@ -73,7 +72,9 @@ public abstract class BaseCircleItem implements ItemViewDelegate<CircleInfo> {
                 .buildItem2Str(context.getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(context.getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, ratio)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    if (mCircleItemItemEvent != null) {
+                        mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);
+                    }
                     mPayPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())

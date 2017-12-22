@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.circle.mine.joined;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -130,21 +132,46 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
+
         if (circleInfo.getAudit() != 1) {
-            mRootView.showSnackErrorMessage("圈子还在审核啊");
+            mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
         }
         boolean isJoined = circleInfo.getJoined() != null;
-        if (isJoined) {
-            circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
-        } else {
-            circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
-        }
-        // 更改数据源，切换订阅状态
-        circleInfo.setJoined(new CircleJoinedBean());
-        mCircleInfoGreenDao.updateSingleData(circleInfo);
-        mRepository.dealCircleJoinOrExit(circleInfo);
-        mRootView.refreshData(position);
+
+        mRepository.dealCircleJoinOrExit(circleInfo)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        if (isJoined) {
+                            circleInfo.setJoined(null);
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
+                        } else {
+                            if (CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
+
+                                return;
+                            }
+                            circleInfo.setJoined(new CircleJoinedBean());
+                            circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+                        }
+                        mCircleInfoGreenDao.updateSingleData(circleInfo);
+                        mRootView.refreshData(position);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
 
     }
 
