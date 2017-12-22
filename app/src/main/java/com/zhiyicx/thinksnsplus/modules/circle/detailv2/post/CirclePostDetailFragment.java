@@ -522,7 +522,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.post_apply_for_top) : "")
-                .item2Str(isMine || isManager ? getString(R.string.info_delete) : getString(isCollected ? R
+                .item2Str((isMine) ? getString(R.string.info_delete) : getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
                 .item3Str(isMine ? "" : getString(R.string.report))

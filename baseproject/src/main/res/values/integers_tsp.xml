@@ -49,7 +49,7 @@
     <!-- 创建圈子简介最多输入字符数量 -->
     <integer name="circle_introduce_max_size">255</integer>
     <!-- 创建圈子简介输入到多少字符的时候显示提示 -->
-    <integer name="circle__input_size">100</integer>
+    <integer name="circle__input_size">200</integer>
 
     <!--发布动态标题最大字数30-->
     <integer name="dynamic_title_max_size">30</integer>

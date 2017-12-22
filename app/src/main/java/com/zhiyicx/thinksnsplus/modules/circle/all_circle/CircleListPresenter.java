@@ -78,11 +78,15 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
             observable = mRepository.dealCircleJoinOrExit(circleInfo);
         }
         Subscription subscription = observable
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .doOnSubscribe(() -> {
+                            mRootView.dismissSnackBar();
+                            mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                        }
+                )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        mRootView.dismissSnackBar();
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
