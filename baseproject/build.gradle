@@ -94,9 +94,9 @@ dependencies {
     compile project(':baseadapter-recyclerview')
     compile project(':ucrop')
     compile project(':PhotoPicker')
+    compile project(':pickerview')
     compile project(':overscrolllib')
     compile dataDependences.refresh
-    compile dataDependences.pickerView
     compile dataDependences.refreshHeader
 }
 

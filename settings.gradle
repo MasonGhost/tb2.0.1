@@ -1,1 +1,1 @@
-include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':ucrop', ':PhotoPicker', ':media-cache', ':banner', ':mysnackbar', ':overscrolllib', ':tspay', ':contacts', ':appupdate', ':bigimage', ':link-library', ':richtexteditorlib'
+include ':app', ':common', ':rxerrorhandler', ':baseproject', ':imsdk', ':baseadapter-recyclerview', ':ucrop', ':PhotoPicker', ':media-cache', ':banner', ':mysnackbar', ':overscrolllib', ':tspay', ':contacts', ':appupdate', ':bigimage', ':link-library', ':richtexteditorlib', ':pickerview'

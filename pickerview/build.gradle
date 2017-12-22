@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+
+
+
+android {
+    def gConfig = rootProject.extensions.getByName("ext")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
+    defaultConfig {
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
+        testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+}

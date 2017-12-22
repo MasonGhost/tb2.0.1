@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.TimePickerView;
+import com.bigkoo.pickerview.listener.CustomListener;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -256,17 +257,24 @@ public class EarningListFragment extends TSListFragment<EarningListContract.Pres
         endDate.set(2020, 11, 31);
 
         mTimePickerView = new TimePickerView.Builder(mActivity, this)
-                .setType(new boolean[]{true, true, false, false, false, false})
-                .setContentSize(getResources().getDimensionPixelSize(R.dimen.size_note_assist))
-                .setTitleSize(getResources().getDimensionPixelSize(R.dimen.size_note_assist))
-                .setOutSideCancelable(true)
-                .setSubmitColor(SkinUtils.getColor(R.color.important_for_theme))
-                .setCancelColor(SkinUtils.getColor(R.color.normal_for_assist_text))
-                .setTitleBgColor(R.color.white)
                 .setDate(selectedDate)
-                .setBgColor(R.color.white)
                 .setRangDate(startDate, endDate)
-                .setLabel("", "月", "日", "时", "分", "秒")
+                .setLayoutRes(R.layout.pickerview_custom_time, v -> {
+                    TextView tvSubmit = (TextView) v.findViewById(R.id.btnSubmit);
+                    TextView ivCancel = (TextView) v.findViewById(R.id.btnCancel);
+                    tvSubmit.setOnClickListener(v12 -> {
+                        mTimePickerView.returnData();
+                        mTimePickerView.dismiss();
+                    });
+                    ivCancel.setOnClickListener(v1 -> mTimePickerView.dismiss());
+                })
+                .setContentSize(18)
+                .setType(new boolean[]{true, true, false, false, false, false})
+                .setLabel("年", "月", "日", "时", "分", "秒")
+                .setLineSpacingMultiplier(1.5f)
+                //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .isCenterLabel(false)
+//                .setDividerColor(0xFF24AD9D)
                 .build();
     }
 
