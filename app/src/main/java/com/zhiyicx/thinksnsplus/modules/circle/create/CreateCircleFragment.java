@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -408,9 +409,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .load(mCircleInfo.getAvatar())
                 .into(mIvHeadIcon);
         mHeadImage = null;
-        mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfo.getLatitude()),
-                Double.parseDouble(mCircleInfo.getLongitude())), "", "");
-        mPoiItem.setAdCode(mCircleInfo.getGeo_hash());
+        if (!TextUtils.isEmpty(mCircleInfo.getLatitude()) && !TextUtils.isEmpty(mCircleInfo.getLongitude())) {
+            mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfo.getLatitude()),
+                    Double.parseDouble(mCircleInfo.getLongitude())), "", "");
+            mPoiItem.setAdCode(mCircleInfo.getGeo_hash());
+        }
         mCircleTypeBean = mCircleInfo.getCategory();
 
         mUserTagBeens.addAll(mCircleInfo.getTags());

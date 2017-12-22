@@ -158,7 +158,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public boolean needBlackList() {
-        return !CircleMembers.BLACKLIST.equals(mRole) || !CircleMembers.MEMBER.equals(mRole);
+        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
     }
 
     @Override
@@ -221,7 +221,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 .with(mActivity)
                 .alpha(0.8f)
                 .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager :
-                        (mPermissionOwner && isMember ? R.string.appoint_manager : mPermissionOwner ? R.string.cancle_circle : R.string.empty)))
+                        (mPermissionOwner && isMember ? R.string.appoint_manager : mPermissionOwner||mPermissionManager ? R.string.cancle_circle : R.string.empty)))
                 .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .cancle_circle : R.string.cancle_blacklist)))
                 .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
@@ -296,7 +296,6 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent intent = new Intent();
         intent.putExtra(CIRCLEID, mListDatas.size());
         mActivity.setResult(Activity.RESULT_OK, intent);

@@ -1061,7 +1061,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
-
+        mLlIntroCountContainer.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
 
         if (!updateHeadImg) {
             updateHeadImg = true;
@@ -1101,11 +1101,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mTvExitCircle.setText(R.string.circle_transfer);
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
+        boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(detail.getJoined().getRole());
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mBtReportCircle.setVisibility(isNormalMember || isManager ? View.VISIBLE : View.GONE);
-        mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
+        mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(isNormalMember || isBlackList ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
@@ -1121,7 +1122,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfo.getId());
                 bundle.putString(MemberListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
                 intent.putExtras(bundle);
-                startActivityForResult(intent, MemberListFragment.MEMBER_REQUEST);
+                mActivity.startActivityForResult(intent, MemberListFragment.MEMBER_REQUEST);
                 break;
             case R.id.ll_detail_container:
                 CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfo);

@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 
 import java.util.List;
 

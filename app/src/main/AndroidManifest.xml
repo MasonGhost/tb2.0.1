@@ -582,10 +582,6 @@
             android:name=".modules.circle.main.CircleMainActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".modules.markdown_editor.MarkdownActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".modules.circle.detailv2.CircleDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>

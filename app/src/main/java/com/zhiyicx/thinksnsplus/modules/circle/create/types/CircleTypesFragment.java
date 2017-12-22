@@ -31,7 +31,8 @@ import static android.app.Activity.RESULT_OK;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.Presenter> implements AllCircleContainerContract.View {
+public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.Presenter>
+        implements AllCircleContainerContract.View {
 
     public static final String BUNDLE_CIRCLE_CATEGORY = "circle_category";
     private static final int DEFAULT_COLUMN = 4;
@@ -120,7 +121,8 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
 
     @Override
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
-        mCircleTypeBeans = circleTypeList;
+        mCircleTypeBeans.clear();
+        mCircleTypeBeans.addAll(circleTypeList);
         mAdapter.notifyDataSetChanged();
     }
 

@@ -147,7 +147,7 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (postListBean.getExpires_at() == null
+                    if (postListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW
                             && postListBean.getPost() != null) {
                         initReviewPopWindow(postListBean, position);
                     }

@@ -11,6 +11,8 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
+import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -122,6 +124,11 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
 
     @Override
     public void onNetResponseSuccess(List<CircleInfo> data) {
+        if (data.isEmpty()) {
+            startActivity(new Intent(getActivity(), CircleMainActivity.class));
+            mActivity.finish();
+            return;
+        }
         mCircleInfos.clear();
         mCircleInfos.addAll(data);
         mAdapter.notifyDataSetChanged();
@@ -130,5 +137,10 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     @Override
     protected void initData() {
         mPresenter.getMyJoinedCircleList();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 }

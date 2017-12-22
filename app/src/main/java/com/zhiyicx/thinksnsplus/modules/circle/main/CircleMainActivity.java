@@ -18,4 +18,9 @@ public class CircleMainActivity extends TSActivity<CircleMainPresenter, CircleMa
                 .circleMainPresenterModule(new CircleMainPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }
