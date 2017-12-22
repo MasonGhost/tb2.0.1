@@ -26,7 +26,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;

@@ -3,10 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.circle.create;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Author Jliuer

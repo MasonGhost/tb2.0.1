@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public interface MessageReviewContract {
 
     interface View extends ITSListView<BaseListBean, Presenter> {
         String getType();
+        Long getSourceId();
     }
 
     interface Repository {
@@ -33,6 +35,8 @@ public interface MessageReviewContract {
         Observable<List<TopPostCommentListBean>> getPostReviewComment(int after);
 
         Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after);
+
+        Observable<List<TopPostListBean>> getPostReview(Long circleId,int after);
 
         Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id);
 
@@ -47,6 +51,10 @@ public interface MessageReviewContract {
         Observable<BaseJsonV2> approvedPostTopComment(Integer comment_id);
 
         Observable<BaseJsonV2> refusePostTopComment(Integer comment_id);
+
+        Observable<BaseJsonV2> approvedPostTop(Long psotId);
+
+        Observable<BaseJsonV2> refusePostTop(Long psotId);
 
         Observable<BaseJsonV2> refuseCircleJoin(BaseListBean result);
 

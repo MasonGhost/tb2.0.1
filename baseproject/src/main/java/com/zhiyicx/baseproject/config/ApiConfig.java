@@ -590,6 +590,11 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";
 
     /**
+     * 帖子申请置顶列表
+     */
+    public static final String APP_PATH_TOP_POST_LIST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts";
+
+    /**
      * 帖子打赏
      */
     public static final String APP_PATH_REWARD_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/rewards";
@@ -613,6 +618,16 @@ public class ApiConfig {
      * 拒绝帖子评论置顶
      */
     public static final String APP_PATH_REFUSE_POST_COMMENT = "api/" + API_VERSION_2 + "/plus-group/pinned/comments/{comment_id}/reject";
+
+    /**
+     * 同意帖子置顶
+     */
+    public static final String APP_PATH_APPROVED_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/accept";
+
+    /**
+     * 拒绝帖子置顶
+     */
+    public static final String APP_PATH_REFUSE_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/reject";
 
     /**
      * 圈子成员列表

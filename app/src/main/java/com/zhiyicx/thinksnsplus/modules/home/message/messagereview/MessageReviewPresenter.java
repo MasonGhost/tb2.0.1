@@ -11,7 +11,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,6 +21,7 @@ import rx.Subscription;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_CIRCLE_MEMBER;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_DYNAMIC_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST_COMMENT;
 
 
@@ -67,6 +67,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
             case TOP_CIRCLE_MEMBER:
                 observable = mRepository.getCircleJoinRequest(maxId.intValue());
                 break;
+            case TOP_POST:
+                observable = mRepository.getPostReview(mRootView.getSourceId(), maxId.intValue());
+                break;
             default:
                 observable = mRepository.getDynamicReviewComment(maxId.intValue());
                 break;
@@ -110,6 +113,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
 
     /**
      * 同意置顶
+     *
      * @param feedId
      * @param commentId
      * @param pinnedId
@@ -130,11 +134,14 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 observable = mRepository.approvedPostTopComment(commentId);
                 break;
             case TOP_CIRCLE_MEMBER:
-                observable = mRepository.approvedCircleJoin(feedId,commentId);
+                observable = mRepository.approvedCircleJoin(feedId, commentId);
                 break;
-                default:
+            case TOP_POST:
+                observable = mRepository.approvedPostTop(feedId);
+                break;
+            default:
         }
-        if(observable==null){
+        if (observable == null) {
             return;
         }
         Subscription subscription = observable
@@ -163,6 +170,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
 
     /**
      * 拒绝置顶
+     *
      * @param pinned_id
      * @param result
      * @param position
@@ -176,17 +184,21 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
                 observable = mRepository.refuseTopComment(pinned_id);
                 break;
             case TOP_NEWS_COMMENT:
-                TopNewsCommentListBean data=(TopNewsCommentListBean)result;
-                observable = mRepository.refuseNewsTopComment(data.getNews().getId(),data.getComment().getId(),pinned_id);
+                TopNewsCommentListBean data = (TopNewsCommentListBean) result;
+                observable = mRepository.refuseNewsTopComment(data.getNews().getId(), data.getComment().getId(), pinned_id);
                 break;
             case TOP_POST_COMMENT:
                 observable = mRepository.refusePostTopComment(pinned_id);
                 break;
             case TOP_CIRCLE_MEMBER:
                 observable = mRepository.refuseCircleJoin(result);
-                default:
+                break;
+            case TOP_POST:
+                observable = mRepository.approvedPostTop((long)pinned_id);
+                break;
+            default:
         }
-        if(observable==null){
+        if (observable == null) {
             return;
         }
         Subscription subscription = observable

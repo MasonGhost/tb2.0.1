@@ -1,18 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**

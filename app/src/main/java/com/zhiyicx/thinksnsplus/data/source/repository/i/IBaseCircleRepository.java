@@ -7,18 +7,14 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
 import java.util.List;
 
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
-import retrofit2.http.Path;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 
 /**
  * @author Jliuer

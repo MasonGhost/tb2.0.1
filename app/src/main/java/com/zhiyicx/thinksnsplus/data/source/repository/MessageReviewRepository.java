@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -70,6 +71,13 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
+    public Observable<List<TopPostListBean>> getPostReview(Long circleId, int after) {
+        return mCircleClient.getPostReview(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE, circleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after) {
         return mCircleClient.getCircleJoinRequest(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
@@ -118,6 +126,20 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     @Override
     public Observable<BaseJsonV2> refusePostTopComment(Integer comment_id) {
         return mCircleClient.refusePostTopComment(comment_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> approvedPostTop(Long psotId) {
+        return mCircleClient.approvedPostTop(psotId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> refusePostTop(Long psotId) {
+        return mCircleClient.refusePostTop(psotId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

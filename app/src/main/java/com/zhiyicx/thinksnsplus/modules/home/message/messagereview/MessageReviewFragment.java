@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopCi
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopDyanmicCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopNewsCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPostCommentItem;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPostItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import butterknife.BindView;
@@ -82,11 +83,13 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         TopDyanmicCommentItem dyanmicCommentItem = new TopDyanmicCommentItem(getActivity(), mPresenter);
         TopNewsCommentItem newsCommentItem = new TopNewsCommentItem(getActivity(), mPresenter);
-        TopPostCommentItem postCommentItem=new TopPostCommentItem(getActivity(), mPresenter);
-        TopCircleJoinRequestItem topCircleJoinRequestItem=new TopCircleJoinRequestItem(getActivity(), mPresenter);
+        TopPostCommentItem postCommentItem = new TopPostCommentItem(getActivity(), mPresenter);
+        TopCircleJoinRequestItem topCircleJoinRequestItem = new TopCircleJoinRequestItem(getActivity(), mPresenter);
+        TopPostItem topPostItem = new TopPostItem(getActivity(), mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(dyanmicCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(newsCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(postCommentItem);
+        multiItemTypeAdapter.addItemViewDelegate(topPostItem);
         multiItemTypeAdapter.addItemViewDelegate(topCircleJoinRequestItem);
         return multiItemTypeAdapter;
     }
@@ -136,6 +139,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
+    public Long getSourceId() {
+        return null;
+    }
+
+    @Override
     protected void setCenterClick() {
         initTopPopWindow();
     }
@@ -163,8 +171,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .item2Color(mTopType.equals(mTopTypes[1]) ? getColor(R.color.themeColor) : 0)
                 .item3Str(getString(R.string.stick_type_group_commnet))
                 .item3Color(mTopType.equals(mTopTypes[2]) ? getColor(R.color.themeColor) : 0)
-                .item4Str(getString(R.string.stick_type_group_join))
+                .item4Str(getString(R.string.stick_type_group))
                 .item4Color(mTopType.equals(mTopTypes[3]) ? getColor(R.color.themeColor) : 0)
+                .item5Str(getString(R.string.stick_type_group_join))
+                .item5Color(mTopType.equals(mTopTypes[4]) ? getColor(R.color.themeColor) : 0)
                 .item1ClickListener(() -> {
                     chooseType(getString(R.string.stick_type_dynamic_commnet), 0);
                 })
@@ -176,7 +186,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                     chooseType(getString(R.string.stick_type_group_commnet), 2);
                 })
                 .item4ClickListener(() -> {
-                    chooseType(getString(R.string.stick_type_group_join), 3);
+                    chooseType(getString(R.string.stick_type_group), 3);
+                })
+                .item5ClickListener(() -> {
+                    chooseType(getString(R.string.stick_type_group_join), 4);
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override

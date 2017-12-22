@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.circle.create;
+package com.zhiyicx.thinksnsplus.data.beans.circle;
 
 import com.google.gson.annotations.Expose;
 

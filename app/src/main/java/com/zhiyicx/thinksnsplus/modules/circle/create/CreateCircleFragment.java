@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;

@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CircleCommentZip;
 
@@ -35,6 +36,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVED_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_APPROVE_CIRCLE_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ATTORN_CIRCLE;
@@ -69,9 +71,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_JOIN_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_CIRCLE_REPOT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST;
 
 /**
  * @Author Jliuer
@@ -464,6 +468,24 @@ public interface CircleClient {
     Observable<BaseJsonV2> refusePostTopComment(@Path("comment_id") Integer commentId);
 
     /**
+     * 同意帖子置顶
+     *
+     * @param commentId
+     * @return
+     */
+    @PATCH(APP_PATH_APPROVED_POST)
+    Observable<BaseJsonV2> approvedPostTop(@Path("post_id") Long commentId);
+
+    /**
+     * 拒绝帖子置顶
+     *
+     * @param commentId
+     * @return
+     */
+    @PATCH(APP_PATH_REFUSE_POST)
+    Observable<BaseJsonV2> refusePostTop(@Path("post_id") Long commentId);
+
+    /**
      * 审核圈子加入请求
      *
      * @return
@@ -480,6 +502,15 @@ public interface CircleClient {
     @GET(APP_PATH_GET_TOP_POST_COMMENT)
     Observable<List<TopPostCommentListBean>> getPostReviewComment(@Query("after") Integer after, @Query("limit")
             Integer limit, @Query("group") Integer group);
+
+    /**
+     * 帖子申请置顶列表
+     *
+     * @return
+     */
+    @GET(APP_PATH_TOP_POST_LIST)
+    Observable<List<TopPostListBean>> getPostReview(@Query("after") Integer after, @Query("limit")
+            Integer limit, @Query("group") Long circleId);
 
     /**
      * 圈子待审核成员列表

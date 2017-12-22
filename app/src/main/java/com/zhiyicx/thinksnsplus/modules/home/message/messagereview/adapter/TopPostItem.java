@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -32,40 +33,38 @@ import java.util.concurrent.TimeUnit;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * @author Jliuer
- * @Date 2017/12/08/17:02
+ * @Author Jliuer
+ * @Date 2017/12/22/13:09
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface {
+public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEvetnInterface{
 
-    public TopPostCommentItem(Context context, MessageReviewContract.Presenter presenter) {
+    public TopPostItem(Context context, MessageReviewContract.Presenter presenter) {
         super(context, presenter);
-        setTopReviewEvetnInterface(this);
     }
 
     @Override
     public boolean isForViewType(BaseListBean item, int position) {
-        return item instanceof TopPostCommentListBean;
+        return item instanceof TopPostListBean;
     }
 
     @Override
-    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int
-            position, int itemCounts) {
-        TopPostCommentListBean postCommentListBean = (TopPostCommentListBean) baseListBean;
+    public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT, int position, int itemCounts) {
+        TopPostListBean postListBean = (TopPostListBean) baseListBean;
 
         holder.setVisible(R.id.fl_detial, View.GONE);
-        ImageUtils.loadCircleUserHeadPic(postCommentListBean.getCommentUser(), holder.getView(R
+        ImageUtils.loadCircleUserHeadPic(postListBean.getCommentUser(), holder.getView(R
                 .id.iv_headpic));
 
         TextView review_flag = holder.getTextView(R.id.tv_review);
-        if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
+        if (postListBean.getStatus() == TopPostCommentListBean.TOP_REVIEW) {
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .dyanmic_top_flag));
             review_flag.setText(holder.itemView.getResources().getString(R.string.review_ing));
         } else {
 
-            if (postCommentListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
+            if (postListBean.getStatus() == TopPostCommentListBean.TOP_REFUSE) {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color.message_badge_bg));
                 review_flag.setText(holder.itemView.getResources().getString(R.string.review_refuse));
             } else {
@@ -74,12 +73,12 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
             }
         }
 
-        if (postCommentListBean.getPost() != null && postCommentListBean.getPost().getImages() !=
+        if (postListBean.getPost() != null && postListBean.getPost().getImages() !=
                 null
-                && !postCommentListBean.getPost().getImages().isEmpty()) {
+                && !postListBean.getPost().getImages().isEmpty()) {
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             Glide.with(holder.itemView.getContext())
-                    .load(ImageUtils.imagePathConvertV2(postCommentListBean.getPost().getImages()
+                    .load(ImageUtils.imagePathConvertV2(postListBean.getPost().getImages()
                                     .get(0).getFile_id()
                             , holder.itemView.getContext().getResources().getDimensionPixelOffset
                                     (R.dimen.headpic_for_user_center)
@@ -92,34 +91,33 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
             holder.setVisible(R.id.iv_detail_image, View.GONE);
         }
 
-        if (postCommentListBean.getPost() == null || postCommentListBean.getComment() == null) {
+        if (postListBean.getPost() == null || postListBean.getPost() == null) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R
                     .string.review_content_deleted));
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                     holder.itemView.getContext().getString(R.string
-                            .stick_type_group_commnet_message), " "));
+                            .stick_type_group_message), " "));
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .message_badge_bg));
-            review_flag.setText(holder.itemView.getResources().getString(postCommentListBean
+            review_flag.setText(holder.itemView.getResources().getString(postListBean
                     .getPost() == null ?
                     R.string.review_dynamic_deleted : R.string.review_comment_deleted));
         } else {
-            String commentBody = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,
-                    postCommentListBean.getComment().getComment_content());
+            String commentBody = postListBean.getPost().getTitle();
             holder.setText(R.id.tv_content, String.format(Locale.getDefault(),
                     holder.itemView.getContext().getString(R.string
-                            .stick_type_news_commnet_message), TextUtils.isEmpty(commentBody) ? "" +
+                            .stick_type_group_message), TextUtils.isEmpty(commentBody) ? "" +
                             " " : commentBody));
             List<Link> links = setLinks(holder.itemView.getContext());
             if (!links.isEmpty()) {
                 ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
             }
-            holder.setText(R.id.tv_deatil, postCommentListBean.getPost().getSummary());
+            holder.setText(R.id.tv_deatil, postListBean.getPost().getSummary());
         }
 
         holder.setTextColorRes(R.id.tv_name, R.color.important_for_content);
-        holder.setText(R.id.tv_name, postCommentListBean.getCommentUser().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(postCommentListBean
+        holder.setText(R.id.tv_name, postListBean.getCommentUser().getName());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(postListBean
                 .getUpdated_at()));
 
 
@@ -127,57 +125,55 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(),
-                        postCommentListBean.getCommentUser()));
+                        postListBean.getCommentUser()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(),
-                        postCommentListBean.getCommentUser()));
+                        postListBean.getCommentUser()));
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> holder.itemView.performClick());
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (postCommentListBean.getPost() == null || postCommentListBean.getComment()
-                            == null) {
+                    if (postListBean.getPost() == null) {
                         initInstructionsPop(R.string.review_content_deleted);
                         return;
                     }
-                    toDetail(postCommentListBean.getPost(),true);
+                    toDetail(postListBean.getPost(),false);
                 });
 
         RxView.clicks(review_flag)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (postCommentListBean.getExpires_at() == null
-                            && postCommentListBean.getPost() != null
-                            && postCommentListBean.getComment() != null) {
-                        initReviewPopWindow(postCommentListBean, position);
+                    if (postListBean.getExpires_at() == null
+                            && postListBean.getPost() != null) {
+                        initReviewPopWindow(postListBean, position);
                     }
                 });
     }
 
     @Override
     public void onReviewApprovedClick(BaseListBean data, int position) {
-        TopPostCommentListBean postCommentListBean = (TopPostCommentListBean) data;
-        postCommentListBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() +
+        TopPostListBean postListBean = (TopPostListBean) data;
+        postListBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() +
                 1000000));
-        postCommentListBean.setStatus(TopNewsCommentListBean.TOP_SUCCESS);
-        BaseListBean result = postCommentListBean;
-        mPresenter.approvedTopComment(0L,
-                postCommentListBean.getComment().getId().intValue(), 0, result, position);
+        postListBean.setStatus(TopNewsCommentListBean.TOP_SUCCESS);
+        BaseListBean result = postListBean;
+        mPresenter.approvedTopComment(postListBean.getId(),
+                0, 0, result, position);
     }
 
     @Override
     public void onReviewRefuseClick(BaseListBean data, int position) {
-        TopPostCommentListBean postCommentListBean = (TopPostCommentListBean) data;
-        postCommentListBean.setExpires_at(TimeUtils.getCurrenZeroTimeStr());
-        postCommentListBean.setStatus(TopNewsCommentListBean.TOP_REFUSE);
-        mPresenter.refuseTopComment(postCommentListBean.getComment().getId().intValue(), data, position);
+        TopPostListBean postListBean = (TopPostListBean) data;
+        postListBean.setStatus(TopNewsCommentListBean.TOP_REFUSE);
+        mPresenter.refuseTopComment(postListBean.getPost().getId().intValue(), data, position);
     }
 
     @Override
     protected void toDetail(CommentedBean commentedBean) {
+        super.toDetail(commentedBean);
     }
 
     protected void toDetail(CirclePostListBean postListBean,boolean isLookMoreComment) {

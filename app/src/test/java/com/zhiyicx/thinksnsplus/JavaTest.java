@@ -19,7 +19,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
 import org.junit.Assert;
 import org.junit.Test;
