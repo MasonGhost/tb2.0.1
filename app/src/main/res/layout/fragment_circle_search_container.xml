@@ -43,7 +43,7 @@
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
             android:paddingStart="@dimen/spacing_mid"
-            android:textColor="@color/normal_for_assist_text"
+            android:textColor="@color/important_for_content"
             android:textColorHint="@color/normal_for_assist_text"
             android:textSize="@dimen/size_icon_assist"/>
 
