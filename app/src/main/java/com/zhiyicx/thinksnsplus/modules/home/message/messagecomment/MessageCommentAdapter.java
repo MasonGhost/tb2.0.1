@@ -146,18 +146,18 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(commentedBean.getUpdated_at()));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
 
         RxView.clicks(holder.getView(R.id.fl_detial))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toDetail(commentedBean));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_content))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
