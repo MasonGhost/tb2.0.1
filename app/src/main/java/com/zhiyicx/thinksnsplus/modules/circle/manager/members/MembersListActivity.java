@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.AppComponent;
 
 public class MembersListActivity extends TSActivity<MembersPresenter, MemberListFragment> {
 
@@ -17,5 +18,16 @@ public class MembersListActivity extends TSActivity<MembersPresenter, MemberList
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .membersPresenterModule(new MembersPresenterModule(mContanierFragment))
                 .build().inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 }

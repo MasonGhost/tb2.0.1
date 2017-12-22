@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -42,6 +44,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     public static final String CIRCLEID = "circleid";
     public static final String ROLE = "permission";
+
+    public static final int MEMBER_REQUEST = 1997;
 
     @BindView(R.id.fragment_search_back)
     ImageView mFragmentSearchBack;
@@ -217,7 +221,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 .with(mActivity)
                 .alpha(0.8f)
                 .itemlStr(mActivity.getString(mPermissionOwner && isManager ? R.string.cancel_manager :
-                        (mPermissionOwner && isMember ? R.string.appoint_manager :mPermissionOwner? R.string.cancle_circle:R.string.empty)))
+                        (mPermissionOwner && isMember ? R.string.appoint_manager : mPermissionOwner ? R.string.cancle_circle : R.string.empty)))
                 .item2Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
                         .cancle_circle : R.string.cancle_blacklist)))
                 .item3Str(mActivity.getString(isManager ? R.string.empty : (isMember ? R.string
@@ -283,5 +287,19 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 break;
             default:
         }
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent();
+        intent.putExtra(CIRCLEID, mListDatas.size());
+        mActivity.setResult(Activity.RESULT_OK, intent);
+        mActivity.finish();
     }
 }

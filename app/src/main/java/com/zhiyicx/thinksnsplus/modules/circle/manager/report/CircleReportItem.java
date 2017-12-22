@@ -103,12 +103,12 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .message_badge_bg));
                 review_flag.setText(holder.itemView.getResources().getString(R.string
-                        .circle_report_disagree));
+                        .circle_report_refuse));
             } else {
                 review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                         .general_for_hint));
                 review_flag.setText(holder.itemView.getResources().getString(R.string
-                        .circle_report_agree));
+                        .circle_report_done));
             }
         }
 

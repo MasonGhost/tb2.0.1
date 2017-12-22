@@ -339,7 +339,7 @@
     <string name="circle_report_comment">%1$s 举报 %2$s 的评论：</string>
     <string name="circle_report_done">已处理</string>
     <string name="circle_report_doing">未处理</string>
-    <string name="circle_report_refuse">已反驳</string>
+    <string name="circle_report_refuse">已驳回</string>
     <string name="circle_report_agree">同意</string>
     <string name="circle_report_disagree">驳回</string>
     <string name="circle_post_permission">发帖权限设置</string>

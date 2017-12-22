@@ -414,6 +414,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             }
             mCircleInfo = circleInfo;
             setCircleData(mCircleInfo);
+        } else if (requestCode == MemberListFragment.MEMBER_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            mCircleInfo.setUsers_count(data.getIntExtra(MemberListFragment.CIRCLEID, 0));
+            mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
         }
     }
 
@@ -1102,7 +1105,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mBtReportCircle.setVisibility(isNormalMember || isManager ? View.VISIBLE : View.GONE);
         mLlPermissionContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(!isNormalMember ? View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(isNormalMember ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
@@ -1118,7 +1121,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfo.getId());
                 bundle.putString(MemberListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, MemberListFragment.MEMBER_REQUEST);
                 break;
             case R.id.ll_detail_container:
                 CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfo);
