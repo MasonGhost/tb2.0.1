@@ -169,11 +169,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {
                 mMessageItemBean.setConversation(conversation);
-                mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
+                mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, true);
                 updateConversation(conversation);
             }
         } else {
-            mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
+            mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, true);
         }
         // 设置消息内容已读
         mMessageItemBean.getConversation().markAllMessagesAsRead();
@@ -297,24 +297,21 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
-    public void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isInit) {
-        if (isInit){
-            // 初始化的
-            initMessageList(list);
-        } else {
-            if (mMessageItemBean.getConversation() == null) {
-                hideLoading();
-                return;
-            }
-            mDatas.addAll(0, list);
-            mMessageList.refresh();
+    public void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isNeedScrollToBottom) {
+        if (mMessageItemBean.getConversation() == null) {
+            hideLoading();
+            return;
+        }
+        mDatas.addAll(0, list);
+        mMessageList.refresh();
+        if (isNeedScrollToBottom){
             mMessageList.scrollToBottom();
         }
     }
 
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
-        mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE);
+        mPresenter.getHistoryMessagesV2(getCurrentFirstItemId(), DEFAULT_PAGE_SIZE, false);
     }
 
     /**

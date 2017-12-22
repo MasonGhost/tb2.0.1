@@ -162,9 +162,10 @@ public interface ChatContract {
          *
          * @param id       聊天的id 单聊对方用户id 群聊则为群聊的id
          * @param pageSize 一页大小
+         * @param isNeedScrollToBottom 是否需要滚动到底部
          * @return List<ChatItemBean>
          */
-        List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize);
+        List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize, boolean isNeedScrollToBottom);
 
         /**
          * 发送文本消息

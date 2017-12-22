@@ -94,7 +94,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     @Override
-    public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize) {
+    public List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize, boolean isNeedScrollToBottom) {
         List<ChatItemBean> data = mRepository.getChatListDataV2(mRootView.getMessItemBean(), id, pageSize);
         Subscription subscribe = mRepository.completeUserInfo(data)
                 .subscribeOn(Schedulers.io())
@@ -117,7 +117,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     mRootView.hideLoading();
-                    mRootView.getHistoryMessageSuccess(list, false);
+                    mRootView.getHistoryMessageSuccess(list, isNeedScrollToBottom);
                 });
         addSubscrebe(subscribe);
         return data;
