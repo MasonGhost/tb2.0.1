@@ -131,10 +131,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             musicWindowContainer = new FrameLayout(getActivity());
             musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
                     .MATCH_PARENT));
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ConvertUtils.dp2px(getActivity(), 24),
-                    ConvertUtils.dp2px(getActivity(), 24));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.music_icon_size),
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size));
             layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.setMargins(0, ConvertUtils.dp2px(getActivity(), 30), ConvertUtils.dp2px(getContext(), 10), 0);
+            int marginTop = DeviceUtils.getStatuBarHeight(mActivity) + (getResources().getDimensionPixelOffset(R.dimen.toolbar_height) -
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size)) / 2;
+            layoutParams.setMargins(0, marginTop, getResources().getDimensionPixelOffset(R.dimen.spacing_normal), 0);
             mMusicWindowView.setLayoutParams(layoutParams);
             mMusicWindowView.setVisibility(View.GONE);
             mMusicWindowView.setOnClickListener(new View.OnClickListener() {

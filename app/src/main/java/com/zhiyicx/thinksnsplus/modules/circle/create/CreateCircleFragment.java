@@ -307,7 +307,13 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         RxTextView.textChanges(mEtCircleAmount)
                 .filter(charSequence -> mCbToll.isChecked() && !charSequence.toString().isEmpty())
-                .subscribe(charSequence -> createCirclepreHandle(emptyFlag != 0 && Integer.parseInt(charSequence.toString().trim()) > 0));
+                .subscribe(charSequence -> {
+                    try {
+                        createCirclepreHandle(emptyFlag != 0 && Integer.parseInt(charSequence.toString().trim()) > 0);
+                    } catch (Exception e) {
+                        createCirclepreHandle(false);
+                    }
+                });
 
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -382,7 +388,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
                 CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
-        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText().toString());
+        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText()
+                .toString());
         mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
         List<CreateCircleBean.TagId> tags = new ArrayList<>();
         for (UserTagBean tagBean : mUserTagBeens) {
