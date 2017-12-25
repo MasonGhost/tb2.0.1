@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="3"
+        android:visibility="gone"
         android:paddingTop="@dimen/spacing_mid_small_8dp"
         android:text="tym"
         android:textColor="@color/normal_for_dynamic_list_content"

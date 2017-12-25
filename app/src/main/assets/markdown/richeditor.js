@@ -199,7 +199,8 @@ var RE = {
 	initTitle: function initTitle(){
         var _self = this;
         var pre = document.getElementById('pre');
-        pre.textContent = _self.cache.title.value;
+        _self.cache.title.value = pre.textContent;
+        console.log("initTitle:::" + pre.textContent);
         _self.cache.title.style.height = pre.offsetHeight + 'px';
     },
 	focus: function focus() {

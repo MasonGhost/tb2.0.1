@@ -29,9 +29,12 @@ public class AnswerDraftItem extends BaseDraftItem<AnswerDraftBean> {
     }
 
     @Override
-    protected void bindData(ViewHolder holder, AnswerDraftBean realData) {
-        holder.setText(R.id.tv_draft_title, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, realData.getBody()));
-        holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreated_at()));
-        holder.setVisible(R.id.tv_draft_content, View.GONE);
+    protected String setCreateTime(AnswerDraftBean draftBean) {
+        return draftBean.getCreated_at();
+    }
+
+    @Override
+    protected String setTitle(AnswerDraftBean draftBean) {
+        return RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, draftBean.getBody());
     }
 }
