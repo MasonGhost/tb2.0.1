@@ -397,28 +397,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- #########################################      环信相关       ################################ -->
-        <!-- 设置环信应用的AppKey -->
-        <meta-data android:name="EASEMOB_APPKEY"  android:value="1139171207178196#thinksns-plus" />
-        <!-- 声明SDK所需的service SDK核心功能-->
-        <service android:name="com.hyphenate.chat.EMChatService" android:exported="true"/>
-        <service android:name="com.hyphenate.chat.EMJobService"
-                 android:permission="android.permission.BIND_JOB_SERVICE"
-                 android:exported="true"
-                />
-        <!-- 声明SDK所需的receiver -->
-        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <data android:scheme="package"/>
-            </intent-filter>
-            <!-- 可选filter -->
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
-
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
 
@@ -612,6 +590,9 @@
                 android:screenOrientation="portrait"/>
         <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
                 android:screenOrientation="portrait"/>
+        <!--我的好友列表-->
+        <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -85,12 +85,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
             mAuthRepository.loginIM();
             EMClient.getInstance().addConnectionListener(this);
             EMClient.getInstance().chatManager().addMessageListener(this);
-            EMOptions options = new EMOptions();
-            // 设置是否需要已读回执
-            options.setRequireAck(true);
-            // 设置是否需要已送达回执
-            options.setRequireDeliveryAck(true);
-            EMClient.getInstance().init(mContext, options);
         }
         LogUtils.e("-----------" + AppApplication.getMyUserIdWithdefault());
         LogUtils.e("userinfo : " + mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
