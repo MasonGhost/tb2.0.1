@@ -534,13 +534,8 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .with(getActivity())
                 .item3ClickListener(() -> {
                     // 管理员删除
-                    if (isMine) {
-                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
-                        getActivity().finish();
-                    } else {
-                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
-                                circlePostListBean.getId());
-                    }
+                    EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+                    getActivity().finish();
                     mDealPostPopWindow.hide();
                 })
                 .item4ClickListener(() -> {

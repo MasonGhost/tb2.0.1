@@ -1096,9 +1096,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             detail.getJoined().setRole(CircleMembers.BLACKLIST);
         }
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
-        mTvExitCircle.setVisibility(!isJoined && mCircleInfo.getUsers_count() == 1 ? View.GONE : View.VISIBLE);
-        if (isOwner && mCircleInfo.getUsers_count() > 1) {
+        mTvExitCircle.setVisibility(!isJoined && detail.getUsers_count() == 1 ? View.GONE : View.VISIBLE);
+        if (isOwner && detail.getUsers_count() > 1) {
             mTvExitCircle.setText(R.string.circle_transfer);
+        } else if (isOwner && detail.getUsers_count() <= 1) {
+            mTvExitCircle.setVisibility(View.GONE);
         }
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(detail.getJoined().getRole());
@@ -1108,7 +1110,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
-        mTvCircleFounder.setVisibility(mCircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
+        mTvCircleFounder.setVisibility(detail.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
