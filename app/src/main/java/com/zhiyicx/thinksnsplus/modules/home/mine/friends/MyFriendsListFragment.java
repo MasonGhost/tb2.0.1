@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.home.mine.friends.search.SearchFriendsActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +35,16 @@ public class MyFriendsListFragment extends TSListFragment<MyFriendsListContract.
     @Override
     protected String setCenterTitle() {
         return getString(R.string.chat_my_friends);
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return "搜索";
+    }
+
+    @Override
+    protected void setRightClick() {
+        startActivity(new Intent(getActivity(), SearchFriendsActivity.class));
     }
 
     @Override
