@@ -593,6 +593,9 @@
         <!--我的好友列表-->
         <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
                   android:screenOrientation="portrait"/>
+        <!--搜索好友-->
+        <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
