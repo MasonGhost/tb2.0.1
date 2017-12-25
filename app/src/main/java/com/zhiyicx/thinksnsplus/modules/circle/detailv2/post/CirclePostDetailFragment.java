@@ -387,6 +387,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
+            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null;
+            if (isJoined && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole())) {
+                showSnackErrorMessage(getString(R.string.circle_blacklist));
+                return;
+            }
             switch (position) {
                 // 点赞
                 case DynamicDetailMenuView.ITEM_POSITION_0:

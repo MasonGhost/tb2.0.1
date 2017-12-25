@@ -76,6 +76,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    protected boolean needMusicWindowView() {
+        return false;
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(getActivity(), HomeActivity.class));

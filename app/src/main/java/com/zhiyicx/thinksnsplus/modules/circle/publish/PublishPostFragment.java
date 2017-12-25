@@ -76,7 +76,6 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected boolean preHandlePublish() {
         mPostPublishBean = new PostPublishBean();
-        mImages = new ArrayList<>();
         if (mCircleInfo == null) {
             showSnackErrorMessage(getString(R.string.post_publish_select_circle));
         }
@@ -110,7 +109,7 @@ public class PublishPostFragment extends MarkdownFragment {
         mPostPublishBean.setCircle_id(mCircleInfo.getId());
         mPostPublishBean.setSync_feed(mCbSynToDynamic.isChecked() ? 1 : 0);
         mPostPublishBean.setFeed_from(mCbSynToDynamic.isChecked() ? 4 : 0);
-        mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
+        mPostPublishBean.setImages(mImages);
         mPresenter.publishPost(mPostPublishBean);
     }
 

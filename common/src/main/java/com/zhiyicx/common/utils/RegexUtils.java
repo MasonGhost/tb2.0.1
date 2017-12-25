@@ -3,8 +3,6 @@ package com.zhiyicx.common.utils;
 import android.text.InputFilter;
 import android.text.Spanned;
 
-import com.zhiyicx.common.utils.log.LogUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -282,28 +280,6 @@ public class RegexUtils {
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
     }
 
-    /**
-     * 提取第一个 图片 id
-     *
-     * @param regex
-     * @param input
-     * @return
-     */
-    public static int getImageIdFromMarkDown(String regex, String input) {
-        if (regex == null || input == null) {
-            return -1;
-        }
-        try {
-            Matcher matcher = Pattern.compile(regex).matcher(input);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));
-            }
-        } catch (Exception e) {
-            return -1;
-        }
-        return -1;
-    }
-
     public static String replaceImageId(String regex, String input) {
         try {
             Matcher matcher = Pattern.compile(regex).matcher(input);
@@ -326,18 +302,22 @@ public class RegexUtils {
         int lastIndex = 0;
         while (matcher1.find()) {
             if (matcher1.start() > lastIndex) {
-                String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
+                // 文字
+                String result1 = targetStr.substring(lastIndex, matcher1.start());
                 splitTextList.add(result1);
             }
-            String result2 = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+            // 图片
+            String result2 = targetStr.substring(matcher1.start(), matcher1.end());
             splitTextList.add(result2);
 
             lastIndex = matcher1.end();
         }
-        if (lastIndex != targetStr.length()) {// 没有匹配
+        // 没有匹配
+        if (lastIndex != targetStr.length()) {
             splitTextList.add(targetStr.substring(lastIndex, targetStr.length()));
         }
-        if (splitTextList.size() > 0) {// 最后添加标识符
+        // 最后添加标识符
+        if (splitTextList.size() > 0) {
             String last = splitTextList.get(splitTextList.size() - 1);
             splitTextList.set(splitTextList.size() - 1, last + "tym_last");
         }
@@ -352,7 +332,8 @@ public class RegexUtils {
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
-            String result = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+            // 图片
+            String result = targetStr.substring(matcher1.start(), matcher1.end());
             splitTextList.add(result);
         }
         return splitTextList;
@@ -362,8 +343,9 @@ public class RegexUtils {
      * 提取第一个 图片 id
      *
      * @param input
-     * @return
+     * @return 请使用 getImageIdFromMarkDown(String regex, String input)；
      */
+    @Deprecated
     public static int getImageId(String input) {
         try {
             String reg = "@!\\[.*?]\\((\\d+)\\)";
@@ -374,6 +356,46 @@ public class RegexUtils {
             return -1;
         } catch (Exception e) {
             return -1;
+        }
+    }
+
+    /**
+     * 提取第一个 图片 id
+     *
+     * @param regex
+     * @param input
+     * @return
+     */
+    public static int getImageIdFromMarkDown(String regex, String input) {
+
+        if (regex == null || input == null) {
+            return -1;
+        }
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        } catch (Exception e) {
+            return -1;
+        }
+        return -1;
+    }
+
+    public static List<Integer> getImageIdsFromMarkDown(String regex, String input) {
+        String reg = "@!\\[.*?]\\((\\d+)\\)";
+        if (regex == null || input == null || !reg.equals(regex)) {
+            return null;
+        }
+        List<Integer> result = new ArrayList<>();
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
+            while (matcher.find()) {
+                result.add(Integer.parseInt(matcher.group(1)));
+            }
+            return result;
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -390,7 +412,7 @@ public class RegexUtils {
             }
 
             String reg = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
-            Pattern emoji = Pattern.compile(reg,Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            Pattern emoji = Pattern.compile(reg, Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
         };
 
 
