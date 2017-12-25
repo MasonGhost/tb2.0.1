@@ -23,8 +23,9 @@ public class BaseJsonV2<T> {
      * count          --  圈子总数
      * post           --  圈子帖子
      * group          --  圈子信息
+     * protocol       --  圈子协议
      */
-    @SerializedName(value = "data",alternate = {"answer","comment","count","post","group"})
+    @SerializedName(value = "data",alternate = {"answer","comment","count","post","group","protocol"})
     private T data;
     private Object message;
 

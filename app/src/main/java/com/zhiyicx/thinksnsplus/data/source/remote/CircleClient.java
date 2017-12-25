@@ -14,8 +14,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 
 import java.util.List;
 
@@ -59,6 +59,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_COUNT
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_EARNINGLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_MEMBER_JOIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CIRCLE_REPOTS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CREATE_RULE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MINE_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_JOINED_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
@@ -133,7 +134,7 @@ public interface CircleClient {
      * @return
      */
     @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
-    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offet") int offet,@Query("type") String type);
+    Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") int limit, @Query("offet") int offet, @Query("type") String type);
 
     /**
      * 获取已经加入的圈子
@@ -324,6 +325,14 @@ public interface CircleClient {
     @Multipart
     @Headers({"Accept:application/json;charset=UTF-8"})
     Observable<BaseJsonV2<CircleInfo>> createCircle(@Path("category_id") long categoryId, @Part List<MultipartBody.Part> params);
+
+    /**
+     * 获取圈子协议
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_CREATE_RULE)
+    Observable<BaseJsonV2<String>> getCircleRule();
 
     /**
      * 修改圈子信息
@@ -562,9 +571,8 @@ public interface CircleClient {
      *
      * @param groupId 圈子id
      * @param after
-     * @param limit
-     * * @param start    秒级时间戳，起始筛选时间
-     * @param end      秒级时间戳，结束筛选时间
+     * @param limit   * @param start    秒级时间戳，起始筛选时间
+     * @param end     秒级时间戳，结束筛选时间
      * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
      * @return
      */
@@ -574,7 +582,7 @@ public interface CircleClient {
                                                                @Query("after") Integer after,
                                                                @Query("limit") Integer limit,
                                                                @Query("start") Long start,
-                                                               @Query("end")Long end);
+                                                               @Query("end") Long end);
 
     /**
      * 同意举报

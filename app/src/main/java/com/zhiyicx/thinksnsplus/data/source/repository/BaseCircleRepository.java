@@ -105,6 +105,13 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
+    public Observable<BaseJsonV2<String>> getCircleRule() {
+        return mCircleClient.getCircleRule()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<BaseJsonV2<CircleInfo>> updateCircle(CreateCircleBean createCircleBean) {
         Map<String, String> file = new HashMap<>();
         if (createCircleBean.getFilePath() != null) {
@@ -328,7 +335,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      */
     @Override
     public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id) {
-        return  dealWithPostList(mCircleClient.getAllePostList(limit, offset, keyword, group_id))
+        return dealWithPostList(mCircleClient.getAllePostList(limit, offset, keyword, group_id))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

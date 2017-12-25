@@ -26,7 +26,18 @@ public interface IBaseCircleRepository {
 
     Observable<List<CircleTypeBean>> getCategroiesList(int limit, int offet);
 
+    /**
+     * 创建圈子
+     * @param createCircleBean
+     * @return
+     */
     Observable<BaseJsonV2<CircleInfo>> createCircle(CreateCircleBean createCircleBean);
+
+    /**
+     * 获取圈子协议
+     * @return
+     */
+    Observable<BaseJsonV2<String>> getCircleRule();
 
     /**
      * 修改圈子信息

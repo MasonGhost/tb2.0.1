@@ -15,12 +15,18 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 public interface CreateCircleContract {
     interface View extends IBaseView<Presenter> {
         void setCircleInfo(CircleInfo data);
+
+        /**
+         * 用于圈子协议
+         */
+        void setCircleRule(String rule);
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void createCircle(CreateCircleBean createCircleBean);
         void updateCircle(CreateCircleBean createCircleBean);
         String getCircleCategoryName(int category);
+        void getRule();
     }
 
     interface Repository extends IBaseCircleRepository {

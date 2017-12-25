@@ -376,7 +376,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 关闭中心放大缩小加载动画
      */
-    protected void closeLoadingView() {
+    @Override
+    public void closeLoadingView() {
         if (mCenterLoadingView == null) {
             return;
         }

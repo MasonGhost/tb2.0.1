@@ -93,4 +93,35 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
                 });
         addSubscrebe(subscription);
     }
+
+    @Override
+    public void getRule() {
+        Subscription subscription = mRepository.getCircleRule()
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
+                        mRootView.setCircleRule(data.getData());
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.closeLoadingView();
+                    }
+                });
+
+        addSubscrebe(subscription);
+    }
 }

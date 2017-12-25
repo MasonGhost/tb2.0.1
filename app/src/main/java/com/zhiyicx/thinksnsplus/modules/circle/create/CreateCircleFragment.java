@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.location.CircleLocationFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.create.rule.RuleForCreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
@@ -237,6 +238,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         intent.putExtras(bundle);
         mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
+    }
+
+    @Override
+    public void setCircleRule(String rule) {
+
     }
 
     @Override
@@ -452,7 +458,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container,
-            R.id.ll_synchro, R.id.ll_block})
+            R.id.ll_synchro, R.id.ll_block, R.id.tv_user_agreement})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -473,6 +479,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             case R.id.ll_synchro:
                 break;
             case R.id.ll_block:
+                break;
+            case R.id.tv_user_agreement:
+                startActivity(new Intent(mActivity, RuleForCreateCircleActivity.class));
                 break;
             default:
         }

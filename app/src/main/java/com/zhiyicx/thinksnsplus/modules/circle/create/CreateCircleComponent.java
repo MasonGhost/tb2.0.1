@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+import com.zhiyicx.thinksnsplus.modules.circle.create.rule.RuleForCreateCircleActivity;
 
 import dagger.Component;
 
@@ -16,4 +16,5 @@ import dagger.Component;
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = CreateCirclePresenterModule.class)
 public interface CreateCircleComponent extends InjectComponent<CreateCircleActivity> {
+    void inject(RuleForCreateCircleActivity ruleForCreateCircleActivity);
 }

@@ -71,6 +71,8 @@ public interface IBaseView<VP> {
 
     void hideCenterLoading();
 
+    void closeLoadingView();
+
     /**
      * 去充值
      */
