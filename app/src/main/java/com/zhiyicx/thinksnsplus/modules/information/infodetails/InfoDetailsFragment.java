@@ -162,7 +162,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateInfoHeader(InfoListDataBean infoDetailBean) {
-//        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
@@ -179,7 +178,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             if (success) {
                 showSnackSuccessMessage(message);
                 EventBus.getDefault().post(mInfoMation, EVENT_UPDATE_LIST_DELETE);
-                showSnackSuccessMessage(getString(R.string.has_apply));
                 mIsClose = true;
             } else {
                 showSnackErrorMessage(message);
