@@ -512,10 +512,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     private void initDealPostPopupWindow(final CirclePostListBean circlePostListBean, boolean
             isCollected) {
-        boolean isMine = circlePostListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
-                .getUser_id();
+        boolean isMine = circlePostListBean.getUser_id() == AppApplication.getMyUserIdWithdefault();
         boolean isManager = false;
-        if (circlePostListBean.getGroup().getJoined() != null) {
+        if (circlePostListBean.getGroup() != null && circlePostListBean.getGroup().getJoined() != null) {
             isManager = CircleMembers.FOUNDER.equals(circlePostListBean.getGroup().getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(circlePostListBean.getGroup().getJoined().getRole());
         }
