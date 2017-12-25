@@ -131,4 +131,21 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
 
     }
 
+    /**
+     * 获取本地的互相关注列表
+     * @param maxId
+     * @return
+     */
+    public List<UserInfoBean> getUserFriendsList(long maxId){
+        if (maxId == 0) {
+            maxId = System.currentTimeMillis();
+        }
+        UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
+        return userInfoBeanDao.queryBuilder()
+                .where(UserInfoBeanDao.Properties.Follower.eq(true), UserInfoBeanDao.Properties.Following.eq(true), UserInfoBeanDao.Properties.User_id.lt(maxId))
+                .limit(TSListFragment.DEFAULT_ONE_PAGE_SIZE)
+                .orderDesc(UserInfoBeanDao.Properties.User_id)
+                .list();
+    }
+
 }
