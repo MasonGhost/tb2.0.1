@@ -218,7 +218,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_personal_page:
                 PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
-            /**
+            /*
              * 我的投稿
              */
             case R.id.bt_my_info:
@@ -383,34 +383,4 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         startActivity(intent);
     }
 
-    private void initPermissionPopUpWindow() {
-        if (mActionPopupWindow != null) {
-            return;
-        }
-        String model = android.os.Build.MODEL;
-        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
-        mActionPopupWindow = PermissionPopupWindow.builder()
-                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
-                .with(getActivity())
-                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
-
-                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
-                        .oppo_setting_windows_permission_hint :
-                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
-
-                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
-                .item2ClickListener(() -> {
-                    mActionPopupWindow.hide();
-                    if (isOppoR9s) {
-                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
-                    } else {
-                        DeviceUtils.openAppDetail(getActivity());
-                    }
-                })
-                .bottomClickListener(() -> mActionPopupWindow.hide())
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                .build();
-    }
 }

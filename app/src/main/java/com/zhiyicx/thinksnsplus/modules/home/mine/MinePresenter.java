@@ -78,11 +78,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
     @Override
     public void getUserInfoFromDB() {
         // 尝试从数据库获取当前用户的信息
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (authBean != null) {
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
             if (userInfoBean != null) {
-                WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
+                WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
                 if (walletBean != null) {
                     int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
 ///                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
@@ -91,7 +89,6 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
                 mRootView.setUserInfo(userInfoBean);
             }
             setMineTipVisable(false);
-        }
     }
 
     /**
@@ -102,11 +99,10 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
         Subscription subscribe = rx.Observable.just(data)
                 .observeOn(Schedulers.io())
                 .map(userInfoBeans -> {
-                    AuthBean authBean = AppApplication.getmCurrentLoginAuth();
                     if (data != null) {
                         for (UserInfoBean userInfoBean : data) {
-                            if (userInfoBean.getUser_id() == authBean.getUser_id()) {
-                                userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
+                            if (userInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
+                                userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault()));
                                 return userInfoBean;
                             }
                         }
