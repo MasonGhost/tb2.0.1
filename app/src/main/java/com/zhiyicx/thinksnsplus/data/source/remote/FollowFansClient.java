@@ -58,6 +58,6 @@ public interface FollowFansClient {
      * @return Observable
      */
     @GET(APP_PATH_DELETE_USER_FRIENDS_LIST)
-    Observable<List<UserInfoBean>> getUserFriendsList(@Query("offset") long max_id, @Query("limit") Integer limitCount);
+    Observable<List<UserInfoBean>> getUserFriendsList(@Query("offset") long max_id, @Query("limit") Integer limitCount, @Query("keyword") String keyword);
 
 }
