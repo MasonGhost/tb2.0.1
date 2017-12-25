@@ -210,8 +210,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
-    public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore) {
-        checkEmptyView();
+    public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore){
     }
 
     @Override
