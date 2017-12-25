@@ -55,7 +55,6 @@ import org.msgpack.template.Templates;
 import org.msgpack.type.Value;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
-import org.simple.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -215,6 +214,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private boolean isBackground = false;
     private boolean isDisconnecting = false;
+    private boolean isConnecting = false;
 
     /**
      * For heart Beat
@@ -260,7 +260,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     /**
                      * ping后或者发送普通消息{@Link HEART_PING_PONG_RATE}s收不到回应则重连
                      */
-                    if (System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime > responsTime) {
+                    if (!isConnecting && System.currentTimeMillis() - sendTime > HEART_PING_PONG_RATE && sendTime > responsTime) {
                         socketReconnect();
                         heartRateThreadSleep(HEART_BEAT_RATE_INTERVAL_FOR_CPU);
                         continue;
@@ -433,7 +433,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
         mContext = getApplicationContext();
         mService = new ImService();
         initSocketListener();
-        LogUtils.debugInfo(TAG, "------------init------------");
     }
 
     /**
@@ -450,10 +449,20 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
+        if (imConfig == null || TextUtils.isEmpty(imConfig.getToken())) {
+            return false;
+        }
         mIMConfig = imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
+        LogUtils.debugInfo(TAG, "---init----" + imConfig.toString());
+        isConnecting = true;
+        mService.connect();
+        resetTime();
+        if (mDisconnectStartTime == 0) {
+            mDisconnectStartTime = System.currentTimeMillis();
+        }
         mThread = new Thread(heartBeatRunnable);
         /**
          * 开始维持心跳
@@ -498,7 +507,9 @@ public class SocketService extends BaseService implements ImService.ImListener {
                         @Override
                         public void onAvailable(Network network) {
                             super.onAvailable(network);
-                            socketReconnect();
+                            if (!isConnecting) {
+                                socketReconnect();
+                            }
                         }
                     });
                 }
@@ -637,7 +648,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
                  * 重连
                  */
                 case TAG_IM_RECONNECT:
-                    result = connect();
+                    result = reConnect();
                     break;
                 /**
                  * 加入对话
@@ -1159,6 +1170,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
             }
         } else if (jsonObject.has("ping")) {
             eventContainer.mAuthData = gson.fromJson(jsonObject.toString(), AuthData.class);
+            connected = true;
+            isConnecting = false;
         }
         return eventContainer;
     }
@@ -1833,7 +1846,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private boolean socketReconnect() {
         try {
-            if (isNeedReConnected) {
+            if (isNeedReConnected && mIMConfig != null) {
                 if (mService.isConnected()) {
                     if (!isDisconnecting) {
                         LogUtils.debugInfo(TAG, "----------socketReconnect---by own---");
@@ -1844,7 +1857,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
                     if (DeviceUtils.netIsConnected(getApplicationContext())) {
                         LogUtils.debugInfo(TAG, "----------socketReconnect------");
                         changeHeartBeatRateByReconnect();
-                        mService.connect();
+                        isConnecting = true;
+                        mService.reconnect();
                         resetTime();
                         if (mDisconnectStartTime == 0) {
                             mDisconnectStartTime = System.currentTimeMillis();
@@ -1872,9 +1886,8 @@ public class SocketService extends BaseService implements ImService.ImListener {
     /**
      * 开启连接
      */
-    private boolean connect() {
+    private boolean reConnect() {
         isNeedReConnected = true;
-
         return socketReconnect();
     }
 
