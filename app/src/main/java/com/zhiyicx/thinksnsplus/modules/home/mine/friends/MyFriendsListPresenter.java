@@ -36,7 +36,7 @@ public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContra
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getUserFriendsList(maxId)
+        Subscription subscription = mRepository.getUserFriendsList(maxId, "")
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {

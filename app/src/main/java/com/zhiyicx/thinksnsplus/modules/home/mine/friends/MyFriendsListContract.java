@@ -26,13 +26,6 @@ public interface MyFriendsListContract {
     interface Presenter extends ITSListPresenter<UserInfoBean> {
     }
 
-    interface Repository {
-        /**
-         * 获取用户好友列表
-         *
-         * @param maxId offset
-         * @return Observable
-         */
-        Observable<List<UserInfoBean>> getUserFriendsList(long maxId);
+    interface Repository extends IBaseFriendsRepository{
     }
 }
