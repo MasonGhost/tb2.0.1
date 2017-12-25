@@ -4,9 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -27,6 +32,11 @@ public class MyJoinedCircleFragment extends BaseCircleListFragment {
     @Override
     protected String setCenterTitle() {
         return getString(R.string.joined_group);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<CircleInfo> data) {
+        return (long) mListDatas.size();
     }
 
     @Override

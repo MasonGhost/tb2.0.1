@@ -318,6 +318,7 @@ var RE = {
 			var items = [];
 			_self.commandSet.forEach(function (item) {
 				if (document.queryCommandState(item)) {
+				    console.log("queryCommandState:::" + item);
 					items.push(item);
 				}
 			});

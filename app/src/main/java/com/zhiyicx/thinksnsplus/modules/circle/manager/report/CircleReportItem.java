@@ -162,9 +162,6 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(holder.itemView.getContext(),
                         circleReportListBean.getUser()));
-        RxView.clicks(holder.getView(R.id.tv_content))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> holder.itemView.performClick());
         RxView.clicks(holder.itemView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {

@@ -34,21 +34,19 @@
 
     <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
         android:id="@+id/tv_content"
-        android:enabled="false"
-        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_name"
         android:layout_toRightOf="@id/iv_headpic"
         android:includeFontPadding="false"
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
-        app:etv_MaxLinesOnShrink="2"
-        app:etv_ToExpandHintShow="true"
-        app:etv_IsNeedShrink="false"
-        app:etv_ToExpandHint="@string/circle_report_more"
         android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
+        app:etv_IsNeedShrink="false"
+        app:etv_MaxLinesOnShrink="2"
+        app:etv_ToExpandHint="@string/circle_report_more"
+        app:etv_ToShrinkHint=""
         tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
 
     <LinearLayout
