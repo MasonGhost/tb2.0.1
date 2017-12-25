@@ -317,6 +317,7 @@
     <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
+    <string name="circle_rule">圈子创建协议</string>
 
     <string name="circle_detail">详细信息</string>
     <string name="circle_earnings">圈子收益</string>
@@ -335,7 +336,7 @@
     <string name="appoint_blacklist">加入黑名单</string>
     <string name="appoint_circle">设为圈管理员</string>
     <string name="circle_report_more">[查看更多]</string>
-    <string name="circle_report_post">%1$s 举报 %1$s 的帖子：</string>
+    <string name="circle_report_post">%1$s 举报 %2$s 的帖子：</string>
     <string name="circle_report_comment">%1$s 举报 %2$s 的评论：</string>
     <string name="circle_report_done">已处理</string>
     <string name="circle_report_doing">未处理</string>

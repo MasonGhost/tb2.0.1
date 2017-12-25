@@ -8,7 +8,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleContract;
-import com.zhiyicx.thinksnsplus.modules.register.rule.UserRuleFragment;
 
 import br.tiagohm.markdownview.MarkdownView;
 import butterknife.BindView;
@@ -19,7 +18,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class RuleForCreateCircleFragment extends TSFragment<CreateCircleContract.Presenter> implements  CreateCircleContract.View{
+public class RuleForCreateCircleFragment extends TSFragment<CreateCircleContract.Presenter> implements CreateCircleContract.View {
 
     @Override
     public void setCircleInfo(CircleInfo data) {
@@ -37,7 +36,7 @@ public class RuleForCreateCircleFragment extends TSFragment<CreateCircleContract
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.user_rule_register);
+        return getString(R.string.circle_rule);
     }
 
     @Override

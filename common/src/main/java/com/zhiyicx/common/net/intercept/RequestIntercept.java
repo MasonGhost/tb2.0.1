@@ -29,7 +29,7 @@ import okio.BufferedSource;
 public class RequestIntercept implements Interceptor {
     private static final String TAG = "RequestIntercept";
     private RequestInterceptListener mListener;
-    private static final boolean USE_ERROR_LOG = true;
+    private static final boolean USE_ERROR_LOG = false;
 
     public RequestIntercept(RequestInterceptListener listener) {
         this.mListener = listener;
