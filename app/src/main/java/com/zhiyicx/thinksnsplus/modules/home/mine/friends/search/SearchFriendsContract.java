@@ -15,7 +15,12 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository
 public interface SearchFriendsContract {
 
     interface View extends ITSListView<UserInfoBean, Presenter> {
-
+        /**
+         * 获取关键词
+         *
+         * @return string
+         */
+        String getKeyWord();
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {

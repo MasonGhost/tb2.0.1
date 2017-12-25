@@ -72,7 +72,7 @@ public class ApiConfig {
     public static final String APP_PATH_UPDATE_USER_PHONE_OR_EMAIL = "api/" + API_VERSION_2 + "/user";// 更新认证用户的手机号码和邮箱
     public static final String APP_PATH_DELETE_USER_PHONE = "api/" + API_VERSION_2 + "/user/phone";// 解除用户 Phone 绑定
     public static final String APP_PATH_DELETE_USER_EMAIL = "api/" + API_VERSION_2 + "/user/email";// 解除用户 E-Mail 绑定
-    public static final String APP_PATH_DELETE_USER_FRIENDS_LIST = "api/" + API_VERSION_2 + "/follow-mutual";// 好友列表
+    public static final String APP_PATH_DELETE_USER_FRIENDS_LIST = "api/" + API_VERSION_2 + "/user/follow-mutual";// 好友列表
 
 
     // 用户标签
