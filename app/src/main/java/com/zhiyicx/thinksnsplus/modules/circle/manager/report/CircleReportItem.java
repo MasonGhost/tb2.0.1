@@ -15,9 +15,11 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
@@ -51,10 +53,13 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
     public static final String TYPECOMMENT = "comment";
 
     private ReporReviewContract.Presenter mPresenter;
+    private CenterInfoPopWindow mReportPopWindow;
+    private Activity mActivity;
 
-    public CircleReportItem(Context context, ReporReviewContract.Presenter presenter) {
-        super(context);
+    public CircleReportItem(Activity activity, ReporReviewContract.Presenter presenter) {
+        super(activity);
         mPresenter = presenter;
+        mActivity = activity;
     }
 
     @Override
@@ -133,6 +138,17 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
             detailContentView.setText(detailContent);
         }
         contentView.setText(circleReportListBean.getContent());
+        contentView.setExpandListener(new ExpandableTextView.OnExpandListener() {
+            @Override
+            public void onExpand(ExpandableTextView view) {
+                showRulePopupWindow(circleReportListBean.getContent(),view);
+            }
+
+            @Override
+            public void onShrink(ExpandableTextView view) {
+
+            }
+        });
 
         String userName, targetName;
         userName = circleReportListBean.getUser().getName();
@@ -246,5 +262,22 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                 .bottomClickListener(() -> mReviewPopWindow.hide())
                 .build();
         mReviewPopWindow.show();
+    }
+
+    private void showRulePopupWindow(String report, View parent) {
+        mReportPopWindow = CenterInfoPopWindow.builder()
+                .titleStr(mActivity.getString(R.string.circle_report_reason))
+                .desStr(report)
+                .item1Str(mActivity.getString(R.string.close))
+                .item1Color(R.color.themeColor)
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(mActivity)
+                .buildCenterPopWindowItem1ClickListener(() -> mReportPopWindow.hide())
+                .parentView(parent)
+                .build();
+        mReportPopWindow.show();
     }
 }
