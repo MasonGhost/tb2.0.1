@@ -71,6 +71,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
 
@@ -433,7 +434,7 @@ public class AppApplication extends TSApplication {
                                 .subscribe(aLong -> {
                                     WindowUtils.setIsPause(true);
                                     WindowUtils.hidePopupWindow();
-                                });
+                                }, Throwable::printStackTrace);
                     }
                 }
             }

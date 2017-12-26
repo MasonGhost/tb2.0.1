@@ -334,18 +334,25 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS - 1);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
-        mFragmentList.clear();
-        mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(FindFragment.newInstance());
-        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(new MessageContainerFragment().instance());
-        }
-        if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(MineFragment.newInstance());
-        }
         //将 List 设置给 adapter
         mHomePager.bindData(mFragmentList);
         mVpHome.setAdapter(mHomePager);
+        // 减轻主线程压力
+        mVpHome.post(new Runnable() {
+            @Override
+            public void run() {
+                mFragmentList.clear();
+                mFragmentList.add(MainFragment.newInstance(HomeFragment.this));
+                mFragmentList.add(FindFragment.newInstance());
+                if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
+                    mFragmentList.add(new MessageContainerFragment().instance());
+                }
+                if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
+                    mFragmentList.add(MineFragment.newInstance());
+                }
+                mHomePager.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
