@@ -185,6 +185,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                                 protected void onFailure(String message, int code) {
                                     super.onFailure(message, code);
                                     mRootView.showMessage(message);
+                                    mRootView.loadAllError();
                                 }
 
                                 @Override
@@ -396,16 +397,22 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
+                            mRootView.updateCircleInfo(circleInfo);
                         } else {
                             // 如果是 封闭的或者 收费的 ，就不及时更新
                             if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
-                            circleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
+                            CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
+                            circleJoinedBean.setUser_id((int) AppApplication.getMyUserIdWithdefault());
+                            circleJoinedBean.setUser(AppApplication.getmCurrentLoginAuth().getUser());
+                            circleJoinedBean.setGroup_id(circleInfo.getId().intValue());
+                            circleJoinedBean.setAudit(1);
+                            circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+                            mRootView.updateCircleInfo(circleInfo);
                         }
-                        mRootView.getCircleInfo().setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                     }
 
                     @Override
