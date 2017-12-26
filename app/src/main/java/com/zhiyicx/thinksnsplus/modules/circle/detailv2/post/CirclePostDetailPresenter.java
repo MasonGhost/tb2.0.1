@@ -50,6 +50,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLECT_UPDATE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE_UPDATE;
 
 /**
  * @author Jliuer
@@ -129,8 +130,9 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
-                            mCirclePostListBeanGreenDao.deleteSingleCache(mRootView.getPostId());
                             mCirclePostCommentBeanGreenDao.deleteCommentsByPostId(mRootView.getPostId());
+                            EventBus.getDefault().post(mCirclePostListBeanGreenDao.getSingleDataFromCache(mRootView.getPostId()),
+                                    POST_LIST_DELETE_UPDATE);
                             mRootView.postHasBeDeleted();
                             return;
                         }
@@ -142,8 +144,6 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                         super.onException(throwable);
                         mRootView.loadAllError();
                     }
-
-
                 });
 
         addSubscrebe(subscription);
