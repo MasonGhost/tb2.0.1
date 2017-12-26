@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -61,11 +62,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
@@ -81,7 +79,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
+public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -111,12 +109,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     SystemRepository mSystemRepository;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    @Inject
+    BaseDynamicRepository mDynamicRepository;
 
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
-    public DynamicPresenter(DynamicContract.Repository repository, DynamicContract.View rootView) {
-        super(repository, rootView);
+    public DynamicPresenter(DynamicContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
             return;
         }
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
+        Subscription dynamicLisSub = mDynamicRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
                 .observeOn(Schedulers.io())
                 .map(listBaseJson -> {
                     // 更新数据库
@@ -244,7 +244,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
         Observable.just(data)
                 .observeOn(Schedulers.io())
-                .subscribe(dynamicDetailBeanV2s -> mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
+                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
     }
 
     /**
@@ -315,7 +315,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             return;
         }
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(postion));
-        mRepository.handleLike(isLiked, feed_id);
+        mDynamicRepository.handleLike(isLiked, feed_id);
     }
 
     @Override
@@ -351,13 +351,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
         mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
         mRootView.refreshData(dynamicPositon);
-        mRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
+        mDynamicRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
     }
 
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+        mDynamicRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
                 commentBean.getComment_mark());
         mRootView.refreshData();
     }
@@ -371,7 +371,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mRootView.getListDatas().remove(position);
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getId());
+            mDynamicRepository.deleteDynamic(dynamicBean.getId());
         }
     }
 
@@ -406,7 +406,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendCommentV2(commentContent, mRootView.getListDatas().get(mCurrentPostion)
+        mDynamicRepository.sendCommentV2(commentContent, mRootView.getListDatas().get(mCurrentPostion)
                 .getId(), replyToUserId, creatComment.getComment_mark());
     }
 
@@ -524,7 +524,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     if (isImage) {
                         return Observable.just(stringBaseJsonV2);
                     }
-                    return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                    return mDynamicRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
                             .flatMap(detailBeanV2 -> {
                                 stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
                                 return Observable.just(stringBaseJsonV2);

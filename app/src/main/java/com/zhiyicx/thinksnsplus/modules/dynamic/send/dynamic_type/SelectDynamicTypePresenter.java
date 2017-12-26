@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -17,7 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -35,21 +34,21 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class SelectDynamicTypePresenter extends AppBasePresenter<SelectDynamicTypeContract.Repository, SelectDynamicTypeContract.View>
+public class SelectDynamicTypePresenter extends AppBasePresenter<SelectDynamicTypeContract.View>
         implements SelectDynamicTypeContract.Presenter{
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
+    UserInfoRepository mCertificationDetailRepository;
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
 
     @Inject
-    public SelectDynamicTypePresenter(SelectDynamicTypeContract.Repository repository, SelectDynamicTypeContract.View rootView) {
-        super(repository, rootView);
+    public SelectDynamicTypePresenter( SelectDynamicTypeContract.View rootView) {
+        super( rootView);
     }
 
     @Override

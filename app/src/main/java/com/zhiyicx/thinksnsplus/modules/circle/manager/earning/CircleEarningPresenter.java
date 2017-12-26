@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import java.util.List;
 
@@ -18,17 +19,19 @@ import rx.functions.Action0;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleEarningPresenter extends AppBasePresenter<CircleEarningContract.Repository, CircleEarningContract.View>
+public class CircleEarningPresenter extends AppBasePresenter< CircleEarningContract.View>
         implements CircleEarningContract.Presenter {
 
     @Inject
-    public CircleEarningPresenter(CircleEarningContract.Repository repository, CircleEarningContract.View rootView) {
-        super(repository, rootView);
+    BaseCircleRepository mBaseCircleRepository;
+    @Inject
+    public CircleEarningPresenter( CircleEarningContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void setCirclePermissions(long circleId, List<String> permissions) {
-        Subscription subscription = mRepository.setCirclePermissions(circleId, permissions)
+        Subscription subscription = mBaseCircleRepository.setCirclePermissions(circleId, permissions)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
             @Override
             protected void onSuccess(BaseJsonV2<Object> data) {

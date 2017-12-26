@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.mine.joined;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class BaseCircleListPresenterModule {
         return mView;
     }
 
-    @Provides
-    BaseCircleListContract.Repository provideCircleListContractRepository(CircleListRepository circleListRepository) {
-        return circleListRepository;
-    }
 }

@@ -15,7 +15,8 @@ import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -34,7 +35,7 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class AllCircleContainerPresenter extends AppBasePresenter<AllCircleContainerContract.Repository, AllCircleContainerContract.View>
+public class AllCircleContainerPresenter extends AppBasePresenter< AllCircleContainerContract.View>
         implements AllCircleContainerContract.Presenter {
 
     @Inject
@@ -42,19 +43,21 @@ public class AllCircleContainerPresenter extends AppBasePresenter<AllCircleConta
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
     @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
+    UserInfoRepository mCertificationDetailRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
 
     @Inject
-    public AllCircleContainerPresenter(AllCircleContainerContract.Repository repository, AllCircleContainerContract.View rootView) {
-        super(repository, rootView);
+    public AllCircleContainerPresenter(AllCircleContainerContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void getCategroiesList(int limit, int offet) {
-        Subscription subscription = mRepository.getCategroiesList(limit, offet)
+        Subscription subscription = mBaseCircleRepository.getCategroiesList(limit, offet)
                 .subscribe(new BaseSubscribeForV2<List<CircleTypeBean>>() {
 
                     @Override

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ExpertSearchRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class ExpertSearchPresenterModule {
         return mView;
     }
 
-    @Provides
-    public ExpertSearchContract.Repository provideExpertSearchContractRepository(ExpertSearchRepository repository){
-        return repository;
-    }
 }

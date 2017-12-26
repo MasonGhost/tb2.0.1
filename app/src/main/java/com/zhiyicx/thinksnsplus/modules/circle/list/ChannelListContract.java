@@ -53,18 +53,4 @@ public interface ChannelListContract {
         void handleGroupJoin(int position, GroupInfoBean groupInfoBean);
     }
 
-    interface Repository extends IBaseChannelRepository {
-
-
-
-        /**
-         * 获取全部圈子列表
-         */
-        Observable<List<GroupInfoBean>> getAllGroupList(long max_id);
-
-        /**
-         * 获取用户加入的圈子
-         */
-        Observable<List<GroupInfoBean>> getUserJoinedGroupList(long max_id);
-    }
 }

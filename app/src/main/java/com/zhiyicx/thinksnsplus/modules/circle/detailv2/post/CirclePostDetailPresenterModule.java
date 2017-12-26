@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleDetailRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CirclePostDetailRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +22,4 @@ public class CirclePostDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    CirclePostDetailContract.Repository provideRepository(CirclePostDetailRepository repository){
-        return repository;
-    }
 }

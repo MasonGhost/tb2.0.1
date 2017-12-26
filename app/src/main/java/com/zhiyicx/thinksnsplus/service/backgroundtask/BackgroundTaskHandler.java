@@ -49,7 +49,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendCertificationRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -137,12 +136,8 @@ public class BackgroundTaskHandler {
     @Inject
     QuestionCommentBeanGreenDaoImpl mQuestionCommentBeanGreenDao;
 
-    @Inject
-    SendCertificationRepository mSendCertificationRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
-
-//    private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
 
     private boolean mIsExit = false; // 是否关闭
 
@@ -1373,7 +1368,7 @@ public class BackgroundTaskHandler {
                     }
                 }
                 return integers;
-            }).map(integers -> bean).flatMap(bean1 -> mSendCertificationRepository.sendCertification(bean1)
+            }).map(integers -> bean).flatMap(bean1 -> mUserInfoRepository.sendCertification(bean1)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());

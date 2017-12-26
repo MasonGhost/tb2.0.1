@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -22,19 +23,21 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repository, MyGroupContract.View> implements MyGroupContract.Presenter {
+public class MyGroupPresenter extends AppBasePresenter< MyGroupContract.View> implements MyGroupContract.Presenter {
 
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
+    @Inject
+    BaseChannelRepository mBaseChannelRepository;
 
     @Inject
-    public MyGroupPresenter(MyGroupContract.Repository repository, MyGroupContract.View rootView) {
-        super(repository, rootView);
+    public MyGroupPresenter(MyGroupContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getGroupList(1, maxId)
+        Subscription subscription = mBaseChannelRepository.getGroupList(1, maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<GroupInfoBean>>() {
                     @Override
@@ -81,7 +84,7 @@ public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repositor
         // 更改数据源，切换订阅状态
         groupInfoBean.setIs_member(isJoined ? 0 : 1);
         mGroupInfoBeanGreenDao.updateSingleData(groupInfoBean);
-        mRepository.handleGroupJoin(groupInfoBean);
+        mBaseChannelRepository.handleGroupJoin(groupInfoBean);
         mRootView.updateGroupJoinState(position, groupInfoBean);
     }
 

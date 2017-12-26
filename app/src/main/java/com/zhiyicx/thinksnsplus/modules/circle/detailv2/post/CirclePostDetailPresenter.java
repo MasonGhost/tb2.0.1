@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -56,7 +57,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLEC
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetailContract.Repository, CirclePostDetailContract.View>
+public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetailContract.View>
         implements CirclePostDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -67,6 +68,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
 
@@ -79,17 +82,17 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Inject
-    public CirclePostDetailPresenter(CirclePostDetailContract.Repository repository, CirclePostDetailContract.View rootView) {
-        super(repository, rootView);
+    public CirclePostDetailPresenter( CirclePostDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
-        Subscription subscription = Observable.zip(mRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
-                mRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
-                mRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null, null),
-                mRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue()),
+        Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
+                mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
+                mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null, null),
+                mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue()),
                 (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
                     circlePostDetailBean.setComments(circlePostCommentBeans);
                     circlePostDetailBean.setDigList(postDigListBeans);
@@ -151,8 +154,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     @Override
     public void updateRewardData() {
 
-        Subscription subscription = Observable.zip(mRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId())
-                , mRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+        Subscription subscription = Observable.zip(mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId())
+                , mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
                 , (currenPost, rewardsListBeens) -> {
                     Observable.empty()
                             .observeOn(AndroidSchedulers.mainThread())
@@ -238,7 +241,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mRootView.refreshData();
 
         mCirclePostCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendPostComment(commentContent,
+        mBaseCircleRepository.sendPostComment(commentContent,
                 mRootView.getCurrentePost().getId(),
                 replyToUserId,
                 creatComment.getComment_mark());
@@ -252,7 +255,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
         mRootView.getCurrentePost().getComments().remove(data);
         mRootView.refreshData();
-        mRepository.deletePostComment(circlePostListBean.getId(), data.getId());
+        mBaseCircleRepository.deletePostComment(circlePostListBean.getId(), data.getId());
     }
 
     @Override
@@ -292,7 +295,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mRootView.getCurrentePost().setLiked(isLiked);
         mRootView.setDigg(isLiked);
 
-        mRepository.dealLike(isLiked, id);
+        mBaseCircleRepository.dealLike(isLiked, id);
     }
 
     @Override
@@ -320,7 +323,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
         mRootView.getCurrentePost().setCollected(isUnCollected);
         mCirclePostListBeanGreenDao.updateSingleData(mRootView.getCurrentePost());
         EventBus.getDefault().post(mRootView.getCurrentePost(), POST_LIST_COLLECT_UPDATE);
-        mRepository.dealCollect(isUnCollected, id);
+        mBaseCircleRepository.dealCollect(isUnCollected, id);
     }
 
     @Override

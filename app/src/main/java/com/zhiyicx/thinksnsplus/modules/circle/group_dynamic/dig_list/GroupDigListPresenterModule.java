@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.dig_list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.GroupDigListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class GroupDigListPresenterModule {
         return mView;
     }
 
-    @Provides
-    public GroupDigListContract.Repository provideGroupDigListContractRepository(GroupDigListRepository repository){
-        return repository;
-    }
 }

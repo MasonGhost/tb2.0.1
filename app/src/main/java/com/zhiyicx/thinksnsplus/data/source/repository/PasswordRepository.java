@@ -4,7 +4,11 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IPasswordRepository;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordContract;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -19,11 +23,11 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindPasswordRepository extends VertifyCodeRepository implements FindPasswordContract.Repository {
+public class PasswordRepository extends VertifyCodeRepository implements IPasswordRepository{
 
     private PasswordClient mPasswordClient;
     @Inject
-    public FindPasswordRepository(ServiceManager serviceManager) {
+    public PasswordRepository(ServiceManager serviceManager) {
         super(serviceManager);
         mPasswordClient = serviceManager.getPasswordClient();
     }
@@ -31,13 +35,24 @@ public class FindPasswordRepository extends VertifyCodeRepository implements Fin
 
     @Override
     public Observable<CacheBean> findPasswordV2(String phone, String vertifyCode, String newPassword) {
-        return  mPasswordClient.findPasswordV2(phone, null, vertifyCode, mPasswordClient.REGITER_TYPE_SMS, newPassword)
+        return  mPasswordClient.findPasswordV2(phone, null, vertifyCode, PasswordClient.REGITER_TYPE_SMS, newPassword)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<CacheBean> findPasswordByEmail(String email, String verifyCode, String newPassword) {
-        return mPasswordClient.findPasswordV2( null, email, verifyCode, mPasswordClient.REGITER_TYPE_EMAIL, newPassword)
+        return mPasswordClient.findPasswordV2( null, email, verifyCode, PasswordClient.REGITER_TYPE_EMAIL, newPassword)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Object> changePasswordV2(String oldPassword, String newPassword) {
+        Map<String, String> data = new HashMap<>();
+        data.put("old_password", oldPassword);
+        data.put("password", newPassword);
+        data.put("password_confirmation", newPassword);
+
+        return mPasswordClient.changePasswordV2(data)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

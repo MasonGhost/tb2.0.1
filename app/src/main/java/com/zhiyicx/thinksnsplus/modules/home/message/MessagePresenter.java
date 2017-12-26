@@ -32,6 +32,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
@@ -66,12 +68,12 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.D
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+public class MessagePresenter extends AppBasePresenter<MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
     @Inject
-    ChatContract.Repository mChatRepository;
+    ChatRepository mChatRepository;
 
     @Inject
     AuthRepository mAuthRepository;
@@ -118,10 +120,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private UnReadNotificaitonBean mUnReadNotificaitonBean;
 
     private Subscription mUnreadNotiSub;
+    
+    @Inject
+    MessageRepository mMessageRepository;
 
     @Inject
-    public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
-        super(repository, rootView);
+    public MessagePresenter(MessageContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -157,7 +162,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
                     }
                     if (datas.isEmpty()) {
-                        return mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
+                        return mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
                     } else {
                         return Observable.zip(datas, (FuncN<Object>) args -> {
                             // 为 ts 助手添加提示语
@@ -179,7 +184,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
                             }
                             return args;
-                        }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
+                        }).flatMap(o -> mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -320,7 +325,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void getSingleConversation(int cid) {
-        Subscription subscribe = mRepository.getSingleConversation(cid)
+        Subscription subscribe = mMessageRepository.getSingleConversation(cid)
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     if (data == null || data.getConversation() == null) {
@@ -358,7 +363,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void checkUnreadNotification() {
-        mRepository.ckeckUnreadNotification()
+        mMessageRepository.ckeckUnreadNotification()
                 .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
                     protected void onSuccess(Void data) {
@@ -544,7 +549,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             mUnreadNotiSub.unsubscribe();
         }
 
-        mUnreadNotiSub = mRepository.getUnreadNotificationData()
+        mUnreadNotiSub = mMessageRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     mUnReadNotificaitonBean = data;

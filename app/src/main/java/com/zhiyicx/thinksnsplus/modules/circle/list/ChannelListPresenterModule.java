@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ChannelListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class ChannelListPresenterModule {
         return mView;
     }
 
-    @Provides
-    public ChannelListContract.Repository provideChannelListContractRepository(ChannelListRepository channelListRepository) {
-        return channelListRepository;
-    }
 }

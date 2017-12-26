@@ -21,8 +21,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Repository, CircleMainContract.View>
+public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.View>
         implements CircleMainContract.Presenter {
 
     @Inject
@@ -52,24 +52,25 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
     @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
+    UserInfoRepository mCertificationDetailRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
-
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public CircleMainPresenter(CircleMainContract.Repository repository, CircleMainContract.View rootView) {
-        super(repository, rootView);
+    public CircleMainPresenter(CircleMainContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
-        Subscription subscription = Observable.zip(mRepository.getCircleCount(),
-                mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
-                mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value),
+        Subscription subscription = Observable.zip(mBaseCircleRepository.getCircleCount(),
+                mBaseCircleRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
+                mBaseCircleRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
@@ -96,13 +97,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null,isLoadMore);
+                        mRootView.onResponseError(null, isLoadMore);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable,isLoadMore);
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
 
@@ -117,7 +118,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
     @Override
     public void getRecommendCircle() {
-        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value)
+        Subscription subscription = mBaseCircleRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
@@ -155,7 +156,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
         }
         boolean isJoined = circleInfo.getJoined() != null;
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
+        Subscription subscribe = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -188,6 +189,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

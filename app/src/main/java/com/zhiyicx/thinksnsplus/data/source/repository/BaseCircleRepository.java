@@ -12,14 +12,18 @@ import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -469,6 +473,165 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 return postListBeans;
                             });
                 })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CircleInfo> getCircleInfo(long circleId) {
+        return mCircleClient.getCircleInfo(circleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CircleEarningListBean>> getCircleEarningList(Long circleId, Long start, Long end,
+                                                                        Long after, Long limit, String type) {
+
+        return mCircleClient.getCircleEarningList(circleId, start, end, after, limit, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CircleReportListBean>> getCircleReportList(Long groupId, Integer status,
+                                                                      Integer after, Integer limit, Long start, Long end) {
+        return mCircleClient.getCircleReportList(groupId, status, after, limit, start, end)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> approvedCircleReport(Long reportId) {
+        return mCircleClient.approvedCircleReport(reportId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> refuseCircleReport(Long reportId) {
+        return mCircleClient.refuseCircleReport(reportId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    /**
+     * 获取圈子成员列表
+     *
+     * @param limit
+     * @param after
+     * @param type
+     * @return
+     */
+    @Override
+    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type) {
+        return mCircleClient.getCircleMemberList(circleId, limit, after, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 转让圈子
+     *
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @Override
+    public Observable<CircleMembers> attornCircle(long circleId, long userId) {
+        return mCircleClient.attornCircle(circleId, userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CirclePostListBean> getPostDetail(long circleId, long postId) {
+        return mCircleClient.getPostDetail(circleId, postId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after) {
+        return getPostCommentList(postId, (long) after).flatMap(circleCommentZip -> {
+            circleCommentZip.getPinneds().addAll(circleCommentZip.getComments());
+            return Observable.just(circleCommentZip.getPinneds())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+        });
+    }
+
+    @Override
+    public Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId) {
+        return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue())
+                .subscribeOn(Schedulers.io())
+                .flatMap(circleCommentZip -> {
+                    final List<Object> user_ids = new ArrayList<>();
+
+                    if (circleCommentZip.getPinneds() != null) {
+                        for (CirclePostCommentBean commentListBean : circleCommentZip.getPinneds()) {
+                            user_ids.add(commentListBean.getUser_id());
+                            commentListBean.setPinned(true);
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                            user_ids.add(commentListBean.getTo_user_id());
+                        }
+                    }
+                    if (circleCommentZip.getComments() != null) {
+                        for (CirclePostCommentBean commentListBean : circleCommentZip.getComments()) {
+                            user_ids.add(commentListBean.getUser_id());
+                            commentListBean.setPinned(false);
+                            user_ids.add(commentListBean.getReply_to_user_id());
+                            user_ids.add(commentListBean.getTo_user_id());
+                        }
+                    }
+                    if (user_ids.isEmpty()) {
+                        return Observable.just(circleCommentZip);
+                    }
+                    return mUserInfoRepository.getUserInfo(user_ids)
+                            .map(userInfoBeanList -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeanList) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
+                                }
+                                dealCommentData(circleCommentZip.getPinneds(), userInfoBeanSparseArray);
+                                dealCommentData(circleCommentZip.getComments(), userInfoBeanSparseArray);
+                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
+                                return circleCommentZip;
+                            });
+                });
+    }
+
+    private void dealCommentData(List<CirclePostCommentBean> list, SparseArray<UserInfoBean> userInfoBeanSparseArray) {
+        if (list != null) {
+            for (CirclePostCommentBean commentListBean : list) {
+                commentListBean.setCommentUser(userInfoBeanSparseArray.get((int) commentListBean.getUser_id()));
+                if (commentListBean.getReply_to_user_id() == 0) {
+                    // reply_user_id = 0 回复动态
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(0L);
+                    commentListBean.setReplyUser(userInfoBean);
+                } else {
+                    commentListBean.setReplyUser(userInfoBeanSparseArray.get((int) commentListBean.getReply_to_user_id()));
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet,String type) {
+        return mCircleClient.getRecommendCircle(limit,offet,type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId) {
+        return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

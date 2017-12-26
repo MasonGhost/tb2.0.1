@@ -24,8 +24,4 @@ public interface CircleListContract {
     interface Presenter extends ITSListPresenter<CircleInfo> {
         void dealCircleJoinOrExit(int position, CircleInfo circleInfo);
     }
-
-    interface Repository extends IBaseCircleRepository {
-        Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId);
-    }
 }

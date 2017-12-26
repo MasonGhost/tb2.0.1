@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DynamicRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,11 +21,4 @@ public class DynamicPresenterModule {
     DynamicContract.View provideDynamicContractView() {
         return mView;
     }
-
-
-    @Provides
-    DynamicContract.Repository provideDynamicContractRepository(DynamicRepository dynamicRepository) {
-        return dynamicRepository;
-    }
-
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MessageReviewRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,10 +22,4 @@ public class MessageReviewPresenterModule {
         return mView;
     }
 
-
-    @Provides
-    MessageReviewContract.Repository provideMessageLikeContractRepository(MessageReviewRepository
-                                                                                  messageReviewRepository) {
-        return messageReviewRepository;
-    }
 }

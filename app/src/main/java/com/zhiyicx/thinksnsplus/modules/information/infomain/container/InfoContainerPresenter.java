@@ -19,7 +19,8 @@ import com.zhiyicx.thinksnsplus.data.beans.VerifiedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import org.simple.eventbus.EventBus;
@@ -32,8 +33,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -43,8 +42,7 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Repository
-        , InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
+public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
 
     @Inject
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
@@ -52,16 +50,17 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    CertificationDetailRepository mCertificationDetailRepository;
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoDao;
+    @Inject
+    BaseInfoRepository mBaseInfoRepository;
 
 
     @Inject
-    public InfoContainerPresenter(InfoMainContract.Repository repository,
-                                  InfoMainContract.InfoContainerView rootContainerView) {
-        super(repository, rootContainerView);
+    public InfoContainerPresenter(InfoMainContract.InfoContainerView rootContainerView) {
+        super( rootContainerView);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 .map(infoTypeBeanGreenDao -> infoTypeBeanGreenDao.getSingleDataFromCache(1L))
                 .flatMap(infoTypeBean -> {
                     if (infoTypeBean == null) {
-                        return mRepository.getInfoType();
+                        return mBaseInfoRepository.getInfoType();
                     }
                     return Observable.just(infoTypeBean);
                 })
@@ -98,7 +97,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 });
         addSubscrebe(subscription);
 
-        Subscription subscribe = mRepository.getInfoType()
+        Subscription subscribe = mBaseInfoRepository.getInfoType()
                 .subscribe(data -> {
                     for (InfoTypeCatesBean myCates : data.getMy_cates()) {
                         myCates.setIsMyCate(true);
@@ -123,7 +122,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 //        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
 //            mRootView.setUserCertificationInfo(userCertificationInfo);
 //        } else {
-        Subscription subscribe = Observable.zip(mSystemRepository.getBootstrappersInfo(), mCertificationDetailRepository.getCertificationInfo(),
+        Subscription subscribe = Observable.zip(mSystemRepository.getBootstrappersInfo(), mUserInfoRepository.getCertificationInfo(),
                 (systemConfigBean, userCertificationInfo1) -> {
                     Map data = new HashMap();
                     data.put("systemConfigBean", systemConfigBean);

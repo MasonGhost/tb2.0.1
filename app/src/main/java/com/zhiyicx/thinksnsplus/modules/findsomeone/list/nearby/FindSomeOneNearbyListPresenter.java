@@ -39,8 +39,8 @@ import rx.Subscription;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOneNearbyListContract.Repository,
-        FindSomeOneNearbyListContract.View> implements FindSomeOneNearbyListContract.Presenter, GeocodeSearch.OnGeocodeSearchListener {
+public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOneNearbyListContract.View> implements FindSomeOneNearbyListContract
+        .Presenter, GeocodeSearch.OnGeocodeSearchListener {
 
     public static final int DEFAULT_NEARBY_RADIUS = 50000; // 搜索范围，单位 M
     @Inject
@@ -57,9 +57,8 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     private boolean mIsConverLocation;
 
     @Inject
-    public FindSomeOneNearbyListPresenter(FindSomeOneNearbyListContract.Repository repository,
-                                          FindSomeOneNearbyListContract.View rootView) {
-        super(repository, rootView);
+    public FindSomeOneNearbyListPresenter(FindSomeOneNearbyListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -78,7 +77,8 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
         } else {
             Subscription subscribe = mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
-                    , DEFAULT_NEARBY_RADIUS, FindSomeOneListPresenter.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
+                    , DEFAULT_NEARBY_RADIUS, FindSomeOneListPresenter.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment
+                            .DEFAULT_PAGE)
                     .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
                         @Override
                         protected void onSuccess(List<NearbyBean> data) {
@@ -94,7 +94,7 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
-                            mRootView.onResponseError(throwable,isLoadMore);
+                            mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
             addSubscrebe(subscribe);
@@ -103,7 +103,7 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
 
     }
 

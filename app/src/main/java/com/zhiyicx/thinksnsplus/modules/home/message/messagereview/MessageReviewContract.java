@@ -27,40 +27,6 @@ public interface MessageReviewContract {
         Long getSourceId();
     }
 
-    interface Repository {
-        Observable<List<TopDynamicCommentBean>> getDynamicReviewComment(int after);
-
-        Observable<List<TopNewsCommentListBean>> getNewsReviewComment(int after);
-
-        Observable<List<TopPostCommentListBean>> getPostReviewComment(int after);
-
-        Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after);
-
-        Observable<List<TopPostListBean>> getPostReview(Long circleId,int after);
-
-        Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id);
-
-        Observable<BaseJsonV2> refuseTopComment(int pinned_id);
-
-        Observable<BaseJsonV2> approvedNewsTopComment(Long feed_id, int comment_id, int pinned_id);
-
-        Observable<BaseJsonV2> refuseNewsTopComment(int news_id, Long comment_id, int pinned_id);
-
-        Observable<BaseJsonV2> deleteTopComment(Long feed_id, int comment_id);
-
-        Observable<BaseJsonV2> approvedPostTopComment(Integer comment_id);
-
-        Observable<BaseJsonV2> refusePostTopComment(Integer comment_id);
-
-        Observable<BaseJsonV2> approvedPostTop(Long psotId);
-
-        Observable<BaseJsonV2> refusePostTop(Long psotId);
-
-        Observable<BaseJsonV2> refuseCircleJoin(BaseListBean result);
-
-        Observable<BaseJsonV2> approvedCircleJoin(Long feedId, int commentId);
-    }
-
     interface Presenter extends ITSListPresenter<BaseListBean> {
         void approvedTopComment(Long feed_id, int comment_id, int pinned_id, BaseListBean result, int position);
 

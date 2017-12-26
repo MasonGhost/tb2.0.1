@@ -42,17 +42,15 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class LocationRecommentPresenter extends BasePresenter<LocationRecommentContract.Repository,
-        LocationRecommentContract.View> implements LocationRecommentContract.Presenter {
-
+public class LocationRecommentPresenter extends BasePresenter<LocationRecommentContract.View> implements LocationRecommentContract.Presenter {
 
     @Inject
     SystemRepository mSystemRepository;
 
     @Inject
-    public LocationRecommentPresenter(LocationRecommentContract.Repository repository, LocationRecommentContract.View
+    public LocationRecommentPresenter( LocationRecommentContract.View
             rootView) {
-        super(repository, rootView);
+        super(rootView);
 
     }
 

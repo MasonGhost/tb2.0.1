@@ -6,13 +6,13 @@ import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -36,7 +36,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class ContactsPresenter extends AppBasePresenter<ContactsContract.Repository, ContactsContract.View> implements ContactsContract.Presenter {
+public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> implements ContactsContract.Presenter {
 
 
     @Inject
@@ -47,8 +47,8 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.Reposit
     SystemRepository mSystemRepository;
 
     @Inject
-    public ContactsPresenter(ContactsContract.Repository repository, ContactsContract.View rootView) {
-        super(repository, rootView);
+    public ContactsPresenter(ContactsContract.View rootView) {
+        super(rootView);
     }
 
 

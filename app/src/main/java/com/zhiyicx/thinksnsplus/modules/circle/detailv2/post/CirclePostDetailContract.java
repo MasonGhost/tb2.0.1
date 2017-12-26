@@ -57,9 +57,4 @@ public interface CirclePostDetailContract {
         void updateRewardData();
     }
 
-    interface Repository extends IBaseCircleRepository {
-        Observable<CirclePostListBean> getPostDetail(long circleId, long postId);
-
-        Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after);
-    }
 }

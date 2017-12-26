@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
 /**
  * @Describe
@@ -21,12 +20,6 @@ public interface MessageCommentContract {
          *
          */
         void closeInputView();
-    }
-
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository extends UserInfoContract.Repository{
     }
 
     interface Presenter extends ITSListPresenter<CommentedBean> {

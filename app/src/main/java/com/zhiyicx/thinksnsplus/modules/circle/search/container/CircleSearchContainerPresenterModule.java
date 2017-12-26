@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.search.container;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleMainRepository;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +22,4 @@ public class CircleSearchContainerPresenterModule {
         return mView;
     }
 
-    @Provides
-    CircleSearchContainerContract.Repository providesRepository(CircleMainRepository circleMainRepository) {
-        return circleMainRepository;
-    }
 }

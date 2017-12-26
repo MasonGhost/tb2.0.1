@@ -19,7 +19,4 @@ public interface CircleSearchContainerContract {
 
     }
 
-    interface Repository {
-
-    }
 }

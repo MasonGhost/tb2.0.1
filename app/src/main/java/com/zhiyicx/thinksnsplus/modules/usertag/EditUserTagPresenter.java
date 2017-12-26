@@ -21,13 +21,13 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
- * @Describea
  * @author Jungle68
+ * @Describea
  * @Date 2017/7/10
  * @Contact master.jungle68@gmail.com
  */
 
-public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repository, EditUserTagContract.View> implements EditUserTagContract.Presenter {
+public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.View> implements EditUserTagContract.Presenter {
 
     @Inject
     SystemRepository mSystemRepository;
@@ -42,8 +42,8 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
     UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
 
     @Inject
-    public EditUserTagPresenter(EditUserTagContract.Repository repository, EditUserTagContract.View rootView) {
-        super(repository, rootView);
+    public EditUserTagPresenter(EditUserTagContract.View rootView) {
+        super(rootView);
     }
 
 

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.group_dynamic;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.GroupDynamicDetailRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,9 +23,5 @@ public class GroupDynamicDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    public GroupDynamicDetailContract.Repository provideGroupDynamicDetailContractRepository(GroupDynamicDetailRepository repository){
-        return repository;
-    }
 
 }

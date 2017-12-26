@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MarkdownRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class MarkdownPresenterModule {
         return mView;
     }
 
-    @Provides
-    MarkdownContract.Repository providesMarkdownContractRepository(MarkdownRepository markdownRepository) {
-        return markdownRepository;
-    }
 }

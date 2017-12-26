@@ -22,7 +22,4 @@ public interface RankListContract {
 
     }
 
-    interface Repository extends IBaseRankRepository{
-
-    }
 }

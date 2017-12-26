@@ -26,7 +26,4 @@ public interface DigListContract {
         void handleFollowUser(int position, UserInfoBean followFansBean);
     }
 
-    interface Repository {
-
-    }
 }

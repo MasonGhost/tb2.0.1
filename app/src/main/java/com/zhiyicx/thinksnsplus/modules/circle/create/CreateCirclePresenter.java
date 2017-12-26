@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import javax.inject.Inject;
 
@@ -20,15 +21,18 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract.Repository, CreateCircleContract.View>
+public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContract.View>
         implements CreateCircleContract.Presenter {
 
     @Inject
     CircleTypeBeanGreenDaoImpl mCircleTypeBeanGreenDao;
 
     @Inject
-    public CreateCirclePresenter(CreateCircleContract.Repository repository, CreateCircleContract.View rootView) {
-        super(repository, rootView);
+    BaseCircleRepository mBaseCircleRepository;
+
+    @Inject
+    public CreateCirclePresenter( CreateCircleContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -38,7 +42,7 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
 
     @Override
     public void createCircle(CreateCircleBean createCircleBean) {
-        Subscription subscription = mRepository.createCircle(createCircleBean)
+        Subscription subscription = mBaseCircleRepository.createCircle(createCircleBean)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -67,7 +71,7 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
 
     @Override
     public void updateCircle(CreateCircleBean createCircleBean) {
-        Subscription subscription = mRepository.updateCircle(createCircleBean)
+        Subscription subscription = mBaseCircleRepository.updateCircle(createCircleBean)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -96,7 +100,7 @@ public class CreateCirclePresenter extends AppBasePresenter<CreateCircleContract
 
     @Override
     public void getRule() {
-        Subscription subscription = mRepository.getCircleRule()
+        Subscription subscription = mBaseCircleRepository.getCircleRule()
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<String> data) {

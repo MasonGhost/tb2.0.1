@@ -21,7 +21,7 @@ import rx.subscriptions.CompositeSubscription;
  * @Date 2016/12/14
  * @Contact 335891510@qq.com
  */
-public abstract class BasePresenter<R, V extends IBaseView> implements IBasePresenter {
+public abstract class BasePresenter<V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
     protected final Observable.Transformer mSchedulersTransformer = new Observable.Transformer() {
         @Override
@@ -33,22 +33,18 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     };
 
     protected CompositeSubscription mCompositeSubscription;
-
-    protected R mRepository;
     protected V mRootView;
+
     @Inject
     protected Application mContext;
 
-    public BasePresenter(R repository, V rootView) {
-        this.mRepository = repository;
+    public BasePresenter(V rootView) {
         this.mRootView = rootView;
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        {
             EventBus.getDefault().register(this);// 注册到事件主线
+        }
     }
-
-    public BasePresenter() {
-    }
-
 
     /**
      * Method injection is used here to safely reference {@code this} after the object is created.
@@ -67,7 +63,9 @@ public abstract class BasePresenter<R, V extends IBaseView> implements IBasePres
     public void onDestroy() {
         unSubscribe();
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        {
             EventBus.getDefault().unregister(this);
+        }
     }
 
     /**

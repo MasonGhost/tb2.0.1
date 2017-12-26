@@ -26,7 +26,4 @@ public interface CircleLocationContract {
         void searchLocation(String name);
     }
 
-    interface Repository{
-
-    }
 }

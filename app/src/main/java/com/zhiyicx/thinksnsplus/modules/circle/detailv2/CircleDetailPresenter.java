@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract.Repository, CircleDetailContract.View>
+public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract.View>
         implements CircleDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -75,12 +76,14 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
     @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     private Subscription mSearchSub;
 
     @Inject
-    public CircleDetailPresenter(CircleDetailContract.Repository repository, CircleDetailContract.View rootView) {
-        super(repository, rootView);
+    public CircleDetailPresenter( CircleDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -94,7 +97,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         // 需要头信息
         if (mRootView.isNeedHeaderInfo()) {
             if (!isLoadMore) {
-                Subscription subscribe = Observable.zip(mRepository.getCircleInfo(mRootView.getCircleId()), mRepository.getPostListFromCircle
+                Subscription subscribe = Observable.zip(mBaseCircleRepository.getCircleInfo(mRootView.getCircleId()), mBaseCircleRepository.getPostListFromCircle
                                 (mRootView.getCircleId(), maxId, mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
@@ -138,7 +141,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 case PUBLISH:
                 case HAD_PINNED:
                 case WAIT_PINNED_AUDIT:
-                    Subscription subscribe = mRepository.getMinePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), mRootView
+                    Subscription subscribe = mBaseCircleRepository.getMinePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), mRootView
                             .getCircleMinePostType().value)
                             .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
                                 @Override
@@ -170,7 +173,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mRootView.hideRefreshState(isLoadMore);
                         return;
                     }
-                    mSearchSub = mRepository.getAllePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, mRootView
+                    mSearchSub = mBaseCircleRepository.getAllePostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, mRootView
                             .getCircleId())
                             .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
                                 @Override
@@ -231,7 +234,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         mCirclePostCommentBeanGreenDao.deleteSingleCache(circlePostListBean.getComments().get(commentPosition));
         mRootView.getListDatas().get(postPositon).getComments().remove(commentPosition);
         mRootView.refreshData(postPositon);
-        mRepository.deletePostComment(circlePostListBean.getId(), commentId);
+        mBaseCircleRepository.deletePostComment(circlePostListBean.getId(), commentId);
     }
 
     @Override
@@ -265,7 +268,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         mRootView.refreshData();
 
         mCirclePostCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendPostComment(commentContent,
+        mBaseCircleRepository.sendPostComment(commentContent,
                 mRootView.getListDatas().get(mCurrentPostion).getId(),
                 replyToUserId,
                 creatComment.getComment_mark());
@@ -283,7 +286,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         }
         mRootView.refreshData();
         if (circlePostListBean.getId() != null && circlePostListBean.getId() != 0) {
-            mRepository.deletePost(circlePostListBean.getGroup_id(), circlePostListBean.getId());
+            mBaseCircleRepository.deletePost(circlePostListBean.getGroup_id(), circlePostListBean.getId());
         }
     }
 
@@ -327,7 +330,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             return;
         }
         mCirclePostListBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dataPosition));
-        mRepository.dealLike(isLiked, postId);
+        mBaseCircleRepository.dealLike(isLiked, postId);
     }
 
     @Override
@@ -337,7 +340,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         // 更新数据库
         mCirclePostListBeanGreenDao.insertOrReplace(circlePostListBean);
         // 通知服务器
-        mRepository.dealCollect(is_collection, circlePostListBean.getId());
+        mBaseCircleRepository.dealCollect(is_collection, circlePostListBean.getId());
     }
 
     @Override
@@ -371,7 +374,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         }
         boolean isJoined = circleInfo.getJoined() != null;
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
+        mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override

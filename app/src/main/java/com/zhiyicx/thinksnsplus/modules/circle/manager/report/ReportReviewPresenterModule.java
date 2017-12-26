@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.report;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ReportReviewRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class ReportReviewPresenterModule {
         return mView;
     }
 
-    @Provides
-    ReporReviewContract.Repository provideReportRevieContractRepository(ReportReviewRepository reportReviewRepository) {
-        return reportReviewRepository;
-    }
 }

@@ -1,19 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.bumptech.glide.Glide;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RealAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommonRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 
@@ -24,8 +24,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -35,7 +33,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class GuidePresenter extends BasePresenter<GuideContract.Repository, GuideContract.View>
+public class GuidePresenter extends BasePresenter<GuideContract.View>
         implements GuideContract.Presenter {
 
     @Inject
@@ -43,15 +41,18 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Inject
     SystemRepository mSystemRepository;
     @Inject
-    WalletRepository mWalletRepository;
+    BillRepository mWalletRepository;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertLIstBeanGreendo;
     @Inject
     RealAdvertListBeanGreenDaoImpl mRealAdvertListBeanGreenDao;
 
     @Inject
-    public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {
-        super(repository, rootView);
+    CommonRepository mCommonRepository;
+
+    @Inject
+    public GuidePresenter(GuideContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -76,18 +77,18 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Override
     public void getLaunchAdverts() {
-        Subscription subscribe = mRepository.getLaunchAdverts()
+        Subscription subscribe = mCommonRepository.getLaunchAdverts()
                 .observeOn(Schedulers.io())
                 .flatMap(allAdverListBeen -> {
                     List<Object> ids = new ArrayList<>();
                     for (AllAdverListBean adverListBean : allAdverListBeen) {
                         ids.add(adverListBean.getId());
                     }
-                    return mRepository.getAllRealAdverts(ids)
+                    return mCommonRepository.getAllRealAdverts(ids)
                             .flatMap(realAdvertListBeen -> {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
                                     if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
-                                        String url=boot.getAdvertFormat().getImage().getImage();
+                                        String url = boot.getAdvertFormat().getImage().getImage();
                                         Glide.with(mContext)
                                                 .load(url)
                                                 .downloadOnly(DeviceUtils

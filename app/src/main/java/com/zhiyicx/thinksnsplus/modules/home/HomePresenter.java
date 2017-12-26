@@ -52,7 +52,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
+class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
         ImStatusListener, ImTimeoutListener {
     @Inject
     AuthRepository mAuthRepository;
@@ -66,8 +66,8 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
-    public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
-        super(repository, rootView);
+    public HomePresenter(HomeContract.View rootView) {
+        super(rootView);
     }
 
     @Override

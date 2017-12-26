@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,21 +27,22 @@ import rx.android.schedulers.AndroidSchedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements
+public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.View> implements
         MessageCommentContract.Presenter {
     @Inject
     CommentRepository mCommentRepository;
     @Inject
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
-
     @Inject
-    public MessageCommentPresenter(MessageCommentContract.Repository repository, MessageCommentContract.View rootView) {
-        super(repository, rootView);
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    public MessageCommentPresenter(MessageCommentContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mRepository.getMyComments(maxId.intValue())
+        Subscription commentSub = mUserInfoRepository.getMyComments(maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override
                     protected void onSuccess(List<CommentedBean> data) {

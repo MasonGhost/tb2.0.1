@@ -24,7 +24,4 @@ public interface MyFollowContract {
         void handleTopicFollowState(int position, QATopicBean qaTopicBean);
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-
-    }
 }

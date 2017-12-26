@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.earning.record;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleEarningRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +22,4 @@ public class EarningListPresenterModule {
         return mView;
     }
 
-    @Provides
-    CircleEarningContract.Repository provideBillContractRepository(CircleEarningRepository repository) {
-        return repository;
-    }
 }

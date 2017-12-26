@@ -21,12 +21,4 @@ public interface WithdrawalsDetailConstract {
 
     interface Presenter extends ITSListPresenter<WithdrawalsListBean>{}
 
-    interface Repository{
-        /**
-         *
-         * @param after 获取更多数据，上一次获取列表的最后一条 ID
-         * @return
-         */
-        Observable<List<WithdrawalsListBean>> getWithdrawListDetail(int after);
-    }
 }

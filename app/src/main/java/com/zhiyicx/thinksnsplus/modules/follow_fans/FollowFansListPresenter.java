@@ -31,7 +31,7 @@ import rx.Subscription;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FollowFansListPresenter extends AppBasePresenter<FollowFansListContract.Repository,
+public class FollowFansListPresenter extends AppBasePresenter<
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
 
     @Inject
@@ -49,9 +49,9 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
     private long mUserId;
 
     @Inject
-    public FollowFansListPresenter(FollowFansListContract.Repository repository,
+    public FollowFansListPresenter(
                                    FollowFansListContract.View rootView) {
-        super(repository, rootView);
+        super(rootView);
     }
 
     @Override
@@ -80,9 +80,9 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
         this.mPageType = pageType;
         Observable<List<UserInfoBean>> observable = null;
         if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
+            observable = mUserInfoRepository.getFollowListFromNet(userId, maxId.intValue());
         } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            observable = mRepository.getFansListFromNet(userId, maxId.intValue());
+            observable = mUserInfoRepository.getFansListFromNet(userId, maxId.intValue());
         }
         Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {

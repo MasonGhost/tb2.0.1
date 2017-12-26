@@ -22,9 +22,5 @@ public class QASearchContainerPresenterModule {
         return mView;
     }
 
-    @Provides
-    QASearchContainerContract.Repository providesRepository() {
-        return new QASearchContainerContract.Repository() {
-        };
-    }
+
 }

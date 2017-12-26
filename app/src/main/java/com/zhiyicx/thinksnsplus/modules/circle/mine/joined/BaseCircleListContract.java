@@ -39,6 +39,4 @@ public interface BaseCircleListContract {
         void deleteSearchHistory(CircleSearchHistoryBean circleSearchHistoryBean);
     }
 
-    interface Repository extends IBaseCircleRepository {
-    }
 }

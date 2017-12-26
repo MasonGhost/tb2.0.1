@@ -27,7 +27,7 @@ import rx.functions.Func1;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePresenter<RP, V> implements IBaseTouristPresenter {
+public abstract class AppBasePresenter<V extends IBaseView> extends BasePresenter<V> implements IBaseTouristPresenter {
     private static final String DEFAULT_WALLET_EXCEPTION_MESSAGE = "balance_check";
     @Inject
     protected AuthRepository mAuthRepository;
@@ -40,8 +40,8 @@ public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePres
     @Inject
     protected SystemRepository mSystemRepository;
 
-    public AppBasePresenter(RP repository, V rootView) {
-        super(repository, rootView);
+    public AppBasePresenter(V rootView) {
+        super(rootView);
     }
 
     @Override

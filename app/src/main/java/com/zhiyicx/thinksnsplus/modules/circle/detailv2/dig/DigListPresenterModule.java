@@ -23,12 +23,5 @@ public class DigListPresenterModule {
         return mView;
     }
 
-    @Provides
-    DigListContract.Repository provideDigListContractRepository() {
-        return new NotNull();
-    }
 
-    class NotNull implements DigListContract.Repository{
-
-    }
 }

@@ -46,7 +46,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
@@ -154,7 +154,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private PayPopWindow mPayImagePopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
-    private PersonalCenterRepository.MyDynamicTypeEnum mDynamicType = PersonalCenterRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
+    private BaseDynamicRepository.MyDynamicTypeEnum mDynamicType = BaseDynamicRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
     // paid-付费动态 pinned - 置顶动态
 
     /**
@@ -576,7 +576,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void onDynamicTypeChanged(PersonalCenterRepository.MyDynamicTypeEnum type) {
+    public void onDynamicTypeChanged(BaseDynamicRepository.MyDynamicTypeEnum type) {
         mDynamicType = type;
         requestNetData(DEFAULT_PAGE_MAX_ID, false);
 

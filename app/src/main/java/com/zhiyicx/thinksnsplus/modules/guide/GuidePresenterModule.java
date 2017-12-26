@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.GuideRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,11 +23,4 @@ public class GuidePresenterModule {
     GuideContract.View provideGuideContractView() {
         return mView;
     }
-
-
-    @Provides
-    GuideContract.Repository provideGuideContractRepository(GuideRepository guideRepository){
-        return guideRepository;
-    }
-
 }

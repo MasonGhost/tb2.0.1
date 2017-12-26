@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -32,18 +33,21 @@ import rx.functions.Func1;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListContract.Repository, TopicDetailListContract.View>
-        implements TopicDetailListContract.Presenter{
+public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListContract.View>
+        implements TopicDetailListContract.Presenter {
 
 
     @Inject
-    public TopicDetailListPresenter(TopicDetailListContract.Repository repository, TopicDetailListContract.View rootView) {
-        super(repository, rootView);
+    BaseQARepository mBaseQARepository;
+
+    @Inject
+    public TopicDetailListPresenter(TopicDetailListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getQAQuestionByTopic(String.valueOf(mRootView.getTopicId()),
+        Subscription subscription = mBaseQARepository.getQAQuestionByTopic(String.valueOf(mRootView.getTopicId()),
                 "", maxId, mRootView.getCurrentType())
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
@@ -67,12 +71,7 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
         Subscription subscription = handleWalletBlance((long) getSystemConfigBean().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<AnswerInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<AnswerInfoBean>> call(Object o) {
-                        return mRepository.payForOnlook(answer_id);
-                    }
-                })
+                .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
@@ -118,10 +117,10 @@ public class TopicDetailListPresenter extends AppBasePresenter<TopicDetailListCo
                     getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
             if (qaListInfoBean != null) {
                 for (int i = 0; i < mRootView.getListDatas().size(); i++) {
-                    if (qaListInfoBean.getId().equals(mRootView.getListDatas().get(i).getId())){
+                    if (qaListInfoBean.getId().equals(mRootView.getListDatas().get(i).getId())) {
                         mRootView.getListDatas().remove(i);
                         mRootView.refreshData();
-                        EventBus.getDefault().post("success",EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
+                        EventBus.getDefault().post("success", EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
                         break;
                     }
                 }

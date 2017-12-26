@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.NotificationRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -27,17 +28,19 @@ import rx.functions.Func1;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class NotificationPresenter extends AppBasePresenter<NotificationContract.Repository, NotificationContract.View>
+public class NotificationPresenter extends AppBasePresenter<NotificationContract.View>
         implements NotificationContract.Presenter {
 
 
     @Inject
     MessageRepository mMessageRepository;
+    @Inject
+    NotificationRepository mNotificationRepository;
     private Subscription subscribe;
 
     @Inject
-    public NotificationPresenter(NotificationContract.Repository repository, NotificationContract.View rootView) {
-        super(repository, rootView);
+    public NotificationPresenter(NotificationContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
         subscribe = mMessageRepository.makeNotificationAllReaded()
                 .flatMap(o -> {
                     readNotification();
-                    return mRepository.getNotificationList(maxId.intValue());
+                    return mNotificationRepository.getNotificationList(maxId.intValue());
 
                 })
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {

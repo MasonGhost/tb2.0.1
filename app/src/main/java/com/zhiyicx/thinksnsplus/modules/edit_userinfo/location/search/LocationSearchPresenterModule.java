@@ -22,9 +22,5 @@ public class LocationSearchPresenterModule {
         return mView;
     }
 
-    @Provides
-    LocationSearchContract.Repository providesLocationSearchContracttRepository() {
-        return new LocationSearchContract.Repository() {
-        };
-    }
+
 }

@@ -9,13 +9,13 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -28,15 +28,17 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.Repository, PublishInfoContract.View>
+public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.View>
         implements PublishInfoContract.Presenter {
 
     @Inject
     UpLoadRepository mUpLoadRepository;
+    @Inject
+    BaseInfoRepository mBaseInfoRepository;
 
     @Inject
-    public PublishInfoPresenter(PublishInfoContract.Repository repository, PublishInfoContract.View rootView) {
-        super(repository, rootView);
+    public PublishInfoPresenter(PublishInfoContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     "mContentLength::" + contentLength + "\n" +
                     "done::" + done);
 
-            LogUtils.d("currentThread::" +Thread.currentThread().getName());
+            LogUtils.d("currentThread::" + Thread.currentThread().getName());
 
         })
                 .subscribeOn(Schedulers.io())
@@ -84,9 +86,9 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
     public void publishInfo(InfoPublishBean infoPublishBean) {
         Observable<BaseJsonV2<Object>> observable;
         if (infoPublishBean.isRefuse()) {
-            observable = mRepository.updateInfo(infoPublishBean);
+            observable = mBaseInfoRepository.updateInfo(infoPublishBean);
         } else {
-            observable = mRepository.publishInfo(infoPublishBean);
+            observable = mBaseInfoRepository.publishInfo(infoPublishBean);
         }
         observable
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.info_publishing)))

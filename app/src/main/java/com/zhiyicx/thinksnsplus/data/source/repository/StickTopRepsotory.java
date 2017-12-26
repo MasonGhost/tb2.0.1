@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IStickTopRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopContract;
 
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class StickTopRepsotory implements StickTopContract.Repository {
+public class StickTopRepsotory implements IStickTopRepository {
 
     DynamicClient mDynamicClient;
     InfoMainClient mInfoMainClient;

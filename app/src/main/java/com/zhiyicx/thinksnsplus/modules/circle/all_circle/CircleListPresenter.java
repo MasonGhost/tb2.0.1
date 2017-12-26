@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,20 +24,22 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListPresenter extends AppBasePresenter<CircleListContract.Repository, CircleListContract.View>
+public class CircleListPresenter extends AppBasePresenter< CircleListContract.View>
         implements CircleListContract.Presenter {
 
     @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public CircleListPresenter(CircleListContract.Repository repository, CircleListContract.View rootView) {
-        super(repository, rootView);
+    public CircleListPresenter(CircleListContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getCircleList(mRootView.getCategoryId(), maxId)
+        Subscription subscription = mBaseCircleRepository.getCircleList(mRootView.getCategoryId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
 
                     @Override
@@ -73,9 +76,9 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Rep
             observable = handleWalletBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
-                    .flatMap(o -> mRepository.dealCircleJoinOrExit(circleInfo));
+                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
         } else {
-            observable = mRepository.dealCircleJoinOrExit(circleInfo);
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo);
         }
         Subscription subscription = observable
                 .doOnSubscribe(() -> {

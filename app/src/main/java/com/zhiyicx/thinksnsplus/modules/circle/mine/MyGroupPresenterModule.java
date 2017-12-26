@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.mine;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MyGroupRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,5 @@ public class MyGroupPresenterModule {
         return mView;
     }
 
-    @Provides
-    public MyGroupContract.Repository provideMyGroupContractRepository(MyGroupRepository repository){
-        return repository;
-    }
+
 }

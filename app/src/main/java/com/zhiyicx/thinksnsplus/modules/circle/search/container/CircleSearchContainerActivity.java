@@ -7,15 +7,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.container.DaggerQASearchContainerComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerPresenter;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
-import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
-
-import static com.zhiyicx.thinksnsplus.modules.report.ReportFragment.BUNDLE_REPORT_RESOURCE_DATA;
 
 /**
  * @Describe 圈子搜索容器

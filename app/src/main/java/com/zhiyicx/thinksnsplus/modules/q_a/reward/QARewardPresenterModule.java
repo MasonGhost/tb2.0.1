@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.QA$RewardRepositoryPublish;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class QARewardPresenterModule {
         return mView;
     }
 
-    @Provides
-    public QARewardContract.RepositoryPublish provideQA$RewardContractRepository(QA$RewardRepositoryPublish rewardRepository){
-        return rewardRepository;
-    }
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MembersRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class MembersPresenterModule {
         return mView;
     }
 
-    @Provides
-    MembersContract.Repository provideMembersContractRepository(MembersRepository repository) {
-        return repository;
-    }
 }

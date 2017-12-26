@@ -13,12 +13,12 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class CircleSearchContainerPresenter extends BasePresenter<CircleSearchContainerContract.Repository, CircleSearchContainerContract.View>
+public class CircleSearchContainerPresenter extends BasePresenter<CircleSearchContainerContract.View>
         implements CircleSearchContainerContract.Presenter {
 
     @Inject
-    public CircleSearchContainerPresenter(CircleSearchContainerContract.Repository repository, CircleSearchContainerContract.View rootView) {
-        super(repository, rootView);
+    public CircleSearchContainerPresenter(CircleSearchContainerContract.View rootView) {
+        super(rootView);
     }
 
 }

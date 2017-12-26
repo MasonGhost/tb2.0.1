@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create.location;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,11 +22,4 @@ public class CircleLocationPresenterModule {
         return mView;
     }
 
-    @Provides
-    CircleLocationContract.Repository provideCircleLocationContractRepository() {
-        return new NotNull();
-    }
-
-    class NotNull implements CircleLocationContract.Repository {
-    }
 }

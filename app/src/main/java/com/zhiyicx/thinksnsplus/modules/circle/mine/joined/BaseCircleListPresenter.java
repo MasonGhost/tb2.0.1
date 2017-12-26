@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +32,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Date 2017/12/6
  * @Contact master.jungle68@gmail.com
  */
-public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListContract.Repository, BaseCircleListContract.View>
+public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListContract.View>
         implements BaseCircleListContract.Presenter {
 
     @Inject
@@ -39,12 +40,14 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Inject
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     Subscription mSearchSub;
 
     @Inject
-    public BaseCircleListPresenter(BaseCircleListContract.Repository repository, BaseCircleListContract.View rootView) {
-        super(repository, rootView);
+    public BaseCircleListPresenter(BaseCircleListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -53,7 +56,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
         switch (mRootView.getMineCircleType()) {
             case JOIN:
             case AUDIT:
-                Subscription subscribe = mRepository.getMyJoinedCircle(TSListFragment.DEFAULT_PAGE_SIZE
+                Subscription subscribe = mBaseCircleRepository.getMyJoinedCircle(TSListFragment.DEFAULT_PAGE_SIZE
                         , maxId.intValue(), mRootView.getMineCircleType().value)
                         .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
 
@@ -86,7 +89,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
                     mRootView.hideRefreshState(isLoadMore);
                     return;
                 }
-                mSearchSub = mRepository.getAllCircle(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, null)
+                mSearchSub = mBaseCircleRepository.getAllCircle(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), searchContent, null)
                         .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                             @Override
                             protected void onSuccess(List<CircleInfo> data) {
@@ -139,7 +142,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
         }
         boolean isJoined = circleInfo.getJoined() != null;
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
+        Subscription subscribe = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -172,6 +175,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

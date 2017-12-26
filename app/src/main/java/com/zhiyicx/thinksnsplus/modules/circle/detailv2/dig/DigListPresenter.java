@@ -6,9 +6,9 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CirclePostDetailRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoDetailsRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.adapter.BaseDigItem;
 
@@ -28,20 +28,20 @@ import rx.Subscription;
  * @Description 
  */
 @FragmentScoped
-public class DigListPresenter extends AppBasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
+public class DigListPresenter extends AppBasePresenter<DigListContract.View> implements DigListContract.Presenter {
 
     @Inject
-    InfoDetailsRepository mInfoDetailsRepository;
+    BaseInfoRepository mInfoDetailsRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    CirclePostDetailRepository mCirclePostDetailRepository;
+    BaseCircleRepository mCirclePostDetailRepository;
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject
-    public DigListPresenter(DigListContract.Repository repository, DigListContract.View rootView) {
-        super(repository, rootView);
+    public DigListPresenter( DigListContract.View rootView) {
+        super( rootView);
     }
 
     @Override

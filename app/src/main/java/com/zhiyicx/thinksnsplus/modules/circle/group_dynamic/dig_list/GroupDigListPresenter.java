@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -27,7 +29,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract.Repository, GroupDigListContract.View>
+public class GroupDigListPresenter extends AppBasePresenter< GroupDigListContract.View>
         implements GroupDigListContract.Presenter{
 
     @Inject
@@ -35,16 +37,19 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
+    BaseChannelRepository mBaseChannelRepository;
+    @Inject
     GroupDynamicListBeanGreenDaoimpl mGroupDynamicListBeanGreenDaoimpl;
 
     @Inject
-    public GroupDigListPresenter(GroupDigListContract.Repository repository, GroupDigListContract.View rootView) {
-        super(repository, rootView);
+    public GroupDigListPresenter( GroupDigListContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getGroupDynamicDigList(mRootView.getDynamicBean().getGroup_id(), mRootView.getDynamicBean().getId(), maxId)
+        Subscription subscribe = mBaseChannelRepository.getGroupDynamicDigList(mRootView.getDynamicBean().getGroup_id(), mRootView.getDynamicBean()
+                .getId(), maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<DynamicDigListBean>>() {
@@ -64,6 +69,7 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

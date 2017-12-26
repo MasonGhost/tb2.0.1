@@ -23,7 +23,4 @@ public interface CertificationDetailContract {
         void getCertificationInfo();
     }
 
-    interface Repository{
-        Observable<UserCertificationInfo> getCertificationInfo();
-    }
 }

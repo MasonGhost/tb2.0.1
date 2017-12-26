@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGre
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChannelDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
+public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContract.View>
         implements ChannelDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -76,14 +77,16 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
+    @Inject
+    ChannelDetailRepository mChannelDetailRepository;
     @Override
     public void onStart(Share share) {
 
     }
 
     @Inject
-    public ChannelDetailPresenter(ChannelDetailContract.Repository repository, ChannelDetailContract.View rootView) {
-        super(repository, rootView);
+    public ChannelDetailPresenter(ChannelDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -94,7 +97,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         }
         long group_id = mRootView.getGroupId();// 是不是收藏的
         if (group_id < 0) {
-            Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
+            Subscription subscription = mChannelDetailRepository.getMyCollectGroupDynamicList(group_id, maxId)
                     .map(listBaseJson -> {
                         if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
@@ -102,7 +105,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                         }
 
                         for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment
+                                    (listBaseJson.get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
                                 dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
                                 listBaseJson.get(i).getNew_comments().clear();
@@ -134,12 +138,13 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     });
             addSubscrebe(subscription);
         } else if (!isLoadMore) {
-            Subscription subscription = Observable.zip(mRepository.getGroupDetail(group_id), mRepository.getDynamicListFromGroup(group_id, maxId)
+            Subscription subscription = Observable.zip(mChannelDetailRepository.getGroupDetail(group_id), mChannelDetailRepository.getDynamicListFromGroup(group_id, maxId)
                     , GroupZipBean::new)
                     .map(groupZipBean -> {
                         List<GroupDynamicListBean> data = groupZipBean.getGroupDynamicList();
                         for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(data
+                                    .get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
                                 dynamicCommentBeen.addAll(data.get(i).getNew_comments());
                                 data.get(i).getNew_comments().clear();
@@ -176,14 +181,15 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     });
             addSubscrebe(subscription);
         } else {
-            Subscription subscription = mRepository.getDynamicListFromGroup(group_id, maxId)
+            Subscription subscription = mChannelDetailRepository.getDynamicListFromGroup(group_id, maxId)
                     .map(listBaseJson -> {
                         if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
                             data.addAll(listBaseJson);
                         }
                         for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment
+                                    (listBaseJson.get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
                                 dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
                                 listBaseJson.get(i).getNew_comments().clear();
@@ -217,12 +223,12 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         // 频道的动态不要从数据库拉取数据
-       mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
     public void getGroupDetails(long group_id) {
-        mRepository.getGroupDetail(group_id).subscribe(new BaseSubscribeForV2<GroupInfoBean>() {
+        mChannelDetailRepository.getGroupDetail(group_id).subscribe(new BaseSubscribeForV2<GroupInfoBean>() {
             @Override
             protected void onSuccess(GroupInfoBean data) {
                 mGroupInfoBeanGreenDao.insertOrReplace(data);
@@ -240,7 +246,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth().getUser_id());
+        List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth()
+                .getUser_id());
         return datas;
     }
 
@@ -267,7 +274,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return;
         }
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(position));
-        mRepository.handleLike(isLiked, group_id, dynamic_id);
+        mChannelDetailRepository.handleLike(isLiked, group_id, dynamic_id);
     }
 
     @Override
@@ -277,7 +284,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知服务器
-        mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
+        mChannelDetailRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }
 
     @Override
@@ -302,14 +309,14 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mGroupDynamicCommentBeanGreenDaoImpl.deleteSingleCache(dynamicBean.getNew_comments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getNew_comments().remove(commentPositon);
         mRootView.refreshData(dynamicPosition);
-        mRepository.deleteGroupComment(dynamicBean.getGroup_id(), dynamicBean.getId(), comment_id);
+        mChannelDetailRepository.deleteGroupComment(dynamicBean.getGroup_id(), dynamicBean.getId(), comment_id);
     }
 
 
     @Override
     public void reSendComment(GroupDynamicCommentListBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendGroupComment(commentBean.getContent(),
+        mChannelDetailRepository.sendGroupComment(commentBean.getContent(),
                 (long) commentBean.getGroup_id(),
                 feed_id,
                 commentBean.getReply_to_user_id(),
@@ -329,7 +336,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         }
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
-            mRepository.deleteGroupDynamic(dynamicBean.getGroup_id(), dynamicBean.getId());
+            mChannelDetailRepository.deleteGroupDynamic(dynamicBean.getGroup_id(), dynamicBean.getId());
         }
 
     }
@@ -371,7 +378,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mRootView.refreshData();
 
         mGroupDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);
-        mRepository.sendGroupComment(commentContent,
+        mChannelDetailRepository.sendGroupComment(commentContent,
                 (long) mRootView.getListDatas().get(mCurrentPostion).getGroup_id(),
                 mRootView.getListDatas().get(mCurrentPostion).getId(),
                 replyToUserId,
@@ -453,7 +460,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     if (dynamicPosition != -1) {// 如果列表有当前评论
                         int commentSize = mRootView.getListDatas().get(dynamicPosition).getNew_comments().size();
                         for (int i = 0; i < commentSize; i++) {
-                            if (mRootView.getListDatas().get(dynamicPosition).getNew_comments().get(i).getFeed_id() == dynamicCommentBean1.getFeed_id()) {
+                            if (mRootView.getListDatas().get(dynamicPosition).getNew_comments().get(i).getFeed_id() == 
+                                    dynamicCommentBean1.getFeed_id()) {
                                 mRootView.getListDatas().get(dynamicPosition).getNew_comments().get(i).setState(dynamicCommentBean1.getState());
                                 mRootView.getListDatas().get(dynamicPosition).getNew_comments().get(i).setId(dynamicCommentBean1.getId());
                                 mRootView.getListDatas().get(dynamicPosition).getNew_comments().get(i).setFeed_id(dynamicCommentBean1.getFeed_id());
@@ -531,7 +539,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void handleGroupSubscrib(final GroupInfoBean groupSubscripBean) {
-        Subscription subscription = mRepository.handleSubscribGroupByFragment(groupSubscripBean)
+        Subscription subscription = mChannelDetailRepository.handleSubscribGroupByFragment(groupSubscripBean)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {

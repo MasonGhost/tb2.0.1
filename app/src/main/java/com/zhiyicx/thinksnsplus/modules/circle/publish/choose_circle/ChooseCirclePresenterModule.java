@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.publish.choose_circle;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CircleListRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -26,8 +23,4 @@ public class ChooseCirclePresenterModule {
         return mView;
     }
 
-    @Provides
-    public BaseCircleListContract.Repository provideChooseCircleContractRepository(CircleListRepository repository){
-        return repository;
-    }
 }

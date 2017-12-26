@@ -31,7 +31,4 @@ public interface AllCircleContainerContract {
 
     }
 
-    interface Repository extends IBaseCircleRepository {
-
-    }
 }

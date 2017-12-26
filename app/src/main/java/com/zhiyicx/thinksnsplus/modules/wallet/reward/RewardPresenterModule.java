@@ -1,9 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.RechargeRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.RewardRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -26,8 +22,4 @@ public class RewardPresenterModule {
         return mView;
     }
 
-    @Provides
-    RewardContract.Repository provideRewardContractRepository(RewardRepository repository) {
-        return repository;
-    }
 }

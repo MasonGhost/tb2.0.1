@@ -46,6 +46,4 @@ public interface ReportContract {
         void getUserInfoById(Long userId);
     }
 
-    interface Repository {
-    }
 }

@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,20 +22,22 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.Repository, MyPublishQuestionContract.View>
+public class MyPublishQuestionPresenter extends AppBasePresenter< MyPublishQuestionContract.View>
         implements MyPublishQuestionContract.Presenter {
 
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     @Inject
-    public MyPublishQuestionPresenter(MyPublishQuestionContract.Repository repository, MyPublishQuestionContract.View rootView) {
-        super(repository, rootView);
+    BaseQARepository mBaseQARepository;
+    @Inject
+    public MyPublishQuestionPresenter( MyPublishQuestionContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+        Subscription subscribe = mBaseQARepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
             @Override
             protected void onSuccess(List<QAListInfoBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);

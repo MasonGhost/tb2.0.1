@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DynamicTopRepsotory;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class DynamicTopPresenterModule {
         return mView;
     }
 
-    @Provides
-    DynamicTopContract.Repository provideDynamicTopContractRepository(DynamicTopRepsotory dynamicTopRepsotory) {
-        return dynamicTopRepsotory;
-    }
 }

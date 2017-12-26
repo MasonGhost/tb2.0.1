@@ -21,7 +21,4 @@ public interface MyGroupContract {
         void handleGroupJoin(int position, GroupInfoBean groupInfoBean);
     }
 
-    interface Repository extends IBaseChannelRepository {
-
-    }
 }

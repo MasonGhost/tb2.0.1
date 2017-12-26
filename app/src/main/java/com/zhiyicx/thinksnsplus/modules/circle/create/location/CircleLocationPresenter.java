@@ -12,19 +12,20 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author Jliuer
  * @Date 2017/11/21/16:29
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleLocationPresenter extends AppBasePresenter<CircleLocationContract.Repository,CircleLocationContract.View>
+public class CircleLocationPresenter extends AppBasePresenter<CircleLocationContract.View>
         implements CircleLocationContract.Presenter {
 
     @Inject
-    public CircleLocationPresenter(CircleLocationContract.Repository repository,
-                                   CircleLocationContract.View rootView) {
-        super(repository, rootView);
+    public CircleLocationPresenter(CircleLocationContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class CircleLocationPresenter extends AppBasePresenter<CircleLocationCont
 
     @Override
     public void searchLocation(String name) {
-        mSystemRepository.searchLocation(name)
+        Subscription subscribe = mSystemRepository.searchLocation(name)
                 .map(locationContainerBeen -> {
                     List<LocationBean> result = new ArrayList<>();
 
@@ -78,5 +79,6 @@ public class CircleLocationPresenter extends AppBasePresenter<CircleLocationCont
                         mRootView.onResponseError(throwable, false);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 }

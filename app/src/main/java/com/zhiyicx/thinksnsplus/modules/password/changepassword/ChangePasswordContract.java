@@ -24,14 +24,6 @@ public interface ChangePasswordContract {
          */
         void finsh();
     }
-
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository  {
-        Observable<Object> changePasswordV2(String oldPassword, String newPassword);
-    }
-
     interface Presenter extends IBasePresenter {
 
         void changePassword(String oldPassword, String newPassword, String sureNewPassword);

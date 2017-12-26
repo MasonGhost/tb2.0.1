@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,25 +14,29 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/05/10:06
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class BillPresenter extends AppBasePresenter<BillContract.Repository, BillContract.View> implements BillContract.Presenter {
+public class BillPresenter extends AppBasePresenter<BillContract.View> implements BillContract.Presenter {
 
     @Inject
     RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
+    @Inject
+    BillRepository mBillRepository;
 
     @Inject
-    public BillPresenter(BillContract.Repository repository, BillContract.View rootView) {
-        super(repository, rootView);
+    public BillPresenter(BillContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getBillList(maxId.intValue())
+        Subscription subscribe = mBillRepository.getBillList(maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
                     @Override
                     protected void onSuccess(List<RechargeSuccessBean> data) {
@@ -52,13 +57,14 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
         Collections.sort(data, new TimeStringSortClass());
-        mRootView.onCacheResponseSuccess( data,isLoadMore);
+        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -75,7 +81,7 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
 
     @Override
     public void selectAll() {
-      requestCacheData(1L, false);
+        requestCacheData(1L, false);
     }
 
     public void removeAction(List<RechargeSuccessBean> list, int action) {

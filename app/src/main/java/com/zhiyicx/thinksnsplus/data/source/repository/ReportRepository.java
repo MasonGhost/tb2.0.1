@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
  * @Date 2017/12/11
  * @Contact master.jungle68@gmail.com
  */
-public class ReportRepository implements IReportRepository, ReportContract.Repository {
+public class ReportRepository implements IReportRepository {
 
     private InfoMainClient mInfoMainClient;
     private DynamicClient mDynamicClient;

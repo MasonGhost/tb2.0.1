@@ -1,12 +1,20 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
+import android.util.SparseArray;
+
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleReportListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
 import java.util.List;
@@ -149,5 +157,72 @@ public interface IBaseCircleRepository {
     Observable<BaseJsonV2<Object>> appointCircleBlackList(long circleId, long memberId);
 
     Observable<BaseJsonV2<Object>> cancleCircleBlackList(long circleId, long memberId);
+
+    Observable<CircleInfo> getCircleInfo(long circleId);
+
+    /**
+     * 圈子收入记录
+     *
+     * @param circleId 圈子id
+     * @param start    秒级时间戳，起始筛选时间
+     * @param end      秒级时间戳，结束筛选时间
+     * @param after    默认 0 ，翻页标识。
+     * @param limit    默认 15 ，数据返回条数 默认为15
+     * @param type     默认 all, all-全部 join-成员加入 pinned-帖子置顶
+     * @return
+     */
+    Observable<List<CircleEarningListBean>> getCircleEarningList(Long circleId, Long start, Long end, Long after, Long limit, String type);
+
+    /**
+     * 圈子举报列表
+     *
+     * @param groupId 圈子id
+     * @param after
+     * @param limit
+     * @param start    秒级时间戳，起始筛选时间
+     * @param end      秒级时间戳，结束筛选时间
+     * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
+     * @return
+     */
+    Observable<List<CircleReportListBean>> getCircleReportList(Long groupId, Integer status, Integer after,
+                                                               Integer limit, Long start, Long end);
+
+    /**
+     * 同意举报
+     *
+     * @param reportId 舉報的id
+     * @return
+     */
+    Observable<BaseJsonV2> approvedCircleReport(Long reportId);
+
+    /**
+     * 拒绝举报
+     *
+     * @param reportId 舉報的id
+     * @return
+     */
+    Observable<BaseJsonV2> refuseCircleReport(Long reportId);
+
+    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
+
+    Observable<CircleMembers> attornCircle(long circleId, long userId);
+
+    Observable<CirclePostListBean> getPostDetail(long circleId, long postId);
+
+    Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after);
+
+    Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId);
+
+    /**
+     * 获取推荐的圈子
+     *
+     * @param limit 默认 20 ，数据返回条数 默认为20
+     * @param offet 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param type  random 随机
+     * @return
+     */
+    Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet,String type);
+
+    Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId);
 
 }

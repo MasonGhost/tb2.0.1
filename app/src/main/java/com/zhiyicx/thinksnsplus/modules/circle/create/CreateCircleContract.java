@@ -29,6 +29,4 @@ public interface CreateCircleContract {
         void getRule();
     }
 
-    interface Repository extends IBaseCircleRepository {
-    }
 }

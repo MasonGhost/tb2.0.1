@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.LoginRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,10 +20,5 @@ public class LoginPresenterModule {
     @Provides
     LoginContract.View provideLoginContractView() {
         return mView;
-    }
-
-    @Provides
-    LoginContract.Repository provideLoginRepository(LoginRepository loginRepository) {
-        return loginRepository;
     }
 }

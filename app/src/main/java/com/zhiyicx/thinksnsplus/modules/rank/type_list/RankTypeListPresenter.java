@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRankRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig;
 
@@ -28,17 +29,19 @@ import static com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfi
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract.Repository, RankTypeListContract.View>
+public class RankTypeListPresenter extends AppBasePresenter< RankTypeListContract.View>
         implements RankTypeListContract.Presenter{
 
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    BaseRankRepository mBaseRankRepository;
 
     @Inject
-    public RankTypeListPresenter(RankTypeListContract.Repository repository, RankTypeListContract.View rootView) {
-        super(repository, rootView);
+    public RankTypeListPresenter( RankTypeListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -56,49 +59,49 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
         String type = mRootView.getRankType();
         switch (type){
             case RankTypeConfig.RANK_USER_FOLLOWER:
-                observable = mRepository.getRankFollower(size);
+                observable = mBaseRankRepository.getRankFollower(size);
                 break;
             case RankTypeConfig.RANK_USER_RICHES:
-                observable = mRepository.getRankRiches(size);
+                observable = mBaseRankRepository.getRankRiches(size);
                 break;
             case RankTypeConfig.RANK_USER_INCOME:
-                observable = mRepository.getRankIncome(size);
+                observable = mBaseRankRepository.getRankIncome(size);
                 break;
             case RankTypeConfig.RANK_USER_CHECK_ID:
-                observable = mRepository.getRankCheckIn(size);
+                observable = mBaseRankRepository.getRankCheckIn(size);
                 break;
             case RankTypeConfig.RANK_USER_EXPERT:
-                observable = mRepository.getRankQuestionExpert(size);
+                observable = mBaseRankRepository.getRankQuestionExpert(size);
                 break;
             case RankTypeConfig.RANK_USER_QUESTION_LIKE:
-                observable = mRepository.getRankQuestionLikes(size);
+                observable = mBaseRankRepository.getRankQuestionLikes(size);
                 break;
             case RankTypeConfig.RANK_QUESTION_DAY:
-                observable = mRepository.getRankAnswer(RANK_DAY, size);
+                observable = mBaseRankRepository.getRankAnswer(RANK_DAY, size);
                 break;
             case RankTypeConfig.RANK_QUESTION_WEEK:
-                observable = mRepository.getRankAnswer(RANK_WEEK, size);
+                observable = mBaseRankRepository.getRankAnswer(RANK_WEEK, size);
                 break;
             case RankTypeConfig.RANK_QUESTION_MONTH:
-                observable = mRepository.getRankAnswer(RANK_MONTH, size);
+                observable = mBaseRankRepository.getRankAnswer(RANK_MONTH, size);
                 break;
             case RankTypeConfig.RANK_DYNAMIC_DAY:
-                observable = mRepository.getRankDynamic(RANK_DAY, size);
+                observable = mBaseRankRepository.getRankDynamic(RANK_DAY, size);
                 break;
             case RankTypeConfig.RANK_DYNAMIC_WEEK:
-                observable = mRepository.getRankDynamic(RANK_WEEK, size);
+                observable = mBaseRankRepository.getRankDynamic(RANK_WEEK, size);
                 break;
             case RankTypeConfig.RANK_DYNAMIC_MONTH:
-                observable = mRepository.getRankDynamic(RANK_MONTH, size);
+                observable = mBaseRankRepository.getRankDynamic(RANK_MONTH, size);
                 break;
             case RankTypeConfig.RANK_INFORMATION_DAY:
-                observable = mRepository.getRankInfo(RANK_DAY, size);
+                observable = mBaseRankRepository.getRankInfo(RANK_DAY, size);
                 break;
             case RankTypeConfig.RANK_INFORMATION_WEEK:
-                observable = mRepository.getRankInfo(RANK_WEEK, size);
+                observable = mBaseRankRepository.getRankInfo(RANK_WEEK, size);
                 break;
             case RankTypeConfig.RANK_INFORMATION_MONTH:
-                observable = mRepository.getRankInfo(RANK_MONTH, size);
+                observable = mBaseRankRepository.getRankInfo(RANK_MONTH, size);
                 break;
             default:
         }

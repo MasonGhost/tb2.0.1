@@ -36,9 +36,4 @@ public interface MembersContract {
         void attornCircle(CircleMembers circleMembers);
     }
 
-    interface Repository extends IBaseCircleRepository {
-        Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
-
-        Observable<CircleMembers> attornCircle(long circleId, long userId);
-    }
 }

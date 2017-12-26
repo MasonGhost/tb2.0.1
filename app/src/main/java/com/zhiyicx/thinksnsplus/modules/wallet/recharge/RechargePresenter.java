@@ -11,9 +11,12 @@ import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 /**
  * @Describe
@@ -22,7 +25,7 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RechargePresenter extends AppBasePresenter<RechargeContract.Repository, RechargeContract.View> implements RechargeContract.Presenter {
+public class RechargePresenter extends AppBasePresenter<RechargeContract.View> implements RechargeContract.Presenter {
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -34,8 +37,11 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
 
     @Inject
-    public RechargePresenter(RechargeContract.Repository repository, RechargeContract.View rootView) {
-        super(repository, rootView);
+    BillRepository mBillRepository;
+
+    @Inject
+    public RechargePresenter(RechargeContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -75,7 +81,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Override
     public void rechargeSuccess(String charge) {
-        mRepository.rechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
+        Subscription subscribe = mBillRepository.rechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
                 rechargeSuccessCallBack(data.getId() + "");
@@ -91,6 +97,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
                 super.onException(throwable);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -100,14 +107,11 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_DOMAIN + String.format(ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT, charge));
         mBackgroundRequestTaskBeanGreenDao.insertOrReplace(backgroundRequestTaskBean);
-        mRepository.rechargeSuccessCallBack(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
+        Subscription subscribe = mBillRepository.rechargeSuccessCallBack(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
                 mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                try {
-                    mRootView.rechargeSuccess(data);
-                } catch (Exception e) {
-                }
+                mRootView.rechargeSuccess(data);
             }
 
             @Override
@@ -120,5 +124,6 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
                 super.onException(throwable);
             }
         });
+        addSubscrebe(subscribe);
     }
 }

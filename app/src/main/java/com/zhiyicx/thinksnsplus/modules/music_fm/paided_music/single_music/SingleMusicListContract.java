@@ -18,7 +18,4 @@ import rx.Observable;
 public interface SingleMusicListContract {
     interface View extends ITSListView<MusicDetaisBean,Presenter>{}
     interface Presenter extends ITSListPresenter<MusicDetaisBean>{}
-    interface Repository extends IMusicRepository{
-        Observable<List<MusicDetaisBean>> getMyPaidsMusicList(long max_id);
-    }
 }

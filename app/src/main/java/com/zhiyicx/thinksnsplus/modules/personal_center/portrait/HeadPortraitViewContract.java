@@ -41,7 +41,4 @@ public interface HeadPortraitViewContract {
         void updateUserInfo(HashMap<String, String> userInfo, int id);
     }
 
-    interface Repository {
-
-    }
 }

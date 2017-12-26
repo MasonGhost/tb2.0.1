@@ -33,35 +33,4 @@ public interface ReporReviewContract {
         void refuseCircleReport(Long reportId);
     }
 
-    interface Repository {
-        /**
-         * 圈子举报列表
-         *
-         * @param groupId 圈子id
-         * @param after
-         * @param limit
-         * @param start    秒级时间戳，起始筛选时间
-         * @param end      秒级时间戳，结束筛选时间
-         * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
-         * @return
-         */
-        Observable<List<CircleReportListBean>> getCircleReportList(Long groupId, Integer status, Integer after,
-                                                                   Integer limit,Long start, Long end);
-
-        /**
-         * 同意举报
-         *
-         * @param reportId 舉報的id
-         * @return
-         */
-        Observable<BaseJsonV2> approvedCircleReport(Long reportId);
-
-        /**
-         * 拒绝举报
-         *
-         * @param reportId 舉報的id
-         * @return
-         */
-        Observable<BaseJsonV2> refuseCircleReport(Long reportId);
-    }
 }

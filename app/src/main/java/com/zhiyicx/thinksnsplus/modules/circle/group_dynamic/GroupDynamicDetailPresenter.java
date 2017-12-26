@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGre
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -65,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:648129313@qq.com
  */
 
-public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDetailContract.Repository,
+public class GroupDynamicDetailPresenter extends AppBasePresenter<
         GroupDynamicDetailContract.View> implements GroupDynamicDetailContract.Presenter,
         OnShareCallbackListener {
     @Inject
@@ -87,13 +88,15 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     UserInfoRepository mUserInfoRepository;
     @Inject
     public SharePolicy mSharePolicy;
+    @Inject
+    BaseChannelRepository mBaseChannelRepository;
 
     private boolean mIsNeedDynamicListRefresh = false;
 
     @Inject
-    public GroupDynamicDetailPresenter(GroupDynamicDetailContract.Repository repository,
+    public GroupDynamicDetailPresenter(
                                        GroupDynamicDetailContract.View rootView) {
-        super(repository, rootView);
+        super( rootView);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             getDynamicDigList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        Subscription subscribe = mRepository.getGroupDynamicCommentList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic()
+        Subscription subscribe = mBaseChannelRepository.getGroupDynamicCommentList(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic()
                 .getId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<GroupDynamicCommentListBean>>() {
                     @Override
@@ -176,7 +179,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
     @Override
     public void getCurrentDynamicDetail(long group_id, long dynamic_id, boolean refreshUI) {
-        Subscription subscription = mRepository.getGroupDynamicDetail(group_id, dynamic_id)
+        Subscription subscription = mBaseChannelRepository.getGroupDynamicDetail(group_id, dynamic_id)
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
@@ -206,8 +209,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
     @Override
     public void getDetailAll(long group_id, long dynamic_id, Long max_id, String user_ids) {
-        Subscription subscription = Observable.zip(mRepository.getGroupDynamicDigList(group_id, dynamic_id, max_id)
-                , mRepository.getGroupDynamicCommentList(group_id, dynamic_id, max_id)
+        Subscription subscription = Observable.zip(mBaseChannelRepository.getGroupDynamicDigList(group_id, dynamic_id, max_id)
+                , mBaseChannelRepository.getGroupDynamicCommentList(group_id, dynamic_id, max_id)
                 , (listBaseJson2, listBaseJson3) -> {
                     GroupDynamicListBean dynamicBean = new GroupDynamicListBean();
                     dynamicBean.setMGroupDynamicLikeListBeanList(listBaseJson2);
@@ -275,7 +278,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
     @Override
     public void getDynamicDigList(long group_id, long dynamic_id, long max_id) {
-        Subscription subscription = mRepository.getGroupDynamicDigList(group_id, dynamic_id, max_id)
+        Subscription subscription = mBaseChannelRepository.getGroupDynamicDigList(group_id, dynamic_id, max_id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -338,7 +341,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
         // 通知服务器
-        mRepository.handleLike(isLiked, group_id, dynamic_id);
+        mBaseChannelRepository.handleLike(isLiked, group_id, dynamic_id);
     }
 
     @Override
@@ -360,7 +363,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION);
         // 通知服务器
-        mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
+        mBaseChannelRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }
 
     @Override
@@ -405,7 +408,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.deleteGroupComment(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), comment_id);
+        mBaseChannelRepository.deleteGroupComment(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
     /**
@@ -457,7 +460,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.getListDatas().add(0, creatComment);
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.sendGroupComment(commentContent,
+        mBaseChannelRepository.sendGroupComment(commentContent,
                 (long) mRootView.getCurrentDynamic().getGroup_id(),
                 mRootView.getCurrentDynamic().getId(),
                 replyToUserId,
@@ -547,7 +550,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     if (isImage) {
                         return Observable.just(stringBaseJsonV2);
                     }
-                    return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic()
+                    return mBaseChannelRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic()
                             .getId())
                             .flatMap(detailBeanV2 -> {
                                 stringBaseJsonV2.setData(detailBeanV2.getFeed_content());

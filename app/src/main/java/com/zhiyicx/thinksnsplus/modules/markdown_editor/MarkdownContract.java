@@ -38,7 +38,4 @@ public interface MarkdownContract {
         void saveDraft(BaseDraftBean postDraftBean);
     }
 
-    interface Repository extends IBaseCircleRepository {
-
-    }
 }

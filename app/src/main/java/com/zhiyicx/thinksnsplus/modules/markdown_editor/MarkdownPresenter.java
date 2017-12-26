@@ -12,11 +12,13 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.PostDraftBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -26,18 +28,19 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Repository,
+public class MarkdownPresenter extends AppBasePresenter<
         MarkdownContract.View> implements MarkdownContract.Presenter {
-
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
     @Inject
     PostDraftBeanGreenDaoImpl mPostDraftBeanGreenDao;
 
     @Inject
-    public MarkdownPresenter(MarkdownContract.Repository repository, MarkdownContract.View
-            rootView) {
-        super(repository, rootView);
+    public MarkdownPresenter(MarkdownContract.View
+                                     rootView) {
+        super(rootView);
     }
 
     /**
@@ -48,8 +51,8 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
      */
     @Override
     public void uploadPic(String filePath, long tagId) {
-        mUpLoadRepository.upLoadFileWithProgress(filePath, "", true, 0, 0, (bytesWritten,
-                                                                            contentLength, done) ->
+        Subscription subscribe = mUpLoadRepository.upLoadFileWithProgress(filePath, "", true, 0, 0, (bytesWritten,
+                                                                                                     contentLength, done) ->
         {
             LogUtils.d("bytesWritten::" + bytesWritten + "\n" +
                     "mContentLength::" + contentLength + "\n" +
@@ -86,12 +89,13 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                         mRootView.onFailed(filePath, tagId);
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 
     @Override
     public void publishPost(PostPublishBean postPublishBean) {
-        mRepository.sendCirclePost(postPublishBean)
+        Subscription subscribe = mBaseCircleRepository.sendCirclePost(postPublishBean)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.post_publishing)))
@@ -117,6 +121,7 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                                 .info_publishfailed));
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

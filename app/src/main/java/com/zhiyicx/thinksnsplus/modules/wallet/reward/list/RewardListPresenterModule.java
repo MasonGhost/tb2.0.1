@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.RewardListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,11 +21,6 @@ public class RewardListPresenterModule {
     @Provides
     RewardListContract.View provideRRewardListContractView() {
         return mView;
-    }
-
-    @Provides
-    RewardListContract.Repository provideRewardListContractRepository(RewardListRepository repository) {
-        return repository;
     }
 
 }

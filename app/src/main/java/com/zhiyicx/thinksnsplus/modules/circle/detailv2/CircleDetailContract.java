@@ -75,7 +75,4 @@ public interface CircleDetailContract {
 
     }
 
-    interface Repository extends IBaseCircleRepository {
-        Observable<CircleInfo> getCircleInfo(long circleId);
-    }
 }

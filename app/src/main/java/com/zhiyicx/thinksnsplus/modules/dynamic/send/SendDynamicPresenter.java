@@ -37,7 +37,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAM
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.Repository, SendDynamicContract.View>
+public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.View>
         implements SendDynamicContract.Presenter {
 
     @Inject
@@ -50,8 +50,8 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.R
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
     @Inject
-    public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
-        super(repository, rootView);
+    public SendDynamicPresenter( SendDynamicContract.View rootView) {
+        super( rootView);
     }
 
     @Override

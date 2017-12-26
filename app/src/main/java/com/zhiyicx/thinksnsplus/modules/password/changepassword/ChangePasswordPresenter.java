@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.PasswordRepository;
 
 import javax.inject.Inject;
 
@@ -18,12 +17,14 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContract.Repository, ChangePasswordContract.View> implements ChangePasswordContract.Presenter {
-
+public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContract.View> implements ChangePasswordContract.Presenter {
 
     @Inject
-    public ChangePasswordPresenter(ChangePasswordContract.Repository repository, ChangePasswordContract.View rootView) {
-        super(repository, rootView);
+    PasswordRepository mPasswordRepository;
+
+    @Inject
+    public ChangePasswordPresenter(ChangePasswordContract.View rootView) {
+        super(rootView);
     }
 
 
@@ -47,7 +48,7 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
             mRootView.showMessage(mContext.getString(R.string.password_diffrent));
             return;
         }
-        Subscription changePasswordSub = mRepository.changePasswordV2(oldPassword, newPassword)
+        Subscription changePasswordSub = mPasswordRepository.changePasswordV2(oldPassword, newPassword)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

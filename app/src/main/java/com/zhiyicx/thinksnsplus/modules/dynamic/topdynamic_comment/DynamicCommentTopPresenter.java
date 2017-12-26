@@ -24,7 +24,7 @@ import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentTopContract.Repository, DynamicCommentTopContract.View>
+public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicCommentTopContract.View>
         implements DynamicCommentTopContract.Presenter {
 
     @Inject
@@ -37,8 +37,8 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
     BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject
-    public DynamicCommentTopPresenter(DynamicCommentTopContract.Repository repository, DynamicCommentTopContract.View rootView) {
-        super(repository, rootView);
+    public DynamicCommentTopPresenter(DynamicCommentTopContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
             return;
         }
         
-        Subscription subscription = mRepository.stickTop(feed_id, comment_id, PayConfig.gameCurrency2RealCurrency(amount*day,getRatio()), day)
+        Subscription subscription = mBaseDynamicRepository.commentStickTop(feed_id, comment_id, PayConfig.gameCurrency2RealCurrency(amount*day,getRatio()), day)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override

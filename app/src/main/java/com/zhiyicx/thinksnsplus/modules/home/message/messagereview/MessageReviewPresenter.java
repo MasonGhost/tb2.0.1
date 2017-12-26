@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageReviewRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,18 +33,20 @@ import static com.zhiyicx.thinksnsplus.config.NotificationConfig.TOP_POST_COMMEN
  * @Description
  */
 @FragmentScoped
-public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContract.Repository,
+public class MessageReviewPresenter extends AppBasePresenter<
         MessageReviewContract.View> implements MessageReviewContract.Presenter {
 
     public static final int DEFAULT_MAX_REQUEST_UNREAD_NUM = 100;
 
     @Inject
     MessageRepository mMessageRepository;
+    @Inject
+    MessageReviewRepository mMessageReviewRepository;
 
     @Inject
-    public MessageReviewPresenter(MessageReviewContract.Repository repository,
-                                  MessageReviewContract.View rootView) {
-        super(repository, rootView);
+    public MessageReviewPresenter(
+            MessageReviewContract.View rootView) {
+        super(rootView);
     }
 
     public void test() {
@@ -56,22 +59,22 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Observable observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
-                observable = mRepository.getDynamicReviewComment(maxId.intValue());
+                observable = mMessageReviewRepository.getDynamicReviewComment(maxId.intValue());
                 break;
             case TOP_NEWS_COMMENT:
-                observable = mRepository.getNewsReviewComment(maxId.intValue());
+                observable = mMessageReviewRepository.getNewsReviewComment(maxId.intValue());
                 break;
             case TOP_POST_COMMENT:
-                observable = mRepository.getPostReviewComment(maxId.intValue());
+                observable = mMessageReviewRepository.getPostReviewComment(maxId.intValue());
                 break;
             case TOP_CIRCLE_MEMBER:
-                observable = mRepository.getCircleJoinRequest(maxId.intValue());
+                observable = mMessageReviewRepository.getCircleJoinRequest(maxId.intValue());
                 break;
             case TOP_POST:
-                observable = mRepository.getPostReview(mRootView.getSourceId(), maxId.intValue());
+                observable = mMessageReviewRepository.getPostReview(mRootView.getSourceId(), maxId.intValue());
                 break;
             default:
-                observable = mRepository.getDynamicReviewComment(maxId.intValue());
+                observable = mMessageReviewRepository.getDynamicReviewComment(maxId.intValue());
                 break;
         }
 
@@ -125,19 +128,19 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Observable<BaseJsonV2> observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
-                observable = mRepository.approvedTopComment(feedId, commentId, pinnedId);
+                observable = mMessageReviewRepository.approvedTopComment(feedId, commentId, pinnedId);
                 break;
             case TOP_NEWS_COMMENT:
-                observable = mRepository.approvedNewsTopComment(feedId, commentId, pinnedId);
+                observable = mMessageReviewRepository.approvedNewsTopComment(feedId, commentId, pinnedId);
                 break;
             case TOP_POST_COMMENT:
-                observable = mRepository.approvedPostTopComment(commentId);
+                observable = mMessageReviewRepository.approvedPostTopComment(commentId);
                 break;
             case TOP_CIRCLE_MEMBER:
-                observable = mRepository.approvedCircleJoin(feedId, commentId);
+                observable = mMessageReviewRepository.approvedCircleJoin(feedId, commentId);
                 break;
             case TOP_POST:
-                observable = mRepository.approvedPostTop(feedId);
+                observable = mMessageReviewRepository.approvedPostTop(feedId);
                 break;
             default:
         }
@@ -181,20 +184,20 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Observable<BaseJsonV2> observable = null;
         switch (mRootView.getType()) {
             case TOP_DYNAMIC_COMMENT:
-                observable = mRepository.refuseTopComment(pinned_id);
+                observable = mMessageReviewRepository.refuseTopComment(pinned_id);
                 break;
             case TOP_NEWS_COMMENT:
                 TopNewsCommentListBean data = (TopNewsCommentListBean) result;
-                observable = mRepository.refuseNewsTopComment(data.getNews().getId(), data.getComment().getId(), pinned_id);
+                observable = mMessageReviewRepository.refuseNewsTopComment(data.getNews().getId(), data.getComment().getId(), pinned_id);
                 break;
             case TOP_POST_COMMENT:
-                observable = mRepository.refusePostTopComment(pinned_id);
+                observable = mMessageReviewRepository.refusePostTopComment(pinned_id);
                 break;
             case TOP_CIRCLE_MEMBER:
-                observable = mRepository.refuseCircleJoin(result);
+                observable = mMessageReviewRepository.refuseCircleJoin(result);
                 break;
             case TOP_POST:
-                observable = mRepository.approvedPostTop((long)pinned_id);
+                observable = mMessageReviewRepository.approvedPostTop((long) pinned_id);
                 break;
             default:
         }
@@ -226,7 +229,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
 
     @Override
     public void deleteTopComment(Long feed_id, int comment_id) {
-        Subscription subscription = mRepository.deleteTopComment(feed_id, comment_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+        Subscription subscription = mMessageReviewRepository.deleteTopComment(feed_id, comment_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
             @Override
             protected void onSuccess(BaseJsonV2 data) {
 

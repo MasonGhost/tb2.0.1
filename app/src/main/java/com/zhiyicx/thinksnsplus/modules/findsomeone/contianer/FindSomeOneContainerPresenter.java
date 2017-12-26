@@ -24,15 +24,15 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindSomeOneContainerPresenter extends AppBasePresenter<FindSomeOneContainerContract.Repository, FindSomeOneContainerContract.View>
+public class FindSomeOneContainerPresenter extends AppBasePresenter<FindSomeOneContainerContract.View>
         implements FindSomeOneContainerContract.Presenter {
 
     @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneContainerPresenter(FindSomeOneContainerContract.Repository repository, FindSomeOneContainerContract.View rootView) {
-        super(repository, rootView);
+    public FindSomeOneContainerPresenter(FindSomeOneContainerContract.View rootView) {
+        super(rootView);
     }
 
 

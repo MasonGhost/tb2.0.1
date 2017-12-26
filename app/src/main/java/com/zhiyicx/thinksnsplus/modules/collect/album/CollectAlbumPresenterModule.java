@@ -26,13 +26,4 @@ public class CollectAlbumPresenterModule {
         return view;
     }
 
-    @Provides
-    MusicContract.Repository provideMusicRepository(CollectAlbumListRepository collectAlbumListRepository) {
-        return collectAlbumListRepository;
-    }
-
-    @Provides
-    MediaBrowserCompat provideMediaBrowserCompat() {
-        return null;
-    }
 }

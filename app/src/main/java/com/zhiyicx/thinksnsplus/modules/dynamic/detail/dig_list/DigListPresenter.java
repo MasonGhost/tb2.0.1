@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -27,17 +29,19 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class DigListPresenter extends AppBasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
+public class DigListPresenter extends AppBasePresenter<DigListContract.View> implements DigListContract.Presenter {
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject
-    public DigListPresenter(DigListContract.Repository repository, DigListContract.View rootView) {
-        super(repository, rootView);
+    public DigListPresenter(DigListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long feed_id) {
-        mRepository.getDynamicDigListV2(feed_id, maxId)
+        Subscription subscribe = mBaseDynamicRepository.getDynamicDigListV2(feed_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<DynamicDigListBean>>() {
@@ -89,6 +93,7 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
 
     }
 

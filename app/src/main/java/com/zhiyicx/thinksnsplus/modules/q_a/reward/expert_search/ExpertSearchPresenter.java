@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +30,17 @@ import rx.functions.Func1;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract.Repository, ExpertSearchContract.View>
+public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract.View>
         implements ExpertSearchContract.Presenter {
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public ExpertSearchPresenter(ExpertSearchContract.Repository repository, ExpertSearchContract.View rootView) {
-        super(repository, rootView);
+    public ExpertSearchPresenter( ExpertSearchContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -47,7 +50,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
 
     @Override
     public void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getTopicExperts(maxId, topic_id)
+        Subscription subscribe = mBaseQARepository.getTopicExperts(maxId, topic_id)
                 .subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
                     @Override
                     protected void onSuccess(List<ExpertBean> data) {
@@ -73,7 +76,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
         // mRepository.getExpertList(size, topic_ids, keyword)
         Observable<List<ExpertBean>> observable;
         if (!TextUtils.isEmpty(topic_ids)) {
-            observable = mRepository.getExpertList(size, topic_ids, keyword);
+            observable = mBaseQARepository.getExpertList(size, topic_ids, keyword);
         } else {
             observable = mUserInfoRepository.searchUserInfo(null, keyword, null, null, null)
                     .flatMap(new Func1<List<UserInfoBean>, Observable<List<ExpertBean>>>() {

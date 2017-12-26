@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AllCircleContainerRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class AllCircleContainerPresenterModule {
         return mView;
     }
 
-    @Provides
-    AllCircleContainerContract.Repository providesAllCircleContainerContractRepository(AllCircleContainerRepository allCircleContainerRepository) {
-        return allCircleContainerRepository;
-    }
 }

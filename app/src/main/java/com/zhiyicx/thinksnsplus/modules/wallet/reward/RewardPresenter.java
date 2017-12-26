@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import rx.functions.Func1;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RewardPresenter extends AppBasePresenter<RewardContract.Repository, RewardContract.View> implements RewardContract.Presenter {
+public class RewardPresenter extends AppBasePresenter< RewardContract.View> implements RewardContract.Presenter {
 
     public static final int DEFAULT_DELAY_TIME = 2;
 
@@ -34,10 +35,13 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     CommentRepository mCommentRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    
+    @Inject
+    BaseRewardRepository mRewardRepository;
 
     @Inject
-    public RewardPresenter(RewardContract.Repository repository, RewardContract.View rootView) {
-        super(repository, rootView);
+    public RewardPresenter( RewardContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -46,20 +50,20 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         switch (rewardType) {
             case INFO: // 咨询打赏
-                hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney), walletBean, rewardMoney);
+                hanldeRewardResult(mRewardRepository.rewardInfo(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
             case DYNAMIC: // 动态打赏
-                hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney), walletBean, rewardMoney);
+                hanldeRewardResult(mRewardRepository.rewardDynamic(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
             case USER: // 用户打赏
-                hanldeRewardResult(mRepository.rewardUser(sourceId, rewardMoney), walletBean, rewardMoney);
+                hanldeRewardResult(mRewardRepository.rewardUser(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
             case QA_ANSWER: // 问答回答打赏
-                hanldeRewardResult(mRepository.rewardQA(sourceId, rewardMoney), walletBean, rewardMoney);
+                hanldeRewardResult(mRewardRepository.rewardQA(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
 
             case POST: // 帖子打赏
-                hanldeRewardResult(mRepository.rewardPost(sourceId, rewardMoney), walletBean, rewardMoney);
+                hanldeRewardResult(mRewardRepository.rewardPost(sourceId, rewardMoney), walletBean, rewardMoney);
                 break;
 
             default:

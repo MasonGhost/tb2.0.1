@@ -28,7 +28,4 @@ public interface AddTopicContract {
        void requestNetData(String name, Long maxId, Long follow,boolean isLoadMore);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {
-
-    }
 }

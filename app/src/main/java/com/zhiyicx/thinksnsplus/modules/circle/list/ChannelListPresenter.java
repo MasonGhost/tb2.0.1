@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ import rx.Subscription;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.Repository, ChannelListContract.View>
+public class ChannelListPresenter extends AppBasePresenter< ChannelListContract.View>
         implements ChannelListContract.Presenter {
     @Inject
     ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
@@ -44,10 +45,12 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     SystemRepository mSystemRepository;
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
+    @Inject
+    BaseChannelRepository mBaseChannelRepository;
 
     @Inject
-    public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
-        super(repository, rootView);
+    public ChannelListPresenter(ChannelListContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -67,10 +70,10 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                     mRootView.onNetResponseSuccess(null, isLoadMore);
                     return;
                 }
-                observable = mRepository.getUserJoinedGroupList(maxId);
+                observable = mBaseChannelRepository.getUserJoinedGroupList(maxId);
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                observable = mRepository.getAllGroupList(maxId);
+                observable = mBaseChannelRepository.getAllGroupList(maxId);
                 break;
             default:
         }
@@ -171,7 +174,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         // 更改数据源，切换订阅状态
         groupInfoBean.setIs_member(isJoined ? 0 : 1);
         mGroupInfoBeanGreenDao.updateSingleData(groupInfoBean);
-        mRepository.handleGroupJoin(groupInfoBean);
+        mBaseChannelRepository.handleGroupJoin(groupInfoBean);
         EventBus.getDefault().post(groupInfoBean, EventBusTagConfig.EVENT_GROUP_JOIN);
     }
 

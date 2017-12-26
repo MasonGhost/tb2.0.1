@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers;
  * @Date 2017/12/11
  * @Contact master.jungle68@gmail.com
  */
-public class ReportPresenter extends AppBasePresenter<ReportContract.Repository, ReportContract.View>
+public class ReportPresenter extends AppBasePresenter< ReportContract.View>
         implements ReportContract.Presenter {
 
     @Inject
@@ -32,8 +32,8 @@ public class ReportPresenter extends AppBasePresenter<ReportContract.Repository,
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public ReportPresenter(ReportContract.Repository repository, ReportContract.View rootView) {
-        super(repository, rootView);
+    public ReportPresenter(ReportContract.View rootView) {
+        super( rootView);
     }
 
 

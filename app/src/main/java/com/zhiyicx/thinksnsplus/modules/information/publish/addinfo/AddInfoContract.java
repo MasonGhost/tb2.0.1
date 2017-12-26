@@ -20,6 +20,4 @@ public interface AddInfoContract {
         List<InfoTypeCatesBean> getInfoTypeBean();
     }
 
-    interface Repository {
-    }
 }

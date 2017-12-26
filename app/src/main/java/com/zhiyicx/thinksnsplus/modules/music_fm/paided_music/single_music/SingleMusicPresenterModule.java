@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicPaidsListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class SingleMusicPresenterModule {
         return mView;
     }
 
-    @Provides
-    SingleMusicListContract.Repository provideSingleMusicContractRepository(MusicPaidsListRepository musicPaidsListRepository){
-        return musicPaidsListRepository;
-    }
 }

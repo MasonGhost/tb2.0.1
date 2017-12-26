@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.create;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CreateCircleRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class CreateCirclePresenterModule {
         return mView;
     }
 
-    @Provides
-    CreateCircleContract.Repository provideCreateCircleContractRepository(CreateCircleRepository createCircleRepository) {
-        return createCircleRepository;
-    }
 }

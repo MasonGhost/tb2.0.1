@@ -16,6 +16,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMessageRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMessageReviewRepository;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewContract;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MessageReviewRepository implements MessageReviewContract.Repository {
+public class MessageReviewRepository implements IMessageReviewRepository {
 
     DynamicClient mDynamicClient;
     InfoMainClient mInfoMainClient;

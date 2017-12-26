@@ -21,7 +21,7 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Repository, DraftBoxContract.View> implements DraftBoxContract.Presenter {
+public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
 
     @Inject
     QAPublishBeanGreenDaoImpl mQAPublishBeanGreenDaoImpl;
@@ -38,8 +38,8 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     }
 
     @Inject
-    public DraftBoxPresenter(DraftBoxContract.Repository repository, DraftBoxContract.View rootView) {
-        super(repository, rootView);
+    public DraftBoxPresenter(DraftBoxContract.View rootView) {
+        super( rootView);
     }
 
     @Override

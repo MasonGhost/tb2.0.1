@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,21 +26,23 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MembersPresenter extends AppBasePresenter<MembersContract.Repository,
+public class MembersPresenter extends AppBasePresenter<
         MembersContract.View>
         implements MembersContract.Presenter {
 
     public static final String TYPE_ALL = "all";
+    @Inject
+    BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public MembersPresenter(MembersContract.Repository repository, MembersContract.View rootView) {
-        super(repository, rootView);
+    public MembersPresenter( MembersContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
-        mRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(), Integer.MAX_VALUE, TYPE_ALL)
+        Subscription subscribe = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(), Integer.MAX_VALUE, TYPE_ALL)
                 .flatMap(circleMembers -> {
                     List<CircleMembers> manager = new ArrayList<>();
                     List<CircleMembers> member = new ArrayList<>();
@@ -95,6 +98,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                         mRootView.onResponseError(e, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -112,19 +116,19 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
         Observable<BaseJsonV2<Object>> observable = null;
         switch (type) {
             case APPOINT_MANAFER:
-                observable = mRepository.appointCircleManager(circleId, memberId);
+                observable = mBaseCircleRepository.appointCircleManager(circleId, memberId);
                 break;
             case CANCLE_MANAFER:
-                observable = mRepository.cancleCircleManager(circleId, memberId);
+                observable = mBaseCircleRepository.cancleCircleManager(circleId, memberId);
                 break;
             case CANCLE_MEMBER:
-                observable = mRepository.cancleCircleMember(circleId, memberId);
+                observable = mBaseCircleRepository.cancleCircleMember(circleId, memberId);
                 break;
             case APPOINT_BLACKLIST:
-                observable = mRepository.appointCircleBlackList(circleId, memberId);
+                observable = mBaseCircleRepository.appointCircleBlackList(circleId, memberId);
                 break;
             case CANCLE_BLACKLIST:
-                observable = mRepository.cancleCircleBlackList(circleId, memberId);
+                observable = mBaseCircleRepository.cancleCircleBlackList(circleId, memberId);
                 break;
             default:
         }
@@ -218,7 +222,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
         long circleId, userId;
         circleId = circleMembers.getGroup_id();
         userId = circleMembers.getUser_id();
-        mRepository.attornCircle(circleId, userId).subscribe(new BaseSubscribeForV2<CircleMembers>() {
+        Subscription subscribe = mBaseCircleRepository.attornCircle(circleId, userId).subscribe(new BaseSubscribeForV2<CircleMembers>() {
             @Override
             protected void onSuccess(CircleMembers data) {
                 circleMembers.setRole(CircleMembers.FOUNDER);
@@ -239,6 +243,7 @@ public class MembersPresenter extends AppBasePresenter<MembersContract.Repositor
                 mRootView.showSnackErrorMessage(mContext.getString(R.string.circle_manager_attorn_failed));
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override

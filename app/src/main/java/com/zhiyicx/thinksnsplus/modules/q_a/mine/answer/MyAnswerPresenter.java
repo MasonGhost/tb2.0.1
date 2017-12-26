@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,20 +22,22 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Repository, MyAnswerContract.View>
+public class MyAnswerPresenter extends AppBasePresenter< MyAnswerContract.View>
         implements MyAnswerContract.Presenter{
 
     @Inject
     AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
 
     @Inject
-    public MyAnswerPresenter(MyAnswerContract.Repository repository, MyAnswerContract.View rootView) {
-        super(repository, rootView);
+    BaseQARepository mBaseQARepository;
+    @Inject
+    public MyAnswerPresenter(MyAnswerContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getUserAnswerList(mRootView.getType(), maxId)
+        Subscription subscription = mBaseQARepository.getUserAnswerList(mRootView.getType(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(List<AnswerInfoBean> data) {
@@ -72,6 +75,6 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
         }
         mRootView.updateList(position, answerInfoBean);
         mAnswerInfoListBeanGreenDao.insertOrReplace(answerInfoBean);
-        mRepository.handleAnswerLike(isLiked, answerInfoBean.getId());
+        mBaseQARepository.handleAnswerLike(isLiked, answerInfoBean.getId());
     }
 }

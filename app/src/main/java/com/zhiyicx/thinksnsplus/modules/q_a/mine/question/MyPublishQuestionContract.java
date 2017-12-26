@@ -22,7 +22,4 @@ public interface MyPublishQuestionContract {
 
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-
-    }
 }

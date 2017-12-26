@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.earning.CircleEarningContract;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,25 +14,30 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/05/10:06
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class EarningListPresenter extends AppBasePresenter<CircleEarningContract.Repository, EarningListContract.View> implements EarningListContract.Presenter {
-
+public class EarningListPresenter extends AppBasePresenter<EarningListContract.View> implements EarningListContract.Presenter {
 
     @Inject
-    public EarningListPresenter(CircleEarningContract.Repository repository, EarningListContract.View rootView) {
-        super(repository, rootView);
+    BaseCircleRepository mBaseCircleRepository;
+
+    @Inject
+    public EarningListPresenter(EarningListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 //        getCircleEarningList(long circleId, long start, long end,\long after, long limit, String type)
-        mRepository.getCircleEarningList(mRootView.getCircleId(),mRootView.getStartTime(),mRootView.getEndTime(),maxId,
-                (long)TSListFragment.DEFAULT_ONE_PAGE_SIZE,mRootView.getType())
+        Subscription subscribe = mBaseCircleRepository.getCircleEarningList(mRootView.getCircleId(), mRootView.getStartTime(), mRootView.getEndTime
+                        (), maxId,
+                (long) TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getType())
                 .subscribe(new BaseSubscribeForV2<List<CircleEarningListBean>>() {
                     @Override
                     protected void onSuccess(List<CircleEarningListBean> data) {
@@ -51,6 +57,7 @@ public class EarningListPresenter extends AppBasePresenter<CircleEarningContract
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
