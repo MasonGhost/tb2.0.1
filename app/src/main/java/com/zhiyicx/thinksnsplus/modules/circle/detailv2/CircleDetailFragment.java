@@ -472,13 +472,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public void updateCircleInfo(CircleInfo circleInfo) {
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
                 .getUsers_count()));
-        if (circleInfo.getJoined() != null) {
-            mTvCircleSubscrib.setVisibility(View.GONE);
-            mTvExitCircle.setVisibility(View.VISIBLE);
-        } else {
-            mTvCircleSubscrib.setVisibility(View.VISIBLE);
-            mTvExitCircle.setVisibility(View.GONE);
-        }
+        mLlMemberContainer.setRightText(String.valueOf(circleInfo.getUsers_count()));
+        setVisiblePermission(circleInfo);
     }
 
     @Override
@@ -1114,7 +1109,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             detail.getJoined().setRole(CircleMembers.BLACKLIST);
         }
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
-        mTvExitCircle.setVisibility(!isJoined && detail.getUsers_count() == 1 ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
         if (isOwner && detail.getUsers_count() > 1) {
             mTvExitCircle.setText(R.string.circle_transfer);
         } else if (isOwner && detail.getUsers_count() <= 1) {

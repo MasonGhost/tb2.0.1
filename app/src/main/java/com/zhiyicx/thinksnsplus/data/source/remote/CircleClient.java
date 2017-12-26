@@ -119,11 +119,11 @@ public interface CircleClient {
      *
      * @param categoryId 圈子类别id
      * @param limit
-     * @param offet
+     * @param offset
      * @return
      */
     @GET(APP_PATH_GET_CIRCLELIST)
-    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") int limit, @Query("offet") int offet);
+    Observable<List<CircleInfo>> getCircleList(@Path("category_id") long categoryId, @Query("limit") int limit, @Query("offset") int offset);
 
     /**
      * 获取推荐的圈子

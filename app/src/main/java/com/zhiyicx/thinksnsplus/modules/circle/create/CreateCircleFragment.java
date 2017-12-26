@@ -388,7 +388,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
                 CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
-        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? "0" : mEtCircleAmount.getText()
+        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? null : mEtCircleAmount.getText()
                 .toString());
         mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
         List<CreateCircleBean.TagId> tags = new ArrayList<>();
@@ -463,8 +463,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCbToll.setEnabled(canUpdate && !isManager && !isPaidCircle);
         mEtCircleAmount.setEnabled(canUpdate && !isManager && !isPaidCircle);
 
-        mTvNotice.setEnabled(canUpdate);
-        mEtCircleIntroduce.setEnabled(canUpdate);
+        mTvNotice.getEtContent().setEnabled(canUpdate);
+        mEtCircleIntroduce.getEtContent().setEnabled(canUpdate);
 
     }
 
