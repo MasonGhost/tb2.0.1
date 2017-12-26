@@ -512,11 +512,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
                     CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
                     int position = mRootView.getListDatas().indexOf(postListBean);
-                    // 如果列表有当前评论
                     if (position != -1) {
                         mRootView.getListDatas().set(position, postListBean);
                     } else {
-                        mRootView.getListDatas().add(0, postListBean);
+//                        mRootView.getListDatas().add(0, postListBean);
                     }
                     return isNeedRefresh;
                 })

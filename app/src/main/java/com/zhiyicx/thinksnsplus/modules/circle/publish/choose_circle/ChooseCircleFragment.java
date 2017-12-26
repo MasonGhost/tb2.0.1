@@ -6,13 +6,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,6 +42,12 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
 
     @BindView(R.id.fragment_channel_content_unsubscribe)
     RecyclerView mRvCircleList;
+    @BindView(R.id.ll_empty)
+    LinearLayout mLlEmpty;
+    @BindView(R.id.tv_tip)
+    TextView mTvTip;
+    @BindView(R.id.bt_do)
+    Button mBtDo;
 
     private List<CircleInfo> mCircleInfos = new ArrayList<>();
     private CommonAdapter mAdapter;
@@ -84,6 +93,9 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
         mRvCircleList.setLayoutManager(new GridLayoutManager(getActivity(),
                 DEFAULT_COLUMN));
         mRvCircleList.setAdapter(initAdapter());
+
+        mTvTip.setText(getString(R.string.not_find_joined_circle));
+        mBtDo.setText(getString(R.string.join_circle));
     }
 
     private CommonAdapter initAdapter() {
@@ -125,8 +137,8 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     @Override
     public void onNetResponseSuccess(List<CircleInfo> data) {
         if (data.isEmpty()) {
-            startActivity(new Intent(getActivity(), CircleMainActivity.class));
-            mActivity.finish();
+            mLlEmpty.setVisibility(View.VISIBLE);
+            mRvCircleList.setVisibility(View.GONE);
             return;
         }
         mCircleInfos.clear();
@@ -137,6 +149,12 @@ public class ChooseCircleFragment extends TSFragment<ChooseCircleContract.Presen
     @Override
     protected void initData() {
         mPresenter.getMyJoinedCircleList();
+    }
+
+    @OnClick(R.id.bt_do)
+    public void onViewClicked() {
+        startActivity(new Intent(getActivity(), CircleMainActivity.class));
+        mActivity.finish();
     }
 
 }

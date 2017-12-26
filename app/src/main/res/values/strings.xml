@@ -865,6 +865,8 @@
     <string name="to_publish_circle_post">去发帖</string>
     <string name="not_find_circle_to_publish">未找到相关圈子，创建属于自己的圈子吧</string>
     <string name="to_publish_circle">创建圈子</string>
+    <string name="not_find_joined_circle">未找相关圈子，去加入感兴趣圈子吧</string>
+    <string name="join_circle">加入圈子</string>
     <string name="circle_publish_hint_certification">只有认证过的用户才可以创建圈子，是否去认证?</string>
 
     <!--举报-->
