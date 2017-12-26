@@ -52,6 +52,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
@@ -126,7 +127,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             @Override
                             protected void onException(Throwable throwable) {
                                 super.onException(throwable);
-                                mRootView.onResponseError(throwable,isLoadMore);
+                                mRootView.onResponseError(throwable, isLoadMore);
                             }
                         });
                 addSubscrebe(subscribe);
@@ -381,7 +382,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
-                            if (CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
+                            // 如果是 封闭的或者 收费的 ，就不及时更新
+                            if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
+                                    || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
                             circleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
@@ -443,43 +446,6 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     }
 
-    @Subscriber(tag = EventBusTagConfig.POST_LIST_DELETE_UPDATE)
-    public void deletePost(CirclePostListBean postListBean) {
-        deletePost(postListBean, mRootView.getListDatas().indexOf(postListBean));
-        LogUtils.d(EventBusTagConfig.POST_LIST_DELETE_UPDATE);
-    }
-
-    /**
-     * 详情界面处理了数据
-     * 处理更新动态数据
-     *
-     * @param data
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_POST)
-    public void updatePost(Bundle data) {
-        Subscription subscribe = Observable.just(data)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.computation())
-                .map(bundle -> {
-                    boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
-                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
-                    int position = mRootView.getListDatas().indexOf(postListBean);
-                    // 如果列表有当前评论
-                    if (position != -1) {
-                        mRootView.getListDatas().set(position, postListBean);
-                    }
-                    return isNeedRefresh ? position : -1;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer -> {
-                    if (integer != -1) {
-                        mRootView.refreshData();
-                    }
-
-                }, Throwable::printStackTrace);
-        addSubscrebe(subscribe);
-    }
-
     @Override
     public void onStart(Share share) {
     }
@@ -529,4 +495,45 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void deleteSearchHistory(CircleSearchHistoryBean qaSearchHistoryBean) {
         mCircleSearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
+
+
+    /**
+     * 详情界面处理了数据
+     * 处理更新数据
+     *
+     * @param data
+     */
+    @Subscriber(tag = EVENT_UPDATE_CIRCLE_POST)
+    public void updatePost(Bundle data) {
+        Subscription subscribe = Observable.just(data)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.computation())
+                .map(bundle -> {
+                    boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
+                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                    int position = mRootView.getListDatas().indexOf(postListBean);
+                    // 如果列表有当前评论
+                    if (position != -1) {
+                        mRootView.getListDatas().set(position, postListBean);
+                    } else {
+                        mRootView.getListDatas().add(0, postListBean);
+                    }
+                    return isNeedRefresh;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isNeedRefresh -> {
+                    if (isNeedRefresh) {
+                        mRootView.refreshData();
+                    }
+
+                }, Throwable::printStackTrace);
+        addSubscrebe(subscribe);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.POST_LIST_DELETE_UPDATE)
+    public void deletePost(CirclePostListBean postListBean) {
+        deletePost(postListBean, mRootView.getListDatas().indexOf(postListBean));
+        LogUtils.d(EventBusTagConfig.POST_LIST_DELETE_UPDATE);
+    }
+
 }

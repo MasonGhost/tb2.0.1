@@ -18,41 +18,61 @@ public class EventBusTagConfig {
     // 后台任务处理
     public static final String EVENT_BACKGROUND_TASK_CANT_NOT_DEAL =
             "event_background_task_cant_not_deal";
-    // 后台刷新用户信息
+
+    /**
+     * 后台刷新用户信息
+     */
     public static final String EVENT_USERINFO_UPDATE = "event_userinfo_update";
 
-    // 发送动态到动态列表
+    /**
+     * 发送动态到动态列表
+     */
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
-    // 发送动态到频道动态列表
 
+    /**
+     * 发送动态到频道动态列表
+     */
     public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL = "event_send_dynamic_to_channel";
 
     /**
      * 动态详情页收藏通知
      */
     public static final String EVENT_COLLECT_DYNAMIC = "event_collect_dynamic";
-    // 收藏圈子动态
+
+    /**
+     * 收藏圈子动态
+     */
     public static final String EVENT_COLLECT_GROUP_DYNAMIC = "event_collect_group_dynamic";
-    // 点赞圈子动态
+
+    /**
+     * 点赞圈子动态
+     */
     public static final String EVENT_DIG_GROUP_DYNAMIC = "event_dig_group_dynamic";
+
     /**
      * 更新动态列表
      */
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
 
     /**
-     * 更新帖子列表
+     * 更新圈子动态列表
      */
-    public static final String EVENT_UPDATE_POST = "event_update_post";
-    // 更新圈子动态列表
     public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
-    // 更新圈子收藏
+
+    /**
+     * 更新圈子收藏
+     */
     public static final String EVENT_UPDATE_GROUP_COLLECTION = "event_update_group_collection";
 
     /**
      * 动态详情界面删除内容通知
      */
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
+
+    /**
+     * 圈子更新帖子
+     */
+    public static final String EVENT_UPDATE_CIRCLE_POST = "event_update_circle_post";
 
     /**
      * 帖子详情界面删除内容通知
@@ -63,7 +83,10 @@ public class EventBusTagConfig {
      * 帖子详情界面收藏通知
      */
     public static final String POST_LIST_COLLECT_UPDATE = "post_list_collect_update";
-    // 动态列表发送评论
+
+    /**
+     * 动态列表发送评论
+     */
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_comment_to_List";
 
     /**

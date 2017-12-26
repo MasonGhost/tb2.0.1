@@ -35,7 +35,7 @@ public class PostPublishBean {
      */
     private int sync_feed;
     /**
-     * 设备标示 同步动态需要传 1:pc 2:h5 3:ios 4:android 5:其他
+     * 设备标示 同步动态需要传 1:pc ; 2:h5 ; 3:ios ; 4:android ; 5:其他
      */
     private int feed_from;
 

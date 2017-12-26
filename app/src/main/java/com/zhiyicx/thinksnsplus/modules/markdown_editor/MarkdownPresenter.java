@@ -1,19 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.markdown_editor;
 
+import android.os.Bundle;
+
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.PostDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
+
+import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -101,6 +105,10 @@ public class MarkdownPresenter extends AppBasePresenter<MarkdownContract.Reposit
                     @Override
                     protected void onSuccess(BaseJsonV2<CirclePostListBean> data) {
                         mRootView.dismissSnackBar();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(CirclePostDetailFragment.POST_DATA, data.getData());
+                        bundle.putBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH, true);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST);
                         mRootView.sendPostSuccess(data.getData());
                     }
 

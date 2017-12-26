@@ -218,7 +218,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                     holder.setVisible(R.id.fl_tip, View.GONE);
                 }
                 RxView.clicks(holder.getView(R.id.fl_tip))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             if (mOnReSendClickListener != null) {
                                 mOnReSendClickListener.onReSendClick(position);

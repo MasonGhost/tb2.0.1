@@ -39,6 +39,12 @@ public interface CirclePostDetailContract {
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> postRewardList);
 
         Bundle getArgumentsBundle();
+
+        void updateCommentView(CirclePostListBean currentePost);
+
+        void postHasBeDeleted();
+
+        void loadAllError();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostCommentBean> {
