@@ -327,6 +327,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mIvSetting;
+    }
+
+    @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         mPresenter.requestNetData(0L, false);
@@ -461,6 +466,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public void onMoreCommentClick(View view, CirclePostListBean dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
         goPostDetail(position, true);
+    }
+
+    @Override
+    public void updateCircleInfo(CircleInfo circleInfo) {
+        mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
+                .getUsers_count()));
+        if (circleInfo.getJoined() != null) {
+            mTvCircleSubscrib.setVisibility(View.GONE);
+            mTvExitCircle.setVisibility(View.VISIBLE);
+        } else {
+            mTvCircleSubscrib.setVisibility(View.VISIBLE);
+            mTvExitCircle.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -1161,13 +1179,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mDrawer.openDrawer(Gravity.RIGHT);
                 break;
             case R.id.tv_circle_subscrib:
-                mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), null));
-                mCircleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
-                mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() + 1);
-                mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
-                        .getUsers_count()));
-                mTvCircleSubscrib.setVisibility(View.GONE);
-                mTvExitCircle.setVisibility(View.VISIBLE);
+                mPresenter.dealCircleJoinOrExit(mCircleInfo);
                 break;
             case R.id.tv_exit_circle:
                 boolean isOwner = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole());
@@ -1180,14 +1192,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {
-                    mPresenter.dealCircleJoinOrExit(new CircleInfo(mCircleInfo.getId(), mCircleInfo.getAudit(), new CircleJoinedBean(mCircleInfo
-                            .getJoined().getRole())));
-                    mCircleInfo.setJoined(null);
-                    mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() - 1);
-                    mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo
-                            .getUsers_count()));
-                    mTvCircleSubscrib.setVisibility(View.VISIBLE);
-                    mTvExitCircle.setVisibility(View.GONE);
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo);
                 }
                 break;
                 /*
@@ -1210,6 +1215,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public boolean isNeedHeaderInfo() {
         return true;
+    }
+
+    @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        showLoadViewLoadError();
     }
 
     @Override

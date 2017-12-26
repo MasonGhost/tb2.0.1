@@ -17,56 +17,46 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:tools="http://schemas.android.com/tools">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:background="@drawable/bg_bottom_shadow"
+        android:minHeight="50dp"
+        android:orientation="horizontal"
         >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            >
+        <TextView
+            android:id="@+id/snackbar_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/msg_box_remind"
+            android:drawablePadding="@dimen/margin_small"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingBottom="@dimen/margin_large"
+            android:paddingLeft="@dimen/margin_large"
+            android:paddingRight="@dimen/margin_large"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/content_size"
+            tools:text="修改中。。。"/>
 
-            <TextView
-                android:id="@+id/snackbar_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left|start"
-                android:layout_weight="1"
-                android:drawableLeft="@drawable/msg_box_remind"
-                android:drawablePadding="@dimen/margin_small"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:paddingLeft="@dimen/margin_large"
-                android:paddingRight="@dimen/margin_large"
-                android:textColor="@color/text_color_black"
-                android:textSize="@dimen/content_size"
-                tools:text="修改中。。。"/>
-
-            <TextView
-                android:id="@+id/snackbar_action"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/toolbarHeight"
-                android:layout_gravity="center_vertical|right|end"
-                android:layout_marginLeft="@dimen/design_snackbar_extra_spacing_horizontal"
-                android:layout_marginStart="@dimen/design_snackbar_extra_spacing_horizontal"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/margin_large"
-                android:paddingRight="@dimen/margin_large"
-                android:textColor="@color/text_color_black"
-                android:visibility="gone"
-                tools:text="取消"/>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/v_custom_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:background="@drawable/shape_line_evalueation"/>
+        <TextView
+            android:id="@+id/snackbar_action"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbarHeight"
+            android:layout_gravity="center_vertical|right|end"
+            android:layout_marginLeft="@dimen/design_snackbar_extra_spacing_horizontal"
+            android:layout_marginStart="@dimen/design_snackbar_extra_spacing_horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_large"
+            android:paddingRight="@dimen/margin_large"
+            android:textColor="@color/text_color_black"
+            android:visibility="gone"
+            tools:text="取消"/>
 
     </LinearLayout>
 

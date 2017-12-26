@@ -74,6 +74,11 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     }
 
     @Override
+    protected boolean needMusicWindowView() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_search_list;
     }

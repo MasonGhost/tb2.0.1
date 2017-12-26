@@ -78,14 +78,15 @@ public class CircleListPresenter extends AppBasePresenter< CircleListContract.Vi
                             .string.pay_alert_ing)))
                     .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
         } else {
-            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo);
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
+                    .doOnSubscribe(() -> {
+                                mRootView.dismissSnackBar();
+                                mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                            }
+                    );
+
         }
         Subscription subscription = observable
-                .doOnSubscribe(() -> {
-                            mRootView.dismissSnackBar();
-                            mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
-                        }
-                )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {

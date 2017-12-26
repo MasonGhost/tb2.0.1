@@ -188,6 +188,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                                 protected void onFailure(String message, int code) {
                                     super.onFailure(message, code);
                                     mRootView.showMessage(message);
+                                    mRootView.loadAllError();
                                 }
 
                                 @Override
@@ -374,9 +375,24 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             return;
         }
         boolean isJoined = circleInfo.getJoined() != null;
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
-        mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+        Observable<BaseJsonV2<Object>> observable;
+        if (isPaid) {
+            observable = handleWalletBlance(circleInfo.getMoney())
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.pay_alert_ing)))
+                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
+        } else {
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
+                    .doOnSubscribe(() -> {
+                                mRootView.dismissSnackBar();
+                                mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                            }
+                    );
+
+        }
+        Subscription subscribe = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -384,16 +400,22 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
+                            mRootView.updateCircleInfo(circleInfo);
                         } else {
                             // 如果是 封闭的或者 收费的 ，就不及时更新
                             if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
-                            circleInfo.setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
+                            CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
+                            circleJoinedBean.setUser_id((int) AppApplication.getMyUserIdWithdefault());
+                            circleJoinedBean.setUser(AppApplication.getmCurrentLoginAuth().getUser());
+                            circleJoinedBean.setGroup_id(circleInfo.getId().intValue());
+                            circleJoinedBean.setAudit(1);
+                            circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+                            mRootView.updateCircleInfo(circleInfo);
                         }
-                        mRootView.getCircleInfo().setJoined(new CircleJoinedBean(CircleMembers.MEMBER));
                     }
 
                     @Override
@@ -408,6 +430,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+
+        addSubscrebe(subscribe);
     }
 
 
@@ -515,11 +539,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
                     CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
                     int position = mRootView.getListDatas().indexOf(postListBean);
-                    // 如果列表有当前评论
                     if (position != -1) {
                         mRootView.getListDatas().set(position, postListBean);
                     } else {
-                        mRootView.getListDatas().add(0, postListBean);
+//                        mRootView.getListDatas().add(0, postListBean);
                     }
                     return isNeedRefresh;
                 })

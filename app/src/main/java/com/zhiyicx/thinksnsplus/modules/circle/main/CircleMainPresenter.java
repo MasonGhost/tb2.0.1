@@ -156,8 +156,25 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
         }
         boolean isJoined = circleInfo.getJoined() != null;
 
-        Subscription subscribe = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
+
+        Observable<BaseJsonV2<Object>> observable;
+        if (isPaid) {
+            observable = handleWalletBlance(circleInfo.getMoney())
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.pay_alert_ing)))
+                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo));
+        } else {
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo)
+                    .doOnSubscribe(() -> {
+                                mRootView.dismissSnackBar();
+                                mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                            }
+                    );
+
+        }
+
+        Subscription subscribe = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {

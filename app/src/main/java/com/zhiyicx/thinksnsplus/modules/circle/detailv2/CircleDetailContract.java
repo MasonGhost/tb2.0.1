@@ -40,6 +40,10 @@ public interface CircleDetailContract {
         String getSearchInput();
 
         CircleInfo getCircleInfo();
+
+        void loadAllError();
+
+        void updateCircleInfo(CircleInfo circleInfo);
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {

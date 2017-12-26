@@ -307,6 +307,17 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        showLoadViewLoadError();
+    }
+
+    @Override
+    public void updateCircleInfo(CircleInfo circleInfo) {
+
+    }
+
+    @Override
     public void onImageClick(ViewHolder holder, CirclePostListBean circlePostListBean, int position) {
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;

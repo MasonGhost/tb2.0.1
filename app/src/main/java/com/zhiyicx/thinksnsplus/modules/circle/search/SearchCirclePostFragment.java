@@ -84,6 +84,11 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
+    protected boolean needMusicWindowView() {
+        return false;
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof IHistoryCententClickListener) {
