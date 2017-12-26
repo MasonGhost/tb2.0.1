@@ -116,4 +116,5 @@
     <dimen name="info_title_size">25sp</dimen>
     <dimen name="report_resource_img">42dp</dimen>
     <dimen name="typchoose_with">100dp</dimen>
+    <dimen name="circle_detail_toolbar_height">48dp</dimen>
 </resources>

@@ -40,6 +40,10 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
         return fragment;
     }
 
+    @Override
+    protected boolean needMusicWindowView() {
+        return false;
+    }
 
     @Override
     protected boolean setUseStatusView() {

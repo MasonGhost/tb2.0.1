@@ -327,6 +327,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mIvSetting;
+    }
+
+    @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         mPresenter.requestNetData(0L, false);

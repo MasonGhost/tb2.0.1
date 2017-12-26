@@ -56,6 +56,10 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
         return true;
     }
 
+    @Override
+    protected boolean needMusicWindowView() {
+        return true;
+    }
 
     @Override
     protected View getRightViewOfMusicWindow() {
