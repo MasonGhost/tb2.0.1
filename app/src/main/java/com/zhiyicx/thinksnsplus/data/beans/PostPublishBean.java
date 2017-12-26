@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 /**
  * @author Jliuer
  * @Date 2017/11/29/15:36
@@ -27,13 +29,13 @@ public class PostPublishBean {
     /**
      * 文件id,例如[1,2,3]
      */
-    private Integer[] images;
+    private List<Integer> images;
     /**
      * 同步至动态，同步需要传sync_feed = 1
      */
     private int sync_feed;
     /**
-     * 设备标示 同步动态需要传 1:pc 2:h5 3:ios 4:android 5:其他
+     * 设备标示 同步动态需要传 1:pc ; 2:h5 ; 3:ios ; 4:android ; 5:其他
      */
     private int feed_from;
 
@@ -61,11 +63,11 @@ public class PostPublishBean {
         this.summary = summary;
     }
 
-    public Integer[] getImages() {
+    public List<Integer> getImages() {
         return images;
     }
 
-    public void setImages(Integer[] images) {
+    public void setImages(List<Integer> images) {
         this.images = images;
     }
 

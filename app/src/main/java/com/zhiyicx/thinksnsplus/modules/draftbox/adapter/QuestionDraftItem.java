@@ -32,9 +32,12 @@ public class QuestionDraftItem extends BaseDraftItem<QAPublishBean> {
     }
 
     @Override
-    protected void bindData(ViewHolder holder, QAPublishBean realData) {
-        holder.setText(R.id.tv_draft_title, realData.getSubject());
-        holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreated_at()));
-        holder.setVisible(R.id.tv_draft_content, View.GONE);
+    protected String setCreateTime(QAPublishBean draftBean) {
+        return draftBean.getCreated_at();
+    }
+
+    @Override
+    protected String setTitle(QAPublishBean draftBean) {
+        return draftBean.getSubject();
     }
 }

@@ -1191,10 +1191,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 }
                 break;
                 /*
-                  举报圈子
+                 * 举报圈子
                  */
             case R.id.bt_report_circle:
-                ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getUser(), mCircleInfo.getId().toString
+                ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getFounder().getUser(), mCircleInfo.getId().toString
                         (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
                 break;

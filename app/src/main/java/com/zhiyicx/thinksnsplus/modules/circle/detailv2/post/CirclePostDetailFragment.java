@@ -68,10 +68,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailContract.Presenter,
-        CirclePostCommentBean>
-        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView
-        .OnSendClickListener,
+public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailContract.Presenter, CirclePostCommentBean>
+        implements CirclePostDetailContract.View, BaseWebLoad.OnWebLoadListener, InputLimitView.OnSendClickListener,
         OnUserInfoClickListener {
 
     public static final String CIRCLE_ID = "circle_id";
@@ -255,7 +253,22 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
         setToolBarInfo();
+    }
 
+    @Override
+    public void postHasBeDeleted() {
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        mTvToolbarRight.setVisibility(View.GONE);
+        mTvToolbarCenter.setVisibility(View.GONE);
+        showLoadViewLoadError();
     }
 
     @Override
@@ -299,6 +312,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 }
             }
         }
+    }
+
+    @Override
+    public void updateCommentView(CirclePostListBean currentePost) {
+        mPostDetailHeaderView.updateCommentView(currentePost);
     }
 
     class ItemOnCommentListener implements PostDetailCommentItem.OnCommentItemListener {
@@ -387,6 +405,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private void initBottomToolListener() {
         mDdDynamicTool.setItemOnClick((parent, v, position) -> {
             mDdDynamicTool.getTag(R.id.view_data);
+            boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null;
+            if (isJoined && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole())) {
+                showSnackErrorMessage(getString(R.string.circle_blacklist));
+                return;
+            }
             switch (position) {
                 // 点赞
                 case DynamicDetailMenuView.ITEM_POSITION_0:

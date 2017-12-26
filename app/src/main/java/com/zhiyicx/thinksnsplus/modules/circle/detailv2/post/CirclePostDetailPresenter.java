@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
@@ -50,6 +51,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_COLLECT_UPDATE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE_UPDATE;
 
 /**
  * @author Jliuer
@@ -130,12 +132,20 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
+                            mCirclePostCommentBeanGreenDao.deleteCommentsByPostId(mRootView.getPostId());
+                            EventBus.getDefault().post(mCirclePostListBeanGreenDao.getSingleDataFromCache(mRootView.getPostId()),
+                                    POST_LIST_DELETE_UPDATE);
+                            mRootView.postHasBeDeleted();
+                            return;
+                        }
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable, isLoadMore);
+                        mRootView.loadAllError();
                     }
                 });
 
@@ -191,7 +201,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!mIsAllDataReady) { // 数据加载完毕就更新动态列表
+        // 数据加载完毕就更新动态列表
+        if (!mIsAllDataReady) {
             return;
         }
 
@@ -205,7 +216,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
             mRootView.getCurrentePost().setComments(mRootView.getListDatas());
             bundle.putParcelable(CirclePostDetailFragment.POST_DATA, mRootView.getCurrentePost());
             bundle.putBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
-            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_POST);
+            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST);
         }
     }
 
@@ -234,10 +245,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
         if (mRootView.getListDatas().get(0).getContent() == null) {
-            mRootView.getListDatas().remove(0);// 去掉占位图
+            // 去掉占位图
+            mRootView.getListDatas().remove(0);
         }
         mRootView.getListDatas().add(0, creatComment);
         mRootView.getCurrentePost().setComments_count(mRootView.getCurrentePost().getComments_count() + 1);
+        mRootView.updateCommentView(mRootView.getCurrentePost());
         mRootView.refreshData();
 
         mCirclePostCommentBeanGreenDao.insertOrReplace(creatComment);
@@ -254,7 +267,9 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
         circlePostListBean.setComments_count(circlePostListBean.getComments_count() - 1);
         mCirclePostCommentBeanGreenDao.deleteSingleCache(data);
         mRootView.getCurrentePost().getComments().remove(data);
+        mRootView.getListDatas().remove(data);
         mRootView.refreshData();
+        mRootView.updateCommentView(mRootView.getCurrentePost());
         mBaseCircleRepository.deletePostComment(circlePostListBean.getId(), data.getId());
     }
 

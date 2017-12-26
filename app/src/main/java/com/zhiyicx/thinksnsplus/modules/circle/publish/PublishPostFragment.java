@@ -52,6 +52,9 @@ public class PublishPostFragment extends MarkdownFragment {
         if (isOutCirclePublish) {
             mLlCircleContainer.setVisibility(View.VISIBLE);
             mLine.setVisibility(View.VISIBLE);
+            if (mDraftBean != null) {
+                mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
+            }
             if (mCircleInfo != null) {
                 mCircleName.setText(mCircleInfo.getName());
             }
@@ -62,7 +65,7 @@ public class PublishPostFragment extends MarkdownFragment {
     protected void initListener() {
         super.initListener();
         mBottomMenu.setBottomMenuVisibleChangeListener(this::setSynToDynamicCbVisiable);
-        RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength >0));
+        RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength > 0));
     }
 
     @Override
@@ -76,7 +79,6 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected boolean preHandlePublish() {
         mPostPublishBean = new PostPublishBean();
-        mImages = new ArrayList<>();
         if (mCircleInfo == null) {
             showSnackErrorMessage(getString(R.string.post_publish_select_circle));
         }
@@ -85,12 +87,12 @@ public class PublishPostFragment extends MarkdownFragment {
 
     @Override
     protected boolean openDraft() {
-        return false;
+        return true;
     }
 
     @Override
     protected void loadDraft(BaseDraftBean draft) {
-        mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getContent());
+        mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
     }
 
     @Override
@@ -110,7 +112,7 @@ public class PublishPostFragment extends MarkdownFragment {
         mPostPublishBean.setCircle_id(mCircleInfo.getId());
         mPostPublishBean.setSync_feed(mCbSynToDynamic.isChecked() ? 1 : 0);
         mPostPublishBean.setFeed_from(mCbSynToDynamic.isChecked() ? 4 : 0);
-        mPostPublishBean.setImages(mImages.toArray(new Integer[mImages.size()]));
+        mPostPublishBean.setImages(mImages);
         mPresenter.publishPost(mPostPublishBean);
     }
 

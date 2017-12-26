@@ -300,6 +300,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                     return emptyFlag != 0;
                 }).subscribe(this::createCirclepreHandle);
 
+        Observable.combineLatest(
+                RxTextView.textChanges(mTvNotice.getEtContent()),
+                RxTextView.textChanges(mEtCircleIntroduce.getEtContent()), (charSequence, charSequence2) -> emptyFlag != 0)
+                .subscribe(this::createCirclepreHandle);
+
         RxTextView.textChanges(mEtCircleAmount)
                 .filter(charSequence -> mCbToll.isChecked() && !charSequence.toString().isEmpty())
                 .subscribe(charSequence -> {
@@ -309,7 +314,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                         createCirclepreHandle(false);
                     }
                 });
-
 
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

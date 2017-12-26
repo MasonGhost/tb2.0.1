@@ -17,6 +17,7 @@ import com.zhiyi.richtexteditorlib.view.BottomMenu;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyi.richtexteditorlib.view.dialogs.PictureHandleDialog;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -24,6 +25,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -191,7 +193,6 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     protected void setLeftClick() {
-//        super.setLeftClick();
         onBackPressed();
     }
 
@@ -219,6 +220,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onMarkdownWordResult(String title, String markdwon, String noMarkdown, boolean isPublish) {
         if (isPublish) {
+            List<Integer> result = RegexUtils.getImageIdsFromMarkDown(MarkdownConfig.IMAGE_FORMAT, markdwon);
+            if (mImages.containsAll(result)) {
+                mImages.clear();
+                mImages.addAll(result);
+            }
             handlePublish(title, markdwon, noMarkdown);
         } else {
             boolean canSaveDraft = !TextUtils.isEmpty(title + noMarkdown);
@@ -239,8 +245,11 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mToolbarRight.setEnabled(false);
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
-        initListener();
+        mImages = new ArrayList<>();
+
         editorPreLoad();
+
+        initListener();
     }
 
     @Override
@@ -360,13 +369,12 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onUploading(long id, String filePath, int progress, int imgeId) {
-        getActivity().runOnUiThread(() -> mRichTextView.setImageUploadProcess(id, progress, imgeId));
-        if (progress == 100) {
-            if (mImages == null) {
-                mImages = new ArrayList<>();
+        getActivity().runOnUiThread(() -> {
+            if (progress == 100) {
+                mImages.add(imgeId);
             }
-            mImages.add(imgeId);
-        }
+            mRichTextView.setImageUploadProcess(id, progress, imgeId);
+        });
     }
 
     @Override

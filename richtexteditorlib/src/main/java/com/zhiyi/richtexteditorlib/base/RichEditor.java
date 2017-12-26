@@ -276,9 +276,9 @@ public abstract class RichEditor extends WebView {
         LogUtils.d("load", "after load");
     }
 
-    public void loadDraft(String html, String test) {
+    public void loadDraft(String title, String html) {
         LogUtils.d("loadDraft", "before loadDraft");
-        loadDataWithBaseURL(SETUP_BASEURL, test, "text/html", "utf-8", null);
+        loadDataWithBaseURL(SETUP_BASEURL, html, "text/html", "utf-8", null);
         LogUtils.d("loadDraft", "after loadDraft");
     }
 
@@ -439,12 +439,7 @@ public abstract class RichEditor extends WebView {
         if (isReady) {
             load(trigger);
         } else {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exec(trigger);
-                }
-            }, 100);
+            postDelayed(() -> exec(trigger), 100);
         }
     }
 

@@ -477,6 +477,7 @@ public class ExpandableTextView extends AppCompatTextView {
                     ds.setColor(mToShrinkHintColor);
                     ds.bgColor = mIsPressed ? mToShrinkHintColorBgPressed : 0;
                     break;
+                default:
             }
             ds.setUnderlineText(false);
         }

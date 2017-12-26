@@ -166,8 +166,9 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
-                            if (CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
-
+                            // 如果是 封闭的或者 收费的 ，就不及时更新
+                            if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
+                                    || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
                             circleInfo.setJoined(new CircleJoinedBean());

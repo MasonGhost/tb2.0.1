@@ -27,9 +27,12 @@ public class PostDraftItem extends BaseDraftItem<PostDraftBean> {
     }
 
     @Override
-    protected void bindData(ViewHolder holder, PostDraftBean realData) {
-        holder.setText(R.id.tv_draft_title, realData.getTitle());
-        holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreate_at()));
-        holder.setVisible(R.id.tv_draft_content, View.GONE);
+    protected String setCreateTime(PostDraftBean draftBean) {
+        return draftBean.getCreate_at();
+    }
+
+    @Override
+    protected String setTitle(PostDraftBean draftBean) {
+        return draftBean.getTitle();
     }
 }

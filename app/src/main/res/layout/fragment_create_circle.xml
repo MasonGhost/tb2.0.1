@@ -43,7 +43,7 @@
                         android:layout_height="@dimen/create_circle_head_width"
                         android:layout_gravity="center_vertical"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/npc"/>
+                        android:src="@drawable/shape_default_image"/>
                 </LinearLayout>
 
                 <TextView
