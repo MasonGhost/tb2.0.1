@@ -5,14 +5,14 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:background="@color/themeColor">
+        android:background="@color/themeColor"
+        android:paddingTop="@dimen/spacing_large">
 
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginRight="@dimen/spacing_mid"
-            android:layout_marginTop="@dimen/spacing_normal_large"
             android:paddingTop="@dimen/spacing_large"
             android:paddingRight="@dimen/spacing_large"
             android:paddingLeft="@dimen/spacing_large"
@@ -53,13 +53,20 @@
                 tools:text="xxxxxx"/>
 
         <!--二维码-->
-        <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/iv_user_code"
-                android:layout_width="@dimen/qr_code_width"
-                android:layout_height="@dimen/qr_code_width"
+        <FrameLayout
+                android:id="@+id/rl_user_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/user_avatar"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="@dimen/qr_code_content_padding_top"/>
+                android:layout_marginTop="@dimen/qr_code_content_padding_top"
+                android:padding="@dimen/button_corner_tiny"
+                android:background="@drawable/shape_qr_code_bg">
+            <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/iv_user_code"
+                    android:layout_width="@dimen/qr_code_width"
+                    android:layout_height="@dimen/qr_code_width"/>
+        </FrameLayout>
 
         <com.zhiyicx.baseproject.widget.EmptyView
                 android:id="@+id/empty_view"
@@ -75,7 +82,7 @@
                 android:textSize="@dimen/size_content_assist"
                 android:textColor="@color/general_for_loading_more"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/iv_user_code"
+                android:layout_below="@+id/rl_user_code"
                 android:layout_marginBottom="@dimen/qr_code_content_padding_bottom"
                 android:layout_marginTop="@dimen/spacing_big_large"
                 android:text="@string/qr_scan_alert"/>
