@@ -247,8 +247,10 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mInsertedImages = new HashMap<>();
         mFailedImages = new HashMap<>();
         mImages = new ArrayList<>();
-        initListener();
+
         editorPreLoad();
+
+        initListener();
     }
 
     @Override

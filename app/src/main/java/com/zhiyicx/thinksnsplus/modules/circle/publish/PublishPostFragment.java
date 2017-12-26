@@ -52,6 +52,9 @@ public class PublishPostFragment extends MarkdownFragment {
         if (isOutCirclePublish) {
             mLlCircleContainer.setVisibility(View.VISIBLE);
             mLine.setVisibility(View.VISIBLE);
+            if (mDraftBean != null) {
+                mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
+            }
             if (mCircleInfo != null) {
                 mCircleName.setText(mCircleInfo.getName());
             }
@@ -62,7 +65,7 @@ public class PublishPostFragment extends MarkdownFragment {
     protected void initListener() {
         super.initListener();
         mBottomMenu.setBottomMenuVisibleChangeListener(this::setSynToDynamicCbVisiable);
-        RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength >0));
+        RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength > 0));
     }
 
     @Override
