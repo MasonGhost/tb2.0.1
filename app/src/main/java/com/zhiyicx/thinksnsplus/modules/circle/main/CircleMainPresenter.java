@@ -69,7 +69,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
         Subscription subscription = Observable.zip(mRepository.getCircleCount(),
                 mRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
-                mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value),
+                mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
@@ -96,13 +96,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null,isLoadMore);
+                        mRootView.onResponseError(null, isLoadMore);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable,isLoadMore);
+                        mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
 
@@ -117,7 +117,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
 
     @Override
     public void getRecommendCircle() {
-        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0,CircleClient.MineCircleType.RANDOM.value)
+        Subscription subscription = mRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value)
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
@@ -155,8 +155,25 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
         }
         boolean isJoined = circleInfo.getJoined() != null;
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
+
+        Observable<BaseJsonV2<Object>> observable;
+        if (isPaid) {
+            observable = handleWalletBlance(circleInfo.getMoney())
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.pay_alert_ing)))
+                    .flatMap(o -> mRepository.dealCircleJoinOrExit(circleInfo));
+        } else {
+            observable = mRepository.dealCircleJoinOrExit(circleInfo)
+                    .doOnSubscribe(() -> {
+                                mRootView.dismissSnackBar();
+                                mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                            }
+                    );
+
+        }
+
+        Subscription subscribe = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -189,6 +206,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Rep
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override

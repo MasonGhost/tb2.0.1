@@ -371,9 +371,24 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             return;
         }
         boolean isJoined = circleInfo.getJoined() != null;
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
-        mRepository.dealCircleJoinOrExit(circleInfo)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+        Observable<BaseJsonV2<Object>> observable;
+        if (isPaid) {
+            observable = handleWalletBlance(circleInfo.getMoney())
+                    .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                            .string.pay_alert_ing)))
+                    .flatMap(o -> mRepository.dealCircleJoinOrExit(circleInfo));
+        } else {
+            observable = mRepository.dealCircleJoinOrExit(circleInfo)
+                    .doOnSubscribe(() -> {
+                                mRootView.dismissSnackBar();
+                                mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
+                            }
+                    );
+
+        }
+        Subscription subscribe = observable
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -405,6 +420,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+
+        addSubscrebe(subscribe);
     }
 
 
