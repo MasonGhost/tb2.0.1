@@ -20,9 +20,14 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginStart="@dimen/spacing_normal"
         android:layout_toEndOf="@+id/iv_circle_cover"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_toLeftOf="@+id/tv_aduit_status"
         android:layout_toRightOf="@+id/iv_circle_cover"
-        android:orientation="vertical">
+        android:layout_toStartOf="@+id/tv_aduit_status"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/spacing_small">
 
         <TextView
             android:id="@+id/tv_circle_name"
@@ -31,7 +36,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="我是频道名称"
+            android:text="我是频道名称灯灯灯"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
 
