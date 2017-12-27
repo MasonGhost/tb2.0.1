@@ -429,7 +429,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        if (isBalanceCheck(throwable)) {
+                            return;
+                        }
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
                     }
                 });
 

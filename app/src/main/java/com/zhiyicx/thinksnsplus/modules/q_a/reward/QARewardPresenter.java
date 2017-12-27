@@ -95,7 +95,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
                         if (isBalanceCheck(throwable)) {
                             return;
                         }
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
                     }
                 });
         addSubscrebe(subscribe);
