@@ -346,6 +346,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             }
         });
 
+        mWcSynchro.setOnCheckedChangeListener((buttonView, isChecked) -> createCirclepreHandle(emptyFlag != 0));
+
+
 
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);

@@ -514,14 +514,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public void onCommentContentClick(CirclePostListBean postListBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(postListBean.getId());
         boolean isJoined = mCircleInfo.getJoined() != null;
-        if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
-            showSnackErrorMessage(getString(R.string.circle_blacklist));
-            return;
-        }
+        boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
+
         if (postListBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initDeletCommentPopWindow(postListBean, mCurrentPostion, position);
+            initDeletCommentPopWindow(postListBean, mCurrentPostion, position, isBlackList);
             mDeletCommentPopWindow.show();
         } else {
+            if (isBlackList) {
+                showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                return;
+            }
             showCommentView();
             mReplyToUserId = postListBean.getComments().get(position).getUser_id();
             String contentHint = getString(R.string.default_input_hint);
@@ -605,10 +607,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         boolean isJoined = mCircleInfo.getJoined() != null;
-        if (isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
-            showSnackErrorMessage(getString(R.string.circle_blacklist));
-            return;
-        }
+        boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         // 减去 header
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         mCurrentPostion = dataPosition;
@@ -617,6 +616,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         switch (viewPosition) {
             // 喜欢
             case 0:
+                if (isBlackList) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                    return;
+                }
                 // 还未发送成功的动态列表不查看详情
                 canNotDeal = (!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
                         mListDatas.get(dataPosition).getId() == null || mListDatas.get
@@ -628,6 +631,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 break;
             // 评论
             case 1:
+                if (isBlackList) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                    return;
+                }
                 canNotDeal = (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
                         mListDatas.get(dataPosition).getId() == null || mListDatas.get
                         (dataPosition).getId() == 0;
@@ -664,6 +671,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                             .hasCollected(), shareBitMap);
                     mMyPostPopWindow.show();
                 } else {
+                    if (isBlackList) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                        return;
+                    }
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .hasCollected(), shareBitMap);
                     mOtherPostPopWindow.show();
@@ -734,12 +745,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
      * @param dynamicPositon     dynamic comment position
      * @param commentPosition    current comment position
      */
-    private void initDeletCommentPopWindow(final CirclePostListBean circlePostListBean, final int dynamicPositon, final int commentPosition) {
-
+    private void initDeletCommentPopWindow(final CirclePostListBean circlePostListBean, final int dynamicPositon,
+                                           final int commentPosition, boolean isBlackList) {
 
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Str(BuildConfig.USE_TOLL && circlePostListBean
+                .item1Str(!isBlackList && BuildConfig.USE_TOLL && circlePostListBean
                         .getComments().get(commentPosition).getId() != -1L && !circlePostListBean
                         .getComments().get(commentPosition).getPinned() ? getString(R
                         .string.dynamic_list_top_comment) : null)
@@ -785,12 +796,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
         }
         boolean isPinned = circlePostListBean.getPinned();
+        boolean isBlackList = mCircleInfo.getJoined() != null && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
         mMyPostPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
-                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
+                .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(!feedIdIsNull ? getString(R.string.post_apply_for_top) : null)
+                .item3Str(!feedIdIsNull || !isBlackList ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
                 .bottomStr(getString(R.string.cancel))
@@ -1201,6 +1213,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(detail.getJoined().getRole());
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(detail.getJoined().getRole());
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
+
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
 
@@ -1214,8 +1227,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
         boolean isJoing = mCircleInfo.getJoined() != null;
+        boolean isBlackList = isJoing && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         switch (view.getId()) {
             case R.id.ll_member_container:
+                if (isBlackList) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                    return;
+                }
                 Intent intent = new Intent(mActivity, MembersListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong(MemberListFragment.CIRCLEID, mCircleInfo.getId());
@@ -1224,6 +1242,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mActivity.startActivityForResult(intent, MemberListFragment.MEMBER_REQUEST);
                 break;
             case R.id.ll_detail_container:
+                if (isBlackList) {
+                    showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                    return;
+                }
                 CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfo);
                 break;
             case R.id.ll_earnings_container:

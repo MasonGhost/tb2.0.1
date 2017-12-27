@@ -64,6 +64,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void initListener() {
         super.initListener();
+        setSynToDynamicCbVisiable(true);
         mBottomMenu.setBottomMenuVisibleChangeListener(this::setSynToDynamicCbVisiable);
         RxTextView.textChanges(mCircleName).subscribe(charSequence -> setRightClickable(mContentLength > 0));
     }
@@ -121,6 +122,7 @@ public class PublishPostFragment extends MarkdownFragment {
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
+        setSynToDynamicCbVisiable(true);
     }
 
     @Override

@@ -131,6 +131,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     public Observable<BaseJsonV2<CirclePostListBean>> sendCirclePost(PostPublishBean publishBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson()
                 .toJson(publishBean));
+
         return mCircleClient.publishPost(publishBean.getCircle_id(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

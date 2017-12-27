@@ -97,14 +97,25 @@ public class CircleJoinedBean implements Parcelable, Serializable {
     }
 
     public String getRole() {
+        if (disabled == 1) {
+            role = CircleMembers.BLACKLIST;
+        }
         return role;
     }
 
     public void setRole(String role) {
+        if (CircleMembers.BLACKLIST.equals(role)) {
+            disabled = 1;
+        } else {
+            disabled = 0;
+        }
         this.role = role;
     }
 
     public int getDisabled() {
+        if (disabled == 1) {
+            role = CircleMembers.BLACKLIST;
+        }
         return disabled;
     }
 

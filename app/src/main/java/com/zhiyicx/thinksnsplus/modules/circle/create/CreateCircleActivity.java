@@ -47,7 +47,9 @@ public class CreateCircleActivity extends TSActivity<CreateCirclePresenter, Crea
         Bundle bundle = new Bundle();
         bundle.putParcelable(CreateCircleFragment.CIRCLEINFO, CircleInfo);
         boolean isJoined = CircleInfo.getJoined() != null;
-        boolean canNotUpdate = !isJoined || CircleMembers.MEMBER.equals(CircleInfo.getJoined().getRole());
+        boolean canNotUpdate = !isJoined
+                || CircleMembers.MEMBER.equals(CircleInfo.getJoined().getRole())
+                || CircleMembers.BLACKLIST.equals(CircleInfo.getJoined().getRole());
         boolean isOwner = CircleInfo.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault();
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(CircleInfo.getJoined().getRole());
         bundle.putBoolean(CreateCircleFragment.CANUPDATE, !canNotUpdate);
