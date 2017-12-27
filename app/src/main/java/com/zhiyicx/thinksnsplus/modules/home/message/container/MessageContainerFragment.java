@@ -65,7 +65,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     private boolean mIsMessageTipShow;
     private boolean mIsNotificationTipShow;
 
-    public MessageContainerFragment instance() {
+    public static MessageContainerFragment instance() {
         return new MessageContainerFragment();
     }
 
@@ -95,7 +95,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
             mFragmentList.add(MessageFragment.newInstance());
-            mFragmentList.add(new NotificationFragment().instance());
+            mFragmentList.add(NotificationFragment.instance());
         }
 
         return mFragmentList;
@@ -132,7 +132,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
      * @param position 位置 0-消息 1=通知
      */
     public void setNewMessageNoticeState(boolean isShow, int position) {
-        if (position < 0 && position > 1) {
+        if (position < 0 || position > 1) {
             return;
         }
         switch (position) {

@@ -84,7 +84,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     BadgeView mVvFansNewCount;
 
     /**
-     * 选择认证人类的弹窗
+     * 选择认证人类型的弹窗
      */
     private CertificationTypePopupWindow mCertificationWindow;
 
@@ -93,11 +93,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
-
-    /**
-     * 请求音乐权限弹窗
-     */
-    private ActionPopupWindow mActionPopupWindow;
 
     public MineFragment() {
     }

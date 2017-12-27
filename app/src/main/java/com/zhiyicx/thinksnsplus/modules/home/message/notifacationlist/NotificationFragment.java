@@ -26,7 +26,7 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     @Inject
     NotificationPresenter mNotificationPresenter;
 
-    public NotificationFragment instance() {
+    public static NotificationFragment instance() {
         NotificationFragment fragment = new NotificationFragment();
         fragment.setArguments(new Bundle());
         return fragment;
