@@ -417,6 +417,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                             mRootView.updateCircleInfo(circleInfo);
                         }
+                        mCircleInfoGreenDao.insertOrReplace(circleInfo);
                     }
 
                     @Override
