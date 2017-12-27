@@ -38,6 +38,7 @@
                         android:paddingLeft="@dimen/toolbar_padding_left"
                         android:paddingRight="@dimen/toolbar_padding_right">
                     <com.zhiyicx.baseproject.widget.UserAvatarView
+                        android:visibility="gone"
                             android:id="@+id/iv_user_portrait"
                             android:layout_width="@dimen/headpic_for_assist"
                             android:layout_height="@dimen/headpic_for_assist"/>

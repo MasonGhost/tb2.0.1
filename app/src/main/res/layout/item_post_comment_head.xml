@@ -31,22 +31,21 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="@color/general_for_hint"
             android:id="@+id/tv_from_channel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_info_list_channel"
             android:padding="@dimen/spacing_tiny"
-            android:textColor="@color/themeColor"
             android:textSize="@dimen/size_advert_launche"
             tools:text="时政"/>
 
         <TextView
+            android:textColor="@color/themeColor"
             android:id="@+id/item_info_timeform"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_small_3dp"
             android:layout_marginStart="@dimen/spacing_small_3dp"
-            android:textColor="@color/general_for_hint"
             android:textSize="@dimen/size_icon_assist"
             tools:text="三小时前   来自火星"/>
     </LinearLayout>

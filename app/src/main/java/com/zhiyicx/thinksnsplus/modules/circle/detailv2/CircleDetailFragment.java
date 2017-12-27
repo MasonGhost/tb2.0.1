@@ -1022,12 +1022,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                             if (mCircleInfo.getJoined()
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
                                 BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, mCircleInfo);
-                            } else {
-                                //被拉到了黑名单
-                                showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
-
                             }
-
+                        } else if (CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
+                            //被拉到了黑名单
+                            showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         } else {
                             // 没有权限发帖
                             if (mCircleInfo.getPermissions().contains(CircleMembers.FOUNDER)) {

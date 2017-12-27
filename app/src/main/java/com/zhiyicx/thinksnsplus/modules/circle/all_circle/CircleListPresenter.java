@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -24,7 +25,7 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CircleListPresenter extends AppBasePresenter< CircleListContract.View>
+public class CircleListPresenter extends AppBasePresenter<CircleListContract.View>
         implements CircleListContract.Presenter {
 
     @Inject
@@ -34,12 +35,18 @@ public class CircleListPresenter extends AppBasePresenter< CircleListContract.Vi
 
     @Inject
     public CircleListPresenter(CircleListContract.View rootView) {
-        super( rootView);
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mBaseCircleRepository.getCircleList(mRootView.getCategoryId(), maxId)
+        Observable<List<CircleInfo>> observable;
+        if (mRootView.getCategoryId() < 0) {
+            observable = mBaseCircleRepository.getRecommendCircle(TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null);
+        } else {
+            observable = mBaseCircleRepository.getCircleList(mRootView.getCategoryId(), maxId);
+        }
+        Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
 
                     @Override

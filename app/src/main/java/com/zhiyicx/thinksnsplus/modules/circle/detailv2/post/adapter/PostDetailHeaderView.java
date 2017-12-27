@@ -113,8 +113,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
     public void setDetail(CirclePostListBean circlePostDetailBean) {
         if (circlePostDetailBean != null) {
             mTitle.setText(circlePostDetailBean.getTitle());
-//            mChannel.setVisibility(VISIBLE);
-            mChannel.setText("原创");
+            mChannel.setText("来自");
             String from = circlePostDetailBean.getUser().getName();
             if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);

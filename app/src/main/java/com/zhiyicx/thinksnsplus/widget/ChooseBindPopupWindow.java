@@ -70,7 +70,7 @@ public class ChooseBindPopupWindow extends PopupWindow {
 
         setFocusable(false);
         setOutsideTouchable(isOutsideTouch);
-        setAnimationStyle(R.style.style_actionPopupAnimation);
+//        setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
         setBackgroundDrawable(mBackgroundDrawable);
     }

@@ -22,6 +22,7 @@ import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -325,12 +326,14 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 mCbToll.setChecked(false);
+                mEtCircleAmount.setText("");
                 createCirclepreHandle(emptyFlag != 0);
             }
         });
 
         mWcBlock.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
+                mEtCircleAmount.setText("");
                 createCirclepreHandle(emptyFlag != 0);
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
@@ -388,8 +391,17 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
                 CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));
         mCreateCircleBean.setNotice(mTvNotice.getInputContent());
-        mCreateCircleBean.setMoney(!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty() ? null : mEtCircleAmount.getText()
-                .toString());
+
+        // 钱要转成真实货币分单位，后台限制不能有小数
+        String money;
+        if (!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty()) {
+            money = null;
+        } else {
+            int result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+            money = result + "";
+        }
+
+        mCreateCircleBean.setMoney(money);
         mCreateCircleBean.setSummary(mEtCircleIntroduce.getInputContent());
         List<CreateCircleBean.TagId> tags = new ArrayList<>();
         for (UserTagBean tagBean : mUserTagBeens) {

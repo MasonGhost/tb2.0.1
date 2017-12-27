@@ -40,11 +40,15 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         implements AllCircleContainerContract.View {
 
     private List<String> mTitle;
-    public static final String RECOMMEND_INFO = "1";
+
+    // 推荐专用
+    public static final String RECOMMEND_INFO = "-1";
 
 
     private UserCertificationInfo mUserCertificationInfo;
-    private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
+
+    // 提示需要认证的
+    private ActionPopupWindow mCertificationAlertPopWindow;
 
 
     @Override

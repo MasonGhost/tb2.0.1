@@ -172,7 +172,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(getString(R.string.info_details));
+        mTvToolbarCenter.setText(getString(R.string.post_detail));
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -187,7 +187,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     @Override
     protected void initData() {
         super.initData();
-        setToolBarInfo();
+//        setToolBarInfo();
         requestNetData(0L, false);
     }
 
@@ -252,7 +252,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
-        setToolBarInfo();
+//        setToolBarInfo();
     }
 
     @Override
@@ -459,9 +459,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mVShadow.setVisibility(View.GONE);
 
                 });
-        RxView.clicks(mTvToolbarCenter)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
+//        RxView.clicks(mTvToolbarCenter)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
         RxView.clicks(mIvUserPortrait)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
