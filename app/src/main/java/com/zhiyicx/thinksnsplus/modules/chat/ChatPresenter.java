@@ -189,8 +189,9 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         break;
                     default:
                 }
-                message.setStatus(EMMessage.Status.FAIL);
-                mRootView.refreshData();
+                Observable.just("")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> mRootView.refreshData());
             }
 
             @Override
