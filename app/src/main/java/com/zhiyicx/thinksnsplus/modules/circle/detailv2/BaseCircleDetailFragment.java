@@ -473,7 +473,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item3Str(getString(R.string.delete_post))
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

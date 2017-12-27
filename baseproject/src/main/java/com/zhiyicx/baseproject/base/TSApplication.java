@@ -16,6 +16,7 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.dagger.module.ImageModule;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ public abstract class TSApplication extends BaseApplication {
             @SuppressLint("MyToastHelper")
             @Override
             public void uncaughtException(Thread t, Throwable e) {
+                LogUtils.e(TAG, e);
                 Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
                 rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
                         .subscribe(new Action1<Long>() {
