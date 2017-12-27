@@ -254,6 +254,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
 
     @Override
     public void reFreshMessage(ChatItemBean chatItemBean) {
+        if (mDatas.indexOf(chatItemBean) != -1){
+            mDatas.remove(chatItemBean);
+        }
         mDatas.add(chatItemBean);
         mMessageList.refreshSoomthBottom();
     }
@@ -261,6 +264,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     @Override
     public void refreshData() {
         mMessageList.refresh();
+    }
+
+    @Override
+    public void refreshData(int position) {
+        mMessageList.refresh(position);
     }
 
     @Override
@@ -307,6 +315,11 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         if (isNeedScrollToBottom){
             mMessageList.scrollToBottom();
         }
+    }
+
+    @Override
+    public List<ChatItemBean> getListDatas() {
+        return mDatas;
     }
 
     @Override

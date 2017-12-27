@@ -48,6 +48,11 @@ public interface ChatContract {
         void refreshData();
 
         /**
+         * 刷新列表数据
+         */
+        void refreshData(int position);
+
+        /**
          * 滑动内容到底部
          */
         void smoothScrollToBottom();
@@ -79,10 +84,17 @@ public interface ChatContract {
         /**
          * 获取历史聊天记录成功
          *
-         * @param list 历史聊天记录
+         * @param list   历史聊天记录
          * @param isInit 是否为初始化
          */
         void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isInit);
+
+        /**
+         * 获取当前的数据
+         *
+         * @return List<ChatItemBean>
+         */
+        List<ChatItemBean> getListDatas();
 
     }
 
@@ -160,8 +172,8 @@ public interface ChatContract {
         /**
          * 获取环信的历史消息
          *
-         * @param id       聊天的id 单聊对方用户id 群聊则为群聊的id
-         * @param pageSize 一页大小
+         * @param id                   聊天的id 单聊对方用户id 群聊则为群聊的id
+         * @param pageSize             一页大小
          * @param isNeedScrollToBottom 是否需要滚动到底部
          * @return List<ChatItemBean>
          */

@@ -40,6 +40,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
@@ -51,7 +53,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
  * @Contact master.jungle68@gmail.com
  */
 
-public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
+public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View>
+        implements ChatContract.Presenter{
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
@@ -159,16 +162,20 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
 //        }
         //发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
+        updateMessageV2(message);
         message.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
                 // 发送成功 需要刷新页面
                 LogUtils.d("Cathy", "发送成功" + message.getBody().toString());
-                updateMessageV2(message);
+                Observable.just("")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> mRootView.refreshData());
             }
 
             @Override
             public void onError(int code, String error) {
+                LogUtils.d("Cathy", "sendTextMessageV2 onError// " + error + code);
                 // 这个错误也太多了 先随便写点吧_(:з」∠)_  具体的查看官方API EMError
                 switch (code) {
                     case EMError.SERVER_BUSY:
@@ -182,12 +189,13 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         break;
                     default:
                 }
-                mRootView.showSnackErrorMessage(error);
+                message.setStatus(EMMessage.Status.FAIL);
+                mRootView.refreshData();
             }
 
             @Override
             public void onProgress(int progress, String status) {
-
+                LogUtils.d("Cathy", "sendTextMessageV2 progress// " + progress);
             }
         });
     }
@@ -197,12 +205,15 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
      */
     @Override
     public void reSendText(ChatItemBean chatItemBean) {
-        if (ZBIMClient.getInstance().isLogin()) {
-            ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
-            mRootView.refreshData();
-        } else {
-            ZBIMClient.getInstance().reConnect();
-        }
+//        if (ZBIMClient.getInstance().isLogin()) {
+//            ChatClient.getInstance(mContext).sendMessage(chatItemBean.getLastMessage());
+//            mRootView.refreshData();
+//        } else {
+//            ZBIMClient.getInstance().reConnect();
+//        }
+        // 改为环信的
+        //发送消息
+        EMClient.getInstance().chatManager().sendMessage(chatItemBean.getMessage());
     }
 
     @Override
