@@ -7,9 +7,9 @@
     <string name="char_unit">字</string>
     <string name="delete">删  除</string>
     <string name="retry">重  试</string>
-    <string name="add_link">添加链接</string>
-    <string name="input_link_name">输入链接名</string>
-    <string name="input_url">输入链接</string>
+    <string name="add_link">插入链接</string>
+    <string name="input_link_name">输入链接标题</string>
+    <string name="input_url">输入链接地址</string>
     <string name="cancle">取消</string>
     <string name="ok">确定</string>
 </resources>

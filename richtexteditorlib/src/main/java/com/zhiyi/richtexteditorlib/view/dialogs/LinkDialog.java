@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.zhiyi.richtexteditorlib.R;
 import com.zhiyi.richtexteditorlib.view.dialogs.base.BaseDialogFragment;
@@ -25,19 +26,19 @@ public class LinkDialog extends BaseDialogFragment {
     private String name;
     private String url;
 
-    public static LinkDialog createLinkDialog(String name,String url){
+    public static LinkDialog createLinkDialog(String name, String url) {
         LinkDialog dialog = createLinkDialog();
         dialog.setUrl(url);
         dialog.setName(name);
         return dialog;
     }
 
-    public static LinkDialog createLinkDialog(){
+    public static LinkDialog createLinkDialog() {
 
         return new LinkDialog();
     }
 
-    public LinkDialog(){
+    public LinkDialog() {
 
     }
 
@@ -52,37 +53,32 @@ public class LinkDialog extends BaseDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialog = inflater.inflate(R.layout.dialog_fragment_link, container);
-        Button ok = (Button) dialog.findViewById(R.id.confirm_btn);
-        Button cancle = (Button) dialog.findViewById(R.id.cancel_btn);
-        final EditText urledt = (EditText) dialog.findViewById(R.id.url_edt);
-        final EditText nameedt = (EditText) dialog.findViewById(R.id.name_edt);
+        TextView ok = (TextView) dialog.findViewById(R.id.confirm_btn);
+        TextView cancle = (TextView) dialog.findViewById(R.id.cancel_btn);
+        final EditText urledt = (EditText) dialog.findViewById(R.id.et_linkurl);
+        final EditText nameedt = (EditText) dialog.findViewById(R.id.et_linkname);
 
-        if(name != null){
+        if (name != null) {
             nameedt.setText(name);
         }
-        if(url != null){
+        if (url != null) {
             urledt.setText(url);
         }
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null) {
-                    listener.onConfirmButtonClick(nameedt.getText().toString(), urledt.getText().toString());
-                }
+        ok.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onConfirmButtonClick(nameedt.getText().toString(), urledt.getText().toString());
             }
         });
 
-        cancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null) {
-                    listener.onCancelButtonClick();
-                }
+        cancle.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCancelButtonClick();
             }
         });
 
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);//remove title
+        //remove title
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
 
@@ -109,6 +105,7 @@ public class LinkDialog extends BaseDialogFragment {
 
     public interface OnDialogClickListener {
         void onConfirmButtonClick(String name, String url);
+
         void onCancelButtonClick();
     }
 }

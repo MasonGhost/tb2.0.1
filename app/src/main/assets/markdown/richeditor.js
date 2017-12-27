@@ -248,6 +248,7 @@ var RE = {
         }
     },
 
+    // 暂时没用到
     restoreDraft: function restoreDraft(title,content){
         var _self = this;
         _self.cache.title.value = title;
@@ -291,8 +292,8 @@ var RE = {
 	exec: function exec(command) {
 		//执行指令
 		var _self = this;
-		console.log("command:::" + command);
 		if (_self.commandSet.indexOf(command) !== -1) {
+		    console.log("exec:::" + command);
 			document.execCommand(command, false, null);
 		} else {
 			var value = '<' + command + '>';
@@ -300,6 +301,8 @@ var RE = {
 			_self.getEditItem({});
 		}
 	},
+
+	// 同步状态
 	getEditItem: function getEditItem(evt) {
 		//通过点击时，去获得一个当前位置的所有状态
 		var _self = this;
@@ -344,6 +347,8 @@ var RE = {
 	    var _self = this;
 	    _self.cache.editor.style.borderColor = color;
 	},
+
+	// 插入分割线
 	insertLine: function insertLine() {
 		var _self = this;
 		var html = '<hr><div><br></div>';
@@ -351,11 +356,15 @@ var RE = {
 		_self.getEditItem({});
 		window.scrollTo(0,document.body.scrollHeight);
 	},
+
+	// 插入链接
 	insertLink: function insertLink(name, url) {
 		var _self = this;
 		var html = '<a href="' + url + '" class="editor-link">' + name + '</a>';
 		_self.insertHtml(html);
 	},
+
+	// 修改链接
 	changeLink: function changeLink(name, url) {
 		var _self = this;
 		var current = _self.cache.currentLink;
@@ -373,6 +382,8 @@ var RE = {
 		range.setEnd(endContainer, len);
 		selection.addRange(range);
 	},
+
+	// 插入图片
 	insertImage: function insertImage(url, id, width, height) {
 		var _self = this;
 		var newWidth = 0,
@@ -401,6 +412,8 @@ var RE = {
 		_self.imageCache.put(id, imgBlock.parentNode);
 		window.scrollTo(0,document.body.scrollHeight);
 	},
+
+	// 图片上传进度
 	changeProcess: function changeProcess(id, process,imageId) {
 		var _self = this;
 		var block = _self.imageCache.get(id);
@@ -423,6 +436,8 @@ var RE = {
 			imgBlock.removeChild(process);
 		}
 	},
+
+	// 限制标题输入字数
     wordsLimit: function wordsLimit(){
         var _self = this;
         var noteView=_self.titleLimit.txtNote;
@@ -446,18 +461,23 @@ var RE = {
         _self.titleLimit.txtlength = noteView.value.length;//记录每次输入后的长度
     },
 
+    // 删除图片
 	removeImage: function removeImage(id) {
 		var _self = this;
 		var block = _self.imageCache.get(id);
 		block.parentNode.removeChild(block);
 		_self.imageCache.remove(id);
 	},
+
+	// 图片上传失败
 	uploadFailure: function uploadFailure(id) {
 		var _self = this;
 		var block = _self.imageCache.get(id);
 		var del = block.querySelector('.delete');
 		del.style.display = 'block';
 	},
+
+	// 图片上传后重传
 	uploadReload: function uploadReload(id) {
 		var _self = this;
 		var block = _self.imageCache.get(id);
