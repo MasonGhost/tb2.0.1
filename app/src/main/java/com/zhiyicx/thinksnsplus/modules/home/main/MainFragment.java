@@ -18,7 +18,9 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -135,11 +137,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected List<String> initTitles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.follow));
-        return titles;
+        return Arrays.asList(getString(R.string.the_last)
+                , getString(R.string.hot)
+                , getString(R.string.follow));
     }
 
     @Override
