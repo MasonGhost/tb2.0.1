@@ -154,7 +154,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
                     itemCounts) {
                 holder.setText(R.id.tv_content, qaSearchHistoryBean.getContent());
                 RxView.clicks(holder.getView(R.id.tv_content))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             if (mIHistoryCententClickListener != null) {
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
@@ -162,7 +162,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
                             onEditChanged(qaSearchHistoryBean.getContent());
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             mPresenter.deleteSearchHistory(mHistoryData.get(position));
                             mHistoryData.remove(position);
@@ -188,7 +188,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
             public void convert(ViewHolder holder, CircleSearchHistoryBean o, CircleSearchHistoryBean lastT, int position, int itemCounts) {
                 holder.setText(R.id.tv_content, o.getContent());
                 RxView.clicks(holder.getView(R.id.tv_content))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> {
                             if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
                                 mHistoryData.clear();

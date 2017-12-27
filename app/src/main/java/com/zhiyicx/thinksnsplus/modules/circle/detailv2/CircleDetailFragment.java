@@ -651,6 +651,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public boolean isOutsideSerach() {
+        return false;
+    }
+
+    @Override
     public void onChoosed(PostTypeChoosePopAdapter.MyPostTypeEnum type) {
         switch (type) {
             case ALL:
@@ -755,26 +760,31 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
-                .item2ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {
+                    // 收藏
                     mMyPostPopWindow.hide();
                     handleCollect(position);
                     showBottomView(true);
                 })
-                .item3ClickListener(() -> {// 置顶
+                .item3ClickListener(() -> {
+                    // 置顶
                     mMyPostPopWindow.hide();
                     showBottomView(true);
                     StickTopFragment.startSticTopActivity(mActivity, StickTopFragment.TYPE_POST, circlePostListBean.getId());
                 })
-                .item4ClickListener(() -> {// 删除
+                .item4ClickListener(() -> {
+                    // 删除
                     mMyPostPopWindow.hide();
                     mPresenter.deletePost(circlePostListBean, position);
                     showBottomView(true);
                 })
-                .item1ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {
+                    // 分享
                     mPresenter.sharePost(circlePostListBean, shareBitMap);
                     mMyPostPopWindow.hide();
                 })
-                .bottomClickListener(() -> {//取消
+                .bottomClickListener(() -> {
+                    //取消
                     mMyPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -818,18 +828,31 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
      */
     private void initOtherDynamicPopupWindow(final CirclePostListBean circlePostListBean, int position, boolean isCollected, final
     Bitmap shareBitmap) {
+
+        boolean isManager = false;
+        if ( mCircleInfo.getJoined() != null) {
+            isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
+                    CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
+        }
         mOtherPostPopWindow = ActionPopupWindow.builder()
+                .item4Str(getString(isManager ? R.string.info_delete : R.string.empty))
                 .item3Str(getString(R.string.report))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item1Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
                 .with(getActivity())
-                .item3ClickListener(() -> {                    // 举报帖子
+                .item4ClickListener(() -> {
+                    // 管理员删除
+                    mOtherPostPopWindow.hide();
+                    mPresenter.deletePost(circlePostListBean, position);
+                    showBottomView(true);
+                })
+                .item3ClickListener(() -> {
+                    // 举报帖子
                     String img = "";
                     if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
                         img = ImageUtils.imagePathConvertV2(circlePostListBean.getImages().get(0).getFile_id(), getResources()
@@ -847,12 +870,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {
+                    // 收藏
                     handleCollect(position);
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
-                .item1ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {
+                    // 分享
                     mPresenter.sharePost(circlePostListBean, shareBitmap);
                     mOtherPostPopWindow.hide();
                     showBottomView(true);

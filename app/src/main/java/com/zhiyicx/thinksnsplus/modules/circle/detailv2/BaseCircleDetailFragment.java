@@ -240,6 +240,11 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
+    public boolean isOutsideSerach() {
+        return true;
+    }
+
+    @Override
     public void onCommentUserInfoClick(UserInfoBean userInfoBean) {
         onUserInfoClick(userInfoBean);
     }

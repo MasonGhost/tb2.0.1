@@ -55,14 +55,23 @@ public class CircleSearchBeanGreenDaoImpl extends CommonCacheImpl<CircleSearchHi
                 .list();
     }
 
+    public List<CircleSearchHistoryBean> getMultiDataFromCacheByFrom(boolean isOutsideCircle) {
+        CircleSearchHistoryBeanDao circleSearchHistoryBeanDao = getRDaoSession().getCircleSearchHistoryBeanDao();
+        return circleSearchHistoryBeanDao.queryBuilder()
+                .where(CircleSearchHistoryBeanDao.Properties.IsOutSideCircle.eq(isOutsideCircle))
+                .orderDesc(CircleSearchHistoryBeanDao.Properties.Create_time)
+                .list();
+    }
+
     /**
      * @param size first show size
      * @return 第一次显示的
      */
-    public List<CircleSearchHistoryBean> getFristShowData(int size, int type) {
+    public List<CircleSearchHistoryBean> getFristShowData(int size, int type,boolean isOutside) {
         CircleSearchHistoryBeanDao circleSearchHistoryBeanDao = getRDaoSession().getCircleSearchHistoryBeanDao();
         return circleSearchHistoryBeanDao.queryBuilder()
-                .where(CircleSearchHistoryBeanDao.Properties.Type.eq(type))
+                .where(CircleSearchHistoryBeanDao.Properties.Type.eq(type),
+                        CircleSearchHistoryBeanDao.Properties.IsOutSideCircle.eq(isOutside))
                 .orderDesc(CircleSearchHistoryBeanDao.Properties.Create_time)
                 .limit(size)
                 .list();

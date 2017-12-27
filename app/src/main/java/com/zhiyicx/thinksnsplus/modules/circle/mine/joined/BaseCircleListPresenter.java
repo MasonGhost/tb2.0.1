@@ -86,7 +86,8 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
                     mSearchSub.unsubscribe();
                 }
                 final String searchContent = mRootView.getSearchInput();
-                if (TextUtils.isEmpty(searchContent)) {// 无搜索内容
+                // 无搜索内容
+                if (TextUtils.isEmpty(searchContent)) {
                     mRootView.hideRefreshState(isLoadMore);
                     return;
                 }
@@ -130,6 +131,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
      */
     private void saveSearhDatq(String searchContent) {
         CircleSearchHistoryBean cricleSearchHistoryBean = new CircleSearchHistoryBean(searchContent, CircleSearchHistoryBean.TYPE_CIRCLE);
+        cricleSearchHistoryBean.setOutSideCircle(true);
         mCircleSearchBeanGreenDao.saveHistoryDataByType(cricleSearchHistoryBean, CircleSearchHistoryBean.TYPE_CIRCLE);
     }
 
@@ -212,7 +214,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA);
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA,true);
     }
 
     @Override

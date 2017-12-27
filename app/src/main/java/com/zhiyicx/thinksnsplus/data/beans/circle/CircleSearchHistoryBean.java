@@ -19,6 +19,7 @@ public class CircleSearchHistoryBean {
     private Long id;
     private String content;
     private long create_time;
+    private boolean isOutSideCircle;
     private int type = TYPE_DEFAULT;
 
 
@@ -28,12 +29,20 @@ public class CircleSearchHistoryBean {
         this.create_time = System.currentTimeMillis();
     }
 
-    @Generated(hash = 1596019093)
+    public CircleSearchHistoryBean(String content, int type, boolean isOutSideCircle) {
+        this.content = content;
+        this.type = type;
+        this.isOutSideCircle = isOutSideCircle;
+        this.create_time = System.currentTimeMillis();
+    }
+
+    @Generated(hash = 1783680448)
     public CircleSearchHistoryBean(Long id, String content, long create_time,
-            int type) {
+            boolean isOutSideCircle, int type) {
         this.id = id;
         this.content = content;
         this.create_time = create_time;
+        this.isOutSideCircle = isOutSideCircle;
         this.type = type;
     }
 
@@ -47,6 +56,7 @@ public class CircleSearchHistoryBean {
                 "id=" + id +
                 ", content='" + content + '\'' +
                 ", create_time=" + create_time +
+                ", isOutSideCircle=" + isOutSideCircle +
                 ", type=" + type +
                 '}';
     }
@@ -57,6 +67,14 @@ public class CircleSearchHistoryBean {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean getOutSideCircle() {
+        return isOutSideCircle;
+    }
+
+    public void setOutSideCircle(boolean outSideCircle) {
+        isOutSideCircle = outSideCircle;
     }
 
     public String getContent() {
@@ -81,5 +99,41 @@ public class CircleSearchHistoryBean {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public boolean getIsOutSideCircle() {
+        return this.isOutSideCircle;
+    }
+
+    public void setIsOutSideCircle(boolean isOutSideCircle) {
+        this.isOutSideCircle = isOutSideCircle;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CircleSearchHistoryBean that = (CircleSearchHistoryBean) o;
+
+        if (create_time != that.create_time) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
+        return content != null ? content.equals(that.content) : that.content == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = content != null ? content.hashCode() : 0;
+        result = 31 * result + (int) (create_time ^ (create_time >>> 32));
+        result = 31 * result + type;
+        return result;
     }
 }

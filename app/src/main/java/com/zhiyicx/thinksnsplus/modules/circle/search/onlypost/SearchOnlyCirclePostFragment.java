@@ -62,6 +62,11 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
     }
 
     @Override
+    public boolean isOutsideSerach() {
+        return false;
+    }
+
+    @Override
     protected View getRightViewOfMusicWindow() {
         return mFragmentSearchCancle;
     }

@@ -83,7 +83,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     private Subscription mSearchSub;
 
     @Inject
-    public CircleDetailPresenter( CircleDetailContract.View rootView) {
+    public CircleDetailPresenter(CircleDetailContract.View rootView) {
         super(rootView);
     }
 
@@ -170,7 +170,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mSearchSub.unsubscribe();
                     }
                     final String searchContent = mRootView.getSearchInput();
-                    if (TextUtils.isEmpty(searchContent)) {// 无搜索内容
+                    // 无搜索内容
+                    if (TextUtils.isEmpty(searchContent)) {
                         mRootView.hideRefreshState(isLoadMore);
                         return;
                     }
@@ -499,13 +500,14 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
      */
     private void saveSearhDatq(String searchContent) {
         CircleSearchHistoryBean cricleSearchHistoryBean = new CircleSearchHistoryBean(searchContent, CircleSearchHistoryBean.TYPE_CIRCLE);
+        cricleSearchHistoryBean.setOutSideCircle(mRootView.isOutsideSerach());
         mCircleSearchBeanGreenDao.saveHistoryDataByType(cricleSearchHistoryBean, CircleSearchHistoryBean.TYPE_CIRCLE);
     }
 
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA);
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA,mRootView.isOutsideSerach());
     }
 
     @Override

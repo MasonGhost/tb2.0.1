@@ -44,6 +44,12 @@ public interface CircleDetailContract {
         void loadAllError();
 
         void updateCircleInfo(CircleInfo circleInfo);
+
+        /**
+         * 是否是圈外搜索，用于处理搜索记录
+         * @return
+         */
+        boolean isOutsideSerach();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {
