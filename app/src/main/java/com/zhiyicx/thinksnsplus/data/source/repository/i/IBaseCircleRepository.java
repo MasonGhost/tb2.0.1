@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
-import android.util.SparseArray;
-
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleEarningListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -13,7 +11,6 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
@@ -36,6 +33,7 @@ public interface IBaseCircleRepository {
 
     /**
      * 创建圈子
+     *
      * @param createCircleBean
      * @return
      */
@@ -43,6 +41,7 @@ public interface IBaseCircleRepository {
 
     /**
      * 获取圈子协议
+     *
      * @return
      */
     Observable<BaseJsonV2<String>> getCircleRule();
@@ -83,9 +82,10 @@ public interface IBaseCircleRepository {
 
     /**
      * 获取我加入的圈子
+     *
      * @param limit
      * @param offet
-     * @param type 默认: join, join 我加入 audit 待审核 allow_post 可以发帖的
+     * @param type  默认: join, join 我加入 audit 待审核 allow_post 可以发帖的
      * @return
      */
     Observable<List<CircleInfo>> getMyJoinedCircle(int limit, int offet, String type);
@@ -107,7 +107,7 @@ public interface IBaseCircleRepository {
      *
      * @return
      */
-    Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId,List<String> permissions);
+    Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId, List<String> permissions);
 
     Observable<BaseJsonV2<Integer>> getCircleCount();
 
@@ -179,8 +179,8 @@ public interface IBaseCircleRepository {
      * @param groupId 圈子id
      * @param after
      * @param limit
-     * @param start    秒级时间戳，起始筛选时间
-     * @param end      秒级时间戳，结束筛选时间
+     * @param start   秒级时间戳，起始筛选时间
+     * @param end     秒级时间戳，结束筛选时间
      * @param status  状态 默认全部，0-未处理 1-已处理 2-已驳回
      * @return
      */
@@ -221,8 +221,25 @@ public interface IBaseCircleRepository {
      * @param type  random 随机
      * @return
      */
-    Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet,String type);
+    Observable<List<CircleInfo>> getRecommendCircle(int limit, int offet, String type);
 
     Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId);
+
+    /**
+     * 圈主和管理员置顶帖子
+     *
+     * @param postId
+     * @param day 天数
+     * @return
+     */
+    Observable<BaseJsonV2> stickTopPost(Long postId,int day);
+
+    /**
+     * 圈主和管理员撤销置顶帖子
+     *
+     * @param postId
+     * @return
+     */
+    Observable<BaseJsonV2> undoTopPost(Long postId);
 
 }

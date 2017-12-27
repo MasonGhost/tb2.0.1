@@ -61,6 +61,22 @@ public interface CirclePostDetailContract {
         void sendComment(long replyUserId, String text);
 
         void updateRewardData();
+
+        /**
+         * 圈主和管理员置顶帖子
+         *
+         * @param postId
+         * @return
+         */
+        void stickTopPost(Long postId,int day);
+
+        /**
+         * 圈主和管理员撤销置顶帖子
+         *
+         * @param postId
+         * @return
+         */
+        void undoTopPost(Long postId);
     }
 
 }

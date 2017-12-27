@@ -24,13 +24,13 @@ import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
-import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -352,6 +352,9 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .map(circlePostBean -> {
                     List<CirclePostListBean> data = circlePostBean.getPinneds();
                     if (data != null) {
+                        for (CirclePostListBean postListBean : data) {
+                            postListBean.setPinned(true);
+                        }
                         data.addAll(circlePostBean.getPosts());
                         return data;
                     } else {
@@ -398,6 +401,20 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<BaseJsonV2<Object>> setCirclePermissions(long circleId, List<String> permissions) {
         return mCircleClient.setCirclePermissions(circleId, permissions)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> stickTopPost(Long postId,int day) {
+        return mCircleClient.stickTopPost(postId,day)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2> undoTopPost(Long postId) {
+        return mCircleClient.undoTopPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -621,8 +638,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
 
     @Override
-    public Observable<List<CircleInfo>> getRecommendCircle(int limit,int offet,String type) {
-        return mCircleClient.getRecommendCircle(limit,offet,type)
+    public Observable<List<CircleInfo>> getRecommendCircle(int limit, int offet, String type) {
+        return mCircleClient.getRecommendCircle(limit, offet, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

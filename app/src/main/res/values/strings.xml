@@ -276,6 +276,8 @@
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
     <string name="circle_blocked">封闭圈子!</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
+    <string name="post_undo_top">撤销置顶</string>
+    <string name="post_apply_top">置顶帖子</string>
     <string name="delete_post">删除帖子</string>
     <string name="post_publishing">发贴中</string>
     <string name="post_publish_select_circle">请选择一个圈子</string>

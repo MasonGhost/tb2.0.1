@@ -143,6 +143,42 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     public static final String CIRCLE_ID = "circle_id";
 
+    /**
+     * 加入圈子
+     */
+    @BindView(R.id.tv_circle_subscrib)
+    CheckBox mTvCircleSubscrib;
+
+    /**
+     * 退出圈子
+     */
+    @BindView(R.id.tv_exit_circle)
+    TextView mTvExitCircle;
+
+    /**
+     * 圈子收益
+     */
+    @BindView(R.id.ll_earnings_container)
+    CombinationButton mLlEarningsContainer;
+
+    /**
+     * 举报圈子
+     */
+    @BindView(R.id.bt_report_circle)
+    CombinationButton mBtReportCircle;
+
+    /**
+     * 权限管理
+     */
+    @BindView(R.id.ll_permission_container)
+    CombinationButton mLlPermissionContainer;
+
+    /**
+     * 举报管理
+     */
+    @BindView(R.id.ll_report_container)
+    CombinationButton mLlReportContainer;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
     @BindView(R.id.circle_title_layout)
@@ -175,12 +211,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvCircleDec;
     @BindView(R.id.tv_circle_owner)
     TextView mTvOwnerName;
-    @BindView(R.id.tv_exit_circle)
-    TextView mTvExitCircle;
     @BindView(R.id.tv_introduce_content)
     ExpandableTextView mTvCircleIntroduce;
-    @BindView(R.id.tv_circle_subscrib)
-    CheckBox mTvCircleSubscrib;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.iv_share)
@@ -193,14 +225,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     ImageView mBtnSendPost;
     @BindView(R.id.ll_member_container)
     CombinationButton mLlMemberContainer;
-    @BindView(R.id.ll_earnings_container)
-    CombinationButton mLlEarningsContainer;
-    @BindView(R.id.bt_report_circle)
-    CombinationButton mBtReportCircle;
-    @BindView(R.id.ll_permission_container)
-    CombinationButton mLlPermissionContainer;
-    @BindView(R.id.ll_report_container)
-    CombinationButton mLlReportContainer;
     @BindView(R.id.ll_circle_navigation_container)
     LinearLayout mLlCircleNavigationContainer;
     @BindView(R.id.ll_dynamic_count_container)
@@ -754,12 +778,21 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                        final Bitmap shareBitMap) {
         Long feed_id = circlePostListBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
+
+        boolean isManager = false;
+        if (mCircleInfo.getJoined() != null) {
+            isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
+                    CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
+        }
+        boolean isPinned = circlePostListBean.getPinned();
+
         mMyPostPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item4Str(getString(R.string.delete_post))
                 .item3Str(!feedIdIsNull ? getString(R.string.post_apply_for_top) : null)
-                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
+                .item5Str(getString(R.string.delete_post))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -778,6 +811,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     StickTopFragment.startSticTopActivity(mActivity, StickTopFragment.TYPE_POST, circlePostListBean.getId());
                 })
                 .item4ClickListener(() -> {
+                    // 管理员置顶操作
+                    if (isPinned) {
+                        mPresenter.undoTopPost(circlePostListBean.getId(), position);
+                    } else {
+                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                    }
+                    mMyPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .item5ClickListener(() -> {
                     // 删除
                     mMyPostPopWindow.hide();
                     mPresenter.deletePost(circlePostListBean, position);
@@ -839,24 +882,26 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
         }
+        boolean isPinned = circlePostListBean.getPinned();
         mOtherPostPopWindow = ActionPopupWindow.builder()
-                .item4Str(getString(isManager ? R.string.info_delete : R.string.empty))
-                .item3Str(getString(R.string.report))
-                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item1Str(getString(R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
+                .item4Str(getString(R.string.report))
+                .item5Str(getString(isManager ? R.string.info_delete : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
                 .with(getActivity())
-                .item4ClickListener(() -> {
+                .item5ClickListener(() -> {
                     // 管理员删除
                     mOtherPostPopWindow.hide();
                     mPresenter.deletePost(circlePostListBean, position);
                     showBottomView(true);
                 })
-                .item3ClickListener(() -> {
+                .item4ClickListener(() -> {
                     // 举报帖子
                     String img = "";
                     if (circlePostListBean.getImages() != null && !circlePostListBean.getImages().isEmpty()) {
@@ -872,6 +917,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
                             (circlePostListBean.getId()),
                             name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                    mOtherPostPopWindow.hide();
+                    showBottomView(true);
+                })
+                .item3ClickListener(() -> {
+                    // 管理员置顶操作
+                    if (isPinned) {
+                        mPresenter.undoTopPost(circlePostListBean.getId(), position);
+                    } else {
+                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                    }
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -1149,10 +1204,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(detail.getJoined().getRole());
         boolean isManager = isJoined && CircleMembers.ADMINISTRATOR.equals(detail.getJoined().getRole());
         mLlEarningsContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
-        mBtReportCircle.setVisibility(isNormalMember || isManager ? View.VISIBLE : View.GONE);
+        mBtReportCircle.setVisibility(isNormalMember ? View.VISIBLE : View.GONE);
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
-        mLlReportContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
+        mLlReportContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(detail.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
@@ -1208,7 +1263,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 if (isPaid) {
                     initPayPopWindow(mActivity, mCircleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName()
                             , R.string.buy_pay_circle_desc);
-                }else{
+                } else {
                     mPresenter.dealCircleJoinOrExit(mCircleInfo);
                 }
                 break;

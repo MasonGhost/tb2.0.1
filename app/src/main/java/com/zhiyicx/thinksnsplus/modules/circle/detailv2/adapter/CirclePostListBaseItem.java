@@ -171,7 +171,9 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             try { // 置顶标识 ,防止没有置顶布局错误
                 // 待审核 也隐藏
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
-                topFlagView.setVisibility(View.GONE);
+                topFlagView.setVisibility(circlePostListBean.getPinned() ?
+                        View.VISIBLE : View.GONE);
+                topFlagView.setText(R.string.dynamic_top_flag);
             } catch (Exception e) {
 
             }

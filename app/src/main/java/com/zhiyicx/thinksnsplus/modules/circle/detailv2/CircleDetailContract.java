@@ -25,12 +25,14 @@ import rx.Observable;
 public interface CircleDetailContract {
     interface View extends ITSListView<CirclePostListBean, Presenter> {
         Long getCircleId();
+
         void allDataReady(CircleZipBean circleZipBean);
 
         String getType();
 
         /**
          * 是否需要头信息
+         *
          * @return true 需要
          */
         boolean isNeedHeaderInfo();
@@ -47,6 +49,7 @@ public interface CircleDetailContract {
 
         /**
          * 是否是圈外搜索，用于处理搜索记录
+         *
          * @return
          */
         boolean isOutsideSerach();
@@ -67,7 +70,7 @@ public interface CircleDetailContract {
 
         void shareCircle(CircleInfo CircleInfo, Bitmap shareBitMap);
 
-        void handleLike(boolean b,Long id, int dataPosition);
+        void handleLike(boolean b, Long id, int dataPosition);
 
         void handleCollect(CirclePostListBean circlePostListBean);
 
@@ -75,13 +78,34 @@ public interface CircleDetailContract {
 
         void deleteSearchHistory(CircleSearchHistoryBean circleSearchHistoryBean);
 
-        List<CircleSearchHistoryBean>  getAllSearchHistory();
+        List<CircleSearchHistoryBean> getAllSearchHistory();
 
         void cleaerAllSearchHistory();
 
         void handleViewCount(Long id, int position);
 
+        /**
+         * 加入/退出圈子
+         * @param circleInfo
+         */
         void dealCircleJoinOrExit(CircleInfo circleInfo);
+
+        /**
+         * 圈主和管理员置顶帖子
+         *
+         * @param postId
+         * @param day
+         * @return
+         */
+        void stickTopPost(Long postId,int position,int day);
+
+        /**
+         * 圈主和管理员撤销置顶帖子
+         *
+         * @param postId
+         * @return
+         */
+        void undoTopPost(Long postId,int position);
 
     }
 

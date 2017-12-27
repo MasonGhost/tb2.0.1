@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,10 +43,31 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     public static final String PARENT_ID = "parent_id";
     public static final String CHILD_ID = "child_id";
 
-    public static final String TYPE_DYNAMIC = "dynamic"; // value 动态置顶
-    public static final String TYPE_INFO = "info";  // value 资讯置顶
-    public static final String TYPE_POST = "post";  // value 帖子置顶
-    public static final String TYPE = "type";    // 置顶的 key
+    /**
+     * value 动态置顶
+     */
+    public static final String TYPE_DYNAMIC = "dynamic";
+
+    /**
+     * value 资讯置顶
+     */
+    public static final String TYPE_INFO = "info";
+
+    /**
+     * value 帖子置顶
+     */
+    public static final String TYPE_POST = "post";
+
+    /**
+     * value 管理员置顶
+     */
+    public static final String TYPE_MANAGER = "manager";
+
+    /**
+     * 置顶的 key
+     */
+    public static final String TYPE = "type";
+
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -69,6 +91,13 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     @BindView(R.id.tv_total_money)
     TextView mTotalMoney;
 
+    @BindView(R.id.line)
+    View mLine;
+    @BindView(R.id.ll_top_money)
+    LinearLayout mLlTopMoney;
+    @BindView(R.id.ll_top_total_money)
+    LinearLayout mLlTopTotalMoney;
+
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private int mInputMoney;
@@ -78,6 +107,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     private long parent_id, child_id;
     private String type;
+    private boolean isManager;
     private int mErrorCode;
 
     public static StickTopFragment newInstance(Bundle bundle) {
@@ -97,11 +127,18 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         type = getArguments().getString(TYPE, "");
         parent_id = getArguments().getLong(PARENT_ID, -1L);
         child_id = getArguments().getLong(CHILD_ID, -1L);
+        isManager = getArguments().getBoolean(TYPE_MANAGER);
         mBlance = mPresenter.getBalance();
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mBlance));
         String moneyName = mPresenter.getGoldName();
         mCustomMoney.setText(moneyName);
         mTotalMoney.setText(moneyName);
+
+        if (isManager) {
+            mLine.setVisibility(View.GONE);
+            mLlTopMoney.setVisibility(View.GONE);
+            mLlTopTotalMoney.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -286,6 +323,29 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
 
     public static void startSticTopActivity(Context context, String type, Long parent_id) {
         startSticTopActivity(context, type, parent_id, null);
+    }
+
+    public static void startSticTopActivity(Context context, String type, Long parent_id, Long child_id, boolean isManager) {
+        Bundle bundle = new Bundle();
+
+        // 资源类型
+        bundle.putString(StickTopFragment.TYPE, type);
+
+        // 资源id
+        bundle.putLong(StickTopFragment.PARENT_ID, parent_id);
+
+        bundle.putBoolean(StickTopFragment.TYPE_MANAGER, isManager);
+
+        if (child_id != null) {
+            bundle.putLong(StickTopFragment.CHILD_ID, child_id);
+        }
+        Intent intent = new Intent(context, StickTopActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void startSticTopActivity(Context context, String type, Long parent_id, boolean isManager) {
+        startSticTopActivity(context, type, parent_id, null, isManager);
     }
 
 }

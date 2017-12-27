@@ -67,6 +67,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CI
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_TOP_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MANAGER_TOP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUBLISH_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_PUT_EXIT_CIRCLE;
@@ -77,6 +78,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMM
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UNDO_TOP_POST;
 
 /**
  * @Author Jliuer
@@ -104,7 +106,7 @@ public interface CircleClient {
     }
 
     /**
-     * @param limit 返回条数 默认为15
+     * @param limit  返回条数 默认为15
      * @param offset 翻页偏移量
      * @author Jliuer
      * @Date 17/11/27 17:07
@@ -128,9 +130,9 @@ public interface CircleClient {
     /**
      * 获取推荐的圈子
      *
-     * @param limit 默认 20 ，数据返回条数 默认为20
+     * @param limit  默认 20 ，数据返回条数 默认为20
      * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
-     * @param type  random 随机
+     * @param type   random 随机
      * @return
      */
     @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
@@ -139,9 +141,9 @@ public interface CircleClient {
     /**
      * 获取已经加入的圈子
      *
-     * @param limit 默认 20 ，数据返回条数 默认为20
+     * @param limit  默认 20 ，数据返回条数 默认为20
      * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
-     * @param type  默认: join, join 我加入 audit 待审核
+     * @param type   默认: join, join 我加入 audit 待审核
      * @return
      */
     @GET(APP_PATH_GET_MY_JOINED_CIRCLE)
@@ -151,7 +153,7 @@ public interface CircleClient {
      * 获取全部圈子
      *
      * @param limit       默认 15 ，数据返回条数 默认为15
-     * @param offset       默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param offset      默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param keyword     用于搜索圈子，按圈名搜索
      * @param category_id 圈子分类id
      * @return
@@ -431,6 +433,27 @@ public interface CircleClient {
     @POST(ApiConfig.APP_PATH_TOP_POST_COMMENT)
     Observable<BaseJsonV2<Integer>> stickTopPostComment(@Field("post_id") Long parent_id, @Path("comment_id") Long child_id, @Field("amount") Long
             amount, @Field("day") Integer day);
+
+
+    /**
+     * 圈主和管理员置顶帖子
+     *
+     * @param postId
+     * @param day 天数
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_MANAGER_TOP_POST)
+    Observable<BaseJsonV2> stickTopPost(@Path("post_id") Long postId,@Field("day") int day);
+
+    /**
+     * 圈主和管理员撤销置顶帖子
+     *
+     * @param postId
+     * @return
+     */
+    @PATCH(APP_PATH_UNDO_TOP_POST)
+    Observable<BaseJsonV2> undoTopPost(@Path("post_id") Long postId);
 
     /**
      * 帖子打赏

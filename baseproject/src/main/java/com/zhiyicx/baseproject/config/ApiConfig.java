@@ -595,6 +595,16 @@ public class ApiConfig {
     public static final String APP_PATH_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}";
 
     /**
+     * 圈主和管理员置顶帖子
+     */
+    public static final String APP_PATH_MANAGER_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/create";
+
+    /**
+     * 圈主和管理员撤销置顶帖子
+     */
+    public static final String APP_PATH_UNDO_TOP_POST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts/{post_id}/cancel";
+
+    /**
      * 帖子申请置顶列表
      */
     public static final String APP_PATH_TOP_POST_LIST = "api/" + API_VERSION_2 + "/plus-group/pinned/posts";

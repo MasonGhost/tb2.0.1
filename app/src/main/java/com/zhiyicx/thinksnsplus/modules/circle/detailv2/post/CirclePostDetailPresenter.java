@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -59,7 +60,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetailContract.View>
+public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetailContract.View>
         implements CirclePostDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -84,7 +85,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
     }
 
     @Inject
-    public CirclePostDetailPresenter( CirclePostDetailContract.View rootView) {
+    public CirclePostDetailPresenter(CirclePostDetailContract.View rootView) {
         super(rootView);
     }
 
@@ -156,6 +157,37 @@ public class CirclePostDetailPresenter extends AppBasePresenter< CirclePostDetai
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
 
+    }
+
+    @Override
+    public void stickTopPost(Long postId, int day) {
+        Subscription subscribe = mBaseCircleRepository.stickTopPost(postId, day)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.getCurrentePost().setPinned(true);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void undoTopPost(Long postId) {
+        Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.getCurrentePost().setPinned(false);
+                    }
+                });
+        addSubscrebe(subscribe);
     }
 
     /**

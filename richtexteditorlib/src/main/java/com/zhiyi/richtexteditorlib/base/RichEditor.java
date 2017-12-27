@@ -142,8 +142,8 @@ public abstract class RichEditor extends WebView {
         setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                LogUtils.d("webview", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber()
-                        + " of " + consoleMessage.sourceId());
+//                LogUtils.d("webview", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber()
+//                        + " of " + consoleMessage.sourceId());
                 return super.onConsoleMessage(consoleMessage);
             }
         });

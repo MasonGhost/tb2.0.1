@@ -51,6 +51,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST;
@@ -526,6 +527,44 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         mCircleSearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
 
+    @Override
+    public void stickTopPost(Long postId, int position, int day) {
+        Subscription subscribe = mBaseCircleRepository.stickTopPost(postId, day)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.getListDatas().get(position).setPinned(true);
+                        mRootView.refreshData(position);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void undoTopPost(Long postId, int position) {
+        Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.getListDatas().get(position).setPinned(false);
+                        mRootView.refreshData(position);
+                    }
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
 
     /**
      * 详情界面处理了数据

@@ -295,6 +295,7 @@ var RE = {
 		if (_self.commandSet.indexOf(command) !== -1) {
 		    console.log("exec:::" + command);
 			document.execCommand(command, false, null);
+			console.log("execCommand:::" + document.documentElement.outerHTML);
 		} else {
 			var value = '<' + command + '>';
 			document.execCommand('formatBlock', false, value);
@@ -326,6 +327,7 @@ var RE = {
 					items.push(item);
 				}
 			});
+			console.log("getEditItem:::" + document.documentElement.outerHTML);
 			if (document.queryCommandValue('formatBlock')) {
 				items.push(document.queryCommandValue('formatBlock'));
 			}

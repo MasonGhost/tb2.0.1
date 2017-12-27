@@ -541,26 +541,66 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
             isManager = CircleMembers.FOUNDER.equals(circlePostListBean.getGroup().getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(circlePostListBean.getGroup().getJoined().getRole());
         }
+        boolean isPinned = circlePostListBean.getPinned();
 
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.post_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R
+                .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
+                .item3Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
-                .item4Str(isMine ? "" : getString(R.string.report))
+                .item4Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
+                .item5Str(isMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 申请置顶
+                    if (circlePostListBean.hasPinned()) {
+                        showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
+                    } else {
+                        // 跳转置顶页面
+                        Bundle bundle = new Bundle();
+                        // 资源类型
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
+                        // 资源id
+                        bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
+                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                    mDealPostPopWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    // 管理员置顶操作
+                    if (isPinned) {
+                        mPresenter.undoTopPost(circlePostListBean.getId());
+                    } else {
+                        mPresenter.stickTopPost(circlePostListBean.getId(),30);
+                    }
+                    mDealPostPopWindow.hide();
+                })
                 .item3ClickListener(() -> {
+                    // 收藏
+                    // 如果是自己发布的，则不能收藏只能删除
+                    if (isMine) {
+                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+                        getActivity().finish();
+                    } else {
+                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
+                                circlePostListBean.getId());
+                    }
+                    mDealPostPopWindow.hide();
+                })
+                .item4ClickListener(() -> {
                     // 管理员删除
                     EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
                     getActivity().finish();
                     mDealPostPopWindow.hide();
                 })
-                .item4ClickListener(() -> {
+                .item5ClickListener(() -> {
                     // 举报
                     String img = "";
                     if (circlePostListBean.getImages() != null && !circlePostListBean.getImages()
@@ -580,35 +620,6 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                             (circlePostListBean.getUser(), String.valueOf
                                     (circlePostListBean.getId()),
                                     name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
-                    mDealPostPopWindow.hide();
-                })
-                .item2ClickListener(() -> {
-                    // 收藏
-                    // 如果是自己发布的，则不能收藏只能删除
-                    if (isMine) {
-                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
-                        getActivity().finish();
-                    } else {
-                        mPresenter.handleCollect(!circlePostListBean.getCollected(),
-                                circlePostListBean.getId());
-                    }
-                    mDealPostPopWindow.hide();
-                })
-                .item1ClickListener(() -> {
-                    // 申请置顶
-                    if (circlePostListBean.hasPinned()) {
-                        showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
-                    } else {
-                        // 跳转置顶页面
-                        Bundle bundle = new Bundle();
-                        // 资源类型
-                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_POST);
-                        // 资源id
-                        bundle.putLong(StickTopFragment.PARENT_ID, circlePostListBean.getId());
-                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
                     mDealPostPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealPostPopWindow.hide())
