@@ -332,7 +332,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void initViewPager() {
         //设置缓存的个数
-        mVpHome.setOffscreenPageLimit(PAGE_NUMS-1);
+        mVpHome.setOffscreenPageLimit(PAGE_NUMS - 1);
         mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));

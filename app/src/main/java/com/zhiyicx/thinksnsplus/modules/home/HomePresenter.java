@@ -86,8 +86,6 @@ class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContra
             EMClient.getInstance().addConnectionListener(this);
             EMClient.getInstance().chatManager().addMessageListener(this);
         }
-        LogUtils.e("-----------" + AppApplication.getMyUserIdWithdefault());
-        LogUtils.e("userinfo : " + mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
     }
 
     /*******************************************

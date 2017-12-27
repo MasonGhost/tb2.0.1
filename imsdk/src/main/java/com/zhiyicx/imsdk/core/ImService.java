@@ -183,7 +183,7 @@ public class ImService {
      */
 
     public void connect() {
-        if(TextUtils.isEmpty(mUri)){
+        if (TextUtils.isEmpty(mUri)) {
             return;
         }
         LogUtils.debugInfo("SocketService", mUri);
@@ -227,6 +227,15 @@ public class ImService {
         }
 
 
+    }
+
+    /**
+     * 重连
+     */
+    public void reconnect() {
+        if (mConnection != null && mConnection instanceof WebSocketConnection) {
+            ((WebSocketConnection) mConnection).reconnect();
+        }
     }
 
     /**
@@ -311,7 +320,7 @@ public class ImService {
      * @param limit
      * @param msgid
      */
-    public boolean sendSyncMessage(int cid, int gt, int lt, int order,int limit, int msgid) {
+    public boolean sendSyncMessage(int cid, int gt, int lt, int order, int limit, int msgid) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("cid", cid);
