@@ -2,7 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.home.mine.mycode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -62,13 +68,42 @@ public class MyCodePresenter extends AppBasePresenter<MyCodeContract.Repository,
             String qrCodeContent = String.format(mContext.getString(R.string.my_qr_code_content), userInfoBean.getUser_id());
             Observable.just(qrCodeContent)
                     .subscribeOn(Schedulers.newThread())
-                    .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"), logo))
+                    .map(s -> QRCodeEncoder.syncEncodeQRCode(s, BGAQRCodeUtil.dp2px(mContext, 150), Color.parseColor("#000000"), getRoundedCornerBitmap(logo, 2)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(bitmap -> {
                         mRootView.setMyCode(bitmap);
                         mRootView.getEmptyView().setErrorType(EmptyView.STATE_HIDE_LAYOUT);
                     });
         }
+    }
+
+    private Bitmap getRoundedCornerBitmap(Bitmap bitmap, float roundPx){
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+                .getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+//        setBitmapBorder(canvas);
+        return output;
+    }
+
+    private void setBitmapBorder(Canvas canvas){
+        Rect rect = canvas.getClipBounds();
+        Paint paint = new Paint();
+        //设置边框颜色
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        //设置边框宽度
+        paint.setStrokeWidth(10);
+        canvas.drawRect(rect, paint);
     }
 
     @Override

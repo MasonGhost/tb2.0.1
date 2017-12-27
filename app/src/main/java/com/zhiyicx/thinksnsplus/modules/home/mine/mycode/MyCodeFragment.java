@@ -22,6 +22,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
@@ -61,6 +62,11 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
     protected void initView(View rootView) {
         setCenterTextColor(R.color.white);
         initScanCodePopupWindow();
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
     }
 
     @Override
