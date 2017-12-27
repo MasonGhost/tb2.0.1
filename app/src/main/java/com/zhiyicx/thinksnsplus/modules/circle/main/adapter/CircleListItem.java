@@ -178,7 +178,7 @@ public class CircleListItem extends BaseCircleItem {
                         if (mPresenter != null && CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                             initPayPopWindow(mContext, position, circleInfo, circleInfo.getMoney
                                     (), mPresenter.getRatio(), mPresenter.getGoldName(), R.string
-                                    .buy_pay_words_desc);
+                                    .buy_pay_circle_desc);
                             return;
                         }
                         mCircleItemItemEvent.dealCircleJoinOrExit(position, circleInfo);

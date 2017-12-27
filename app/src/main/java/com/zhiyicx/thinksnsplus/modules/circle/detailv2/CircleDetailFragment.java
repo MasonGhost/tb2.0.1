@@ -33,6 +33,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -41,6 +42,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -232,6 +234,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
 
+    protected PayPopWindow mPayPopWindow;
+
 
     // 类型选择框
     private TypeChoosePopupWindow mTypeChoosePopupWindow;
@@ -422,6 +426,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         } else if (requestCode == MemberListFragment.MEMBER_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             mCircleInfo.setUsers_count(data.getIntExtra(MemberListFragment.CIRCLEID, 0));
             mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
+            mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
         }
     }
 
@@ -830,7 +835,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     Bitmap shareBitmap) {
 
         boolean isManager = false;
-        if ( mCircleInfo.getJoined() != null) {
+        if (mCircleInfo.getJoined() != null) {
             isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
         }
@@ -1199,7 +1204,13 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 mDrawer.openDrawer(Gravity.RIGHT);
                 break;
             case R.id.tv_circle_subscrib:
-                mPresenter.dealCircleJoinOrExit(mCircleInfo);
+                boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+                if (isPaid) {
+                    initPayPopWindow(mActivity, mCircleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName()
+                            , R.string.buy_pay_circle_desc);
+                }else{
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo);
+                }
                 break;
             case R.id.tv_exit_circle:
                 boolean isOwner = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole());
@@ -1284,5 +1295,52 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         dismissPop(mMyPostPopWindow);
         dismissPop(mTypeChoosePopupWindow);
         dismissPop(mAuditTipPop);
+    }
+
+    /**
+     * @param context
+     * @param amout    金额
+     * @param ratio    转换率
+     * @param goldName 单位名称
+     * @param strRes   描述文字
+     */
+    protected void initPayPopWindow(Activity context, long amout, int ratio, String goldName, int strRes) {
+
+        mPayPopWindow = PayPopWindow.builder()
+                .with(context)
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(context.getString(strRes) + context.getString(R
+                        .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(amout, ratio), goldName))
+                .buildLinksStr(context.getString(R.string.buy_pay_member))
+                .buildTitleStr(context.getString(R.string.buy_pay))
+                .buildItem1Str(context.getString(R.string.buy_pay_in))
+                .buildItem2Str(context.getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(context.getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(amout, ratio)))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo);
+                    mPayPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayPopWindow.show();
+
     }
 }

@@ -379,7 +379,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
 
         Observable<BaseJsonV2<Object>> observable;
-        if (isPaid) {
+        if (isPaid && !isJoined) {
             observable = handleWalletBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
@@ -507,7 +507,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA,mRootView.isOutsideSerach());
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, mRootView.isOutsideSerach());
     }
 
     @Override
