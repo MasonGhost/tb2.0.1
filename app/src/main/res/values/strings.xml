@@ -303,6 +303,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="change_circle_head_icon">上传圈子头像</string>
+    <string name="circle_head_icon">圈子头像</string>
     <string name="circle_name">圈名</string>
     <string name="circle_owner">圈主</string>
     <string name="circle_manager">管理员</string>

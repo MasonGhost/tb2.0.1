@@ -84,6 +84,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     DeleteEditText mEtCircleName;
     @BindView(R.id.tv_circle_type)
     TextView mTvCircleType;
+    @BindView(R.id.tv_circle_head)
+    TextView mTvCircleHead;
     @BindView(R.id.tv_user_agreement)
     TextView mTvUseAgreeMent;
     @BindView(R.id.ll_type_container)
@@ -465,6 +467,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
         mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);
+        mTvCircleHead.setText(canUpdate && !isManager ? R.string.change_circle_head_icon : R.string.circle_head_icon);
         mEtCircleName.setEnabled(canUpdate && !isManager);
         mLlTypeContainer.setEnabled(canUpdate && !isManager);
         mLlTagContainer.setEnabled(canUpdate && !isManager);
