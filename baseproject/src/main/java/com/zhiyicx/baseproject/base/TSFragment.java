@@ -30,6 +30,7 @@ import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.base.BaseActivity;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -109,7 +110,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private LoadingDialog mCenterLoadingDialog;
     private TSnackbar mSnackBar;
     private View mMusicWindowView;
-    private FrameLayout musicWindowContainer;
     protected SystemConfigBean mSystemConfigBean;
 
     private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
@@ -117,36 +117,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
-        // 添加音乐悬浮窗
-        if (getParentFragment() == null && needMusicWindowView()) {
-            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
-            musicWindowContainer = new FrameLayout(getActivity());
-            musicWindowContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
-                    .MATCH_PARENT));
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.music_icon_size),
-                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size));
-            layoutParams.gravity = Gravity.RIGHT;
-            int marginTop = DeviceUtils.getStatuBarHeight(mActivity) + (getResources().getDimensionPixelOffset(R.dimen.toolbar_height) -
-                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size)) / 2;
-            layoutParams.setMargins(0, marginTop, getResources().getDimensionPixelOffset(R.dimen.spacing_normal), 0);
-            mMusicWindowView.setLayoutParams(layoutParams);
-            mMusicWindowView.setVisibility(View.GONE);
-            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent("android.intent.action.MAIN");
-                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
-                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getActivity().startActivity(intent);
-                }
-            });
-            musicWindowContainer.addView(linearLayout);
-            musicWindowContainer.addView(mMusicWindowView);
-        }
-
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 是否添加和状态栏等高的占位 View
         if (setUseSatusbar() && setUseStatusView()) {
@@ -189,14 +160,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             StatusBarUtils.statusBarLightMode(getActivity());
         }
         setToolBarTextColor();
-        FrameLayout frameLayout = new FrameLayout(getActivity());
-        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 内容区域
         final View bodyContainer = mLayoutInflater.inflate(getBodyLayoutId(), null);
         bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        frameLayout.addView(bodyContainer);
         // 加载动画
         if (setUseCenterLoading()) {
+            FrameLayout frameLayout = new FrameLayout(getActivity());
+            frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            frameLayout.addView(bodyContainer);
+
             mCenterLoadingView = mLayoutInflater.inflate(R.layout.view_center_loading, null);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (!showToolbar()) {
@@ -219,14 +191,51 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     });
 
             frameLayout.addView(mCenterLoadingView);
+            linearLayout.addView(frameLayout);
+
+        } else {
+            linearLayout.addView(bodyContainer);
         }
 
-        linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
-        return musicWindowContainer == null ? linearLayout : musicWindowContainer;
+        return linearLayout;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // 添加音乐悬浮窗
+        if (getParentFragment() == null && needMusicWindowView()) {
+
+            mMusicWindowView = mLayoutInflater.inflate(R.layout.windows_music, null);
+
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelOffset(R.dimen.music_icon_size),
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size));
+            layoutParams.gravity = Gravity.RIGHT;
+            int marginTop = DeviceUtils.getStatuBarHeight(mActivity) + (getResources().getDimensionPixelOffset(R.dimen.toolbar_height) -
+                    getResources().getDimensionPixelOffset(R.dimen.music_icon_size)) / 2;
+            layoutParams.setMargins(0, marginTop, getResources().getDimensionPixelOffset(R.dimen.spacing_normal), 0);
+            mMusicWindowView.setLayoutParams(layoutParams);
+            mMusicWindowView.setVisibility(View.GONE);
+            mMusicWindowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.intent.action.MAIN");
+                    intent.setClassName(getActivity(), "com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity");
+                    intent.putExtra("music_info", WindowUtils.getMusicAlbumDetailsBean());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                }
+            });
+
+            if (mActivity instanceof BaseActivity) {
+                ((ViewGroup) mActivity.findViewById(R.id.fl_fragment_container)).addView(mMusicWindowView);
+            }
+        }
     }
 
     @Override

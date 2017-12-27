@@ -1,5 +1,6 @@
 package com.zhiyicx.common.base;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
      */
     public boolean mIsForeground;
 
-    @Nullable
+    @SuppressLint("ActivityLayoutNameNotPrefixed")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +109,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
 
     /**
      * view 初始化
+     *
      * @param savedInstanceState
      */
     protected abstract void initView(Bundle savedInstanceState);

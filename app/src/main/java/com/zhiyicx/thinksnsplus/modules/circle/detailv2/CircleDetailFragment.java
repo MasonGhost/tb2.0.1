@@ -466,7 +466,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         initToolBar();
         initLisener();
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        AndroidBug5497Workaround.assistActivity(mActivity);
         onChoosed(ALL);
     }
 

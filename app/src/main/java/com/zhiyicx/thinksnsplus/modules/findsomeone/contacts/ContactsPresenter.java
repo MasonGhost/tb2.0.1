@@ -86,41 +86,38 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> i
             }
         })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<ContactsBean>, Observable<List<ContactsContainerBean>>>() {
-                    @Override
-                    public Observable<List<ContactsContainerBean>> call(List<ContactsBean> contacts) {
-                        ArrayList<String> phones = new ArrayList<>();
-                        for (ContactsBean contact : contacts) {
-                            phones.add(contact.getPhone());
-                        }
-                        return mUserInfoRepository.getUsersByPhone(phones)
-                                .observeOn(Schedulers.io())
-                                .map(userInfoBeen -> {
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
-                                    List<ContactsContainerBean> contactsContainerBeens = new ArrayList<>();
-                                    ContactsContainerBean hadAdd = new ContactsContainerBean();
-                                    hadAdd.setContacts(new ArrayList<>());
-                                    hadAdd.setTitle(mContext.getString(R.string.contact_had_add_ts_plust));
-                                    ContactsContainerBean notAdd = new ContactsContainerBean();
-                                    notAdd.setContacts(new ArrayList<>());
-                                    notAdd.setTitle(mContext.getString(R.string.contact_not_add_ts_plust));
-                                    contactsContainerBeens.add(hadAdd);
-                                    contactsContainerBeens.add(notAdd);
-
-                                    for (ContactsBean contact : contacts) {
-                                        List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
-                                        if (!tmp.isEmpty()) {
-                                            contact.setUser(tmp.get(0));
-                                            hadAdd.getContacts().add(contact);
-                                        } else {
-                                            notAdd.getContacts().add(contact);
-                                        }
-                                    }
-                                    return contactsContainerBeens;
-                                });
-
+                .observeOn(Schedulers.io())
+                .flatMap(contacts -> {
+                    ArrayList<String> phones = new ArrayList<>();
+                    for (ContactsBean contact : contacts) {
+                        phones.add(contact.getPhone());
                     }
+                    return mUserInfoRepository.getUsersByPhone(phones)
+                            .observeOn(Schedulers.io())
+                            .map(userInfoBeen -> {
+                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                                List<ContactsContainerBean> contactsContainerBeens = new ArrayList<>();
+                                ContactsContainerBean hadAdd = new ContactsContainerBean();
+                                hadAdd.setContacts(new ArrayList<>());
+                                hadAdd.setTitle(mContext.getString(R.string.contact_had_add_ts_plust));
+                                ContactsContainerBean notAdd = new ContactsContainerBean();
+                                notAdd.setContacts(new ArrayList<>());
+                                notAdd.setTitle(mContext.getString(R.string.contact_not_add_ts_plust));
+                                contactsContainerBeens.add(hadAdd);
+                                contactsContainerBeens.add(notAdd);
+
+                                for (ContactsBean contact : contacts) {
+                                    List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
+                                    if (!tmp.isEmpty()) {
+                                        contact.setUser(tmp.get(0));
+                                        hadAdd.getContacts().add(contact);
+                                    } else {
+                                        notAdd.getContacts().add(contact);
+                                    }
+                                }
+                                return contactsContainerBeens;
+                            });
+
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<ContactsContainerBean>>() {

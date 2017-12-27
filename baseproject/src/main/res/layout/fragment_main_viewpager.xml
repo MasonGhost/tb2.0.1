@@ -16,9 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_with_tab_height"
         android:layout_below="@id/v_status_bar_placeholder"
-        android:background="@color/white">
+        android:background="@color/white"/>
 
-    </com.zhiyicx.baseproject.widget.TabSelectView>
 
     <View
         android:id="@+id/v_shadow"

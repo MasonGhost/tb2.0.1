@@ -82,6 +82,12 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
                 });
     }
 
+    /**
+     * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
+     *
+     * @param throwable 抛出的异常
+     * @return
+     */
     protected boolean isBalanceCheck(Throwable throwable) {
         if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_WALLET_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
             mRootView.dismissSnackBar();

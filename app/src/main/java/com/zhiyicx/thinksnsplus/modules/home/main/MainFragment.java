@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
- * @Describe 主页MainFragment
+ * @Describe 主页 MainFragment
  * @Author Jungle68
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
