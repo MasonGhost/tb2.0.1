@@ -801,7 +801,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     public void onResume() {
         super.onResume();
-        refreshData();
+        if (!mListDatas.isEmpty()) {
+            refreshData();
+        }
     }
 
     /**

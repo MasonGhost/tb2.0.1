@@ -105,8 +105,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * item 间距单位 dp
      */
     public static final long ITEM_SPACING = 5L;
-    @BindView(R.id.fl_container)
-    FrameLayout mFlContainer;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
@@ -128,7 +126,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
-    ///    private PayPopWindow mPayWordsPopWindow;
     /**
      * 当前评论的动态位置
      */
@@ -141,7 +138,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private DynamicBannerHeader mDynamicBannerHeader;
     private List<RealAdvertListBean> mListAdvert;
     private List<RealAdvertListBean> mHeaderAdvert;
-
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -177,12 +173,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return false;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mListDatas.isEmpty()) {
+            refreshData();
         }
     }
 
@@ -201,16 +204,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean useEventBus() {
-        return true;
-    }
-
-    @Override
-    protected boolean needCenterLoadingDialog() {
         return true;
     }
 
@@ -260,19 +253,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
             advertLinks.add(advert.getAdvertFormat().getImage().getLink());
-            if (advert.getType().equals("html")) {
+            if ("html".equals(advert.getType())) {
                 showStickyHtmlMessage((String) advert.getData());
             }
         }
-
         if (advertUrls.isEmpty()) {
             return;
         }
-
-        mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
+        mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
         mDynamicBannerHeader.setHeadlerClickEvent(this);
-        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
-                DynamicBannerHeaderInfo();
+        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
         headerInfo.setLinks(advertLinks);
         headerInfo.setUrls(advertUrls);
@@ -532,11 +522,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshData();
-    }
 
     @Override
     public void paySuccess() {

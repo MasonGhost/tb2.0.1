@@ -53,7 +53,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
             mRxPermissions.setLogging(true);
         }
         initView(mRootView);
-        LogUtils.d("------------------"+TAG+"--------------------");
         return mRootView;
     }
 
@@ -64,7 +63,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment 
         {
             EventBus.getDefault().register(this);// 注册到事件主线
         }
-
         initData();
     }
 

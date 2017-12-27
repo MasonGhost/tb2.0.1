@@ -114,14 +114,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     private ActionPopupWindow mDeleteTipPopupWindow;// 删除二次确认弹框
 
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
-    }
-
     @Override
     protected View getContentView() {
         LinearLayout linearLayout = new LinearLayout(getActivity());
