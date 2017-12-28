@@ -91,8 +91,7 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
     UpLoadRepository mIUploadRepository;
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     @Inject
@@ -103,10 +102,6 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    CommentRepository mCommentRepository;
 
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;

@@ -36,6 +36,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
     MessageRepository mMessageRepository;
     @Inject
     NotificationRepository mNotificationRepository;
+
     private Subscription subscribe;
 
     @Inject

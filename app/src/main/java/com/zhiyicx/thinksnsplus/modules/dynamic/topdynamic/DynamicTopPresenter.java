@@ -40,19 +40,11 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Vie
         implements DynamicTopContract.Presenter {
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
 
-    @Inject
-    SystemRepository mSystemRepository;
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;
 

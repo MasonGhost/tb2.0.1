@@ -60,12 +60,6 @@ public interface HomeContract {
 
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository {
-    }
-
     interface Presenter extends IBaseTouristPresenter {
         /**
          * 初始化 im

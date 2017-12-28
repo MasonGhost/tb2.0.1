@@ -34,8 +34,7 @@ public class RankTypeListPresenter extends AppBasePresenter< RankTypeListContrac
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     BaseRankRepository mBaseRankRepository;
 

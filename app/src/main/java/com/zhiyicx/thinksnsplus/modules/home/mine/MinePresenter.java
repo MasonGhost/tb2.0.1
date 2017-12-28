@@ -44,16 +44,9 @@ import rx.schedulers.Schedulers;
  */
 @FragmentScoped
 public class MinePresenter extends AppBasePresenter<MineContract.View> implements MineContract.Presenter {
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
-
-    @Inject
-    SystemRepository mSystemRepository;
 
     @Inject
     UserInfoRepository mUserInfoRepository;

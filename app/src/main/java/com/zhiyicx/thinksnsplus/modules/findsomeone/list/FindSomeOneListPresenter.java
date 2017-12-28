@@ -38,9 +38,6 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject

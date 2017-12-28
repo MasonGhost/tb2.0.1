@@ -36,10 +36,6 @@ public class FollowFansListPresenter extends AppBasePresenter<
 
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject

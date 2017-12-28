@@ -36,13 +36,9 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
     private int mTimeOut = SNS_TIME;
 
     @Inject
-    AuthRepository mAuthRepository;
-    @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     VertifyCodeRepository mVertifyCodeRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     CountDownTimer timer = new CountDownTimer(mTimeOut, S_TO_MS_SPACING) {
 

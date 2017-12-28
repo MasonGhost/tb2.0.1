@@ -41,10 +41,6 @@ public class ContactsPresenter extends AppBasePresenter<ContactsContract.View> i
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    SystemRepository mSystemRepository;
 
     @Inject
     public ContactsPresenter(ContactsContract.View rootView) {

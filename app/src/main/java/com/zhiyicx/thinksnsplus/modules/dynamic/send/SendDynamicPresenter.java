@@ -44,8 +44,7 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
     IUploadRepository mIUploadRepository;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 

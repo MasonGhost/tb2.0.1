@@ -89,6 +89,7 @@ public class SystemRepository implements ISystemRepository {
         mCommonClient.getBootstrappersInfo()
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .observeOn(Schedulers.io())
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {

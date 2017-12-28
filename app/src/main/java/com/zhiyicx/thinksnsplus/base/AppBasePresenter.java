@@ -32,11 +32,11 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
     @Inject
     protected AuthRepository mAuthRepository;
     @Inject
-    CommentRepository mCommentRepository;
+    protected CommentRepository mCommentRepository;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    protected WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     protected SystemRepository mSystemRepository;
 
