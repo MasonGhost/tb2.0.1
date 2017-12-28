@@ -23,19 +23,16 @@
 
             <include
                 layout="@layout/include_top_tip_sub"
-            />
+                />
 
             <include
                 layout="@layout/include_coodinator_refresh"
                 />
         </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.EmptyView
-            android:id="@+id/empty_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
+        <include
+            layout="@layout/include_list_emtyview_sub"
+            />
 
         <LinearLayout
             android:id="@+id/ll_empty"

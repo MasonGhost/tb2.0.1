@@ -186,12 +186,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
         mRefreshlayout.finishRefresh();
         mRefreshlayout.setEnableRefresh(false);
         ArrayList<PoiItem> pois = result.getPois();
-        if (pois.isEmpty()) {
-            mEmptyView.setErrorImag(setEmptView());
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
+        setEmptyViewVisiable(pois.isEmpty());
         mPoiItems.clear();
         mPoiItems.addAll(pois);
         mHeaderAndFooterWrapper.notifyDataSetChanged();

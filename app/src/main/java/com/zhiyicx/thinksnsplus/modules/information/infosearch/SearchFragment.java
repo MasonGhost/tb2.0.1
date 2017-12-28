@@ -70,7 +70,7 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mEmptyView.setVisibility(View.GONE);
+        setEmptyViewVisiable(false);
         mFragmentInfoSearchEdittext.setOnEditorActionListener(
                 (v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -95,7 +95,9 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
             case R.id.fragment_search_cancle:
                 getActivity().finish();
                 break;
+                default:
         }
+
     }
 
     @Override
