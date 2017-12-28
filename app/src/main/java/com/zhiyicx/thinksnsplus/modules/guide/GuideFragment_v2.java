@@ -94,9 +94,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
             mPresenter.checkLogin();
             return;
         }
-        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+        subscription = Observable.just("")
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(aLong -> mPresenter.getBootAdvert()!= null)
+                .map(aLong -> mPresenter.getBootAdvert() != null)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {

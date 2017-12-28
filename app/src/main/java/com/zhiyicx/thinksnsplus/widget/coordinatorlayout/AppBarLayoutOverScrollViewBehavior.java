@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nineoldandroids.view.ViewHelper;
+
 
 /**
  * @author Jliuer
@@ -71,7 +73,10 @@ public class AppBarLayoutOverScrollViewBehavior extends AppBarLayout.Behavior {
         abl.addOnOffsetChangedListener((appBarLayout, i) -> {
                     float point = Float.valueOf(Math.abs(i)) / Float.valueOf(appBarLayout.getTotalScrollRange());
                     middleLayout.setAlpha(1f - point);
-                    if (onRefreshChangeListener != null) {
+            ViewHelper.setPivotX(middleLayout, 0);
+            ViewHelper.setPivotY(middleLayout,
+                    mMiddleHeight / 3);
+            if (onRefreshChangeListener != null) {
                         onRefreshChangeListener.alphaChange(point);
                     }
                 }
