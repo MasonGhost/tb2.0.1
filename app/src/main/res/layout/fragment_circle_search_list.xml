@@ -22,8 +22,8 @@
             android:orientation="vertical">
 
             <include
-                layout="@layout/view_top_tip"
-                />
+                layout="@layout/include_top_tip_sub"
+            />
 
             <include
                 layout="@layout/include_coodinator_refresh"

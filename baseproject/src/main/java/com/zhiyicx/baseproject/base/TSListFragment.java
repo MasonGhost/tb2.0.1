@@ -12,6 +12,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -84,8 +85,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected SmartRefreshLayout mRefreshlayout;
 
     protected RecyclerView mRvList;
-
-    protected View mFlTopTipContainer;
     protected TextView mTvTopTip;
     protected RecyclerView.LayoutManager layoutManager;
 
@@ -141,16 +140,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected void initView(View rootView) {
         mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
-        mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
-        RxView.clicks(mFlTopTipContainer)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        onTopTipClick();
-                    }
-                });
-        mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
+
         mEmptyView = (EmptyView) rootView.findViewById(R.id.empty_view);
         mEmptyView.setErrorImag(setEmptView());
         mEmptyView.setNeedTextTip(false);
@@ -197,6 +187,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             }
         });
     }
+
     /**
      * 刷新数据的方式：方式1：启用下拉列表动画，调用onRefresh接口刷新数据 方式2：不启用下拉列表动画，仅仅调用刷新数据的方法
      *
@@ -294,7 +285,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     private void layzLoad() {
         if (mPresenter != null && getUserVisibleHint() && isLayzLoad() && mListDatas.isEmpty()) {
-            rx.Observable.timer(100,TimeUnit.MILLISECONDS)
+            rx.Observable.timer(100, TimeUnit.MILLISECONDS)
                     .subscribe(new Action1<Long>() {
                         @Override
                         public void call(Long aLong) {
@@ -399,10 +390,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
 
     protected void setTopTipText(@NotNull String text) {
+        inflateTopView();
         mTvTopTip.setText(text);
     }
 
     protected void setTopTipHtmlText(@NotNull String text) {
+        inflateTopView();
         Spanned html = Html.fromHtml(text);
         mTvTopTip.setText(html);
     }
@@ -414,7 +407,26 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @attr ref android.R.styleable#View_visibility
      */
     protected void setTopTipVisible(int visibility) {
-        mFlTopTipContainer.setVisibility(visibility);
+        inflateTopView();
+        mTvTopTip.setVisibility(visibility);
+    }
+
+    /**
+     * 懒加载 top Tip
+     */
+    private void inflateTopView() {
+        if (mTvTopTip == null) {
+            ViewStub mTopTipStub = (ViewStub) mRootView.findViewById(R.id.stub_toptip);
+            mTvTopTip = (TextView) mTopTipStub.inflate();
+            RxView.clicks(mTvTopTip)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            onTopTipClick();
+                        }
+                    });
+        }
     }
 
     /**
@@ -630,7 +642,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param data       返回的数据
      * @param isLoadMore 是否是加载更多
      */
-    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
+    private void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
         // 刷新
         if (!isLoadMore) {
             if (isLoadingMoreEnable()) {
@@ -641,7 +653,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data, isLoadMore);
+                    mPresenter.insertOrUpdateData(data, false);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
@@ -660,7 +672,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mTvNoMoredataText.setVisibility(View.GONE);
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data, isLoadMore);
+                    mPresenter.insertOrUpdateData(data, true);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
@@ -701,13 +713,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         } else {
             mRefreshlayout.finishRefresh();
         }
-    }
-
-    /**
-     * 过度拉动了
-     */
-    protected void onOverScrolled() {
-
     }
 
     protected int getPagesize() {

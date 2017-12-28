@@ -726,12 +726,6 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    protected void onOverScrolled() {
-        super.onOverScrolled();
-//        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
     public void onCommentTextClick(int position) {
         handleItemClick(position);
     }

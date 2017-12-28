@@ -2,6 +2,7 @@
 <resources>
     <!--主题色-->
     <color name="themeColor">@color/important_for_theme</color>
+    <color name="themeColor_alpha7">#B359b6d7</color>
     <!--背景色-->
     <color name="bgColor">@color/general_for_bg_light</color>
     <color name="bgColor_alpha_0.5">@color/general_for_bg_light_alpha_0.5</color>
