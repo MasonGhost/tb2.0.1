@@ -120,7 +120,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     private UnReadNotificaitonBean mUnReadNotificaitonBean;
 
     private Subscription mUnreadNotiSub;
-    
+
     @Inject
     MessageRepository mMessageRepository;
 
@@ -566,6 +566,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                         pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
                                 + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount())
                                 + (data.getPinneds().getGroupPosts() == null ? 0 : data.getPinneds().getGroupPosts().getCount())
+                                + data.getCounts().getUnread_group_join_count()
                                 + (data.getPinneds().getGroupComments() == null ? 0 : data.getPinneds().getGroupComments().getCount());
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {

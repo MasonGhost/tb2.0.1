@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -375,15 +374,28 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     private void goReportComment(int position) {
         // 减去 header
         position = position - mHeaderAndFooterWrapper.getHeadersCount();
+
+        boolean isJoined = mCirclePostDetailBean.getGroup().getJoined() != null;
+        boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
+
+        if (isBlackList) {
+            showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+            return;
+        }
+        boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
+        boolean isMine = mListDatas.get(position).getUser_id() == AppApplication.getMyUserIdWithdefault();
+
         // 举报
-        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+        if (!isMine && isNormalMember) {
             ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get
                     (position).getCommentUser(), mListDatas.get
                     (position).getId().toString(),
                     null, null, mListDatas.get(position).getContent(), ReportType.CIRCLE_COMMENT));
 
         } else {
-
+            // 删除
+            initDeleteCommentPopupWindow(mListDatas.get(position), !isMine);
+            mDeletCommentPopWindow.show();
         }
     }
 
@@ -565,7 +577,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
 
         mDealPostPopWindow = ActionPopupWindow.builder()
-                .item1Str(isMine || !isBlackList ? getString(R.string.post_apply_for_top) : "")
+                .item1Str(isMine && !isBlackList ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item3Str(isMine ? getString(R.string.info_delete) : (!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))

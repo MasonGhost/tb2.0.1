@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
@@ -148,6 +149,7 @@ public class MessageReviewPresenter extends AppBasePresenter<
             return;
         }
         Subscription subscription = observable
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
@@ -167,6 +169,11 @@ public class MessageReviewPresenter extends AppBasePresenter<
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
 
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
+                    }
                 });
         addSubscrebe(subscription);
     }
@@ -205,6 +212,7 @@ public class MessageReviewPresenter extends AppBasePresenter<
             return;
         }
         Subscription subscription = observable
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
@@ -222,6 +230,12 @@ public class MessageReviewPresenter extends AppBasePresenter<
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
                         mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
                     }
                 });
         addSubscrebe(subscription);

@@ -47,6 +47,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     private CircleMainHeader mCircleMainHeader;
     private List<CircleInfo> mJoinedCircle;
+    private List<CircleInfo> mRecommendCircle;
 
     private UserCertificationInfo mUserCertificationInfo;
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
@@ -89,6 +90,16 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     public void setJoinedCircles(List<CircleInfo> circles) {
         mJoinedCircle = circles;
+    }
+
+    @Override
+    public void setRecommendCircles(List<CircleInfo> circles) {
+        mRecommendCircle = circles;
+    }
+
+    @Override
+    public List<CircleInfo> getRecommendCircles() {
+        return mRecommendCircle;
     }
 
     @Override

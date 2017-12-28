@@ -308,13 +308,13 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
 
     @Override
     public void onImageClick(Long id) {
-//        if (mInsertedImages.containsKey(id)) {
+        if (mInsertedImages.containsKey(id)) {
 //            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
 //                    CharSequence[]{getString(R.string.delete)});
-//        } else if (mFailedImages.containsKey(id)) {
-//            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
-//                    new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
-//        }
+        } else if (mFailedImages.containsKey(id)) {
+            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
+                    new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
+        }
     }
 
     @Override

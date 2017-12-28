@@ -89,7 +89,7 @@ public class MarkdownPresenter extends AppBasePresenter<
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage("图片解析错误");
+                        mRootView.showSnackErrorMessage("图片上传失败");
                         mRootView.onFailed(filePath, tagId);
                     }
                 });

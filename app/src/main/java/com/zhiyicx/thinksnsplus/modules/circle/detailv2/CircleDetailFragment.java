@@ -263,7 +263,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     // 类型选择框
     private TypeChoosePopupWindow mTypeChoosePopupWindow;
-    private ActionPopupWindow mAuditTipPop;// 权限说明提示框
+
+    /**
+     * 权限说明提示框
+     */
+    private ActionPopupWindow mAuditTipPop;
 
     private int mCurrentPostion;
 
@@ -539,16 +543,36 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (mPresenter.handleTouristControl()) {
             return;
         }
+        boolean isJoined = mCircleInfo.getJoined() != null;
+        boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
+
+        if (isBlackList) {
+            showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+            return;
+        }
+
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
+
+        boolean isNormalMember = isJoined && CircleMembers.MEMBER.equals(mCircleInfo.getJoined().getRole());
+        boolean isManager = false;
+        if (mCircleInfo.getJoined() != null) {
+            isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
+                    CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
+        }
+
+        boolean isMine = dynamicBean.getComments().get(position).getUser_id() == AppApplication.getMyUserIdWithdefault();
+
         // 举报
-        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+        if (!isMine && isNormalMember) {
             ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
                     (position).getCommentUser(), dynamicBean.getComments().get
                     (position).getId().toString(),
                     null, null, dynamicBean.getComments().get(position).getContent(), ReportType.CIRCLE_COMMENT));
 
         } else {
-
+            // 删除
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position, !isMine);
+            mDeletCommentPopWindow.show();
         }
     }
 
@@ -802,7 +826,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(!feedIdIsNull || !isBlackList ? getString(R.string.post_apply_for_top) : null)
+                .item3Str(!feedIdIsNull && !isBlackList ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
                 .bottomStr(getString(R.string.cancel))
@@ -1325,8 +1349,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void loadAllError() {
-        setLoadViewHolderImag(R.mipmap.img_default_internet);
-        showLoadViewLoadError();
+        setLoadViewHolderImag(R.mipmap.img_default_delete);
+        showLoadViewLoadErrorDisableClick();
     }
 
     @Override

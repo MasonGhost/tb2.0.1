@@ -51,7 +51,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST;
@@ -125,6 +124,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             @Override
                             protected void onFailure(String message, int code) {
                                 super.onFailure(message, code);
+                                mRootView.loadAllError();
                                 mRootView.showSnackErrorMessage(message);
                             }
 
@@ -560,6 +560,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         mRootView.getListDatas().get(position).setPinned(false);
                         mRootView.refreshData(position);
                     }
+
                     @Override
                     public void onCompleted() {
                         super.onCompleted();

@@ -52,6 +52,7 @@ public class UnReadNotificaitonBean {
         private Long user_id;
         private int unread_comments_count;
         private int unread_likes_count;
+        private int unread_group_join_count;
         private String created_at;
         private String updated_at;
 
@@ -65,6 +66,14 @@ public class UnReadNotificaitonBean {
 
         public int getUnread_comments_count() {
             return unread_comments_count;
+        }
+
+        public int getUnread_group_join_count() {
+            return unread_group_join_count;
+        }
+
+        public void setUnread_group_join_count(int unread_group_join_count) {
+            this.unread_group_join_count = unread_group_join_count;
         }
 
         public void setUnread_comments_count(int unread_comments_count) {

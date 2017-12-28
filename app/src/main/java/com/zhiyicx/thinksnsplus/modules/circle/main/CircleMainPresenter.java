@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -74,17 +75,22 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
+
                     CircleInfo moreJoined = new CircleInfo();
                     moreJoined.setName(mContext.getString(R.string.joined_group));
                     moreJoined.setSummary(mContext.getString(R.string.more_group));
                     moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
+
                     CircleInfo changeCircle = new CircleInfo();
                     changeCircle.setName(mContext.getString(R.string.recommend_group));
                     changeCircle.setSummary(mContext.getString(R.string.exchange_group));
                     changeCircle.setId(BaseCircleItem.RECOMMENDCIRCLE);
+
                     myJoinedCircle.add(0, moreJoined);
                     myJoinedCircle.add(changeCircle);
+
                     mRootView.setJoinedCircles(new ArrayList<>(myJoinedCircle));
+                    mRootView.setRecommendCircles(new ArrayList<>(recommendCircle));
                     myJoinedCircle.addAll(recommendCircle);
                     return myJoinedCircle;
                 })
@@ -122,6 +128,7 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                 .subscribe(new BaseSubscribeForV2<List<CircleInfo>>() {
                     @Override
                     protected void onSuccess(List<CircleInfo> data) {
+                        mRootView.setRecommendCircles(new ArrayList<>(data));
                         List<CircleInfo> subs = new ArrayList<>(mRootView.getJoinedCircles());
                         subs.addAll(data);
                         mRootView.getListDatas().clear();
@@ -188,8 +195,18 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
-                            circleInfo.setJoined(new CircleJoinedBean());
+                            CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
+                            circleJoinedBean.setUser_id((int) AppApplication.getMyUserIdWithdefault());
+                            circleJoinedBean.setUser(AppApplication.getmCurrentLoginAuth().getUser());
+                            circleJoinedBean.setGroup_id(circleInfo.getId().intValue());
+                            circleJoinedBean.setAudit(1);
+                            circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
+
+                            if (mRootView.getJoinedCircles().size() < 7) {
+                                mRootView.getListDatas().add(1, circleInfo);
+                                mRootView.getJoinedCircles().add(1, circleInfo);
+                            }
                         }
                         mCircleInfoGreenDao.updateSingleData(circleInfo);
                         mRootView.refreshData();

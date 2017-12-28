@@ -22,8 +22,10 @@ public interface CircleMainContract {
         void updateCircleCount(int count);
 
         List<CircleInfo> getJoinedCircles();
+        List<CircleInfo> getRecommendCircles();
 
         void setJoinedCircles(List<CircleInfo> circles);
+        void setRecommendCircles(List<CircleInfo> circles);
 
         void setUserCertificationInfo(UserCertificationInfo data);
     }

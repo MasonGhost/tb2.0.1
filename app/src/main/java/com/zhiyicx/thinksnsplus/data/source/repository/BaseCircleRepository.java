@@ -407,8 +407,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2> stickTopPost(Long postId,int day) {
-        return mCircleClient.stickTopPost(postId,day)
+    public Observable<BaseJsonV2> stickTopPost(Long postId, int day) {
+        return mCircleClient.stickTopPost(postId, day)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -572,6 +572,9 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<List<CirclePostCommentBean>> getPostComments(long postId, int limit, int after) {
         return getPostCommentList(postId, (long) after).flatMap(circleCommentZip -> {
+            for (CirclePostCommentBean pinned : circleCommentZip.getPinneds()) {
+                pinned.setPinned(true);
+            }
             circleCommentZip.getPinneds().addAll(circleCommentZip.getComments());
             return Observable.just(circleCommentZip.getPinneds())
                     .subscribeOn(Schedulers.io())
