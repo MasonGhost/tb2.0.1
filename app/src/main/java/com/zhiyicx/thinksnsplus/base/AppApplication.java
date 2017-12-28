@@ -18,6 +18,7 @@ import com.google.gson.JsonSyntaxException;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
+import com.hyphenate.easeui.EaseUI;
 import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
@@ -160,9 +161,7 @@ public class AppApplication extends TSApplication {
         // 设置是否需要已送达回执
         options.setRequireDeliveryAck(true);
         //初始化
-        EMClient.getInstance().init(getApplicationContext(), options);
-        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
-        EMClient.getInstance().setDebugMode(true);
+        EaseUI.getInstance().init(getApplicationContext(), options);
     }
 
     /**

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
@@ -44,7 +46,7 @@ import butterknife.BindView;
  * @contact email:648129313@qq.com
  */
 
-public class MessageContainerFragment extends TSViewPagerFragment {
+public class MessageContainerFragment extends TSViewPagerFragment implements EaseConversationListFragment.EaseConversationListItemClickListener {
 
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color.important_for_content;// 缺省的tab被选择文字
@@ -64,6 +66,8 @@ public class MessageContainerFragment extends TSViewPagerFragment {
      */
     private boolean mIsMessageTipShow;
     private boolean mIsNotificationTipShow;
+
+    private EaseConversationListFragment mConversationListFragment;
 
     public MessageContainerFragment instance() {
         return new MessageContainerFragment();
@@ -95,7 +99,9 @@ public class MessageContainerFragment extends TSViewPagerFragment {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
             mFragmentList.add(MessageFragment.newInstance());
-            mFragmentList.add(new NotificationFragment().instance());
+            mConversationListFragment = new EaseConversationListFragment();
+            mConversationListFragment.setConversationListItemClickListener(this);
+            mFragmentList.add(mConversationListFragment);
         }
 
         return mFragmentList;
@@ -229,5 +235,15 @@ public class MessageContainerFragment extends TSViewPagerFragment {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
+
+    }
+
+    @Override
+    public void onListItemClicked(EMConversation conversation) {
+
     }
 }

@@ -90,7 +90,6 @@ dependencies {
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     compile dataDependences.playServices
-    compile dataDependences.hyphenate
     // 扫码
     compile dataDependences.zxing
     compile dataDependences.bgaQrcodecore
@@ -104,6 +103,7 @@ dependencies {
     compile project(':pickerview')
     compile project(':PhotoPicker')
     compile project(':overscrolllib')
+    compile project(':easeui')
     compile dataDependences.refresh
     compile dataDependences.refreshHeader
 }
