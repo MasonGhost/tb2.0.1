@@ -66,13 +66,9 @@ public class CirclePostListItemForNineImage extends CirclePostListBaseItem {
         TextView size = holder.getTextView(R.id.tv_numshadow);
         int iamgeSize = circlePostListBean.getImages().size();
         size.setVisibility(iamgeSize > 9 ? View.VISIBLE : View.GONE);
-        size.setText(String.valueOf(iamgeSize));
+        size.setText("+" + iamgeSize);
         RxView.clicks(size)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    if (mOnImageClickListener != null) {
-                        mOnImageClickListener.onImageClick(holder, circlePostListBean, position);
-                    }
-                });
+                .subscribe(aVoid -> holder.getConvertView().performClick());
     }
 }

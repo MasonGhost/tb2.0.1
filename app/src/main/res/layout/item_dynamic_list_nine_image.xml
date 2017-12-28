@@ -234,10 +234,11 @@
                     android:src="@drawable/shape_default_image"/>
 
                 <TextView
+                    android:gravity="center"
                     android:id="@+id/tv_numshadow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/masked_color"
+                    android:background="@color/shadow_color"
                     android:textColor="@color/white"
                     android:textSize="@dimen/size_number_shadow"/>
 

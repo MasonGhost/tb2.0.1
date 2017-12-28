@@ -181,10 +181,17 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     @Override
     public void undoTopPost(Long postId) {
         Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.getCurrentePost().setPinned(false);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.dismissSnackBar();
                     }
                 });
         addSubscrebe(subscribe);
