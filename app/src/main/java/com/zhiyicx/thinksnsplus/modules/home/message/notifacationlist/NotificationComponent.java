@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = NotificationPresenterModule.class)
-public interface NotificationComponent extends InjectComponent<NotificationFragment>{
+public interface NotificationComponent extends InjectComponent<NotificationActivity>{
 }

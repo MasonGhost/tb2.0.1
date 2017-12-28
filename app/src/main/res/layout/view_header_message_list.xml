@@ -6,11 +6,100 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <!--系统通知-->
+    <RelativeLayout
+            android:id="@+id/rl_system_notify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_mid"
+            tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_header_notification"
+                android:layout_width="@dimen/headpic_for_list"
+                app:pressShape="circle"
+                android:layout_height="@dimen/headpic_for_list"
+                android:src="@mipmap/ico_message_comment"/>
+        <TextView
+                android:id="@+id/tv_header_notification_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_header_notification"
+                android:maxLength="@integer/username_max_length"
+                android:maxLines="1"
+                android:layout_marginTop="@dimen/textview_spacing_offset_height"
+                android:gravity="top"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:includeFontPadding="false"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_sub_title"
+                android:text="@string/system_notification"/>
+        <TextView
+                android:id="@+id/tv_header_notification_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBaseline="@id/iv_header_notification"
+                android:maxLines="1"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_icon_assist"
+                tools:text="2016-05-06"/>
+
+        <FrameLayout
+                android:id="@+id/fl_header_notification_tip"
+                android:layout_width="@dimen/chat_list_new_msg_tip_with"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_header_notification_time"
+                android:paddingRight="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_small">
+
+            <com.zhiyicx.baseproject.widget.BadgeView
+                    android:id="@+id/tv_header_notification_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="@dimen/spacing_line"
+                    android:maxLines="1"
+                    android:padding="@dimen/spacing_line"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_icon_assist"
+                    tools:text="99"/>
+        </FrameLayout>
+
+
+
+        <TextView
+                android:id="@+id/tv_header_notification_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_header_notification_time"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_toLeftOf="@+id/fl_header_notification_tip"
+                android:layout_toRightOf="@+id/iv_header_notification"
+                android:ellipsize="end"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingTop="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/textview_spacing_offset_height"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="我送第几个 "/>
+
+
+    </RelativeLayout>
+    <!--评论-->
     <RelativeLayout
         android:id="@+id/rl_critical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:layout_marginTop="@dimen/spacing_line"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_mid"
@@ -92,7 +181,6 @@
 
 
     </RelativeLayout>
-
     <RelativeLayout
         android:id="@+id/rl_liked"
         android:layout_width="match_parent"

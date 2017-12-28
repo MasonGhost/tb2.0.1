@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 
@@ -23,9 +24,6 @@ import javax.inject.Inject;
 public class NotificationFragment extends TSListFragment<NotificationContract.Presenter, TSPNotificationBean>
         implements NotificationContract.View {
 
-    @Inject
-    NotificationPresenter mNotificationPresenter;
-
     public NotificationFragment instance() {
         NotificationFragment fragment = new NotificationFragment();
         fragment.setArguments(new Bundle());
@@ -33,14 +31,10 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     }
 
     @Override
-    protected void initData() {
-        DaggerNotificationComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .notificationPresenterModule(new NotificationPresenterModule(this))
-                .build()
-                .inject(this);
-        super.initData();
+    protected String setCenterTitle() {
+        return getString(R.string.system_notification);
     }
+
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
@@ -59,7 +53,7 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
     @Override
     protected boolean showToolBarDivider() {
