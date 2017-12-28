@@ -826,7 +826,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                         .dynamic_list_collect_dynamic))
-                .item3Str(!feedIdIsNull && !isBlackList ? getString(R.string.post_apply_for_top) : null)
+                .item3Str(!feedIdIsNull && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
                 .bottomStr(getString(R.string.cancel))

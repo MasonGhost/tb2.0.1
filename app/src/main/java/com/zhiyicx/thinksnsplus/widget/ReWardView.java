@@ -92,7 +92,7 @@ public class ReWardView extends FrameLayout {
                 ImageUtils.loadUserHead(rewardsListBean.getUser(), (ImageView) holder.getView(R.id.iv_head), false);
 
                 RxView.clicks(holder.getView(R.id.iv_head))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
 //                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
                         .subscribe(aVoid -> RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData));
 
@@ -105,7 +105,7 @@ public class ReWardView extends FrameLayout {
     private void initListener() {
         // 打赏
         RxView.clicks(mBtRewards)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnRewardsClickListener != null) {
                         mOnRewardsClickListener.onRewardClick();
@@ -115,7 +115,7 @@ public class ReWardView extends FrameLayout {
                 });
         // 打赏用户列表
         RxView.clicks(mIvRightArrow)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData);
                 });

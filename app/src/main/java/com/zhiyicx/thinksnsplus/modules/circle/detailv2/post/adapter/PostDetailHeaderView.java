@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,7 +24,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.adapter.BaseDigItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
@@ -254,7 +251,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 && circlePostDetailBean.getDigList().size() > 0) {
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
-                DigListActivity.startDigActivity(mContext,circlePostDetailBean.getId(), BaseDigItem.DigTypeEnum.POST);
+                DigListActivity.startDigActivity(mContext, circlePostDetailBean.getId(), BaseDigItem.DigTypeEnum.POST);
             });
         }
     }

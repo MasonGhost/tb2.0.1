@@ -577,7 +577,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         boolean isBlackList = circlePostListBean.getGroup().getJoined() != null && CircleMembers.BLACKLIST.equals(mCirclePostDetailBean.getGroup().getJoined().getRole());
 
         mDealPostPopWindow = ActionPopupWindow.builder()
-                .item1Str(isMine && !isBlackList ? getString(R.string.post_apply_for_top) : "")
+                .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item3Str(isMine ? getString(R.string.info_delete) : (!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))

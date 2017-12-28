@@ -65,7 +65,7 @@ public class CirclePostListCommentView extends LinearLayout {
 
     private void setListener() {
         RxView.clicks(mMoreComment)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // JITTER_SPACING_TIME秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnMoreCommentClickListener != null) {
                         mOnMoreCommentClickListener.onMoreCommentClick(mMoreComment, mDynamicBean);
@@ -126,7 +126,8 @@ public class CirclePostListCommentView extends LinearLayout {
         List<CirclePostCommentBean> data = new ArrayList<>();
 
         if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
-            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
+            //最多显示5条
+            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
                     data.add(dynamicBean.getComments().get(i));
                 }
@@ -134,6 +135,7 @@ public class CirclePostListCommentView extends LinearLayout {
                 data.addAll(dynamicBean.getComments());
             }
         }
+        mCirclePostNoPullRecyclerView.setTopFlagPosition(CommentBaseRecycleView.TopFlagPosition.WORDS_RIGHT);
         mCirclePostNoPullRecyclerView.setData(data);
         if (dynamicBean.getComments_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);

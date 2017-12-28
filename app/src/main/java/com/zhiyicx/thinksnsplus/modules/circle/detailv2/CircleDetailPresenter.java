@@ -588,7 +588,8 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     if (position != -1) {
                         mRootView.getListDatas().set(position, postListBean);
                     } else {
-//                        mRootView.getListDatas().add(0, postListBean);
+                        // 发帖更新到列表
+                        mRootView.getListDatas().add(0, postListBean);
                     }
                     return isNeedRefresh;
                 })

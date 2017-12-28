@@ -146,7 +146,7 @@ public class DynamicListCommentView extends LinearLayout {
                 data.addAll(dynamicBean.getComments());
             }
         }
-        mDynamicNoPullRecycleView.setTopFlagPosition(DynamicNoPullRecycleView.TopFlagPosition.WORDS_RIGHT);
+        mDynamicNoPullRecycleView.setTopFlagPosition(CommentBaseRecycleView.TopFlagPosition.WORDS_RIGHT);
         mDynamicNoPullRecycleView.setData(data);
         if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
