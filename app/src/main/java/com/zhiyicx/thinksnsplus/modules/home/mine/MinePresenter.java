@@ -95,8 +95,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
         Subscription subscribe = rx.Observable.just(data)
                 .observeOn(Schedulers.io())
                 .map(userInfoBeans -> {
-                    if (data != null) {
-                        for (UserInfoBean userInfoBean : data) {
+                    if (userInfoBeans != null) {
+                        for (UserInfoBean userInfoBean : userInfoBeans) {
                             if (userInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                                 userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault()));
                                 return userInfoBean;
@@ -146,6 +146,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
+                        if (data.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        }
                         mRootView.setUserInfo(data);
                     }
                 });
