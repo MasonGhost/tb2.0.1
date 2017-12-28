@@ -78,17 +78,17 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
     @Override
     public void getUserInfoFromDB() {
         // 尝试从数据库获取当前用户的信息
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
-            if (userInfoBean != null) {
-                WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
-                if (walletBean != null) {
-                    int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+        if (userInfoBean != null) {
+            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault());
+            if (walletBean != null) {
+                int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
 ///                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
-                    userInfoBean.setWallet(walletBean);
-                }
-                mRootView.setUserInfo(userInfoBean);
+                userInfoBean.setWallet(walletBean);
             }
-            setMineTipVisable(false);
+            mRootView.setUserInfo(userInfoBean);
+        }
+        setMineTipVisable(false);
     }
 
     /**
@@ -99,8 +99,8 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
         Subscription subscribe = rx.Observable.just(data)
                 .observeOn(Schedulers.io())
                 .map(userInfoBeans -> {
-                    if (data != null) {
-                        for (UserInfoBean userInfoBean : data) {
+                    if (userInfoBeans != null) {
+                        for (UserInfoBean userInfoBean : userInfoBeans) {
                             if (userInfoBean.getUser_id() == AppApplication.getMyUserIdWithdefault()) {
                                 userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getMyUserIdWithdefault()));
                                 return userInfoBean;
@@ -150,6 +150,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.Repository, Min
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
+                        if (data.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        }
                         mRootView.setUserInfo(data);
                     }
                 });
