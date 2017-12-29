@@ -46,9 +46,5 @@ public interface FindSomeOneNearbyListContract {
 
     }
 
-    interface Repository {
-
-
-    }
 
 }

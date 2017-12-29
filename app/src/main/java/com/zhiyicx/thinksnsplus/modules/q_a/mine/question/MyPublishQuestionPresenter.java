@@ -22,17 +22,19 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyPublishQuestionPresenter extends AppBasePresenter< MyPublishQuestionContract.View>
+public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.View>
         implements MyPublishQuestionContract.Presenter {
 
-    @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
-    @Inject
     BaseQARepository mBaseQARepository;
+
     @Inject
-    public MyPublishQuestionPresenter( MyPublishQuestionContract.View rootView) {
-        super( rootView);
+    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView, BaseQARepository baseQARepository, QAListInfoBeanGreenDaoImpl
+            qaListInfoBeanGreenDao) {
+        super(rootView);
+        mBaseQARepository = baseQARepository;
+        mQAListInfoBeanGreenDao = qaListInfoBeanGreenDao;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter< MyPublishQuest
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override

@@ -277,13 +277,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     private void layzLoad() {
         if (mPresenter != null && getUserVisibleHint() && isLayzLoad() && mListDatas.isEmpty()) {
-            rx.Observable.timer(100, TimeUnit.MILLISECONDS)
-                    .subscribe(new Action1<Long>() {
-                        @Override
-                        public void call(Long aLong) {
-                            getNewDataFromNet();
-                        }
-                    });
+            getNewDataFromNet();
         }
     }
 
@@ -309,7 +303,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new LinearLayoutManager(getContext());
+        return new LinearLayoutManager(mActivity);
     }
 
     /**

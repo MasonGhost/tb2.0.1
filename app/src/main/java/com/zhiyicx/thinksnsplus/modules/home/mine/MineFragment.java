@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -32,6 +33,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -46,6 +48,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
@@ -94,9 +98,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
-    public MineFragment() {
-    }
-
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
         Bundle args = new Bundle();
@@ -105,15 +106,28 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Observable.create(subscriber -> {
+            DaggerMinePresenterComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .minePresenterModule(new MinePresenterModule(MineFragment.this))
+                    .build().inject(MineFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                }, Throwable::printStackTrace);
+    }
+
+    @Override
     protected void initView(View rootView) {
     }
 
     @Override
     protected void initData() {
-        DaggerMinePresenterComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .minePresenterModule(new MinePresenterModule(this))
-                .build().inject(this);
+
     }
 
     @Override
@@ -175,7 +189,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), SystemConversationActivity.class));
-        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
+        if (mPresenter != null) {
+            mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
+        }
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,

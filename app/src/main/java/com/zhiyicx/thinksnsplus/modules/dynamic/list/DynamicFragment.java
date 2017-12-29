@@ -242,7 +242,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        AndroidBug5497Workaround.assistActivity(mActivity);
     }
 
     @Override
