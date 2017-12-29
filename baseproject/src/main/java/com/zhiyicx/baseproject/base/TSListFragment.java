@@ -108,6 +108,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private boolean mIsTipMessageSticky;
 
+    /**
+     * 没有更多数据
+     */
+    private View mTvNoMoredataText;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_tslist;
@@ -214,6 +219,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected View getFooterView() {
         // 添加加载更多没有了的提示
         mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_footer, null);
+        mTvNoMoredataText = mFooterView.findViewById(R.id.tv_no_moredata_text);
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return mFooterView;
     }
@@ -696,7 +702,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             mRefreshlayout.setEnableLoadmore(false);
             // mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
             if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {
-                setEmptyViewVisiable(true);
+                mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }
     }

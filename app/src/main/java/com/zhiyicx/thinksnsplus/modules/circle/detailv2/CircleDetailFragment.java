@@ -713,6 +713,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @Override
     public void onChoosed(PostTypeChoosePopAdapter.MyPostTypeEnum type) {
+        if (mPostTypeEnum.equals(type)) {
+            return;
+        }
         switch (type) {
             case ALL:
                 mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_all));
@@ -730,6 +733,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mTypeChoosePopupWindow.dismiss();
         }
         mPostTypeEnum = type;
+        mIvRefresh.setVisibility(View.VISIBLE);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).start();
         requestNetData(0L, false);
     }
 
