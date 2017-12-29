@@ -86,6 +86,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
     }
@@ -199,12 +204,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         // 系统通知
         RxView.clicks(headerview.findViewById(R.id.rl_system_notify))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // 跳转系统通知页面
-                        startActivity(new Intent(getContext(), NotificationActivity.class));
-                    }
+                .subscribe(aVoid -> {
+                    // 跳转系统通知页面
+                    startActivity(new Intent(getContext(), NotificationActivity.class));
                 });
 
         rlCritical = headerview.findViewById(R.id.rl_critical);

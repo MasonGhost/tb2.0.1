@@ -19,6 +19,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.MessageConversationFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist.NotificationFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 
@@ -101,7 +102,7 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
             mFragmentList.add(MessageFragment.newInstance());
             mConversationListFragment = new EaseConversationListFragment();
             mConversationListFragment.setConversationListItemClickListener(this);
-            mFragmentList.add(mConversationListFragment);
+            mFragmentList.add(new MessageConversationFragment());
         }
 
         return mFragmentList;
