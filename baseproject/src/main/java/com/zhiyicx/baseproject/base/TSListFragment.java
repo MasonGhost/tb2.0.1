@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
@@ -58,7 +56,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 一个页面显示的最大条数，用来判断是否显示加载更多
      */
-    public static final int DEFAULT_ONE_PAGE_SIZE = 15;
+    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 15;
 
     /**
      * 默认初始化列表 id
@@ -696,8 +694,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
             mRefreshlayout.setEnableLoadmore(false);
-            // mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
-            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {
+            // mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE 当前数量大于一页显示数量时，显示加载更多
+            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE || showNoMoreData()) {
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }

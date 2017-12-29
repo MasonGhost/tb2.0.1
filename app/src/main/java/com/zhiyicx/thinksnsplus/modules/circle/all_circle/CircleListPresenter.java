@@ -42,7 +42,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Observable<List<CircleInfo>> observable;
         if (mRootView.getCategoryId() < 0) {
-            observable = mBaseCircleRepository.getRecommendCircle(TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null);
+            observable = mBaseCircleRepository.getRecommendCircle(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null);
         } else {
             observable = mBaseCircleRepository.getCircleList(mRootView.getCategoryId(), maxId);
         }

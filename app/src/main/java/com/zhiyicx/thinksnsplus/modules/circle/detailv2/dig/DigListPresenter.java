@@ -52,7 +52,7 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.View> imp
                 observable = mInfoDetailsRepository.getInfoDigListV2(String.valueOf(mRootView.getSourceId()), maxId);
                 break;
             case BaseDigItem.TYPE_POST:
-                observable = mCirclePostDetailRepository.getPostDigList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId);
+                observable = mCirclePostDetailRepository.getPostDigList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId);
                 break;
             case BaseDigItem.TYPE_DYNAMIC:
                 observable = mBaseDynamicRepository.getDynamicDigListV2(mRootView.getSourceId(), maxId);

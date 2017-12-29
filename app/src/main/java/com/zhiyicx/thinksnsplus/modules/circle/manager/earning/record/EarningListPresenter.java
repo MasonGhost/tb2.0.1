@@ -37,7 +37,7 @@ public class EarningListPresenter extends AppBasePresenter<EarningListContract.V
 //        getCircleEarningList(long circleId, long start, long end,\long after, long limit, String type)
         Subscription subscribe = mBaseCircleRepository.getCircleEarningList(mRootView.getCircleId(), mRootView.getStartTime(), mRootView.getEndTime
                         (), maxId,
-                (long) TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getType())
+                (long) TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getType())
                 .subscribe(new BaseSubscribeForV2<List<CircleEarningListBean>>() {
                     @Override
                     protected void onSuccess(List<CircleEarningListBean> data) {
