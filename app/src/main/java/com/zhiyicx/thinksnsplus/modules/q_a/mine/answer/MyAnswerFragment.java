@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
@@ -102,6 +103,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
             subscriber.onCompleted();
         }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

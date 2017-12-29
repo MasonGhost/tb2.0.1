@@ -16,12 +16,15 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.BaseCircleListPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.DaggerBaseCircleListComponent;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -102,8 +105,14 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
+    protected void initDagger() {
+        DaggerBaseCircleListComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .baseCircleListPresenterModule(new BaseCircleListPresenterModule(this))
+                .build()
+                .inject(this);
+
         initHistoryView();
     }
 

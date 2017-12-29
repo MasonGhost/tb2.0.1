@@ -85,9 +85,9 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     public static final String CIRCLE_TYPE = "circle_type";
 
     @BindView(R.id.v_shadow)
-    View mVShadow;
+    protected View mVShadow;
     @BindView(R.id.ilv_comment)
-    InputLimitView mIlvComment;
+    protected InputLimitView mIlvComment;
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
@@ -191,6 +191,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         super.initView(rootView);
         mIlvComment.setOnSendClickListener(this);
         mVShadow.setOnClickListener(v -> closeInputView());
+        initDagger();
+    }
+
+    protected void initDagger() {
         Observable.create(subscriber -> {
 
             DaggerCircleDetailComponent
@@ -221,7 +225,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 });
     }
 
-    private void closeInputView() {
+    protected void closeInputView() {
         if (mIlvComment.getVisibility() == View.VISIBLE) {
             mIlvComment.setVisibility(View.GONE);
             DeviceUtils.hideSoftKeyboard(mActivity, mIlvComment.getEtContent());

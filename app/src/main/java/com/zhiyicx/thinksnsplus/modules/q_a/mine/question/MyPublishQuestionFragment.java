@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
@@ -111,6 +112,7 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
 
             subscriber.onCompleted();
         }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

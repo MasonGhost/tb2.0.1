@@ -38,6 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
@@ -169,6 +170,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
             subscriber.onCompleted();
         }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new rx.Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

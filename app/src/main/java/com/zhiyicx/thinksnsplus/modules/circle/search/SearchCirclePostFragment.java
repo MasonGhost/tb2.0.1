@@ -12,14 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.DaggerCircleDetailComponent;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
@@ -35,6 +39,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
@@ -98,9 +105,23 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
-        initHistoryView();
+    protected void initDagger() {
+        DaggerCircleDetailComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .circleDetailPresenterModule(new CircleDetailPresenterModule(this))
+                .shareModule(new ShareModule(mActivity))
+                .build()
+                .inject(this);
+
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        if (mPresenter != null) {
+            initHistoryView();
+        }
 
     }
 
@@ -215,7 +236,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     @Override
-    public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore){
+    public void onCacheResponseSuccess(List<CirclePostListBean> data, boolean isLoadMore) {
     }
 
     @Override

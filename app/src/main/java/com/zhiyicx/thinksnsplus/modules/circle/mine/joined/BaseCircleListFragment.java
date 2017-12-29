@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -106,6 +107,10 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initDagger();
+    }
+
+    protected void initDagger() {
         Observable.create(subscriber -> {
             DaggerBaseCircleListComponent
                     .builder()
@@ -116,6 +121,7 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
 
             subscriber.onCompleted();
         }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {
