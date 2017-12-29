@@ -96,6 +96,11 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }

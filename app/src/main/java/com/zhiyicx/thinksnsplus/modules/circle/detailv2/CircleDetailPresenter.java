@@ -146,6 +146,41 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         });
                 addSubscrebe(subscribe);
 
+            }else{
+                Subscription subscribe = mBaseCircleRepository
+                                .getPostListFromCircle
+                                        (mRootView.getCircleId(), maxId, mRootView.getType())
+                        .map(data -> {
+                            for (int i = 0; i < data.size(); i++) {
+                                List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
+                                        .getMaxId().intValue());
+                                if (!circlePostCommentBeans.isEmpty()) {
+                                    circlePostCommentBeans.addAll(data.get(i).getComments());
+                                    data.get(i).getComments().clear();
+                                    data.get(i).getComments().addAll(circlePostCommentBeans);
+                                }
+                            }
+                            return data;
+                        }).subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
+                            @Override
+                            protected void onSuccess(List<CirclePostListBean> data) {
+                                mRootView.onNetResponseSuccess(data, isLoadMore);
+                            }
+
+                            @Override
+                            protected void onFailure(String message, int code) {
+                                super.onFailure(message, code);
+                                mRootView.loadAllError();
+                                mRootView.showSnackErrorMessage(message);
+                            }
+
+                            @Override
+                            protected void onException(Throwable throwable) {
+                                super.onException(throwable);
+                                mRootView.onResponseError(throwable, isLoadMore);
+                            }
+                        });
+                addSubscrebe(subscribe);
             }
 
         } else {

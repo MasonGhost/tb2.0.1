@@ -10,10 +10,6 @@ import android.text.TextPaint;
 import android.view.View;
 
 import com.zhiyicx.common.R;
-import com.zhiyicx.common.utils.log.LogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Jliuer
@@ -66,11 +62,19 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
         int position = parent.getChildAdapterPosition(view);
         if (mCallback != null) {
             GroupInfo groupInfo = mCallback.getGroupInfo(position);
+            // 上一个 分组
+            GroupInfo lastGroupInfo = null;
+            if (position > 0) {
+                lastGroupInfo = mCallback.getGroupInfo(position - 1);
+            }
             if (groupInfo == null) {
                 return;
             }
+
+            boolean isFirst = lastGroupInfo == null || lastGroupInfo.getGroupID() != groupInfo.getGroupID();
+
             //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
-            if (groupInfo.isFirstViewInGroup() || groupInfo.mGroupID != groupIdT) {
+            if (groupInfo.isFirstViewInGroup() || isFirst) {
                 outRect.top = mHeaderHeight;
             } else {
                 outRect.top = mDividerHeight;
