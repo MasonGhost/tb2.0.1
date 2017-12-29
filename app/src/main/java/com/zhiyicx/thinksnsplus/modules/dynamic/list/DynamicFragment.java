@@ -77,6 +77,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -215,12 +220,22 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .shareModule(new ShareModule(getActivity()))
-                .dynamicPresenterModule(new DynamicPresenterModule(this))
-                .build().inject(this);
+        Observable.create(subscriber -> {
+            DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .shareModule(new ShareModule(getActivity()))
+                    .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
+                    .build()
+                    .inject(DynamicFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    initData();
+                }, Throwable::printStackTrace);
+
     }
 
     @Override
@@ -232,9 +247,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected void initData() {
-        mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
-        initAdvert();
-        super.initData();
+        if (mPresenter != null) {
+            mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
+            initAdvert();
+            super.initData();
+        }
     }
 
     private void initAdvert() {
@@ -353,11 +370,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception e) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);
-    }
-
-    @Override
-    protected boolean showEmptyViewWithNoData() {
-        return true;
     }
 
     /**

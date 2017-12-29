@@ -109,11 +109,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected boolean showEmptyViewWithNoData() {
-        return true;
-    }
-
-    @Override
     public void onCacheResponseSuccess(List<BaseListBean> data, boolean isLoadMore) {
         try {// 添加广告
             if (!data.isEmpty()) {
