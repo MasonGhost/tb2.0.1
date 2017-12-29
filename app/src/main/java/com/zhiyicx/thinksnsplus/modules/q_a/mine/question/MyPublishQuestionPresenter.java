@@ -25,16 +25,15 @@ import rx.Subscription;
 public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.View>
         implements MyPublishQuestionContract.Presenter {
 
+    @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
+    @Inject
     BaseQARepository mBaseQARepository;
 
     @Inject
-    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView, BaseQARepository baseQARepository, QAListInfoBeanGreenDaoImpl
-            qaListInfoBeanGreenDao) {
+    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView) {
         super(rootView);
-        mBaseQARepository = baseQARepository;
-        mQAListInfoBeanGreenDao = qaListInfoBeanGreenDao;
     }
 
     @Override

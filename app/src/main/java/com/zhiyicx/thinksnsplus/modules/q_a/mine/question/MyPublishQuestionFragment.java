@@ -10,18 +10,11 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.home.mine.DaggerMinePresenterComponent;
-import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
-import com.zhiyicx.thinksnsplus.modules.home.mine.MinePresenterModule;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
@@ -55,18 +48,11 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Observable.create(subscriber -> {
-            DaggerMyPublishQuestionComponent.builder()
-                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .myPublishQuestionPresenterModule(new MyPublishQuestionPresenterModule(MyPublishQuestionFragment.this))
-                    .build()
-                    .inject(MyPublishQuestionFragment.this);
-            subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe(o -> {
-                    initData();
-                }, Throwable::printStackTrace);
+        DaggerMyPublishQuestionComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .myPublishQuestionPresenterModule(new MyPublishQuestionPresenterModule(this))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -91,7 +77,7 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), mListDatas) {
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), mListDatas){
             @Override
             protected int getRatio() {
                 return mPresenter.getRatio();
@@ -117,8 +103,6 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
 
     @Override
     protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
+        super.initData();
     }
 }
