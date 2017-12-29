@@ -84,12 +84,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
@@ -98,7 +95,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
 
     @Inject
     public SharePolicy mSharePolicy;
-
+    @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     @Inject
     BaseDynamicRepository mDynamicRepository;
@@ -106,9 +103,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
-    public DynamicPresenter(DynamicContract.View rootView,AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao) {
+    public DynamicPresenter(DynamicContract.View rootView) {
         super(rootView);
-        mAllAdvertListBeanGreenDao=allAdvertListBeanGreenDao;
     }
 
     @Override
@@ -236,7 +232,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
         Observable.just(data)
                 .observeOn(Schedulers.io())
-                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
+                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()),
+                        Throwable::printStackTrace);
     }
 
     /**

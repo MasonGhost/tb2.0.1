@@ -220,21 +220,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Observable.create(subscriber -> {
-            DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
-                    .builder()
-                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .shareModule(new ShareModule(getActivity()))
-                    .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
-                    .build()
-                    .inject(DynamicFragment.this);
-            subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    initData();
-                }, Throwable::printStackTrace);
+
 
     }
 
@@ -243,11 +229,43 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initView(rootView);
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
+
+        Observable.create(subscriber -> {
+            DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .shareModule(new ShareModule(mActivity))
+                    .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
+                    .build()
+                    .inject(DynamicFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
+
     }
 
     @Override
     protected void initData() {
         if (mPresenter != null) {
+            System.out.println(" --------2-----------");
             mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
             initAdvert();
             super.initData();

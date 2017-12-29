@@ -115,8 +115,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                     .minePresenterModule(new MinePresenterModule(MineFragment.this))
                     .build().inject(MineFragment.this);
             subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                 }, Throwable::printStackTrace);
     }
