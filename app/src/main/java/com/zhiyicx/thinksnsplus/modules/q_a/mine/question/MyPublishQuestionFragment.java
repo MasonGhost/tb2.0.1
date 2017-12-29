@@ -129,12 +129,4 @@ public class MyPublishQuestionFragment extends TSListFragment<MyPublishQuestionC
                 });
     }
 
-    @Override
-    protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
-
-
-    }
 }

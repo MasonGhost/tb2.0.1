@@ -36,19 +36,21 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
 public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListContract.View>
         implements BaseCircleListContract.Presenter {
 
-    @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
-
-    @Inject
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
-    @Inject
     BaseCircleRepository mBaseCircleRepository;
 
     Subscription mSearchSub;
 
     @Inject
-    public BaseCircleListPresenter(BaseCircleListContract.View rootView) {
+    public BaseCircleListPresenter(BaseCircleListContract.View rootView
+    ,CircleInfoGreenDaoImpl circleInfoGreenDao
+    ,CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
+    ,BaseCircleRepository baseCircleRepository) {
         super(rootView);
+        mCircleInfoGreenDao=circleInfoGreenDao;
+        mCircleSearchBeanGreenDao=circleSearchBeanGreenDao;
+        mBaseCircleRepository=baseCircleRepository;
     }
 
     @Override

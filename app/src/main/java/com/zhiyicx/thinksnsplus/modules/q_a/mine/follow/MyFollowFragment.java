@@ -102,12 +102,6 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                 });
     }
 
-    @Override
-    protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
-    }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {

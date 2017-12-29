@@ -121,12 +121,6 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
     }
 
-    @Override
-    protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
-    }
 
     @Override
     public String getType() {

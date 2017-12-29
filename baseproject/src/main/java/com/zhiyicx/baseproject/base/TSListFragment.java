@@ -249,11 +249,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        mRefreshlayout.setEnableRefresh(isRefreshEnable());
-        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
-        if (!isLayzLoad()) {
-            // 获取缓存数据
-            requestCacheData(mMaxId, false);
+        if (mPresenter != null) {
+            mRefreshlayout.setEnableRefresh(isRefreshEnable());
+            mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
+            if (!isLayzLoad()) {
+                // 获取缓存数据
+                requestCacheData(mMaxId, false);
+            }
         }
     }
 

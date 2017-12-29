@@ -44,6 +44,9 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
@@ -58,6 +61,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
@@ -114,13 +120,6 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerCircleDetailComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .circleDetailPresenterModule(new CircleDetailPresenterModule(this))
-                .shareModule(new ShareModule(getActivity()))
-                .build()
-                .inject(this);
         if (getArguments() != null) {
             mCircleMinePostType = (BaseCircleRepository.CircleMinePostType) getArguments().getSerializable(CIRCLE_TYPE);
         }
@@ -188,15 +187,38 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setOnSendClickListener(this);
         mVShadow.setOnClickListener(v -> closeInputView());
+        Observable.create(subscriber -> {
+
+            DaggerCircleDetailComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .circleDetailPresenterModule(new CircleDetailPresenterModule(BaseCircleDetailFragment.this))
+                    .shareModule(new ShareModule(mActivity))
+                    .build()
+                    .inject(BaseCircleDetailFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
 
     private void closeInputView() {
@@ -221,7 +243,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position)
-                .getGroup_id(), mListDatas.get(position).getId(),false);
+                .getGroup_id(), mListDatas.get(position).getId(), false);
     }
 
     @Override
