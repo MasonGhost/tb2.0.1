@@ -202,7 +202,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
-            R.id.bt_my_friends})
+            R.id.ll_friends_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -300,7 +300,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 // 我的圈子
                 startActivity(new Intent(getActivity(), MyGroupActivity.class));
                 break;
-            case R.id.bt_my_friends:
+            case R.id.ll_friends_container:
                 // 我的朋友
                 startActivity(new Intent(getActivity(), MyFriendsListActivity.class));
                 break;

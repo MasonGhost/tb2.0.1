@@ -166,7 +166,38 @@
                         android:textColor="@color/important_for_content"
                         android:textSize="@dimen/size_content_assist"/>
                 </LinearLayout>
+                <ImageView
+                        style="@style/style_divider_veitical_light"
+                        android:layout_width="@dimen/divider_line"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/spacing_small_3dp"
+                        android:layout_marginTop="@dimen/spacing_small_3dp"
+                        />
+                <!--好友-->
+                <LinearLayout
+                        android:id="@+id/ll_friends_container"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                    <!--关注数量-->
+                    <TextView
+                            android:id="@+id/tv_friends_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/themeColor"
+                            android:textSize="@dimen/size_content_assist"
+                            tools:text="12233"/>
 
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small_4dp"
+                            android:text="@string/friends"
+                            android:textColor="@color/important_for_content"
+                            android:textSize="@dimen/size_content_assist"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!--个人主页-->
@@ -216,18 +247,6 @@
                     app:dividerRightMargin="@dimen/spacing_normal"
                     app:leftImage="@mipmap/ico_me_circle"
                     app:leftText="@string/group_mine"
-                    android:visibility="visible"
-                    app:showLine="false"
-                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
-            <!--我的好友-->
-            <com.zhiyicx.baseproject.widget.button.CombinationButton
-                    android:id="@+id/bt_my_friends"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/full_button_height"
-                    app:dividerLeftMargin="@dimen/spacing_normal"
-                    app:dividerRightMargin="@dimen/spacing_normal"
-                    app:leftImage="@mipmap/ico_me_circle"
-                    app:leftText="@string/chat_my_friends"
                     android:visibility="visible"
                     app:showLine="false"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
