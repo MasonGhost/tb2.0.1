@@ -13,7 +13,7 @@ ext {
     minSdkVersion = 16
     targetSdkVersion = 25
     versionCode = 141
-    versionName = "1.4.5-circle-beta"
+    versionName = "1.4.5-circle"
     compileSdkVersion = 25
     buildToolsVersion = "26.0.2"
 
