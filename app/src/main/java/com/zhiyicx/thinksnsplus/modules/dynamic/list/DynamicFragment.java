@@ -246,7 +246,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onCompleted() {
                         initData();
-
                     }
 
                     @Override
@@ -256,7 +255,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                     @Override
                     public void onNext(Object o) {
-
                     }
                 });
 
@@ -265,7 +263,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initData() {
         if (mPresenter != null) {
-            System.out.println(" --------2-----------");
             mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
             initAdvert();
             super.initData();

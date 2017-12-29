@@ -5,9 +5,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DaggerDynamicComponent;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListPresenter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
@@ -16,6 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe 找人列表页
@@ -61,13 +70,39 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     protected void initView(View rootView) {
-        DaggerFindSomeOneListPresenterComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
-                .build().inject(this);
-
         super.initView(rootView);
+
+        Observable.create(subscriber -> {
+            DaggerFindSomeOneListPresenterComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
+                    .build().inject(FindSomeOneListFragment.this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+    }
+
+    @Override
+    protected void initData() {
+        if (mPresenter != null) {
+            super.initData();
+        }
     }
 
     @Override
