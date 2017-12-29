@@ -37,7 +37,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -65,26 +69,31 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
 public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract.View>
         implements CircleDetailContract.Presenter, OnShareCallbackListener {
 
-    @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
-    @Inject
     public SharePolicy mSharePolicy;
-    @Inject
     CircleSearchBeanGreenDaoImpl mCircleSearchBeanGreenDao;
-    @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
-    @Inject
     BaseCircleRepository mBaseCircleRepository;
 
     private Subscription mSearchSub;
 
     @Inject
-    public CircleDetailPresenter(CircleDetailContract.View rootView) {
+    public CircleDetailPresenter(CircleDetailContract.View rootView
+            , CirclePostCommentBeanGreenDaoImpl circlePostCommentBeanGreenDao
+            , CirclePostListBeanGreenDaoImpl circlePostListBeanGreenDao
+            , SharePolicy sharePolicy
+            , CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
+            , CircleInfoGreenDaoImpl circleInfoGreenDao
+            , BaseCircleRepository baseCircleRepository
+    ) {
         super(rootView);
+        mCirclePostCommentBeanGreenDao = circlePostCommentBeanGreenDao;
+        mCirclePostListBeanGreenDao = circlePostListBeanGreenDao;
+        mSharePolicy = sharePolicy;
+        mCircleSearchBeanGreenDao = circleSearchBeanGreenDao;
+        mCircleInfoGreenDao = circleInfoGreenDao;
+        mBaseCircleRepository = baseCircleRepository;
     }
 
     @Override
@@ -98,8 +107,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         // 需要头信息
         if (mRootView.isNeedHeaderInfo()) {
             if (!isLoadMore) {
-                Subscription subscribe = Observable.zip(mBaseCircleRepository.getCircleInfo(mRootView.getCircleId()), mBaseCircleRepository.getPostListFromCircle
-                                (mRootView.getCircleId(), maxId, mRootView.getType()),
+                Subscription subscribe = Observable.zip(mBaseCircleRepository.getCircleInfo(mRootView.getCircleId()), mBaseCircleRepository
+                                .getPostListFromCircle
+                                        (mRootView.getCircleId(), maxId, mRootView.getType()),
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();

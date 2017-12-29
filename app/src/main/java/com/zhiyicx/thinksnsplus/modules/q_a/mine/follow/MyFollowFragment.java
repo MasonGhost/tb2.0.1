@@ -16,6 +16,9 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivi
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyFollowQuestionAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.QuestionTopicAdapter;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.DaggerMyAnswerComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerPresenterModule;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -23,6 +26,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
@@ -45,7 +52,7 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     private String mType;
 
-    public MyFollowFragment instance(String type) {
+    public static MyFollowFragment instance(String type) {
         MyFollowFragment followFragment = new MyFollowFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_MY_QUESTION_TYPE, type);
@@ -65,13 +72,36 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     @Override
     protected void initView(View rootView) {
-        DaggerMyFollowComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .myFollowPresenterModule(new MyFollowPresenterModule(this))
-                .build()
-                .inject(this);
+
         super.initView(rootView);
+        Observable.create(subscriber -> {
+
+            DaggerMyFollowComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .myFollowPresenterModule(new MyFollowPresenterModule(MyFollowFragment.this))
+                    .build()
+                    .inject(MyFollowFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
+
 
     @Override
     protected RecyclerView.Adapter getAdapter() {

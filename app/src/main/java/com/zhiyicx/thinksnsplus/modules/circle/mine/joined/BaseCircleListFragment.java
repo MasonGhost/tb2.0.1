@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -14,6 +15,9 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +26,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
+
 /**
  * @Describe 圈子类别基类
  * @Author Jungle68
  * @Date 2017/12/6
  * @Contact master.jungle68@gmail.com
  */
-public  class BaseCircleListFragment extends TSListFragment<BaseCircleListContract.Presenter, CircleInfo>
+public class BaseCircleListFragment extends TSListFragment<BaseCircleListContract.Presenter, CircleInfo>
         implements BaseCircleListContract.View, BaseCircleItem.CircleItemItemEvent {
 
     public static final String BUNDLE_IS_NEED_TOOLBAR = "isNeedToolBar";
@@ -49,12 +57,7 @@ public  class BaseCircleListFragment extends TSListFragment<BaseCircleListContra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerBaseCircleListComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .baseCircleListPresenterModule(new BaseCircleListPresenterModule(this))
-                .build()
-                .inject(this);
+
         if (getArguments() != null) {
             mIsNeedToolBar = getArguments().getBoolean(BUNDLE_IS_NEED_TOOLBAR);
         }
@@ -92,7 +95,7 @@ public  class BaseCircleListFragment extends TSListFragment<BaseCircleListContra
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(isMineJoined(), mActivity, this,mPresenter));
+        adapter.addItemViewDelegate(new CircleListItem(isMineJoined(), mActivity, this, mPresenter));
         return adapter;
     }
 
@@ -101,9 +104,36 @@ public  class BaseCircleListFragment extends TSListFragment<BaseCircleListContra
     }
 
     @Override
-    protected void initData() {
-        super.initData();
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        Observable.create(subscriber -> {
+            DaggerBaseCircleListComponent
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .baseCircleListPresenterModule(new BaseCircleListPresenterModule(BaseCircleListFragment.this))
+                    .build()
+                    .inject(BaseCircleListFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
+
 
     @Override
     public void toAllJoinedCircle(CircleInfo circleInfo) {

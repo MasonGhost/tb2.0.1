@@ -92,8 +92,8 @@ public class MyFollowContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(new MyFollowFragment().instance(TYPE_QUESTION));
-            mFragments.add(new MyFollowFragment().instance(TYPE_TOPIC));
+            mFragments.add(MyFollowFragment.instance(TYPE_QUESTION));
+            mFragments.add(MyFollowFragment.instance(TYPE_TOPIC));
         }
         return mFragments;
     }

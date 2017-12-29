@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
-import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,9 +22,4 @@ public class FindSomeOneContainerPresenterModule {
         return mView;
     }
 
-    @Provides
-    FindSomeOneContainerContract.Repository providesRepository() {
-        return new FindSomeOneContainerContract.Repository() {
-        };
-    }
 }

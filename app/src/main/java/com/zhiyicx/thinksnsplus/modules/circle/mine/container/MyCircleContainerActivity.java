@@ -18,7 +18,7 @@ public class MyCircleContainerActivity extends TSActivity{
 
     @Override
     protected Fragment getFragment() {
-        return new MyCircleContainerFragment().instance();
+        return MyCircleContainerFragment.instance();
     }
 
     @Override

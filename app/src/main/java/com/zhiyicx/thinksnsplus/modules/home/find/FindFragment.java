@@ -2,11 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.home.find;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -17,6 +19,9 @@ import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DaggerDynamicComponent;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
@@ -30,6 +35,9 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import javax.inject.Inject;
 
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe 发现页面
@@ -45,6 +53,19 @@ public class FindFragment extends TSFragment {
     public FindFragment() {
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Observable.create(subscriber -> {
+            AppApplication.AppComponentHolder.getAppComponent().inject(FindFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                }, Throwable::printStackTrace);
+    }
+
     public static FindFragment newInstance() {
         FindFragment fragment = new FindFragment();
         Bundle args = new Bundle();
@@ -54,7 +75,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        AppApplication.AppComponentHolder.getAppComponent().inject(this);
+
     }
 
     @Override

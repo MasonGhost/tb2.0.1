@@ -97,8 +97,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     public static final String CHANNEL_HEADER_INFO_DATA = "channel_header_info_data";
 
-    @BindView(R.id.tv_top_tip_text)
-    TextView mTvTopTipText;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_channel_name)

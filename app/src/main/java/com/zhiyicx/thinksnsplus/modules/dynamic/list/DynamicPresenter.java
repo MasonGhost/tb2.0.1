@@ -82,34 +82,39 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
-    @Inject
-    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
-    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
-    @Inject
     TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
 
-    @Inject
-    public SharePolicy mSharePolicy;
-
+    SharePolicy mSharePolicy;
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
-    @Inject
     BaseDynamicRepository mDynamicRepository;
 
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
-    public DynamicPresenter(DynamicContract.View rootView,AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao) {
+    public DynamicPresenter(DynamicContract.View rootView
+            , AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao
+            , DynamicDetailBeanV2GreenDaoImpl dynamicDetailBeanV2GreenDao
+            , DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao
+            , SendDynamicDataBeanV2GreenDaoImpl sendDynamicDataBeanV2GreenDao
+            , TopDynamicBeanGreenDaoImpl topDynamicBeanGreenDao
+            , SharePolicy sharePolicy
+            , BaseDynamicRepository baseDynamicRepository
+    ) {
         super(rootView);
-        mAllAdvertListBeanGreenDao=allAdvertListBeanGreenDao;
+        mAllAdvertListBeanGreenDao = allAdvertListBeanGreenDao;
+        mDynamicDetailBeanV2GreenDao = dynamicDetailBeanV2GreenDao;
+        mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
+        mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
+        mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
+        mSharePolicy = sharePolicy;
+        mDynamicRepository = baseDynamicRepository;
     }
+
 
     @Override
     protected boolean useEventBus() {
@@ -236,7 +241,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
         Observable.just(data)
                 .observeOn(Schedulers.io())
-                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
+                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()),
+                        Throwable::printStackTrace);
     }
 
     /**
@@ -275,8 +281,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth()
-                .getUser_id());
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getMyUserIdWithdefault());
 
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {

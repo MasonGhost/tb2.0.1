@@ -60,7 +60,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
     @BindView(R.id.vp_fragment)
     ViewPager mVpFragment;
 
-    public MyQuestionFragment instance() {
+    public static MyQuestionFragment instance() {
         return new MyQuestionFragment();
     }
 

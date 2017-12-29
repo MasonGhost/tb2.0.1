@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,12 +55,11 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.info_recommend));
-        titles.add(getString(R.string.neary_by));
-        return titles;
+        return Arrays.asList(getString(R.string.hot)
+                , getString(R.string.the_last)
+                , getString(R.string.info_recommend)
+                , getString(R.string.neary_by)
+        );
     }
 
     @Override

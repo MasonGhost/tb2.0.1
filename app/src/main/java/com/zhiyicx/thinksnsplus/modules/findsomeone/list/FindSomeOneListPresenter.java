@@ -34,15 +34,17 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
     public static final int DEFAULT_PAGE_SIZE = 15;
-    @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView) {
+    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView
+            , FollowFansBeanGreenDaoImpl followFansBeanGreenDao
+            , UserInfoRepository userInfoRepository) {
         super(rootView);
+        mFollowFansBeanGreenDao = followFansBeanGreenDao;
+        mUserInfoRepository = userInfoRepository;
     }
 
     @Override
