@@ -229,8 +229,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     LinearLayout mLlDynamicCountContainer;
     @BindView(R.id.ll_intro_container)
     LinearLayout mLlIntroCountContainer;
-    @BindView(R.id.tv_top_tip_text)
-    TextView mTvTopTipText;
     @BindView(R.id.swipe_target)
     RecyclerView mSwipeTarget;
     @BindView(R.id.refreshlayout)
