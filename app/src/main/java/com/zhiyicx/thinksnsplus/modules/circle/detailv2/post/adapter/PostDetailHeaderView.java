@@ -37,8 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
-import br.tiagohm.markdownview.css.InternalStyleSheet;
-import br.tiagohm.markdownview.css.styles.Github;
 
 import static android.view.View.GONE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
@@ -117,12 +115,8 @@ public class PostDetailHeaderView extends BaseWebLoad {
             }
             mContentSubject.setVisibility(GONE);
 
-            // 资讯contente
             if (!TextUtils.isEmpty(circlePostDetailBean.getBody())) {
-                InternalStyleSheet css = new Github();
-                css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify");
-                mContent.addStyleSheet(MarkDownRule.generateStandardQuoteStyle());
+                mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
 
