@@ -43,7 +43,7 @@ public abstract class TSApplication extends BaseApplication {
             @SuppressLint("MyToastHelper")
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                LogUtils.e(TAG, e);
+                e.printStackTrace();
                 Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
                 rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
                         .subscribe(new Action1<Long>() {

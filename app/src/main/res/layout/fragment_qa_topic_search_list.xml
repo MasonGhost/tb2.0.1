@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <include
-                layout="@layout/view_top_tip"
+                layout="@layout/include_top_tip_sub"
                 />
 
             <com.wcy.overscroll.OverScrollLayout
@@ -37,12 +37,9 @@
             </com.wcy.overscroll.OverScrollLayout>
         </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.EmptyView
-            android:id="@+id/empty_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
+        <include
+            layout="@layout/include_list_emtyview_sub"
+            />
 
         <LinearLayout
             android:id="@+id/ll_empty"

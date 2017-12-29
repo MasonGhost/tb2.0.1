@@ -90,23 +90,15 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    AuthRepository mAuthRepository;
-    @Inject
-    CommentRepository mCommentRepository;
+
     @Inject
     public SharePolicy mSharePolicy;
 
-    @Inject
-    SystemRepository mSystemRepository;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     @Inject

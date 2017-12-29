@@ -22,12 +22,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * @describe 用户搜索界面
  * @author Jungle68
+ * @describe 用户搜索界面
  * @date 2017/1/9
  * @contact master.jungle68@gmail.com
  */
-public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.Presenter, UserInfoBean> implements SearchSomeOneContract.View, MultiItemTypeAdapter.OnItemClickListener {
+public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.Presenter, UserInfoBean> implements SearchSomeOneContract.View,
+        MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_LOCATION_STRING = "location_string";
 
@@ -76,8 +77,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mEmptyView.setVisibility(View.GONE);
-
+        setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());

@@ -36,16 +36,11 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETE
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class LoginPresenter extends AppBasePresenter< LoginContract.View> implements LoginContract.Presenter {
+public class LoginPresenter extends AppBasePresenter<LoginContract.View> implements LoginContract.Presenter {
+
 
     @Inject
-    AuthRepository mAuthRepository;
-    @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     AccountBeanGreenDaoImpl mAccountBeanGreenDao;
     @Inject
@@ -54,7 +49,7 @@ public class LoginPresenter extends AppBasePresenter< LoginContract.View> implem
     BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public LoginPresenter( LoginContract.View rootView) {
+    public LoginPresenter(LoginContract.View rootView) {
         super(rootView);
     }
 

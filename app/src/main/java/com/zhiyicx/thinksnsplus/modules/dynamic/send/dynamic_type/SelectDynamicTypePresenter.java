@@ -38,9 +38,6 @@ public class SelectDynamicTypePresenter extends AppBasePresenter<SelectDynamicTy
         implements SelectDynamicTypeContract.Presenter{
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     UserInfoRepository mCertificationDetailRepository;
 
     @Inject

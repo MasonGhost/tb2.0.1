@@ -35,7 +35,6 @@ import rx.schedulers.Schedulers;
 
 public class GuidePresenter extends BasePresenter<GuideContract.View>
         implements GuideContract.Presenter {
-
     @Inject
     AuthRepository mIAuthRepository;
     @Inject
@@ -56,24 +55,25 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void checkLogin() {
+    public void initConfig() {
         // 系统扩展配置信息处理
         mSystemRepository.getBootstrappersInfoFromServer();
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
-//        mIAuthRepository.refreshToken();
+            //        mIAuthRepository.refreshToken();
             // 钱包信息我也不知道在哪儿获取
             mWalletRepository.getWalletConfigWhenStart(mIAuthRepository.getAuthBean().getUser_id());
-            mRootView.startActivity(HomeActivity.class);
-        } else {
-            mRootView.startActivity(LoginActivity.class);
+        }
+        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            getLaunchAdverts();
         }
     }
+
+    @Override
+    public void checkLogin() {
+        mRootView.startActivity(mIAuthRepository.isLogin() ? HomeActivity.class : LoginActivity.class);
+    }
+
 
     @Override
     public void getLaunchAdverts() {
@@ -102,10 +102,6 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
                                 }
                                 return Observable.just(allAdverListBeen);
                             });
-//                        Observable.merge(adverts).subscribe(realAdvertListBeen -> {
-//                            mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
-//                        });
-//                        return Observable.just(allAdverListBeen);
                 })
                 .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
                     @Override

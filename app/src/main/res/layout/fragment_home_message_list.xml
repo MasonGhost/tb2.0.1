@@ -1,12 +1,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/rl_container"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
     <include
-        layout="@layout/view_top_tip"
+        layout="@layout/include_top_tip_sub"
         />
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
@@ -14,10 +14,10 @@
         android:id="@+id/refreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fl_top_tip_container"
+        android:layout_below="@+id/tv_top_tip_text"
         app:srlAccentColor="@android:color/white"
-        app:srlEnablePureScrollMode="true"
-        app:srlEnablePreviewInEditMode="true">
+        app:srlEnablePreviewInEditMode="true"
+        app:srlEnablePureScrollMode="true">
 
 
         <com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView
@@ -30,11 +30,8 @@
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-    <com.zhiyicx.baseproject.widget.EmptyView
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+    <include
+        layout="@layout/include_list_emtyview_sub"
+        />
 
 </RelativeLayout>

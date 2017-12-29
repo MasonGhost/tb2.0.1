@@ -100,6 +100,7 @@ public class BillRepository implements IBillRepository {
     @Override
     public void getWalletConfigWhenStart(Long user_id) {
         getWalletConfig()
+                .observeOn(Schedulers.io())
                 .subscribe(new BaseSubscribeForV2<WalletConfigBean>() {
                     @Override
                     protected void onSuccess(WalletConfigBean data) {

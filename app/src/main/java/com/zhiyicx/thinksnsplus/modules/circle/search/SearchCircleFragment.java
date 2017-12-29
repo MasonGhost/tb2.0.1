@@ -224,9 +224,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     }
 
     private void checkEmptyView() {
-        if (mEmptyView != null) {
-            mEmptyView.setVisibility(View.GONE);
-        }
+        setEmptyViewVisiable(false);
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {

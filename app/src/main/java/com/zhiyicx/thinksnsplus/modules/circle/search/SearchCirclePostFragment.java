@@ -225,9 +225,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
     }
 
     private void checkEmptyView() {
-        if (mEmptyView != null) {
-            mEmptyView.setVisibility(View.GONE);
-        }
+        setEmptyViewVisiable(false);
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {

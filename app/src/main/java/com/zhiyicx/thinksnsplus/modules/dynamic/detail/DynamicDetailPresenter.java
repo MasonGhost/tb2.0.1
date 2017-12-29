@@ -83,20 +83,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    SystemRepository mSystemRepository;
-    @Inject
-    CommentRepository mCommentRepository;
+
     @Inject
     BaseRewardRepository mRewardRepository;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+
     @Inject
     public SharePolicy mSharePolicy;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject

@@ -43,6 +43,9 @@ public interface GuideContract {
         void getLaunchAdverts();
 
         List<RealAdvertListBean> getBootAdvert();
+
+        void initConfig();
+
     }
 
 }

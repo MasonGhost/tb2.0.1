@@ -19,7 +19,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,7 +37,6 @@ import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
-import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -233,14 +231,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     LinearLayout mLlIntroCountContainer;
     @BindView(R.id.tv_top_tip_text)
     TextView mTvTopTipText;
-    @BindView(R.id.fl_top_tip_container)
-    FrameLayout mFlTopTipContainer;
     @BindView(R.id.swipe_target)
     RecyclerView mSwipeTarget;
     @BindView(R.id.refreshlayout)
     SmartRefreshLayout mRefreshlayout;
-    @BindView(R.id.empty_view)
-    EmptyView mEmptyView;
     @BindView(R.id.container)
     CoordinatorLayout mContainer;
 

@@ -54,13 +54,10 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
         ImStatusListener, ImTimeoutListener {
-    @Inject
-    AuthRepository mAuthRepository;
+
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;

@@ -76,16 +76,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     ChatRepository mChatRepository;
 
     @Inject
-    AuthRepository mAuthRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
-    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
 
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
@@ -93,8 +84,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
-    @Inject
-    SystemRepository mSystemRepository;
 
     /**
      * 评论的

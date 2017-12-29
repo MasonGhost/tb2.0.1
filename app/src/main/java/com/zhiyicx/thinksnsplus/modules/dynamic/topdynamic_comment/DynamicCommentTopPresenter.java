@@ -28,12 +28,6 @@ public class DynamicCommentTopPresenter extends AppBasePresenter< DynamicComment
         implements DynamicCommentTopContract.Presenter {
 
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-
-    @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
     BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject

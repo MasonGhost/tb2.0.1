@@ -46,8 +46,6 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     UserInfoRepository mUserInfoRepository;

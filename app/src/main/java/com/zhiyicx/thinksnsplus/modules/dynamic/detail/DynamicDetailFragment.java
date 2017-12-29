@@ -311,19 +311,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
-//        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-//        Glide.with(getContext())
-//                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
-//                .bitmapTransform(new GlideCircleTransform(getContext()))
-//                .placeholder(R.mipmap.pic_default_portrait1)
-//                .error(R.mipmap.pic_default_portrait1)
-//                .into(new SimpleTarget<GlideDrawable>() {
-//                    @Override
-//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-//                        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
-//                    }
-//                });
     }
 
     @Override
@@ -735,10 +722,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initImageCenterPopWindow(final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
-///       if (mPayImagePopWindow != null) {
-//            mPayImagePopWindow.show();
-//            return;
-//        }
         mPayImagePopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
@@ -796,20 +779,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .bottomClickListener(() -> mReSendCommentPopWindow.hide())
                 .build();
         mReSendCommentPopWindow.show();
-    }
-
-    /**
-     * 为了防止toolbar移动，导致状态栏透明，添加一个白色的色块
-     */
-    private void initToolbarTopBlankHeight() {
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mToolbarTopBlank.getLayoutParams();
-        layoutParams.height = DeviceUtils.getStatuBarHeight(getContext());
-    }
-
-    @Override
-    protected void onOverScrolled() {
-        super.onOverScrolled();
-//        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -20,9 +20,6 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.View>
         implements FeedBackContract.Presenter {
 
     @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
     public FeedBackPresenter(FeedBackContract.View rootView) {
         super(rootView);
     }
