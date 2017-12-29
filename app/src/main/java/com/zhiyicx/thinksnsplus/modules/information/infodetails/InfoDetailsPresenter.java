@@ -112,7 +112,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     mBaseInfoRepository.getInfoCommentListV2(String.valueOf(mRootView.getNewsId()), 0L, 0L),
                     mBaseRewardRepository.getRewardCount(mRootView.getCurrentInfo().getId()),
                     mBaseRewardRepository.rewardInfoList(mRootView.getCurrentInfo().getId(),
-                            TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null),
+                            TSListFragment.DEFAULT_PAGE_SIZE, null, null, null),
                     (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean, rewardsCountBean, rewardsListBeen) -> {
                         infoListDataBean.setDigList(infoDigListBeen);
                         infoListDataBean.setRelateInfoList(infoRelateBean);
@@ -285,7 +285,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Override
     public void reqReWardsData(int id) {
         Subscription subscribe = Observable.zip(mBaseRewardRepository.getRewardCount(id), mBaseRewardRepository.rewardInfoList(id
-                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 
                     mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);

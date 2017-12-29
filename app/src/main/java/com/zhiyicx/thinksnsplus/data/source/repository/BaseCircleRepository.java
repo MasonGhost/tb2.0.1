@@ -91,7 +91,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<CircleTypeBean>> getCategroiesList(int limit, int offet) {
-        return mCircleClient.getCategroiesList(TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+        return mCircleClient.getCategroiesList(TSListFragment.DEFAULT_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -171,14 +171,14 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<RewardsListBean>> getPostRewardList(long post_id, Integer limit, Integer offset, String order, String order_type) {
-        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offset, order, order_type)
+        return mCircleClient.getPostRewardList(post_id, TSListFragment.DEFAULT_PAGE_SIZE, offset, order, order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<PostDigListBean>> getPostDigList(long postId, int limit, long offet) {
-        return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, offet)
+        return mCircleClient.getPostDigList(postId, TSListFragment.DEFAULT_PAGE_SIZE, offet)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(postDigListBeans -> {
@@ -347,7 +347,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId, type)
+        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
@@ -584,7 +584,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<CircleCommentZip> getPostCommentList(long postId, Long maxId) {
-        return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue())
+        return mCircleClient.getPostComments(postId, TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
                 .subscribeOn(Schedulers.io())
                 .flatMap(circleCommentZip -> {
                     final List<Object> user_ids = new ArrayList<>();
@@ -651,7 +651,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
     @Override
     public Observable<List<CircleInfo>> getCircleList(long categoryId, long maxId) {
-        return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_ONE_PAGE_SIZE, (int) maxId)
+        return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

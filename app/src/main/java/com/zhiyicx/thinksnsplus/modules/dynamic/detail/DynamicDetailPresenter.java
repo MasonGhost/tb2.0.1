@@ -230,7 +230,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
     @Override
     public void updateRewardData(Long feed_id) {
         Subscription subscription = Observable.zip(mBaseDynamicRepository.getDynamicDetailBeanV2(feed_id)
-                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (currenDynamic, rewardsListBeens) -> {
                     mRootView.setRewardListBeans(rewardsListBeens);
                     mRootView.getCurrentDynamic().setReward(currenDynamic.getReward());
@@ -265,7 +265,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
             topFlag) {
         Subscription subscription = Observable.zip(mBaseDynamicRepository.getDynamicDigListV2(feed_id, max_id)
                 , mBaseDynamicRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), feed_id, max_id)
-                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (mDynamicDigs, listBaseJson3, rewardsListBeens) -> {
                     DynamicDetailBeanV2 dynamicBean = new DynamicDetailBeanV2();
                     dynamicBean.setDigUserInfoList(mDynamicDigs);

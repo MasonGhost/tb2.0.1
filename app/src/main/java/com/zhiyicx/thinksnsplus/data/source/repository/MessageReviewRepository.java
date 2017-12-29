@@ -67,21 +67,21 @@ public class MessageReviewRepository implements IMessageReviewRepository {
 
     @Override
     public Observable<List<TopPostCommentListBean>> getPostReviewComment(int after) {
-        return mCircleClient.getPostReviewComment(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null)
+        return mCircleClient.getPostReviewComment(after, TSListFragment.DEFAULT_PAGE_SIZE, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<TopPostListBean>> getPostReview(Long circleId, int after) {
-        return mCircleClient.getPostReview(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE, circleId)
+        return mCircleClient.getPostReview(after, TSListFragment.DEFAULT_PAGE_SIZE, circleId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after) {
-        return mCircleClient.getCircleJoinRequest(after, TSListFragment.DEFAULT_ONE_PAGE_SIZE)
+        return mCircleClient.getCircleJoinRequest(after, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

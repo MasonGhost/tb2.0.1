@@ -94,8 +94,8 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
         Subscription subscription = Observable.zip(mBaseCircleRepository.getPostComments(mRootView.getPostId(), 0, maxId.intValue()),
                 mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId()),
-                mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue(), null, null),
-                mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, maxId.intValue()),
+                mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null, null),
+                mBaseCircleRepository.getPostDigList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue()),
                 (circlePostCommentBeans, circlePostDetailBean, postRewardList, postDigListBeans) -> {
                     circlePostDetailBean.setComments(circlePostCommentBeans);
                     circlePostDetailBean.setDigList(postDigListBeans);
@@ -204,7 +204,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     public void updateRewardData() {
 
         Subscription subscription = Observable.zip(mBaseCircleRepository.getPostDetail(mRootView.getCircleId(), mRootView.getPostId())
-                , mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , mBaseCircleRepository.getPostRewardList(mRootView.getPostId(), TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (currenPost, rewardsListBeens) -> {
                     Observable.empty()
                             .observeOn(AndroidSchedulers.mainThread())

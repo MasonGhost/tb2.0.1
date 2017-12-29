@@ -49,17 +49,17 @@ public class RewardListPresenter extends AppBasePresenter< RewardListContract.Vi
         }
         switch (mRootView.getCurrentType()) {
             case INFO:
-                getRewardUsers(mRewardRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null,
+                getRewardUsers(mRewardRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null,
                         null)
                         , isLoadMore);
                 break;
 
             case DYNAMIC:
-                getRewardUsers(mRewardRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null, null)
+                getRewardUsers(mRewardRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null, null)
                         , isLoadMore);
                 break;
             case QA_ANSWER:
-                getRewardUsers(mRewardRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null)
+                getRewardUsers(mRewardRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null)
                         , isLoadMore);
             default:
 

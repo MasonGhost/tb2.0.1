@@ -34,7 +34,7 @@ public class ReportReviewPresenter extends AppBasePresenter< ReporReviewContract
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Subscription subscribe = mBaseCircleRepository.getCircleReportList(mRootView.getSourceId(), mRootView.getStatus(), maxId.intValue()
-                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getStartTime(), mRootView.getEndTime())
+                , TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getStartTime(), mRootView.getEndTime())
                 .subscribe(new BaseSubscribeForV2<List<CircleReportListBean>>() {
                     @Override
                     protected void onSuccess(List<CircleReportListBean> data) {
