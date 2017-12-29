@@ -36,6 +36,7 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
 
     private float mTextOffsetX;
     private int groupId;
+    private int groupIdT;
 
     public StickySectionDecoration(Context context, GroupInfoCallback callback) {
         this.mCallback = callback;
@@ -61,7 +62,6 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State
             state) {
-        super.getItemOffsets(outRect, view, parent, state);
 
         int position = parent.getChildAdapterPosition(view);
         if (mCallback != null) {
@@ -70,12 +70,12 @@ public class StickySectionDecoration extends RecyclerView.ItemDecoration {
                 return;
             }
             //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
-            if (groupInfo.isFirstViewInGroup() || groupInfo.mGroupID != groupId) {
+            if (groupInfo.isFirstViewInGroup() || groupInfo.mGroupID != groupIdT) {
                 outRect.top = mHeaderHeight;
             } else {
                 outRect.top = mDividerHeight;
             }
-            groupId = groupInfo.mGroupID;
+            groupIdT = groupInfo.mGroupID;
         }
     }
 

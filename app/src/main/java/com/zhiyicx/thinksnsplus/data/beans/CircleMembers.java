@@ -204,4 +204,19 @@ public class CircleMembers extends BaseListBean {
         result = 31 * result + (int) (user_id ^ (user_id >>> 32));
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "CircleMembers{" +
+                "id=" + id +
+                ", group_id=" + group_id +
+                ", user_id=" + user_id +
+                ", audit=" + audit +
+                ", role='" + role + '\'' +
+                ", disabled=" + disabled +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }

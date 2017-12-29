@@ -300,7 +300,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
         shareContent.setContent(TextUtils.isEmpty(circlePostListBean.getSummary()) ? mContext.getString(R.string
-                .share_dynamic) : circlePostListBean.getSummary());
+                .share_post) : circlePostListBean.getSummary());
         if (shareBitMap != null) {
             shareContent.setBitmap(shareBitMap);
         } else {
@@ -317,7 +317,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
         shareContent.setContent(TextUtils.isEmpty(CircleInfo.getName()) ? mContext.getString(R.string
-                .share_dynamic) : CircleInfo.getName());
+                .share_circle) : CircleInfo.getName());
         if (shareBitMap != null) {
             shareContent.setBitmap(shareBitMap);
         } else {
