@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 
 import com.hyphenate.chat.EMConversation;
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.cache.CacheBean;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
     private UserInfoBean userInfo;
     private EMConversation conversation;
     private String emKey;
+    private EMConversation.EMConversationType type;
 
     public UserInfoBean getUserInfo() {
         return userInfo;
@@ -45,12 +47,21 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
         this.emKey = emKey;
     }
 
+    public EMConversation.EMConversationType getType() {
+        return type;
+    }
+
+    public void setType(EMConversation.EMConversationType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "MessageItemBeanV2{" +
                 "userInfo=" + userInfo +
                 ", conversation=" + conversation +
                 ", emKey='" + emKey + '\'' +
+                ", type=" + type +
                 '}';
     }
 }

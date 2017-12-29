@@ -140,7 +140,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        getAllConversationV2(isLoadMore);
+//        getAllConversationV2(isLoadMore);
     }
 
     /**
@@ -248,7 +248,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-            getAllConversationV2(isLoadMore);
+//            getAllConversationV2(isLoadMore);
         }
     }
 
@@ -485,7 +485,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
     private void onConnected(String content) {
         mRootView.hideStickyMessage();
-        getAllConversationV2(false);
+//        getAllConversationV2(false);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
