@@ -22,17 +22,20 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyAnswerPresenter extends AppBasePresenter< MyAnswerContract.View>
-        implements MyAnswerContract.Presenter{
+public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.View>
+        implements MyAnswerContract.Presenter {
 
-    @Inject
     AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
 
-    @Inject
     BaseQARepository mBaseQARepository;
+
     @Inject
-    public MyAnswerPresenter(MyAnswerContract.View rootView) {
-        super( rootView);
+    public MyAnswerPresenter(MyAnswerContract.View rootView
+            , AnswerInfoListBeanGreenDaoImpl answerInfoListBeanGreenDao
+            , BaseQARepository baseQARepository) {
+        super(rootView);
+        mAnswerInfoListBeanGreenDao = answerInfoListBeanGreenDao;
+        mBaseQARepository = baseQARepository;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class MyAnswerPresenter extends AppBasePresenter< MyAnswerContract.View>
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class MyAnswerPresenter extends AppBasePresenter< MyAnswerContract.View>
     public void handleLike(int position, AnswerInfoBean answerInfoBean) {
         boolean isLiked = !answerInfoBean.getLiked();
         answerInfoBean.setLiked(isLiked);
-        if (isLiked){
+        if (isLiked) {
             answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
         } else {
             answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);

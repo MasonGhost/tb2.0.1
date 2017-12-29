@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.question;
 
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -25,15 +27,18 @@ import rx.Subscription;
 public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.View>
         implements MyPublishQuestionContract.Presenter {
 
-    @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
-    @Inject
     BaseQARepository mBaseQARepository;
 
     @Inject
-    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView) {
+    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView
+            , QAListInfoBeanGreenDaoImpl qAListInfoBeanGreenDao
+            , BaseQARepository baseQARepository
+    ) {
         super(rootView);
+        mQAListInfoBeanGreenDao = qAListInfoBeanGreenDao;
+        mBaseQARepository = baseQARepository;
     }
 
     @Override
@@ -68,4 +73,5 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
         mQAListInfoBeanGreenDao.saveMultiData(data);
         return false;
     }
+
 }

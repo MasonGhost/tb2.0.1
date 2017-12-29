@@ -51,7 +51,7 @@ public class MyCircleContainerFragment extends TSViewPagerFragment {
     @BindView(R.id.vp_fragment)
     ViewPager mVpFragment;
 
-    public MyCircleContainerFragment instance() {
+    public static MyCircleContainerFragment instance() {
         return new MyCircleContainerFragment();
     }
 

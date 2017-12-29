@@ -32,15 +32,17 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyFollowContai
 public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.View>
         implements MyFollowContract.Presenter {
 
-    @Inject
     QATopicBeanGreenDaoImpl mQaTopicBeanGreenDao;
 
-    @Inject
     BaseQARepository mBaseQARepository;
 
     @Inject
-    public MyFollowPresenter(MyFollowContract.View rootView) {
+    public MyFollowPresenter(MyFollowContract.View rootView
+            , QATopicBeanGreenDaoImpl qaTopicBeanGreenDao
+            , BaseQARepository baseQARepository) {
         super(rootView);
+        mQaTopicBeanGreenDao = qaTopicBeanGreenDao;
+        mBaseQARepository = baseQARepository;
     }
 
     @Override

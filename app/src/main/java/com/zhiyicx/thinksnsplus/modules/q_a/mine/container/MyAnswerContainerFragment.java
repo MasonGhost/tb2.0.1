@@ -89,11 +89,11 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(new MyAnswerFragment().instance(TYPE_ALL));
+            mFragments.add(MyAnswerFragment.instance(TYPE_ALL));
 //        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
-            mFragments.add(new MyAnswerFragment().instance(TYPE_ADOPTION));
-            mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
-            mFragments.add(new MyAnswerFragment().instance(TYPE_OTHER));
+            mFragments.add(MyAnswerFragment.instance(TYPE_ADOPTION));
+            mFragments.add(MyAnswerFragment.instance(TYPE_INVITE));
+            mFragments.add(MyAnswerFragment.instance(TYPE_OTHER));
         }
 
         return mFragments;
