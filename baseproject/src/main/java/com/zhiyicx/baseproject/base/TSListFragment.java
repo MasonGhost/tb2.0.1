@@ -475,17 +475,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     /**
-     * 刷新数据
-     */
-    @Override
-    public void refreshData() {
-        if (mHeaderAndFooterWrapper != null) {
-            setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-            mHeaderAndFooterWrapper.notifyDataSetChanged();
-        }
-    }
-
-    /**
      * 设置 emptyview 可见性
      *
      * @param visiable true 可见
@@ -502,6 +491,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             try {
                 ViewStub viewStub = (ViewStub) mRootView.findViewById(R.id.stub_empty_view);
                 mEmptyView = (EmptyView) viewStub.inflate();
+//                mEmptyView = (EmptyView) mRootView.findViewById(R.id.empty_view);
                 mEmptyView.setErrorImag(setEmptView());
                 mEmptyView.setNeedTextTip(false);
                 mEmptyView.setNeedClickLoadState(false);
@@ -517,6 +507,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    /**
+     * 刷新数据
+     */
+    @Override
+    public void refreshData() {
+        if (mHeaderAndFooterWrapper != null) {
+            setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
         }
     }
 
@@ -567,7 +568,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
         // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
-        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) {
+        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter != null && mPresenter.isTourist() && !mListDatas.isEmpty()) {
             hideLoading();
             showLoginPop();
             return;
@@ -663,7 +664,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mRefreshlayout.setEnableLoadmore(true);
             }
             mListDatas.clear();
-            setEmptyViewVisiable(false);
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
@@ -673,16 +673,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 mListDatas.addAll(data);
                 mMaxId = getMaxId(data);
                 refreshData();
-                setEmptyViewVisiable(false);
 
             } else {
+                layzLoadEmptyView();
                 mEmptyView.setErrorImag(setEmptView());
                 refreshData();
-                setEmptyViewVisiable(showEmptyViewWithNoData());
             }
         } else { // 加载更多
             if (data != null && data.size() != 0) {
-                setEmptyViewVisiable(false);
                 if (!isFromCache) {
                     // 更新缓存
                     mPresenter.insertOrUpdateData(data, true);
@@ -697,12 +695,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
             mRefreshlayout.setEnableLoadmore(false);
             // mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
-            setEmptyViewVisiable(mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData());
+            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {
+                setEmptyViewVisiable(true);
+            }
         }
-    }
-
-    protected boolean showEmptyViewWithNoData() {
-        return mHeaderAndFooterWrapper.getHeadersCount() <= 0;
     }
 
     protected Long getMaxId(@NotNull List<T> data) {

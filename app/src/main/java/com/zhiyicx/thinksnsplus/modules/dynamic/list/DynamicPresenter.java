@@ -99,7 +99,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     @Inject
     public SharePolicy mSharePolicy;
 
-    @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
     @Inject
     BaseDynamicRepository mDynamicRepository;
@@ -107,8 +106,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
-    public DynamicPresenter(DynamicContract.View rootView) {
+    public DynamicPresenter(DynamicContract.View rootView,AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao) {
         super(rootView);
+        mAllAdvertListBeanGreenDao=allAdvertListBeanGreenDao;
     }
 
     @Override
