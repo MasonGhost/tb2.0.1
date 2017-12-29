@@ -349,7 +349,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mWcSynchro.setOnCheckedChangeListener((buttonView, isChecked) -> createCirclepreHandle(emptyFlag != 0));
 
 
-
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
     }
@@ -466,7 +465,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()) || isPaidCircle);
         mCbToll.setChecked(isPaidCircle);
         mCbFree.setChecked(CircleInfo.CirclePayMode.PUBLIC.value.equals(mCircleInfo.getMode()));
-        mEtCircleAmount.setText(mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "");
+
+        // 金额转换
+        String money = mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "0";
+        double result = PayConfig.realCurrency2GameCurrency(Integer.parseInt(money), mPresenter.getRatio());
+        mEtCircleAmount.setText(result > 0 ? result + "" : "");
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
         mRlChangeHeadContainer.setEnabled(canUpdate && !isManager);
