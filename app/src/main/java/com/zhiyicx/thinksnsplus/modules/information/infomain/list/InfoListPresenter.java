@@ -40,24 +40,23 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIS
 @FragmentScoped
 public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
 
-    @Inject
-    InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
 
-    @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
-    @Inject
-    InfoRecommendBeanGreenDaoImpl mInfoRecommendBeanGreenDao;
 
-    @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
-    @Inject
     BaseInfoRepository mBaseInfoRepository;
 
     @Inject
-    public InfoListPresenter(InfoMainContract.InfoListView rootInfoListView) {
+    public InfoListPresenter(InfoMainContract.InfoListView rootInfoListView
+            , InfoListDataBeanGreenDaoImpl infoListDataBeanGreenDao
+            , AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao
+            , BaseInfoRepository baseInfoRepository) {
         super(rootInfoListView);
+        mInfoListDataBeanGreenDao = infoListDataBeanGreenDao;
+        mAllAdvertListBeanGreenDao = allAdvertListBeanGreenDao;
+        mBaseInfoRepository = baseInfoRepository;
     }
 
     @Override

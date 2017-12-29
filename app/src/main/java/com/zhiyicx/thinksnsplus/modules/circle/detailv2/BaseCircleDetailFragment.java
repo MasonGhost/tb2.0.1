@@ -132,7 +132,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return false;
     }
 
     @Override
