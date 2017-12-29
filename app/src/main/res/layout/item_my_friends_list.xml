@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_name"
             android:layout_marginTop="@dimen/spacing_mid_small"
-            android:layout_toLeftOf="@+id/iv_user_follow"
+            android:layout_toLeftOf="@+id/iv_to_chat"
             android:layout_toRightOf="@id/iv_headpic"
             android:ellipsize="end"
             android:gravity="top"
