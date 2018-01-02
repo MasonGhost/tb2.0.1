@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.easeui.R;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowVoice;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowVoicePlayer;
@@ -28,7 +29,7 @@ public class EaseChatVoicePresenter extends EaseChatFilePresenter {
     private EaseChatRowVoicePlayer voicePlayer;
 
     @Override
-    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter) {
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         voicePlayer = EaseChatRowVoicePlayer.getInstance(cxt);
         return new EaseChatRowVoice(cxt, message, position, adapter);
     }

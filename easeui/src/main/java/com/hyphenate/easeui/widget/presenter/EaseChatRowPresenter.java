@@ -9,6 +9,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.R;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.model.styles.EaseMessageListItemStyle;
 import com.hyphenate.easeui.widget.EaseAlertDialog;
 import com.hyphenate.easeui.widget.EaseChatMessageList;
@@ -48,10 +49,10 @@ public abstract class EaseChatRowPresenter implements EaseChatRow.EaseChatRowAct
     public void onDetachedFromWindow() {
     }
 
-    public EaseChatRow createChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter) {
+    public EaseChatRow createChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         this.context = cxt;
         this.adapter = adapter;
-        chatRow = onCreateChatRow(cxt, message, position, adapter);
+        chatRow = onCreateChatRow(cxt, message, position, adapter, userInfoBean);
         return chatRow;
     }
 
@@ -106,7 +107,7 @@ public abstract class EaseChatRowPresenter implements EaseChatRow.EaseChatRowAct
     protected void handleReceiveMessage(EMMessage message) {
     }
 
-    protected abstract EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter);
+    protected abstract EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean);
 
     protected EaseChatRow getChatRow() {
         return chatRow;

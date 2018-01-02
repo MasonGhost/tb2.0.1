@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowLocation;
@@ -18,7 +19,7 @@ import com.hyphenate.exceptions.HyphenateException;
 
 public class EaseChatLocationPresenter extends EaseChatRowPresenter {
     @Override
-    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter) {
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         return new EaseChatRowLocation(cxt, message, position, adapter);
     }
 

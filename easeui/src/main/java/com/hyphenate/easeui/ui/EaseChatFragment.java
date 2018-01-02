@@ -38,6 +38,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.R;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
@@ -115,6 +116,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
 
+    private List<ChatUserInfoBean> mUserInfoBeans;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ease_fragment_chat, container, false);
@@ -140,6 +143,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     /**
      * init view
      */
+    @Override
     protected void initView() {
         // hold to record voice
         //noinspection ConstantConditions
@@ -194,6 +198,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         }
     }
 
+    @Override
     protected void setUpView() {
         titleBar.setTitle(toChatUsername);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
@@ -308,7 +313,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     
     protected void onMessageListInit(){
         messageList.init(toChatUsername, chatType, chatFragmentHelper != null ? 
-                chatFragmentHelper.onSetCustomChatRowProvider() : null);
+                chatFragmentHelper.onSetCustomChatRowProvider() : null, mUserInfoBeans);
         setListItemClickListener();
         
         messageList.getListView().setOnTouchListener(new OnTouchListener() {

@@ -3,6 +3,7 @@ package com.hyphenate.easeui.widget.chatrow;
 import android.widget.BaseAdapter;
 
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 
 /**
@@ -28,5 +29,7 @@ public interface EaseCustomChatRowProvider {
      * @return
      */
     EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter);
+
+    EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean);
     
 }

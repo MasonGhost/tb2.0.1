@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.BaseAdapter;
 
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowBigExpression;
 
@@ -13,7 +14,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseChatRowBigExpression;
 
 public class EaseChatBigExpressionPresenter extends EaseChatTextPresenter {
     @Override
-    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter) {
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean chatUserInfoBean) {
         return new EaseChatRowBigExpression(cxt, message, position, adapter);
     }
 

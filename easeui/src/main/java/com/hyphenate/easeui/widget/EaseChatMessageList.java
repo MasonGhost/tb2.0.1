@@ -13,9 +13,12 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.adapter.EaseMessageAdapter;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.model.styles.EaseMessageListItemStyle;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
+
+import java.util.List;
 
 public class EaseChatMessageList extends RelativeLayout{
 
@@ -29,6 +32,8 @@ public class EaseChatMessageList extends RelativeLayout{
     protected EaseMessageAdapter messageAdapter;
 
     protected EaseMessageListItemStyle itemStyle;
+
+    private List<ChatUserInfoBean> mUserInfoBeans;
 
     public EaseChatMessageList(Context context, AttributeSet attrs, int defStyle) {
         this(context, attrs);
@@ -58,12 +63,12 @@ public class EaseChatMessageList extends RelativeLayout{
      * @param chatType
      * @param customChatRowProvider
      */
-    public void init(String toChatUsername, int chatType, EaseCustomChatRowProvider customChatRowProvider) {
+    public void init(String toChatUsername, int chatType, EaseCustomChatRowProvider customChatRowProvider, List<ChatUserInfoBean> userInfoBeans) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
-        
+        this.mUserInfoBeans = userInfoBeans;
         conversation = EMClient.getInstance().chatManager().getConversation(toChatUsername, EaseCommonUtils.getConversationType(chatType), true);
-        messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView);
+        messageAdapter = new EaseMessageAdapter(context, toChatUsername, chatType, listView, mUserInfoBeans);
         messageAdapter.setItemStyle(itemStyle);
         messageAdapter.setCustomChatRowProvider(customChatRowProvider);
         // set message adapter

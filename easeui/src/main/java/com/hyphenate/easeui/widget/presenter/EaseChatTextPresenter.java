@@ -5,6 +5,7 @@ import android.widget.BaseAdapter;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowText;
 import com.hyphenate.exceptions.HyphenateException;
@@ -16,7 +17,7 @@ import com.hyphenate.exceptions.HyphenateException;
 public class EaseChatTextPresenter extends EaseChatRowPresenter {
 
     @Override
-    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter) {
+    protected EaseChatRow onCreateChatRow(Context cxt, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
         return new EaseChatRowText(cxt, message, position, adapter);
     }
 
