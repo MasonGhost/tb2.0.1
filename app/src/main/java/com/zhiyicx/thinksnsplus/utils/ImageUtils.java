@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.signature.StringSignature;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -209,6 +210,41 @@ public class ImageUtils {
     }
 
     /**
+     * 加载聊天中的用户头像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    控件
+     * @param withBorder   边框
+     */
+    public static void loadUserHead(ChatUserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
+        if (checkImageContext(imageView)) {
+            return;
+        }
+
+        loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
+        if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
+            if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
+                userInfoBean.getVerified().setIcon("");
+            }
+            Glide.with(imageView.getContext())
+                    .load(userInfoBean.getVerified().getIcon())
+                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+                    .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
+                            .pic_identi_individual)
+                    .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap
+                            .pic_identi_individual)
+                    .transform(withBorder ?
+                            new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
+                                    .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                            : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                    .into(imageView.getIvVerify());
+            imageView.getIvVerify().setVisibility(View.VISIBLE);
+        } else {
+            imageView.getIvVerify().setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
      * 加载用户圆形图像
      *
      * @param userInfoBean 用户信息
@@ -298,11 +334,47 @@ public class ImageUtils {
                 .into(imageView);
     }
 
+    private static void loadUserAvatar(ChatUserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
+        String avatar = "";
+        if (userInfoBean != null && userInfoBean.getUser_id() != null) {
+            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? "" : userInfoBean.getAvatar();
+            long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
+            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() ==
+                    currentLoginUerId) {
+
+                if (userInfoBean.getUser_id() == currentLoginUerId) {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(),
+                            SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+                } else {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(),
+                            SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+                }
+                if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
+                    mHeadPicSigture = System.currentTimeMillis();
+                }
+                SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                        , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE :
+                                SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
+            }
+            laste_request_time = System.currentTimeMillis();
+        }
+        int defaultAvatar = getDefaultAvatar(userInfoBean);
+        Glide.with(imageView.getContext())
+                .load(avatar)
+                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+                .placeholder(withBorder ? defaultAvatar : defaultAvatar)
+                .error(withBorder ? defaultAvatar : defaultAvatar)
+                .transform(withBorder ?
+                        new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources()
+                                .getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                        : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                .into(imageView);
+    }
+
     /**
      * 获取用户头像地址
      *
      * @param userId user's  id
-     * @return
      */
     public static String getUserAvatar(Long userId) {
         if (userId == null) {
@@ -316,7 +388,6 @@ public class ImageUtils {
      * 获取用户头像地址
      *
      * @param userInfoBean user's  info
-     * @return
      */
     public static String getUserAvatar(UserInfoBean userInfoBean) {
         if (userInfoBean == null || userInfoBean.getAvatar() == null) {
@@ -330,7 +401,6 @@ public class ImageUtils {
      * 获取用户默认头像
      *
      * @param userInfoBean user's  info
-     * @return
      */
     public static int getDefaultAvatar(UserInfoBean userInfoBean) {
         int defaultAvatar;
@@ -356,13 +426,36 @@ public class ImageUtils {
         return defaultAvatar;
     }
 
+    public static int getDefaultAvatar(ChatUserInfoBean userInfoBean) {
+        int defaultAvatar;
+        if (userInfoBean == null) {
+            return R.mipmap.pic_default_secret;
+        }
+        switch (userInfoBean.getSex()) {
+
+            case ChatUserInfoBean.FEMALE:
+                defaultAvatar = R.mipmap.pic_default_woman;
+                break;
+            case ChatUserInfoBean.MALE:
+                defaultAvatar = R.mipmap.pic_default_man;
+
+                break;
+            case ChatUserInfoBean.SECRET:
+                defaultAvatar = R.mipmap.pic_default_secret;
+                break;
+            default:
+                defaultAvatar = R.mipmap.pic_default_secret;
+
+        }
+        return defaultAvatar;
+    }
+
     /**
      * 图片地址转换 V2 api
      *
      * @param canLook 是否可查看
      * @param storage 图片对应的 id 号，也可能是本地的图片路径
      * @param part    压缩比例 0-100
-     * @return
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
         String url = String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
@@ -374,7 +467,6 @@ public class ImageUtils {
      *
      * @param url   图片地址
      * @param token 图片token
-     * @return
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
         LogUtils.d("imagePathConvertV2:" + url);
@@ -389,7 +481,6 @@ public class ImageUtils {
      * @param h       高
      * @param part    压缩比例
      * @param token   token
-     * @return
      */
     public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
         return new GlideUrl(imagePathConvertV2(storage, w, h, part), new LazyHeaders.Builder()
