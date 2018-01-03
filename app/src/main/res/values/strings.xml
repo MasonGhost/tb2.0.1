@@ -317,7 +317,7 @@
     <string name="edit_circle_block">设置为封闭圈子</string>
     <string name="edit_circle_charge">收费入圈</string>
     <string name="edit_circle_free">免费入圈</string>
-    <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
+    <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子,收费圈子不可更改成公开和私有圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
     <string name="circle_rule">圈子创建协议</string>

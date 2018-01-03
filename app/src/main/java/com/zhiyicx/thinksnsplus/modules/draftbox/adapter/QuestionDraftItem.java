@@ -1,13 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox.adapter;
 
 import android.app.Activity;
-import android.view.View;
 
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
  * @Author Jliuer

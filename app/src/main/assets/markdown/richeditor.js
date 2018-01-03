@@ -442,21 +442,21 @@ var RE = {
 	// 限制标题输入字数
     wordsLimit: function wordsLimit(){
         var _self = this;
-        var noteView=_self.titleLimit.txtNote;
-        var limitCount=_self.titleLimit.limitCount;
-        var InPutView=document.getElementById("title");
-        if(InPutView.value.length<1){
+        var noteView = _self.titleLimit.txtNote;
+        var limitCount = _self.titleLimit.limitCount;
+        var InPutView = document.getElementById("title");
+        if(InPutView.value.length < 1 ){
             document.getElementById("stay").style.display="none";
             return
         }
-        if(InPutView.value.length>=10){
+        if(InPutView.value.length > =10 ){
             document.getElementById("stay").style.display="block";
             document.getElementById("stay").style.color="green";
         }
-        if(InPutView.value.length>15){
+        if(InPutView.value.length > 15 ){
             document.getElementById("stay").style.color="red";
         }
-        if(noteView.value.length>limitCount){
+        if(noteView.value.length > limitCount ){
             noteView.value=noteView.value.substring(0,limitCount);
         }
         _self.titleLimit.txtLimit.innerText=noteView.value.length;

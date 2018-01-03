@@ -17,6 +17,7 @@ p {
   position: absolute;
   z-index: -100;
   visibility: hidden;
+  white-space: pre-wrap;
   word-wrap: break-word;
   width: 100%;
   min-height: 30px;

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -54,6 +55,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func4;
 
 /**
  * @author Jliuer
