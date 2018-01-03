@@ -440,14 +440,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onLeftClick(int position) {
         // 减去 header
-        position = position - 1;
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         toChatV2(messageItemBeanList.get(position), position);
     }
 
     @Override
     public void onRightClick(int position) {
         // 减去 header
-        position = position - 1;
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mPresenter.deletConversation(position);
         refreshData();
     }
