@@ -15,7 +15,8 @@
     <string name="the_last">最新</string>
     <!-- 消息 -->
     <string name="notification">通知</string>
-    <string name="system_notification">系统通知</string>
+    <string name="system_notification">系统消息</string>
+    <string name="system_notification_null">暂无系统消息</string>
     <string name="critical">评论的</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>

@@ -92,7 +92,7 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.message), getString(R.string.notification));
+        return Arrays.asList(getString(R.string.notification), getString(R.string.chat));
     }
 
     @Override

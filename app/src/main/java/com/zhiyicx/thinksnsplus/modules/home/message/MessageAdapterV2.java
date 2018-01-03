@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 
 import com.daimajia.swipe.SimpleSwipeListener;
@@ -17,6 +18,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -90,7 +92,18 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         } else {
             if (messageItemBean.getConversation().getLastMessage().status() == EMMessage.Status.FAIL) {
                 holder.setText(R.id.tv_content, holder.getConvertView().getResources().getString(R.string.send_fail));
+                holder.getTextView(R.id.tv_content).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    holder.getTextView(R.id.tv_content).setCompoundDrawablesRelative(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null, null, null);
+                } else {
+                    holder.getTextView(R.id.tv_content).setCompoundDrawables(UIUtils.getCompoundDrawables(mContext, R.mipmap.msg_box_remind), null, null, null);
+                }
             } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    holder.getTextView(R.id.tv_content).setCompoundDrawablesRelative(null, null, null, null);
+                } else {
+                    holder.getTextView(R.id.tv_content).setCompoundDrawables(null, null, null, null);
+                }
                 EMMessage message = messageItemBean.getConversation().getLastMessage();
                 String content;
                 if (message.getBody() instanceof EMTextMessageBody){

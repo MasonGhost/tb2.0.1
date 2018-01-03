@@ -22,7 +22,7 @@
                 android:layout_width="@dimen/headpic_for_list"
                 app:pressShape="circle"
                 android:layout_height="@dimen/headpic_for_list"
-                android:src="@mipmap/ico_message_comment"/>
+                android:src="@mipmap/ico_message_systerm"/>
         <TextView
                 android:id="@+id/tv_header_notification_name"
                 android:layout_width="wrap_content"
@@ -46,6 +46,7 @@
                 android:maxLines="1"
                 android:textColor="@color/general_for_hint"
                 android:textSize="@dimen/size_icon_assist"
+                android:visibility="invisible"
                 tools:text="2016-05-06"/>
 
         <FrameLayout
@@ -89,7 +90,7 @@
                 android:layout_marginTop="@dimen/textview_spacing_offset_height"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_assist"
-                tools:text="我送第几个 "/>
+                tools:text="@string/system_notification_null "/>
 
 
     </RelativeLayout>
