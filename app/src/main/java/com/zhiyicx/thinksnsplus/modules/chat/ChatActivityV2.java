@@ -16,9 +16,11 @@ import java.util.List;
 
 public class ChatActivityV2 extends TSActivity{
 
+    public final static String BUNDLE_CHAT_DATA = "bundle_chat_data";
+
     @Override
     protected Fragment getFragment() {
-        return new ChatFragmentV2().instance(getIntent().getExtras());
+        return new ChatFragmentV2().instance(getIntent().getBundleExtra(BUNDLE_CHAT_DATA));
     }
 
     @Override

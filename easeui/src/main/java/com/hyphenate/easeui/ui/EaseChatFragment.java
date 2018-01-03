@@ -116,7 +116,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected boolean isRoaming = false;
     private ExecutorService fetchQueue;
 
-    private List<ChatUserInfoBean> mUserInfoBeans;
+    public List<ChatUserInfoBean> mUserInfoBeans;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -200,6 +200,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
     @Override
     protected void setUpView() {
+
         titleBar.setTitle(toChatUsername);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) {
             // set title

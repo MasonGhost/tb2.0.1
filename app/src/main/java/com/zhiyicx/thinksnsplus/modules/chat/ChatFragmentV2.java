@@ -52,6 +52,13 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     @Override
+    protected void setUpView() {
+        setChatFragmentHelper(this);
+        mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
+        super.setUpView();
+    }
+
+    @Override
     public void onSetMessageAttributes(EMMessage message) {
 
     }

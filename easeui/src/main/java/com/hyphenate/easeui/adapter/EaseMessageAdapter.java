@@ -95,7 +95,7 @@ public class EaseMessageAdapter extends BaseAdapter{
 		this.listView = listView;
 		toChatUsername = username;
 		for (ChatUserInfoBean chatUserInfoBean : userInfoBeans){
-			mUserInfoBeanSparseArray.get(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
+			mUserInfoBeanSparseArray.put(chatUserInfoBean.getUser_id().intValue(), chatUserInfoBean);
 		}
 		this.conversation = EMClient.getInstance().chatManager().getConversation(username, EaseCommonUtils.getConversationType(chatType), true);
 	}

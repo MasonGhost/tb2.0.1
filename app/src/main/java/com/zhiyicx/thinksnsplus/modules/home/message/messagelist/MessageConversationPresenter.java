@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 import android.support.v4.app.Fragment;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -11,11 +13,14 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +39,9 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class MessageConversationPresenter extends AppBasePresenter<MessageConversationContract.Repository, MessageConversationContract.View>
         implements MessageConversationContract.Presenter{
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.Repository repository, MessageConversationContract.View rootView) {
@@ -85,6 +93,30 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     @Override
     public void checkUnreadNotification() {
 
+    }
+
+    @Override
+    public List<ChatUserInfoBean> getChatUserList(int position) {
+        List<ChatUserInfoBean> chatUserInfoBeans = new ArrayList<>();
+        // 当前用户
+        chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
+        chatUserInfoBeans.add(getChatUser(mRootView.getRealMessageList().get(position).getUserInfo()));
+        return chatUserInfoBeans;
+    }
+
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+        ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+        chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+        chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+        chatUserInfoBean.setName(userInfoBean.getName());
+        chatUserInfoBean.setSex(userInfoBean.getSex());
+        ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+        verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+        verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+        verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+        verifiedBean.setType(userInfoBean.getVerified().getType());
+        chatUserInfoBean.setVerified(verifiedBean);
+        return chatUserInfoBean;
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.chat.item;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -8,10 +10,15 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.utils.EaseSmileUtils;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+
+import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_SPACING_TIME;
 
 /**
  * @author Catherine
@@ -52,18 +59,25 @@ public class ChatRowText extends EaseChatRow {
 
     @Override
     protected void onViewUpdate(EMMessage msg) {
-        EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
-        // 正文
-        mTvChatContent.setText(txtBody.getMessage());
-        // 头像
-        ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
-        // 时间
-        // 用户名
-        mTvChatName.setText(mUserInfoBean.getName());
+
     }
 
     @Override
     protected void onSetUpView() {
-
+        EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
+        // 正文
+        Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
+        mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
+        // 头像
+        ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
+        // 时间
+        if ((message.getMsgTime() - message.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+            mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+            mTvChatTime.setVisibility(VISIBLE);
+        } else {
+            mTvChatTime.setVisibility(GONE);
+        }
+        // 用户名
+        mTvChatName.setText(mUserInfoBean.getName());
     }
 }
