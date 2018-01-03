@@ -115,6 +115,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     /**1.5.0新增 环信登陆的密码  用户名是uid*/
     private String im_pwd_hash;
+    /**1.5.1新增 好友数量*/
+    private int friends_count;
 
     private boolean initial_password = true; // 在登陆信息中返回，用来判断是否需要设置密码，给个默认值true，false才需要设置
 
@@ -332,6 +334,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public void setIm_pwd_hash(String im_pwd_hash) {
         this.im_pwd_hash = im_pwd_hash;
+    }
+
+    public int getFriends_count() {
+        return friends_count;
+    }
+
+    public void setFriends_count(int friends_count) {
+        this.friends_count = friends_count;
     }
 
     public UserInfoExtraBean getExtra() {
@@ -616,11 +626,12 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
-    @Generated(hash = 703875029)
+    @Generated(hash = 436092144)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
             String location, boolean following, boolean follower, String created_at, String updated_at,
             String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags, String im_pwd_hash, boolean initial_password, boolean has_deleted) {
+            List<UserTagBean> tags, String im_pwd_hash, int friends_count, boolean initial_password,
+            boolean has_deleted) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -638,6 +649,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.verified = verified;
         this.tags = tags;
         this.im_pwd_hash = im_pwd_hash;
+        this.friends_count = friends_count;
         this.initial_password = initial_password;
         this.has_deleted = has_deleted;
     }
@@ -667,6 +679,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 ", verified=" + verified +
                 ", tags=" + tags +
                 ", im_pwd_hash='" + im_pwd_hash + '\'' +
+                ", friends_count=" + friends_count +
                 ", initial_password=" + initial_password +
                 ", has_deleted=" + has_deleted +
                 '}';
@@ -702,6 +715,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.verified, flags);
         dest.writeTypedList(this.tags);
         dest.writeString(this.im_pwd_hash);
+        dest.writeInt(this.friends_count);
         dest.writeByte(this.initial_password ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_deleted ? (byte) 1 : (byte) 0);
     }
@@ -730,6 +744,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.im_pwd_hash = in.readString();
+        this.friends_count = in.readInt();
         this.initial_password = in.readByte() != 0;
         this.has_deleted = in.readByte() != 0;
     }

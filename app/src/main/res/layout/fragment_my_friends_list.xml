@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
-                android:drawableLeft="@mipmap/find_ico_location"
+                android:drawableLeft="@mipmap/ico_addfriends"
                 android:drawablePadding="@dimen/spacing_small"
                 android:ellipsize="end"
                 android:gravity="center"

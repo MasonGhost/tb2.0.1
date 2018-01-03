@@ -73,6 +73,6 @@
             android:layout_marginLeft="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
-            android:src="@mipmap/ico_me_follow"/>
+            android:src="@mipmap/ico_chat"/>
 
 </RelativeLayout>

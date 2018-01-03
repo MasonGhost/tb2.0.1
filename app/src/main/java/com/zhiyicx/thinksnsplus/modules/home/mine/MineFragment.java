@@ -81,6 +81,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     TextView mTvFansCount;
     @BindView(R.id.tv_follow_count)
     TextView mTvFollowCount;
+    @BindView(R.id.tv_friends_count)
+    TextView mTvFriendsCount;
     @BindView(R.id.bt_wallet)
     CombinationButton mBtWallet;
     @BindView(R.id.bt_certification)
@@ -346,6 +348,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney, mPresenter.getRatio())
                 , mPresenter.getGoldName()));
         this.mUserInfoBean = userInfoBean;
+        // 设置好友数
+        String friendsCount = String.valueOf(userInfoBean.getFriends_count());
+        mTvFriendsCount.setText(friendsCount);
     }
 
     @Override
