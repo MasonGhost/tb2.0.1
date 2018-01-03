@@ -17,9 +17,11 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_COLLECT_POST;
 
 /**
  * @author Jliuer
@@ -79,6 +81,15 @@ public interface IBaseCircleRepository {
      */
     @GET(APP_PATH_GET_ALL_POSTLIST)
     Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id);
+
+    /**
+     * 用户帖子收藏列表
+     *
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return
+     */
+    Observable<List<CirclePostListBean>> getUserCollectPostList(Integer limit, Integer offset);
 
     /**
      * 获取我加入的圈子
@@ -229,10 +240,10 @@ public interface IBaseCircleRepository {
      * 圈主和管理员置顶帖子
      *
      * @param postId
-     * @param day 天数
+     * @param day    天数
      * @return
      */
-    Observable<BaseJsonV2> stickTopPost(Long postId,int day);
+    Observable<BaseJsonV2> stickTopPost(Long postId, int day);
 
     /**
      * 圈主和管理员撤销置顶帖子

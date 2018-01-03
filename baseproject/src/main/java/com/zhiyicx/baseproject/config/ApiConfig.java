@@ -578,6 +578,11 @@ public class ApiConfig {
      */
     public static final String APP_PATH_GET_ALL_POSTLIST = "api/" + API_VERSION_2 + "/plus-group/group-posts";
     /**
+     * 用户帖子收藏列表
+     *
+     */
+    public static final String APP_PATH_GET_USER_COLLECT_POST = "api/" + API_VERSION_2 + "/plus-group/user-post-collections";
+    /**
      * 评论帖子/评论列表
      */
     public static final String APP_PATH_COMMENT_POST = "api/" + API_VERSION_2 + "/plus-group/group-posts/{post_id}/comments";
