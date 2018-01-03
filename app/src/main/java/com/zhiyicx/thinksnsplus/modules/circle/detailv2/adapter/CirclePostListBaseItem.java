@@ -164,6 +164,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
+            holder.setTextColor(R.id.tv_title, R.color.important_for_content);
 
             String content = circlePostListBean.getSummary();
             TextView contentView = holder.getView(R.id.tv_content);

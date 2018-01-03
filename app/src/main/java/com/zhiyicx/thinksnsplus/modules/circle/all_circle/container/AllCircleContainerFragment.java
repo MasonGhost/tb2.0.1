@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputAc
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
 
@@ -29,6 +30,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.detail.Certificatio
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment.REQUST_CODE_CATEGORY;
 
 /**
  * @Author Jliuer
@@ -38,6 +40,8 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  */
 public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleContainerContract.Presenter>
         implements AllCircleContainerContract.View {
+
+    private CircleTypeBean mCircleTypeBean;
 
     private List<String> mTitle;
 
@@ -142,8 +146,18 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
         mTsvToolbar.setRightClickListener(this, () -> {
             Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
-            startActivity(typeIntent);
+            startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
+            mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
+            mVpFragment.setCurrentItem(mTitle.indexOf(mCircleTypeBean.getName()));
+        }
+
     }
 
     @Override

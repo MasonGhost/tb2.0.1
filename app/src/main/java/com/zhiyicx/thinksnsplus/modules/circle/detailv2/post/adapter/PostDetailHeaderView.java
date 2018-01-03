@@ -89,6 +89,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
         mInfoDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mInfoDetailHeader.findViewById(R.id.tv_info_title);
+        mTitle.setTextColor(mContext.getResources().getColor(R.color.important_for_content));
         mChannel = (TextView) mInfoDetailHeader.findViewById(R.id.tv_from_channel);
         mFrom = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_timeform);
         mContent = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_detail_content);

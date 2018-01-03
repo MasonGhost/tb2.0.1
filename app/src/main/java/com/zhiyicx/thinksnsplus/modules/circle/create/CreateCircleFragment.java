@@ -65,7 +65,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         implements CreateCircleContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     private static final int REQUST_CODE_AREA = 8000;
-    private static final int REQUST_CODE_CATEGORY = 5000;
+    public static final int REQUST_CODE_CATEGORY = 5000;
 
     public static final int REQUST_CODE_UPDATE = 1996;
 
