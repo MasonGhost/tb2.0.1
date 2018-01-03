@@ -71,12 +71,19 @@ public class ChatRowText extends EaseChatRow {
         // 头像
         ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
         // 时间
-        if ((message.getMsgTime() - message.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+        if (position == 0){
             mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
             mTvChatTime.setVisibility(VISIBLE);
         } else {
-            mTvChatTime.setVisibility(GONE);
+            EMMessage prevMessage = (EMMessage) adapter.getItem(position - 1);
+            if ((message.getMsgTime() - prevMessage.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
+                mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
+                mTvChatTime.setVisibility(VISIBLE);
+            } else {
+                mTvChatTime.setVisibility(GONE);
+            }
         }
+
         // 用户名
         mTvChatName.setText(mUserInfoBean.getName());
     }
