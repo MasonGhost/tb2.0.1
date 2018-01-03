@@ -1,18 +1,32 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.ui.EaseChatFragment;
+import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
@@ -45,6 +59,9 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
     private static final int MESSAGE_TYPE_RECALL = 9;
 
+    protected View mDriver;
+    protected View mStatusPlaceholderView;
+
     public ChatFragmentV2 instance(Bundle bundle){
         ChatFragmentV2 fragmentV2 = new ChatFragmentV2();
         fragmentV2.setArguments(bundle);
@@ -52,10 +69,86 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return getContentView(inflater);
+    }
+
+    private View getContentView(LayoutInflater inflater){
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        linearLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 是否添加和状态栏等高的占位 View
+        if (setUseSatusbar() && setUseStatusView()) {
+            mStatusPlaceholderView = new View(getContext());
+            mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    DeviceUtils.getStatuBarHeight(getContext())));
+            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), R.color.white) == Color
+                    .WHITE) {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            } else {
+                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+            }
+            linearLayout.addView(mStatusPlaceholderView);
+        }
+        // 分割线
+        mDriver = new View(getContext());
+        mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(com.zhiyicx.baseproject.R.dimen
+                .divider_line)));
+        mDriver.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.general_for_line));
+        linearLayout.addView(mDriver);
+        if (setUseSatusbar()) {
+            // 状态栏顶上去
+            StatusBarUtils.transparencyBar(getActivity());
+            linearLayout.setFitsSystemWindows(false);
+        } else {
+            // 状态栏不顶上去
+            StatusBarUtils.setStatusBarColor(getActivity(), R.color.white);
+            linearLayout.setFitsSystemWindows(true);
+        }
+        StatusBarUtils.statusBarLightMode(getActivity());
+        FrameLayout frameLayout = new FrameLayout(getActivity());
+        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 内容区域
+        final View bodyContainer = inflater.inflate(getBodyLayoutId(), null);
+        bodyContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        frameLayout.addView(bodyContainer);
+        linearLayout.addView(frameLayout);
+        return linearLayout;
+    }
+
+
+    @Override
     protected void setUpView() {
         setChatFragmentHelper(this);
         mUserInfoBeans = getArguments().getParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST);
-        super.setUpView();
+        // 标题栏
+        // 背景白色
+        titleBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        titleBar.setTitleColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+        // 左边返回键
+        titleBar.setLeftImageResource(R.mipmap.topbar_back);
+        // 右边更多按钮
+        titleBar.setRightImageResource(R.mipmap.topbar_more_black);
+        if (chatType == EaseConstant.CHATTYPE_SINGLE){
+            titleBar.setTitle(mUserInfoBeans.get(1).getName());
+        } else if (chatType == EaseConstant.CHATTYPE_GROUP){
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
+            titleBar.setTitle(group.getGroupName());
+            EMClient.getInstance().groupManager().addGroupChangeListener(groupListener);
+        }
+        titleBar.setLeftLayoutClickListener(v -> onBackPressed());
+        titleBar.setRightLayoutClickListener(v -> toGroupDetails());
+        setRefreshLayoutListener();
+        if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
+            onConversationInit();
+            onMessageListInit();
+        }
+        // show forward message if the message is not null
+        String forward_msg_id = getArguments().getString("forward_msg_id");
+        if (forward_msg_id != null) {
+            forwardMessage(forward_msg_id);
+        }
     }
 
     @Override
@@ -105,6 +198,10 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         return new CustomChatRowProvider();
     }
 
+    private int getBodyLayoutId(){
+        return R.layout.fragment_chat_v2;
+    }
+
     @Override
     protected void registerExtendMenuItem() {
         //use the menu in base class
@@ -116,6 +213,24 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL, extendMenuItemClickListener);
 
         //end of red packet code
+    }
+
+    /**
+     * 状态栏是否可用
+     *
+     * @return 默认不可用
+     */
+    protected boolean setUseSatusbar() {
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    /**
+     * 设置是否需要添加和状态栏等高的占位 view
+     *
+     * @return
+     */
+    protected boolean setUseStatusView() {
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     private final class CustomChatRowProvider implements EaseCustomChatRowProvider {
