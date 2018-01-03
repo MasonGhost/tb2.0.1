@@ -41,6 +41,8 @@ import static com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragmen
 public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleContainerContract.Presenter>
         implements AllCircleContainerContract.View {
 
+    public static final String BUNDLE_ALL_CIRCLE_CATEGORY = "all_circle_category";
+
     private CircleTypeBean mCircleTypeBean;
 
     private List<String> mTitle;
@@ -146,6 +148,9 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
         mTsvToolbar.setRightClickListener(this, () -> {
             Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(BUNDLE_ALL_CIRCLE_CATEGORY, true);
+            typeIntent.putExtras(bundle);
             startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
         });
     }

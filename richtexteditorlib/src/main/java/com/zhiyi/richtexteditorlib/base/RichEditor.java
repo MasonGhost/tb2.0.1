@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -12,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.zhiyi.richtexteditorlib.SimpleRichEditor;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -209,6 +211,9 @@ public abstract class RichEditor extends WebView {
         text = text.replaceFirst(LINK_CHANGE_SCHEME, "");
         String[] result = text.split("@_@");
         if (mOnLinkClickListener != null && result.length >= 2) {
+            InputMethodManager imm = (InputMethodManager) getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
             mOnLinkClickListener.onLinkClick(result[0], result[1]);
         }
     }
