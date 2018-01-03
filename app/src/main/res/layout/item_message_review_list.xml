@@ -11,42 +11,12 @@
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
-        android:layout_width="@dimen/headpic_for_list"
-        android:layout_height="@dimen/headpic_for_list"
+        android:layout_width="@dimen/headpic_for_notification"
+        android:layout_height="@dimen/headpic_for_notification"
         android:layout_marginRight="@dimen/spacing_mid"
         app:pressShape="circle"
         app:ts_avatare_size="@dimen/headpic_for_list"
         tools:src="@mipmap/ic_launcher"/>
-
-    <FrameLayout
-        android:id="@+id/fl_detial"
-        android:layout_width="@dimen/rec_image_for_list"
-        android:layout_height="@dimen/rec_image_for_list"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:background="@color/bgColor">
-
-        <TextView
-            android:id="@+id/tv_deatil"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/spacing_tiny"
-            android:gravity="center"
-            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
-            android:textSize="@dimen/size_note_assist"
-            tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
-
-        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
-            android:id="@+id/iv_detail_image"
-            android:layout_width="@dimen/rec_image_for_list"
-            android:layout_height="@dimen/rec_image_for_list"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            tools:src="@mipmap/ic_launcher">
-        </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
-    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_name"
@@ -58,30 +28,66 @@
         android:includeFontPadding="false"
         android:maxLines="1"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content_comment"
+        android:textSize="@dimen/size_icon_assist"
         tools:text="张三 "/>
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_name"
-        android:layout_toLeftOf="@id/fl_detial"
+        android:includeFontPadding="false"
+        android:layout_below="@id/tv_time"
         android:layout_toRightOf="@id/iv_headpic"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"
-        tools:text="我送第几个 "/>
+        android:textSize="@dimen/size_content_assist"
+        tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
+
+    <LinearLayout
+        android:id="@+id/fl_detial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid_small_8dp"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:background="@color/bgColor"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_detail_image"
+            android:layout_width="@dimen/headpic_for_notification"
+            android:layout_height="@dimen/headpic_for_notification"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="@dimen/spacing_small"
+            tools:src="@mipmap/ic_launcher">
+        </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
+
+        <TextView
+            android:id="@+id/tv_deatil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:minHeight="@dimen/headpic_for_notification"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:maxLines="2"
+            android:textSize="@dimen/size_note_assist"
+            tools:text="点点滴滴点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多的撒范德萨范德萨范德萨多少撒\n点滴滴的撒点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多范德萨范德萨范德萨多 "/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_content"
+        android:layout_below="@id/tv_name"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
@@ -90,20 +96,15 @@
         android:id="@+id/tv_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_content"
-        android:layout_toLeftOf="@id/fl_detial"
         android:maxLines="1"
-        android:paddingRight="@dimen/spacing_mid"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:paddingLeft="@dimen/spacing_mid_small_8dp"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="6分钟前"/>
+        tools:text="6分钟前"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
-    <View
-        android:id="@+id/v_bottom_line"
-        style="@style/style_divider_horizontal_light"
-        android:layout_below="@+id/tv_time"
-        android:layout_toRightOf="@+id/iv_headpic"
-        />
 </RelativeLayout>

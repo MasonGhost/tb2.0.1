@@ -36,7 +36,8 @@ public class NumericWheelAdapter implements WheelAdapter {
 	@Override
 	public Object getItem(int index) {
 		if (index >= 0 && index < getItemsCount()) {
-			return minValue + index;
+			int value = minValue + index;
+			return value;
 		}
 		return 0;
 	}
@@ -48,6 +49,11 @@ public class NumericWheelAdapter implements WheelAdapter {
 	
 	@Override
 	public int indexOf(Object o){
-		return (int)o - minValue;
+		try {
+			return (int)o - minValue;
+		} catch (Exception e) {
+			return -1;
+		}
+
 	}
 }

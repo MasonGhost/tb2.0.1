@@ -60,9 +60,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
     @BindView(R.id.vp_fragment)
     ViewPager mVpFragment;
 
-    private List<Fragment> mFragments;
-
-    public MyQuestionFragment instance() {
+    public static MyQuestionFragment instance() {
         return new MyQuestionFragment();
     }
 
@@ -76,13 +74,13 @@ public class MyQuestionFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
-            mFragments = new ArrayList<>();
-            mFragments.add(new MyPublishQuestionContainerFragment());
-            mFragments.add(new MyAnswerContainerFragment());
-            mFragments.add(new MyFollowContainerFragment());
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(new MyPublishQuestionContainerFragment());
+            mFragmentList.add(new MyAnswerContainerFragment());
+            mFragmentList.add(new MyFollowContainerFragment());
         }
-        return mFragments;
+        return mFragmentList;
     }
 
     @Override

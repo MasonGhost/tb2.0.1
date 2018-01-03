@@ -141,6 +141,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 case R.id.rb_three:
                     mCurrentDays = mSelectDays.get(2);
                     break;
+                default:
             }
             setConfirmEnable();
         });

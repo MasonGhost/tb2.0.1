@@ -38,6 +38,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
@@ -72,33 +74,15 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.D
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
+public class MessagePresenter extends AppBasePresenter<MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
     @Inject
-    ChatContract.Repository mChatRepository;
+    ChatRepository mChatRepository;
 
     @Inject
-    AuthRepository mAuthRepository;
-
-    @Inject
-    UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
-    CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
-
-    @Inject
-    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
-
-    @Inject
-    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-
-    @Inject
-    SystemRepository mSystemRepository;
+    MessageRepository mMessageRepository;
 
     /**
      * 评论的
@@ -126,8 +110,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private Subscription mUnreadNotiSub;
 
     @Inject
-    public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
-        super(repository, rootView);
+    public MessagePresenter(MessageContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -150,7 +134,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private void getAllConversationV2(boolean isLoadMore) {
         // 已连接才去获取
         if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
-            Subscription subscribe = mRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
+            Subscription subscribe = mMessageRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
                         mRootView.getMessageListSuccess(messageItemBeanV2s);
@@ -186,7 +170,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr).observeOn(Schedulers.io()));
                     }
                     if (datas.isEmpty()) {
-                        return mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
+                        return mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault());
                     } else {
                         return Observable.zip(datas, (FuncN<Object>) args -> {
                             // 为 ts 助手添加提示语
@@ -208,7 +192,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
                             }
                             return args;
-                        }).flatMap(o -> mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
+                        }).flatMap(o -> mMessageRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault()));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -312,7 +296,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void getSingleConversation(int cid) {
-        Subscription subscribe = mRepository.getSingleConversation(cid)
+        Subscription subscribe = mMessageRepository.getSingleConversation(cid)
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     if (data == null || data.getConversation() == null) {
@@ -350,7 +334,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Override
     public void checkUnreadNotification() {
-        mRepository.ckeckUnreadNotification()
+        mMessageRepository.ckeckUnreadNotification()
                 .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
                     protected void onSuccess(Void data) {
@@ -451,7 +435,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             messageItemBeanV2List.add(itemBeanV2);
                         }
                     }
-                    return mRepository.completeEmConversation(messageItemBeanV2List)
+                    return mMessageRepository.completeEmConversation(messageItemBeanV2List)
                             .map(list12 -> list12);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -578,7 +562,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             mUnreadNotiSub.unsubscribe();
         }
 
-        mUnreadNotiSub = mRepository.getUnreadNotificationData()
+        mUnreadNotiSub = mMessageRepository.getUnreadNotificationData()
                 .observeOn(Schedulers.io())
                 .map(data -> {
                     mUnReadNotificaitonBean = data;
@@ -591,8 +575,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     mItemBeanComment.setUnReadMessageNums(data.getCounts().getUnread_comments_count());
                     mItemBeanDigg.setUnReadMessageNums(data.getCounts().getUnread_likes_count());
                     int pinnedNums = 0;
-                    if (data.getPinneds() != null && (data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount()) > 0) {
-                        pinnedNums = data.getPinneds().getFeeds().getCount() + data.getPinneds().getNews().getCount();
+                    if (data.getPinneds() != null) {
+                        pinnedNums = (data.getPinneds().getFeeds() == null ? 0 : data.getPinneds().getFeeds().getCount())
+                                + (data.getPinneds().getNews() == null ? 0 : data.getPinneds().getNews().getCount())
+                                + (data.getPinneds().getGroupPosts() == null ? 0 : data.getPinneds().getGroupPosts().getCount())
+                                + data.getCounts().getUnread_group_join_count()
+                                + (data.getPinneds().getGroupComments() == null ? 0 : data.getPinneds().getGroupComments().getCount());
                         mItemBeanReview.setUnReadMessageNums(pinnedNums);
                     } else {
                         mItemBeanReview.setUnReadMessageNums(0);
@@ -609,19 +597,21 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             TimeUtils
                                     .utc2LocalLong(data.getLikes().get(0).getTime()));
 
-                    String feedTime = data.getPinneds().getFeeds().getTime();
+                    String feedTime = data.getPinneds() != null && data.getPinneds().getFeeds() != null ? data.getPinneds().getFeeds().getTime() :
+                            null;
+                    String newTime = data.getPinneds() != null && data.getPinneds().getNews() != null ? data.getPinneds().getNews().getTime() : null;
+                    String groupPostsTime = data.getPinneds() != null && data.getPinneds().getGroupPosts() != null ? data.getPinneds().getGroupPosts()
+                            .getTime() : null;
+                    String groupCommentsTime = data.getPinneds() != null && data.getPinneds().getGroupComments() != null ? data.getPinneds()
+                            .getGroupComments().getTime
+                                    () : null;
+                    long lastTime = 0;
+                    lastTime = getLastTime(feedTime, lastTime);
+                    lastTime = getLastTime(newTime, lastTime);
+                    lastTime = getLastTime(groupPostsTime, lastTime);
+                    lastTime = getLastTime(groupCommentsTime, lastTime);
 
-                    String newTime = data.getPinneds().getNews().getTime();
-                    long reviewTime = 0;
-                    if (feedTime != null) {
-                        reviewTime = TimeUtils
-                                .utc2LocalLong(feedTime);
-                    }
-                    if (newTime != null && TimeUtils.utc2LocalLong(newTime) > reviewTime) {
-                        reviewTime = TimeUtils.utc2LocalLong(newTime);
-                    }
-
-                    mItemBeanReview.getConversation().setLast_message_time(reviewTime);
+                    mItemBeanReview.getConversation().setLast_message_time(lastTime);
 
                     /**
                      * 设置提示内容
@@ -673,6 +663,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
         addSubscrebe(mUnreadNotiSub);
+    }
+
+    private long getLastTime(String newTime, long lastTime) {
+        if (newTime != null && TimeUtils.utc2LocalLong(newTime) > lastTime) {
+            lastTime = TimeUtils.utc2LocalLong(newTime);
+        }
+        return lastTime;
     }
 
     /**

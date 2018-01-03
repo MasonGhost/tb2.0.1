@@ -16,15 +16,12 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Repository, FeedBackContract.View>
+public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.View>
         implements FeedBackContract.Presenter {
 
     @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
-    public FeedBackPresenter(FeedBackContract.Repository repository, FeedBackContract.View rootView) {
-        super(repository, rootView);
+    public FeedBackPresenter(FeedBackContract.View rootView) {
+        super(rootView);
     }
 
     @Override

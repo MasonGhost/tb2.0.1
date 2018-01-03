@@ -32,7 +32,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动-->
+    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动 -->
     <application
         android:name=".base.AppApplication"
         android:allowBackup="false"
@@ -191,7 +191,7 @@
             android:theme="@style/TransParentTheme">
         </activity>
 
-        <!--低配手机用不起硬件加速 比如 HUAWEI Che1-CL10 Android 6.0.1 API 23-->
+        <!-- 低配手机用不起硬件加速 比如 HUAWEI Che1-CL10 Android 6.0.1 API 23 -->
         <activity
             android:name=".modules.gallery.GalleryActivity"
             android:hardwareAccelerated="false"
@@ -276,15 +276,15 @@
 
         <!-- 圈子相关页面 -->
         <activity
-            android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
+            android:name=".modules.circle.group_dynamic.GroupDynamicDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
+            android:name=".modules.circle.group_dynamic.dig_list.GroupDigListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.channel.mine.MyGroupActivity"
+            android:name=".modules.circle.mine.MyGroupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
@@ -453,11 +453,11 @@
 
         <!-- 频道 -->
         <activity
-            android:name=".modules.channel.list.ChannelListActivity"
+            android:name=".modules.circle.list.ChannelListActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".modules.channel.detail.ChannelDetailActivity"
+            android:name=".modules.circle.detail.ChannelDetailActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -581,9 +581,80 @@
         <activity
             android:name=".modules.draftbox.DraftBoxActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.q_a.publish.create_topic.CreateTopicActivity">
-        </activity>
-        <activity android:name=".modules.register.rule.UserRuleActivity">
+        <activity
+            android:name=".modules.q_a.publish.create_topic.CreateTopicActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.register.rule.UserRuleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.main.CircleMainActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.detailv2.CircleDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+        <activity
+            android:name=".modules.circle.create.CreateCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.all_circle.container.AllCircleContainerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.mine.container.MyCircleContainerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.create.types.CircleTyepsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.create.location.CircleLocationActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.detailv2.post.CirclePostDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.mine.joined.MyJoinedCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.detailv2.dig.DigListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.search.container.CircleSearchContainerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.circle.manager.members.MembersListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.report.ReportActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
+        <activity
+            android:name=".modules.circle.manager.earning.CircleEarningActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.report.ReportReviewActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.earning.record.EarningListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.search.onlypost.CirclePostSearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
+        <activity
+            android:name=".modules.circle.manager.permission.PermissionActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.publish.choose_circle.ChooseCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.manager.members.attorn.AttornCircleActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.circle.publish.PublishPostActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity">
         </activity>
         <!--扫码相关页面-->
         <activity android:name=".modules.home.mine.scan.ScanCodeActivity"

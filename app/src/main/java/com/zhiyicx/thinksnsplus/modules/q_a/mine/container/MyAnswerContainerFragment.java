@@ -30,7 +30,7 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public class MyAnswerContainerFragment extends TSViewPagerFragment{
+public class MyAnswerContainerFragment extends TSViewPagerFragment {
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -58,7 +58,7 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
             .line_height;
 
     public static final String TYPE_ALL = "all";
-//    public static final String TYPE_NOT_READ = "not_read";
+    //    public static final String TYPE_NOT_READ = "not_read";
     public static final String TYPE_INVITE = "invitation";
     public static final String TYPE_ADOPTION = "adoption";
     public static final String TYPE_OTHER = "other";
@@ -74,10 +74,12 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
     protected boolean setUseStatusView() {
         return false;
     }
+
     @Override
     protected boolean isAdjustMode() {
         return false;
     }
+
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getResources().getStringArray(R.array.qa_mine_answer_title));
@@ -85,14 +87,15 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null){
+        if (mFragments == null) {
             mFragments = new ArrayList<>();
-        }
-        mFragments.add(new MyAnswerFragment().instance(TYPE_ALL));
+            mFragments.add(MyAnswerFragment.instance(TYPE_ALL));
 //        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_ADOPTION));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_OTHER));
+            mFragments.add(MyAnswerFragment.instance(TYPE_ADOPTION));
+            mFragments.add(MyAnswerFragment.instance(TYPE_INVITE));
+            mFragments.add(MyAnswerFragment.instance(TYPE_OTHER));
+        }
+
         return mFragments;
     }
 
@@ -106,7 +109,8 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.showDivider(false);
-        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0,getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
+        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_mid), 0, getResources().getDimensionPixelOffset(R.dimen
+                .spacing_mid), 0);
 //        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 

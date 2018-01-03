@@ -8,7 +8,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 
 import javax.inject.Inject;
 
-import rx.functions.Action0;
+import rx.Subscription;
 
 /**
  * @Author Jliuer
@@ -16,20 +16,20 @@ import rx.functions.Action0;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicCommentTollContract.Repository, DynamicCommentTollContract.View>
+public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicCommentTollContract.View>
         implements DynamicCommentTollContract.Presenter {
 
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject
-    public DynamicCommentTollPresenter(DynamicCommentTollContract.Repository repository, DynamicCommentTollContract.View rootView) {
-        super(repository, rootView);
+    public DynamicCommentTollPresenter( DynamicCommentTollContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void setDynamicCommentToll(Long feed_id, int amout) {
-        mBaseDynamicRepository.setDynamicCommentToll(feed_id, amout)
+        Subscription subscribe = mBaseDynamicRepository.setDynamicCommentToll(feed_id, amout)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<DynamicCommentToll>() {
                     @Override
@@ -49,6 +49,7 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
                         mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
 }

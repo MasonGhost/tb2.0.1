@@ -22,7 +22,4 @@ public interface RankTypeListContract {
         void handleFollowState(UserInfoBean userInfoBean);
     }
 
-    interface Repository extends IBaseRankRepository{
-
-    }
 }

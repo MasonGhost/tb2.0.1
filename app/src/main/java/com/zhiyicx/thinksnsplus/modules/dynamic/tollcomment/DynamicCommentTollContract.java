@@ -25,7 +25,4 @@ public interface DynamicCommentTollContract {
         void setDynamicCommentToll(Long feed_id, int amout);
     }
 
-    interface Repository {
-        Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount);
-    }
 }

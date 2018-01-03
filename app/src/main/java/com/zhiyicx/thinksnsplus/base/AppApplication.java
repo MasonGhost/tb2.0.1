@@ -9,6 +9,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.SparseArray;
+import android.view.Choreographer;
 import android.view.KeyEvent;
 
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -57,6 +58,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import org.simple.eventbus.EventBus;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,6 +76,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
 
@@ -84,6 +87,20 @@ import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
  * @Contact 335891510@qq.com
  */
 public class AppApplication extends TSApplication {
+    /**
+     * 丢帧检查设置
+     */
+    static {
+        try {
+            Field field = Choreographer.class.getDeclaredField("SKIPPED_FRAME_WARNING_LIMIT");
+            field.setAccessible(true);
+            // 可设置最大丢帧时显示丢帧日志
+            field.set(Choreographer.class, 20);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -281,7 +298,7 @@ public class AppApplication extends TSApplication {
                 .getInstance().currentActivity() instanceof TSActivity) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
-                // TODO: 2017/2/8  清理登录信息 token 信息
+                // 清理登录信息 token 信息
                 mAuthRepository.clearAuthBean();
                 mAuthRepository.clearThridAuth();
 
@@ -468,7 +485,7 @@ public class AppApplication extends TSApplication {
                                 .subscribe(aLong -> {
                                     WindowUtils.setIsPause(true);
                                     WindowUtils.hidePopupWindow();
-                                });
+                                }, Throwable::printStackTrace);
                     }
                 }
             }

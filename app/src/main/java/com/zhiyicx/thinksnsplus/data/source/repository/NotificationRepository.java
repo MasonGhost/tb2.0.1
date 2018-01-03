@@ -1,33 +1,28 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.util.SparseArray;
-
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
-import com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist.NotificationContract;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.INotificationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
- * @describe
+ * @describe 通知相关
  * @date 2017/8/31
  * @contact email:648129313@qq.com
  */
 
-public class NotificationRepository implements NotificationContract.Repository{
+public class NotificationRepository implements INotificationRepository {
 
     protected UserInfoClient mUserInfoClient;
 

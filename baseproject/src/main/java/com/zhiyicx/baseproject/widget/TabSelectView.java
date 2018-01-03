@@ -49,10 +49,11 @@ public class TabSelectView extends FrameLayout {
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
     private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
-    private static final int DEFAULT_TAB_MARGIN = R.integer.tab_margin;// 缺省的tab左右padding
+    private static int DEFAULT_TAB_LEFT_MARGIN = R.integer.tab_margin;// 缺省的tab左padding
+    private static int DEFAULT_TAB_RIGHT_MARGIN = R.integer.tab_margin;// 缺省的tab右padding
     private static final int DEFAULT_TAB_PADDING = R.integer.tab_padding;// 缺省的tab的线和文字的边缘距离
     private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
-    private static final int DEFAULT_TAB_LINE_HEGIHT = R.integer.line_height;// 缺省的tab的线的高度
+    private static int DEFAULT_TAB_LINE_HEGIHT = R.integer.line_height;// 缺省的tab的线的高度
 
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
@@ -216,8 +217,9 @@ public class TabSelectView extends FrameLayout {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(context, DEFAULT_TAB_UNSELECTED_TEXTCOLOR));
-                int leftRightPadding = UIUtil.dip2px(context, mContext.getResources().getInteger(DEFAULT_TAB_MARGIN));
-                simplePagerTitleView.setPadding(leftRightPadding, 0, leftRightPadding, 0);
+                int leftPadding = UIUtil.dip2px(context, mContext.getResources().getInteger(DEFAULT_TAB_LEFT_MARGIN));
+                int RightPadding = UIUtil.dip2px(context, mContext.getResources().getInteger(DEFAULT_TAB_RIGHT_MARGIN));
+                simplePagerTitleView.setPadding(leftPadding, 0, RightPadding, 0);
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(context, DEFAULT_TAB_SELECTED_TEXTCOLOR));
                 simplePagerTitleView.setText(mStringList.get(index));
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources().getInteger(DEFAULT_TAB_TEXTSIZE));
@@ -279,15 +281,29 @@ public class TabSelectView extends FrameLayout {
             ViewGroup.LayoutParams params = mMagicIndicator.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            mMagicIndicator.setPadding(0,0,50,0);
             mMagicIndicator.setLayoutParams(params);
         }
+    }
+
+    public void setDefaultTabLinehegiht(int height) {
+        DEFAULT_TAB_LINE_HEGIHT = height;
+    }
+
+    public void setDefaultTabLeftMargin(int defaultTabLeftMargin) {
+        DEFAULT_TAB_LEFT_MARGIN = defaultTabLeftMargin;
+    }
+
+    public void setDefaultTabRightMargin(int defaultTabRightMargin) {
+        DEFAULT_TAB_RIGHT_MARGIN = defaultTabRightMargin;
     }
 
     public interface TabLeftRightClickListener {
         void buttonClick();
     }
 
-    public CommonNavigator getCommonNavigator() {
-        return mCommonNavigator;
+    public void notifyDataSetChanged(List<String> stringList) {
+        mStringList = stringList;
+        mCommonNavigator.notifyDataSetChanged();
     }
 }

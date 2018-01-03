@@ -58,6 +58,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     TextView mTvTip;
     @BindView(R.id.bt_do)
     Button mBtDo;
+
     @BindView(R.id.ll_empty)
     LinearLayout mLlEmpty;
 
@@ -118,13 +119,13 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
         super.initView(rootView);
 
         initHistoryView();
-        mTvTip.setText(getString(R.string.not_find_qa_to_publish));
-        mBtDo.setText(getString(R.string.to_publish_qa));
+
 
     }
 
     private void initHistoryView() {
-
+        mTvTip.setText(getString(R.string.not_find_qa_to_publish));
+        mBtDo.setText(getString(R.string.to_publish_qa));
         mHistoryData.addAll(mPresenter.getFirstShowHistory());
         if (mHistoryData.size() >= DEFAULT_FIRST_SHOW_HISTORY_SIZE) {
             mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history), QASearchHistoryBean.TYPE_DEFAULT));
@@ -293,7 +294,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
     @OnClick(R.id.bt_do)
     public void onViewClicked() {
-        // 发布话题
+        // 发布问答
         startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
     }
 }

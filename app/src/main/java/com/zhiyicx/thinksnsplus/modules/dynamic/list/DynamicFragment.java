@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
@@ -57,9 +58,12 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -73,6 +77,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -101,8 +110,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * item 间距单位 dp
      */
     public static final long ITEM_SPACING = 5L;
-    @BindView(R.id.fl_container)
-    FrameLayout mFlContainer;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
@@ -124,7 +131,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
-    ///    private PayPopWindow mPayWordsPopWindow;
     /**
      * 当前评论的动态位置
      */
@@ -137,7 +143,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private DynamicBannerHeader mDynamicBannerHeader;
     private List<RealAdvertListBean> mListAdvert;
     private List<RealAdvertListBean> mHeaderAdvert;
-
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -173,12 +178,19 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         return false;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         if (mDynamicBannerHeader != null) {
             mDynamicBannerHeader.startBanner();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mListDatas.isEmpty()) {
+            refreshData();
         }
     }
 
@@ -201,16 +213,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    protected boolean useEventBus() {
-        return true;
-    }
-
-    @Override
-    protected boolean needCenterLoadingDialog() {
-        return true;
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input;
     }
@@ -218,26 +220,53 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .shareModule(new ShareModule(getActivity()))
-                .dynamicPresenterModule(new DynamicPresenterModule(this))
-                .build().inject(this);
+
+
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initInputView();
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        AndroidBug5497Workaround.assistActivity(mActivity);
+
+        Observable.create(subscriber -> {
+            DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+                    .builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .shareModule(new ShareModule(mActivity))
+                    .dynamicPresenterModule(new DynamicPresenterModule(DynamicFragment.this))
+                    .build()
+                    .inject(DynamicFragment.this);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                    }
+                });
+
     }
 
     @Override
     protected void initData() {
-        mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
-        initAdvert();
-        super.initData();
+        if (mPresenter != null) {
+            mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
+            initAdvert();
+            super.initData();
+        }
     }
 
     private void initAdvert() {
@@ -256,19 +285,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
             advertLinks.add(advert.getAdvertFormat().getImage().getLink());
-            if (advert.getType().equals("html")) {
+            if ("html".equals(advert.getType())) {
                 showStickyHtmlMessage((String) advert.getData());
             }
         }
-
         if (advertUrls.isEmpty()) {
             return;
         }
-
-        mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
+        mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
         mDynamicBannerHeader.setHeadlerClickEvent(this);
-        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
-                DynamicBannerHeaderInfo();
+        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
         headerInfo.setLinks(advertLinks);
         headerInfo.setUrls(advertUrls);
@@ -359,11 +385,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         } catch (Exception e) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);
-    }
-
-    @Override
-    protected boolean showEmptyViewWithNoData() {
-        return true;
     }
 
     /**
@@ -509,6 +530,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
+        // 是广告
         if (detailBeanV2.getFeed_from() == -1) {
             toAdvert(detailBeanV2.getDeleted_at(), detailBeanV2.getFeed_content());
             return;
@@ -526,6 +548,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         goDynamicDetail(position, false);
 
     }
+
 
     @Override
     public void paySuccess() {
@@ -655,6 +678,30 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    /**
+     * 评论长按
+     *
+     * @param dynamicBean
+     * @param position
+     */
+    @Override
+    public void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
+                    (position).getComment_id().toString(),
+                    null, null, dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
+
+        } else {
+
+        }
+    }
+
     private void showCommentView() {
         showBottomView(false);
 
@@ -756,6 +803,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             position,
                                              boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
+                // 广告不处理
+                .item3Str(dynamicBean.getFeed_from() == -1 ? "" : getString(R.string.report))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
                 .item1Str(getString(R.string.dynamic_list_share_dynamic))
@@ -764,6 +813,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
+                .item3ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+                    if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                            .getId()),
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
+                })
                 .item2ClickListener(() -> {// 收藏
                     if (!TouristConfig.DYNAMIC_CAN_COLLECT && mPresenter.handleTouristControl
                             ()) {

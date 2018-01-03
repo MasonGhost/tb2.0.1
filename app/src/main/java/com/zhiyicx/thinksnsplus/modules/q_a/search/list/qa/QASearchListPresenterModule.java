@@ -22,10 +22,4 @@ public class QASearchListPresenterModule {
         return mView;
     }
 
-    @Provides
-    QASearchListContract.Repository provideRepository() {
-        return new QASearchListContract.Repository() {
-        };
-    }
-
 }

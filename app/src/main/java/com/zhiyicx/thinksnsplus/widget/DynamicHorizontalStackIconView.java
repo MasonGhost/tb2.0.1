@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
@@ -119,14 +120,46 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     /**
      * 设置点赞的人的头像，最多五个
      */
-    public void setDigUserHeadIconInfo(List<InfoDigListBean> infoDigListBeanList) {
-        if (infoDigListBeanList == null || infoDigListBeanList.size() == 0) {
+    public void setDigUserHeadIconInfo(List<InfoDigListBean> postDigListBeans) {
+        if (postDigListBeans == null || postDigListBeans.size() == 0) {
             showNoDig();
         } else {
             for (int i = 0; i < mImageViews.length; i++) {
                 // 需要显示的图片控件
-                if (i < infoDigListBeanList.size()) {
-                    InfoDigListBean dynamicDigListBean = infoDigListBeanList.get(i);
+                if (i < postDigListBeans.size()) {
+                    InfoDigListBean dynamicDigListBean = postDigListBeans.get(i);
+                    int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
+
+                    AppApplication.AppComponentHolder.getAppComponent().imageLoader()
+                            .loadImage(mContext, GlideImageConfig.builder()
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen
+                                            .spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                    .placeholder(defaultAvatar)
+                                    .errorPic(defaultAvatar)
+                                    .imagerView(mImageViews[i])
+                                    .url(ImageUtils.getUserAvatar(dynamicDigListBean.getDiggUserInfo()))
+                                    .build()
+                            );
+                    mImageViews[i].setVisibility(VISIBLE);
+                    digCount.setVisibility(VISIBLE);
+                } else {// 没有显示的图片控件隐藏
+                    mImageViews[i].setVisibility(GONE);
+                }
+            }
+        }
+    }
+
+    /**
+     * 设置点赞的人的头像，最多五个
+     */
+    public void setDigUserHeadIconPost(List<PostDigListBean> postDigListBeans) {
+        if (postDigListBeans == null || postDigListBeans.size() == 0) {
+            showNoDig();
+        } else {
+            for (int i = 0; i < mImageViews.length; i++) {
+                // 需要显示的图片控件
+                if (i < postDigListBeans.size()) {
+                    PostDigListBean dynamicDigListBean = postDigListBeans.get(i);
                     int defaultAvatar = ImageUtils.getDefaultAvatar(dynamicDigListBean.getDiggUserInfo());
 
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()

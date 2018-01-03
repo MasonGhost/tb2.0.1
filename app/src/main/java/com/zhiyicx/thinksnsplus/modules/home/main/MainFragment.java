@@ -18,7 +18,9 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,7 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
- * @Describe 主页MainFragment
+ * @Describe 主页 MainFragment
  * @Author Jungle68
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
@@ -38,7 +40,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mStatusBarPlaceholder;
     @BindView(R.id.v_shadow)
     View mVShadow;
-    List<Fragment> fragments = new ArrayList<>();
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -89,7 +90,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
         mStatusBarPlaceholder.setLayoutParams(layoutParams);
         // 适配非6.0以上、非魅族系统、非小米系统状态栏
         if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
@@ -121,7 +123,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    ((DynamicContract.View) fragments.get(mVpFragment.getCurrentItem())).closeInputView();
+                    ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
                 }
             }
         });
@@ -135,25 +137,26 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected List<String> initTitles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.the_last));
-        titles.add(getString(R.string.hot));
-        titles.add(getString(R.string.follow));
-        return titles;
+        return Arrays.asList(getString(R.string.the_last)
+                , getString(R.string.hot)
+                , getString(R.string.follow));
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-        // 游客处理
-        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
-            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
-        } else {
-            // 用于viewpager 占位
-            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList();
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            // 游客处理
+            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
+                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+            } else {
+                // 用于viewpager 占位
+                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+            }
         }
-        return fragments;
+        return mFragmentList;
     }
 
 

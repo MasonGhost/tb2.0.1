@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.follow;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MyFollowRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,11 +20,6 @@ public class MyFollowPresenterModule {
     @Provides
     public MyFollowContract.View provideMyFollowContractView(){
         return mView;
-    }
-
-    @Provides
-    public MyFollowContract.Repository provideMyFollowContractRepository(MyFollowRepository repository){
-        return repository;
     }
 
 }

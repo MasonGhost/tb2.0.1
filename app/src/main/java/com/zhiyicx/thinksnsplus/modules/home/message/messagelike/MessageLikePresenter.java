@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,19 +23,21 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract
+public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.View> implements MessageLikeContract
         .Presenter {
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public MessageLikePresenter(MessageLikeContract.Repository repository, MessageLikeContract.View rootView) {
-        super(repository, rootView);
+    public MessageLikePresenter(MessageLikeContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mRepository.getMyDiggs(maxId.intValue())
+        Subscription commentSub = mUserInfoRepository.getMyDiggs(maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<DigedBean>>() {
                     @Override
                     protected void onSuccess(List<DigedBean> data) {

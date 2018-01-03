@@ -20,13 +20,15 @@ public class MarkDownRule {
      */
     public static StyleSheet generateStandardStyle() {
         InternalStyleSheet css = new Github();
-        css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify","text-align-last:left");
+        css.addRule(".container", "padding-right:0", ";padding-left:0", "text-align:justify","text-align-last:left",
+                "width: 100%","word-wrap:break-word","word-break:break-all","overflow: hidden");
         css.addRule("body", "line-height: 1.59", "padding: 0px", "font-size: 17px", "color: #333333");
         css.addRule("h1", "color: #333333", "size: 25px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
         css.addRule("h2", "color: #333333", "size: 23px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
         css.addRule("h3", "color: #333333", "size: 21px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
         css.addRule("h4", "color: #333333", "size: 19px", "margin-top: 30px", "magin-bottom: 30px", "text-align: left");
         css.addRule("img", "margin-top: 20px", "margin-bottom: 20px","align:center", "margin: 0 auto","max-width: 100%", "display: block");
+        css.addRule("p", "margin:0 0 10px", "width: 100%");
         /*设置 a 标签文字颜色，不知道为什么，要这样混合才能有效*/
         css.addMedia("color: #59b6d7; a:link {color: #59b6d7}");
         css.endMedia();

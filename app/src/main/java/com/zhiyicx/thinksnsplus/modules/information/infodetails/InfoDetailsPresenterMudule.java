@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoDetailsRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,12 +19,8 @@ public class InfoDetailsPresenterMudule {
     }
 
     @Provides
-    InfoDetailsConstract.View provideInfoDetailsView(){
+    InfoDetailsConstract.View provideInfoDetailsView() {
         return mView;
     }
 
-    @Provides
-    InfoDetailsConstract.Repository provideInfoDetailsRepository(InfoDetailsRepository infoDetailsRepository){
-        return infoDetailsRepository;
-    }
 }

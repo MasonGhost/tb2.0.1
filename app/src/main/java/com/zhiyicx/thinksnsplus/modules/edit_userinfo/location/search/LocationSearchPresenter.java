@@ -24,7 +24,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class LocationSearchPresenter extends AppBasePresenter<LocationSearchContract.Repository, LocationSearchContract.View>
+public class LocationSearchPresenter extends AppBasePresenter<LocationSearchContract.View>
         implements LocationSearchContract.Presenter {
 
     @Inject
@@ -32,8 +32,8 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
     private Subscription searchSub;
 
     @Inject
-    public LocationSearchPresenter(LocationSearchContract.Repository repository, LocationSearchContract.View rootView) {
-        super(repository, rootView);
+    public LocationSearchPresenter( LocationSearchContract.View rootView) {
+        super( rootView);
     }
 
     @Override

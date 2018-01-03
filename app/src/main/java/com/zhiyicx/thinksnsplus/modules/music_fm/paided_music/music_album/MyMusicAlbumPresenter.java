@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,47 +12,53 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/24/18:01
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MyMusicAlbumPresenter extends AppBasePresenter<MyMusicAblumListContract.Repository,MyMusicAblumListContract.View>
+public class MyMusicAlbumPresenter extends AppBasePresenter<MyMusicAblumListContract.View>
         implements MyMusicAblumListContract.Presenter {
 
+    @Inject
+    BaseMusicRepository mBaseMusicRepository;
     @Inject
     MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
-    public MyMusicAlbumPresenter(MyMusicAblumListContract.Repository repository, MyMusicAblumListContract.View rootView) {
-        super(repository, rootView);
+    public MyMusicAlbumPresenter(MyMusicAblumListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        mRepository.getMyPaidsMusicAlbumList(maxId).subscribe(new BaseSubscribeForV2<List<MusicAlbumListBean>>() {
+        Subscription subscribe = mBaseMusicRepository.getMyPaidsMusicAlbumList(maxId).subscribe(new BaseSubscribeForV2<List<MusicAlbumListBean>>() {
             @Override
             protected void onSuccess(List<MusicAlbumListBean> data) {
-                mRootView.onNetResponseSuccess(data,isLoadMore);
+                mRootView.onNetResponseSuccess(data, isLoadMore);
             }
+
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
-                mRootView.onResponseError(null,isLoadMore);
+                mRootView.onResponseError(null, isLoadMore);
             }
 
             @Override
             protected void onException(Throwable throwable) {
                 super.onException(throwable);
-                mRootView.onResponseError(throwable,isLoadMore);
+                mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-       mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -60,7 +67,7 @@ public class MyMusicAlbumPresenter extends AppBasePresenter<MyMusicAblumListCont
     }
 
     @Override
-    public void updateOneMusic(MusicAlbumListBean albumListBean){
+    public void updateOneMusic(MusicAlbumListBean albumListBean) {
         mMusicAlbumListDao.updateSingleData(albumListBean);
     }
 }

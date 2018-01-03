@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DynamicCommentTollRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.DynamicCommentTopRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -26,8 +23,4 @@ public class DynamicCommentTopPresenterModule {
         return mView;
     }
 
-    @Provides
-    DynamicCommentTopContract.Repository provideDynamicCommentTollContractRepository(DynamicCommentTopRepository commentTopRepository) {
-        return commentTopRepository;
-    }
 }

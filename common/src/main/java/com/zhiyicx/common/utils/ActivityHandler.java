@@ -128,6 +128,9 @@ public class ActivityHandler {
      * 结束非最后一个 Activity
      */
     public void finishAllActivityEcepteCurrent() {
+        if(activityStack.isEmpty()){
+            return;
+        }
         Activity activity = activityStack.lastElement();
         for (int i = 0; i < activityStack.size(); i++) {
             if (null != activityStack.get(i) && activityStack.get(i) != activity) {
@@ -147,13 +150,17 @@ public class ActivityHandler {
      * 它能有效的释放 JVM 之外的资源,执行清除任务，运行相关的 finalizer 方法终结对象，
      * 而 finish 只是退出了 Activity。
      */
-    public void AppExit() {
+    public void AppExitWithSleep() {
         // app主线程等待3秒，让用户处理好崩溃异常后，杀死进程
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        AppExit();
+    }
+
+    public void AppExit() {
         try {
             finishAllActivity();
             //DalvikVM的本地方法

@@ -49,35 +49,6 @@ public interface FindPasswordContract {
         void setSureBtEnabled(boolean isEnable);
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository extends IVertifyCodeRepository{
-
-
-        /**
-         * 找回密码
-         *
-         * @param phone       电话号码
-         * @param vertifyCode 验证码
-         * @param newPassword 新密码
-         * @return
-         */
-        Observable<CacheBean> findPasswordV2(String phone
-                , String vertifyCode, String newPassword);
-
-        /**
-         * 找回密码
-         *
-         * @param email       邮箱地址
-         * @param verifyCode 验证码
-         * @param newPassword 新密码
-         * @return
-         */
-        Observable<CacheBean> findPasswordByEmail(String email
-                , String verifyCode, String newPassword);
-    }
-
     interface Presenter extends IBasePresenter {
 
         void findPassword(String phone, String vertifyCode, String newPassword);

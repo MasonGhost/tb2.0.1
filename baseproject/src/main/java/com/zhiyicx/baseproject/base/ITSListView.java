@@ -89,5 +89,5 @@ public interface ITSListView<T, P> extends IBaseView<P> {
      */
     void refreshData(int index);
 
-
+    void refreshRangeData(int start,int count);
 }

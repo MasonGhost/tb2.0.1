@@ -25,7 +25,4 @@ public interface SearchSomeOneContract {
         void getRecommentUser();
     }
 
-    interface Repository {
-
-    }
 }

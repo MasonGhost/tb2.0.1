@@ -26,6 +26,9 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -56,6 +59,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -93,8 +98,6 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
     @Inject
-    SystemRepository mSystemRepository;
-    @Inject
     RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
     @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
@@ -106,6 +109,12 @@ public class AuthRepository implements IAuthRepository {
     AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
     @Inject
     UserTagBeanGreenDaoImpl mUserTagBeanGreenDaoimpl;
+    @Inject
+    CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
+    @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
+    @Inject
+    CircleInfoGreenDaoImpl mCircleInfoGreenDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -154,7 +163,8 @@ public class AuthRepository implements IAuthRepository {
                         // 获取了最新的token，将这些信息保存起来
                         saveAuthBean(data);
                         // 刷新im信息
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.GET_IM_INFO));
                     }
 
                     @Override
@@ -195,6 +205,9 @@ public class AuthRepository implements IAuthRepository {
         mDynamicToolBeanGreenDao.clearTable();
         mTopDynamicBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
+        mCirclePostListBeanGreenDao.clearTable();
+        mCirclePostCommentBeanGreenDao.clearTable();
+        mCircleInfoGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(mContext).delDataBase();

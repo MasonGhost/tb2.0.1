@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -37,7 +38,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.Repository, TopicDetailContract.View>
+public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.View>
         implements TopicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -45,15 +46,17 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
 
     @Inject
     public SharePolicy mSharePolicy;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public TopicDetailPresenter(TopicDetailContract.Repository repository, TopicDetailContract.View rootView) {
-        super(repository, rootView);
+    public TopicDetailPresenter(TopicDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void getTopicDetail(String topic_id) {
-        Subscription subscription = mRepository.getTopicDetail(topic_id)
+        Subscription subscription = mBaseQARepository.getTopicDetail(topic_id)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<QATopicBean>() {
 
@@ -77,7 +80,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         mRootView.updateFollowState();
         mQaTopicBeanGreenDao.updateSingleData(mRootView.getCurrentTopicBean());
         EventBus.getDefault().post(mRootView.getCurrentTopicBean(), EventBusTagConfig.EVENT_QA_SUBSCRIB);
-        mRepository.handleTopicFollowState(topic_id, isFollow);
+        mBaseQARepository.handleTopicFollowState(topic_id, isFollow);
     }
 
     @Override
@@ -87,7 +90,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         shareContent.setTitle(mRootView.getCurrentTopicBean().getName());
 //        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
 //                mRootView.getCurrentTopicBean().getId()));
-        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + APP_PATH_SHARE_DEFAULT);
         shareContent.setContent(mRootView.getCurrentTopicBean().getDescription());
 
         if (bitmap == null) {
@@ -105,7 +108,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
 
     @Override
     public void saveQuestion(QAPublishBean qaPublishBean) {
-        mRepository.saveQuestion(qaPublishBean);
+        mBaseQARepository.saveQuestion(qaPublishBean);
     }
 
     @Override

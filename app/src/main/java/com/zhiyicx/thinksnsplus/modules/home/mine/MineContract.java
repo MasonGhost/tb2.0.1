@@ -58,8 +58,4 @@ public interface MineContract {
 
         void getCertificationInfo();
     }
-
-    interface Repository {
-
-    }
 }

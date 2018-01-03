@@ -12,15 +12,15 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public class QASearchContainerPresenter extends BasePresenter<QASearchContainerContract.Repository, QASearchContainerContract.View>
+public class QASearchContainerPresenter extends BasePresenter<QASearchContainerContract.View>
         implements QASearchContainerContract.Presenter {
 
     @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public QASearchContainerPresenter(QASearchContainerContract.Repository repository, QASearchContainerContract.View rootView) {
-        super(repository, rootView);
+    public QASearchContainerPresenter(QASearchContainerContract.View rootView) {
+        super(rootView);
     }
 
 }

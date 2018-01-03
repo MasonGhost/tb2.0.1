@@ -50,6 +50,8 @@
     顶部标题栏、底部操作栏灰色分割线、键盘升起的分割线、拍照框的描边
     -->
     <color name="general_for_line">#dedede</color>
+    <!--搜索框背景-->
+    <color name="general_for_search_bg">#ebebeb</color>
     <!--
     稍低调的分割线，广泛使用,占位图
     页面内的浅色分割线
@@ -66,6 +68,7 @@
 
     <!--20%蒙层颜色-->
     <color name="masked_color">#33000000</color>
+    <color name="shadow_color">#aa000000</color>
     <color name="copy_right_color">#f3f6f7</color>
     <color name="input_view_bg_color">#fafafa</color>
     <color name="tag_bg_color">#def0f7</color>

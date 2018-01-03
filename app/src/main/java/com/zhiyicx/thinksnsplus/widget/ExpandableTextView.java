@@ -320,6 +320,7 @@ public class ExpandableTextView extends AppCompatTextView {
                 ssbExpand.setSpan(mTouchableSpan, ssbExpand.length() - getLengthOfString(mToShrinkHint), ssbExpand.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return ssbExpand;
             }
+            default:
         }
         return mOrigText;
     }
@@ -354,6 +355,7 @@ public class ExpandableTextView extends AppCompatTextView {
                     mOnExpandListener.onShrink(this);
                 }
                 break;
+            default:
         }
         setTextInternal(getNewTextByConfig(), mBufferType);
     }
@@ -475,6 +477,7 @@ public class ExpandableTextView extends AppCompatTextView {
                     ds.setColor(mToShrinkHintColor);
                     ds.bgColor = mIsPressed ? mToShrinkHintColorBgPressed : 0;
                     break;
+                default:
             }
             ds.setUnderlineText(false);
         }

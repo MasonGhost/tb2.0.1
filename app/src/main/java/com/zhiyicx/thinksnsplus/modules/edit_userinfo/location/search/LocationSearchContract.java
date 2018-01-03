@@ -21,7 +21,4 @@ public interface LocationSearchContract {
 
     }
 
-    interface Repository {
-
-    }
 }

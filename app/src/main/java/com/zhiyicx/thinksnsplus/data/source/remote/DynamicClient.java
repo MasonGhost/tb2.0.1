@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
@@ -28,6 +29,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_PAID_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
 
@@ -66,7 +68,7 @@ public interface DynamicClient {
     /**
      * 获取搜索的动态
      *
-     * @param offset 偏移值
+     * @param offset  偏移值
      * @param user_id
      * @param limit
      * @return
@@ -190,7 +192,7 @@ public interface DynamicClient {
      *
      * @param news_id    动态 id
      * @param limit      列表返回数据条数
-     * @param offset      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param offset     翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
      * @param order_type 排序规则 date-按时间 amount-按金额
      * @return
@@ -199,6 +201,19 @@ public interface DynamicClient {
     Observable<List<RewardsListBean>> rewardDynamicList(@Path("feed_id") long news_id, @Query("limit") Integer limit,
                                                         @Query("offset") Integer offset, @Query("order") String order,
                                                         @Query("order_type") String order_type);
+
+    /*******************************************  举报  *********************************************/
+
+    /**
+     * 举报一条动态
+     *
+     * @param feedId 动态 id
+     * @param reason 举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_DYNAMIC_REPORT)
+    Observable<ReportResultBean> reportDynamic(@Path("feed_id") String feedId, @Field("reason") String reason);
 
 
 }

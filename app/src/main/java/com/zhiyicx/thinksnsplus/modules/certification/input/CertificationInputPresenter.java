@@ -15,12 +15,12 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class CertificationInputPresenter extends BasePresenter<CertificationInputContract.Repository, CertificationInputContract.View>
-        implements CertificationInputContract.Presenter{
+public class CertificationInputPresenter extends BasePresenter<CertificationInputContract.View>
+        implements CertificationInputContract.Presenter {
 
     @Inject
-    public CertificationInputPresenter(CertificationInputContract.Repository repository,
-                                       CertificationInputContract.View rootView) {
-        super(repository, rootView);
+    public CertificationInputPresenter(
+            CertificationInputContract.View rootView) {
+        super(rootView);
     }
 }

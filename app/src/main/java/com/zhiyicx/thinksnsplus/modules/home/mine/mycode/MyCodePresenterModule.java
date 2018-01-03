@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.mycode;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MyCodeRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,8 +24,4 @@ public class MyCodePresenterModule {
         return mView;
     }
 
-    @Provides
-    public MyCodeContract.Repository provideMyCodeContractRepository(MyCodeRepository repository){
-        return repository;
-    }
 }

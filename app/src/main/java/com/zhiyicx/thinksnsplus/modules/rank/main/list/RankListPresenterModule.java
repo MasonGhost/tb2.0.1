@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.rank.main.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.RankListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class RankListPresenterModule {
         return mView;
     }
 
-    @Provides
-    public RankListContract.Repository provideRankListContractRepository(RankListRepository rankListRepository){
-        return rankListRepository;
-    }
 }

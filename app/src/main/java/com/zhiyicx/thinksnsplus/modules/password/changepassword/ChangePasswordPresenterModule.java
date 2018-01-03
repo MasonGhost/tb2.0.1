@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,9 +23,4 @@ public class ChangePasswordPresenterModule {
         return mView;
     }
 
-
-    @Provides
-    ChangePasswordContract.Repository provideChangePasswordContractRepository(ChangePasswordRepository changePasswordRepository) {
-        return changePasswordRepository;
-    }
 }

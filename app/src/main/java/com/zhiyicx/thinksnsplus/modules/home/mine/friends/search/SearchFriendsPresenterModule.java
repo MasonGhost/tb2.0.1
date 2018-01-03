@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends.search;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SearchFriendsRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class SearchFriendsPresenterModule {
         return mView;
     }
 
-    @Provides
-    public SearchFriendsContract.Repository provideSearchFriendsContractRepository(SearchFriendsRepository repository){
-        return repository;
-    }
 }

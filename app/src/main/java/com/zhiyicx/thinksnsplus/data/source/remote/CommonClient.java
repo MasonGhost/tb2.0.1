@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 
@@ -49,6 +50,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVER
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_COMMON_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REPORT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
@@ -159,9 +162,10 @@ public interface CommonClient {
     Observable<List<RealAdvertListBean>> getAllRealAdvert(@Query("space") String advert_id);
 
     /**
-     *  版本更新
+     * 版本更新
+     *
      * @param version_code 当前版本号
-     * @param type  类型：android \ios
+     * @param type         类型：android \ios
      * @return
      */
     @GET(APP_PATH_GET_APP_NEW_VERSION)
@@ -281,4 +285,16 @@ public interface CommonClient {
     @Multipart
     @PATCH(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJsonV2<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
+
+
+    /**
+     * 举报评论，举报信息只有管理员在后台可以看到
+     *
+     * @param commentId 评论 id
+     * @param reason    举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_REPORT_COMMON_COMMENT)
+    Observable<ReportResultBean> reportComment(@Path("comment_id") String commentId, @Field("reason") String reason);
 }

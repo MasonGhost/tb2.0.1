@@ -120,4 +120,7 @@
     <dimen name="qr_code_user_avatar_width">50dp</dimen>
     <dimen name="qr_code_content_padding_top">59dp</dimen>
     <dimen name="qr_code_content_padding_bottom">74dp</dimen>
+    <dimen name="report_resource_img">42dp</dimen>
+    <dimen name="typchoose_with">100dp</dimen>
+    <dimen name="circle_detail_toolbar_height">48dp</dimen>
 </resources>

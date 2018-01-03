@@ -195,7 +195,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
         rlCritical = headerview.findViewById(R.id.rl_critical);
         RxView.clicks(rlCritical)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
                         ((MessageAdapterV2) mAdapter).closeAllItems();
@@ -209,7 +209,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
         liked = headerview.findViewById(R.id.rl_liked);
         RxView.clicks(liked)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
                         ((MessageAdapterV2) mAdapter).closeAllItems();
@@ -229,7 +229,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                         return;
                     }
                     toReviewList();
-                    updateCommnetItemData(mPresenter.updateReviewItemData());
+                    updateReviewItemData(mPresenter.updateReviewItemData());
                 });
 
         tvHeaderCommentContent = (TextView) headerview.findViewById(R.id

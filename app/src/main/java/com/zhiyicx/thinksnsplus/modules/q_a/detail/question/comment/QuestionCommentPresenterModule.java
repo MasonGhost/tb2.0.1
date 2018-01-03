@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.QuestionCommentRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class QuestionCommentPresenterModule {
         return mView;
     }
 
-    @Provides
-    public QuestionCommentContract.Repository provideQuestionCommentContractRepository(QuestionCommentRepository repository){
-        return repository;
-    }
 }

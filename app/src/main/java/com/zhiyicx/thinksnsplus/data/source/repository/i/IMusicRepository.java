@@ -43,4 +43,7 @@ public interface IMusicRepository {
     void shareMusic(String music_id);
 
     void handleLike(boolean isLiked, String music_id);
+    Observable<List<MusicDetaisBean>> getMyPaidsMusicList(long max_id);
+    Observable<List<MusicAlbumListBean>> getMyPaidsMusicAlbumList(long max_id);
+
 }

@@ -27,7 +27,4 @@ public interface PublishQuestionContract {
         void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {
-
-    }
 }

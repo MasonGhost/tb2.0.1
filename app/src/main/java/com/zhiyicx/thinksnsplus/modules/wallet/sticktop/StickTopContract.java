@@ -44,8 +44,4 @@ public interface StickTopContract {
         void stickTop(long parent_id,long child_id);
     }
 
-    interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(String type,long parent_id, double amount, int day);
-        Observable<BaseJsonV2<Integer>> stickTop(String type,long parent_id,long child_id, double amount, int day);
-    }
 }

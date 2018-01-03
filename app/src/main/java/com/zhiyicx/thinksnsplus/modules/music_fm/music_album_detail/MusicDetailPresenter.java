@@ -32,6 +32,8 @@ import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
@@ -42,7 +44,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLL
  * @Description 专辑详情
  */
 @FragmentScoped
-public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.Repository,
+public class MusicDetailPresenter extends AppBasePresenter<
         MusicDetailContract.View> implements MusicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -64,9 +66,9 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     }
 
     @Inject
-    public MusicDetailPresenter(MusicDetailContract.Repository repository, MusicDetailContract
-            .View rootView) {
-        super(repository, rootView);
+    public MusicDetailPresenter(MusicDetailContract
+                                        .View rootView) {
+        super(rootView);
     }
 
     /**
@@ -91,7 +93,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
             mRootView.goRecharge(WalletActivity.class);
             return;
         }
-        mCommentRepository.paykNote(note)
+        Subscription subscribe = mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
@@ -121,11 +123,12 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void getMusicAblum(String id) {
-        mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
+        Subscription subscribe = mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
@@ -143,6 +146,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
                         mRootView.noNetWork();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -188,14 +192,14 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
 
-        shareContent.setTitle(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getTitle());
-        shareContent.setContent(mRootView.getCurrentAblum()==null?mContext.getString(R.string.unknown):mRootView.getCurrentAblum().getIntro());
+        shareContent.setTitle(mRootView.getCurrentAblum() == null ? mContext.getString(R.string.unknown) : mRootView.getCurrentAblum().getTitle());
+        shareContent.setContent(mRootView.getCurrentAblum() == null ? mContext.getString(R.string.unknown) : mRootView.getCurrentAblum().getIntro());
         if (bitmap == null) {
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
         } else {
             shareContent.setBitmap(bitmap);
         }
-        shareContent.setUrl(ApiConfig.APP_DOMAIN+APP_PATH_SHARE_DEFAULT);
+        shareContent.setUrl(ApiConfig.APP_DOMAIN + APP_PATH_SHARE_DEFAULT);
 
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

@@ -1,11 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -27,10 +21,5 @@ public class MusicCommentPresenterModule {
     @Provides
     MusicCommentContract.View provideMusicCommentView() {
         return mView;
-    }
-
-    @Provides
-    MusicCommentContract.Repository provideMusicCommentRepository(MusicCommentRepositroty musicCommentRepositroty) {
-        return musicCommentRepositroty;
     }
 }

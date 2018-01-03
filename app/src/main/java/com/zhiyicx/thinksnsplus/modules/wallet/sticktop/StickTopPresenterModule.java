@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.StickTopRepsotory;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class StickTopPresenterModule {
         return mView;
     }
 
-    @Provides
-    StickTopContract.Repository provideStickTopContractRepository(StickTopRepsotory stickTopRepsotory) {
-        return stickTopRepsotory;
-    }
 }

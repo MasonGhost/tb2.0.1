@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -19,6 +21,10 @@ public class UnhandlePinnedBean implements Parcelable {
 
     private CountBean news;
     private CountBean feeds;
+    @SerializedName("group-posts")
+    private CountBean groupPosts;
+    @SerializedName("group-comments")
+    private CountBean groupComments;
 
     public CountBean getNews() {
         return news;
@@ -36,6 +42,21 @@ public class UnhandlePinnedBean implements Parcelable {
         this.feeds = feeds;
     }
 
+    public CountBean getGroupPosts() {
+        return groupPosts;
+    }
+
+    public void setGroupPosts(CountBean groupPosts) {
+        this.groupPosts = groupPosts;
+    }
+
+    public CountBean getGroupComments() {
+        return groupComments;
+    }
+
+    public void setGroupComments(CountBean groupComments) {
+        this.groupComments = groupComments;
+    }
 
     public static class CountBean implements Parcelable {
         /**
@@ -102,6 +123,7 @@ public class UnhandlePinnedBean implements Parcelable {
         }
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -111,6 +133,8 @@ public class UnhandlePinnedBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.news, flags);
         dest.writeParcelable(this.feeds, flags);
+        dest.writeParcelable(this.groupPosts, flags);
+        dest.writeParcelable(this.groupComments, flags);
     }
 
     public UnhandlePinnedBean() {
@@ -119,9 +143,11 @@ public class UnhandlePinnedBean implements Parcelable {
     protected UnhandlePinnedBean(Parcel in) {
         this.news = in.readParcelable(CountBean.class.getClassLoader());
         this.feeds = in.readParcelable(CountBean.class.getClassLoader());
+        this.groupPosts = in.readParcelable(CountBean.class.getClassLoader());
+        this.groupComments = in.readParcelable(CountBean.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<UnhandlePinnedBean> CREATOR = new Parcelable.Creator<UnhandlePinnedBean>() {
+    public static final Creator<UnhandlePinnedBean> CREATOR = new Creator<UnhandlePinnedBean>() {
         @Override
         public UnhandlePinnedBean createFromParcel(Parcel source) {
             return new UnhandlePinnedBean(source);
@@ -138,6 +164,8 @@ public class UnhandlePinnedBean implements Parcelable {
         return "UnhandlePinnedBean{" +
                 "news=" + news +
                 ", feeds=" + feeds +
+                ", groupPosts=" + groupPosts +
+                ", groupComments=" + groupComments +
                 '}';
     }
 }

@@ -59,4 +59,7 @@
     <!--付费弹窗金额字体大小-->
     <dimen name="size_paypop_window">30sp</dimen>
 
+    <!--帖子多找图提示字体大小-->
+    <dimen name="size_number_shadow">25sp</dimen>
+
 </resources>

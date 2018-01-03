@@ -21,8 +21,4 @@ public interface ScanCodeContract {
     interface Presenter extends IBaseTouristPresenter {
 
     }
-
-    interface Repository {
-
-    }
 }

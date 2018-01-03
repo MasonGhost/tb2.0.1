@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.circle.detail.ChannelDetailPresenterModule;
 
 import dagger.Component;
 
@@ -15,6 +15,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = {AppComponent.class, ShareModule.class}, modules = ChannelDetailPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = { ShareModule.class,ChannelDetailPresenterModule.class})
 public interface CollectGroupDynamicPresenterComonent extends InjectComponent<CollectGroupDynamicListFragment> {
 }

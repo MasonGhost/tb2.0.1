@@ -35,7 +35,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class LocationSearchFragment extends TSListFragment<LocationSearchContract.Presenter, LocationBean> implements LocationSearchContract.View, MultiItemTypeAdapter.OnItemClickListener {
+public class LocationSearchFragment extends TSListFragment<LocationSearchContract.Presenter, LocationBean> implements LocationSearchContract.View,
+        MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_DATA = "DATA";
     public static final String BUNDLE_LOCATION_STRING = "location_string";
@@ -85,8 +86,7 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mEmptyView.setVisibility(View.GONE);
-
+        setEmptyViewVisiable(false);
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
                 mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());

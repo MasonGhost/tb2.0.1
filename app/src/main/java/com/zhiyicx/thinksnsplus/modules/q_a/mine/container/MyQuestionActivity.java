@@ -11,13 +11,13 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @contact email:648129313@qq.com
  */
 
-public class MyQuestionActivity extends TSActivity{
+public class MyQuestionActivity extends TSActivity {
 
     public static final String BUNDLE_MY_QUESTION_TYPE = "bundle_my_question_type";
 
     @Override
     protected Fragment getFragment() {
-        return new MyQuestionFragment().instance();
+        return MyQuestionFragment.instance();
     }
 
     @Override

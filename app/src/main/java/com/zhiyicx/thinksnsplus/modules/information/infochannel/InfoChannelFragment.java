@@ -250,7 +250,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 //                        .subscribe(o -> {
 //                            if (mOnItemClickListener != null) {
 //                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
 //                            }
 //                        });
 //
@@ -319,7 +319,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 //                        .subscribe(o -> {
 //                            if (mOnItemClickListener != null) {
 //                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
 //                            }
 //                        });
 //

@@ -104,7 +104,7 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
 //                        .subscribe(o -> {
 //                            if (mOnItemClickListener != null) {
 //                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
 //                            }
 //                        });
 //

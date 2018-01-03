@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -32,7 +33,7 @@ import rx.functions.Action1;
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class WalletPresenter extends AppBasePresenter<WalletContract.Repository, WalletContract.View> implements WalletContract.Presenter {
+public class WalletPresenter extends AppBasePresenter< WalletContract.View> implements WalletContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
 
     /**
@@ -49,6 +50,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    BillRepository mBillRepository;
 
     @Inject
     SystemRepository mSystemRepository;
@@ -68,8 +71,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
 
     @Inject
-    public WalletPresenter(WalletContract.Repository repository, WalletContract.View rootView) {
-        super(repository, rootView);
+    public WalletPresenter(WalletContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -160,7 +163,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
      */
     private void getWalletConfigFromServer(final int tag, final boolean isNeedTip) {
 
-        final Subscription walletConfigSub = mRepository.getWalletConfig()
+        final Subscription walletConfigSub = mBillRepository.getWalletConfig()
                 .doOnSubscribe(() -> {
                     if (isNeedTip) {
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));

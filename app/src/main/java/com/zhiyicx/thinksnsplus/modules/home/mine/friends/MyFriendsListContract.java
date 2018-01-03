@@ -26,6 +26,4 @@ public interface MyFriendsListContract {
     interface Presenter extends ITSListPresenter<UserInfoBean> {
     }
 
-    interface Repository extends IBaseFriendsRepository{
-    }
 }

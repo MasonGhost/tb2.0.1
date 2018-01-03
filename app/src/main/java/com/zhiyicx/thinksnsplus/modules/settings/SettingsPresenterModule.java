@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SettingsRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,9 +22,4 @@ public class SettingsPresenterModule {
         return mView;
     }
 
-
-    @Provides
-    SettingsContract.Repository provideRegisterContractRepository(SettingsRepository serviceManager) {
-        return serviceManager;
-    }
 }

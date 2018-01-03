@@ -67,7 +67,7 @@ android {
             minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
     repositories {
@@ -139,7 +139,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 77
+    schemaVersion 83
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -163,6 +163,7 @@ dependencies {
     def dataDependences = rootProject.ext.dataDependencies
     def supportDependences = rootProject.ext.sdksoupportDependencies
     def testDependences = rootProject.ext.testDependencies
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //support
     compile supportDependences.appcompatV7
@@ -175,7 +176,6 @@ dependencies {
         exclude module: 'support-annotations'
         exclude group: 'javax.inject'
     }
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     androidTestCompile testDependences.espressoIntent
     androidTestCompile(testDependences.espressoRecyclerView) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -186,7 +186,6 @@ dependencies {
     testCompile testDependences.runner
     testCompile testDependences.robolectric
     testCompile testDependences.mockito
-    annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
@@ -203,6 +202,8 @@ dependencies {
     compile project(':contacts')
     compile project(':appupdate')
     compile project(':bigimage')
+    // markdown编辑器
+    compile project(':richtexteditorlib')
     // database
     compile dataDependences.greendao
     compile dataDependences.guava

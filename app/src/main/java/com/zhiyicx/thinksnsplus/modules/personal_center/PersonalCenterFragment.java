@@ -46,7 +46,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
@@ -64,6 +65,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -79,13 +82,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -150,10 +151,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
+    private ActionPopupWindow mTopBarMorePopWindow;
     private PayPopWindow mPayImagePopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
-    private PersonalCenterRepository.MyDynamicTypeEnum mDynamicType = PersonalCenterRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
+    private BaseDynamicRepository.MyDynamicTypeEnum mDynamicType = BaseDynamicRepository.MyDynamicTypeEnum.ALL; //type = users 时可选，null-全部
     // paid-付费动态 pinned - 置顶动态
 
     /**
@@ -372,7 +374,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             requestData();
         }
         super.initData();
-        // 支持魅族手机首页状太栏文字白色问题
     }
 
     /**
@@ -554,7 +555,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 getActivity().finish();
                 break;
             case R.id.iv_more:
-                mPresenter.shareUserInfo(mUserInfoBean);
+                showTopBarMorePopWindow();
                 break;
             default:
         }
@@ -577,7 +578,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void onDynamicTypeChanged(PersonalCenterRepository.MyDynamicTypeEnum type) {
+    public void onDynamicTypeChanged(BaseDynamicRepository.MyDynamicTypeEnum type) {
         mDynamicType = type;
         requestNetData(DEFAULT_PAGE_MAX_ID, false);
 
@@ -681,6 +682,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
     }
 
+    @Override
+    public void onCommentContentLongClick(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) {
+            return;
+        }
+        mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
+        // 举报
+        if (dynamicBean.getComments().get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getComments().get
+                    (position).getCommentUser(), dynamicBean.getComments().get
+                    (position).getComment_id().toString(),
+                    null, null, dynamicBean.getComments().get(position).getComment_content(), ReportType.COMMENT));
+
+        } else {
+
+        }
+    }
+
     private void initToolBar() {
         if (!setUseStatusView()) {
             // toolBar 设置状态栏高度的 marginTop
@@ -781,6 +800,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mListDatas.isEmpty()) {
+            refreshData();
+        }
+    }
+
     /**
      * 初始化评论删除选择弹框
      *
@@ -813,6 +840,36 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
+    }
+
+
+    /**
+     * 顶部更多弹框
+     */
+    private void showTopBarMorePopWindow() {
+        if (mTopBarMorePopWindow == null) {
+            mTopBarMorePopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.share))
+                    .item2Str(AppApplication.getMyUserIdWithdefault() != mUserInfoBean.getUser_id() ? getString(R.string.report) : "")
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(() -> {
+                        mPresenter.shareUserInfo(mUserInfoBean);
+                        mTopBarMorePopWindow.hide();
+                    })
+                    .item2ClickListener(() -> {
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mUserInfoBean, mUserInfoBean.getUser_id().toString(),
+                                mUserInfoBean
+                                        .getName(), mUserInfoBean.getAvatar(), mUserInfoBean.getIntro(), ReportType.USER));
+                        mTopBarMorePopWindow.hide();
+                    })
+                    .bottomClickListener(() -> mTopBarMorePopWindow.hide())
+                    .build();
+        }
+        mTopBarMorePopWindow.show();
     }
 
     /**
@@ -1012,4 +1069,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mPayImagePopWindow);
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDeletDynamicPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mReSendDynamicPopWindow);
+        dismissPop(mTopBarMorePopWindow);
+    }
 }

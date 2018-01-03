@@ -1,0 +1,80 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/fragment_tslist"/>
+
+        <View
+            android:id="@+id/v_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/masked_color"
+            android:visibility="gone"/>
+        <!--灰色背景-->
+        <!--评论输入框-->
+        <com.zhiyicx.baseproject.widget.InputLimitView
+            android:id="@+id/ilv_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:fitsSystemWindows="true"
+            android:visibility="gone"
+            app:limitSize="@integer/comment_input_max_size"
+            app:showLimitSize="@integer/show_comment_input_size">
+
+        </com.zhiyicx.baseproject.widget.InputLimitView>
+
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/not_find_circle_post_to_publish"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/qa_search_empty_size"/>
+
+            <Button
+                android:id="@+id/bt_do"
+                android:layout_width="@dimen/qa_search_empty_bt_with"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:background="@drawable/selector_button_corner_solid_small"
+                android:gravity="center"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_huge"
+                android:paddingRight="@dimen/spacing_huge"
+                android:paddingTop="@dimen/spacing_normal"
+                android:text="to_publish_qa"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_sub_title"
+
+                />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

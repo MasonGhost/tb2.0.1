@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
@@ -35,23 +36,17 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Repository, DynamicTopContract.View>
+public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.View>
         implements DynamicTopContract.Presenter {
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
 
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-
-    @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
 
     @Inject
-    SystemRepository mSystemRepository;
+    BaseDynamicRepository mBaseDynamicRepository;
 
     @Override
     protected boolean useEventBus() {
@@ -59,8 +54,8 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
     }
 
     @Inject
-    public DynamicTopPresenter(DynamicTopContract.Repository repository, DynamicTopContract.View rootView) {
-        super(repository, rootView);
+    public DynamicTopPresenter(DynamicTopContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -76,7 +71,8 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
         if (feed_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(feed_id, PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney()*mRootView.getTopDyas(),getRatio()), mRootView.getTopDyas())
+        Subscription subscription = mBaseDynamicRepository.stickTop(feed_id, PayConfig.gameCurrency2RealCurrency(mRootView.getInputMoney() * mRootView
+                .getTopDyas(), getRatio()), mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
