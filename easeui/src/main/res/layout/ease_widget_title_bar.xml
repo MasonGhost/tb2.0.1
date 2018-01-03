@@ -3,7 +3,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="@dimen/height_top_bar"
-    android:background="@color/top_bar_normal_bg"
+    android:background="@color/btn_register_normal"
     android:gravity="center_vertical" >
 
     <RelativeLayout
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <RelativeLayout
         android:id="@+id/right_layout"
