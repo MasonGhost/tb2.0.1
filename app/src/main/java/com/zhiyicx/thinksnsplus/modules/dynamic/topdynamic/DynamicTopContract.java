@@ -34,7 +34,4 @@ public interface DynamicTopContract {
         void stickTop(long feed_id);
     }
 
-    interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long feed_id, double amount, int day);
-    }
 }

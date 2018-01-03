@@ -1,16 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
@@ -29,16 +26,16 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
-import com.zhiyicx.thinksnsplus.modules.channel.mine.MyGroupActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.mine.container.MyCircleContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
@@ -51,6 +48,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
@@ -89,7 +88,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     BadgeView mVvFansNewCount;
 
     /**
-     * 选择认证人类的弹窗
+     * 选择认证人类型的弹窗
      */
     private CertificationTypePopupWindow mCertificationWindow;
 
@@ -99,14 +98,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
-    /**
-     * 请求音乐权限弹窗
-     */
-    private ActionPopupWindow mActionPopupWindow;
-
-    public MineFragment() {
-    }
-
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
         Bundle args = new Bundle();
@@ -115,15 +106,27 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Observable.create(subscriber -> {
+            DaggerMinePresenterComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .minePresenterModule(new MinePresenterModule(MineFragment.this))
+                    .build().inject(MineFragment.this);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                }, Throwable::printStackTrace);
+    }
+
+    @Override
     protected void initView(View rootView) {
     }
 
     @Override
     protected void initData() {
-        DaggerMinePresenterComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .minePresenterModule(new MinePresenterModule(this))
-                .build().inject(this);
+
     }
 
     @Override
@@ -185,7 +188,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), SystemConversationActivity.class));
-        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
+        if (mPresenter != null) {
+            mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
+        }
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
@@ -223,7 +228,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_personal_page:
                 PersonalCenterFragment.startToPersonalCenter(getContext(), mUserInfoBean);
                 break;
-            /**
+            /*
              * 我的投稿
              */
             case R.id.bt_my_info:
@@ -263,7 +268,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
                 if (mUserCertificationInfo != null
                         && mUserCertificationInfo.getId() != 0
-                        && mUserCertificationInfo.getStatus() != 2) {
+                        && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
@@ -286,7 +291,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_my_group:
                 // 我的圈子
-                startActivity(new Intent(getActivity(), MyGroupActivity.class));
+                startActivity(new Intent(getActivity(), MyCircleContainerActivity.class));
                 break;
             default:
         }
@@ -346,11 +351,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void updateCertification(UserCertificationInfo data) {
         if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
-            if (data.getStatus() == 1) {
+            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
-            } else if (data.getStatus() == 0) {
+            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
-            } else if (data.getStatus() == 2) {
+            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                 mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {
@@ -388,34 +393,4 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         startActivity(intent);
     }
 
-    private void initPermissionPopUpWindow() {
-        if (mActionPopupWindow != null) {
-            return;
-        }
-        String model = android.os.Build.MODEL;
-        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
-        mActionPopupWindow = PermissionPopupWindow.builder()
-                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
-                .with(getActivity())
-                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
-
-                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
-                        .oppo_setting_windows_permission_hint :
-                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
-
-                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
-                .item2ClickListener(() -> {
-                    mActionPopupWindow.hide();
-                    if (isOppoR9s) {
-                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
-                    } else {
-                        DeviceUtils.openAppDetail(getActivity());
-                    }
-                })
-                .bottomClickListener(() -> mActionPopupWindow.hide())
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
-                .build();
-    }
 }

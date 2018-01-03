@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
@@ -51,22 +52,19 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-class HomePresenter extends AppBasePresenter<HomeContract.Repository, HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
+class HomePresenter extends AppBasePresenter<HomeContract.View> implements HomeContract.Presenter, ImMsgReceveListener,
         ImStatusListener, ImTimeoutListener {
-    @Inject
-    AuthRepository mAuthRepository;
+
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
-    public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
-        super(repository, rootView);
+    public HomePresenter(HomeContract.View rootView) {
+        super(rootView);
     }
 
     @Override

@@ -22,7 +22,7 @@ import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.Reppsitory,
+public class InfoChannelPresenter extends AppBasePresenter<
         InfoChannelConstract.View> implements InfoChannelConstract.Presenter {
 
     @Inject
@@ -32,9 +32,9 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
 
     @Inject
-    public InfoChannelPresenter(InfoChannelConstract.Reppsitory repository, InfoChannelConstract
-            .View rootView) {
-        super(repository, rootView);
+    public InfoChannelPresenter(InfoChannelConstract
+                                        .View rootView) {
+        super(rootView);
     }
 
     @Inject

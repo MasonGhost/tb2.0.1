@@ -66,6 +66,7 @@
 
     <!--20%蒙层颜色-->
     <color name="masked_color">#33000000</color>
+    <color name="shadow_color">#aa000000</color>
     <color name="copy_right_color">#f3f6f7</color>
     <color name="input_view_bg_color">#fafafa</color>
     <color name="tag_bg_color">#def0f7</color>

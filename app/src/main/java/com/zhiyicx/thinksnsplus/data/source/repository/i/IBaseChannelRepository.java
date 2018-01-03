@@ -75,4 +75,17 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
      * 圈子动态收藏
      */
     void handleCollect(boolean isCollected, long group_id, long dynamic_id);
+
+
+
+
+    /**
+     * 获取全部圈子列表
+     */
+    Observable<List<GroupInfoBean>> getAllGroupList(long max_id);
+
+    /**
+     * 获取用户加入的圈子
+     */
+    Observable<List<GroupInfoBean>> getUserJoinedGroupList(long max_id);
 }

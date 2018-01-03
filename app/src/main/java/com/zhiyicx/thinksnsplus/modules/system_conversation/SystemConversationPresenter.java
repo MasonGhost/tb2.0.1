@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,20 +22,21 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class SystemConversationPresenter extends AppBasePresenter<SystemConversationContract.Repository, SystemConversationContract.View> implements SystemConversationContract.Presenter {
+public class SystemConversationPresenter extends AppBasePresenter< SystemConversationContract.View> implements SystemConversationContract.Presenter {
     @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-
+@Inject
+    SystemRepository mSystemRepository;
 
     @Inject
-    public SystemConversationPresenter(SystemConversationContract.Repository repository, SystemConversationContract.View rootView) {
-        super(repository, rootView);
+    public SystemConversationPresenter( SystemConversationContract.View rootView) {
+        super(rootView);
     }
 
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription systemconversationsSub = mRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+        Subscription systemconversationsSub = mSystemRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribe(new BaseSubscribeForV2<List<SystemConversationBean>>() {
                     @Override
                     protected void onSuccess(List<SystemConversationBean> data) {

@@ -10,7 +10,8 @@ public enum TagFrom {
     REGISTER(8001),
     USER_EDIT(8002),
     INFO_PUBLISH(8003),
-    QA_PUBLISH(8004);
+    QA_PUBLISH(8004),
+    CREATE_CIRCLE(8005);
 
     public int id;
 

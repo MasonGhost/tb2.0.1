@@ -38,7 +38,7 @@ import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHand
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicCommentRepositroty extends BaseMusicRepository implements MusicCommentContract.Repository {
+public class MusicCommentRepositroty extends BaseMusicRepository {
 
     @Inject
     public MusicCommentRepositroty(ServiceManager serviceManager) {

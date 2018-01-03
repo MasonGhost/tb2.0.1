@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -15,10 +16,21 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivi
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyFollowQuestionAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.QuestionTopicAdapter;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.DaggerMyAnswerComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerPresenterModule;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
@@ -41,7 +53,7 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     private String mType;
 
-    public MyFollowFragment instance(String type) {
+    public static MyFollowFragment instance(String type) {
         MyFollowFragment followFragment = new MyFollowFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_MY_QUESTION_TYPE, type);
@@ -61,13 +73,37 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
 
     @Override
     protected void initView(View rootView) {
-        DaggerMyFollowComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .myFollowPresenterModule(new MyFollowPresenterModule(this))
-                .build()
-                .inject(this);
+
         super.initView(rootView);
+        Observable.create(subscriber -> {
+
+            DaggerMyFollowComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .myFollowPresenterModule(new MyFollowPresenterModule(MyFollowFragment.this))
+                    .build()
+                    .inject(MyFollowFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
     }
+
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -76,7 +112,22 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
         }
         CommonAdapter adapter;
         if (mType.equals(TYPE_QUESTION)) {
-            adapter = new MyFollowQuestionAdapter(getContext(), mListDatas);
+            adapter = new MyFollowQuestionAdapter(getContext(), mListDatas) {
+                @Override
+                protected int getExcellentTag(boolean isExcellent) {
+                    return isExcellent ? R.mipmap.icon_choice : 0;
+                }
+
+                @Override
+                protected boolean isTourist() {
+                    return mPresenter.handleTouristControl();
+                }
+
+                @Override
+                protected int getRatio() {
+                    return mPresenter.getRatio();
+                }
+            };
         } else {
             adapter = new QuestionTopicAdapter(getContext(), mListDatas, mFollowPresenter);
         }
@@ -88,7 +139,7 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         if (mType.equals(TYPE_QUESTION)) {
             // 问题详情
-            if (mListDatas.get(position) instanceof QAListInfoBean){
+            if (mListDatas.get(position) instanceof QAListInfoBean) {
                 QAListInfoBean qaListInfoBean = (QAListInfoBean) mListDatas.get(position);
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
@@ -139,11 +190,11 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
                 }
             }
             if (!qaTopicBean.getHas_follow()) {
-                if (position != -1){
+                if (position != -1) {
                     mListDatas.remove(position);
                 }
             } else {
-                if (position == -1){
+                if (position == -1) {
                     mListDatas.add(qaTopicBean);
                 }
             }

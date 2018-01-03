@@ -1,12 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -30,9 +23,5 @@ public class UserInfoPresenterModule {
         return mView;
     }
 
-    @Provides
-    UserInfoContract.Repository provideUserInfoContractRepository(UserInfoRepository repository) {
-        return repository;
-    }
 
 }

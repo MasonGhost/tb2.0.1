@@ -1,4 +1,7 @@
 <resources>
+
+    <!-- 顶部按钮padding -->
+    <dimen name="pickerview_topbar_padding">20dp</dimen>
     <!-- 顶部按钮栏高度 -->
     <dimen name="pickerview_topbar_height">44dp</dimen>
     <!-- 顶部按钮paddingLeft -->
@@ -12,4 +15,5 @@
     <dimen name="pickerview_textsize">15sp</dimen>
     <dimen name="margin_10dp">10dp</dimen>
     <dimen name="item_hegiht">40dp</dimen>
+
 </resources>

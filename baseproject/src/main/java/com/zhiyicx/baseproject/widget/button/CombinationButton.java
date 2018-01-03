@@ -1,11 +1,12 @@
 package com.zhiyicx.baseproject.widget.button;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.UIUtils;
 
 /**
  * @author LiuChao
@@ -45,21 +45,31 @@ public class CombinationButton extends FrameLayout {
         Drawable rightImage = array.getDrawable(R.styleable.combinationBtn_rightImage);
         String leftText = array.getString(R.styleable.combinationBtn_leftText);
         String rightText = array.getString(R.styleable.combinationBtn_rightText);
-        int leftTextColor = array.getColor(R.styleable.combinationBtn_leftTextColor, -1);
-        int rightTextColor = array.getColor(R.styleable.combinationBtn_rightTextColor, -1);
+        ColorStateList leftTextColor = array.getColorStateList(R.styleable.combinationBtn_leftTextColor);
+        ColorStateList rightTextColor = array.getColorStateList(R.styleable.combinationBtn_rightTextColor);
+        int bgColor = array.getColor(R.styleable.combinationBtn_bgColor,-1);
+
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
+        int lineColor = array.getColor(R.styleable.combinationBtn_lineColor, -1);
+        Drawable lineBg = array.getDrawable(R.styleable.combinationBtn_lineBg);
+
         int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
+        float leftTextSize = array.getDimension(R.styleable.combinationBtn_leftTextSize, 14);
+        float rightTextSize = array.getDimension(R.styleable.combinationBtn_rightTextSize, 13);
         int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
         int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context, 10));
         array.recycle();
         if (!TextUtils.isEmpty(leftText)) {
             mCombinedButtonLeftText.setText(leftText);
         }
-        if (leftTextColor != -1) {
+        if (leftTextColor != null) {
             mCombinedButtonLeftText.setTextColor(leftTextColor);
         }
-        if (rightTextColor != -1) {
+        if (rightTextColor != null) {
             mCombinedButtonRightText.setTextColor(rightTextColor);
+        }
+        if (bgColor != -1) {
+            findViewById(R.id.rl_container).setBackgroundColor(bgColor);
         }
         if (!TextUtils.isEmpty(rightText)) {
             mCombinedButtonRightText.setText(rightText);
@@ -72,10 +82,19 @@ public class CombinationButton extends FrameLayout {
             mCombinedButtonImgLeft.setImageDrawable(leftImage);
         }
         mCombinedButtonImgRight.setImageDrawable(rightImage);
+        mCombinedButtonLeftText.setTextSize(leftTextSize);
+        mCombinedButtonRightText.setTextSize(rightTextSize);
         if (showLine) {
             mVLine.setVisibility(VISIBLE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mVLine.getLayoutParams();
             layoutParams.setMargins(dividerLeftMargin, 0, dividerRightMargin, 0);
+            if (lineColor != -1) {
+                mVLine.setBackground(null);
+                mVLine.setBackgroundColor(lineColor);
+            }
+            if (lineBg != null) {
+                mVLine.setBackground(leftImage);
+            }
         } else {
             mVLine.setVisibility(INVISIBLE);
         }
@@ -88,6 +107,14 @@ public class CombinationButton extends FrameLayout {
         mCombinedButtonLeftText.setText(leftText);
     }
 
+    public void setLeftText(CharSequence leftText) {
+        mCombinedButtonLeftText.setText(leftText);
+    }
+
+    public void setLeftTextSize(float leftTextSize) {
+        mCombinedButtonLeftText.setTextSize(TypedValue.COMPLEX_UNIT_SP, leftTextSize);
+    }
+
     /**
      * 设置右边文字内容
      */
@@ -96,10 +123,14 @@ public class CombinationButton extends FrameLayout {
     }
 
     /**
-     * 设置右边文字内容颜色
+     * 设置文字内容颜色
      */
     public void setRightTextColor(int color) {
         mCombinedButtonRightText.setTextColor(color);
+    }
+
+    public void setLeftTextColor(int color) {
+        mCombinedButtonLeftText.setTextColor(color);
     }
 
     public TextView getCombinedButtonRightTextView() {
@@ -119,6 +150,12 @@ public class CombinationButton extends FrameLayout {
     }
 
     public void setRightImage(int res) {
+        if (res == 0) {
+            mCombinedButtonImgRight.setVisibility(INVISIBLE);
+            return;
+        } else {
+            mCombinedButtonImgRight.setVisibility(VISIBLE);
+        }
         mCombinedButtonImgRight.setImageResource(res);
     }
 }

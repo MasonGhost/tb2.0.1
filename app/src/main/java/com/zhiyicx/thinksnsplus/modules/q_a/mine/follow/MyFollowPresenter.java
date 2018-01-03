@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -28,53 +29,58 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyFollowContai
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.Repository, MyFollowContract.View>
-        implements MyFollowContract.Presenter{
+public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.View>
+        implements MyFollowContract.Presenter {
 
-    @Inject
     QATopicBeanGreenDaoImpl mQaTopicBeanGreenDao;
 
+    BaseQARepository mBaseQARepository;
+
     @Inject
-    public MyFollowPresenter(MyFollowContract.Repository repository, MyFollowContract.View rootView) {
-        super(repository, rootView);
+    public MyFollowPresenter(MyFollowContract.View rootView
+            , QATopicBeanGreenDaoImpl qaTopicBeanGreenDao
+            , BaseQARepository baseQARepository) {
+        super(rootView);
+        mQaTopicBeanGreenDao = qaTopicBeanGreenDao;
+        mBaseQARepository = baseQARepository;
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         List<BaseListBean> listBeen = new ArrayList<>();
         Subscription subscription = null;
-        if (mRootView.getType().equals(TYPE_TOPIC)){
-            subscription = mRepository.getFollowTopic("follow", maxId)
-            .subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
-                @Override
-                protected void onSuccess(List<QATopicBean> data) {
-                    listBeen.addAll(data);
-                    mRootView.onNetResponseSuccess(listBeen, isLoadMore);
-                }
+        if (mRootView.getType().equals(TYPE_TOPIC)) {
+            subscription = mBaseQARepository.getFollowTopic("follow", maxId)
+                    .subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+                        @Override
+                        protected void onSuccess(List<QATopicBean> data) {
+                            listBeen.addAll(data);
+                            mRootView.onNetResponseSuccess(listBeen, isLoadMore);
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    super.onError(e);
-                    mRootView.onResponseError(e, isLoadMore);
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            mRootView.onResponseError(e, isLoadMore);
+                        }
+                    });
         } else {
-            subscription = mRepository.getQAQuestion("", maxId, "follow")
-            .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
-                @Override
-                protected void onSuccess(List<QAListInfoBean> data) {
-                    listBeen.addAll(data);
-                    mRootView.onNetResponseSuccess(listBeen, isLoadMore);
-                }
+            subscription = mBaseQARepository.getQAQuestion("", maxId, "follow")
+                    .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+                        @Override
+                        protected void onSuccess(List<QAListInfoBean> data) {
+                            listBeen.addAll(data);
+                            mRootView.onNetResponseSuccess(listBeen, isLoadMore);
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    super.onError(e);
-                    mRootView.onResponseError(e, isLoadMore);
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            mRootView.onResponseError(e, isLoadMore);
+                        }
+                    });
         }
-        if (subscription != null){
+        if (subscription != null) {
             addSubscrebe(subscription);
         }
     }
@@ -82,12 +88,12 @@ public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.Reposit
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<BaseListBean> listBeen = new ArrayList<>();
-        if (mRootView.getType().equals(TYPE_TOPIC)){
-            if (mQaTopicBeanGreenDao.getUserFollowTopic() != null){
+        if (mRootView.getType().equals(TYPE_TOPIC)) {
+            if (mQaTopicBeanGreenDao.getUserFollowTopic() != null) {
                 listBeen.addAll(mQaTopicBeanGreenDao.getUserFollowTopic());
             }
         }
-        mRootView.onCacheResponseSuccess(listBeen,isLoadMore);
+        mRootView.onCacheResponseSuccess(listBeen, isLoadMore);
     }
 
     @Override
@@ -99,19 +105,19 @@ public class MyFollowPresenter extends AppBasePresenter<MyFollowContract.Reposit
     public void handleTopicFollowState(int position, QATopicBean qaTopicBean) {
         boolean isFollow = !qaTopicBean.getHas_follow();
         qaTopicBean.setHas_follow(isFollow);
-        if (isFollow){
+        if (isFollow) {
             qaTopicBean.setFollows_count(qaTopicBean.getFollows_count() + 1);
         } else {
             qaTopicBean.setFollows_count(qaTopicBean.getFollows_count() - 1);
         }
         mRootView.updateTopicFollowState(qaTopicBean);
         mQaTopicBeanGreenDao.updateSingleData(qaTopicBean);
-        mRepository.handleTopicFollowState(String.valueOf(qaTopicBean.getId()), isFollow);
+        mBaseQARepository.handleTopicFollowState(String.valueOf(qaTopicBean.getId()), isFollow);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_QA_SUBSCRIB)
     public void uploadTopicSubscribState(QATopicBean topicBean) {
-        if (topicBean != null){
+        if (topicBean != null) {
             mRootView.updateTopicFollowState(topicBean);
         }
     }

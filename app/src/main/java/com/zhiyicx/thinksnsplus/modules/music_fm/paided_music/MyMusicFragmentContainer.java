@@ -19,7 +19,7 @@ import java.util.List;
 public class MyMusicFragmentContainer extends TSViewPagerFragment {
 
     public static MyMusicFragmentContainer getInstance() {
-        MyMusicFragmentContainer myMusicFragmentContainer=new MyMusicFragmentContainer();
+        MyMusicFragmentContainer myMusicFragmentContainer = new MyMusicFragmentContainer();
         return myMusicFragmentContainer;
     }
 
@@ -30,9 +30,12 @@ public class MyMusicFragmentContainer extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        Fragment singleMusic= MySingleMusicListFragment.getInstance();
-        Fragment musicAlbum= MyMusicAblumListFragment.getInstance();
-        return  Arrays.asList(singleMusic,musicAlbum);
+        if (mFragmentList == null) {
+            Fragment singleMusic = MySingleMusicListFragment.getInstance();
+            Fragment musicAlbum = MyMusicAblumListFragment.getInstance();
+            mFragmentList = Arrays.asList(singleMusic, musicAlbum);
+        }
+        return mFragmentList;
     }
 
     @Override

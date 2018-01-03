@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import javax.inject.Inject;
 
@@ -15,17 +16,20 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CreateTopicPresenter extends AppBasePresenter<CreateTopicContract.Repository, CreateTopicContract.View>
+public class CreateTopicPresenter extends AppBasePresenter<CreateTopicContract.View>
         implements CreateTopicContract.Presenter {
 
     @Inject
-    public CreateTopicPresenter(CreateTopicContract.Repository repository, CreateTopicContract.View rootView) {
-        super(repository, rootView);
+    BaseQARepository mBaseQARepository;
+
+    @Inject
+    public CreateTopicPresenter(CreateTopicContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void createTopic(String name, String desc) {
-        Subscription subscribe = mRepository.createTopic(name, desc)
+        Subscription subscribe = mBaseQARepository.createTopic(name, desc)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {

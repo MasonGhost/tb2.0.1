@@ -128,9 +128,9 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
         if (info == null || info.getData() == null) {
             return;
         }
-        if (info.getStatus() == 0) {
+        if (info.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
             mTvStatusHint.setVisibility(View.VISIBLE);
-        } else if (info.getStatus() == 1) {
+        } else if (info.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
             mTvStatusHint.setVisibility(View.GONE);
         }
         if (info.getCertification_name().equals(TYPE_USER)) {

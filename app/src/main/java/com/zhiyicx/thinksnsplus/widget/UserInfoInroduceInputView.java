@@ -141,6 +141,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
                 }
             }
         });
+        setBackgroundResource(R.color.white);
     }
 
     /**

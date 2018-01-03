@@ -43,7 +43,7 @@
                 android:textColorHint="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_sub_title"
                 android:drawableLeft="@mipmap/topic_icon_search"
-                android:drawablePadding="@dimen/margin_10dp"
+                android:drawablePadding="@dimen/spacing_normal"
                 android:hint="@string/info_search"/>
 
         <TextView

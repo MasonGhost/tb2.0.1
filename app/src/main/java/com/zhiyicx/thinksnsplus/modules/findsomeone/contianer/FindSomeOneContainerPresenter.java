@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -24,21 +25,21 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindSomeOneContainerPresenter extends AppBasePresenter<FindSomeOneContainerContract.Repository, FindSomeOneContainerContract.View>
+public class FindSomeOneContainerPresenter extends BasePresenter<FindSomeOneContainerContract.View>
         implements FindSomeOneContainerContract.Presenter {
 
     @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneContainerPresenter(FindSomeOneContainerContract.Repository repository, FindSomeOneContainerContract.View rootView) {
-        super(repository, rootView);
+    public FindSomeOneContainerPresenter(FindSomeOneContainerContract.View rootView) {
+        super(rootView);
     }
 
 
     @Override
     public void updateUseLocation(LatLonPoint latLonPoint) {
-        if (isLogin()) {
+        if (AppApplication.getMyUserIdWithdefault() > 0) {
             Subscription subscribe = mUserInfoRepository
                     .updateUserLocation(latLonPoint.getLongitude(), latLonPoint.getLatitude())
                     .subscribe(new BaseSubscribeForV2<Object>() {

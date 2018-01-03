@@ -10,7 +10,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.PasswordRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 
@@ -31,7 +31,7 @@ import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.S_TO_M
  * @contact email:648129313@qq.com
  */
 
-public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repository, AccountBindContract.View>
+public class AccountBindPresenter extends BasePresenter<AccountBindContract.View>
         implements AccountBindContract.Presenter {
     public static final int DEFAULT_DELAY_CLOSE_TIME = 2_000;
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
@@ -45,7 +45,7 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    ChangePasswordRepository mChangePasswordRepository;
+    PasswordRepository mChangePasswordRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
@@ -65,8 +65,8 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
 
 
     @Inject
-    public AccountBindPresenter(AccountBindContract.Repository repository, AccountBindContract.View rootView) {
-        super(repository, rootView);
+    public AccountBindPresenter(AccountBindContract.View rootView) {
+        super(rootView);
     }
 
     /**
@@ -82,7 +82,8 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
         }
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
-        Subscription getVertifySub = (isBind ? mVertifyCodeRepository.getMemberVertifyCode(phone) : mVertifyCodeRepository.getNonMemberVertifyCode(phone))
+        Subscription getVertifySub = (isBind ? mVertifyCodeRepository.getMemberVertifyCode(phone) : mVertifyCodeRepository.getNonMemberVertifyCode
+                (phone))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -124,7 +125,8 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
 
-        Subscription getVerifySub = (isBind ? mVertifyCodeRepository.getMemberVerifyCodeByEmail(email) : mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email))
+        Subscription getVerifySub = (isBind ? mVertifyCodeRepository.getMemberVerifyCodeByEmail(email) : mVertifyCodeRepository
+                .getNonMemberVerifyCodeByEmail(email))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

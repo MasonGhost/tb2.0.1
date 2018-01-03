@@ -6,17 +6,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
-import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -24,6 +21,7 @@ import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
@@ -39,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
@@ -50,7 +49,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendCertificationRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -64,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -73,11 +70,11 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_CIRCLE_POST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
@@ -127,6 +124,8 @@ public class BackgroundTaskHandler {
     @Inject
     GroupDynamicCommentListBeanGreenDaoImpl mGroupDynamicCommentListBeanGreenDao;
     @Inject
+    CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
+    @Inject
     InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
 
     @Inject
@@ -137,12 +136,8 @@ public class BackgroundTaskHandler {
     @Inject
     QuestionCommentBeanGreenDaoImpl mQuestionCommentBeanGreenDao;
 
-    @Inject
-    SendCertificationRepository mSendCertificationRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
-
-//    private List<BackgroundRequestTaskBean> mBackgroundRequestTaskBeanCaches = new ArrayList<>();
 
     private boolean mIsExit = false; // 是否关闭
 
@@ -374,6 +369,13 @@ public class BackgroundTaskHandler {
              */
             case SEND_GROUP_DYNAMIC_COMMENT:
                 sendGroupComment(backgroundRequestTaskBean);
+                break;
+                
+                /*
+              发送圈子动态 V3 api 2017年12月4日17:56:50
+             */
+            case SEND_CIRCLE_POST_COMMENT:
+                sendCircleComment(backgroundRequestTaskBean);
                 break;
 
             case SEND_GROUP_DYNAMIC:
@@ -1009,12 +1011,12 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long commentMark = (Long) params.get("comment_mark");
-        final DynamicCommentBean dynamicCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
-        if (dynamicCommentBean == null) {
+        final DynamicCommentBean circlePostCommentBean = mDynamicCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        if (circlePostCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
-        dynamicCommentBean.setState(DynamicCommentBean.SEND_ING);
+        circlePostCommentBean.setState(DynamicCommentBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
@@ -1025,10 +1027,10 @@ public class BackgroundTaskHandler {
                     protected void onSuccess(Object data) {
                         try {
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            dynamicCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
-                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                            mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            circlePostCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
+                            circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1041,17 +1043,17 @@ public class BackgroundTaskHandler {
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                     }
 
                 });
@@ -1119,12 +1121,12 @@ public class BackgroundTaskHandler {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         final Long comment_mark = (Long) params.get("group_post_comment_mark");
-        final GroupDynamicCommentListBean dynamicCommentBean = mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByCommentMark(comment_mark);
-        if (dynamicCommentBean == null) {
+        final GroupDynamicCommentListBean circlePostCommentBean = mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByCommentMark(comment_mark);
+        if (circlePostCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
-        dynamicCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
+        circlePostCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
@@ -1140,14 +1142,14 @@ public class BackgroundTaskHandler {
                              */
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                             try {
-                                dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
                             } catch (JSONException e) {// 。。。
-                                dynamicCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
-                                dynamicCommentBean.setComment_mark(jsonObject.getLong("group_post_comment_mark"));
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                                circlePostCommentBean.setComment_mark(jsonObject.getLong("group_post_comment_mark"));
                             }
-                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                            circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1159,17 +1161,74 @@ public class BackgroundTaskHandler {
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
-                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
-                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
+                    }
+                });
+
+    }
+
+
+    private void sendCircleComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long comment_mark = (Long) params.get("group_post_comment_mark");
+        final CirclePostCommentBean circlePostCommentBean = mCirclePostCommentBeanGreenDao.getCircleCommentsByCommentMark(comment_mark);
+        if (circlePostCommentBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        circlePostCommentBean.setState(GroupDynamicCommentListBean.SEND_ING);
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean
+                        .getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            try {
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                            } catch (JSONException e) {
+                                circlePostCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            }
+                            circlePostCommentBean.setComment_mark(comment_mark);
+                            circlePostCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                            EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        circlePostCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mCirclePostCommentBeanGreenDao.insertOrReplace(circlePostCommentBean);
+                        EventBus.getDefault().post(circlePostCommentBean, EVENT_SEND_COMMENT_TO_CIRCLE_POST);
                     }
                 });
 
@@ -1309,7 +1368,7 @@ public class BackgroundTaskHandler {
                     }
                 }
                 return integers;
-            }).map(integers -> bean).flatMap(bean1 -> mSendCertificationRepository.sendCertification(bean1)
+            }).map(integers -> bean).flatMap(bean1 -> mUserInfoRepository.sendCertification(bean1)
                     .flatMap(objectBaseJsonV2 -> {
                         BaseJson<Object> baseJson = new BaseJson<>();
                         baseJson.setData((double) objectBaseJsonV2.getId());

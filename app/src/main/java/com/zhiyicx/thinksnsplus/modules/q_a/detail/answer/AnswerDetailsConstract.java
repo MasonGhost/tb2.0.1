@@ -81,21 +81,4 @@ public interface AnswerDetailsConstract {
         void handleFollowUser(UserInfoBean userInfoBean);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {
-        Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id,
-                                                                     long max_id);
-
-        Observable<AnswerInfoBean> getAnswerDetail(long answer_id);
-
-        void handleCollect(boolean isCollected, long answer_id);
-
-        void sendComment(String comment_content, long answer_id,
-                         long reply_to_user_id, long comment_mark);
-
-        void deleteComment(long answer_id, long comment_id);
-
-        void deleteAnswer(long answer_id);
-
-        Observable<BaseJsonV2<Object>> adoptionAnswer(long question_id,long answer_id);
-    }
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DraftBoxRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class DraftBoxPresenterModule {
         return mView;
     }
 
-    @Provides
-    DraftBoxContract.Repository providesDraftBoxContractRepository() {
-        return new DraftBoxRepository();
-    }
 }

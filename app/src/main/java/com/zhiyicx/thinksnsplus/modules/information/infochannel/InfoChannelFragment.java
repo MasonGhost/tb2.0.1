@@ -24,6 +24,7 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,7 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.SUBSCRIBE_EXTRA;
+
 /**
  * @Author Jliuer
  * @Date 2017/03/06
@@ -146,9 +148,16 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 
     @Override
     protected void initData() {
-        mInfoTypeBean = getArguments().getParcelable(BUNDLE_INFO_TYPE);
-        mMyCatesBeen = mInfoTypeBean.getMy_cates();
-        mMoreCatesBeen = mInfoTypeBean.getMore_cates();
+        if (getArguments() != null) {
+            mInfoTypeBean = getArguments().getParcelable(BUNDLE_INFO_TYPE);
+        }
+        if (mInfoTypeBean != null) {
+            mMyCatesBeen = mInfoTypeBean.getMy_cates();
+            mMoreCatesBeen = mInfoTypeBean.getMore_cates();
+        } else {
+            mMyCatesBeen = new ArrayList<>();
+            mMoreCatesBeen = new ArrayList<>();
+        }
 
         mFragmentChannelContentSubscribed.setAdapter(initSubscribeAdapter());
 
@@ -180,6 +189,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 mInfoTypeBean = infoTypeBean;
                 backInfo();
                 break;
+            default:
         }
     }
 
@@ -240,7 +250,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 //                        .subscribe(o -> {
 //                            if (mOnItemClickListener != null) {
 //                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
 //                            }
 //                        });
 //
@@ -309,7 +319,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 //                        .subscribe(o -> {
 //                            if (mOnItemClickListener != null) {
 //                                int position = viewHolder.getAdapterPosition();
-//                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
+//                                mOnItemClickListener.onCommentTextClick(viewHolder.itemView, viewHolder, position);
 //                            }
 //                        });
 //

@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_channel_content_unsubscribe"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_margin="@dimen/spacing_normal"/>
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/spacing_normal"
+    android:background="@color/white">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_channel_content_unsubscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"/>
+
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/not_find_qa_to_publish"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/qa_search_empty_size"/>
+
+        <Button
+            android:id="@+id/bt_do"
+            android:layout_width="@dimen/qa_search_empty_bt_with"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:background="@drawable/selector_button_corner_solid_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingLeft="@dimen/spacing_huge"
+            android:paddingRight="@dimen/spacing_huge"
+            android:paddingTop="@dimen/spacing_normal"
+            android:text="to_publish_qa"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_sub_title"
+
+            />
+    </LinearLayout>
+
+</FrameLayout>
 

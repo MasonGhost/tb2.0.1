@@ -19,6 +19,7 @@
             android:layout_height="@dimen/spacing_normal"/>
 
         <LinearLayout
+            android:id="@+id/ll_top_money"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
             android:gravity="center"
@@ -60,9 +61,11 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/line"
             style="@style/style_divider_horizontal"/>
 
         <LinearLayout
+            android:id="@+id/ll_top_total_money"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
             android:gravity="center"

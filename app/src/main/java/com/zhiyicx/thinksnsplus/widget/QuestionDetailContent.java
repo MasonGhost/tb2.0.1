@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.MarkDownRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,10 +186,7 @@ public class QuestionDetailContent extends FrameLayout {
      * @param list    图片列表
      */
     private void dealContent(String content, List<ImageBean> list) {
-        InternalStyleSheet css = new Github();
-        css.addRule("body", "line-height: 1.6", "padding: 0");
-        css.addRule(".container", "padding-right:0", ";padding-left:0","text-align:justify");
-        mMdvQuestionContent.addStyleSheet(css);
+        mMdvQuestionContent.addStyleSheet(MarkDownRule.generateStandardStyle());
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setOnElementListener(new MarkdownView.OnElementListener() {
             @Override

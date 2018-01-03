@@ -21,7 +21,4 @@ public interface CreateTopicContract {
         void createTopic(String name,String desc);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {
-        Observable<BaseJsonV2> createTopic(String name,String desc);
-    }
 }

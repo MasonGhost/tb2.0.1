@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -377,7 +378,7 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
-        LogUtils.d("imagePathConvertV2:" + url);
+//        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
@@ -401,5 +402,29 @@ public class ImageUtils {
         return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
+    public static long[] getBitmapSize(String url) {
+        BitmapFactory.Options op = new BitmapFactory.Options();
+        op.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(url, op);
+        return new long[]{op.outWidth, op.outHeight};
+    }
+
+    /**
+     * 默认加载图片
+     *
+     * @param imageView target view to display image
+     * @param url       image resuorce path
+     */
+    public static void loadImageDefault(ImageView imageView, String url) {
+        if (checkImageContext(imageView)) {
+            return;
+        }
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(R.drawable.shape_default_image)
+                .placeholder(R.drawable.shape_default_error_image)
+                .into(imageView);
+
+    }
 
 }

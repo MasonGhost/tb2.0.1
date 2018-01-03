@@ -30,7 +30,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
@@ -237,7 +237,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         more.setColorFilter(colorFilter);// 纯黑色
     }
 
-    public void initHeaderViewData(final UserInfoBean userInfoBean, PersonalCenterRepository.MyDynamicTypeEnum dynamicType) {
+    public void initHeaderViewData(final UserInfoBean userInfoBean, BaseDynamicRepository.MyDynamicTypeEnum dynamicType) {
 
         // 显示头像
         ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, iv_head_icon);
@@ -354,7 +354,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
         }
     }
 
-    private void initTypePop(PersonalCenterRepository.MyDynamicTypeEnum dynamicType) {
+    private void initTypePop(BaseDynamicRepository.MyDynamicTypeEnum dynamicType) {
         CommonAdapter commonAdapter = new TypeChoosePopAdapter(mActivity, Arrays.asList(mActivity.getResources().getStringArray(R.array
                 .personal_dynamic_typpe)), dynamicType, this);
         mTypeChoosePopupWindow = TypeChoosePopupWindow.Builder()
@@ -362,7 +362,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
                 .adapter(commonAdapter)
                 .asVertical()
                 .alpha(1.0f)
-                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.divider_line))
+                .itemSpacing(mActivity.getResources().getDimensionPixelOffset(R.dimen.spacing_big_line))
                 .parentView(tv_type)
                 .build();
 
@@ -475,7 +475,7 @@ public class PersonalCenterHeaderViewItem implements TypeChoosePopAdapter.OnType
     }
 
     @Override
-    public void onChoosed(PersonalCenterRepository.MyDynamicTypeEnum type) {
+    public void onChoosed(BaseDynamicRepository.MyDynamicTypeEnum type) {
         mView.onDynamicTypeChanged(type);
         switch (type) {
             case ALL:

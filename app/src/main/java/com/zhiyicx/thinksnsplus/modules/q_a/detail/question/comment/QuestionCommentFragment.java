@@ -22,9 +22,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionCommentItem;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +50,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.Quest
 
 public class QuestionCommentFragment extends TSListFragment<QuestionCommentContract.Presenter, QuestionCommentBean>
         implements QuestionCommentContract.View, QuestionCommentItem.OnCommentItemListener, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
 
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
@@ -114,6 +117,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         QuestionCommentItem infoDetailCommentItem = new QuestionCommentItem(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new QuestionCommentEmptyItem());
+        multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
 
@@ -133,7 +137,20 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
     }
 
     @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+    public void onCommentTextClick(View view, RecyclerView.ViewHolder holder, int position) {
+        comment(position);
+    }
+
+    @Override
+    public void onCommentTextLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+    }
+
+    /**
+     * 评论
+     * @param position
+     */
+    private void comment(int position) {
         QuestionCommentBean infoCommentListBean = mListDatas.get(position);
         if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
             if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
@@ -149,6 +166,24 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
                 }
                 mIlvComment.setEtContentHint(contentHint);
             }
+        }
+    }
+
+    /**
+     * 举报
+     * @param position
+     */
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getFromUserInfoBean(), mListDatas.get
+                    (position).getId().toString(),
+                    null, null, mListDatas.get(position).getBody(), ReportType.COMMENT));
+
+        } else {
+
         }
     }
 
@@ -193,6 +228,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
             showSnackLoadingMessage(message);
         } else {
             if (isSuccess) {
+                updateCommentCount();
                 showSnackSuccessMessage(message);
             } else {
                 showSnackErrorMessage(message);
@@ -238,5 +274,16 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        comment(position);
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+        return true;
     }
 }

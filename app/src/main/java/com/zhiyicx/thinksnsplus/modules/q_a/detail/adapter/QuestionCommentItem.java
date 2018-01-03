@@ -69,11 +69,17 @@ public class QuestionCommentItem implements ItemViewDelegate<QuestionCommentBean
         holder.setText(R.id.tv_content, setShowText(questionCommentBean, position));
         holder.setOnClickListener(R.id.tv_content, v -> {
             if (mOnCommentItemListener != null) {
-                mOnCommentItemListener.onItemClick(v, holder, position);
+                mOnCommentItemListener.onCommentTextClick(v, holder, position);
             }
         });
+        holder.setOnLongClickListener(R.id.tv_content, v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onCommentTextLongClick(v, holder, position);
+            }
+            return true;
+        });
 
-        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        TextView topFlag = holder.getView(R.id.tv_top_flag);
         topFlag.setVisibility(View.GONE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
 
@@ -83,8 +89,14 @@ public class QuestionCommentItem implements ItemViewDelegate<QuestionCommentBean
         }
         holder.itemView.setOnClickListener(v -> {
             if (mOnCommentItemListener != null) {
-                mOnCommentItemListener.onItemClick(v, holder, position);
+                mOnCommentItemListener.onCommentTextClick(v, holder, position);
             }
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onCommentTextLongClick(v, holder, position);
+            }
+            return true;
         });
         setUserInfoClick(holder.getView(R.id.tv_name), questionCommentBean.getFromUserInfoBean());
         setUserInfoClick(holder.getView(R.id.iv_headpic), questionCommentBean.getFromUserInfoBean());
@@ -104,10 +116,13 @@ public class QuestionCommentItem implements ItemViewDelegate<QuestionCommentBean
 
     protected List<Link> setLinks(ViewHolder holder, final QuestionCommentBean questionCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (questionCommentBean.getToUserInfoBean() != null && questionCommentBean.getReply_user() != 0 && questionCommentBean.getToUserInfoBean().getName() != null) {
+        if (questionCommentBean.getToUserInfoBean() != null && questionCommentBean.getReply_user() != 0 && questionCommentBean.getToUserInfoBean()
+                .getName() != null) {
             Link replyNameLink = new Link(questionCommentBean.getToUserInfoBean().getName())
-                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                    // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) //
+                    // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
@@ -140,7 +155,9 @@ public class QuestionCommentItem implements ItemViewDelegate<QuestionCommentBean
     }
 
     public interface OnCommentItemListener {
-        void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
+        void onCommentTextClick(View view, RecyclerView.ViewHolder holder, int position);
+
+        void onCommentTextLongClick(View view, RecyclerView.ViewHolder holder, int position);
 
         void onUserInfoClick(UserInfoBean userInfoBean);
     }

@@ -105,7 +105,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelp
  */
 @SuppressWarnings("unchecked")
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
-        MusicPlayContract.View {
+        MusicPlayContract.View, PagerRecyclerView.OnPageChangedListener {
 
     @BindView(R.id.fragment_music_paly_phonograph_point)
     ImageView mFragmentMusicPalyPhonographPoint;
@@ -244,7 +244,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            if (metadata != null) {
+            if (metadata != null && metadata.getDescription() != null) {
                 mCurrentMediaId = metadata.getDescription().getMediaId();
                 updateCurrentMusic(mCurrentMediaId);
                 EventBus.getDefault().post(Integer.valueOf(mCurrentMediaId), EVENT_MUSIC_CHANGE);
@@ -378,7 +378,9 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             getActivity().finish();
             return;
         }
-        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(currentMusic.getDescription().getMediaId());
+        if (currentMusic.getDescription() != null) {
+            mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(currentMusic.getDescription().getMediaId());
+        }
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
@@ -446,49 +448,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
         });
 
-        mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
-                () {
-
-            @Override
-            public void OnPageChanged(int oldPosition, int newPosition) {
-                mCurrentValue = 0;
-                stopAnimation(mCurrentView);
-                if (isConnected && !isComplete) {
-                    isMediaDataChange = true;
-                    if (newPosition > oldPosition) {
-                        getActivity().getSupportMediaController().getTransportControls()
-                                .skipToNext();
-                    } else {
-                        getActivity().getSupportMediaController().getTransportControls()
-                                .skipToPrevious();
-                    }
-                }
-            }
-
-            @Override
-            public void OnDragging(int downPosition) {
-                if (!isDraging) {
-                    pauseAnimation();
-                }
-                isDraging = true;
-            }
-
-            @Override
-            public void OnIdle(int position) {
-                if (isMediaDataChange) {
-                    mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
-                            (mFragmentMusicPalyRv);
-                    isMediaDataChange = false;
-                }
-                mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
-                isDraging = false;
-                if (mCurrentValue != 0 || isComplete) {
-                    doPhonographAnimation();
-                }
-                isComplete = false;
-            }
-
-        });
+        mFragmentMusicPalyRv.addOnPageChangedListener(this);
     }
 
     private void initPlayRecyclerView() {
@@ -504,10 +464,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private void initFirstMusic() {
         mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
         mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
-        updateCurrentMusic(MediaIDHelper.extractMusicIDFromMediaID(AppApplication
-                .getmQueueManager().getCurrentMusic().getDescription().getMediaId()));
-        mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription
-                ().getTitle());
+        try {
+            updateCurrentMusic(MediaIDHelper.extractMusicIDFromMediaID(AppApplication
+                    .getmQueueManager().getCurrentMusic().getDescription().getMediaId()));
+            mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription
+                    ().getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initLyricsAnimation() {
@@ -592,7 +557,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
         MediaMetadataCompat metadata = mediaController.getMetadata();
 
-        if (metadata != null) {
+        if (metadata != null && metadata.getDescription() != null) {
             updateMediaDescription(metadata.getDescription());
             updateDuration(metadata);
         }
@@ -1100,7 +1065,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter.getGoldName()))
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrency2GameCurrency(amout, mPresenter.getRatio()), mPresenter
+                        .getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
@@ -1126,5 +1092,53 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .build();
         mPayMusicPopWindow.show();
 
+    }
+
+
+    @Override
+    public void OnPageChanged(int oldPosition, int newPosition) {
+        mCurrentValue = 0;
+        stopAnimation(mCurrentView);
+        if (isConnected && !isComplete) {
+            isMediaDataChange = true;
+            if (newPosition > oldPosition) {
+                getActivity().getSupportMediaController().getTransportControls()
+                        .skipToNext();
+            } else {
+                getActivity().getSupportMediaController().getTransportControls()
+                        .skipToPrevious();
+            }
+        }
+    }
+
+    @Override
+    public void OnDragging(int downPosition) {
+        if (!isDraging) {
+            pauseAnimation();
+        }
+        isDraging = true;
+    }
+
+    @Override
+    public void OnIdle(int position) {
+        if (isMediaDataChange) {
+            mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                    (mFragmentMusicPalyRv);
+            isMediaDataChange = false;
+        }
+        mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+        isDraging = false;
+        if (mCurrentValue != 0 || isComplete) {
+            doPhonographAnimation();
+        }
+        isComplete = false;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mFragmentMusicPalyRv != null) {
+            mFragmentMusicPalyRv.addOnPageChangedListener(this);
+        }
+        super.onDestroyView();
     }
 }

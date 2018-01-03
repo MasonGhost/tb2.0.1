@@ -34,9 +34,5 @@ public interface QASearchListContract {
         void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean);
     }
 
-    interface Repository {
-
-
-    }
 
 }

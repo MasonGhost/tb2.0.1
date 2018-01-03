@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.widget.EmptyItem;

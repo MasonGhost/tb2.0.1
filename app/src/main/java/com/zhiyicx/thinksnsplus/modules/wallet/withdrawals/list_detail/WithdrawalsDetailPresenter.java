@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WithdrawalsListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,20 +20,22 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDetailConstract.Repository, WithdrawalsDetailConstract.View>
+public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDetailConstract.View>
         implements WithdrawalsDetailConstract.Presenter {
 
     @Inject
     WithdrawalsListBeanGreenDaoImpl mWithdrawalsListBeanGreenDao;
+    @Inject
+    BillRepository mBillRepository;
 
     @Inject
-    public WithdrawalsDetailPresenter(WithdrawalsDetailConstract.Repository repository, WithdrawalsDetailConstract.View rootView) {
-        super(repository, rootView);
+    public WithdrawalsDetailPresenter(WithdrawalsDetailConstract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mRepository.getWithdrawListDetail(maxId.intValue())
+        Subscription subscription = mBillRepository.getWithdrawListDetail(maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<WithdrawalsListBean>>() {
                     @Override
                     protected void onSuccess(List<WithdrawalsListBean> data) {
@@ -56,7 +59,7 @@ public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDeta
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(mWithdrawalsListBeanGreenDao.getMultiDataFromCache(),isLoadMore);
+        mRootView.onCacheResponseSuccess(mWithdrawalsListBeanGreenDao.getMultiDataFromCache(), isLoadMore);
     }
 
     @Override

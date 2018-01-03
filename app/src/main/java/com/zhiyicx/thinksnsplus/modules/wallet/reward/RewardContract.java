@@ -22,10 +22,6 @@ public interface RewardContract {
         void setSureBtEnable(boolean b);
     }
 
-    interface Repository extends IRewardRepository {
-
-    }
-
     interface Presenter extends IBaseTouristPresenter {
         /**
          * reward

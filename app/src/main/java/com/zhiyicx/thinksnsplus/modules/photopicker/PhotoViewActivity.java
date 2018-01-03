@@ -1,31 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.SparseArray;
+import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.PhotoViewDataCacheBean;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
-        .EXTRA_MAX_COUNT;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
-        .EXTRA_VIEW_ALL_PHOTOS;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
-        .EXTRA_VIEW_INDEX;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
-        .EXTRA_VIEW_SELECTED_PHOTOS;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
-        .COMPLETE_REQUEST_CODE;
-
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.OLDTOLL;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.RIGHTTITLE;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.COMPLETE_REQUEST_CODE;
 
 /**
  * @author LiuChao
@@ -46,22 +34,13 @@ public class PhotoViewActivity extends TSActivity {
     }
 
     @Override
-    protected void initView() {
-        super.initView();
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
     }
 
     @Override
     protected Fragment getFragment() {
-        Bundle bundle = getIntent().getExtras();
-        List<String> allPhotos = bundle.getStringArrayList(EXTRA_VIEW_ALL_PHOTOS);
-        List<String> selectedPhotos = bundle.getStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS);
-        int index = bundle.getInt(EXTRA_VIEW_INDEX);
-        int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
-        ArrayList<ImageBean> tolls = bundle.getParcelableArrayList(OLDTOLL);
-        boolean isToll = bundle.getBoolean(RIGHTTITLE, false);
-        ArrayList<AnimationRectBean> animationRectBeen = bundle.getParcelableArrayList("rect");
-        return PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index,
-                maxCount, isToll, tolls);
+        return PhotoViewFragment.newInstance();
     }
 
     @Override
@@ -81,24 +60,23 @@ public class PhotoViewActivity extends TSActivity {
      * @param maxCount                   能够选择的最大数量
      * @param currentPosition            进入预览时，需要显示第几张图片
      * @param isToll                     是否有收费选项
-     * @param selectedPhotos             之前就选中了的照片,可能 size=0
+     * @param tolls                      之前就选中了的照片,可能 size=0
      */
     public static void startToPhotoView(Fragment fragment, ArrayList<String> allPhotos,
                                         ArrayList<String> selectedPhoto
             , ArrayList<AnimationRectBean> animationRectBeanArrayList, int maxCount,
-                                        int currentPosition, boolean isToll, List<ImageBean> selectedPhotos) {
+                                        int currentPosition, boolean isToll, ArrayList<ImageBean> tolls) {
+        PhotoViewDataCacheBean photoViewDataCacheBean = new PhotoViewDataCacheBean();
+        photoViewDataCacheBean.setAllPhotos(allPhotos);
+        photoViewDataCacheBean.setSelectedPhoto(selectedPhoto);
+        photoViewDataCacheBean.setAnimationRectBeanArrayList(animationRectBeanArrayList);
+        photoViewDataCacheBean.setMaxCount(maxCount);
+        photoViewDataCacheBean.setCurrentPosition(currentPosition);
+        photoViewDataCacheBean.setToll(isToll);
+        photoViewDataCacheBean.setSelectedPhotos(tolls);
+        // 处理传递数据过大
+        PhotoViewFragment.sPhotoViewDataCacheBean = photoViewDataCacheBean;
         Intent it = new Intent(fragment.getContext(), PhotoViewActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_VIEW_INDEX, currentPosition);
-        bundle.putBoolean(RIGHTTITLE, isToll);
-        bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
-        bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
-        bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
-        bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-        ArrayList<ImageBean> datas = new ArrayList<>();
-        datas.addAll(selectedPhotos);
-        bundle.putParcelableArrayList(OLDTOLL, datas);
-        it.putExtras(bundle);
         fragment.startActivityForResult(it, COMPLETE_REQUEST_CODE);
     }
 }

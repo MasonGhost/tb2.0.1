@@ -12,7 +12,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupWindow;
+import android.view.ViewStub;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -54,14 +54,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public static final int DEFAULT_PAGE_SIZE = 20;
 
     /**
-     * 有的地方是 10 条哦
-     */
-    public static final int DEFAULT_PAGE_SIZE_X = 10;
-
-    /**
      * 一个页面显示的最大条数，用来判断是否显示加载更多
      */
-    public static final int DEFAULT_ONE_PAGE_SIZE = 15;
+    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 15;
 
     /**
      * 默认初始化列表 id
@@ -88,11 +83,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected SmartRefreshLayout mRefreshlayout;
 
     protected RecyclerView mRvList;
-
-    protected View mFlTopTipContainer;
     protected TextView mTvTopTip;
     protected RecyclerView.LayoutManager layoutManager;
-//    protected OverScrollLayout overscroll;
 
     /**
      * 因为添加了 header 和 footer 故取消了 adater 的 emptyview，改为手动判断
@@ -113,12 +105,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * 提示信息是否需要常驻
      */
     private boolean mIsTipMessageSticky;
-    private View mTvNoMoredataText;
 
     /**
-     * 最后一个 item 是否显示完了
+     * 没有更多数据
      */
-    private boolean mIsLastVisiable;
+    private View mTvNoMoredataText;
 
     @Override
     protected int getBodyLayoutId() {
@@ -151,28 +142,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     protected void initView(View rootView) {
         mRefreshlayout = (SmartRefreshLayout) rootView.findViewById(R.id.refreshlayout);
         mRvList = (RecyclerView) rootView.findViewById(R.id.swipe_target);
-        mFlTopTipContainer = rootView.findViewById(R.id.fl_top_tip_container);
-        RxView.clicks(mFlTopTipContainer)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        onTopTipClick();
-                    }
-                });
-        mTvTopTip = (TextView) rootView.findViewById(R.id.tv_top_tip_text);
-        mEmptyView = (EmptyView) rootView.findViewById(R.id.empty_view);
-        mEmptyView.setErrorImag(setEmptView());
-        mEmptyView.setNeedTextTip(false);
-        mEmptyView.setNeedClickLoadState(false);
-        RxView.clicks(mEmptyView)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        onEmptyViewClick();
-                    }
-                });
+
         mRefreshlayout.setOnRefreshListener(this);
         mRefreshlayout.setOnLoadmoreListener(this);
         if (setListBackColor() != -1) {
@@ -205,96 +175,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                     }
                 }
             }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                getLastItemVisibility(mRvList);
-            }
-
         });
-//
-//        overscroll = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
-//        overscroll.setOverScrollCheckListener(new OverScrollCheckListener() {
-//            @Override
-//            public int getContentViewScrollDirection() {
-//                return OverScrollLayout.SCROLL_VERTICAL;
-//            }
-//
-//            @Override
-//            public boolean canScrollUp() {
-//
-//                if (mRefreshlayout.isRefreshEnabled()) {
-//                    return true;
-//                } else {
-//                    // 如果不能够下拉刷新，并且到了顶部 就可以scrollUp
-//                    if (!mRvList.canScrollVertically(-1)) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean canScrollDown() {
-//                // 如果能够上拉加载，就不能够overScroll Down
-//                if (mRefreshlayout.isLoadMoreEnabled()) {
-//                    return true;
-//                } else {
-//                    getLastItemVisibility(mRvList);
-//                    // 如果不能够上拉加载，并且到了底部 就可以scrollUp
-//                    if (mIsLastVisiable && !mRvList.canScrollVertically(1)) {
-//                        onOverScrolled();
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean canScrollLeft() {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean canScrollRight() {
-//                return false;
-//            }
-//        });
     }
-
-//    private void getLastItemVisibility(RecyclerView recyclerView) {
-//        //得到当前显示的最后一个item的view
-//        View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1);
-//        if (lastChildView == null) {
-//            mIsLastVisiable = false;
-//            return;
-//        }
-//        //得到lastChildView的bottom坐标值
-//        int lastChildBottom = lastChildView.getBottom();
-//        //得到Recyclerview的底部坐标减去底部padding值，也就是显示内容最底部的坐标
-//        int recyclerBottom = recyclerView.getBottom() - recyclerView.getPaddingBottom();
-//        //通过这个lastChildView得到这个view当前的position值
-//        int lastPosition = recyclerView.getLayoutManager().getPosition(lastChildView);
-//        //判断lastChildView的bottom值跟recyclerBottom
-//        //判断lastPosition是不是最后一个position
-//        //如果两个条件都满足则说明是真正的滑动到了底部
-//        if (lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
-//            mIsLastVisiable = true;
-//        } else {
-//            mIsLastVisiable = false;
-//        }
-//    }
-
-//    protected void setOverScroll(Boolean topOverScroll, Boolean bottomOverScroll) {
-//        if (overscroll != null) {
-//            if (topOverScroll != null) {
-//                overscroll.setTopOverScrollEnable(topOverScroll);
-//            }
-//            if (bottomOverScroll != null) {
-//                overscroll.setBottomOverScrollEnable(bottomOverScroll);
-//            }
-//        }
-//    }
 
     /**
      * 刷新数据的方式：方式1：启用下拉列表动画，调用onRefresh接口刷新数据 方式2：不启用下拉列表动画，仅仅调用刷新数据的方法
@@ -365,16 +247,20 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     protected void initData() {
-        mRefreshlayout.setEnableRefresh(isRefreshEnable());
-        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
-        if (!isLayzLoad()) {
-            // 获取缓存数据
-            requestCacheData(mMaxId, false);
+        if (mPresenter != null) {
+            mRefreshlayout.setEnableRefresh(isRefreshEnable());
+            mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
+            if (!isLayzLoad()) {
+                // 获取缓存数据
+                requestCacheData(mMaxId, false);
+            }
         }
     }
 
     protected void requestCacheData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestCacheData(mMaxId, isLoadMore);
+        if (mPresenter != null) {
+            mPresenter.requestCacheData(mMaxId, isLoadMore);
+        }
     }
 
     @Override
@@ -417,7 +303,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new LinearLayoutManager(getContext());
+        return new LinearLayoutManager(mActivity);
     }
 
     /**
@@ -490,10 +376,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
 
     protected void setTopTipText(@NotNull String text) {
+        inflateTopView();
         mTvTopTip.setText(text);
     }
 
     protected void setTopTipHtmlText(@NotNull String text) {
+        inflateTopView();
         Spanned html = Html.fromHtml(text);
         mTvTopTip.setText(html);
     }
@@ -505,7 +393,26 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @attr ref android.R.styleable#View_visibility
      */
     protected void setTopTipVisible(int visibility) {
-        mFlTopTipContainer.setVisibility(visibility);
+        inflateTopView();
+        mTvTopTip.setVisibility(visibility);
+    }
+
+    /**
+     * 懒加载 top Tip
+     */
+    private void inflateTopView() {
+        if (mTvTopTip == null) {
+            ViewStub mTopTipStub = (ViewStub) mRootView.findViewById(R.id.stub_toptip);
+            mTvTopTip = (TextView) mTopTipStub.inflate();
+            RxView.clicks(mTvTopTip)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(new Action1<Void>() {
+                        @Override
+                        public void call(Void aVoid) {
+                            onTopTipClick();
+                        }
+                    });
+        }
     }
 
     /**
@@ -562,7 +469,45 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore);
+        if (mPresenter != null) {
+            mPresenter.requestNetData(maxId, isLoadMore);
+        }
+    }
+
+    /**
+     * 设置 emptyview 可见性
+     *
+     * @param visiable true 可见
+     */
+    public void setEmptyViewVisiable(boolean visiable) {
+        layzLoadEmptyView();
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(visiable ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void layzLoadEmptyView() {
+        if (mEmptyView == null) {
+            try {
+                ViewStub viewStub = (ViewStub) mRootView.findViewById(R.id.stub_empty_view);
+                mEmptyView = (EmptyView) viewStub.inflate();
+//                mEmptyView = (EmptyView) mRootView.findViewById(R.id.empty_view);
+                mEmptyView.setErrorImag(setEmptView());
+                mEmptyView.setNeedTextTip(false);
+                mEmptyView.setNeedClickLoadState(false);
+                RxView.clicks(mEmptyView)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                onEmptyViewClick();
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     /**
@@ -570,15 +515,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData() {
-        setEmptyView();
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
-    }
-
-    private void setEmptyView() {
-        if (mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
+        if (mHeaderAndFooterWrapper != null) {
+            setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
         }
     }
 
@@ -587,7 +526,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(List<T> datas) {
-        setEmptyView();
+        setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
@@ -596,9 +535,16 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     @Override
     public void refreshData(int index) {
-        setEmptyView();
+        setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
         int position = index + mHeaderAndFooterWrapper.getHeadersCount();
         mHeaderAndFooterWrapper.notifyItemChanged(position);
+    }
+
+    @Override
+    public void refreshRangeData(int start, int count) {
+        setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
+        int position = start + mHeaderAndFooterWrapper.getHeadersCount();
+        mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
     }
 
     @Override
@@ -622,7 +568,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
         // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
-        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.isTourist() && !mListDatas.isEmpty()) {
+        if (isUseTouristLoadLimit() && !TouristConfig.LIST_CAN_LOAD_MORE && mPresenter != null && mPresenter.isTourist() && !mListDatas.isEmpty()) {
             hideLoading();
             showLoginPop();
             return;
@@ -690,12 +636,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         closeLoadingView();
         // 刷新
         if (!isLoadMore && (mListDatas.size() == 0)) {
+            layzLoadEmptyView();
             mEmptyView.setErrorType(EmptyView.STATE_NETWORK_ERROR);
             mAdapter.notifyDataSetChanged();
             if (mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
-                mEmptyView.setVisibility(View.VISIBLE);
+                setEmptyViewVisiable(true);
             } else {
-                mEmptyView.setVisibility(View.GONE);
+                setEmptyViewVisiable(false);
                 showMessageNotSticky(getString(R.string.err_net_not_work));
             }
         } else { // 加载更多
@@ -710,37 +657,33 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param data       返回的数据
      * @param isLoadMore 是否是加载更多
      */
-    private void handleReceiveData(@NotNull List<T> data, boolean isLoadMore, boolean isFromCache) {
+    private void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
         // 刷新
         if (!isLoadMore) {
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setEnableLoadmore(true);
             }
             mListDatas.clear();
-            mTvNoMoredataText.setVisibility(View.GONE);
             if (data != null && data.size() != 0) {
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data, isLoadMore);
+                    mPresenter.insertOrUpdateData(data, false);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
                 mMaxId = getMaxId(data);
                 refreshData();
-                mEmptyView.setVisibility(View.GONE);
+
             } else {
+                layzLoadEmptyView();
                 mEmptyView.setErrorImag(setEmptView());
                 refreshData();
-                if (showEmptyViewWithNoData()) {
-                    mEmptyView.setVisibility(View.VISIBLE);
-                }
             }
         } else { // 加载更多
             if (data != null && data.size() != 0) {
-                mTvNoMoredataText.setVisibility(View.GONE);
                 if (!isFromCache) {
                     // 更新缓存
-                    mPresenter.insertOrUpdateData(data, isLoadMore);
+                    mPresenter.insertOrUpdateData(data, true);
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
@@ -751,15 +694,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
             mRefreshlayout.setEnableLoadmore(false);
-            // mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
-            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {
+            // mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE 当前数量大于一页显示数量时，显示加载更多
+            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE || showNoMoreData()) {
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    protected boolean showEmptyViewWithNoData() {
-        return mHeaderAndFooterWrapper.getHeadersCount() <= 0;
     }
 
     protected Long getMaxId(@NotNull List<T> data) {
@@ -781,13 +720,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         } else {
             mRefreshlayout.finishRefresh();
         }
-    }
-
-    /**
-     * 过度拉动了
-     */
-    protected void onOverScrolled() {
-
     }
 
     protected int getPagesize() {

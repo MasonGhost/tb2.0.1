@@ -180,18 +180,16 @@ public class PlaybackManager implements Playback.Callback {
     public void onError(String error) {
         if (mQueueManager.getCurrentQueueSize() == 1) {
             WindowUtils.hidePopupWindow();
-            updatePlaybackState(error);// 如果不止一首歌，那么久播放下一个
+            updatePlaybackState(error);
         } else {
-
-            EventBus.getDefault().post(orderType,
-                    EVENT_SEND_MUSIC_COMPLETE);
+            // 如果不止一首歌，那么久播放下一个
+            EventBus.getDefault().post(orderType,EVENT_SEND_MUSIC_COMPLETE);
             if (mQueueManager.skipQueuePosition(1)) {
                 handlePlayRequest();
                 mQueueManager.updateMetadata();
             } else {
                 handleStopRequest(null);
             }
-
 //            onCompletion();
         }
 

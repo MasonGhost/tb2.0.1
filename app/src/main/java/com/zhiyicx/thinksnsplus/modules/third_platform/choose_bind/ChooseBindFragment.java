@@ -74,6 +74,8 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
     private void initPopWindow() {
         if (mPopupWindow == null) {
             mPopupWindow = ChooseBindPopupWindow.Builder()
+                    .itemlStr(mActivity.getString(R.string.third_platform_complete_register))
+                    .item2Str(mActivity.getString(R.string.third_platform_bind_old_account))
                     .with(getActivity())
                     .alpha(0.8f)
                     .itemListener(this)

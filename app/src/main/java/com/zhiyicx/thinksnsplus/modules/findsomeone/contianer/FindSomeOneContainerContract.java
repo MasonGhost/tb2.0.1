@@ -16,14 +16,10 @@ import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract
  */
 public interface FindSomeOneContainerContract {
 
-    interface View extends IBaseView< Presenter> {
+    interface View extends IBaseView<Presenter> {
     }
 
-    interface Presenter extends IBaseTouristPresenter {
+    interface Presenter extends IBasePresenter {
         void updateUseLocation(LatLonPoint latLonPoint);
-    }
-
-    interface Repository {
-
     }
 }

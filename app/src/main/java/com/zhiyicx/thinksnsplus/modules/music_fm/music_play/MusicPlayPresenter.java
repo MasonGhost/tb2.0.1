@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -38,7 +39,7 @@ import javax.inject.Inject;
  * @Description
  */
 @FragmentScoped
-public class MusicPlayPresenter extends AppBasePresenter<MusicPlayContract.Repository,
+public class MusicPlayPresenter extends AppBasePresenter<
         MusicPlayContract.View> implements MusicPlayContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -49,9 +50,12 @@ public class MusicPlayPresenter extends AppBasePresenter<MusicPlayContract.Repos
     MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
 
     @Inject
-    public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
-            .View rootView) {
-        super(repository, rootView);
+    BaseMusicRepository mBaseMusicRepository;
+
+    @Inject
+    public MusicPlayPresenter(MusicPlayContract
+                                      .View rootView) {
+        super(rootView);
     }
 
     /**
@@ -126,10 +130,10 @@ public class MusicPlayPresenter extends AppBasePresenter<MusicPlayContract.Repos
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentMusic().getTitle());
         shareContent.setContent(mRootView.getCurrentMusic().getLyric());
-        shareContent.setUrl(ImageUtils.imagePathConvertV2(mRootView.getCurrentMusic().getStorage().getId(),0,0, ImageZipConfig.IMAGE_50_ZIP));
-        if (bitmap==null){
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon)));
-        }else{
+        shareContent.setUrl(ImageUtils.imagePathConvertV2(mRootView.getCurrentMusic().getStorage().getId(), 0, 0, ImageZipConfig.IMAGE_50_ZIP));
+        if (bitmap == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        } else {
             shareContent.setBitmap(bitmap);
         }
         mSharePolicy.setShareContent(shareContent);
@@ -143,7 +147,7 @@ public class MusicPlayPresenter extends AppBasePresenter<MusicPlayContract.Repos
 
     @Override
     public void onSuccess(Share share) {
-        mRepository.shareMusic(mRootView.getCurrentMusic().getId() + "");
+        mBaseMusicRepository.shareMusic(mRootView.getCurrentMusic().getId() + "");
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 
@@ -159,6 +163,6 @@ public class MusicPlayPresenter extends AppBasePresenter<MusicPlayContract.Repos
 
     @Override
     public void handleLike(boolean isLiked, String music_id) {
-        mRepository.handleLike(isLiked, music_id);
+        mBaseMusicRepository.handleLike(isLiked, music_id);
     }
 }

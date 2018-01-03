@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,9 +23,4 @@ public class WalletPresenterModule {
         return mView;
     }
 
-
-    @Provides
-    WalletContract.Repository provideWalletContractRepository(WalletRepository walletRepository) {
-        return walletRepository;
-    }
 }

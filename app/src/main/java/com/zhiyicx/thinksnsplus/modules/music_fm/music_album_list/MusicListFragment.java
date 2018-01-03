@@ -96,7 +96,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected boolean showNoMoreData() {
-        return mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE;
+        return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE;
     }
 
     @Override

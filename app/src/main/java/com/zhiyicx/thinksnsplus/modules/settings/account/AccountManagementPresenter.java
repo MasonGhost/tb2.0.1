@@ -28,7 +28,7 @@ import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.Choose
  * @contact email:648129313@qq.com
  */
 
-public class AccountManagementPresenter extends BasePresenter<AccountManagementContract.Repository, AccountManagementContract.View>
+public class AccountManagementPresenter extends BasePresenter<AccountManagementContract.View>
         implements AccountManagementContract.Presenter {
 
     @Inject
@@ -41,9 +41,9 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
     AuthRepository mAuthRepository;
 
     @Inject
-    public AccountManagementPresenter(AccountManagementContract.Repository repository,
-                                      AccountManagementContract.View rootView) {
-        super(repository, rootView);
+    public AccountManagementPresenter(
+            AccountManagementContract.View rootView) {
+        super(rootView);
     }
 
     /**

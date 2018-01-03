@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.collect.album;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ import rx.Observable;
  * @contact email:450127106@qq.com
  */
 
-public class CollectAlbumListRepository extends MusicRepository {
+public class CollectAlbumListRepository extends BaseMusicRepository {
     @Inject
     public CollectAlbumListRepository(ServiceManager serviceManager) {
         super(serviceManager);
@@ -30,6 +29,7 @@ public class CollectAlbumListRepository extends MusicRepository {
         return mMusicClient.getCollectMusicList(max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
     }
 
+    @Override
     public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {
         return mMusicAlbumListDao.getMyCollectAlbum();
     }

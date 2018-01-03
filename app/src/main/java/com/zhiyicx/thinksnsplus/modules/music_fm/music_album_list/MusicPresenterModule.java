@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,8 +23,4 @@ public class MusicPresenterModule {
         return view;
     }
 
-    @Provides
-    MusicContract.Repository provideMusicRepository(MusicRepository musicRepository) {
-        return musicRepository;
-    }
 }

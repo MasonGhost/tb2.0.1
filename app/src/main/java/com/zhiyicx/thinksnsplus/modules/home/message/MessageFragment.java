@@ -6,17 +6,18 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -33,6 +34,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -43,7 +48,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean>
         implements MessageContract.View, MessageAdapter.OnSwipItemClickListener,
-        OnUserInfoClickListener {
+        OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
     private View mHeaderView;
 
     @Inject
@@ -86,6 +91,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initView(rootView);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
+        ((BlankClickRecycleView) mRvList).setBlankListener(this);
     }
 
 
@@ -131,6 +137,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        }
+        if (mAdapter != null && ((MessageAdapter) mAdapter).hasItemOpend()) {
+            ((MessageAdapter) mAdapter).closeAllItems();
         }
     }
 
@@ -184,8 +193,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
         rlCritical = headerview.findViewById(R.id.rl_critical);
         RxView.clicks(rlCritical)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
+                        ((MessageAdapter) mAdapter).closeAllItems();
+                        return;
+                    }
                     toCommentList();
                     mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateCommnetItemData());
@@ -194,8 +207,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
         liked = headerview.findViewById(R.id.rl_liked);
         RxView.clicks(liked)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
+                        ((MessageAdapter) mAdapter).closeAllItems();
+                        return;
+                    }
                     toLikeList();
                     mPresenter.updateLikeItemData().setUnReadMessageNums(0);
                     updateCommnetItemData(mPresenter.updateLikeItemData());
@@ -205,8 +222,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(review)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
+                        ((MessageAdapter) mAdapter).closeAllItems();
+                        return;
+                    }
                     toReviewList();
-                    updateCommnetItemData(mPresenter.updateReviewItemData());
+                    updateReviewItemData(mPresenter.updateReviewItemData());
                 });
 
         tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
@@ -401,4 +422,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        onBlickClick();
+    }
+
+    @Override
+    public void onBlickClick() {
+        if (((MessageAdapter) mAdapter).hasItemOpend()) {
+            ((MessageAdapter) mAdapter).closeAllItems();
+        }
+    }
 }

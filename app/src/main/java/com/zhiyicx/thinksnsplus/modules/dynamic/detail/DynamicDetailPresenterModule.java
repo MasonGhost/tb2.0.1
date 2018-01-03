@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DynamicDetailRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class DynamicDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    public DynamicDetailContract.Repository provideDynamicDetailContractRepository(DynamicDetailRepository dynamicDetailRepository) {
-        return dynamicDetailRepository;
-    }
 }

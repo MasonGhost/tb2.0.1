@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -48,7 +49,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicComme
  * @Description
  */
 @FragmentScoped
-public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract.Repository,
+public class MusicCommentPresenter extends AppBasePresenter<
         MusicCommentContract.View> implements MusicCommentContract.Presenter {
 
     @Inject
@@ -62,13 +63,15 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
     @Inject
     CommentRepository mCommentRepository;
+    @Inject
+    BaseMusicRepository mBaseMusicRepository;
 
     private TCommonMetadataProvider mCommonMetadataProvider;
 
     @Inject
-    public MusicCommentPresenter(MusicCommentContract.Repository repository, MusicCommentContract
+    public MusicCommentPresenter(MusicCommentContract
             .View rootView) {
-        super(repository, rootView);
+        super( rootView);
         mCommonMetadataProvider = new TCommonMetadataProvider(null);
     }
 
@@ -321,7 +324,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
     @Override
     public void getMusicDetails(String music_id) {
-        Subscription subscribe = mRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
+        Subscription subscribe = mBaseMusicRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<MusicDetaisBean>() {
                     @Override
                     protected void onSuccess(MusicDetaisBean data) {
@@ -352,7 +355,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 
     @Override
     public void getMusicAblum(String id) {
-        Subscription subscribe = mRepository.getMusicAblum(id).compose(mSchedulersTransformer)
+        Subscription subscribe = mBaseMusicRepository.getMusicAblum(id).compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
@@ -395,7 +398,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 //                .set$$Comment_(data,new TCommonMetadataProvider(null))
 //                .handleComment();
 
-        mRepository.deleteComment((int) mRootView.getCommentId(), data.getId().intValue());
+        mBaseMusicRepository.deleteComment((int) mRootView.getCommentId(), data.getId().intValue());
         mRootView.getListDatas().remove(data);
         if (mRootView.getListDatas().size() == 0) {// 占位
             MusicCommentListBean emptyData = new MusicCommentListBean();

@@ -1,14 +1,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.youth.banner.Banner
             android:id="@+id/guide_banner"
@@ -31,7 +31,6 @@
             android:visibility="gone"/>
 
         <TextView
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -40,14 +39,15 @@
             android:text="@string/copyright"
             android:textColor="@color/copy_right_color"
             android:textSize="@dimen/copyright_text_size"
+            android:visibility="gone"
             />
     </FrameLayout>
 
     <ImageView
-        android:paddingTop="@dimen/spacing_big_large"
-        android:paddingBottom="@dimen/spacing_big_large"
-        android:background="@color/white"
-        android:src="@mipmap/pic_adver_logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/spacing_big_large"
+        android:paddingTop="@dimen/spacing_big_large"
+        android:src="@mipmap/pic_adver_logo"/>
 </LinearLayout>

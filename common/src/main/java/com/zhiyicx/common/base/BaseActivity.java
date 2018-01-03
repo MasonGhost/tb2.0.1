@@ -1,13 +1,10 @@
 package com.zhiyicx.common.base;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 
-import com.zhiyicx.common.R;
 import com.zhiyicx.common.base.i.IBaseActivity;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -18,8 +15,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import skin.support.app.SkinCompatActivity;
 
 /**
@@ -43,7 +38,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
      */
     public boolean mIsForeground;
 
-    @Nullable
+    @SuppressLint("ActivityLayoutNameNotPrefixed")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +55,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
         setContentView(getLayoutId());
         // 绑定到 butterknife
         mUnbinder = ButterKnife.bind(this);
-        initView();
+        initView(savedInstanceState);
         componentInject();// 依赖注入，必须放在initview后
         initData();
 
@@ -84,63 +79,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
      * @return
      */
     protected abstract int getLayoutId();
-//
-//    @Override
-//    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-//            View v = getCurrentFocus();
-//            if (isShouldHideKeyboard(v, ev)) {
-//                hideKeyboard(v.getWindowToken());
-//            }
-//        }
-//        return super.dispatchTouchEvent(ev);
-//    }
-//
-//    /**
-//     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
-//     *
-//     * @param v
-//     * @param event
-//     * @return
-//     */
-//    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-//        if (v != null && (v instanceof EditText)) {
-//            int[] l = {0, 0};
-//            v.getLocationInWindow(l);
-//            int left = l[0],
-//                    top = l[1],
-//                    bottom = top + v.getHeight(),
-//                    right = left + v.getWidth();
-//            if (event.getX() > left && event.getX() < right
-//                    && event.getY() > top && event.getY() < bottom) {
-//                // 点击EditText的事件，忽略它。
-//                return false;
-//            } else {
-//                return true;
-//            }
-//        }
-//        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
-//        return false;
-//    }
-//
-//    /**
-//     * 获取InputMethodManager，隐藏软键盘
-//     * @param token
-//     */
-//    private void hideKeyboard(IBinder token) {
-//        if (token != null) {
-//            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-//        }
-//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ActivityHandler.getInstance().removeActivity(this);
-        if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
+        if (mUnbinder != Unbinder.EMPTY) {
+            mUnbinder.unbind();
+        }
         if (useEventBus())// 如果要使用 eventbus 请将此方法返回 true
+        {
             EventBus.getDefault().unregister(this);
+        }
     }
 
     /**
@@ -159,8 +109,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
 
     /**
      * view 初始化
+     *
+     * @param savedInstanceState
      */
-    protected abstract void initView();
+    protected abstract void initView(Bundle savedInstanceState);
 
     /**
      * 数据初始化

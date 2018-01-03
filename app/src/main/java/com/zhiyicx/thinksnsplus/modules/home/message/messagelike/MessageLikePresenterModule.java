@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MessageLikeRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,9 +23,4 @@ public class MessageLikePresenterModule {
         return mView;
     }
 
-
-    @Provides
-    MessageLikeContract.Repository provideMessageLikeContractRepository(MessageLikeRepository messageLikeRepository) {
-        return messageLikeRepository;
-    }
 }

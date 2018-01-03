@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.music_album;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicPaidsAlbumListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class MyMusicAlbumListPresenterModule {
         return mView;
     }
 
-    @Provides
-    MyMusicAblumListContract.Repository provideMyMusicAblumListContractRepository(MusicPaidsAlbumListRepository repository) {
-        return repository;
-    }
 }

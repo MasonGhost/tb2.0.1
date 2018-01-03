@@ -36,7 +36,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class GalleryPresenter extends AppBasePresenter<ICommentRepository, GalleryConstract.View> implements GalleryConstract.Presenter {
+public class GalleryPresenter extends AppBasePresenter<GalleryConstract.View> implements GalleryConstract.Presenter {
 
     @Inject
     CommentRepository mCommentRepository;
@@ -49,7 +49,7 @@ public class GalleryPresenter extends AppBasePresenter<ICommentRepository, Galle
 
     @Inject
     public GalleryPresenter(GalleryConstract.View rootView) {
-        super(null, rootView);
+        super(rootView);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class GalleryPresenter extends AppBasePresenter<ICommentRepository, Galle
         DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
 
-        handleWalletBlance((long)amount)
+        handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(o -> mCommentRepository.paykNote(note))
@@ -77,7 +77,8 @@ public class GalleryPresenter extends AppBasePresenter<ICommentRepository, Galle
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
-                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id
+                                ());
                         walletBean.setBalance(walletBean.getBalance() - amount);
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);

@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QuestionCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
@@ -35,8 +36,8 @@ import static com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean.SEND_ING;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentContract.Repository, QuestionCommentContract.View>
-        implements QuestionCommentContract.Presenter{
+public class QuestionCommentPresenter extends AppBasePresenter< QuestionCommentContract.View>
+        implements QuestionCommentContract.Presenter {
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -44,13 +45,16 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
     QuestionCommentBeanGreenDaoImpl mQuestionCommentBeanGreenDao;
 
     @Inject
-    public QuestionCommentPresenter(QuestionCommentContract.Repository repository, QuestionCommentContract.View rootView) {
-        super(repository, rootView);
+    BaseQARepository mBaseQARepository;
+
+    @Inject
+    public QuestionCommentPresenter( QuestionCommentContract.View rootView) {
+        super( rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getQuestionCommentList(mRootView.getCurrentQuestion().getId(), maxId)
+        Subscription subscription = mBaseQARepository.getQuestionCommentList(mRootView.getCurrentQuestion().getId(), maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<QuestionCommentBean>>() {
 
@@ -64,7 +68,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-       mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -108,20 +112,21 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
         mRootView.getCurrentQuestion().setComments_count(mRootView.getCurrentQuestion().getComments_count() + 1);
         mRootView.updateCommentCount();
         mRootView.refreshData();
-        mRepository.sendComment(content, mRootView.getCurrentQuestion().getId(), reply_id,
+        mBaseQARepository.sendQuestionComment(content, mRootView.getCurrentQuestion().getId(), reply_id,
                 createComment.getComment_mark());
     }
 
     @Override
     public void deleteComment(long question_id, long answer_id, int position) {
         mRootView.setLoading(true, false, mContext.getString(R.string.bill_doing));
-        Subscription subscription = mRepository.deleteComment(question_id, answer_id)
+        Subscription subscription = mBaseQARepository.deleteQuestionComment(question_id, answer_id)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.getListDatas().remove(position);
+                        mRootView.getCurrentQuestion().setComments_count(mRootView.getCurrentQuestion().getComments_count() - 1);
                         mRootView.refreshData();
                         mRootView.setLoading(false, true, mContext.getString(R.string.qa_question_comment_delete_success));
                     }

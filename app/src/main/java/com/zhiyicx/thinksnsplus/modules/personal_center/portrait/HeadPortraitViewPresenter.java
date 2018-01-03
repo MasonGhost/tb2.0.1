@@ -35,7 +35,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewContract.Repository, HeadPortraitViewContract.View>
+public class HeadPortraitViewPresenter extends BasePresenter< HeadPortraitViewContract.View>
         implements HeadPortraitViewContract.Presenter {
 
     @Inject
@@ -48,8 +48,8 @@ public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewCon
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public HeadPortraitViewPresenter(HeadPortraitViewContract.Repository repository, HeadPortraitViewContract.View rootView) {
-        super(repository, rootView);
+    public HeadPortraitViewPresenter( HeadPortraitViewContract.View rootView) {
+        super( rootView);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AddTopicRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -27,8 +25,4 @@ public class AddTopicPresenterModule {
         return mView;
     }
 
-    @Provides
-    public AddTopicContract.Repository provideSendQuizContractRepository(AddTopicRepository repository){
-        return repository;
-    }
 }

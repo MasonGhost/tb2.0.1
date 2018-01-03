@@ -33,20 +33,6 @@ public interface GuideContract {
         void initAdvert();
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository {
-        /**
-         * 获取缓存大小
-         */
-        Observable<String> getDirCacheSize(Context context);
-
-        Observable<List<AllAdverListBean>> getLaunchAdverts();
-        Observable<List<RealAdvertListBean>> getRealAdverts(long space_id);
-        Observable<List<RealAdvertListBean>> getAllRealAdverts(List<Object> space_id);
-
-    }
 
     interface Presenter extends IBasePresenter {
 
@@ -57,6 +43,9 @@ public interface GuideContract {
         void getLaunchAdverts();
 
         List<RealAdvertListBean> getBootAdvert();
+
+        void initConfig();
+
     }
 
 }

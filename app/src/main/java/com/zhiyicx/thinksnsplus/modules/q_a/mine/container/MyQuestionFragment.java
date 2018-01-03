@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -59,9 +60,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
     @BindView(R.id.vp_fragment)
     ViewPager mVpFragment;
 
-    private List<Fragment> mFragments;
-
-    public MyQuestionFragment instance() {
+    public static MyQuestionFragment instance() {
         return new MyQuestionFragment();
     }
 
@@ -75,13 +74,13 @@ public class MyQuestionFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
-            mFragments = new ArrayList<>();
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(new MyPublishQuestionContainerFragment());
+            mFragmentList.add(new MyAnswerContainerFragment());
+            mFragmentList.add(new MyFollowContainerFragment());
         }
-        mFragments.add(new MyPublishQuestionContainerFragment());
-        mFragments.add(new MyAnswerContainerFragment());
-        mFragments.add(new MyFollowContainerFragment());
-        return mFragments;
+        return mFragmentList;
     }
 
     @Override
@@ -150,7 +149,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
         };
     }
 
-    private void initMagicIndicator(){
+    private void initMagicIndicator() {
         mMgIndicator.setBackgroundResource(R.drawable.shape_question_tool_bg);
         CommonNavigator commonNavigator = new CommonNavigator(getContext());
         commonNavigator.setAdapter(getCommonNavigatorAdapter(initTitles()));

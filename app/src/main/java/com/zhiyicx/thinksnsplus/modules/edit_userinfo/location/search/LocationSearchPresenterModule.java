@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishAddInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,9 +22,5 @@ public class LocationSearchPresenterModule {
         return mView;
     }
 
-    @Provides
-    LocationSearchContract.Repository providesLocationSearchContracttRepository() {
-        return new LocationSearchContract.Repository() {
-        };
-    }
+
 }

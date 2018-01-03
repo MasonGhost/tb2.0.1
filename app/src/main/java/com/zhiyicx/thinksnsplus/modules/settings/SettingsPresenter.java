@@ -7,6 +7,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommonRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import java.util.List;
@@ -24,21 +25,23 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class SettingsPresenter extends BasePresenter<SettingsContract.Repository, SettingsContract.View> implements SettingsContract.Presenter {
+public class SettingsPresenter extends BasePresenter<SettingsContract.View> implements SettingsContract.Presenter {
 
     @Inject
     AuthRepository mIAuthRepository;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    CommonRepository mCommonRepository;
 
     @Inject
-    public SettingsPresenter(SettingsContract.Repository repository, SettingsContract.View rootView) {
-        super(repository, rootView);
+    public SettingsPresenter(SettingsContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void getDirCacheSize() {
-        Subscription getCacheDirSizeSub = mRepository.getDirCacheSize()
+        Subscription getCacheDirSizeSub = mCommonRepository.getDirCacheSize()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(size -> {
@@ -54,7 +57,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
 
     @Override
     public void cleanCache() {
-        Subscription cleanCacheSub = mRepository.cleanCache()
+        Subscription cleanCacheSub = mCommonRepository.cleanCache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isDelete -> {

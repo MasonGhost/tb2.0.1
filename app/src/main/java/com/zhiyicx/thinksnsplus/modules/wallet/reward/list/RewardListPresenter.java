@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,13 +24,15 @@ import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RewardListPresenter extends AppBasePresenter<RewardListContract.Repository, RewardListContract.View> implements RewardListContract
+public class RewardListPresenter extends AppBasePresenter< RewardListContract.View> implements RewardListContract
         .Presenter {
 
+    @Inject
+    BaseRewardRepository mRewardRepository;
 
     @Inject
-    public RewardListPresenter(RewardListContract.Repository repository, RewardListContract.View rootView) {
-        super(repository, rootView);
+    public RewardListPresenter( RewardListContract.View rootView) {
+        super( rootView);
     }
 
     /**
@@ -46,17 +49,17 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
         }
         switch (mRootView.getCurrentType()) {
             case INFO:
-                getRewardUsers(mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null,
+                getRewardUsers(mRewardRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null,
                         null)
                         , isLoadMore);
                 break;
 
             case DYNAMIC:
-                getRewardUsers(mRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null, null)
+                getRewardUsers(mRewardRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null, null)
                         , isLoadMore);
                 break;
             case QA_ANSWER:
-                getRewardUsers(mRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, since, null)
+                getRewardUsers(mRewardRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_PAGE_SIZE, since, null)
                         , isLoadMore);
             default:
 

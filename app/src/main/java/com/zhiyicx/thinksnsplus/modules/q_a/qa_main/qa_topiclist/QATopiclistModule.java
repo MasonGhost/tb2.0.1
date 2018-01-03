@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.QATopicListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class QATopiclistModule {
         return mView;
     }
 
-    @Provides
-    QATopicListConstact.Repository provideQATopicListConstactRepository(QATopicListRepository repository) {
-        return repository;
-    }
 }

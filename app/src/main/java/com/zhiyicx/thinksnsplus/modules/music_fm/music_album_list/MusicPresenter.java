@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
@@ -28,7 +29,7 @@ import rx.Subscription;
  * @Description
  */
 @FragmentScoped
-public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, MusicContract.View>
+public class MusicPresenter extends AppBasePresenter<MusicContract.View>
         implements MusicContract.Presenter {
 
     @Inject
@@ -37,10 +38,12 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     CommentRepository mCommentRepository;
+    @Inject
+    BaseMusicRepository mBaseMusicRepository;
 
     @Inject
-    public MusicPresenter(MusicContract.Repository repository, MusicContract.View rootView) {
-        super(repository, rootView);
+    public MusicPresenter(MusicContract.View rootView) {
+        super(rootView);
     }
 
     /**
@@ -53,7 +56,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
     @Override
     public void payNote(int position, int note) {
-        if (handleTouristControl()){
+        if (handleTouristControl()) {
             return;
         }
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -62,7 +65,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
             balance = walletBean.getBalance();
         }
         double amount;
-            amount = mRootView.getListDatas().get(position).getPaid_node().getAmount();
+        amount = mRootView.getListDatas().get(position).getPaid_node().getAmount();
 
         if (balance < amount) {
             mRootView.goRecharge(WalletActivity.class);
@@ -101,7 +104,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mRepository.getMusicAblumList(maxId)
+        Subscription subscription = mBaseMusicRepository.getMusicAblumList(maxId)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<MusicAlbumListBean>>() {
                     @Override
@@ -111,7 +114,7 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.onResponseError(null,false);
+                        mRootView.onResponseError(null, false);
                     }
 
                     @Override
@@ -126,21 +129,21 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess( mRepository.getMusicAlbumFromCache(maxId),isLoadMore);
+        mRootView.onCacheResponseSuccess(mBaseMusicRepository.getMusicAlbumFromCache(maxId), isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
-        if (data.isEmpty()){
+        if (data.isEmpty()) {
             mMusicAlbumListDao.saveMultiData(data);
-        }else{
+        } else {
             mMusicAlbumListDao.clearTable();
         }
         return false;
     }
 
     @Override
-    public void updateOneMusic(MusicAlbumListBean albumListBean){
+    public void updateOneMusic(MusicAlbumListBean albumListBean) {
         mMusicAlbumListDao.updateSingleData(albumListBean);
     }
 }

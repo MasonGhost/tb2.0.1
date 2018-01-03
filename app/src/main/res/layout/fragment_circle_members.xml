@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/fragment_search_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/fragment_search_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:src="@mipmap/topbar_back"/>
+
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+            android:id="@+id/fragment_info_search_edittext"
+            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_toEndOf="@+id/fragment_search_back"
+            android:layout_toLeftOf="@+id/fragment_search_cancle"
+            android:layout_toRightOf="@+id/fragment_search_back"
+            android:layout_toStartOf="@+id/fragment_search_cancle"
+            android:background="@drawable/info_search_bg"
+            android:drawablePadding="@dimen/spacing_mid_small"
+            android:drawableLeft="@mipmap/search_icon_search"
+            android:imeOptions="actionSearch"
+            android:paddingEnd="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:paddingStart="@dimen/spacing_mid"
+            android:textColor="@color/normal_for_assist_text"
+            android:textColorHint="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"/>
+
+        <TextView
+            android:id="@+id/fragment_search_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:clickable="false"
+            android:gravity="center"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:text="@string/info_cancle"
+            android:textColor="@color/important_for_theme"
+            android:textSize="@dimen/size_sub_title"
+            android:visibility="visible"/>
+
+        <View
+            android:layout_alignParentBottom="true"
+            style="@style/style_divider_horizontal_light"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/fragment_tslist"/>
+
+</LinearLayout>

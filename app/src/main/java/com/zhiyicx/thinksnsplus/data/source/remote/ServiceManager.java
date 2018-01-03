@@ -30,6 +30,7 @@ public class ServiceManager {
     private WalletClient mWalletClient;
     private QAClient mQAClient;
     private RankClient mRankClien;
+    private CircleClient mCircleClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -52,7 +53,8 @@ public class ServiceManager {
             , WalletClient walletClient
             , QAClient qAClient
             , CommonCommentClient commonCommentClient
-            , RankClient rankClient) {
+            , RankClient rankClient
+            , CircleClient circleClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mQAClient = qAClient;
@@ -68,6 +70,7 @@ public class ServiceManager {
         this.mCommonCommentClient = commonCommentClient;
         this.mWalletClient = walletClient;
         this.mRankClien = rankClient;
+        this.mCircleClient = circleClient;
     }
 
     public CommonClient getCommonClient() {
@@ -128,5 +131,9 @@ public class ServiceManager {
 
     public RankClient getRankClien() {
         return mRankClien;
+    }
+
+    public CircleClient getCircleClient() {
+        return mCircleClient;
     }
 }

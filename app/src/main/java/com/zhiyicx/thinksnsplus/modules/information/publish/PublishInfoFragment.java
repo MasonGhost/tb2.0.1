@@ -184,13 +184,17 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
-        mToolbarRight.setEnabled(false);
+        checkNextBtEnabel(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
         RelativeLayout.LayoutParams layout = (RelativeLayout.LayoutParams) mImPic.getLayoutParams();
         layout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         mImPic.setLayoutParams(layout);
         mImSetting.setVisibility(View.GONE);
+    }
+
+    private void checkNextBtEnabel(boolean enabled) {
+        mToolbarRight.setEnabled(enabled && !TextUtils.isEmpty(mEtInfoTitle.getInputContent()));
     }
 
     @Override
@@ -228,10 +232,12 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
         mPbImageUpload.setVisibility(View.VISIBLE);
         String path = photoList.get(0).getImgUrl();
-        mPresenter.uploadPic(path, "", true, 0, 0);
+        if (mPresenter != null) {
+            mPresenter.uploadPic(path, "", true, 0, 0);
+        }
         mSubsamplingScaleImageView = mRicheTest.insertImage(path, mRicheTest.getWidth());
         mPicTag++;
-        LogUtils.d("uploadPicSuccess::"+mPicTag);
+        LogUtils.d("uploadPicSuccess::" + mPicTag);
     }
 
     @Override
@@ -247,7 +253,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void onPareseBodyEnd(boolean hasContent) {
-        mToolbarRight.setEnabled(hasContent);
+        checkNextBtEnabel(hasContent);
         mRicheTest.setHasContent(hasContent);
     }
 
@@ -289,12 +295,12 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (mPicTag > 0) {
             mPicTag--;
         }
-        LogUtils.d("onImageDelete::"+mPicTag);
+        LogUtils.d("onImageDelete::" + mPicTag);
     }
 
     @Override
     public void onContentChange(boolean hasContent) {
-        mToolbarRight.setEnabled(hasContent);
+        checkNextBtEnabel(hasContent);
     }
 
     /**
@@ -338,10 +344,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 mRicheTest.hideKeyBoard();
                 break;
             case R.id.im_pic:
+                mRicheTest.hideKeyBoard();
                 initPhotoPopupWindow();
                 break;
             case R.id.im_setting:
                 break;
+
+                default:
         }
     }
 
@@ -372,7 +381,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         mPbImageUpload.setOnTouchListener((v, event) -> true);
 
         mEtInfoTitle.setContentChangedListener(s ->
-                mToolbarRight.setEnabled(s.length() > 0 && mRicheTest.isHasContent())
+                checkNextBtEnabel(s.length() > 0 && mRicheTest.isHasContent())
         );
         mRicheTest.setOnContentEmptyListener(this);
     }

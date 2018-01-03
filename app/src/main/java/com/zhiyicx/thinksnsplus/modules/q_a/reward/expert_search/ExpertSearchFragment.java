@@ -72,6 +72,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         return fragment;
     }
 
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

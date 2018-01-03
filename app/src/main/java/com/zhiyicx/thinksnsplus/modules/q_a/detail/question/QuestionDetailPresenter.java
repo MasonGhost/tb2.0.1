@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_QUE
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailContract.Repository, QuestionDetailContract.View>
+public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailContract.View>
         implements QuestionDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -67,11 +68,15 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    BaseQARepository mBaseQARepository;
+    
     private SystemConfigBean mSystemConfigBean;
+    
 
     @Inject
-    public QuestionDetailPresenter(QuestionDetailContract.Repository repository, QuestionDetailContract.View rootView) {
-        super(repository, rootView);
+    public QuestionDetailPresenter(QuestionDetailContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void saveQuestion(QAPublishBean qaPublishBean) {
-        mRepository.saveQuestion(qaPublishBean);
+        mBaseQARepository.saveQuestion(qaPublishBean);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 //        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
 //
 //        } else {
-//            Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
+//            Subscription subscription = mBaseQARepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
 ////                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
 //                    mRootView.getCurrentOrderType(), maxId.intValue())
 //                    .compose(mSchedulersTransformer)
@@ -138,8 +143,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void getQuestionDetail(String questionId, Long maxId, boolean isLoadMore) {
-        Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
-                mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
+        Subscription subscription = Observable.zip(mBaseQARepository.getQuestionDetail(questionId),
+                mBaseQARepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
                 (qaListInfoBean, answerInfoBeanList) -> {
                     qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(maxId, qaListInfoBean, answerInfoBeanList));
                     mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
@@ -191,7 +196,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
             mRootView.getCurrentQuestion().setWatchers_count(mRootView.getCurrentQuestion().getWatchers_count() - 1);
         }
         mRootView.updateFollowState();
-        mRepository.handleQuestionFollowState(questionId, isFollowed);
+        mBaseQARepository.handleQuestionFollowState(questionId, isFollowed);
     }
 
     @Override
@@ -216,7 +221,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void deleteQuestion(Long question_id) {
         mRootView.handleLoading(true, false, mContext.getString(R.string.info_deleting));
-        Subscription subscription = mRepository.deleteQuestion(question_id)
+        Subscription subscription = mBaseQARepository.deleteQuestion(question_id)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
@@ -242,7 +247,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getExcellentQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
-                .flatMap(o -> mRepository.applyForExcellent(question_id))
+                .flatMap(o -> mBaseQARepository.applyForExcellent(question_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -273,7 +278,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public void handleAnswerLike(boolean isLiked, long answer_id, AnswerInfoBean answerInfoBean) {
         answerInfoBean.setLiked(isLiked);
         mAnswerInfoListBeanGreenDao.insertOrReplace(answerInfoBean);
-        mRepository.handleAnswerLike(isLiked, answer_id);
+        mBaseQARepository.handleAnswerLike(isLiked, answer_id);
     }
 
     @Override
@@ -282,7 +287,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.pay_alert_ing)))
-                .flatMap(o -> mRepository.payForOnlook(answer_id))
+                .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {

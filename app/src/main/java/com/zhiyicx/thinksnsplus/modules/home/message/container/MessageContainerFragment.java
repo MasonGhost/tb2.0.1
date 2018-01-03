@@ -59,14 +59,13 @@ public class MessageContainerFragment extends TSViewPagerFragment {
 
     private CommonNavigatorAdapter mCommonNavigatorAdapter;
     private List<BadgePagerTitleView> mBadgePagerTitleViews;
-    List<Fragment> mFragments;
     /**
      * 0-消息 1=通知
      */
     private boolean mIsMessageTipShow;
     private boolean mIsNotificationTipShow;
 
-    public MessageContainerFragment instance() {
+    public static MessageContainerFragment instance() {
         return new MessageContainerFragment();
     }
 
@@ -93,12 +92,13 @@ public class MessageContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
-            mFragments = new ArrayList<>();
+        if (mFragmentList == null) {
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(MessageFragment.newInstance());
+            mFragmentList.add(NotificationFragment.instance());
         }
-        mFragments.add(MessageFragment.newInstance());
-        mFragments.add(new NotificationFragment().instance());
-        return mFragments;
+
+        return mFragmentList;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
      * @param position 位置 0-消息 1=通知
      */
     public void setNewMessageNoticeState(boolean isShow, int position) {
-        if (position < 0 && position > 1) {
+        if (position < 0 || position > 1) {
             return;
         }
         switch (position) {
@@ -217,5 +217,17 @@ public class MessageContainerFragment extends TSViewPagerFragment {
                 return linePagerIndicator;
             }
         };
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (!isVisibleToUser) {
+            try {
+                ((MessageFragment) mFragmentList.get(0)).setUserVisibleHint(isVisibleToUser);
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

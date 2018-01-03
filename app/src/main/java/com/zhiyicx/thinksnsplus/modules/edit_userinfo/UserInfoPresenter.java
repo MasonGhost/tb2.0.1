@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
@@ -36,8 +37,7 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository,
-        UserInfoContract.View> implements UserInfoContract.Presenter {
+public class UserInfoPresenter extends BasePresenter<UserInfoContract.View> implements UserInfoContract.Presenter {
 
     @Inject
     UpLoadRepository mIUploadRepository;
@@ -49,9 +49,10 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
 
     @Inject
-    public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View
-            rootView) {
-        super(repository, rootView);
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    public UserInfoPresenter(UserInfoContract.View rootView) {
+        super(rootView);
 
     }
 
@@ -68,7 +69,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth()
+                                .getUser_id());
                         currentLoginUserInfo.setAvatar(filePath);
                         mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
                         ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
@@ -77,7 +79,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadHeadIconState(-1,message);
+                        mRootView.setUpLoadHeadIconState(-1, message);
                     }
 
                     @Override
@@ -98,7 +100,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         if (!isHeadIcon) {
             mRootView.setChangeUserInfoState(0, "");
         }
-        Subscription subscription = mRepository.changeUserInfo(userInfos)
+        Subscription subscription = mUserInfoRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<Object>() {
@@ -143,27 +145,27 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         List<UserTagBean> datas = mUserTagBeanGreenDao.getCurrentUsertags();
         if (datas.isEmpty()) {
             getCurrentUserTagsFromNet();
-        }else {
+        } else {
             mRootView.updateTags(datas);
         }
 
     }
 
     private void getCurrentUserTagsFromNet() {
-        Subscription sub=  mRepository.getCurrentUserTags()
-                  .map(userTagBeens -> {
-                      for (UserTagBean userTagBean : userTagBeens) {
-                          userTagBean.setMine_has(true);
-                      }
-                      mUserTagBeanGreenDao.saveMultiData(userTagBeens);
-                      return userTagBeens;
-                  })
-                  .subscribe(new BaseSubscribeForV2<List<UserTagBean>>() {
-                      @Override
-                      protected void onSuccess(List<UserTagBean> data) {
-                          mRootView.updateTags(data);
-                      }
-                  });
+        Subscription sub = mUserInfoRepository.getCurrentUserTags()
+                .map(userTagBeens -> {
+                    for (UserTagBean userTagBean : userTagBeens) {
+                        userTagBean.setMine_has(true);
+                    }
+                    mUserTagBeanGreenDao.saveMultiData(userTagBeens);
+                    return userTagBeens;
+                })
+                .subscribe(new BaseSubscribeForV2<List<UserTagBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserTagBean> data) {
+                        mRootView.updateTags(data);
+                    }
+                });
         addSubscrebe(sub);
     }
 
@@ -241,7 +243,8 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      * @return
      */
     private boolean checkUsername(String name) {
-        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources().getInteger(R.integer.username_max_length))) {
+        if (!RegexUtils.isUsernameLength(name, mContext.getResources().getInteger(R.integer.username_min_length), mContext.getResources()
+                .getInteger(R.integer.username_max_length))) {
             mRootView.setChangeUserInfoState(-1, mContext.getString(R.string.username_toast_hint));
             return false;
         }

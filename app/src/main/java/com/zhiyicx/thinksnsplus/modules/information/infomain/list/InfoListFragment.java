@@ -23,6 +23,9 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -33,6 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
@@ -76,6 +83,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    protected boolean needMusicWindowView() {
+        return false;
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(getActivity(), HomeActivity.class));
@@ -101,11 +113,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         } else {
             mInfoBannerHeader.getInfoBannerHeader().setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    protected boolean showEmptyViewWithNoData() {
-        return true;
     }
 
     @Override
@@ -150,15 +157,44 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected void initData() {
-        DaggerInfoListComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .infoListPresenterModule(new InfoListPresenterModule(this))
-                .build()
-                .inject(this);
+    protected void initView(View rootView) {
+        super.initView(rootView);
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
-        initAdvert();
-        super.initData();
+
+        Observable.create(subscriber -> {
+            DaggerInfoListComponent.builder()
+                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                    .infoListPresenterModule(new InfoListPresenterModule(InfoListFragment.this))
+                    .build()
+                    .inject(InfoListFragment.this);
+
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        initData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
+    }
+
+    @Override
+    protected void initData() {
+        if (mPresenter != null) {
+            initAdvert();
+            super.initData();
+        }
     }
 
     private void initAdvert() {

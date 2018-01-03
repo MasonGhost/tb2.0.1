@@ -327,7 +327,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), 0, 0,
-                                    ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
+                                    ImageZipConfig.IMAGE_60_ZIP, AppApplication.getTOKEN());
                         }
                     }
                             .requestGlideUrl())
@@ -336,7 +336,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
             // // 不从网络读取原图(cacheOnlyStreamLoader) 尝试从缓存获取原图
             DrawableRequestBuilder requestBuilder = Glide.with(context)
                     .using(cacheOnlyStreamLoader)
-                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), 0, 0, ImageZipConfig.IMAGE_70_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h,
+                            ImageZipConfig.IMAGE_100_ZIP))
                     // 加载缩略图，上一个页面已经缓存好了，直接读取
                     .thumbnail(thumbnailBuilder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -366,7 +367,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             DrawableRequestBuilder builder = Glide.with(context)
                                     .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), canLook ? w : 0, canLook ? h : 0,
-                                            ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()))
+                                            ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
@@ -416,7 +417,9 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             if (imageBean.getWidth() * imageBean.getHeight() != 0) {
                                 builder.override(w, h);
                             }
-                            builder.into(mIvPager);
+                            if (mIvPager != null) {
+                                builder.into(mIvPager);
+                            }
                             return false;
                         }
 
@@ -628,10 +631,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     if (mSavingTSnackbar != null) {
                         mSavingTSnackbar.dismiss();
                     }
-                    TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
-                            .setPromptThemBackground(Prompt.SUCCESS)
-                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
-                            .show();
+                  showSnackSuccessMessage(result);
                 });
     }
 
@@ -724,13 +724,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio()),
+                                .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter
+                                .getRatio()),
                         mPresenter.getGoldName()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll().getToll_money(), mPresenter.getRatio())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(mImageBean.getToll()
+                        .getToll_money(), mPresenter.getRatio())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

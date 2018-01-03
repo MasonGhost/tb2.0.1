@@ -53,6 +53,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_MY_COLLECTION;
+import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_USERS;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 
@@ -65,6 +66,19 @@ import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
  */
 
 public class BaseDynamicRepository implements IDynamicReppsitory {
+
+
+    public enum MyDynamicTypeEnum {
+        ALL(null),
+        PAID("paid"),
+        PINNED("pinned");
+        public String value;
+
+        MyDynamicTypeEnum(String value) {
+            this.value = value;
+        }
+    }
+
 
     protected DynamicClient mDynamicClient;
 
@@ -133,7 +147,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .subscribe(aBoolean -> {
                     BackgroundRequestTaskBean backgroundRequestTaskBean;
                     HashMap<String, Object> params = new HashMap<>();
-//                    params.put("feed_id", feed_id);
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig
@@ -651,5 +664,41 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
+    }
+
+    /**
+     * 动态置顶
+     *
+     * @param feed_id
+     * @param amount
+     * @param day
+     * @return
+     */
+    @Override
+    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, double amount, int day) {
+        return mDynamicClient.stickTopDynamic(feed_id, (int) amount, day)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Integer>> commentStickTop(long feed_id, long comment_id, double amount, int day) {
+        return mDynamicClient.stickTopDynamicComment(feed_id, comment_id, (int) amount, day)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    @Override
+    public Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount) {
+        return mDynamicClient.setDynamicCommentToll(feed_id, amount)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen) {
+        return getDynamicListV2(DYNAMIC_TYPE_USERS, max_id, user_id, false, screen);
     }
 }

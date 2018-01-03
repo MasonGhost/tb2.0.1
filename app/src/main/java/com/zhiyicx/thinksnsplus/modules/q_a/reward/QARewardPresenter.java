@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
@@ -30,7 +31,7 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class QARewardPresenter extends AppBasePresenter<QARewardContract.RepositoryPublish, QARewardContract.View>
+public class QARewardPresenter extends AppBasePresenter<QARewardContract.View>
         implements QARewardContract.Presenter {
 
     @Inject
@@ -39,10 +40,12 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public QARewardPresenter(QARewardContract.RepositoryPublish repository, QARewardContract.View rootView) {
-        super(repository, rootView);
+    public QARewardPresenter( QARewardContract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -50,8 +53,8 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
         Subscription subscribe = handleWalletBlance((long) qaPublishBean.getAmount())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.publish_doing)))
-                .flatMap(o -> qaPublishBean.isHasAgainEdite() ? mRepository.updateQuestion(qaPublishBean)
-                        : mRepository.publishQuestion(qaPublishBean))
+                .flatMap(o -> qaPublishBean.isHasAgainEdite() ? mBaseQARepository.updateQuestion(qaPublishBean)
+                        : mBaseQARepository.publishQuestion(qaPublishBean))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -75,9 +78,9 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                                 mRootView.showSnackErrorMessage(e.toString());
                             }
                         }
-                        mRepository.deleteQuestion(qaPublishBean);
+                        mBaseQARepository.deleteQuestion(qaPublishBean);
                         qaPublishBean.setMark(qaPublishBean.getMark() - 1);
-                        mRepository.deleteQuestion(qaPublishBean);
+                        mBaseQARepository.deleteQuestion(qaPublishBean);
                     }
 
                     @Override
@@ -92,7 +95,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                         if (isBalanceCheck(throwable)) {
                             return;
                         }
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.bill_doing_fialed));
                     }
                 });
         addSubscrebe(subscribe);
@@ -112,7 +115,7 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                             return Observable.error(new RuntimeException(""));
                         }
                     }
-                    return mRepository.resetReward(question_id, amount);
+                    return mBaseQARepository.resetReward(question_id, amount);
                 }, throwable -> {
                     mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     return null;
@@ -141,11 +144,11 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
 
     @Override
     public QAPublishBean getDraftQuestion(long qestion_mark) {
-        return mRepository.getDraftQuestion(qestion_mark);
+        return mBaseQARepository.getDraftQuestion(qestion_mark);
     }
 
     @Override
     public void saveQuestion(QAPublishBean qestion) {
-        mRepository.saveQuestion(qestion);
+        mBaseQARepository.saveQuestion(qestion);
     }
 }

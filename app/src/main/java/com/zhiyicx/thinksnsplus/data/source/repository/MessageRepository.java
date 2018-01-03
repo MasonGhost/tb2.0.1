@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMessageRepository;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageContract;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class MessageRepository implements MessageContract.Repository {
+public class MessageRepository implements IMessageRepository {
     public static final int MAX_RETRY_COUNTS = 3;//重试次数
     public static final int RETRY_DELAY_TIME = 5;// 重试间隔时间,单位 s
     private ChatInfoClient mChatInfoClient;
@@ -279,7 +280,8 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<Object> makeNotificationReaded(String notificationId) {
         return mUserInfoClient.makeNotificationReaded(notificationId)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
@@ -288,6 +290,7 @@ public class MessageRepository implements MessageContract.Repository {
     @Override
     public Observable<Object> makeNotificationAllReaded() {
         return mUserInfoClient.makeNotificationAllReaded()
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

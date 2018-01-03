@@ -40,8 +40,4 @@ public interface RewardListContract {
 
     }
 
-    interface Repository extends IRewardRepository {
-
-
-    }
 }

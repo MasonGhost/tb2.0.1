@@ -26,12 +26,8 @@ public interface ExpertSearchContract {
     interface Presenter extends ITSListPresenter<ExpertBean> {
         void requestNetData(Long maxId, int topic_id, boolean isLoadMore);
 
-        void requestNetData(int size, String topic_ids,String keyword ,boolean isLoadMore);
+        void requestNetData(int size, String topic_ids, String keyword, boolean isLoadMore);
 
         void handleFollowUser(UserInfoBean userInfoBean);
-    }
-
-    interface Repository extends IBasePublishQuestionRepository {
-        Observable<List<ExpertBean>> getExpertList(int size,String topic_ids,String keyword);
     }
 }

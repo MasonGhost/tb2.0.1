@@ -31,23 +31,20 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.Repository,
-        FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
+public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
     public static final int DEFAULT_PAGE_SIZE = 15;
-    @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneListPresenter(FindSomeOneListContract.Repository repository,
-                                    FindSomeOneListContract.View rootView) {
-        super(repository, rootView);
+    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView
+            , FollowFansBeanGreenDaoImpl followFansBeanGreenDao
+            , UserInfoRepository userInfoRepository) {
+        super(rootView);
+        mFollowFansBeanGreenDao = followFansBeanGreenDao;
+        mUserInfoRepository = userInfoRepository;
     }
 
     @Override
@@ -62,7 +59,7 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
 
     }
 
@@ -83,10 +80,11 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
             case TYPE_NEW:
                 observable = mUserInfoRepository.getNewUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
-                // 后台推荐 + 用户 tag 推荐 ，
+            // 后台推荐 + 用户 tag 推荐 ，
             case TYPE_RECOMMENT:
                 if (!isLoadMore) {
-                    observable = Observable.zip(mUserInfoRepository.getRecommendUserInfo(), mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue()), (userInfoBeen, userInfoBeen2) -> {
+                    observable = Observable.zip(mUserInfoRepository.getRecommendUserInfo(), mUserInfoRepository.getUsersRecommentByTag
+                            (DEFAULT_PAGE_SIZE, maxId.intValue()), (userInfoBeen, userInfoBeen2) -> {
                         mRootView.setRecommentUserSize(userInfoBeen.size());
                         userInfoBeen.addAll(userInfoBeen2);
                         return userInfoBeen;
@@ -100,7 +98,7 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
             case TYPE_NEARBY:
                 observable = mUserInfoRepository.getHotUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
-                default:
+            default:
         }
 
         Subscription subscription = observable

@@ -29,28 +29,6 @@ public interface SettingsContract {
         void getAppNewVersionSuccess(List<AppVersionBean> data);
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository {
-        /**
-         * 获取缓存大小
-         */
-        Observable<String> getDirCacheSize();
-
-        /**
-         * 清理缓存
-         */
-        Observable<Boolean> cleanCache();
-
-        /**
-         * 检查更新
-         *
-         * @return update info
-         */
-        Observable<UpdateInfoBean> checkUpdate();
-    }
-
     interface Presenter extends IBasePresenter {
         /**
          * 获取缓存大小

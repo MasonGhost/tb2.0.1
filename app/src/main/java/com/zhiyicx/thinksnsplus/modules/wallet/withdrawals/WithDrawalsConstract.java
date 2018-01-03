@@ -30,7 +30,4 @@ public interface WithDrawalsConstract {
         void withdraw(double value,String type,String account);
     }
 
-    interface Repository{
-        Observable<WithdrawResultBean> withdraw(double value,String type,String account);
-    }
 }

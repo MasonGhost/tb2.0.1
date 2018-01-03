@@ -21,16 +21,26 @@
         <!--右边文字-->
         <attr name="rightText" format="reference|string"/>
         <!--左边文字颜色-->
-        <attr name="leftTextColor" format="reference|color"/>
+        <attr name="leftTextColor" format="color|reference"/>
         <!--右边文字颜色-->
-        <attr name="rightTextColor" format="reference|color"/>
+        <attr name="rightTextColor" format="color|reference"/>
+        <!--左边文字大小-->
+        <attr name="leftTextSize" format="reference|dimension"/>
+        <!--右边文字大小-->
+        <attr name="rightTextSize" format="reference|dimension"/>
         <!--是否显示分割线-->
         <attr name="showLine" format="reference|boolean"/>
+        <!--线的颜色-->
+        <attr name="lineColor" format="color"/>
+        <!--线的背景-->
+        <attr name="lineBg" format="reference"/>
         <!--分割线左右间距-->
         <attr name="dividerLeftMargin" format="reference|dimension"/>
         <attr name="dividerRightMargin" format="reference|dimension"/>
         <!--左边文字左边的间距-->
         <attr name="leftTextLeftPadding" format="reference|dimension"/>
+        <!--背景色-->
+        <attr name="bgColor" format="reference"/>
     </declare-styleable>
     <!--组合输入框和按钮文字-->
     <declare-styleable name="inputLimitView">

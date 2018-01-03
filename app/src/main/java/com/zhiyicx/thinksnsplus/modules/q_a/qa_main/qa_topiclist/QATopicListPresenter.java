@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QASearchBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -29,17 +30,19 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.Repository, QATopicListConstact.View>
+public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.View>
         implements QATopicListConstact.Presenter {
 
     @Inject
     QASearchBeanGreenDaoImpl mQASearchBeanGreenDao;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     private Subscription all;
 
     @Inject
-    public QATopicListPresenter(QATopicListConstact.Repository repository, QATopicListConstact.View rootView) {
-        super(repository, rootView);
+    public QATopicListPresenter(QATopicListConstact.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
 
     @Override
     public void requestNetData(String type, Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getFollowTopic(type, maxId).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+        Subscription subscribe = mBaseQARepository.getFollowTopic(type, maxId).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -84,7 +87,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
             mRootView.hideRefreshState(isLoadMore);
             return;
         }
-        all = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+        all = mBaseQARepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
                 saveSearhDatq(name);
@@ -109,13 +112,13 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
     @Override
     public void handleTopicFollowState(int position, String topic_id, boolean isFollow) {
         mRootView.getListDatas().get(position).setHas_follow(!isFollow);
-        mRepository.handleTopicFollowState(topic_id, !isFollow);
+        mBaseQARepository.handleTopicFollowState(topic_id, !isFollow);
         EventBus.getDefault().post(mRootView.getListDatas().get(position), EventBusTagConfig.EVENT_QA_SUBSCRIB);
     }
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -129,11 +132,11 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
      * @param searchContent save content
      */
     private void saveSearhDatq(String searchContent) {
-        if(TextUtils.isEmpty(searchContent)){
+        if (TextUtils.isEmpty(searchContent)) {
             return;
         }
         QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA_TOPIC);
-        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean,QASearchHistoryBean.TYPE_QA_TOPIC);
+        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean, QASearchHistoryBean.TYPE_QA_TOPIC);
     }
 
     @Override

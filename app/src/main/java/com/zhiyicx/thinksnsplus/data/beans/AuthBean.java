@@ -18,7 +18,7 @@ import java.io.Serializable;
  */
 
 public class AuthBean extends CacheBean implements Parcelable, Serializable {
-    public static final long serialVersionUID = 536871008l;
+    public static final long serialVersionUID = 536871008L;
     private static final long REQUEST_TIME_OFFSET = 10_000;
     /**
      * {

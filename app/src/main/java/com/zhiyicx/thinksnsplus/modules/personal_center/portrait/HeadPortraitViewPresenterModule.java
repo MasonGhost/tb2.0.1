@@ -1,15 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.portrait;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.HeadPortraitRepository;
-//import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-
 import dagger.Module;
 import dagger.Provides;
+
+//import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 
 /**
  * @author Catherine
@@ -31,13 +25,4 @@ public class HeadPortraitViewPresenterModule {
         return mView;
     }
 
-    @Provides
-    public HeadPortraitViewContract.Repository provideHeadPortraitRepository(HeadPortraitRepository repository) {
-        return repository;
-    }
-
-//    @Provides
-//    IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
-//        return new UpLoadRepository(serviceManager, application);
-//    }
 }

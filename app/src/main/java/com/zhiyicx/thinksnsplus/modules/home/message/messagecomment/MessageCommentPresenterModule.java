@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MessageCommentRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,10 +20,5 @@ public class MessageCommentPresenterModule {
     @Provides
     MessageCommentContract.View provideMessageCommentContractView() {
         return mView;
-    }
-
-    @Provides
-    MessageCommentContract.Repository provideMessageCommentContractRepository(MessageCommentRepository messageCommentRepository) {
-        return messageCommentRepository;
     }
 }

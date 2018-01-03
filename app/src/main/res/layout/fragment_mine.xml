@@ -62,6 +62,7 @@
                         android:layout_marginTop="@dimen/spacing_normal"
                         android:maxLines="2"
                         android:textColor="@color/normal_for_assist_text"
+                        android:ellipsize="end"
                         android:textSize="@dimen/size_content_assist"
                         tools:text="天青色等烟雨，而我在等你，炊烟袅袅升起，晕开了结局"/>
                 </LinearLayout>

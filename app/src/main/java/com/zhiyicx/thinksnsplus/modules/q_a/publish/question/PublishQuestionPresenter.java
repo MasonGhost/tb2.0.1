@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,17 +23,19 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionContract.Repository, PublishQuestionContract.View>
+public class PublishQuestionPresenter extends AppBasePresenter< PublishQuestionContract.View>
         implements PublishQuestionContract.Presenter {
 
+    @Inject
+    BaseQARepository mBaseQARepository;
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     private Subscription searchSub;
 
     @Inject
-    public PublishQuestionPresenter(PublishQuestionContract.Repository repository, PublishQuestionContract.View rootView) {
-        super(repository, rootView);
+    public PublishQuestionPresenter( PublishQuestionContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -42,17 +45,17 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
 
     @Override
     public QAPublishBean getDraftQuestion(long qestion_mark) {
-        return mRepository.getDraftQuestion(qestion_mark);
+        return mBaseQARepository.getDraftQuestion(qestion_mark);
     }
 
     @Override
     public void saveQuestion(QAPublishBean qestion) {
-        mRepository.saveQuestion(qestion);
+        mBaseQARepository.saveQuestion(qestion);
     }
 
     @Override
     public void deleteQuestion(QAPublishBean qestion) {
-        mRepository.deleteQuestion(qestion);
+        mBaseQARepository.deleteQuestion(qestion);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
         if (searchSub != null && !searchSub.isUnsubscribed()) {
             searchSub.unsubscribe();
         }
-        searchSub = mRepository.getQAQuestion(subject, maxId, type)
+        searchSub = mBaseQARepository.getQAQuestion(subject, maxId, type)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
                     @Override
                     protected void onSuccess(List<QAListInfoBean> data) {

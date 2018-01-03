@@ -33,7 +33,7 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public class MyFollowContainerFragment extends TSViewPagerFragment{
+public class MyFollowContainerFragment extends TSViewPagerFragment {
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -72,14 +72,17 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     protected boolean setUseStatusView() {
         return false;
     }
+
     @Override
     protected boolean isAdjustMode() {
         return true;
     }
+
     @Override
     protected int getOffsetPage() {
         return 2;
     }
+
     @Override
     protected List<String> initTitles() {
         return Arrays.asList(getResources().getStringArray(R.array.qa_mine_follow_title));
@@ -87,11 +90,11 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null){
+        if (mFragments == null) {
             mFragments = new ArrayList<>();
+            mFragments.add(MyFollowFragment.instance(TYPE_QUESTION));
+            mFragments.add(MyFollowFragment.instance(TYPE_TOPIC));
         }
-        mFragments.add(new MyFollowFragment().instance(TYPE_QUESTION));
-        mFragments.add(new MyFollowFragment().instance(TYPE_TOPIC));
         return mFragments;
     }
 
@@ -105,10 +108,11 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
-//        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large),0,getResources().getDimensionPixelOffset(R.dimen.spacing_big_large),0);
+//        mTsvToolbar.setPadding(getResources().getDimensionPixelOffset(R.dimen.spacing_big_large),0,getResources().getDimensionPixelOffset(R.dimen
+// .spacing_big_large),0);
 //        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
         mTsvToolbar.showDivider(false);
-        mTsvToolbar.setPadding(200,0,200,0);
+        mTsvToolbar.setPadding(200, 0, 200, 0);
     }
 
     @NonNull

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding.view.RxView;
@@ -22,7 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.GroupDynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
@@ -92,13 +93,50 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
         }
+
         if (commentedBean.getIsDelete()) {
-            holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
+            holder.getView(R.id.fl_detial).setVisibility(View.GONE);
+            TextView review_flag = holder.getTextView(R.id.tv_review);
+            review_flag.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.message_badge_bg));
+            // 评论
+            int resourceRes = 0;
+            switch (commentedBean.getChannel()) {
+                case APP_LIKE_FEED:
+                    resourceRes = R.string.rank_dynamic;
+
+                    break;
+                case APP_LIKE_GROUP_POST:
+                    resourceRes = R.string.post;
+                    break;
+                case APP_LIKE_MUSIC:
+                    resourceRes = R.string.single_music;
+                    break;
+                case APP_LIKE_MUSIC_SPECIALS:
+                    resourceRes = R.string.music_album;
+                    break;
+                case APP_LIKE_NEWS:
+                    resourceRes = R.string.collect_info;
+
+                    break;
+                case ApiConfig.APP_QUESTIONS:
+                    resourceRes = R.string.question;
+
+                    break;
+                case ApiConfig.APP_QUESTIONS_ANSWER:
+                    resourceRes = R.string.draft_type_answers;
+                    break;
+                default:
+            }
+            if (resourceRes != 0) {
+                review_flag.setText(holder.itemView.getResources().getString(R.string.resource_deleted_format,
+                        holder.itemView.getResources().getString(resourceRes)));
+            }
         } else {
+            holder.getView(R.id.fl_detial).setVisibility(View.VISIBLE);
             holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
         }
         holder.setTextColorRes(R.id.tv_name, R.color.normal_for_assist_text);
-        holder.setText(R.id.tv_name, handleName(commentedBean));
+        holder.setText(R.id.tv_name, handleName(commentedBean, holder));
         List<Link> links = setLiknks(holder, commentedBean);
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_name), links);
@@ -108,29 +146,32 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(commentedBean.getUpdated_at()));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
 
         RxView.clicks(holder.getView(R.id.fl_detial))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> toDetail(commentedBean));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_content))
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mOnItemClickListener != null)
+                    if (mOnItemClickListener != null) {
                         mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
+                    }
                 });
     }
 
     private List<Link> setLiknks(ViewHolder holder, final CommentedBean commentedBean) {
         List<Link> links = new ArrayList<>();
         Link nameLink = new Link(commentedBean.getCommentUserInfo().getName())
-                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional,
+                // defaults to holo blue
                 .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                 .setUnderlined(false)                                       // optional, defaults to true
                 .setOnClickListener((clickedText, linkMetadata) -> {
@@ -138,10 +179,13 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                     toUserCenter(commentedBean.getCommentUserInfo());
                 });
         links.add(nameLink);
-        if (commentedBean.getReplyUserInfo() != null && commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0 && commentedBean.getReplyUserInfo().getName() != null) {
+        if (commentedBean.getReplyUserInfo() != null && commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0 &&
+                commentedBean.getReplyUserInfo().getName() != null) {
             Link replyNameLink = new Link(commentedBean.getReplyUserInfo().getName())
-                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                    .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  //
+                    // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) //
+                    // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
                     .setOnClickListener((clickedText, linkMetadata) -> {
@@ -155,16 +199,18 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         return links;
     }
 
-    private String handleName(CommentedBean commentedBean) {
+    private String handleName(CommentedBean commentedBean, ViewHolder holder) {
         String result;
         if (commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0) { // 回复
             if (AppApplication.getMyUserIdWithdefault() == commentedBean.getReply_user()) {
                 result = getContext().getResources().getString(R.string.comment_format_reply_you, commentedBean.getCommentUserInfo().getName());
             } else {
-                result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(), commentedBean.getReplyUserInfo().getName());
+                result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(),
+                        commentedBean.getReplyUserInfo().getName());
             }
             return result;
         }
+
         // 评论
         switch (commentedBean.getChannel()) {
             case APP_LIKE_FEED:
@@ -187,7 +233,8 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
                 break;
             case ApiConfig.APP_QUESTIONS_ANSWER:
-                result = getContext().getResources().getString(R.string.comment_format_questions_answer, commentedBean.getCommentUserInfo().getName());
+                result = getContext().getResources().getString(R.string.comment_format_questions_answer, commentedBean.getCommentUserInfo().getName
+                        ());
 
                 break;
             default:
@@ -211,6 +258,9 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
      * @param commentedBean
      */
     private void toDetail(CommentedBean commentedBean) {
+        if (commentedBean.getIsDelete()) {
+            return;
+        }
         Intent intent;
         Bundle bundle = new Bundle();
         bundle.putLong(BUNDLE_SOURCE_ID, commentedBean.getTarget_id());

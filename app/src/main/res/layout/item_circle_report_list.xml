@@ -1,0 +1,116 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/spacing_normal"
+    android:paddingTop="@dimen/spacing_mid"
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
+
+    <com.zhiyicx.baseproject.widget.UserAvatarView
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/headpic_for_notification"
+        android:layout_height="@dimen/headpic_for_notification"
+        android:layout_marginRight="@dimen/spacing_mid"
+        app:pressShape="circle"
+        app:ts_avatare_size="@dimen/headpic_for_list"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/textview_spacing_offset_height"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="张三 "/>
+
+    <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:includeFontPadding="false"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_small_3dp"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content_assist"
+        app:etv_IsNeedShrink="false"
+        app:etv_MaxLinesOnShrink="2"
+        app:etv_EnableToggle="false"
+        app:etv_ToExpandHint="@string/circle_report_more"
+        app:etv_ToShrinkHint=""
+        tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
+
+    <LinearLayout
+        android:id="@+id/fl_detial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid_small_8dp"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:background="@color/bgColor"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_detail_image"
+            android:layout_width="@dimen/headpic_for_notification"
+            android:layout_height="@dimen/headpic_for_notification"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher">
+        </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
+
+        <TextView
+            android:id="@+id/tv_deatil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:maxLines="2"
+            android:minHeight="@dimen/headpic_for_notification"
+            android:textSize="@dimen/size_note_assist"
+            tools:text="点点滴滴点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多的撒范德萨范德萨范德萨多少撒\n点滴滴的撒点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多范德萨范德萨范德萨多 "/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fl_detial"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="6分钟前"/>
+
+    <TextView
+        android:id="@+id/tv_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/fl_detial"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingLeft="@dimen/spacing_mid_small_8dp"
+        android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:textColor="@color/dyanmic_top_flag"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="6分钟前"/>
+
+</RelativeLayout>

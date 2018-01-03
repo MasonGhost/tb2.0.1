@@ -50,7 +50,7 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     private ContactsAdapter mTagClassAdapter;
 
-    private ArrayList<ContactsContainerBean> mBundleData ;
+    private ArrayList<ContactsContainerBean> mBundleData;
 
     private String mTitle;
 
@@ -198,18 +198,21 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
     @Override
     public void updateContacts(ArrayList<ContactsContainerBean> data) {
 
-        mBundleData=new ArrayList<>();
-        ContactsContainerBean contactsContainerBean=new ContactsContainerBean();
-        contactsContainerBean.setTitle(data.get(0).getTitle());
-        contactsContainerBean.setContacts(new ArrayList<>());
-        contactsContainerBean.getContacts().addAll(data.get(0).getContacts());
-        mBundleData.add(contactsContainerBean);
-        ContactsContainerBean contactsContainerBean2=new ContactsContainerBean();
-        contactsContainerBean2.setTitle(data.get(1).getTitle());
-        contactsContainerBean2.setContacts(new ArrayList<>());
-        contactsContainerBean2.getContacts().addAll(data.get(1).getContacts());
-        mBundleData.add(contactsContainerBean2);
-
+        mBundleData = new ArrayList<>();
+        if (data.size() > 0) {
+            ContactsContainerBean contactsContainerBean = new ContactsContainerBean();
+            contactsContainerBean.setTitle(data.get(0).getTitle());
+            contactsContainerBean.setContacts(new ArrayList<>());
+            contactsContainerBean.getContacts().addAll(data.get(0).getContacts());
+            mBundleData.add(contactsContainerBean);
+        }
+        if (data.size() > 1) {
+            ContactsContainerBean contactsContainerBean2 = new ContactsContainerBean();
+            contactsContainerBean2.setTitle(data.get(1).getTitle());
+            contactsContainerBean2.setContacts(new ArrayList<>());
+            contactsContainerBean2.getContacts().addAll(data.get(1).getContacts());
+            mBundleData.add(contactsContainerBean2);
+        }
         mListData.clear();
         mListData.addAll(data);
         for (int i = 0; i < mListData.size(); i++) {

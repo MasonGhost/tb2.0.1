@@ -32,15 +32,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         GuideContract.View,
         OnBannerListener, ViewPager.OnPageChangeListener, TCountTimer.OnTimeListener {
 
-    public static final int DEFAULT_DELAY_TIME = 500;
-
     @BindView(R.id.guide_banner)
     Banner mGuideBanner;
     @BindView(R.id.guide_text)
     TextView mGuideText;
 
     TCountTimer mTimer;
-    Subscription subscription;
     int mPosition;
 
     boolean isFinish;
@@ -70,46 +67,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         return false;
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_guide_v2;
-    }
-
-    @Override
-    protected void initView(View rootView) {
-        RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkLogin());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isFirst) {
-            return;
-        }
-        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-            mPresenter.getLaunchAdverts();
-        } else {
-            mPresenter.checkLogin();
-            return;
-        }
-        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(aLong -> mPresenter.getBootAdvert()!= null)
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
-                        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-                            initAdvert();
-                        }
-                    } else {
-                        mPresenter.checkLogin();
-                    }
-                }, throwable -> {
-
-                });
-    }
-
 
     @Override
     protected boolean showToolbar() {
@@ -123,8 +80,64 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     @Override
-    protected void initData() {
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_guide_v2;
     }
+
+    @Override
+    protected void initView(View rootView) {
+        RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.checkLogin());
+
+        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mBootAdverts = mPresenter.getBootAdvert();
+            if (mBootAdverts != null) {
+                List<String> urls = new ArrayList<>();
+                for (RealAdvertListBean realAdvertListBean : mBootAdverts) {
+                    urls.add(realAdvertListBean.getAdvertFormat().getImage().getImage());
+                }
+                int time = mBootAdverts.get(0).getAdvertFormat().getImage().getDuration() * 1000;
+                time = time > 0 ? time : 5000;
+                mGuideText.setVisibility(View.VISIBLE);
+                mTimer = TCountTimer.builder()
+                        .buildBtn(mGuideText)
+                        .buildTimeCount(time)
+                        .buildCanUseListener(urls.size() <= 1)// 单张图片
+                        .buildOnTimeListener(this)
+                        .buildCanUseOntick(false)
+                        .build();
+                mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
+                mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
+                mGuideBanner.setImages(urls);
+                mGuideBanner.isDownStopAutoPlay(false);
+                mGuideBanner.setViewPagerIsScroll(false);
+                mGuideBanner.setDelayTime(time);
+                mGuideBanner.setOnBannerListener(this);
+                mGuideBanner.setOnPageChangeListener(this);
+            }
+        }
+    }
+
+    @Override
+    protected void initData() {
+        mPresenter.initConfig();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isFirst) {
+            return;
+        }
+        if (com.zhiyicx.common.BuildConfig.USE_ADVERT && mBootAdverts != null) {
+            initAdvert();
+        } else {
+            mPresenter.checkLogin();
+        }
+    }
+
 
     @Override
     public void startActivity(Class aClass) {
@@ -143,10 +156,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mGuideBanner.setOnPageChangeListener(null);
         mGuideBanner.stopAutoPlay();
         mTimer.replease();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-
     }
 
     @Override
@@ -218,31 +227,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void initAdvert() {
-        List<String> urls = new ArrayList<>();
-        mBootAdverts = mPresenter.getBootAdvert();
-        if (mBootAdverts != null) {
-            for (RealAdvertListBean realAdvertListBean : mBootAdverts) {
-                urls.add(realAdvertListBean.getAdvertFormat().getImage().getImage());
-            }
-        }
-        int time = mBootAdverts.get(0).getAdvertFormat().getImage().getDuration() * 1000;
-        time = time > 0 ? time : 5000;
-        mGuideText.setVisibility(View.VISIBLE);
-        mTimer = TCountTimer.builder()
-                .buildBtn(mGuideText)
-                .buildTimeCount(time)
-                .buildCanUseListener(urls.size() <= 1)// 单张图片
-                .buildOnTimeListener(this)
-                .buildCanUseOntick(false)
-                .build();
-        mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
-        mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
-        mGuideBanner.setImages(urls);
-        mGuideBanner.isDownStopAutoPlay(false);
-        mGuideBanner.setViewPagerIsScroll(false);
-        mGuideBanner.setDelayTime(time);
-        mGuideBanner.setOnBannerListener(this);
-        mGuideBanner.setOnPageChangeListener(this);
         mGuideBanner.start();
         mTimer.start();
     }
@@ -252,9 +236,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         super.onDestroy();
         if (mTimer != null) {
             mTimer.cancel();
-        }
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
         }
         if (mGuideBanner != null) {
             mGuideBanner.releaseBanner();

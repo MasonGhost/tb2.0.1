@@ -192,6 +192,7 @@
     <string name="send_words_dynamic">文字</string>
     <string name="send_image_dynamic">图片</string>
     <string name="send_question">提问</string>
+    <string name="send_post">发帖</string>
     <string name="send_info">投稿</string>
     <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
@@ -241,13 +242,125 @@
     <string name="had_send_dynamic_to_channel">动态将在审核成功后发布</string>
 
     <!--圈子-->
+    <string name="circle_master">圈主</string>
+    <string name="circle_dealing">操作中</string>
+    <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
+    <string name="more_group">查看更多</string>
+    <string name="recommend_group">热门推荐</string>
+    <string name="exchange_group">换一批</string>
     <string name="all_group">全部圈子</string>
     <string name="join_group">加入</string>
     <string name="quit_group">退出</string>
     <string name="group_joined">已加入</string>
     <string name="group_mine">我的圈子</string>
+    <string name="group_count">%d个兴趣小组，等待你的加入！</string>
+    <string name="circle">圈子</string>
+    <string name="circle_post">帖子</string>
+    <string name="circle_member">成员</string>
+    <string name="select_circle">选择圈子</string>
+    <string name="create">创建</string>
+    <string name="create_reviewing">已经提交申请，请等待审核</string>
+    <string name="exit_circle">你是圈子创始人，不能进行退圈</string>
+    <string name="reviewing_circle">圈子还在审核中</string>
+    <string name="circle_detail_location">位置：	%s</string>
+    <string name="circle_detail_usercount">成员：	%d</string>
+    <string name="circle_detail_postcount">%d个帖子</string>
+    <string name="circle_manager_attorn">选择新圈主</string>
+    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给 %2$s 使其成为新的圈主？</string>
+    <string name="circle_manager_attorn_success">圈子转让成功</string>
+    <string name="circle_manager_attorn_failed">圈子转让失败</string>
+    <string name="circle_manager_format">管理员(%d)</string>
+    <string name="circle_member_format">成员(%d)</string>
+    <string name="circle_blacklist_format">黑名单(%d)</string>
+    <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
+    <string name="circle_blocked">封闭圈子!</string>
+    <string name="post_apply_for_top">申请帖子置顶</string>
+    <string name="post_undo_top">撤销置顶</string>
+    <string name="post_apply_top">置顶帖子</string>
+    <string name="delete_post">删除帖子</string>
+    <string name="post_publishing">发贴中</string>
+    <string name="post_publish_select_circle">请选择一个圈子</string>
+    <string name="post_publish_select_title">标题还是要的!</string>
+    <string name="post_publish_select_content">你的内容呢..</string>
 
+    <string-array name="post_typpe_array">
+        <item>全部帖子</item>
+        <item>最新帖子</item>
+        <item>最新回复</item>
+    </string-array>
+    <string name="post_typpe_all">全部帖子</string>
+    <string name="post_typpe_new">最新帖子</string>
+    <string name="post_typpe_reply">最新回复</string>
+
+    <string name="create_circle">创建圈子</string>
+    <string name="edit_circle">详细信息</string>
+    <string name="create_circle_notice">选填</string>
+    <string name="create_circle_nolocation">不显示位置</string>
+
+    <string name="appbar_overscroll_behavior">com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="change_circle_head_icon">上传圈子头像</string>
+    <string name="circle_head_icon">圈子头像</string>
+    <string name="circle_name">圈名</string>
+    <string name="circle_owner">圈主</string>
+    <string name="circle_manager">管理员</string>
+    <string name="circle_type">分类</string>
+    <string name="circle_chat">私聊</string>
+    <string name="edit_circle_name">设置圈名</string>
+    <string name="edit_circle_type">设置圈子类别</string>
+    <string name="edit_circle_location">设置圈子位置</string>
+    <string name="circle_location">位置</string>
+    <string name="edit_circle_synchronization">帖子同步至动态</string>
+    <string name="edit_circle_block">设置为封闭圈子</string>
+    <string name="edit_circle_charge">收费入圈</string>
+    <string name="edit_circle_free">免费入圈</string>
+    <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
+    <string name="edit_circle_notice">公告</string>
+    <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
+    <string name="circle_rule">圈子创建协议</string>
+
+    <string name="circle_detail">详细信息</string>
+    <string name="post_detail">帖子详情</string>
+    <string name="circle_earnings">圈子收益</string>
+    <string name="circle_earningn_member">成员费</string>
+    <string name="circle_earningn_total">总收益(%s)</string>
+    <string name="circle_earningn_top">置顶收益</string>
+    <string name="circle_permission">发帖权限</string>
+    <string name="circle_report">举报管理</string>
+    <string name="circle_more">更多操作</string>
+    <string name="circle_exit">退出圈子</string>
+    <string name="circle_transfer">转让圈子</string>
+    <string name="cancel_manager">移出圈管理</string>
+    <string name="cancle_circle">移出圈子</string>
+    <string name="cancle_blacklist">移出黑名单</string>
+    <string name="appoint_manager">设为圈管理员</string>
+    <string name="appoint_blacklist">加入黑名单</string>
+    <string name="appoint_circle">设为圈管理员</string>
+    <string name="circle_report_more">[查看更多]</string>
+    <string name="circle_report_reason">举报原因</string>
+    <string name="circle_report_post">%1$s 举报 %2$s 的帖子：</string>
+    <string name="circle_report_comment">%1$s 举报 %2$s 的评论：</string>
+    <string name="circle_report_done">已处理</string>
+    <string name="circle_report_doing">未处理</string>
+    <string name="circle_report_refuse">已驳回</string>
+    <string name="circle_report_agree">同意</string>
+    <string name="circle_report_disagree">驳回</string>
+    <string name="circle_post_permission">发帖权限设置</string>
+    <string name="circle_permission_all">所有成员</string>
+    <string name="circle_permission_owner">仅圈主</string>
+    <string name="circle_permission_manager">仅圈主和管理员</string>
+    <string-array name="circle_mine_type">
+        <item>@string/joined_group</item>
+        <item>待审核的</item>
+    </string-array>
+    <string-array name="circle_post_mine_type">
+        <item>我发布的</item>
+        <item>已置顶的</item>
+        <item>置顶待审核</item>
+    </string-array>
     <!--收藏-->
     <string name="collect">收藏</string>
     <string name="collect_dynamic">动态</string>
@@ -294,6 +407,7 @@
     <string name="review_death">已过期</string>
     <string name="review_approved">同意置顶</string>
     <string name="review_dynamic_deleted">该内容已被删除</string>
+    <string name="resource_deleted_format">该%s已被删除</string>
     <string name="review_content_deleted">内容已被删除</string>
     <string name="review_comment_deleted">该评论已被删除</string>
     <string name="review_description">支付%1$.2f申请置顶评论“%2$s”</string>
@@ -306,8 +420,10 @@
     <string name="stick_type_dynamic_commnet_message">对你的动态进行了“%1$s”评论并申请置顶，请及时审核。</string>
     <string name="stick_type_news_commnet">文章评论置顶</string>
     <string name="stick_type_news_commnet_message">对你的文章进行了“%1$s”评论并申请置顶，请及时审核。</string>
-    <string name="stick_type_group_commnet">圈子帖子置顶</string>
-    <string name="stick_type_group_commnet_message">申请动态在你管理的圈子“%1$s”置顶，请及时审核。</string>
+    <string name="stick_type_group_commnet">帖子评论置顶</string>
+    <string name="stick_type_group_commnet_message">对你的帖子进行了“%1$s”评论并申请置顶，请及时审核。</string>
+    <string name="stick_type_group">帖子置顶</string>
+    <string name="stick_type_group_message">对帖子“%1$s”申请置顶，请及时审核。</string>
     <string name="stick_type_group_join">圈子加入申请</string>
     <string name="stick_type_group_join_message">申请加入你创建的圈子“%1$s”，请及时审核。</string>
 
@@ -315,6 +431,8 @@
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>
     <string name="share_dynamic">分享动态</string>
+    <string name="share_circle">分享圈子</string>
+    <string name="share_post">分享帖子</string>
     <string name="favorite">收藏</string>
     <string name="get_dynamic_dig_list_failure">获取点赞列表失败</string>
     <string name="default_input_hint">随便说说~</string>
@@ -490,6 +608,7 @@
 
     <string name="draft_type_questions">提问</string>
     <string name="draft_type_answers">回答</string>
+    <string name="draft_type_circle">圈子</string>
 
 
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
@@ -538,6 +657,8 @@
         <item>最新</item>
         <item>全部</item>
     </string-array>
+    <string name="qa">@string/question</string>
+    <string name="qa_answer">回答</string>
     <string name="qa_topic_description">话题简介：%s</string>
     <string name="qa_topic_expert_count">%d位相关专家</string>
     <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
@@ -743,5 +864,34 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="has_apply">已提交申请</string>
+    <string name="create_wait_audit">创建待审核</string>
+    <string name="join_wait_audit">申请加入待审核</string>
+    <string name="not_find_circle_post_to_publish">未找到相关帖子~</string>
+    <string name="to_publish_circle_post">去发帖</string>
+    <string name="not_find_circle_to_publish">未找到相关圈子，创建属于自己的圈子吧</string>
+    <string name="to_publish_circle">创建圈子</string>
+    <string name="not_find_joined_circle">未找相关圈子，去加入感兴趣圈子吧</string>
+    <string name="join_circle">加入圈子</string>
+    <string name="circle_publish_hint_certification">只有认证过的用户才可以创建圈子，是否去认证?</string>
+
+    <!--举报-->
+    <string name="report">举报</string>
+    <string name="report_title_format">举报 %1$s 的%2$s</string>
+    <string name="report_title_format_single">举报 %s</string>
+    <string name="report_success_tip">举报信息提交成功</string>
+    <string name="hint_report">填写举报原因</string>
+    <string name="not_support_report">不支持的举报类型</string>
+    <string name="post">帖子</string>
+    <string name="question">问题</string>
+    <string name="i_know">知道了</string>
+    <string name="circle_join_rejected">你的加入申请被拒绝了.</string>
+    <string name="circle_join_reviewing">申请审核中</string>
+    <string name="please_join_circle_first">需要先加入才可发帖</string>
+    <string name="circle_member_added_blacklist">你被管理员加入到了黑名单。</string>
+    <string name="publish_circle_post_format">\&#034;%1$s\&#034;仅%2$s拥有发帖权限</string>
+    <string name="report_circle">举报圈子</string>
+    <string name="publish_post">发帖</string>
+    <string name="syn_to_dynamic">同步至动态</string>
 
 </resources>

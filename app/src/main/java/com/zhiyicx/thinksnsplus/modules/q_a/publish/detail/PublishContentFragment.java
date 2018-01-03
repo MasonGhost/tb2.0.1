@@ -128,7 +128,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void initView(View rootView) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            AndroidBug5497Workaround.assistActivity(getActivity());
+            AndroidBug5497Workaround.assistActivity(mActivity);
         }
         mToolbarRight.setEnabled(false);
         initLisenter();

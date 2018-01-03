@@ -11,9 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
@@ -43,7 +41,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_message_review_list_v2;
+        return R.layout.item_message_review_list;
     }
 
     @Override

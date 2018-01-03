@@ -28,6 +28,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -274,5 +275,19 @@ public class BaseMusicRepository implements IMusicRepository {
                 .APP_PATH_MUSIC_SHARE, music_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<List<MusicDetaisBean>> getMyPaidsMusicList(long max_id) {
+        return mMusicClient.getMyPaidsMusicList(max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<MusicAlbumListBean>> getMyPaidsMusicAlbumList(long max_id) {
+        return mMusicClient.getMyPaidsMusicAlbumList(max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
