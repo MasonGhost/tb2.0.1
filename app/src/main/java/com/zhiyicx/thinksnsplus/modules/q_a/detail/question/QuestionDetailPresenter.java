@@ -94,41 +94,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
         getQuestionDetail(mRootView.getCurrentQuestion().getId() + "", maxId, isLoadMore);
-
-//        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
-//
-//        } else {
-//            Subscription subscription = mBaseQARepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
-////                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
-//                    mRootView.getCurrentOrderType(), maxId.intValue())
-//                    .compose(mSchedulersTransformer)
-//                    .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
-//                        @Override
-//                        protected void onSuccess(List<AnswerInfoBean> data) {
-//                            if (maxId == 0) {
-//                                mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
-//                            } else {
-//                                mRootView.onNetResponseSuccess(data, isLoadMore);
-//                            }
-//                        }
-//
-//                        @Override
-//                        protected void onFailure(String message, int code) {
-//                            super.onFailure(message, code);
-//                            mRootView.onResponseError(null, false);
-//                        }
-//
-//                        @Override
-//                        protected void onException(Throwable throwable) {
-//                            super.onException(throwable);
-//                            mRootView.onResponseError(throwable, false);
-//                        }
-//                    });
-//            addSubscrebe(subscription);
-//        }
-
     }
 
     @Override
