@@ -15,9 +15,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;

@@ -378,7 +378,7 @@ public class ImageUtils {
      * @return
      */
     public static GlideUrl imagePathConvertV2(String url, String token) {
-        LogUtils.d("imagePathConvertV2:" + url);
+//        LogUtils.d("imagePathConvertV2:" + url);
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());

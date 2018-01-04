@@ -67,6 +67,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_TOP_POST_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_COLLECT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MANAGER_TOP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
@@ -278,16 +279,6 @@ public interface CircleClient {
     Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("type") Integer type);
 
     /**
-     * 获取我收藏的帖子列表
-     *
-     * @param limit  默认 15 ，数据返回条数 默认为15
-     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
-     * @return
-     */
-    @GET(APP_PATH_COLLECTLIST_POST_FORMAT)
-    Observable<List<CirclePostListBean>> getMineCollectPostList(@Query("limit") Integer limit, @Query("offset") Integer offset);
-
-    /**
      * 全部帖子列表包含搜索
      *
      * @param limit    默认 15 ，数据返回条数 默认为15
@@ -301,6 +292,18 @@ public interface CircleClient {
             , @Query("offset") Integer offset
             , @Query("keyword") String keyword
             , @Query("group_id") Long group_id);
+
+
+    /**
+     * 用户帖子收藏列表
+     *
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return
+     */
+    @GET(APP_PATH_GET_USER_COLLECT_POST)
+    Observable<List<CirclePostListBean>> getUserCollectPostList(@Query("limit") Integer limit
+            , @Query("offset") Integer offset);
 
     /**
      * 获取圈子成员列表
@@ -449,12 +452,12 @@ public interface CircleClient {
      * 圈主和管理员置顶帖子
      *
      * @param postId
-     * @param day 天数
+     * @param day    天数
      * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_MANAGER_TOP_POST)
-    Observable<BaseJsonV2> stickTopPost(@Path("post_id") Long postId,@Field("day") int day);
+    Observable<BaseJsonV2> stickTopPost(@Path("post_id") Long postId, @Field("day") int day);
 
     /**
      * 圈主和管理员撤销置顶帖子

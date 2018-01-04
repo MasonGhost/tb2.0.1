@@ -44,9 +44,6 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;

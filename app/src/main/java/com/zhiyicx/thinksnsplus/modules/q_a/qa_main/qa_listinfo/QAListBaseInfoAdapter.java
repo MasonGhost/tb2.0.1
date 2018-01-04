@@ -121,7 +121,6 @@ public class QAListBaseInfoAdapter<T extends BaseListBean> extends CommonAdapter
                             mContext.startActivity(intent);
                         });
                 int w = getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_question_list);
-                LogUtils.d(content);
                 contentTextView.setOnClickListener(v -> contentView.performClick());
                 content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
                 makeSpan(contentTextView, w, w, content, infoBean.getAnswer().getId(), position, prefix.length(), canLook);

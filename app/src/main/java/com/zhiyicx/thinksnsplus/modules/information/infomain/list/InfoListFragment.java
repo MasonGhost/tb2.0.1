@@ -23,9 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 

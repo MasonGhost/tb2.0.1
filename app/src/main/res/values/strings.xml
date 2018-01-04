@@ -367,7 +367,9 @@
     <string name="collect_info">资讯</string>
     <string name="collect_activity">活动</string>
     <string name="collect_album">专辑</string>
-    <string name="group_collect_dynamic">圈子</string>
+    <string name="collect_post">圈子</string>
+    <string name="collect_question">问题</string>
+    <string name="collect_answer">回答</string>
 
     <!--动态置顶-->
     <string name="yuan">元</string>

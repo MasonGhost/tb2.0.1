@@ -247,7 +247,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
                     break;
                 case COLLECT:
-                    Subscription collectSubscribe = mBaseCircleRepository.getMineCollectPostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
+                    Subscription collectSubscribe = mBaseCircleRepository.getUserCollectPostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
                             .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
                                 @Override
                                 protected void onSuccess(List<CirclePostListBean> data) {

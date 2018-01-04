@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
 import java.util.List;
 
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -102,6 +101,11 @@ public interface IBasePublishQuestionRepository {
     Observable<BaseJsonV2<Object>> deleteQuestionComment(long question_id, long answer_id);
 
     Observable<List<AnswerInfoBean>> getUserAnswerList(String type, Long maxId);
+
+    /**
+     * 获取用户收藏的回答列表
+     */
+    Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Long limit, Long maxId);
 
     Observable<Object> publishQuestion(QAPublishBean qaPublishBean);
 

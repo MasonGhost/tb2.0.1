@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.CollectAnswerList;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
@@ -206,6 +207,12 @@ public interface QAClient {
     Observable<List<AnswerInfoBean>> getUserAnswerList(@Query("type") String type,
                                                        @Query("limit") Long limit,
                                                        @Query("after") Long maxId);
+
+    /**
+     * 获取用户收藏的回答列表
+     */
+    @GET(ApiConfig.APP_PATH_USER_COLLECT_ANSWER_FORMAT)
+    Observable<List<CollectAnswerList>> getUserCollectAnswerList(@Query("limit") Long limit, @Query("after") Long maxId);
 
     /**
      * 删除问题

@@ -330,19 +330,12 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type).subscribeOn(Schedulers.io()));
     }
 
-    @Override
-    public Observable<List<CirclePostListBean>> getMineCollectPostList(Integer limit, Integer offset) {
-        return dealWithPostList(mCircleClient.getU(limit, offset).subscribeOn(Schedulers.io()));
-    }
-
     /**
-     * 获取全部帖子
-     *
      * @param limit    默认 15 ，数据返回条数 默认为15
      * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param keyword  搜索关键词，模糊匹配圈子名称
      * @param group_id 获取某个圈子下面的全部帖子
-     * @return
+     * @return 获取全部帖子
      */
     @Override
     public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id) {
@@ -351,6 +344,24 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return 用户帖子收藏列表
+     */
+    @Override
+    public Observable<List<CirclePostListBean>> getUserCollectPostList(Integer limit, Integer offset) {
+        return dealWithPostList(mCircleClient.getUserCollectPostList(limit, offset))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param circleId
+     * @param maxId
+     * @param type
+     * @return
+     */
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
         return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, type)
