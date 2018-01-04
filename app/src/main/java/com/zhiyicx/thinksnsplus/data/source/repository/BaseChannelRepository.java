@@ -46,18 +46,6 @@ import rx.schedulers.Schedulers;
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
 
     protected ChannelClient mChannelClient;
-    @Inject
-    protected UserInfoRepository mUserInfoRepository;
-    @Inject
-    protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
-    @Inject
-    protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-//    @Inject
-//    private GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager) {
@@ -112,7 +100,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                 for (UserInfoBean userInfoBean : listBaseJson) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                 for (int i = 0; i < groupInfoBeen.size(); i++) {
                                     if (groupInfoBeen.get(i).getManagers() != null) {
                                         for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
@@ -230,7 +217,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                             groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
                                         }
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     return groupDynamicCommentListBeen;
                                 });
                     } else {
@@ -274,7 +260,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                     ().intValue()));
                                         }
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     return groupDynamicLikeListBeen;
                                 });
                     } else {

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.bind;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.BindOldAccountRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class BindOldAccountPresenterModule {
         return mView;
     }
 
-    @Provides
-    public BindOldAccountContract.Repository provideBindOldAccountContractRepository(BindOldAccountRepository repository){
-        return repository;
-    }
 }

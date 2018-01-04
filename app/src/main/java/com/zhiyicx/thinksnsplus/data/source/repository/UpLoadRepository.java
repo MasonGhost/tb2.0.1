@@ -40,15 +40,13 @@ import rx.schedulers.Schedulers;
 public class UpLoadRepository implements IUploadRepository {
     private CommonClient mCommonClient;
     private UserInfoClient mUserInfoClient;
-    private Context mContext;
 
     // 这个用于服务器校检 hash
     private static final int RETRY_MAX_COUNT = 2; // 最大重试次
     private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
 
     @Inject
-    public UpLoadRepository(ServiceManager serviceManager, Application context) {
-        mContext = context;
+    public UpLoadRepository(ServiceManager serviceManager) {
         mCommonClient = serviceManager.getCommonClient();
         mUserInfoClient = serviceManager.getUserInfoClient();
     }

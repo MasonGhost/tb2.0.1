@@ -22,7 +22,4 @@ public interface InitPasswordContract {
         void initPassword(String password, String confirm_password);
     }
 
-    interface Repository {
-
-    }
 }

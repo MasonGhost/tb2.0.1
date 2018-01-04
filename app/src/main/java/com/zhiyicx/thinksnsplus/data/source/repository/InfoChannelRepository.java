@@ -30,12 +30,10 @@ import rx.schedulers.Schedulers;
 public class InfoChannelRepository implements InfoChannelConstract.Reppsitory {
 
     private InfoMainClient mInfoMainClient;
-    private Application mContext;
 
     @Inject
-    public InfoChannelRepository(ServiceManager serviceManager, Application context) {
+    public InfoChannelRepository(ServiceManager serviceManager) {
         mInfoMainClient = serviceManager.getInfoMainClient();
-        mContext = context;
     }
 
     @Override

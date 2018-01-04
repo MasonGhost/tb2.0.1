@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CompleteAccountRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,11 +21,6 @@ public class CompleteAccountPresenterModule {
     @Provides
     public CompleteAccountContract.View provideCompleteAccountContractView(){
         return mView;
-    }
-
-    @Provides
-    public CompleteAccountContract.Repository provideCompleteAccountContractRepository(CompleteAccountRepository repository){
-        return repository;
     }
 
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.certification.input;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationInputRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,11 +21,6 @@ public class CertificationInputPresenterModule {
     @Provides
     public CertificationInputContract.View provideCertificationInputContractView(){
         return mView;
-    }
-
-    @Provides
-    public CertificationInputContract.Repository provideCertificationInputContractRepository(CertificationInputRepository repository){
-        return repository;
     }
 
 }

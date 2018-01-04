@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -41,12 +42,9 @@ public class SendDynamicPresenter extends AppBasePresenter< SendDynamicContract.
         implements SendDynamicContract.Presenter {
 
     @Inject
-    IUploadRepository mIUploadRepository;
+    UpLoadRepository mIUploadRepository;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
 
     @Inject
     public SendDynamicPresenter( SendDynamicContract.View rootView) {

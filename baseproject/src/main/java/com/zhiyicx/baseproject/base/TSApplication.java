@@ -20,7 +20,9 @@ import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -46,6 +48,7 @@ public abstract class TSApplication extends BaseApplication {
                 e.printStackTrace();
                 Toast.makeText(BaseApplication.getContext(), R.string.app_crash_tip, Toast.LENGTH_SHORT).show();
                 rx.Observable.timer(DEFAULT_TOAST_SHORT_DISPLAY_TIME, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Long>() {
                             @Override
                             public void call(Long aLong) {

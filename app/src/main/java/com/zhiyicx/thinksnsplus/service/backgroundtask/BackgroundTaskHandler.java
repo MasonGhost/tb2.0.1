@@ -49,7 +49,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -110,7 +110,7 @@ public class BackgroundTaskHandler {
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    SendDynamicRepository mSendDynamicRepository;
+    BaseDynamicRepository mSendDynamicRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
     @Inject

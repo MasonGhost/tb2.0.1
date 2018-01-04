@@ -48,8 +48,6 @@ public class BaseMusicRepository implements IMusicRepository {
     @Inject
     protected UserInfoRepository mUserInfoRepository;
     @Inject
-    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
     protected MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
@@ -96,7 +94,6 @@ public class BaseMusicRepository implements IMusicRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return commentedBeens;
                             });
                         }
@@ -146,7 +143,6 @@ public class BaseMusicRepository implements IMusicRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return listBaseJson;
                             });
                         }
@@ -236,6 +232,7 @@ public class BaseMusicRepository implements IMusicRepository {
         return mMusicClient.getMusicList(max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
     }
 
+    @Override
     public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {
         return mMusicAlbumListDao.getMultiDataFromCache();
     }
