@@ -43,6 +43,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ATTORN_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANCEL_CIRCLE_MEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COLLECTLIST_POST_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
@@ -276,6 +277,15 @@ public interface CircleClient {
     @GET(APP_PATH_GET_MINE_POSTLIST)
     Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("type") Integer type);
 
+    /**
+     * 获取我收藏的帖子列表
+     *
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return
+     */
+    @GET(APP_PATH_COLLECTLIST_POST_FORMAT)
+    Observable<List<CirclePostListBean>> getMineCollectPostList(@Query("limit") Integer limit, @Query("offset") Integer offset);
 
     /**
      * 全部帖子列表包含搜索

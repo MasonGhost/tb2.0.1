@@ -74,7 +74,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         PUBLISH(1),
         HAD_PINNED(2),
         WAIT_PINNED_AUDIT(3),
-        SEARCH(4);
+        SEARCH(4),
+        COLLECT(5);
 
         public int value;
 
@@ -327,6 +328,11 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     @Override
     public Observable<List<CirclePostListBean>> getMinePostList(Integer limit, Integer offet, Integer type) {
         return dealWithPostList(mCircleClient.getMinePostList(limit, offet, type).subscribeOn(Schedulers.io()));
+    }
+
+    @Override
+    public Observable<List<CirclePostListBean>> getMineCollectPostList(Integer limit, Integer offset) {
+        return dealWithPostList(mCircleClient.getU(limit, offset).subscribeOn(Schedulers.io()));
     }
 
     /**

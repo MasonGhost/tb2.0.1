@@ -246,6 +246,28 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     addSubscrebe(mSearchSub);
 
                     break;
+                case COLLECT:
+                    Subscription collectSubscribe = mBaseCircleRepository.getMineCollectPostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
+                            .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
+                                @Override
+                                protected void onSuccess(List<CirclePostListBean> data) {
+                                    mRootView.onNetResponseSuccess(data, isLoadMore);
+                                }
+
+                                @Override
+                                protected void onFailure(String message, int code) {
+                                    super.onFailure(message, code);
+                                    mRootView.showMessage(message);
+                                }
+
+                                @Override
+                                protected void onException(Throwable throwable) {
+                                    super.onException(throwable);
+                                    mRootView.onResponseError(throwable, isLoadMore);
+                                }
+                            });
+                    addSubscrebe(collectSubscribe);
+                    break;
                 default:
 
             }

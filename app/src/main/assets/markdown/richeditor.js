@@ -445,11 +445,11 @@ var RE = {
         var noteView = _self.titleLimit.txtNote;
         var limitCount = _self.titleLimit.limitCount;
         var InPutView = document.getElementById("title");
-        if(InPutView.value.length < 1 ){
+        if(InPutView.value.length < 10 ){
             document.getElementById("stay").style.display="none";
             return
         }
-        if(InPutView.value.length > =10 ){
+        if(InPutView.value.length >=10 ){
             document.getElementById("stay").style.display="block";
             document.getElementById("stay").style.color="green";
         }
