@@ -153,7 +153,6 @@ hotfix/pay_fail ( 修复分支 )
 |dagger2||1.google官方推荐，配合mvp;<br><br>2.依赖注入，解耦代码；<br><br>3.简化对象的创建以及管理|
 |rx||1.使用干净的输入/输出函数;<br><br>2.减少代码行数；<br><br>3.异步的错误处理；<br><br>4.便于线程操作|
 
-
 ### 工程结构
 
 请查看[二次开发文档](SecondaryDevelopmentTutorial.md)

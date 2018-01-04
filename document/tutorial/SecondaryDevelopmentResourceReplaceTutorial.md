@@ -171,7 +171,7 @@
 
 #### 1. APP图标替换，位于 `app/src/main/res` ,` icon.png`
 
-| 位置（icon.png） | 大小 | 图标 |
+| 位置（icon.png） | 大小（宽x高） | 图标 |
 |:-----:|:-----:|:-----:|
 | mipmap-hdpi | 72x72   | ![icon_hdpi]|
 | mipmap-xhdpi | 96x96  | ![icon_xhdpi]|
@@ -180,27 +180,36 @@
 
 #### 2. 引导图替换, 位于 `baseproject/src/main/res/` ,`guide.png`
 
-| 位置（guide.png） | 大小 | 图标 |
+| 位置（guide.png） | 大小（宽x高） | 图标 |
 |:-----:|:-----:|:-----:|
-| mipmap-hdpi | 800x480   ||
-| mipmap-xhdpi | 1280x720  | |
-| mipmap-xxhdpi | 1920x1080 | ![guide]|
-| mipmap-xxxhdpi | 2560x1440 |  |
+| mipmap-hdpi | 480x800  ||
+| mipmap-xhdpi | 720x1280  | |
+| mipmap-xxhdpi | 1080x1920 | ![guide]|
+| mipmap-xxxhdpi | 1440x2560 |  |
+#### 3. 广告底部 logo、发布页 logo 图标替换, 位于 `app/src/main/res/` ,`pic_adver_logo.png`
 
-#### 3. 缺省信息图片替换, 位于 `baseproject/src/main/res/` ,`guide.png`，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
+| 位置（guide.png） | 大小（宽x高） | 图标 |
+|:-----:|:-----:|:-----:|
+| mipmap-hdpi | 288x86  |![guide_logo_hdpi]|
+| mipmap-xhdpi | 384x115  | ![guide_logo_xhdpi]|
+| mipmap-xxhdpi | 576x173 | ![guide_logo_xxhdpi]|
+| mipmap-xxxhdpi | 763x230 |![guide_logo_xxxhdpi] |
+
+#### 4. 缺省信息图片替换, 位于 `baseproject/src/main/res/` ,`guide.png`，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
 | 名字 | 说明 | 图标 |
 |:-----:|:-----:|:-----:|
-| pic_default_portrait1.png | 默认头像，不带边框  |![pic_default_portrait1]|
-| pic_default_portrait2.png | 默认头像，带白色边框  |![pic_default_portrait2]|
+| pic_default_man.png | 默认头像，男  |![pic_default_man]|
+| pic_default_woman.png | 默认头像，女  |![pic_default_woman]|
+| pic_default_secret.png | 默认头像，保密  |![pic_default_secret]|
 | img_default_delete.png | 默认删除缺省图  |![img_default_delete]|
 | img_default_internet.png | 默认网络差缺省图  |![img_default_internet]|
 | img_default_nobody.png | 默认没有用户缺省图  |![img_default_nobody]|
 | img_default_nothing.png | 默认什么也没有缺省图  |![img_default_nothing]|
 | img_default_search.png | 默认没有搜索到缺省图  |![img_default_search]|
 
-#### 4. 主页底部导航栏替换，位于 `app/main/src/res/`,，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
+#### 5. 主页底部导航栏替换，位于 `app/main/src/res/`,，此处以 `xhdip`文件下的说明，具体替换时，请同时替换`hdpi、xhdpi、xxhdpi、xxxhdpi`
 
- |名字 |大小| 说明 | 图标 |
+|名字 |大小（宽x高）| 说明 | 图标 |
 |:-----:|:-----:|:-----:|:-----:|
 | common_ico_bottom_add.png | 120x98| 加号  |![common_ico_bottom_add]|
 | common_ico_bottom_discover_high.png | 48x48 | 发现高亮  |![common_ico_bottom_discover_high]|
@@ -216,7 +225,7 @@
 
 
 
-#### 5. App 名字修改，位于 `app/src/main/res/values/strings.xml`,修改 `app_name` 即可。
+#### 6. App 名字修改，位于 `app/src/main/res/values/strings.xml`,修改 `app_name` 即可。
 
 ```
 <resources>
@@ -226,7 +235,7 @@
 
 ```
 
-#### 6. 修改主体颜色、文字大小、间距等。
+#### 7. 修改主体颜色、文字大小、间距等。
 
 具体信息可以查看 [视觉文档](../design/DESIGN.md)
 
@@ -241,8 +250,15 @@
 [icon_xxhdpi]:../image/icon_xxhdpi.png "xxhdpi"
 [icon_xxxhdpi]:../image/icon_xxxhdpi.png "xxxhdpi"
 [guide]:../image/guide.png "guide"
+[guide_logo_hdpi]:../image/pic_adver_logo_hdpi.png "guide_logo_hdpi"
+[guide_logo_xhdpi]:../image/pic_adver_logo_xhdpi.png "guide_logo_hdpi"
+[guide_logo_xxhdpi]:../image/pic_adver_logo_xxhdpi.png "guide_logo_hdpi"
+[guide_logo_xxxhdpi]:../image/pic_adver_logo_xxxhdpi.png "guide_logo_hdpi"
 [pic_default_portrait1]:../image/pic_default_portrait1.png "默认头像，不带边框"
 [pic_default_portrait2]:../image/pic_default_portrait2.png "默认头像，带白色边框"
+[pic_default_man]:../image/pic_default_man.png "默认头像，男"
+[pic_default_woman]:../image/pic_default_woman.png "默认头像，女"
+[pic_default_secret]:../image/pic_default_secret.png "默认头像，保密"
 [img_default_delete]:../image/img_default_delete.png "默认删除缺省图"
 [img_default_internet]:../image/img_default_internet.png "默认网络差缺省图"
 [img_default_nobody]:../image/img_default_nobody.png "默认没有用户缺省图"
