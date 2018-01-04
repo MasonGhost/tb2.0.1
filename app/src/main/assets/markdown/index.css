@@ -2,6 +2,33 @@ body {
   margin: 0;
   line-height: 2;
 }
+/* 处理占位文字
+[contenteditable=true]:empty:not(:focus):before{
+  content: attr(placeholder);
+  display: block;
+  color: #cccccc;
+}
+*/
+#editor:empty::before {
+  content: "请输入正文";
+  color: #cccccc;
+  outline: none;
+}
+
+textarea::-webkit-input-placeholder {
+color: #cccccc;
+/* WebKit browsers /
+}
+input:-moz-placeholder {
+color: #D6D0CA !important; / Mozilla Firefox 4 to 18 /
+}
+input::-moz-placeholder {
+color: #D6D0CA !important; / Mozilla Firefox 19+ /
+}
+input:-ms-input-placeholder {
+color: #D6D0CA !important; / Internet Explorer 10+ */
+}
+
 p {
   padding: 0;
   margin: 0;
@@ -46,11 +73,12 @@ p {
   border-color: inherit;
 }
 .content .line {
-  border: 1px solid #969696;
+  height:1px;
+  background:#cccccc;
   margin-top: 5px;
 }
 .content #editor {
-  margin-top: 20px;
+  margin-top: 10px;
   outline: none;
 }
 .content #editor hr {
@@ -116,7 +144,7 @@ p {
 
 #editor .editor-link{
   text-decoration: none;
-  color: #2AAFF3;
+  color: #cccccc;
 }
 
 .block{
@@ -141,12 +169,6 @@ p {
   transform: translateX(-50%);
   z-index: 2;
   background: rgba(255, 255, 255, 0.3);
-}
-
-
-#editor:empty:not(:focus)::before {
-  content: "请输入正文";
-  opacity: .5;
 }
 
 blockquote {

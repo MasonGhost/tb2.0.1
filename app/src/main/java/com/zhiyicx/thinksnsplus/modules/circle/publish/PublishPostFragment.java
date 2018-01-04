@@ -94,6 +94,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void loadDraft(BaseDraftBean draft) {
         mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
+        mCbSynToDynamic.setChecked(mDraftBean.getHasSynToDynamic());
     }
 
     @Override
