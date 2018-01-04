@@ -36,6 +36,7 @@
     <!--消息中 的评论的点赞的线的 margin-->
     <dimen name="message_comment_and_digg_line_margin">63dp</dimen>
     <dimen name="message_badge_count_width">5dp</dimen>
+    <dimen name="conversation_search_height">27dp</dimen>
     <!---->
     <dimen name="infocontainer_right_image_with">50dp</dimen>
     <!--咨询中的 banner hight-->
