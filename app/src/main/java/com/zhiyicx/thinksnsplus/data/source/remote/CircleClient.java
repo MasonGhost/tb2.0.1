@@ -306,17 +306,19 @@ public interface CircleClient {
             , @Query("offset") Integer offset);
 
     /**
-     * 获取圈子成员列表
      *
-     * @param limit
+     * @param circle_id
      * @param after
-     * @param type
+     * @param limit
+     * @param type 默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name 仅仅用于搜索
      * @return
      */
     @GET(APP_PATH_GET_CIRCLEMEMBERS)
     Observable<List<CircleMembers>> getCircleMemberList(@Path("circle_id") Long circle_id, @Query("limit") Integer limit
             , @Query("after") Integer after
-            , @Query("type") String type);
+            , @Query("type") String type,
+                                                        @Query("name") String name);
 
     /**
      * 转让圈子

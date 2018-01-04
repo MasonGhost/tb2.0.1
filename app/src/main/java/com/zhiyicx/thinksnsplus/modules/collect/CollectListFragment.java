@@ -12,9 +12,7 @@ import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragme
 import com.zhiyicx.thinksnsplus.modules.collect.group_posts.CollectCirclePostListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.qa.CollectAnswerListFragment;
-import com.zhiyicx.thinksnsplus.modules.collect.qa.CollectQustionLIstFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyAnswerContainerFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QA_ListInfoFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +31,9 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
         return Arrays.asList(
                 getString(R.string.collect_dynamic)
                 , getString(R.string.collect_info)
-                , getString(R.string.collect_album)
-                , getString(R.string.collect_post)
-//                , getString(R.string.collect_question)
                 , getString(R.string.collect_answer)
+                , getString(R.string.collect_post)
+                , getString(R.string.collect_album)
         );
     }
 
@@ -73,15 +70,13 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
             Fragment infoListFragment = CollectInformationListFragment.newInstance();
             Fragment albumListFragment = CollectAlbumListFragment.newInstance();
             Fragment postListFragment = CollectCirclePostListFragment.newInstance(BaseCircleRepository.CircleMinePostType.COLLECT);
-//            Fragment questionListFragment = CollectQustionLIstFragment.newInstance(QA_ListInfoFragment.QuestionType.FOLLOW.value);
             Fragment answerListFragment = CollectAnswerListFragment.instance(MyAnswerContainerFragment.TYPE_FOLLOW);
             mFragmentList = Arrays.asList(
                     dynamicListFragment
                     , infoListFragment
-                    , albumListFragment
-                    , postListFragment
-//                    , questionListFragment
                     , answerListFragment
+                    , postListFragment
+                    , albumListFragment
             );
         }
         return mFragmentList;

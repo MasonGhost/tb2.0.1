@@ -17,11 +17,9 @@ import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 import java.util.List;
 
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_POSTLIST;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_COLLECT_POST;
 
 /**
  * @author Jliuer
@@ -214,7 +212,15 @@ public interface IBaseCircleRepository {
      */
     Observable<BaseJsonV2> refuseCircleReport(Long reportId);
 
-    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
+    /**
+     * @param circleId
+     * @param after
+     * @param limit
+     * @param type     默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name     仅仅用于搜索
+     * @return
+     */
+    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name);
 
     Observable<CircleMembers> attornCircle(long circleId, long userId);
 

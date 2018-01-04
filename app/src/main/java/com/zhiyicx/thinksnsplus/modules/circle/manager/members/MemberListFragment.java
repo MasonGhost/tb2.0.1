@@ -62,6 +62,9 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     protected boolean isSearch;
 
+    /**
+     * 用于本地筛选
+     */
     List<CircleMembers> cache = new ArrayList<>();
 
     private long mCircleId;
@@ -186,7 +189,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public boolean needBlackList() {
-        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
+//        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
+        return false;
     }
 
     @Override
@@ -237,6 +241,11 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
             return groupInfo;
         });
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     protected void initPopWindow(View v, int pos, CircleMembers members) {
@@ -311,7 +320,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             case R.id.fragment_search_back:
                 break;
             case R.id.fragment_search_cancle:
-                setLeftClick();
+                mRefreshlayout.autoLoadmore();
+//                setLeftClick();
                 break;
             default:
         }

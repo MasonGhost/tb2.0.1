@@ -660,6 +660,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
         // 刷新
         if (!isLoadMore) {
+
+            mTvNoMoredataText.setVisibility(View.GONE);
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setEnableLoadmore(true);
             }

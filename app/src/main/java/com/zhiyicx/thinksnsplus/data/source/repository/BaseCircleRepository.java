@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -548,16 +549,19 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
 
     /**
-     * 获取圈子成员列表
-     *
-     * @param limit
+     * @param circleId
      * @param after
-     * @param type
+     * @param limit
+     * @param type     默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name     仅仅用于搜索
      * @return
      */
     @Override
-    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type) {
-        return mCircleClient.getCircleMemberList(circleId, limit, after, type)
+    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name) {
+        if (TextUtils.isEmpty(name)) {
+            name = null;
+        }
+        return mCircleClient.getCircleMemberList(circleId, limit, after, type, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -46,6 +46,11 @@ public class CircleMembers extends BaseListBean {
     private String updated_at;
     private UserInfoBean user;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public Long getId() {
         return id;
     }
