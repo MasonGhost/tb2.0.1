@@ -2,11 +2,33 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:background="@color/white">
 
+    <com.zhiyicx.thinksnsplus.widget.TSSearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/conversation_search_height"
+            android:background="@drawable/info_search_bg"
+            style="@style/style_edit_cursor"
+            android:hint="@string/info_search"
+            android:imeOptions="actionSearch"
+            android:drawableLeft="@mipmap/search_icon_search"
+            android:textColorHint="@color/normal_for_assist_text"
+            android:textColor="@color/normal_for_assist_text"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:textSize="@dimen/size_content_assist"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:drawablePadding="@dimen/spacing_small"
+            android:visibility="gone"/>
     <include
-            layout="@layout/view_top_tip"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_top_tip_height"
+            android:layout_below="@+id/searchView"
+            layout="@layout/view_top_tip"/>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/refreshlayout"

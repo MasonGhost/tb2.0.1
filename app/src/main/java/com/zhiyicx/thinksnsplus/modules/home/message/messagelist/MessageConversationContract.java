@@ -75,5 +75,7 @@ public interface MessageConversationContract {
          * @return List<ChatUserInfoBean>
          */
         List<ChatUserInfoBean> getChatUserList(int position);
+
+        void searchList(String key);
     }
 }

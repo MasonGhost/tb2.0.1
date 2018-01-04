@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 import android.support.v4.app.Fragment;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -28,6 +30,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -42,6 +46,9 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    /**复制的所有原数据*/
+    private List<MessageItemBeanV2> mCopyConversationList;
 
     @Inject
     public MessageConversationPresenter(MessageConversationContract.Repository repository, MessageConversationContract.View rootView) {
@@ -76,7 +83,6 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(itemBeanV2 -> {
-                    LogUtils.d("Cathy", "deletConversation");
                     mRootView.getRealMessageList().remove(itemBeanV2);
                     mRootView.refreshData();
                     checkBottomMessageTip();
@@ -104,6 +110,35 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         return chatUserInfoBeans;
     }
 
+    @Override
+    public void searchList(String key) {
+        Observable.just(key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(s -> {
+                    List<MessageItemBeanV2> newList = new ArrayList<>();
+                    for (MessageItemBeanV2 itemBeanV2 : mCopyConversationList){
+                        String name = "";
+                        if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat){
+                            if (itemBeanV2.getUserInfo() != null){
+                                name = itemBeanV2.getUserInfo().getName();
+                            }
+                        } else {
+                            EMGroup group = EMClient.getInstance().groupManager().getGroup(itemBeanV2.getEmKey());
+                            if (group != null){
+                                name = group.getGroupName();
+                            }
+                        }
+                        if (name.contains(s)){
+                            newList.add(itemBeanV2);
+                        }
+                    }
+                    return newList;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> mRootView.getMessageListSuccess(list));
+    }
+
     private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
         ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
         chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
@@ -129,6 +164,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
+                        if (mCopyConversationList == null){
+                            mCopyConversationList = new ArrayList<>();
+                        }
+                        mCopyConversationList = messageItemBeanV2s;
                         mRootView.getMessageListSuccess(messageItemBeanV2s);
                         mRootView.hideStickyMessage();
                         checkBottomMessageTip();

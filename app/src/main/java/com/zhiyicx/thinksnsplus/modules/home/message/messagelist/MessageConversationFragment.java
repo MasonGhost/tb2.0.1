@@ -4,9 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.hyphenate.easeui.EaseConstant;
-import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
 import com.zhiyicx.thinksnsplus.R;
@@ -15,17 +24,21 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageAdapterV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.TSSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 
@@ -37,13 +50,21 @@ import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_D
  */
 
 public class MessageConversationFragment extends TSListFragment<MessageConversationContract.Presenter, MessageItemBean>
-        implements MessageConversationContract.View ,MessageAdapterV2.OnSwipeItemClickListener,
-        OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener{
+        implements MessageConversationContract.View, MessageAdapterV2.OnSwipeItemClickListener,
+        OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
 
     @Inject
     MessageConversationPresenter mConversationPresenter;
+    @BindView(R.id.searchView)
+    TSSearchView mSearchView;
 
     private List<MessageItemBeanV2> mMessageItemBeanList;
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mSearchView.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -68,6 +89,23 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
                 .build()
                 .inject(this);
         super.initData();
+        mSearchView.setOnSearchClickListener(new TSSearchView.OnSearchClickListener() {
+            @Override
+            public void onSearchClick(View view) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)){
+                    // 展示原数据
+                    mPresenter.requestNetData(0L, false);
+                } else {
+                    // 显示搜索结果
+                    mPresenter.searchList(s.toString());
+                }
+            }
+        });
     }
 
     @Override
@@ -75,6 +113,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         super.onResume();
         // 刷新信息内容
         if (mPresenter != null) {
+            mPresenter.requestCacheData(0L, false);
             mPresenter.refreshConversationReadMessage();
         }
     }
@@ -132,6 +171,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     protected boolean showToolBarDivider() {
         return false;
     }
+
     @Override
     protected boolean setUseStatusView() {
         return false;
@@ -147,7 +187,7 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
      * 进入聊天页
      *
      * @param messageItemBean 当前 item 内容
-     * @param position         当前点击位置
+     * @param position        当前点击位置
      */
     private void toChatV2(MessageItemBeanV2 messageItemBean, int position) {
         if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
