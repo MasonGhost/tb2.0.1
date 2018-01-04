@@ -111,6 +111,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private View mTvNoMoredataText;
 
+    /**
+     * 避免 Glide.resume.重复设置增加开销
+     */
+    private static boolean sIsScrolling;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_tslist;
@@ -167,11 +172,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // SCROLL_STATE_FLING; //屏幕处于甩动状态
                 // SCROLL_STATE_IDLE; //停止滑动状态
                 // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
-                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        Glide.with(getContext()).resumeRequests();
-                    } else {
-                        Glide.with(getContext()).pauseRequests();
+                if (AndroidLifecycleUtils.canLoadImage(getContext()) && mActivity != null) {
+
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                        sIsScrolling = true;
+                        Glide.with(mActivity).pauseRequests();
+                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (sIsScrolling == true) {
+                            Glide.with(mActivity).resumeRequests();
+
+                        }
+                        sIsScrolling = false;
                     }
                 }
             }
