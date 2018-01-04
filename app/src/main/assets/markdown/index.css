@@ -10,7 +10,7 @@ body {
 }
 */
 #editor:empty::before {
-  content: "请输入正文";
+  content: attr(editor-placeholder);
   color: #cccccc;
   outline: none;
 }

@@ -137,6 +137,7 @@ public class PublishPostFragment extends MarkdownFragment {
                     .currentTimeMillis());
         }
         postDraftBean.setMark(mark);
+        postDraftBean.setHasSynToDynamic(mCbSynToDynamic.isChecked());
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
         postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());

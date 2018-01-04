@@ -521,9 +521,25 @@ public abstract class RichEditor extends WebView {
     private class Android4JsInterface {
         @JavascriptInterface
         public void setViewEnabled(boolean enabled) {
-            if (mOnFocusChangeListener != null) {
-                mOnFocusChangeListener.onFocusChange(enabled);
-            }
+            Observable.empty()
+                    .filter(o -> mOnFocusChangeListener != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mOnFocusChangeListener.onFocusChange(enabled);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+                    });
         }
 
         @JavascriptInterface
@@ -553,6 +569,7 @@ public abstract class RichEditor extends WebView {
 
         @JavascriptInterface
         public void noMarkdownWords(String noMarkdownWords) {
+            // 注意 js 回调 在异步线程中
             if (mOnNoMarkdownWordChangeListener != null) {
                 mOnNoMarkdownWordChangeListener.onNoMarkdownWordChange(noMarkdownWords);
             }

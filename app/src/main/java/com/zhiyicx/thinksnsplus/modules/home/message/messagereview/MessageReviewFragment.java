@@ -20,6 +20,10 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPo
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.adapter.TopPostItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import butterknife.BindView;
 
 /**
@@ -114,6 +118,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
             }
 
         }
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<BaseListBean> data) {
+        return (long) mListDatas.size();
     }
 
     @Override
