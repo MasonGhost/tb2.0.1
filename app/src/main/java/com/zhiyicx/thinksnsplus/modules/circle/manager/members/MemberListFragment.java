@@ -13,12 +13,14 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -125,6 +127,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             protected void convert(ViewHolder holder, CircleMembers circleMembers, int position) {
                 holder.setText(R.id.tv_member_name, circleMembers.getUser().getName());
                 ImageView more = holder.getImageViwe(R.id.iv_member_more);
+                UserAvatarView headImage = holder.getView(R.id.uv_member_head);
                 TextView tag = holder.getTextView(R.id.tv_member_tag);
 
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
@@ -133,6 +136,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
                 more.setVisibility((mPermissionMember || isOwner) || (isManager && mPermissionManager) ? View
                         .INVISIBLE : View.VISIBLE);
+
+                ImageUtils.loadCircleUserHeadPic(circleMembers.getUser(), headImage);
 
                 tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);
                 tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R

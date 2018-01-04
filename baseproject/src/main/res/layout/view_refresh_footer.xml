@@ -5,6 +5,10 @@
     android:layout_height="wrap_content"
     >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cursor_with"/>
+
     <TextView
         android:id="@+id/tv_no_moredata_text"
         android:layout_width="match_parent"
