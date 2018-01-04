@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ChooseBindRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class ChooseBindPresenterModule {
         return mView;
     }
 
-    @Provides
-    public ChooseBindContract.Repository provideChooseBindContractRepository(ChooseBindRepository repository){
-        return repository;
-    }
 }

@@ -54,7 +54,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;
-    private List<RealAdvertListBean> mHeaderAdvert;
+//    private List<RealAdvertListBean> mHeaderAdvert;
 
     private InfoBannerHeader mInfoBannerHeader;
 
@@ -206,7 +206,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         List<String> advertLinks = new ArrayList<>();
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
         mListAdvert = mPresenter.getListAdvert();
-        mHeaderAdvert = mPresenter.getBannerAdvert();
+//        mHeaderAdvert = mPresenter.getBannerAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
@@ -237,11 +237,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected void onEmptyViewClick() {
-        mRefreshlayout.autoRefresh();
-    }
-
-    @Override
     public String getInfoType() {
         return mInfoType;
     }
@@ -249,12 +244,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public int isRecommend() {
         return mInfoType.equals(RECOMMEND_INFO) ? 1 : 0;
-    }
-
-
-    @Override
-    public void setPresenter(InfoMainContract.InfoListPresenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override

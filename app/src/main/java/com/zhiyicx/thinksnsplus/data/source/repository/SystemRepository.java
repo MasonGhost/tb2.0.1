@@ -62,13 +62,6 @@ public class SystemRepository implements ISystemRepository {
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     protected SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-
-    @Inject
-    protected TagCategoryBeanGreenDaoImpl mTagCategoryBeanGreenDao;
-
-    @Inject
-    protected UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
-
     @Inject
     protected ChatRepository mChatRepository;
 

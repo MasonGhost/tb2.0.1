@@ -85,7 +85,6 @@ public class MusicCommentRepositroty extends BaseMusicRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return commentedBeens;
                             });
                         }
@@ -137,7 +136,6 @@ public class MusicCommentRepositroty extends BaseMusicRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return listBaseJson;
                             });
                         }

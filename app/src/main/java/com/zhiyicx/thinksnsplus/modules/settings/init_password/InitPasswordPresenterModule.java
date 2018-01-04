@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings.init_password;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InitPasswordRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class InitPasswordPresenterModule {
         return mView;
     }
 
-    @Provides
-    public InitPasswordContract.Repository provideInitPasswordContractRepository(InitPasswordRepository repository){
-        return repository;
-    }
 }

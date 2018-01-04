@@ -22,7 +22,4 @@ public interface CertificationInputContract {
 
     }
 
-    interface Repository{
-
-    }
 }

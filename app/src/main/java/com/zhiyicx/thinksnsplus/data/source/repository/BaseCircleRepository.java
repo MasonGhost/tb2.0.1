@@ -60,8 +60,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     protected Application mContext;
     @Inject
     protected UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
     @Inject
@@ -197,7 +196,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 for (UserInfoBean userInfoBean : listBaseJson) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                 for (PostDigListBean digListBean : postDigListBeans) {
                                     digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
                                     digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
@@ -504,7 +502,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return postListBeans;
                             });
                 })
@@ -635,7 +632,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 }
                                 dealCommentData(circleCommentZip.getPinneds(), userInfoBeanSparseArray);
                                 dealCommentData(circleCommentZip.getComments(), userInfoBeanSparseArray);
-                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
                                 return circleCommentZip;
                             });
                 });

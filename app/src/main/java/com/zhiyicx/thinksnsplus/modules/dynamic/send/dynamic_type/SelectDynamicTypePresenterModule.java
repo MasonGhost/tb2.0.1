@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SelectDynamicTypeRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class SelectDynamicTypePresenterModule {
         return mView;
     }
 
-    @Provides
-    public SelectDynamicTypeContract.Repository provideSelectDynamicTypeContractRepository(SelectDynamicTypeRepository repository){
-        return repository;
-    }
 }
