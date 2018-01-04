@@ -243,11 +243,6 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         });
     }
 
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
-    }
-
     protected void initPopWindow(View v, int pos, CircleMembers members) {
         boolean isManager = CircleMembers.ADMINISTRATOR.equals(members.getRole());
         boolean isMember = CircleMembers.MEMBER.endsWith(members.getRole());
