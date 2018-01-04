@@ -19,7 +19,8 @@
     <string-array name="top_type">
         <item>comment</item>
         <item>news:comment</item>
-        <item>group:comment</item>
+        <item>post:comment</item>
+        <item>post</item>
         <item>group:join</item>
     </string-array>
 </resources>

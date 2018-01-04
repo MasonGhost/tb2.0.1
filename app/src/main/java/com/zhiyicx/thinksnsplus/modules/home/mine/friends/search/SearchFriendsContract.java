@@ -26,6 +26,4 @@ public interface SearchFriendsContract {
     interface Presenter extends ITSListPresenter<UserInfoBean> {
     }
 
-    interface Repository extends IBaseFriendsRepository {
-    }
 }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.PublicshContentRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class PublishContentPresenterModule {
         return mView;
     }
 
-    @Provides
-    PublishContentConstact.Repository providePublishContentConstactRepository(PublicshContentRepository publicshContentRepository){
-        return publicshContentRepository;
-    }
 }

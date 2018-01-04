@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import rx.Subscription;
  * @Description
  */
 @SuppressWarnings("unchecked")
-public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.Repository, WithDrawalsConstract.View>
+public class WithDrawalsPresenter extends AppBasePresenter< WithDrawalsConstract.View>
         implements WithDrawalsConstract.Presenter {
 
     @Inject
@@ -27,10 +28,12 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    BillRepository mBillRepository;
 
     @Inject
-    public WithDrawalsPresenter(WithDrawalsConstract.Repository repository, WithDrawalsConstract.View rootView) {
-        super(repository, rootView);
+    public WithDrawalsPresenter(WithDrawalsConstract.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
             return;
         }
         value = PayConfig.gameCurrency2RealCurrency(value, getRatio());
-        Subscription subscribe = mRepository.withdraw(value, type, account)
+        Subscription subscribe = mBillRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(() -> {
                     mRootView.configSureBtn(false);

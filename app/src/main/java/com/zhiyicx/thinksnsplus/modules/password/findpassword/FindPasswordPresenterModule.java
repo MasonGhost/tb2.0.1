@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.FindPasswordRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class FindPasswordPresenterModule {
     }
 
 
-    @Provides
-    FindPasswordContract.Repository provideFindPasswordContractRepository(FindPasswordRepository findPasswordRepository) {
-        return findPasswordRepository;
-    }
 }

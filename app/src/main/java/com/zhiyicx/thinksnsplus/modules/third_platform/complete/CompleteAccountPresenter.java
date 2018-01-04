@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -10,7 +9,6 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -27,7 +25,7 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountContract.Repository, CompleteAccountContract.View>
+public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountContract.View>
         implements CompleteAccountContract.Presenter {
 
     @Inject
@@ -38,9 +36,9 @@ public class CompleteAccountPresenter extends AppBasePresenter<CompleteAccountCo
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-    public CompleteAccountPresenter(CompleteAccountContract.Repository repository,
-                                    CompleteAccountContract.View rootView) {
-        super(repository, rootView);
+    public CompleteAccountPresenter(
+            CompleteAccountContract.View rootView) {
+        super(rootView);
     }
 
     @Override

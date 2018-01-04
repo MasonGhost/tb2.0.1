@@ -42,7 +42,7 @@ import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_
 
 /**
  * @Describe
- * @Author Jungle68
+ * @author Jungle68
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */

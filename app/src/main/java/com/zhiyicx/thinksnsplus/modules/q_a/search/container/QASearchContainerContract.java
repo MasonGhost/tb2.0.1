@@ -19,7 +19,4 @@ public interface QASearchContainerContract {
 
     }
 
-    interface Repository {
-
-    }
 }

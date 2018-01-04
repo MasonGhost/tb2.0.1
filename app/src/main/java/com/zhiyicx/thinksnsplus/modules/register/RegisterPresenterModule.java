@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.RegisterRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,10 +22,5 @@ public class RegisterPresenterModule {
         return mView;
     }
 
-
-    @Provides
-    RegisterContract.Repository provideRegisterContractRepository(RegisterRepository registerRepository) {
-        return registerRepository;
-    }
 
 }

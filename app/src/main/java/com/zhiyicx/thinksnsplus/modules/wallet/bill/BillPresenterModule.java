@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class BillPresenterModule {
         return mView;
     }
 
-    @Provides
-    BillContract.Repository provideBillContractRepository(BillRepository repository) {
-        return repository;
-    }
 }

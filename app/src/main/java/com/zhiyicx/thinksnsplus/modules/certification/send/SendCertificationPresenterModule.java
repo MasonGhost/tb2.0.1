@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.certification.send;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.SendCertificationRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class SendCertificationPresenterModule {
         return mView;
     }
 
-    @Provides
-    public SendCertificationContract.Repository provideSendCertificationContractRepository(SendCertificationRepository repository){
-        return repository;
-    }
 }

@@ -24,8 +24,4 @@ public interface SelectDynamicTypeContract {
         void savePayTip(boolean isNeed);
     }
 
-    // 暂时没用，万一以后要搞点什么其他的 比如广告什么的
-    interface Repository {
-
-    }
 }

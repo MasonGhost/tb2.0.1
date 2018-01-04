@@ -27,21 +27,21 @@ import rx.functions.Func1;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePresenter<RP, V> implements IBaseTouristPresenter {
+public abstract class AppBasePresenter<V extends IBaseView> extends BasePresenter<V> implements IBaseTouristPresenter {
     private static final String DEFAULT_WALLET_EXCEPTION_MESSAGE = "balance_check";
     @Inject
     protected AuthRepository mAuthRepository;
     @Inject
-    CommentRepository mCommentRepository;
+    protected CommentRepository mCommentRepository;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    protected WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     protected SystemRepository mSystemRepository;
 
-    public AppBasePresenter(RP repository, V rootView) {
-        super(repository, rootView);
+    public AppBasePresenter(V rootView) {
+        super(rootView);
     }
 
     @Override
@@ -82,6 +82,12 @@ public abstract class AppBasePresenter<RP, V extends IBaseView> extends BasePres
                 });
     }
 
+    /**
+     * 检查异常是否是手动抛出的余额检查异常，如果是不做处理，如果不是需要处理
+     *
+     * @param throwable 抛出的异常
+     * @return
+     */
     protected boolean isBalanceCheck(Throwable throwable) {
         if (throwable != null && !TextUtils.isEmpty(throwable.getMessage()) && DEFAULT_WALLET_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
             mRootView.dismissSnackBar();

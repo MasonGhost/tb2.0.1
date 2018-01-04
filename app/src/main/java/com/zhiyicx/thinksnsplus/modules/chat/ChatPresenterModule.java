@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class ChatPresenterModule {
         return mView;
     }
 
-    @Provides
-    ChatContract.Repository provideChatContractRepository(ChatRepository chatRepository){
-        return chatRepository;
-    }
 }

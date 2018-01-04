@@ -18,10 +18,6 @@ public interface SystemConversationContract {
 
     }
 
-    interface Repository extends ISystemRepository {
-
-    }
-
     interface Presenter extends ITSListPresenter<SystemConversationBean> {
 
     }

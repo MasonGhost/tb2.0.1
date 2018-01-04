@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RichTextEditorLib</string>
+    <string name="pick_name">上传</string>
+    <string name="pic_out_of_size">图片大小超过限制！</string>
+    <string name="not_empty">不能为空！</string>
+    <string name="handles">操作</string>
+    <string name="char_unit">字</string>
+    <string name="delete">删  除</string>
+    <string name="retry">重  试</string>
+    <string name="add_link">插入链接</string>
+    <string name="input_link_name">输入链接标题</string>
+    <string name="input_url">输入链接地址</string>
+    <string name="cancle">取消</string>
+    <string name="ok">确定</string>
+</resources>

@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AnswerDetailsRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoDetailsRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -26,8 +23,4 @@ public class AnswerDetailsPresenterMudule {
         return mView;
     }
 
-    @Provides
-    AnswerDetailsConstract.Repository provideInfoDetailsRepository(AnswerDetailsRepository answerDetailsRepository){
-        return answerDetailsRepository;
-    }
 }

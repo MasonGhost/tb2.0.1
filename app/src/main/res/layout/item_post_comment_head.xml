@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+
+    <!--资讯头部的信息-->
+    <!--title-->
+    <TextView
+        android:id="@+id/tv_info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/info_title_size"
+        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
+
+    <!--栏目以及来源-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:textColor="@color/general_for_hint"
+            android:id="@+id/tv_from_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_tiny"
+            android:textSize="@dimen/size_advert_launche"
+            tools:text="时政"/>
+
+        <TextView
+            android:textColor="@color/themeColor"
+            android:id="@+id/item_info_timeform"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small_3dp"
+            android:layout_marginStart="@dimen/spacing_small_3dp"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="三小时前   来自火星"/>
+    </LinearLayout>
+
+    <br.tiagohm.markdownview.MarkdownView
+        android:id="@+id/info_content_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid_small"
+        android:layout_marginRight="@dimen/spacing_mid_small"
+        android:layout_marginTop="@dimen/spacing_mid"/>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <br.tiagohm.markdownview.MarkdownView
+            android:id="@+id/info_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:escapeHtml="false"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:visibility="visible"
+            tools:ignore="WebViewLayout"/>
+
+        <!--用来占位的-->
+        <ImageView
+            android:id="@+id/iv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/default_pic_personal"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+
+    <include
+        layout="@layout/item_dynamic_detail_dig"/>
+
+    <include
+        layout="@layout/include_reward"/>
+
+    <include
+        layout="@layout/advert_details"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small_3dp"
+        android:background="@color/general_for_bg_light"/>
+
+    <!--评论数-->
+    <FrameLayout
+        android:id="@+id/info_detail_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_mid"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_line_bottom_themcolor"/>
+        </LinearLayout>
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
+</LinearLayout>

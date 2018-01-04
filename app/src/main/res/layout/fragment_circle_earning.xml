@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wcy.overscroll.OverScrollLayout
+        android:id="@+id/overscroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bgColor"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_account_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/themeColor"
+                android:paddingBottom="@dimen/spacing_big_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingStart="@dimen/spacing_mid"
+                android:paddingTop="@dimen/spacing_big_large"
+                android:text="@string/circle_earningn_total"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_icon_assist"
+                />
+
+            <TextView
+                android:id="@+id/tv_mine_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/themeColor"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:textColor="@color/white"
+                android:textSize="@dimen/withdrawal_detail_textsize"
+                tools:text="@string/default_mongy"
+                />
+            <!--充值-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_member"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/circle_earningn_member"
+                app:rightTextColor="@color/money_gold_light"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--提现-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/circle_earningn_top"
+                app:rightTextColor="@color/money_gold_light"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="false"/>
+        </LinearLayout>
+    </com.wcy.overscroll.OverScrollLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_recharge_and_withdraw_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center"
+        android:drawableLeft="@mipmap/ico_wallet_rules"
+        android:drawablePadding="@dimen/spacing_small"
+        android:padding="@dimen/spacing_large"
+        android:text="@string/recharge_and_withdraw_rule"
+        />
+</RelativeLayout>

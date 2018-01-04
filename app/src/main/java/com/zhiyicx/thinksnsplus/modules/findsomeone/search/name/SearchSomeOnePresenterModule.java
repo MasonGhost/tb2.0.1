@@ -22,9 +22,4 @@ public class SearchSomeOnePresenterModule {
         return mView;
     }
 
-    @Provides
-    SearchSomeOneContract.Repository providesRepository() {
-        return new SearchSomeOneContract.Repository() {
-        };
-    }
 }

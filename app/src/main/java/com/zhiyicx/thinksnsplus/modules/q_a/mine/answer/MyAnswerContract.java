@@ -27,7 +27,4 @@ public interface MyAnswerContract {
         void handleLike(int position, AnswerInfoBean answerInfoBean);
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-        Observable<List<AnswerInfoBean>> getUserAnswerList(String type, Long maxId);
-    }
 }

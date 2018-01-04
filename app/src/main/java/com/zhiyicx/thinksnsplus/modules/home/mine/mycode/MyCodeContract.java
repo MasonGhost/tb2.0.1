@@ -53,7 +53,4 @@ public interface MyCodeContract {
         void shareMyQrCode(Bitmap bitmap);
     }
 
-    interface Repository {
-
-    }
 }

@@ -153,8 +153,9 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        // 过滤自己的 or 内容被删除的
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                .getUser_id()) {// 过滤自己的
+                .getUser_id()||mListDatas.get(position).getIsDelete()) {
 
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();

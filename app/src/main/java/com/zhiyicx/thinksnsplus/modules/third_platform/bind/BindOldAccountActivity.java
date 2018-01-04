@@ -15,7 +15,7 @@ import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.Choose
 public class BindOldAccountActivity extends TSActivity<BindOldAccountPresenter, BindOldAccountFragment>{
     @Override
     protected BindOldAccountFragment getFragment() {
-        return new BindOldAccountFragment().instance(getIntent().getExtras());
+        return  BindOldAccountFragment.instance(getIntent().getExtras());
     }
 
     @Override

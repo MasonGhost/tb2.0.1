@@ -1,10 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.mine.question;
 
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,20 +24,26 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.Repository, MyPublishQuestionContract.View>
+public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuestionContract.View>
         implements MyPublishQuestionContract.Presenter {
 
-    @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
+    BaseQARepository mBaseQARepository;
+
     @Inject
-    public MyPublishQuestionPresenter(MyPublishQuestionContract.Repository repository, MyPublishQuestionContract.View rootView) {
-        super(repository, rootView);
+    public MyPublishQuestionPresenter(MyPublishQuestionContract.View rootView
+            , QAListInfoBeanGreenDaoImpl qAListInfoBeanGreenDao
+            , BaseQARepository baseQARepository
+    ) {
+        super(rootView);
+        mQAListInfoBeanGreenDao = qAListInfoBeanGreenDao;
+        mBaseQARepository = baseQARepository;
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+        Subscription subscribe = mBaseQARepository.getUserQAQustion(mRootView.getMyQuestionType(), maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
             @Override
             protected void onSuccess(List<QAListInfoBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -56,7 +65,7 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -64,4 +73,5 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
         mQAListInfoBeanGreenDao.saveMultiData(data);
         return false;
     }
+
 }

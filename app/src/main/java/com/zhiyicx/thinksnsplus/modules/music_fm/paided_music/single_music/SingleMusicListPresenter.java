@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMusicRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,17 +19,20 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListContract.Repository,SingleMusicListContract.View>
+public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListContract.View>
         implements SingleMusicListContract.Presenter {
 
     @Inject
-    public SingleMusicListPresenter(SingleMusicListContract.Repository repository, SingleMusicListContract.View rootView) {
-        super(repository, rootView);
+    BaseMusicRepository mBaseMusicRepository;
+
+    @Inject
+    public SingleMusicListPresenter(SingleMusicListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getMyPaidsMusicList(maxId).subscribe(new BaseSubscribeForV2<List<MusicDetaisBean>>() {
+        Subscription subscribe = mBaseMusicRepository.getMyPaidsMusicList(maxId).subscribe(new BaseSubscribeForV2<List<MusicDetaisBean>>() {
             @Override
             protected void onSuccess(List<MusicDetaisBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -51,7 +55,7 @@ public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListCo
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override

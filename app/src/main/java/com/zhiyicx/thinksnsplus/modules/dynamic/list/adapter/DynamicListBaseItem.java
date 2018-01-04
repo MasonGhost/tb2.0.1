@@ -190,7 +190,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
-        long timeS = System.currentTimeMillis();
         try {
             // 防止个人中心没后头像错误
             try {
@@ -328,8 +327,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        long timeE = System.currentTimeMillis();
-        LogUtils.d(getClass().getSimpleName() + ":::" + (timeE - timeS));
     }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {

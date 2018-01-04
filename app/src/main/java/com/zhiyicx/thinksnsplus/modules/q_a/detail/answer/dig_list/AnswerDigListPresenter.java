@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,17 +27,19 @@ import rx.Subscription;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContract.Repository, AnswerDigListContract.View> implements AnswerDigListContract.Presenter {
+public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContract.View> implements AnswerDigListContract.Presenter {
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public AnswerDigListPresenter(AnswerDigListContract.Repository repository, AnswerDigListContract.View rootView) {
-        super(repository, rootView);
+    public AnswerDigListPresenter(AnswerDigListContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -50,7 +53,7 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long id) {
-        Subscription subscribe = mRepository.getAnswerDigListV2(id, maxId).subscribe(new BaseSubscribeForV2<List<AnswerDigListBean>>() {
+        Subscription subscribe = mBaseQARepository.getAnswerDigListV2(id, maxId).subscribe(new BaseSubscribeForV2<List<AnswerDigListBean>>() {
             @Override
             protected void onSuccess(List<AnswerDigListBean> data) {
                 LogUtils.i("digList_netData" + data.toString());
@@ -91,7 +94,7 @@ public class AnswerDigListPresenter extends AppBasePresenter<AnswerDigListContra
     @Override
     public List<AnswerDigListBean> requestCacheData(Long maxId, boolean isLoadMore, AnswerInfoBean answerInfoBean) {
         List<AnswerDigListBean> likes = answerInfoBean.getLikes();
-        mRootView.onCacheResponseSuccess(likes,isLoadMore);
+        mRootView.onCacheResponseSuccess(likes, isLoadMore);
         return likes;
     }
 }

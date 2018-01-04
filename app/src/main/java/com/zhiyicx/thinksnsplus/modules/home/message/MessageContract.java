@@ -72,62 +72,6 @@ public interface MessageContract {
         List<MessageItemBeanV2> getRealMessageList();
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository extends UserInfoContract {
-        /**
-         * 获取对话列表信息
-         *
-         * @param user_id 用户 id
-         */
-        Observable<List<MessageItemBean>> getConversationList(int user_id);
-
-        Observable<List<MessageItemBeanV2>> getConversationListV2(int user_id);
-
-        /**
-         * 通过 对话 id 获取对话信息
-         *
-         * @param cid 对话 id
-         */
-        Observable<MessageItemBean> getSingleConversation(int cid);
-
-        /**
-         * 未读通知数量检查
-         */
-        Observable<Void> ckeckUnreadNotification();
-
-
-        /**
-         * 获取用户未读消息
-         *
-         * @see {https://slimkit.github.io/plus-docs/v2/core/users/unread#用户未读消息}
-         */
-        Observable<UnReadNotificaitonBean> getUnreadNotificationData();
-
-        /**
-         * 获取通知列表
-         */
-        Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset);
-
-        /**
-         * 读取通知
-         */
-        Observable<TSPNotificationBean> getNotificationDetail(String notificationId);
-
-        /**
-         * 标记通知阅读
-         */
-        Observable<Object> makeNotificationReaded(String notificationId);
-
-        /**
-         * 标记所有通知阅读
-         */
-        Observable<Object> makeNotificationAllReaded();
-
-        Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list);
-    }
-
     interface Presenter extends ITSListPresenter<MessageItemBean> {
         MessageItemBean updateCommnetItemData();
 

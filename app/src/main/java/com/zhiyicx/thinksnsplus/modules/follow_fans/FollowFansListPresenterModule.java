@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.FollowFansListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,10 +21,4 @@ public class FollowFansListPresenterModule {
     FollowFansListContract.View provideFollowFansListContractView() {
         return mView;
     }
-
-    @Provides
-    FollowFansListContract.Repository provideFollowFansListContractRepository(FollowFansListRepository followFansListRepository) {
-        return followFansListRepository;
-    }
-
 }

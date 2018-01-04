@@ -130,8 +130,9 @@ public class TopNewsCommentItem extends BaseTopItem implements BaseTopItem.TopRe
                 .subscribe(aVoid -> {
                     if (dynamicCommentBean.getExpires_at() == null
                             && dynamicCommentBean.getNews() != null
-                            && dynamicCommentBean.getComment() != null)
+                            && dynamicCommentBean.getComment() != null) {
                         initReviewPopWindow(dynamicCommentBean, position);
+                    }
                 });
     }
 

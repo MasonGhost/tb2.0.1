@@ -41,8 +41,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseRewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.RewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -72,7 +73,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContract.Repository,
+public class DynamicDetailPresenter extends AppBasePresenter<
         DynamicDetailContract.View> implements DynamicDetailContract.Presenter,
         OnShareCallbackListener {
 
@@ -82,33 +83,31 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+
     @Inject
-    SystemRepository mSystemRepository;
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
-    RewardRepository mRewardRepository;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    BaseRewardRepository mRewardRepository;
+
     @Inject
     public SharePolicy mSharePolicy;
+
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
+    @Inject
+    BaseDynamicRepository mBaseDynamicRepository;
     private boolean mIsNeedDynamicListRefresh = false;
     private boolean mIsAllDataReady = false;
 
 
     @Inject
-    public DynamicDetailPresenter(DynamicDetailContract.Repository repository,
+    public DynamicDetailPresenter(
                                   DynamicDetailContract.View rootView) {
-        super(repository, rootView);
+        super( rootView);
     }
 
     @Override
@@ -126,7 +125,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             getDynamicDigList(mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        Subscription subscribe = mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
+        Subscription subscribe = mBaseDynamicRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
                 .getCurrentDynamic().getId(), maxId)
                 .subscribe(new BaseSubscribeForV2<List<DynamicCommentBean>>() {
                     @Override
@@ -199,7 +198,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Override
     public void getCurrentDynamicDetail(final long feed_id, int topFlag) {
-        Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
+        Subscription subscription = mBaseDynamicRepository.getDynamicDetailBeanV2(feed_id)
                 .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
                     @Override
                     protected void onSuccess(DynamicDetailBeanV2 data) {
@@ -230,8 +229,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Override
     public void updateRewardData(Long feed_id) {
-        Subscription subscription = Observable.zip(mRepository.getDynamicDetailBeanV2(feed_id)
-                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+        Subscription subscription = Observable.zip(mBaseDynamicRepository.getDynamicDetailBeanV2(feed_id)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (currenDynamic, rewardsListBeens) -> {
                     mRootView.setRewardListBeans(rewardsListBeens);
                     mRootView.getCurrentDynamic().setReward(currenDynamic.getReward());
@@ -264,9 +263,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public void getDetailAll(final Long feed_id, Long max_id, final String user_ids, final int
             topFlag) {
-        Subscription subscription = Observable.zip(mRepository.getDynamicDigListV2(feed_id, max_id)
-                , mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), feed_id, max_id)
-                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+        Subscription subscription = Observable.zip(mBaseDynamicRepository.getDynamicDigListV2(feed_id, max_id)
+                , mBaseDynamicRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), feed_id, max_id)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_PAGE_SIZE, null, null, null)
                 , (mDynamicDigs, listBaseJson3, rewardsListBeens) -> {
                     DynamicDetailBeanV2 dynamicBean = new DynamicDetailBeanV2();
                     dynamicBean.setDigUserInfoList(mDynamicDigs);
@@ -336,7 +335,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public void getDynamicDigList(Long feed_id, Long max_id) {
-        Subscription subscription = mRepository.getDynamicDigListV2(feed_id, max_id)
+        Subscription subscription = mBaseDynamicRepository.getDynamicDigListV2(feed_id, max_id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -395,7 +394,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         // 更新数据库
         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicToolBean);
         // 通知服务器
-        mRepository.handleLike(isLiked, feed_id);
+        mBaseDynamicRepository.handleLike(isLiked, feed_id);
     }
 
     @Override
@@ -473,7 +472,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
+        mBaseDynamicRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
     /**
@@ -528,14 +527,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         mRootView.getListDatas().add(0, creatComment);
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
+        mBaseDynamicRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
     }
 
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+        mBaseDynamicRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
                 commentBean.getComment_mark());
         mRootView.refreshData();
     }
@@ -628,27 +627,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         Subscription subscribe = handleWalletBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(new Func1<Object, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(Object o) {
-                        return mCommentRepository.paykNote(note);
+                .flatMap(o -> mCommentRepository.paykNote(note))
+                .flatMap(stringBaseJsonV2 -> {
+                    if (isImage) {
+                        return Observable.just(stringBaseJsonV2);
                     }
-                })
-                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
-                    @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        if (isImage) {
-                            return Observable.just(stringBaseJsonV2);
-                        }
-                        return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
-                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
-                                    @Override
-                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
-                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
-                                        return Observable.just(stringBaseJsonV2);
-                                    }
-                                });
-                    }
+                    return mBaseDynamicRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
+                            .flatMap(detailBeanV2 -> {
+                                stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                return Observable.just(stringBaseJsonV2);
+                            });
                 })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override

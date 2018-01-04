@@ -42,6 +42,15 @@
     <!-- 简介输入到多少字符的时候显示提示 -->
     <integer name="show_introduce_input_size">25</integer>
 
+    <!-- 创建圈子公告最多输入字符数量 -->
+    <integer name="circle_notice_input_max_size">2000</integer>
+    <!-- 创建圈子名字最多输入字符数量 -->
+    <integer name="circle_name_input_max_size">20</integer>
+    <!-- 创建圈子简介最多输入字符数量 -->
+    <integer name="circle_introduce_max_size">255</integer>
+    <!-- 创建圈子简介输入到多少字符的时候显示提示 -->
+    <integer name="circle__input_size">200</integer>
+
     <!--发布动态标题最大字数30-->
     <integer name="dynamic_title_max_size">30</integer>
     <!--发布动态标题字数在20时提示-->
@@ -68,6 +77,10 @@
     <integer name="feed_back_content_max_size">200</integer>
     <!--意见反馈内容字数在达到数量后提示-->
     <integer name="feed_back_content_input_size">150</integer>
+    <!--举报-->
+    <integer name="report_content_max_size">255</integer>
+    <!--举报内容字数在达到数量后提示-->
+    <integer name="report_content_input_size">200</integer>
     <!--#########################################      浏览器相关       ################################-->
     <!-- 浏览器最大长度-->
     <integer name="progressbar_max">100</integer>
@@ -75,6 +88,8 @@
     <!--#########################################      viewpager的tab切换相关      ################################-->
     <!--tab的间距,单位dp-->
     <integer name="tab_margin">20</integer>
+    <!--tab的间距,单位dp-->
+    <integer name="tab_right_margin">50</integer>
     <!--tab的指示器边缘和文字边缘的距离，单位dp-->
     <integer name="tab_padding">7</integer>
     <!--tab的指示器高度，单位dp-->

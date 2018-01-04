@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -32,13 +33,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
@@ -308,19 +311,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
-//        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-//        Glide.with(getContext())
-//                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
-//                .bitmapTransform(new GlideCircleTransform(getContext()))
-//                .placeholder(R.mipmap.pic_default_portrait1)
-//                .error(R.mipmap.pic_default_portrait1)
-//                .into(new SimpleTarget<GlideDrawable>() {
-//                    @Override
-//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-//                        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
-//                    }
-//                });
     }
 
     @Override
@@ -433,7 +423,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
         if (mIsLookMore && getListDatas().size() >= DynamicListCommentView.SHOW_MORE_COMMENT_SIZE_LIMIT) {
-            mRvList.post(() -> ((LinearLayoutManager)layoutManager).scrollToPositionWithOffset(0,-mDynamicDetailHeader.scrollCommentToTop()));
+            mRvList.post(() -> ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(0, -mDynamicDetailHeader.scrollCommentToTop()));
         }
         // 如果当前动态所属用户，就是当前用户，隐藏关注按钮
         long user_id = mDynamicBean.getUser_id();
@@ -588,7 +578,23 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+
         return false;
+    }
+
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getCommentUser(), mListDatas.get
+                    (position).getComment_id().toString(),
+                    null, null, mListDatas.get(position).getComment_content(), ReportType.COMMENT));
+
+        } else {
+
+        }
     }
 
     @Override
@@ -635,6 +641,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
 ///                .item2Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item3Str(getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -646,6 +653,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 })
                 .item2ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    mOtherDynamicPopWindow.hide();
+                })
+                .item3ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+                    if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
+                        img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                100);
+                    }
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(dynamicBean.getUserInfoBean(), String.valueOf(dynamicBean
+                            .getId()),
+                            "", img, dynamicBean.getFeed_content(), ReportType.DYNAMIC));
                     mOtherDynamicPopWindow.hide();
                 })
                 .bottomClickListener(() -> mOtherDynamicPopWindow.hide())
@@ -702,10 +722,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void initImageCenterPopWindow(final int imagePosition, long amout,
                                           final int note, int strRes, final boolean isImage) {
-///       if (mPayImagePopWindow != null) {
-//            mPayImagePopWindow.show();
-//            return;
-//        }
         mPayImagePopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
@@ -765,23 +781,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mReSendCommentPopWindow.show();
     }
 
-    /**
-     * 为了防止toolbar移动，导致状态栏透明，添加一个白色的色块
-     */
-    private void initToolbarTopBlankHeight() {
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mToolbarTopBlank.getLayoutParams();
-        layoutParams.height = DeviceUtils.getStatuBarHeight(getContext());
-    }
-
-    @Override
-    protected void onOverScrolled() {
-        super.onOverScrolled();
-//        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
-    }
-
     @Override
     public void onCommentTextClick(int position) {
         handleItemClick(position);
+    }
+
+    @Override
+    public void onCommentTextLongClick(int position) {
+        goReportComment(position);
     }
 
     @Override

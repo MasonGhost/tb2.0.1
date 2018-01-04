@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -21,6 +23,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseWebLoad;
@@ -29,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
@@ -36,9 +40,12 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEm
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -66,7 +73,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -148,6 +155,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 ItemOnCommentListener());
         multiItemTypeAdapter.addItemViewDelegate(answerDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerDetailCommentEmptyItem());
+        multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
 
@@ -450,6 +458,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
                 .item4Str(getString(answerIsMine && !isMineAdopted && !isInvited ? R.string.edit : R.string.empty))
+                .item5Str(answerIsMine ? "" : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -486,6 +495,22 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                             mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
                 })
+                .item5ClickListener(() -> {                    // 举报帖子
+                    String img = "";
+
+                    int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
+                    if (id > 0) {
+                        img = ImageUtils.imagePathConvertV2(id, getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                        .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                ImageZipConfig.IMAGE_80_ZIP);
+                    }
+                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody()); // 预览的文字
+                    ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
+                            (mAnswerInfoBean.getId()),
+                            "", img, des, ReportType.QA));
+                    mDealInfoMationPopWindow.hide();
+                })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
     }
@@ -495,37 +520,80 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         closeLoadingView();
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        comment(position);
+
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        goReportComment(position);
+        return true;
+    }
+
     class ItemOnCommentListener implements AnswerDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
-            AnswerCommentListBean infoCommentListBean = mListDatas.get(position);
-            if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
-                if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
-                        .getUser_id()) {// 自己的评论
-//                if (mListDatas.get(position).getId() != -1) {
-                    initDeleteCommentPopupWindow(infoCommentListBean);
-                    mDeletCommentPopWindow.show();
-//                } else {
-//
-//                    return;
-//                }
-                } else {
-                    mReplyUserId = infoCommentListBean.getUser_id().intValue();
-                    showCommentView();
-                    String contentHint = getString(R.string.default_input_hint);
-                    if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
-                        contentHint = getString(R.string.reply, infoCommentListBean
-                                .getFromUserInfoBean().getName());
-                    }
-                    mIlvComment.setEtContentHint(contentHint);
-                }
-            }
+            comment(position);
+        }
+
+        @Override
+        public void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+            goReportComment(position);
         }
 
         @Override
         public void onUserInfoClick(UserInfoBean userInfoBean) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        }
+    }
+
+    /**
+     * 评论
+     * @param position
+     */
+    private void comment(int position) {
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        AnswerCommentListBean infoCommentListBean = mListDatas.get(position);
+        if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
+            if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
+                    .getUser_id()) {// 自己的评论
+//                if (mListDatas.get(position).getId() != -1) {
+                initDeleteCommentPopupWindow(infoCommentListBean);
+                mDeletCommentPopWindow.show();
+//                } else {
+//
+//                    return;
+//                }
+            } else {
+                mReplyUserId = infoCommentListBean.getUser_id().intValue();
+                showCommentView();
+                String contentHint = getString(R.string.default_input_hint);
+                if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
+                    contentHint = getString(R.string.reply, infoCommentListBean
+                            .getFromUserInfoBean().getName());
+                }
+                mIlvComment.setEtContentHint(contentHint);
+            }
+        }
+    }
+
+    /**
+     * 举报
+     * @param position
+     */
+    private void goReportComment(int position) {
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        // 举报
+        if (mListDatas.get(position).getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+            ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mListDatas.get(position).getFromUserInfoBean(), mListDatas.get
+                    (position).getId().toString(),
+                    null, null, mListDatas.get(position).getBody(), ReportType.COMMENT));
+
+        } else {
+
         }
     }
 

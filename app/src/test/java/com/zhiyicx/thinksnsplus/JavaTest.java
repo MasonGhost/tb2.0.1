@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -103,6 +104,19 @@ public class JavaTest {
     }
 
     @Test
+    public void testList2Map() {
+        CreateCircleBean createCircleBean = new CreateCircleBean();
+        CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(2);
+        CreateCircleBean.TagId tag = new CreateCircleBean.TagId(3);
+        List<CreateCircleBean.TagId> tags = new ArrayList<>();
+        tags.add(tag);
+        tags.add(tagId);
+        createCircleBean.setNotice("notice");
+        createCircleBean.setTags(tags);
+        System.out.print(DataDealUitls.transBean2MapWithArray(createCircleBean).toString());
+    }
+
+    @Test
     public void testArrays() {
         String[] test = new String[2];
         test[0] = "aa";
@@ -113,7 +127,6 @@ public class JavaTest {
     @Test
     public void testInt() {
         String test = "<https://www.baidu.com> 我来测试一下哟";
-        System.out.println(test.matches(MarkdownConfig.NETSITE_FORMAT_));
 //        Matcher matcher=
         System.out.println(test.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE));
 
@@ -248,9 +261,9 @@ public class JavaTest {
 
     @Test
     public void singleImageTest() {
-        String input = "@![image](2580)";
+        String input = "@![image](2580),,,@![image](1520)";
 
-        System.out.println("result::" + RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, input));
+        System.out.println("result::" + RegexUtils.getImageId(input));
     }
 
     @Test

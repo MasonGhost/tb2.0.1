@@ -16,11 +16,14 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -30,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
@@ -39,6 +43,9 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.QuestionCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
+import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter.OnItemClickListener;
@@ -426,6 +433,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R
                             .string.qa_question_develop))
                     .item2Str(mIsMine ? getString(R.string.qa_question_delete) : "")
+                    .item3Str(mIsMine ? "" : getString(R.string.report))
                     .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                     .bottomStr(getString(R.string.cancel))
                     .item1ClickListener(() -> {
@@ -447,6 +455,22 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                             mDeleteQuestionPopWindow.show();
                         }
                     })
+                    .item3ClickListener(() -> {                    // 举报帖子
+                        String img = "";
+
+                        int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mQaListInfoBean.getBody());
+                        if (id > 0) {
+                            img = ImageUtils.imagePathConvertV2(id, getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img), getResources()
+                                            .getDimensionPixelOffset(R.dimen.report_resource_img),
+                                    ImageZipConfig.IMAGE_80_ZIP);
+                        }
+                        String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQaListInfoBean.getBody()); // 预览的文字
+                        ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mQaListInfoBean.getUser(), String.valueOf
+                                (mQaListInfoBean.getId()),
+                                mQaListInfoBean.getSubject(), img, des, ReportType.QA));
+                        mMorePop.hide();
+                    })
                     .bottomClickListener(() -> mMorePop.hide())
                     .build();
         }
@@ -463,8 +487,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
                                     .string.buy_pay_member),
-                            PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter.getRatio())
-                            , mPresenter.getGoldName()))
+                            mPresenter != null ? PayConfig.realCurrency2GameCurrency(mPresenter.getSystemConfig().getExcellentQuestion(), mPresenter
+                                    .getRatio()) : ""
+                            , mPresenter != null ? mPresenter.getGoldName() : ""))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.WithdrawalsListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class WithdrawalsDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    WithdrawalsDetailConstract.Repository provideWithdrawalsDetailRepository(WithdrawalsListRepository withdrawalsListRepository) {
-        return withdrawalsListRepository;
-    }
 }

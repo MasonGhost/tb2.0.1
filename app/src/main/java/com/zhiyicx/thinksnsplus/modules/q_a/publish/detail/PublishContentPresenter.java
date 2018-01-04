@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import org.simple.eventbus.EventBus;
@@ -35,9 +36,11 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishContentPresenter extends AppBasePresenter<PublishContentConstact.Repository, PublishContentConstact.View>
+public class PublishContentPresenter extends AppBasePresenter< PublishContentConstact.View>
         implements PublishContentConstact.Presenter {
 
+    @Inject
+    BaseQARepository mBaseQARepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
     @Inject
@@ -51,8 +54,8 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     }
 
     @Inject
-    public PublishContentPresenter(PublishContentConstact.Repository repository, PublishContentConstact.View rootView) {
-        super(repository, rootView);
+    public PublishContentPresenter( PublishContentConstact.View rootView) {
+        super( rootView);
     }
 
     @Override
@@ -85,7 +88,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void publishAnswer(Long question_id, String body, int anonymity) {
-        Subscription subscribe = mRepository.publishAnswer(question_id, body, anonymity)
+        Subscription subscribe = mBaseQARepository.publishAnswer(question_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.publish_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
@@ -114,7 +117,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void updateAnswer(Long answer_id, String body, int anonymity) {
-        Subscription subscribe = mRepository.updateAnswer(answer_id, body, anonymity)
+        Subscription subscribe = mBaseQARepository.updateAnswer(answer_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -141,7 +144,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void updateQuestion(Long question_id, String body, int anonymity) {
-        Subscription subscribe = mRepository.updateQuestion(question_id, body, anonymity)
+        Subscription subscribe = mBaseQARepository.updateQuestion(question_id, body, anonymity)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.update_ing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -194,22 +197,22 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public QAPublishBean getDraftQuestion(long qestion_mark) {
-        return mRepository.getDraftQuestion(qestion_mark);
+        return mBaseQARepository.getDraftQuestion(qestion_mark);
     }
 
     @Override
     public void saveQuestion(QAPublishBean qestion) {
-        mRepository.saveQuestion(qestion);
+        mBaseQARepository.saveQuestion(qestion);
     }
 
     @Override
     public void saveAnswer(AnswerDraftBean answer) {
-        mRepository.saveAnswer(answer);
+        mBaseQARepository.saveAnswer(answer);
     }
 
     @Override
     public void deleteAnswer(AnswerDraftBean answer) {
-        mRepository.deleteAnswer(answer);
+        mBaseQARepository.deleteAnswer(answer);
     }
 
     @Override

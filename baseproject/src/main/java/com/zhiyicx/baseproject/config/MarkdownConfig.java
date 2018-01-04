@@ -8,13 +8,25 @@ package com.zhiyicx.baseproject.config;
  */
 public class MarkdownConfig {
     //@![title](file id)
+    /**
+     * 用于发布资讯 拼装图片
+     */
     public static final String IMAGE_TAG = "@![%s](%d)";
-    //    public static final String LINK_EMOJI = "\uD83D\uDD17";
+
+    /**
+     * 短链接 标识
+     */
     public static final String LINK_EMOJI = "\uD83D\uDCCE";
     public static final String IMAGE_TITLE = "image";
-    public static final String IMAGE_RESULT = "![image](%s)";
+
+    /**
+     * 用于 提取 markdown 格式 图片id
+     */
     public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
+
+    /**
+     * 用于提取 短链接
+     */
     public static final String NETSITE_FORMAT = "<{0,1}((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[#a-zA-Z0-9\\&%_\\./-~-]*)?>{0,1}";
-    public static final String NETSITE_FORMAT_ = "\\S*\\s*((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&%_\\./-~-]*)?\\s*\\S*";
 
 }

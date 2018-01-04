@@ -178,7 +178,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                         .permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     // 获取到了权限
-                    if (aBoolean) {
+                    if (aBoolean && mEtCompleteInput != null) {
                         mAccountBean.setId(System.currentTimeMillis());
                         mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
                         mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());

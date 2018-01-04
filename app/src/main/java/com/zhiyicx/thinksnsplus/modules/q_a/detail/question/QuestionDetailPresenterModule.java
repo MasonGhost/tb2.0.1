@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.QuestionDetailRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,5 @@ public class QuestionDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    public QuestionDetailContract.Repository provideQuestionDetailContractRepository(QuestionDetailRepository repository){
-        return repository;
-    }
+
 }

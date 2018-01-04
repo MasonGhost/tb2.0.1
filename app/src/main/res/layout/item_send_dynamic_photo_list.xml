@@ -16,7 +16,7 @@
         android:id="@+id/iv_dynamic_img_filter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#aa000000"
+        android:background="@color/shadow_color"
         android:visibility="gone"/>
 
     <ImageView

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MineRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class MinePresenterModule {
         return mView;
     }
 
-    @Provides
-    MineContract.Repository provideMineRepository(MineRepository mineRepository) {
-        return mineRepository;
-    }
 }

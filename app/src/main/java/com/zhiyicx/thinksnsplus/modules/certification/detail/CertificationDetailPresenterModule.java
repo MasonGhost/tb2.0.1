@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.certification.detail;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class CertificationDetailPresenterModule {
         return mView;
     }
 
-    @Provides
-    public CertificationDetailContract.Repository provideCertificationDetailContractRepository(CertificationDetailRepository repository){
-        return repository;
-    }
 }

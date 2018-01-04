@@ -34,5 +34,4 @@ public interface QATopicListConstact {
         void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean);
     }
 
-    interface Repository extends IBasePublishQuestionRepository {}
 }

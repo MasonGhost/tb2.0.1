@@ -53,9 +53,4 @@ public interface InfoMainContract {
         List<RealAdvertListBean> getListAdvert();
     }
 
-
-    interface Repository extends IBaseInfoRepository{
-        Observable<InfoTypeBean> getInfoType();
-
-    }
 }

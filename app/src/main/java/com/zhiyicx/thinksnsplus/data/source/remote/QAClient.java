@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.ReportResultBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -27,8 +28,11 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_REPORT;
 
 /**
  * @Author Jliuer
@@ -256,7 +260,8 @@ public interface QAClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
-    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword, @Query("offset") int size);
+    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword, @Query("offset") int
+            size);
 
     /*******************************************  打赏  *********************************************/
 
@@ -287,4 +292,29 @@ public interface QAClient {
     @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_REWARD)
     Observable<BaseJsonV2<Object>> updateQuestionReward(@Path("question") String question_id, @Query("amount") int amount);
 
+    /*******************************************  举报  *********************************************/
+
+
+    /**
+     * 举报一条问题
+     *
+     * @param questionId 动态 id
+     * @param reason     举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_QA_REPORT)
+    Observable<ReportResultBean> reportQA(@Path("question_id") String questionId, @Field("reason") String reason);
+
+
+    /**
+     * 举报一条答案
+     *
+     * @param answerId 动态 id
+     * @param reason   举报原因
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_QA_ANSWER_REPORT)
+    Observable<ReportResultBean> reportQAAnswer(@Path("answer_id") String answerId, @Field("reason") String reason);
 }

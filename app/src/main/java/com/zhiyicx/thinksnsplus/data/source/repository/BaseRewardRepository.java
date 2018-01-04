@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
@@ -30,6 +31,7 @@ public class BaseRewardRepository implements IRewardRepository {
     private DynamicClient mDynamicClient;
     private UserInfoClient mUserInfoClient;
     private QAClient mQAClient;
+    private CircleClient mCircleClient;
 
     @Inject
     public BaseRewardRepository(ServiceManager serviceManager) {
@@ -37,6 +39,7 @@ public class BaseRewardRepository implements IRewardRepository {
         mDynamicClient = serviceManager.getDynamicClient();
         mUserInfoClient = serviceManager.getUserInfoClient();
         mQAClient = serviceManager.getQAClient();
+        mCircleClient=serviceManager.getCircleClient();
     }
 
     /*******************************************  用户打赏  *********************************************/
@@ -128,6 +131,13 @@ public class BaseRewardRepository implements IRewardRepository {
     @Override
     public Observable<Object> rewardQA(long answer_id, double amount) {
         return mQAClient.rewardQA(answer_id, (long) amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Object> rewardPost(long postId, double rewardMoney) {
+        return mCircleClient.rewardPost(postId, (long) rewardMoney)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

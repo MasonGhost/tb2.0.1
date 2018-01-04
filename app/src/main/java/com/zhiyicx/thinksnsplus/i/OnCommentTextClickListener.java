@@ -9,4 +9,5 @@ package com.zhiyicx.thinksnsplus.i;
 
 public interface OnCommentTextClickListener {
     void onCommentTextClick(int position);
+    void onCommentTextLongClick(int position);
 }

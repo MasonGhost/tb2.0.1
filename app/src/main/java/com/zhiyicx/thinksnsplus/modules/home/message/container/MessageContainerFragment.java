@@ -65,7 +65,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
     private boolean mIsMessageTipShow;
     private boolean mIsNotificationTipShow;
 
-    public MessageContainerFragment instance() {
+    public static MessageContainerFragment instance() {
         return new MessageContainerFragment();
     }
 
@@ -95,7 +95,7 @@ public class MessageContainerFragment extends TSViewPagerFragment {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
             mFragmentList.add(MessageFragment.newInstance());
-            mFragmentList.add(new NotificationFragment().instance());
+            mFragmentList.add(NotificationFragment.instance());
         }
 
         return mFragmentList;

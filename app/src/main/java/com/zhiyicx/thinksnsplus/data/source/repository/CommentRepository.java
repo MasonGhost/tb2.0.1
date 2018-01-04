@@ -40,7 +40,7 @@ public class CommentRepository implements ICommentRepository {
     protected CommonClient mCommonClient;
 
     @Inject
-    WalletRepository mWalletRepository;
+    BillRepository mWalletRepository;
 
     @Inject
     UserInfoRepository mUserInfoRepository;

@@ -262,7 +262,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     }
 
     private void checkEmptyView() {
-        mEmptyView.setVisibility(View.GONE);
+        setEmptyViewVisiable(false);
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {

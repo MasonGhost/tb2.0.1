@@ -185,14 +185,4 @@ public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicComm
         mTopFlagPosition = topFlagPosition;
     }
 
-    public enum TopFlagPosition {
-        VIEW_RIGHT("在整个 view 的右边，居中对齐"),
-        WORDS_RIGHT("文字末尾的右边，与最后一排文字居中对齐"),
-        NONE("无置顶标记");
-
-        TopFlagPosition(String desc) {
-        }
-    }
-
-
 }

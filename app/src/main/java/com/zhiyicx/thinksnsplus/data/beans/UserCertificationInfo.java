@@ -13,7 +13,10 @@ import org.greenrobot.greendao.annotation.Id;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
+
+import retrofit2.http.PUT;
 
 /**
  * @author Catherine
@@ -22,7 +25,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class UserCertificationInfo extends BaseListBean{
+public class UserCertificationInfo extends BaseListBean {
 
     /*{
         "id": 1,
@@ -48,6 +51,21 @@ public class UserCertificationInfo extends BaseListBean{
                 "description": null
             }
     }*/
+
+    /**
+     * 审核状态
+     * 2-被驳回 0-审核 1-通过
+     */
+    public enum CertifyStatusEnum {
+        REJECTED(2),
+        REVIEWING(0),
+        PASS(1);
+        public int value;
+
+        CertifyStatusEnum(int value) {
+            this.value = value;
+        }
+    }
 
     @Id
     private long id;
@@ -159,7 +177,7 @@ public class UserCertificationInfo extends BaseListBean{
                 '}';
     }
 
-    public static class UserCertificationData implements Parcelable, Serializable{
+    public static class UserCertificationData implements Parcelable, Serializable {
 
         private static final long serialVersionUID = 522802720451708781L;
 
@@ -283,11 +301,11 @@ public class UserCertificationInfo extends BaseListBean{
         };
     }
 
-    public static class DataConvert extends BaseConvert<UserCertificationData>{
+    public static class DataConvert extends BaseConvert<UserCertificationData> {
 
     }
 
-    public static class CertificationCategory implements Parcelable, Serializable{
+    public static class CertificationCategory implements Parcelable, Serializable {
 
         private static final long serialVersionUID = 3669070613696725049L;
 
@@ -362,7 +380,7 @@ public class UserCertificationInfo extends BaseListBean{
         };
     }
 
-    public static class CategoryConvert extends BaseConvert<CertificationCategory>{
+    public static class CategoryConvert extends BaseConvert<CertificationCategory> {
 
     }
 
@@ -405,8 +423,8 @@ public class UserCertificationInfo extends BaseListBean{
 
     @Generated(hash = 22762421)
     public UserCertificationInfo(long id, long user_id, String certification_name, UserCertificationData data,
-            long examiner, long status, String created_at, String updated_at, CertificationCategory category,
-            String icon) {
+                                 long examiner, long status, String created_at, String updated_at, CertificationCategory category,
+                                 String icon) {
         this.id = id;
         this.user_id = user_id;
         this.certification_name = certification_name;

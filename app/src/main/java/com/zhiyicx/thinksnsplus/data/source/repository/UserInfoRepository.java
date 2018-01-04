@@ -8,8 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.DefaultUserInfoConfig;
@@ -21,7 +25,9 @@ import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
@@ -31,9 +37,14 @@ import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequest
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
+import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
@@ -54,6 +65,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 /**
@@ -63,11 +75,14 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 
-public class UserInfoRepository implements UserInfoContract.Repository {
+public class UserInfoRepository implements IUserInfoRepository {
     public static final int DEFAULT_MAX_USER_GET_NUM_ONCE = 50;
     public static final int DEFAULT_MAX_USER_GET_BY_PHONE_NUM_ONCE = 100;
 
     private UserInfoClient mUserInfoClient;
+    private FollowFansClient mFollowFansClient;
+    private LoginClient mLoginClient;
+    private RegisterClient mRegisterClient;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -76,11 +91,62 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
+    AuthRepository mAuthRepository;
+    @Inject
     Application mContext;
+    @Inject
+    UpLoadRepository mUpLoadRepository;
 
     @Inject
-    public UserInfoRepository(ServiceManager serviceManager, Application application) {
+    public UserInfoRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();
+        mFollowFansClient = serviceManager.getFollowFansClient();
+        mLoginClient = serviceManager.getLoginClient();
+        mRegisterClient = serviceManager.getRegisterClient();
+    }
+
+
+    @Override
+    public Observable<AuthBean> registerByPhone(String phone, String name, String vertifyCode, String password) {
+        return mRegisterClient.register(phone, null, name, password, RegisterClient.REGITER_TYPE_SMS, vertifyCode)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .flatMap(authBean -> {
+                    mAuthRepository.saveAuthBean(authBean);
+                    return getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                });
+    }
+
+    @Override
+    public Observable<AuthBean> registerByEmail(String email, String name, String vertifyCode, String password) {
+        return mRegisterClient.register(null, email, name, password, RegisterClient.REGITER_TYPE_EMAIL, vertifyCode)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .flatMap(authBean -> {
+                    mAuthRepository.saveAuthBean(authBean);
+                    return getCurrentLoginUserInfo()
+                            .map(userInfoBean -> {
+                                authBean.setUser(userInfoBean);
+                                authBean.setUser_id(userInfoBean.getUser_id());
+                                return authBean;
+                            });
+                });
+    }
+
+    @Override
+    public Observable<AuthBean> loginV2(final String account, final String password) {
+       /* if(cacheImp==null){
+            cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
+        }
+        return cacheImp.load(1483098241l, new NetWorkCache<AuthBean>() {
+            @Override
+            public Observable<BaseJson<AuthBean>> get(Long key) {
+            }
+        });*/
+        return mLoginClient.loginV2(account, password);
     }
 
     /**
@@ -333,8 +399,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
             backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, followFansBean
                     .getUser_id()));
-            if (followFansBean.getExtra().getFollowings_count() > 0)
+            if (followFansBean.getExtra().getFollowings_count() > 0) {
                 followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() - 1);
+            }
 
         }
 
@@ -361,32 +428,29 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<DigedBean>, Observable<List<DigedBean>>>() {
-                    @Override
-                    public Observable<List<DigedBean>> call(final List<DigedBean> data) {
-                        List<Object> userIds = new ArrayList();
-                        for (DigedBean digedBean : data) {
-                            digedBean.initDelet();
-                            userIds.add(digedBean.getUser_id());
-                            userIds.add(digedBean.getTarget_user());
-                        }
-                        return getUserInfo(userIds)
-                                .map(userinfobeans -> {
-                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (DigedBean digedBean : data) {
-                                            digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
-                                            digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTarget_user().intValue()));
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                    }
-                                    Collections.sort(data, (o1, o2) -> (int) (o2.getId() - o1.getId()));
-                                    return data;
-                                });
+                .flatMap(data -> {
+                    List<Object> userIds = new ArrayList();
+                    for (DigedBean digedBean : data) {
+                        digedBean.initDelet();
+                        userIds.add(digedBean.getUser_id());
+                        userIds.add(digedBean.getTarget_user());
                     }
+                    return getUserInfo(userIds)
+                            .map(userinfobeans -> {
+                                if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (DigedBean digedBean : data) {
+                                        digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
+                                        digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTarget_user().intValue()));
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                }
+                                Collections.sort(data, (o1, o2) -> (int) (o2.getId() - o1.getId()));
+                                return data;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -403,43 +467,40 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
-                    @Override
-                    public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
-                        if (data.isEmpty()) {
-                            return Observable.just(data);
-                        }
-                        List<Object> userIds = new ArrayList();
-                        for (CommentedBean commentedBean : data) {
-                            commentedBean.initDelet();
-                            userIds.add(commentedBean.getUser_id());
-                            userIds.add(commentedBean.getTarget_user());
-                            userIds.add(commentedBean.getReply_user());
-                        }
-                        return getUserInfo(userIds)
-                                .map(userinfobeans -> {
-                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (CommentedBean commentedBean : data) {
-                                            commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
-                                            commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTarget_user().intValue()));
-                                            if (commentedBean.getReply_user() == 0) { // 用于占位
-                                                UserInfoBean userinfo = new UserInfoBean();
-                                                userinfo.setUser_id(0L);
-                                                commentedBean.setReplyUserInfo(userinfo);
-                                            } else {
-                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get(commentedBean.getReply_user()
-                                                        .intValue()));
-                                            }
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                    }
-                                    return data;
-                                });
+                .flatMap(data -> {
+                    if (data.isEmpty()) {
+                        return Observable.just(data);
                     }
+                    List<Object> userIds = new ArrayList();
+                    for (CommentedBean commentedBean : data) {
+                        commentedBean.initDelet();
+                        userIds.add(commentedBean.getUser_id());
+                        userIds.add(commentedBean.getTarget_user());
+                        userIds.add(commentedBean.getReply_user());
+                    }
+                    return getUserInfo(userIds)
+                            .map(userinfobeans -> {
+                                if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (CommentedBean commentedBean : data) {
+                                        commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
+                                        commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTarget_user().intValue()));
+                                        if (commentedBean.getReply_user() == 0) { // 用于占位
+                                            UserInfoBean userinfo = new UserInfoBean();
+                                            userinfo.setUser_id(0L);
+                                            commentedBean.setReplyUserInfo(userinfo);
+                                        } else {
+                                            commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get(commentedBean.getReply_user()
+                                                    .intValue()));
+                                        }
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                }
+                                return data;
+                            });
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -632,33 +693,30 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<NearbyBean>, Observable<List<NearbyBean>>>() {
-                    @Override
-                    public Observable<List<NearbyBean>> call(List<NearbyBean> nearbyBeen) {
-                        List<Object> userIds = new ArrayList();
-                        for (NearbyBean nearbyBean : nearbyBeen) {
-                            userIds.add(nearbyBean.getUser_id());
-                        }
-                        return getUserInfo(userIds)
-                                .map(userinfobeans -> {
-                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (NearbyBean nearbyBean : nearbyBeen) {
-                                            try {
-                                                if (userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())) != null) {
-                                                    nearbyBean.setUser(userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())));
-                                                }
-                                            } catch (Exception e) {
-                                            }
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                    }
-                                    return nearbyBeen;
-                                });
+                .flatMap(nearbyBeen -> {
+                    List<Object> userIds = new ArrayList();
+                    for (NearbyBean nearbyBean : nearbyBeen) {
+                        userIds.add(nearbyBean.getUser_id());
                     }
+                    return getUserInfo(userIds)
+                            .map(userinfobeans -> {
+                                if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (NearbyBean nearbyBean : nearbyBeen) {
+                                        try {
+                                            if (userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())) != null) {
+                                                nearbyBean.setUser(userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())));
+                                            }
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                }
+                                return nearbyBeen;
+                            });
                 }).map(nearbyBeen -> {
                     List<NearbyBean> result = new ArrayList<>();
                     for (NearbyBean nearbyBean : nearbyBeen) {
@@ -791,6 +849,107 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         return mUserInfoClient.cancelBind(provider)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @return 认证信息
+     */
+    @Override
+    public Observable<UserCertificationInfo> getCertificationInfo() {
+        return mUserInfoClient.getUserCertificationInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 提交认证信息
+     *
+     * @param bean
+     * @return
+     */
+    @Override
+    public Observable<BaseJsonV2<Object>> sendCertification(SendCertificationBean bean) {
+        List<ImageBean> photos = bean.getPicList();
+        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
+        // 先处理图片上传，图片上传成功后，在进行动态发布
+        List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+        for (int i = 0; i < photos.size(); i++) {
+            ImageBean imageBean = photos.get(i);
+            String filePath = imageBean.getImgUrl();
+            int photoWidth = (int) imageBean.getWidth();
+            int photoHeight = (int) imageBean.getHeight();
+            String photoMimeType = imageBean.getImgMimeType();
+            upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+        }
+        return Observable.zip(upLoadPics, (FuncN<Object>) args -> {
+            List<Integer> integers = new ArrayList<>();
+            for (int i = 0; i < args.length; i++) {
+                BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                if (baseJson.isStatus()) {
+                    if (i == 0 && bean.getFiles() != null) {
+                        bean.getFiles().clear();
+                    }
+                    bean.getFiles().add(baseJson.getData());
+                } else {
+                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                }
+            }
+            return integers;
+        }).map(integers -> {
+//            bean.setPicList(null);
+            return bean;
+        }).flatMap(new Func1<SendCertificationBean, Observable<BaseJsonV2<Object>>>() {
+            @Override
+            public Observable<BaseJsonV2<Object>> call(SendCertificationBean bean) {
+                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(bean));
+                LogUtils.d("Cathy", new Gson().toJson(bean));
+                if (bean.isUpdate()) {
+                    return mUserInfoClient.updateUserCertificationInfo(body);
+                } else {
+                    return mUserInfoClient.sendUserCertificationInfo(body);
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public Observable<List<UserInfoBean>> getFollowListFromNet(final long userId, int maxId) {
+        // 将网络请求获取的数据，通过map转换
+        return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
+                .map(userInfoBeen -> {
+                    // 保存用户信息
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                    return userInfoBeen;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<UserInfoBean>> getFansListFromNet(final long userId, int maxId) {
+        // 将网络请求获取的数据，通过map转换
+        return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+                .observeOn(Schedulers.io())
+                .map(userInfoBeen -> {
+                    // 保存用户信息
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                    return userInfoBeen;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    @Override
+    public Observable<Object> followUser(long userId) {
+        return mFollowFansClient.followUser(userId);
+    }
+
+    @Override
+    public Observable<Object> cancleFollowUser(long userId) {
+        return mFollowFansClient.cancelFollowUser(userId);
     }
 
 }

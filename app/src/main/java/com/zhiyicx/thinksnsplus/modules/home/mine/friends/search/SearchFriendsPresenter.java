@@ -5,6 +5,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseFriendsRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,17 +22,19 @@ import rx.Subscription;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class SearchFriendsPresenter extends AppBasePresenter<SearchFriendsContract.Repository, SearchFriendsContract.View>
+public class SearchFriendsPresenter extends AppBasePresenter< SearchFriendsContract.View>
         implements SearchFriendsContract.Presenter{
+    @Inject
+    BaseFriendsRepository mBaseFriendsRepository;
 
     @Inject
-    public SearchFriendsPresenter(SearchFriendsContract.Repository repository, SearchFriendsContract.View rootView) {
-        super(repository, rootView);
+    public SearchFriendsPresenter(SearchFriendsContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getUserFriendsList(maxId, mRootView.getKeyWord())
+        Subscription subscription = mBaseFriendsRepository.getUserFriendsList(maxId, mRootView.getKeyWord())
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {

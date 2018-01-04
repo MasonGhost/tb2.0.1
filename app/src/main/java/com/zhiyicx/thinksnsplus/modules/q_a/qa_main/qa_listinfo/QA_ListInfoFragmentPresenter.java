@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,19 +30,21 @@ import rx.functions.Func1;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoConstact.Repository, QA_ListInfoConstact.View> implements QA_ListInfoConstact.Presenter {
+public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoConstact.View> implements QA_ListInfoConstact.Presenter {
 
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     private SystemConfigBean mSystemConfigBean;
 
     @Inject
-    public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.Repository repository, QA_ListInfoConstact.View rootView) {
-        super(repository, rootView);
+    public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Override
     public void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
-        Subscription subscribe = mRepository.getQAQuestion(subject, maxId, type)
+        Subscription subscribe = mBaseQARepository.getQAQuestion(subject, maxId, type)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
                     @Override
                     protected void onSuccess(List<QAListInfoBean> data) {
@@ -85,7 +88,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
         Subscription subscription = handleWalletBlance((long) getSystemConfig().getOnlookQuestion())
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
-                .flatMap(o -> mRepository.payForOnlook(answer_id))
+                .flatMap(o -> mBaseQARepository.payForOnlook(answer_id))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {

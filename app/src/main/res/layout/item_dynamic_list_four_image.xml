@@ -76,7 +76,7 @@
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
 
-    <TextView
+    <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -213,5 +213,16 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
+
+    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
+        android:visibility="gone"
+        android:id="@+id/post_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_tip"
+        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
+    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView>
 
 </RelativeLayout>

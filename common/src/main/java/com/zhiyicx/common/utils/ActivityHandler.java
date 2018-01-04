@@ -128,6 +128,9 @@ public class ActivityHandler {
      * 结束非最后一个 Activity
      */
     public void finishAllActivityEcepteCurrent() {
+        if(activityStack.isEmpty()){
+            return;
+        }
         Activity activity = activityStack.lastElement();
         for (int i = 0; i < activityStack.size(); i++) {
             if (null != activityStack.get(i) && activityStack.get(i) != activity) {

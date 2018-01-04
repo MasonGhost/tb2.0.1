@@ -3,11 +3,17 @@ package com.zhiyicx.thinksnsplus.modules.draftbox.adapter;
 import android.app.Activity;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -15,7 +21,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
+public abstract class BaseDraftItem<D extends BaseDraftBean> implements ItemViewDelegate<D> {
 
     protected QuestionDraftItem.QuestionDraftItemEvent mQuestionDraftItemEvent;
     protected ChooseBindPopupWindow mPopupWindow;
@@ -36,9 +42,16 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, BaseDraftBean draftBean, BaseDraftBean lastT, int position, int itemCounts) {
-
+    public void convert(ViewHolder holder, D draftBean, D lastT, int position, int itemCounts) {
+        setDraftClickListener(holder.getImageViwe(R.id.iv_draft_more), holder.getConvertView(), draftBean);
+//        bindData(holder, draftBean);
+        holder.setText(R.id.tv_draft_title, setTitle(draftBean));
+        holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(setCreateTime(draftBean)));
     }
+
+    protected abstract String setCreateTime(D draftBean);
+
+    protected abstract String setTitle(D draftBean);
 
     protected void initPopWindow(View v, BaseDraftBean draftBean) {
         mPopupWindow = ChooseBindPopupWindow.Builder()
@@ -62,6 +75,26 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
                 .build();
         mPopupWindow.showAsDropDown(v);
     }
+
+    protected void setDraftClickListener(View more, View itemView, BaseDraftBean draftBean) {
+        RxView.clicks(more)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mQuestionDraftItemEvent != null) {
+                        initPopWindow(more, draftBean);
+                    }
+                });
+
+        RxView.clicks(itemView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mQuestionDraftItemEvent != null) {
+                        mQuestionDraftItemEvent.toEditDraft(draftBean);
+                    }
+                });
+    }
+
+//    protected abstract void bindData(ViewHolder holder, D realData);
 
     public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {
         mQuestionDraftItemEvent = questionDraftItemEvent;

@@ -45,6 +45,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -61,11 +62,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE;
@@ -81,43 +79,42 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
+public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    @Inject
-    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
-    @Inject
-    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
-    @Inject
-    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    AuthRepository mAuthRepository;
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
-    public SharePolicy mSharePolicy;
 
-    @Inject
-    SystemRepository mSystemRepository;
-    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+
+    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
+    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
+
+    SharePolicy mSharePolicy;
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    BaseDynamicRepository mDynamicRepository;
 
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
-    public DynamicPresenter(DynamicContract.Repository repository, DynamicContract.View rootView) {
-        super(repository, rootView);
+    public DynamicPresenter(DynamicContract.View rootView
+            , AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao
+            , DynamicDetailBeanV2GreenDaoImpl dynamicDetailBeanV2GreenDao
+            , DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao
+            , SendDynamicDataBeanV2GreenDaoImpl sendDynamicDataBeanV2GreenDao
+            , TopDynamicBeanGreenDaoImpl topDynamicBeanGreenDao
+            , SharePolicy sharePolicy
+            , BaseDynamicRepository baseDynamicRepository
+    ) {
+        super(rootView);
+        mAllAdvertListBeanGreenDao = allAdvertListBeanGreenDao;
+        mDynamicDetailBeanV2GreenDao = dynamicDetailBeanV2GreenDao;
+        mDynamicCommentBeanGreenDao = dynamicCommentBeanGreenDao;
+        mSendDynamicDataBeanV2GreenDao = sendDynamicDataBeanV2GreenDao;
+        mTopDynamicBeanGreenDao = topDynamicBeanGreenDao;
+        mSharePolicy = sharePolicy;
+        mDynamicRepository = baseDynamicRepository;
     }
+
 
     @Override
     protected boolean useEventBus() {
@@ -134,7 +131,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
             return;
         }
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
+        Subscription dynamicLisSub = mDynamicRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore, null)
                 .observeOn(Schedulers.io())
                 .map(listBaseJson -> {
                     // 更新数据库
@@ -244,7 +241,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
         Observable.just(data)
                 .observeOn(Schedulers.io())
-                .subscribe(dynamicDetailBeanV2s -> mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()), Throwable::printStackTrace);
+                .subscribe(dynamicDetailBeanV2s -> mDynamicRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType()),
+                        Throwable::printStackTrace);
     }
 
     /**
@@ -283,8 +281,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getmCurrentLoginAuth()
-                .getUser_id());
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic(AppApplication.getMyUserIdWithdefault());
 
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
@@ -315,7 +312,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             return;
         }
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(postion));
-        mRepository.handleLike(isLiked, feed_id);
+        mDynamicRepository.handleLike(isLiked, feed_id);
     }
 
     @Override
@@ -325,8 +322,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         }
         mRootView.getListDatas().get(position).setFeed_view_count(mRootView.getListDatas().get(position).getFeed_view_count() + 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-//        mRepository.handleDynamicViewCount(feed_id);
-        mRootView.refreshData();
     }
 
     @Override
@@ -353,13 +348,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
         mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
         mRootView.refreshData(dynamicPositon);
-        mRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
+        mDynamicRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
     }
 
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+        mDynamicRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
                 commentBean.getComment_mark());
         mRootView.refreshData();
     }
@@ -373,7 +368,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mRootView.getListDatas().remove(position);
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getId());
+            mDynamicRepository.deleteDynamic(dynamicBean.getId());
         }
     }
 
@@ -408,7 +403,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendCommentV2(commentContent, mRootView.getListDatas().get(mCurrentPostion)
+        mDynamicRepository.sendCommentV2(commentContent, mRootView.getListDatas().get(mCurrentPostion)
                 .getId(), replyToUserId, creatComment.getComment_mark());
     }
 
@@ -526,7 +521,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     if (isImage) {
                         return Observable.just(stringBaseJsonV2);
                     }
-                    return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                    return mDynamicRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
                             .flatMap(detailBeanV2 -> {
                                 stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
                                 return Observable.just(stringBaseJsonV2);
@@ -543,15 +538,17 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mWalletBeanGreenDao.insertOrReplace(walletBean);
 
                         if (isImage) {
-                            DynamicDetailBeanV2.ImagesBean imageBean=mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
+                            DynamicDetailBeanV2.ImagesBean imageBean = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition);
                             imageBean.setPaid(true);
-                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean.getCurrentWith(),
+                            imageBean.setGlideUrl(ImageUtils.imagePathConvertV2(true, imageBean.getFile(), imageBean.getCurrentWith(), imageBean
+                                            .getCurrentWith(),
                                     imageBean.getPropPart(), AppApplication.getTOKEN()));
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                             mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                             if (data.getData() != null) {
-                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
+                                String friendlyContent = data.getData().replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link
+                                        .DEFAULT_NET_SITE);
                                 if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
                                     friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
                                 }

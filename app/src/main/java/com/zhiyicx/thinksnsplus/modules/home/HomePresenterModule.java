@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.HomeRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,12 +20,6 @@ public class HomePresenterModule {
     @Provides
     HomeContract.View provideMessageContractView() {
         return mView;
-    }
-
-
-    @Provides
-    HomeContract.Repository provideMessageContractRepository(HomeRepository homeRepository) {
-        return homeRepository;
     }
 
 }

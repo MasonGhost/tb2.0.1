@@ -30,7 +30,4 @@ public interface BillContract {
 
     }
 
-    interface Repository {
-        Observable<List<RechargeSuccessBean>> getBillList(int after);
-    }
 }

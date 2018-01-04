@@ -8,12 +8,11 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.PasswordRepository;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.functions.Action0;
 
 /**
  * @author Catherine
@@ -22,17 +21,18 @@ import rx.functions.Action0;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract.Repository, InitPasswordContract.View>
+public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract.View>
         implements InitPasswordContract.Presenter {
 
     @Inject
-    ChangePasswordRepository mChangePasswordRepository;
+    PasswordRepository mPasswordRepository;
+
     @Inject
     AuthRepository mAuthRepository;
 
     @Inject
-    public InitPasswordPresenter(InitPasswordContract.Repository repository, InitPasswordContract.View rootView) {
-        super(repository, rootView);
+    public InitPasswordPresenter(InitPasswordContract.View rootView) {
+        super(rootView);
     }
 
 
@@ -51,7 +51,7 @@ public class InitPasswordPresenter extends AppBasePresenter<InitPasswordContract
             mRootView.showMessage(mContext.getString(R.string.password_diffrent));
             return;
         }
-        Subscription subscription = mChangePasswordRepository.changePasswordV2(null, password)
+        Subscription subscription = mPasswordRepository.changePasswordV2(null, password)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override

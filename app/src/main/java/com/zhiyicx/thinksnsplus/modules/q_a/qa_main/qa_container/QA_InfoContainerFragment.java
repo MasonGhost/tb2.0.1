@@ -63,7 +63,6 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     public String[] QA_TYPES;
 
-    private List<Fragment> mFragments;
 
     @Override
     protected boolean setUseSatusbar() {
@@ -91,14 +90,14 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<Fragment> initFragments() {
-        if (mFragments == null) {
+        if (mFragmentList == null) {
             QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
-            mFragments = new ArrayList<>();
+            mFragmentList = new ArrayList<>();
             for (String type : QA_TYPES) {
-                mFragments.add(QA_ListInfoFragment.newInstance(type));
+                mFragmentList.add(QA_ListInfoFragment.newInstance(type));
             }
         }
-        return mFragments;
+        return mFragmentList;
     }
 
     @Override

@@ -12,12 +12,12 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class ScanCodePresenter extends AppBasePresenter<ScanCodeContract.Repository, ScanCodeContract.View>
+public class ScanCodePresenter extends AppBasePresenter< ScanCodeContract.View>
         implements ScanCodeContract.Presenter{
 
     @Inject
-    public ScanCodePresenter(ScanCodeContract.Repository repository, ScanCodeContract.View rootView) {
-        super(repository, rootView);
+    public ScanCodePresenter(ScanCodeContract.View rootView) {
+        super( rootView);
     }
 
 

@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,21 +21,23 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoSearchPresenter extends AppBasePresenter<SearchContract.Repository, SearchContract
+public class InfoSearchPresenter extends AppBasePresenter<SearchContract
         .View> implements SearchContract.Presenter {
 
     @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
     @Inject
-    public InfoSearchPresenter(SearchContract.Repository repository,
-                               SearchContract.View rootView) {
-        super(repository, rootView);
+    BaseInfoRepository mBaseInfoRepository;
+
+    @Inject
+    public InfoSearchPresenter(SearchContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mRepository.getInfoListV2("",mRootView.getKeyWords(), maxId, mRootView.getPage(), 0)
+        Subscription subscription = mBaseInfoRepository.getInfoListV2("", mRootView.getKeyWords(), maxId, mRootView.getPage(), 0)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<InfoListDataBean>>() {
                     @Override
@@ -61,7 +64,7 @@ public class InfoSearchPresenter extends AppBasePresenter<SearchContract.Reposit
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-      mRootView.onCacheResponseSuccess(new ArrayList<>(),isLoadMore);
+        mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
     }
 
     @Override

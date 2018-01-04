@@ -77,30 +77,4 @@ public interface InfoDetailsConstract {
         List<RealAdvertListBean> getAdvert();
     }
 
-    interface Repository extends IRewardRepository {
-
-        Observable<InfoCommentBean> getInfoCommentListV2(String news_id,
-                                                         Long max_id,
-                                                         Long limit);
-
-        Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id,
-                                                           Long max_id);
-
-        Observable<List<InfoListDataBean>> getRelateInfoList(String news_id);
-
-        Observable<InfoListDataBean> getInfoDetail(String news_id);
-
-
-        void handleCollect(boolean isCollected, String news_id);
-
-        void handleLike(boolean isLiked, final String news_id);
-
-        void sendComment(String comment_content, Long news_id,
-                         int reply_to_user_id, Long comment_mark);
-
-        void deleteComment(int news_id, int comment_id);
-
-        Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id);
-
-    }
 }

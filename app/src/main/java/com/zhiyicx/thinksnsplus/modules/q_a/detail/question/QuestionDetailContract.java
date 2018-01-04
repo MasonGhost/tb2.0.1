@@ -46,11 +46,4 @@ public interface QuestionDetailContract {
         SystemConfigBean getSystemConfig();
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-        Observable<QAListInfoBean> getQuestionDetail(String questionId);
-        Observable<List<AnswerInfoBean>> getAnswerList(String questionId, String order_type, int size);
-        Observable<BaseJsonV2<Object>> deleteQuestion(Long question_id);
-        Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id);
-
-    }
 }

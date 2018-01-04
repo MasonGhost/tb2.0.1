@@ -1,22 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.view.View;
 
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao
@@ -84,7 +76,7 @@ public interface PersonalCenterContract {
          *
          * @param type
          */
-        void onDynamicTypeChanged(PersonalCenterRepository.MyDynamicTypeEnum type);
+        void onDynamicTypeChanged(BaseDynamicRepository.MyDynamicTypeEnum type);
 
         /**
          * 刷新回调
@@ -92,17 +84,6 @@ public interface PersonalCenterContract {
         void refreshStart();
 
         void refreshEnd();
-    }
-
-    //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository extends IDynamicReppsitory {
-
-
-        /**
-         * 获取某个人的动态列表
-         */
-        Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen);
-
     }
 
     interface Presenter extends DynamicContract.Presenter {

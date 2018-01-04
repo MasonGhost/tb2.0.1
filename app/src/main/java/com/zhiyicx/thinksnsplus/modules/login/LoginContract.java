@@ -46,11 +46,6 @@ public interface LoginContract {
 
     }
 
-    //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository {
-
-        Observable<AuthBean> loginV2(final String account, final String password);
-    }
 
     interface Presenter extends IBaseTouristPresenter {
         void login(String phone, String password);

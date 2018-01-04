@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseQARepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -67,7 +68,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstract.Repository,
+public class AnswerDetailsPresenter extends AppBasePresenter<
         AnswerDetailsConstract.View> implements AnswerDetailsConstract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -87,11 +88,14 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    
+    @Inject
+    BaseQARepository mBaseQARepository;
 
     @Inject
-    public AnswerDetailsPresenter(AnswerDetailsConstract.Repository repository, AnswerDetailsConstract
-            .View rootView) {
-        super(repository, rootView);
+    public AnswerDetailsPresenter(AnswerDetailsConstract
+                                          .View rootView) {
+        super(rootView);
     }
 
 
@@ -103,7 +107,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 //        if (mRootView.getAnswerInfo().getCommentList() == null) {
 //
 //        } else {
-//            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
+//            mBaseQARepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
 //                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
 //                        @Override
 //                        protected void onSuccess(List<AnswerCommentListBean> data) {
@@ -138,7 +142,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mContext.getString(R.string.app_name_anster,mContext.getString(R.string.app_name)));
+        shareContent.setTitle(mContext.getString(R.string.app_name_anster, mContext.getString(R.string.app_name)));
         shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_QA_ANSWER_DETAIL,
                 mRootView.getAnswerInfo().getId()));
         shareContent.setContent(mRootView.getAnswerInfo().getBody());
@@ -172,7 +176,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
         mAnswerInfoListBeanGreenDao.insertOrReplace(mRootView.getAnswerInfo());
         EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_COLLECT);
-        mRepository.handleCollect(isUnCollected, answer_id);
+        mBaseQARepository.handleCollect(isUnCollected, answer_id);
     }
 
     @Override
@@ -207,7 +211,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         bundle.putSerializable(EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE, mRootView.getAnswerInfo());
         EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE);
         mAnswerInfoListBeanGreenDao.insertOrReplace(mRootView.getAnswerInfo());
-        mRepository.handleAnswerLike(isLiked, news_id);
+        mBaseQARepository.handleAnswerLike(isLiked, news_id);
     }
 
     @Override
@@ -222,7 +226,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void adoptionAnswer(long question_id, long answer_id) {
-        Subscription subscription = mRepository.adoptionAnswer(question_id, answer_id)
+        Subscription subscription = mBaseQARepository.adoptionAnswer(question_id, answer_id)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
@@ -249,8 +253,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void getAnswerDetail(long answer_id, long max_id, boolean isLoadMore) {
-        Subscription subscription = Observable.zip(mRepository.getAnswerDetail(answer_id),
-                mRepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
+        Subscription subscription = Observable.zip(mBaseQARepository.getAnswerDetail(answer_id),
+                mBaseQARepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
                     answerInfoBean.setCommentList(answerCommentListBeen);
                     return answerInfoBean;
                 })
@@ -260,7 +264,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
-                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrency2GameCurrency(data.getRewards_amount(),getRatio()),getGoldName()),
+                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + PayConfig.realCurrency2GameCurrency(data
+                                        .getRewards_amount(), getRatio()), getGoldName()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data, isLoadMore);
                     }
@@ -283,7 +288,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void deleteAnswer() {
-        mRepository.deleteAnswer(mRootView.getAnswerInfo().getId());
+        mBaseQARepository.deleteAnswer(mRootView.getAnswerInfo().getId());
         mRootView.deleteAnswer();
     }
 
@@ -297,7 +302,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
             mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
-        mRepository.deleteComment(mRootView.getAnswerId().intValue(), data.getId().intValue());
+        mBaseQARepository.deleteComment(mRootView.getAnswerId().intValue(), data.getId().intValue());
     }
 
     @Override
@@ -390,7 +395,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         mRootView.getListDatas().add(0, createComment);
         mRootView.getAnswerInfo().setComments_count(mRootView.getAnswerInfo().getComments_count() + 1);
         mRootView.refreshData();
-        mRepository.sendComment(content, mRootView.getAnswerId(), reply_id,
+        mBaseQARepository.sendComment(content, mRootView.getAnswerId(), reply_id,
                 createComment.getComment_mark());
     }
 
@@ -415,7 +420,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-       mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override

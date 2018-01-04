@@ -10,7 +10,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
@@ -459,18 +461,34 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
                 userCenterFriendlyTimeDonw = dayAndMonth[1];
             }
         }
-
         if (feed_content != null) {
             friendlyContent = feed_content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
-            if (friendlyContent.length() > DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) {
-                friendlyContent = friendlyContent.substring(0, DYNAMIC_LIST_CONTENT_MAX_SHOW_SIZE) + "...";
-            }
             startPosition = friendlyContent.length();
         }
         boolean canLookWords = paid_node == null || paid_node.isPaid();
         if (!canLookWords) {
             friendlyContent += AppApplication.getContext().getString(R.string.words_holder);
         }
+    }
+
+    /**
+     * 计算文本的长度是否超过最大行
+     *
+     * @param string
+     * @return
+     */
+    private int getDynamicContentSingleLineNums(String string) {
+        // 获得字体的宽度，sp转px的方法，网上很多，14为textview中所设定的textSize属性值
+        int txtWidth = ConvertUtils.sp2px(AppApplication.getContext(), 14);
+        // 获得屏幕的宽度
+        int winWidth = DeviceUtils
+                .getScreenWidth(AppApplication.getContext());
+        // 获得textView控件的宽度，15为xml中所设定marginleft 和 marginright的值，这里都是15，所以直接乘以2了。
+        int viewWidth = winWidth
+                - ConvertUtils.dp2px(AppApplication.getContext(), 68);
+        // 获得单行最多显示字数
+        return viewWidth / txtWidth * 2;
+
     }
 
     /**
