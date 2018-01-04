@@ -50,9 +50,13 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         init(context, null);
     }
 
+    public int getBodyLayoutId(){
+        return R.layout.ease_widget_chat_primary_menu;
+    }
+
     private void init(final Context context, AttributeSet attrs) {
         Context context1 = context;
-        LayoutInflater.from(context).inflate(R.layout.ease_widget_chat_primary_menu, this);
+        LayoutInflater.from(context).inflate(getBodyLayoutId(), this);
         editText = (EditText) findViewById(R.id.et_sendmessage);
         buttonSetModeKeyboard = findViewById(R.id.btn_set_mode_keyboard);
         edittext_layout = (RelativeLayout) findViewById(R.id.edittext_layout);
@@ -170,6 +174,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
      * append emoji icon to editText
      * @param emojiContent
      */
+    @Override
     public void onEmojiconInputEvent(CharSequence emojiContent){
         editText.append(emojiContent);
     }
@@ -177,6 +182,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
     /**
      * delete emojicon
      */
+    @Override
     public void onEmojiconDeleteEvent(){
         if (!TextUtils.isEmpty(editText.getText())) {
             KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
