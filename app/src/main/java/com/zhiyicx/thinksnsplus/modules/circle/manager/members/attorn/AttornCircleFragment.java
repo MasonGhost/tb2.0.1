@@ -53,7 +53,7 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
     }
 
     @Override
-    public boolean needManager() {
+    public boolean needFounder() {
         return false;
     }
 

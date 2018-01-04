@@ -53,7 +53,7 @@ public class MembersPresenter extends AppBasePresenter<
                         }
                         switch (members.getRole()) {
                             case CircleMembers.FOUNDER:
-                                if (mRootView.needManager()) {
+                                if (mRootView.needFounder()) {
                                     grouLengh[0]++;
                                     manager.add(0, members);
                                 }

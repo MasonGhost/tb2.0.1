@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -68,6 +70,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     protected boolean mPermissionManager;
     protected boolean mPermissionOwner;
     protected boolean mPermissionMember;
+
+    private String mSearchContent = "";
 
     public static MemberListFragment newInstance(Bundle bundle) {
         MemberListFragment memberListFragment = new MemberListFragment();
@@ -142,8 +146,22 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     protected void initView(View rootView) {
         super.initView(rootView);
         mFragmentInfoSearchEdittext.setHint(getString(R.string.info_search));
-        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData
-                (charSequence));
+//        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData
+//                (charSequence));
+
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext)
+                .filter(textViewEditorActionEvent -> !mSearchContent.equals(mFragmentInfoSearchEdittext.getText().toString()))
+                .subscribe(textViewEditorActionEvent -> {
+                    if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                        mSearchContent = mFragmentInfoSearchEdittext.getText().toString();
+                        if (mRefreshlayout.isRefreshing()) {
+                            onRefresh(mRefreshlayout);
+                        } else {
+                            mRefreshlayout.autoRefresh();
+                        }
+                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+                    }
+                });
     }
 
     @Override
@@ -152,12 +170,17 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    public String getSearchContent() {
+        return mSearchContent;
+    }
+
+    @Override
     public int[] getGroupLengh() {
         return mFrouLengh;
     }
 
     @Override
-    public boolean needManager() {
+    public boolean needFounder() {
         return true;
     }
 
