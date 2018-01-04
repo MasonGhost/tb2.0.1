@@ -159,6 +159,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.addItemDecoration(getItemDecoration());
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvList.setHasFixedSize(sethasFixedSize());
+        mRvList.setItemViewCacheSize(setItemCacheSize());
+        mRvList.setDrawingCacheEnabled(true);
+        mRvList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         //设置动画
         mRvList.setItemAnimator(new DefaultItemAnimator());
         mAdapter = getAdapter();
@@ -185,6 +188,14 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
             }
         });
+    }
+
+    /**
+     *
+     * @return recyclerVeiw item offset cache Size
+     */
+    protected int setItemCacheSize() {
+        return 10;
     }
 
     /**
