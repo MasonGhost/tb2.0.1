@@ -228,7 +228,7 @@
                     app:dividerRightMargin="@dimen/spacing_normal"
                     app:leftImage="@mipmap/ico_me_circle"
                     app:leftText="@string/chat_my_friends"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:showLine="false"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--钱包-->
