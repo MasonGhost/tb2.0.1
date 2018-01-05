@@ -100,8 +100,6 @@ public class BackgroundTaskHandler {
     @Inject
     ServiceManager mServiceManager;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
@@ -115,8 +113,6 @@ public class BackgroundTaskHandler {
     UpLoadRepository mUpLoadRepository;
     @Inject
     BaseChannelRepository mBaseChannelRepository;
-    @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
@@ -707,7 +703,6 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
                     }

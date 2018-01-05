@@ -9,12 +9,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.concurrent.TimeUnit;
@@ -22,10 +18,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -46,21 +40,9 @@ public class WalletPresenter extends AppBasePresenter< WalletContract.View> impl
     public static final int TAG_SHOWRULE_JUMP = 4; // jump rule
 
     @Inject
-    AuthRepository mIAuthRepository;
-
-    @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     BillRepository mBillRepository;
-
-    @Inject
-    SystemRepository mSystemRepository;
-
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
