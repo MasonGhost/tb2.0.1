@@ -239,7 +239,7 @@ public class BackgroundTaskHandler {
             wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         }
 
-        if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
+        if (mobNetInfo != null&& !mobNetInfo.isConnected() && !wifiNetInfo.isConnected()){
             //当前无可用的网络
             return false;
         }

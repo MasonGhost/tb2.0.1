@@ -70,32 +70,13 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     protected void initView(View rootView) {
+        DaggerFindSomeOneListPresenterComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
+                .build().inject(FindSomeOneListFragment.this);
         super.initView(rootView);
 
-        Observable.create(subscriber -> {
-            DaggerFindSomeOneListPresenterComponent
-                    .builder()
-                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
-                    .build().inject(FindSomeOneListFragment.this);
-            subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Object>() {
-                    @Override
-                    public void onCompleted() {
-                        initData();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-                    }
-                });
     }
 
     @Override

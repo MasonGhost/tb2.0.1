@@ -25,20 +25,23 @@ public class ActivityUtils {
      */
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
                                              @NonNull Fragment fragment, int frameId) {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(frameId, fragment);
-        transaction.commit();
+        if (!fragment.isAdded()) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(frameId, fragment);
+            transaction.commit();
+        }
     }
 
     /**
      * 添加返回栈
+     *
      * @param fragmentManager
      * @param fragment
      * @param frameId
      * @param tag
      */
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                             @NonNull Fragment fragment, int frameId,String tag) {
+                                             @NonNull Fragment fragment, int frameId, String tag) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);
         transaction.addToBackStack(tag);
