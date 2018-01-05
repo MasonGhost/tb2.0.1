@@ -213,6 +213,11 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         return false;
     }
 
+    @Override
+    public boolean needMember() {
+        return true;
+    }
+
     /**
      * 是否需要更多操作按钮
      *

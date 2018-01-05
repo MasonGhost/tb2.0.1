@@ -170,12 +170,24 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
                     }
                 });
         addSubscrebe(subscribe);
+    }
+
+    @Override
+    public void handleFollowUser(UserInfoBean userInfoBean) {
+        mBaseCircleRepository.handleFollow(userInfoBean);
+        mRootView.upDateFollowFansState(userInfoBean);
     }
 
     @Override

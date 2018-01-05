@@ -672,4 +672,9 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public void handleFollow(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
+    }
 }

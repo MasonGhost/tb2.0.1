@@ -393,6 +393,8 @@
     <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
     <string name="dynamic_list_top_success">申请置顶成功</string>
     <string name="comment_top_success">申请评论置顶成功</string>
+    <string name="post_top_success">帖子置顶成功</string>
+    <string name="post_top_failed">帖子置顶失败</string>
     <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
 
     <!--设置评论收费-->

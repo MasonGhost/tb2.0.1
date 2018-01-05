@@ -18,6 +18,12 @@
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"/>
 
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_tittle"
+        layout="@layout/include_error_tip_text"/>
+
     <View
         android:id="@+id/line1"
         style="@style/style_divider_horizontal_light"

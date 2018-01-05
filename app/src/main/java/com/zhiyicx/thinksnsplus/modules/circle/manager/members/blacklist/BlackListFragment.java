@@ -63,8 +63,13 @@ public class BlackListFragment extends MemberListFragment implements MembersCont
     }
 
     @Override
-    public boolean needBlackList() {
+    public boolean needMember() {
         return false;
+    }
+
+    @Override
+    public boolean needBlackList() {
+        return true;
     }
 
     @Override

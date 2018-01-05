@@ -10,12 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyi.richtexteditorlib.R;
 import com.zhiyi.richtexteditorlib.view.dialogs.base.BaseDialogFragment;
+
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -40,6 +44,8 @@ public class LinkDialog extends BaseDialogFragment {
     private boolean nameVisible = true;
     private boolean urlVisible = true;
     private boolean needNumFomatFilter = false;
+
+    private TextView errorTip;
 
 
     public static LinkDialog createLinkDialog(String name, String url) {
@@ -70,10 +76,16 @@ public class LinkDialog extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialog = inflater.inflate(R.layout.dialog_fragment_link, container);
         TextView ok = (TextView) dialog.findViewById(R.id.confirm_btn);
+        errorTip = (TextView) dialog.findViewById(R.id.tv_error_tip);
         TextView title = (TextView) dialog.findViewById(R.id.tv_tittle);
         TextView cancle = (TextView) dialog.findViewById(R.id.cancel_btn);
         final EditText urledt = (EditText) dialog.findViewById(R.id.et_linkurl);
         final EditText nameedt = (EditText) dialog.findViewById(R.id.et_linkname);
+
+        RxTextView.textChanges(urledt).subscribe(charSequence -> {
+            errorTip.setText("");
+            errorTip.setVisibility(View.GONE);
+        });
 
         if (titleStr != null) {
             title.setText(titleStr);
@@ -96,6 +108,7 @@ public class LinkDialog extends BaseDialogFragment {
                 InputFilter[] filters = new InputFilter[1];
                 filters[0] = new MyNumFormatInputFilter();
                 urledt.setFilters(filters);
+                urledt.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
             }
         }
 
@@ -221,6 +234,11 @@ public class LinkDialog extends BaseDialogFragment {
     public LinkDialog setUrlVisible(boolean urlVisible) {
         this.urlVisible = urlVisible;
         return this;
+    }
+
+    public void setErrorMessage(String string) {
+        errorTip.setVisibility(View.VISIBLE);
+        errorTip.setText(string);
     }
 
     public interface OnDialogClickListener {

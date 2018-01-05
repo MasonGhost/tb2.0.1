@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -21,6 +22,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -175,7 +177,6 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(getString(R.string.post_detail));
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -255,7 +256,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
-//        setToolBarInfo();
+        setToolBarInfo();
     }
 
     @Override
@@ -315,6 +316,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 }
             }
         }
+    }
+
+    @Override
+    public void upDateFollowFansState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -480,8 +486,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .subscribe(aVoid -> getActivity().finish());
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                });
+                .subscribe(aVoid -> mPresenter.handleFollowUser(mCirclePostDetailBean.getUserInfoBean()));
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
@@ -492,9 +497,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mVShadow.setVisibility(View.GONE);
 
                 });
-//        RxView.clicks(mTvToolbarCenter)
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
         RxView.clicks(mIvUserPortrait)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
@@ -520,6 +525,21 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         UserInfoBean userInfoBean = mCirclePostDetailBean.getUserInfoBean();
         mTvToolbarCenter.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
+    }
+
+    /**
+     * 设置toolBar上面的关注状态
+     */
+    private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
+        mTvToolbarRight.setVisibility(View.VISIBLE);
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
+                    null);
+        } else if (userInfoBean1.isFollower()) {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+        } else {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
+        }
     }
 
     private void initBottomToolData(CirclePostListBean circlePostDetailBean) {
@@ -610,7 +630,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId());
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), 30);
+                        managerStickTop(circlePostListBean.getId());
                     }
                     mDealPostPopWindow.hide();
                 })
@@ -698,5 +718,39 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .with(getActivity())
                 .bottomClickListener(() -> mAuditTipPop.hide()).build();
         mAuditTipPop.show();
+    }
+
+    private void managerStickTop(Long id) {
+        LinkDialog dialog = createLinkDialog();
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                if (TextUtils.isEmpty(url)) {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                    return;
+                }
+                int day = Integer.valueOf(url);
+                if (day > 0 && day <= 31) {
+                    mPresenter.stickTopPost(id, day);
+                } else {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    private LinkDialog createLinkDialog() {
+        return LinkDialog.createLinkDialog()
+                .setUrlHinit(getString(R.string.post_apply_top_days))
+                .setTitleStr(getString(R.string.set_post_apply_top_days))
+                .setNameVisible(false)
+                .setNeedNumFomatFilter(true);
     }
 }

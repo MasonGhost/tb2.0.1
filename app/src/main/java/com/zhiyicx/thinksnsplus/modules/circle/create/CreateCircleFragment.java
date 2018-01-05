@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -55,8 +54,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func4;
 
 /**
  * @author Jliuer
@@ -281,6 +278,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public void getPhotoSuccess(List<ImageBean> photoList) {
         Glide.with(getActivity())
                 .load(photoList.get(0).getImgUrl())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(mIvHeadIcon);
         mHeadImage = photoList.get(0).getImgUrl();
         hasHeadImage = true;
@@ -443,6 +442,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mToolbarCenter.setText(setCenterTitle());
         Glide.with(getActivity())
                 .load(mCircleInfo.getAvatar())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(mIvHeadIcon);
         mHeadImage = null;
         if (!TextUtils.isEmpty(mCircleInfo.getLatitude()) && !TextUtils.isEmpty(mCircleInfo.getLongitude())) {

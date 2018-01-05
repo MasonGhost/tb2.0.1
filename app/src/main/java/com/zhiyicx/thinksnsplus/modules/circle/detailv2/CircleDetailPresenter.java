@@ -599,14 +599,21 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                         mRootView.getListDatas().get(position).setPinned(true);
                         mRootView.refreshData(position);
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
                     }
                 });
         addSubscrebe(subscribe);

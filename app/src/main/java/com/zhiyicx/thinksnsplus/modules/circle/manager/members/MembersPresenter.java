@@ -64,8 +64,10 @@ public class MembersPresenter extends AppBasePresenter<
                                 grouLengh[1]++;
                                 break;
                             case CircleMembers.MEMBER:
-                                member.add(members);
-                                grouLengh[2]++;
+                                if (mRootView.needMember()){
+                                    member.add(members);
+                                    grouLengh[2]++;
+                                }
                                 break;
                             case CircleMembers.BLACKLIST:
                                 if (mRootView.needBlackList()) {

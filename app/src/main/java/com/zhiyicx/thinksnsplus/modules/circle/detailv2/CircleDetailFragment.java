@@ -465,7 +465,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
 
             mCircleInfo.setBlacklist_count(blackListCount);
-            mLlBlackContainer.setRightText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
+            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
         }
     }
 
@@ -624,6 +624,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         for (int i = 0; i < task.size(); i++) {
+            if (i >= 9) {
+                continue;
+            }
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
@@ -1264,7 +1267,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleFounder.setVisibility(detail.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
-    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,R.id.ll_black_container,
+    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container, R.id.ll_black_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
@@ -1408,15 +1411,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void managerStickTop(Long id, int position) {
-        LinkDialog dialog = createLinkDialog(id, position);
+        LinkDialog dialog = createLinkDialog();
         dialog.setListener(new LinkDialog.OnDialogClickListener() {
             @Override
             public void onConfirmButtonClick(String name, String url) {
+                if (TextUtils.isEmpty(url)) {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                    return;
+                }
                 int day = Integer.valueOf(url);
                 if (day > 0 && day <= 31) {
                     mPresenter.stickTopPost(id, position, day);
                 } else {
-                    showSnackErrorMessage(getString(R.string.post_apply_top_days));
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
                 }
                 dialog.dismiss();
             }
@@ -1429,7 +1436,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         dialog.show(getFragmentManager(), LinkDialog.Tag);
     }
 
-    private LinkDialog createLinkDialog(Long id, int position) {
+    private LinkDialog createLinkDialog() {
         return LinkDialog.createLinkDialog()
                 .setUrlHinit(getString(R.string.post_apply_top_days))
                 .setTitleStr(getString(R.string.set_post_apply_top_days))

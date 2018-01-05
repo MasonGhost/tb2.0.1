@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
@@ -259,4 +260,5 @@ public interface IBaseCircleRepository {
      */
     Observable<BaseJsonV2> undoTopPost(Long postId);
 
+    void handleFollow(UserInfoBean userInfoBean);
 }
