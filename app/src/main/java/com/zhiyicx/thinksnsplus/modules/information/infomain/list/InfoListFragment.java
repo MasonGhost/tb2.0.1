@@ -54,7 +54,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;
-//    private List<RealAdvertListBean> mHeaderAdvert;
 
     private InfoBannerHeader mInfoBannerHeader;
 
@@ -70,11 +69,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
-    protected boolean isLayzLoad() {
-        return true;
-    }
-
-    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -82,6 +76,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected boolean needMusicWindowView() {
         return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
     }
 
     @Override
@@ -96,8 +95,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             if (!data.isEmpty()) {
                 RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
                 DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-                long max_id = data.get(data.size() - 1).getMaxId();
-                data.add(DynamicListAdvert.advert2Info(advert, max_id));
+                long maxId = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Info(advert, maxId));
             }
         } catch (Exception e) {
         }
