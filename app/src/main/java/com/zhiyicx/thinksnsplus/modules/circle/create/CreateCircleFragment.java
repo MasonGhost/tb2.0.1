@@ -403,7 +403,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty()) {
             money = null;
         } else {
-            int result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+            int result = 0;
+            try {
+                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             money = result + "";
         }
 

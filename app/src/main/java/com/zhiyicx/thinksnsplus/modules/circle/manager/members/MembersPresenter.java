@@ -186,10 +186,14 @@ public class MembersPresenter extends AppBasePresenter<
                                         manager.add(members1);
                                         break;
                                     case CircleMembers.MEMBER:
-                                        member.add(members1);
+                                        if (mRootView.needMember()){
+                                            member.add(members1);
+                                        }
                                         break;
                                     case CircleMembers.BLACKLIST:
-                                        blacklist.add(members1);
+                                        if (mRootView.needBlackList()){
+                                            blacklist.add(members1);
+                                        }
                                         break;
                                     default:
                                 }

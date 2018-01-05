@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -146,6 +147,10 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 RxView.clicks(more)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> initPopWindow(more, position, circleMembers));
+
+                RxView.clicks(holder.itemView)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(mActivity, circleMembers.getUser()));
             }
         };
     }
@@ -349,8 +354,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             case R.id.fragment_search_back:
                 break;
             case R.id.fragment_search_cancle:
-                mRefreshlayout.autoLoadmore();
-//                setLeftClick();
+                setLeftClick();
                 break;
             default:
         }
