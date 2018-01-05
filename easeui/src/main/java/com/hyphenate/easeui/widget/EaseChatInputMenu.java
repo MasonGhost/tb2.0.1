@@ -63,7 +63,7 @@ public class EaseChatInputMenu extends LinearLayout {
     private void init(Context context, AttributeSet attrs) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
-        layoutInflater.inflate(R.layout.ease_widget_chat_input_menu, this);
+        layoutInflater.inflate(getBodyLayoutId(), this);
         primaryMenuContainer = (FrameLayout) findViewById(R.id.primary_menu_container);
         emojiconMenuContainer = (FrameLayout) findViewById(R.id.emojicon_menu_container);
         chatExtendMenuContainer = (FrameLayout) findViewById(R.id.extend_menu_container);
@@ -72,6 +72,10 @@ public class EaseChatInputMenu extends LinearLayout {
          chatExtendMenu = (EaseChatExtendMenu) findViewById(R.id.extend_menu);
         
 
+    }
+
+    public int getBodyLayoutId(){
+        return R.layout.ease_widget_chat_input_menu;
     }
 
     /**
@@ -87,7 +91,7 @@ public class EaseChatInputMenu extends LinearLayout {
         }
         // primary menu, use default if no customized one
         if(chatPrimaryMenu == null){
-            chatPrimaryMenu = (EaseChatPrimaryMenu) layoutInflater.inflate(R.layout.ease_layout_chat_primary_menu, null);
+            chatPrimaryMenu = setPrimaryMenuView();
         }
         primaryMenuContainer.addView(chatPrimaryMenu);
 
@@ -110,6 +114,10 @@ public class EaseChatInputMenu extends LinearLayout {
     
     public void init(){
         init(null);
+    }
+
+    public EaseChatPrimaryMenuBase setPrimaryMenuView(){
+        return (EaseChatPrimaryMenuBase) layoutInflater.inflate(R.layout.ease_layout_chat_primary_menu, null);
     }
     
     /**
