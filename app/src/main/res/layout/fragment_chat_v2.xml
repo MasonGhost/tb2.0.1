@@ -37,7 +37,7 @@
                 android:visibility="invisible" />
     </RelativeLayout>
 
-    <com.hyphenate.easeui.widget.EaseChatInputMenu
+    <com.zhiyicx.thinksnsplus.widget.chat.TSChatInputMenu
             android:id="@+id/input_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

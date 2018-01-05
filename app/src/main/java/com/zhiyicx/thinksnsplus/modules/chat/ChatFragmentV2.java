@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -7,8 +9,11 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,8 +26,14 @@ import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.domain.EaseEmojicon;
+import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.ui.EaseChatFragment;
+import com.hyphenate.easeui.widget.EaseChatExtendMenu;
+import com.hyphenate.easeui.widget.EaseChatInputMenu;
+import com.hyphenate.easeui.widget.EaseChatMessageList;
 import com.hyphenate.easeui.widget.EaseTitleBar;
+import com.hyphenate.easeui.widget.EaseVoiceRecorderView;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -31,6 +42,9 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
+import com.zhiyicx.thinksnsplus.widget.chat.TSChatPrimaryMenu;
+
+import java.util.concurrent.Executors;
 
 /**
  * @author Catherine
@@ -58,6 +72,10 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private static final int MESSAGE_TYPE_SENT_VIDEO_CALL = 3;
     private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
     private static final int MESSAGE_TYPE_RECALL = 9;
+
+    static final int ITEM_TAKE_PICTURE = 1;
+    static final int ITEM_PICTURE = 2;
+    static final int ITEM_LOCATION = 3;
 
     protected View mDriver;
     protected View mStatusPlaceholderView;
@@ -116,7 +134,6 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         linearLayout.addView(frameLayout);
         return linearLayout;
     }
-
 
     @Override
     protected void setUpView() {
@@ -277,6 +294,37 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 return presenter;
             }
             return null;
+        }
+
+    }
+
+    /**
+     * handle the click event for extend menu
+     *
+     */
+    class ExtendMenuItemClickListener implements EaseChatExtendMenu.EaseChatExtendMenuItemClickListener{
+
+        @Override
+        public void onClick(int itemId, View view) {
+            if(chatFragmentHelper != null){
+                if(chatFragmentHelper.onExtendMenuItemClick(itemId, view)){
+                    return;
+                }
+            }
+            switch (itemId) {
+                case ITEM_TAKE_PICTURE:
+                    selectPicFromCamera();
+                    break;
+                case ITEM_PICTURE:
+                    selectPicFromLocal();
+                    break;
+                case ITEM_LOCATION:
+                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
     }
