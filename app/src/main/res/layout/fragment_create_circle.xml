@@ -353,6 +353,7 @@
                     android:textSize="@dimen/size_content"/>
 
                 <TextView
+                    android:id="@+id/tv_currency_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/spacing_mid"

@@ -181,6 +181,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
+        // 当搜索结果为空时保证空 view 不出现
         if (data.isEmpty()) {
             setEmptyViewVisiable(false);
         }
