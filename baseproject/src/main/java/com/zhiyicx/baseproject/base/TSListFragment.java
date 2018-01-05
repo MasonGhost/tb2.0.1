@@ -191,7 +191,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     /**
-     *
      * @return recyclerVeiw item offset cache Size
      */
     protected int setItemCacheSize() {
@@ -562,9 +561,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void refreshRangeData(int start, int count) {
-        setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-        int position = start + mHeaderAndFooterWrapper.getHeadersCount();
-        mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
+        if (mHeaderAndFooterWrapper != null) {
+            setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
+            int position = start + mHeaderAndFooterWrapper.getHeadersCount();
+            mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
+        }
     }
 
     @Override
@@ -709,7 +710,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
-                refreshData();
+                try {
+                    refreshRangeData(mListDatas.size() - data.size() - 1, data.size());
+                } catch (Exception e) {
+                    refreshData();
+                }
                 mMaxId = getMaxId(data);
             }
         }
