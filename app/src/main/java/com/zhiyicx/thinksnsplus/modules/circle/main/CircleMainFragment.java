@@ -63,11 +63,6 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
     protected boolean isLoadingMoreEnable() {
         return false;
     }

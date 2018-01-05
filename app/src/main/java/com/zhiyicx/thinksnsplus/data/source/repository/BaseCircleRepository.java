@@ -634,6 +634,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                             .intValue(), userInfoBean);
                                 }
+
                                 dealCommentData(circleCommentZip.getPinneds(), userInfoBeanSparseArray);
                                 dealCommentData(circleCommentZip.getComments(), userInfoBeanSparseArray);
                                 return circleCommentZip;
