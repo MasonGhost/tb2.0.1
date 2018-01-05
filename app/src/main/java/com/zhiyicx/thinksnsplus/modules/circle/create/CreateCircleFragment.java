@@ -30,6 +30,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.GeoHash;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -393,11 +394,15 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean = new CreateCircleBean();
         mCreateCircleBean.setName(mEtCircleName.getText().toString());
         if (mPoiItem != null) {
+            String geoHash = GeoHash.getInstance()
+                    .setLocation(new GeoHash.LocationBean(mPoiItem.getLatLonPoint().getLatitude(),
+                            mPoiItem.getLatLonPoint().getLongitude())).getGeoHashBase32();
             mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
             mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
-            mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+            mCreateCircleBean.setGeo_hash(geoHash);
             mCreateCircleBean.setLocation(mTvLocation.getText().toString());
         }
+
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
                 CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));

@@ -181,7 +181,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                         Glide.with(mActivity).pauseRequests();
                     } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         if (sIsScrolling) {
-                            Glide.with(mActivity).resumeRequests();
+                            if (AndroidLifecycleUtils.canLoadImage(mActivity)) {
+                                Glide.with(mActivity).resumeRequests();
+                            }
                         }
                         sIsScrolling = false;
                     }

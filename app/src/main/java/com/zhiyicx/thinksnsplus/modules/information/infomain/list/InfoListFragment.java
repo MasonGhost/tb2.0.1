@@ -198,7 +198,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
-        if (!mInfoType.equals("-1")) {// 只有推荐才加载广告
+        // 只有推荐才加载广告
+        if (!mInfoType.equals(RECOMMEND_INFO)) {
             return;
         }
         List<String> advertTitle = new ArrayList<>();
@@ -206,7 +207,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         List<String> advertLinks = new ArrayList<>();
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
         mListAdvert = mPresenter.getListAdvert();
-//        mHeaderAdvert = mPresenter.getBannerAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
