@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -13,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -28,6 +30,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +67,11 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
     @Inject
     public CircleMainPresenter(CircleMainContract.View rootView) {
         super(rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -298,5 +306,20 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                     }
                 });
         addSubscrebe(subscribe);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CIRCLE)
+    public void updateCircle(CircleInfo circleInfo) {
+        int index = -1;
+        for (CircleInfo circle : mRootView.getListDatas()) {
+            if (circle.equals(circleInfo)) {
+                index = mRootView.getListDatas().indexOf(circle);
+            }
+        }
+        if (index != 1) {
+            mRootView.getListDatas().set(index, circleInfo);
+        }
+        mRootView.refreshData(index);
+        LogUtils.d(EventBusTagConfig.EVENT_UPDATE_CIRCLE);
     }
 }

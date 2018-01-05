@@ -518,6 +518,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .getUsers_count()));
         mLlMemberContainer.setRightText(String.valueOf(circleInfo.getUsers_count()));
         setVisiblePermission(circleInfo);
+        if (circleInfo.getJoined() == null) {
+            mActivity.finish();
+        }
     }
 
     @Override

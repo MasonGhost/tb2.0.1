@@ -131,7 +131,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
-        mVpFragment.setOffscreenPageLimit(getOffsetPage());
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
@@ -150,6 +149,7 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
             getActivity().overridePendingTransition(R.anim.slide_from_top_enter, R.anim
                     .slide_from_top_quit);
         });
+        mVpFragment.setOffscreenPageLimit(getOffsetPage());
     }
 
     @Override
@@ -166,8 +166,8 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                         mFragmentList.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
                     });
             mTsvToolbar.notifyDataSetChanged(mTitle);
-            mVpFragment.setOffscreenPageLimit(mTitle.size());
             tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
+            mVpFragment.setOffscreenPageLimit(mTitle.size());
         }
 
     }
@@ -200,8 +200,8 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
             }
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
-        mVpFragment.setOffscreenPageLimit(mTitle.size());
         tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
+        mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override

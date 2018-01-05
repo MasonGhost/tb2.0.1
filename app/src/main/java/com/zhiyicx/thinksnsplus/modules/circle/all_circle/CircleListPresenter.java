@@ -2,15 +2,18 @@ package com.zhiyicx.thinksnsplus.modules.circle.all_circle;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -36,6 +39,11 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
     @Inject
     public CircleListPresenter(CircleListContract.View rootView) {
         super(rootView);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -142,5 +150,20 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
     public boolean insertOrUpdateData(@NotNull List<CircleInfo> data, boolean isLoadMore) {
         mCircleInfoGreenDao.saveMultiData(data);
         return isLoadMore;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CIRCLE)
+    public void updateCircle(CircleInfo circleInfo) {
+        int index = -1;
+        for (CircleInfo circle : mRootView.getListDatas()) {
+            if (circle.equals(circleInfo)) {
+                index = mRootView.getListDatas().indexOf(circle);
+            }
+        }
+        if (index != 1) {
+            mRootView.getListDatas().set(index, circleInfo);
+        }
+        mRootView.refreshData(index);
+        LogUtils.d(EventBusTagConfig.EVENT_UPDATE_CIRCLE);
     }
 }

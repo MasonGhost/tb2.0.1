@@ -42,6 +42,8 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     @Inject
     BaseCircleListPresenter mCircleListPresenter;
 
+    private CircleListItem mCircleListItem;
+
     private boolean mIsNeedToolBar;
 
     public static BaseCircleListFragment newInstance(boolean isNeedToolBar) {
@@ -93,7 +95,8 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(isMineJoined(), mActivity, this, mPresenter));
+        mCircleListItem = new CircleListItem(isMineJoined(), mActivity, this, mPresenter);
+        adapter.addItemViewDelegate(mCircleListItem);
         return adapter;
     }
 
@@ -105,6 +108,12 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         initDagger();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        mCircleListItem.setPresenter(mPresenter);
     }
 
     protected void initDagger() {

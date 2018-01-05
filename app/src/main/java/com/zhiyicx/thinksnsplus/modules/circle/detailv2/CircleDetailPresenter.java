@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -141,10 +142,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         });
                 addSubscrebe(subscribe);
 
-            }else{
+            } else {
                 Subscription subscribe = mBaseCircleRepository
-                                .getPostListFromCircle
-                                        (mRootView.getCircleId(), maxId, mRootView.getType())
+                        .getPostListFromCircle
+                                (mRootView.getCircleId(), maxId, mRootView.getType())
                         .map(data -> {
                             for (int i = 0; i < data.size(); i++) {
                                 List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
@@ -461,14 +462,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.dismissSnackBar();
+                        boolean isPrivateOrPaid = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
+                                || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                             mRootView.updateCircleInfo(circleInfo);
                         } else {
                             // 如果是 封闭的或者 收费的 ，就不及时更新
-                            if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
-                                    || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
+                            if (isPrivateOrPaid) {
                                 return;
                             }
                             CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
@@ -479,6 +481,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                             mRootView.updateCircleInfo(circleInfo);
+                        }
+                        if (isPrivateOrPaid) {
+                            EventBus.getDefault().post(circleInfo, EventBusTagConfig.EVENT_UPDATE_CIRCLE);
                         }
                         mCircleInfoGreenDao.insertOrReplace(circleInfo);
                     }
