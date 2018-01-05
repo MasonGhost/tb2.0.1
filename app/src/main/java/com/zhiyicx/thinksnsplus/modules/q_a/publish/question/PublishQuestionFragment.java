@@ -181,7 +181,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
-        setEmptyViewVisiable(!data.isEmpty());
+        if (data.isEmpty()) {
+            setEmptyViewVisiable(false);
+        }
     }
 
     @Override
@@ -264,11 +266,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         RxTextView.textChanges(mEtQustion.getEtContent())
                 .subscribe(charSequence -> {
                     mQuestionStr = charSequence.toString().trim();
-                    if (!TextUtils.isEmpty(mQuestionStr)) {
-                        mToolbarRight.setEnabled(true);
-                    } else {
-                        mToolbarRight.setEnabled(false);
-                    }
+                    mToolbarRight.setEnabled(!TextUtils.isEmpty(mQuestionStr));
                     requestNetData(mQuestionStr, 0L, "all", false);
                 }, throwable -> mToolbarRight.setEnabled(false));
 
