@@ -761,4 +761,5 @@
     <string name="chat_delete_conversation_failed">删除聊天失败</string>
     <string name="chat_unconnected">聊天服务器未连接</string>
     <string name="chat_my_friends">我的好友</string>
+    <string name="chat_send_voice_alert">按住说话</string>
 </resources>

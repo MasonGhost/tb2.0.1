@@ -30,6 +30,6 @@ public class TSChatPrimaryMenu extends EaseChatPrimaryMenu {
     @Override
     public int getBodyLayoutId() {
         // 重写 但是要记得id不能变哦
-        return R.layout.ease_widget_chat_input_menu;
+        return R.layout.view_chat_input_menu;
     }
 }

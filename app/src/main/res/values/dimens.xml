@@ -121,4 +121,9 @@
     <dimen name="qr_code_user_avatar_width">50dp</dimen>
     <dimen name="qr_code_content_padding_top">59dp</dimen>
     <dimen name="qr_code_content_padding_bottom">74dp</dimen>
+
+    <!--聊天详情-->
+    <dimen name="chat_detail_input_menu_height">41dp</dimen>
+    <dimen name="chat_detail_input_menu_voice_height">20dp</dimen>
+    <dimen name="chat_detail_input_menu_send_voice_height">25dp</dimen>
 </resources>
