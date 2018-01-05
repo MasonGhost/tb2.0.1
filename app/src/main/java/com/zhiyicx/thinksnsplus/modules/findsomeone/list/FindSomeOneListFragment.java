@@ -5,14 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DaggerDynamicComponent;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenterModule;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListPresenter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @Describe 找人列表页

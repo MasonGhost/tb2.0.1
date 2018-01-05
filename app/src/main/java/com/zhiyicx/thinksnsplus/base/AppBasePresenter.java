@@ -46,12 +46,12 @@ public abstract class AppBasePresenter<V extends IBaseView> extends BasePresente
 
     @Override
     public boolean isTourist() {
-        return mAuthRepository.isTourist();
+        return mAuthRepository == null || mAuthRepository.isTourist();
     }
 
     @Override
     public boolean isLogin() {
-        return mAuthRepository.isLogin();
+        return mAuthRepository != null && mAuthRepository.isLogin();
     }
 
     @Override
