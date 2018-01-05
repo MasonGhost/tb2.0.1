@@ -193,6 +193,8 @@ public class AuthRepository implements IAuthRepository {
         BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
         new JpushAlias(mContext, "").setAlias(); // 注销极光
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
+        /*退出环信*/
+        EMClient.getInstance().logout(true);
         mDynamicBeanGreenDao.clearTable();
         mAnswerDraftBeanGreenDaoImpl.clearTable();
         mQAPublishBeanGreenDaoImpl.clearTable();
