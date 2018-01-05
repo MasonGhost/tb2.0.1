@@ -645,8 +645,10 @@
         <activity
             android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity">
-        </activity>
+        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

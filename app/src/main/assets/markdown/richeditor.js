@@ -201,6 +201,7 @@ var RE = {
         var pre = document.getElementById('pre');
         _self.cache.title.value = pre.textContent;
         _self.cache.title.style.height = pre.offsetHeight + 'px';
+        console.log("titleHeight:::" + pre.offsetHeight);
     },
 	focus: function focus() {
 		//聚焦

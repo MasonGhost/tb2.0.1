@@ -51,6 +51,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
      pinned_income_count	integer	置顶收益统计
      joined	object	是否加入：null未加入
      avatar	地址	头像地址
+     blacklist_count 黑名单数量
      */
     /**
      * id : 3
@@ -137,6 +138,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
     private String notice;
     private int users_count;
     private int posts_count;
+    private int blacklist_count;
     private int audit;
     private String created_at;
     private String updated_at;
@@ -332,6 +334,14 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.joined = joined;
     }
 
+    public int getBlacklist_count() {
+        return blacklist_count;
+    }
+
+    public void setBlacklist_count(int blacklist_count) {
+        this.blacklist_count = blacklist_count;
+    }
+
     public CircleInfo() {
     }
 
@@ -412,6 +422,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
         dest.writeInt(this.join_income_count);
         dest.writeInt(this.pinned_income_count);
         dest.writeInt(this.category_id);
+        dest.writeInt(this.blacklist_count);
         dest.writeString(this.location);
         dest.writeString(this.longitude);
         dest.writeString(this.latitude);
@@ -451,6 +462,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.join_income_count = in.readInt();
         this.pinned_income_count = in.readInt();
         this.category_id = in.readInt();
+        this.blacklist_count = in.readInt();
         this.location = in.readString();
         this.longitude = in.readString();
         this.latitude = in.readString();
@@ -473,12 +485,12 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.category = in.readParcelable(CircleTypeBean.class.getClassLoader());
     }
 
-    @Generated(hash = 743179421)
+    @Generated(hash = 497247326)
     public CircleInfo(Long id, String name, String avatar, int user_id, int join_income_count, int pinned_income_count,
             int category_id, String location, String longitude, String latitude, String geo_hash, String permissions, int allow_feed,
-            String mode, int money, String summary, String notice, int users_count, int posts_count, int audit, String created_at,
-            String updated_at, CircleJoinedBean joined, UserInfoBean user, CircleJoinedBean founder, List<UserTagBean> tags,
-            CircleTypeBean category) {
+            String mode, int money, String summary, String notice, int users_count, int posts_count, int blacklist_count, int audit,
+            String created_at, String updated_at, CircleJoinedBean joined, UserInfoBean user, CircleJoinedBean founder,
+            List<UserTagBean> tags, CircleTypeBean category) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
@@ -498,6 +510,7 @@ public class CircleInfo extends BaseListBean implements Serializable {
         this.notice = notice;
         this.users_count = users_count;
         this.posts_count = posts_count;
+        this.blacklist_count = blacklist_count;
         this.audit = audit;
         this.created_at = created_at;
         this.updated_at = updated_at;

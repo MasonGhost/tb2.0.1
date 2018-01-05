@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -85,6 +86,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragmen
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.blacklist.BlackListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.blacklist.BlackListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragment;
@@ -170,6 +173,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
      */
     @BindView(R.id.ll_permission_container)
     CombinationButton mLlPermissionContainer;
+
+    /**
+     * 黑名单
+     */
+    @BindView(R.id.ll_black_container)
+    CombinationButton mLlBlackContainer;
 
     /**
      * 举报管理
@@ -447,6 +456,16 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mCircleInfo.setUsers_count(data.getIntExtra(MemberListFragment.CIRCLEID, 0));
             mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
+        } else if (requestCode == BlackListFragment.BLACKLISTCODE && resultCode == Activity.RESULT_OK && data != null) {
+            int blackListCount = data.getIntExtra(MemberListFragment.CIRCLEID, 0);
+
+            // 重新统计成员数量
+            mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() + blackListCount - mCircleInfo.getBlacklist_count());
+            mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
+            mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
+
+            mCircleInfo.setBlacklist_count(blackListCount);
+            mLlBlackContainer.setRightText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
         }
     }
 
@@ -848,7 +867,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId(), position);
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                        managerStickTop(circlePostListBean.getId(), position);
                     }
                     mMyPostPopWindow.hide();
                     showBottomView(true);
@@ -958,7 +977,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId(), position);
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                        managerStickTop(circlePostListBean.getId(), position);
                     }
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
@@ -1187,6 +1206,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 detail.getLocation()));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
+        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
@@ -1240,10 +1260,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
+        mLlBlackContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(detail.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
-    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
+    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,R.id.ll_black_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
@@ -1330,6 +1351,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                         (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
                 break;
+            // 黑名单管理
+            case R.id.ll_black_container:
+                Intent intent3 = new Intent(mActivity, BlackListActivity.class);
+                Bundle bundle3 = new Bundle();
+                bundle3.putLong(BlackListFragment.CIRCLEID, mCircleInfo.getId());
+                bundle3.putString(BlackListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
+                intent3.putExtras(bundle3);
+                mActivity.startActivityForResult(intent3, BlackListFragment.BLACKLISTCODE);
+                break;
             default:
         }
     }
@@ -1375,6 +1405,36 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .with(getActivity())
                 .bottomClickListener(() -> mAuditTipPop.hide()).build();
         mAuditTipPop.show();
+    }
+
+    private void managerStickTop(Long id, int position) {
+        LinkDialog dialog = createLinkDialog(id, position);
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                int day = Integer.valueOf(url);
+                if (day > 0 && day <= 31) {
+                    mPresenter.stickTopPost(id, position, day);
+                } else {
+                    showSnackErrorMessage(getString(R.string.post_apply_top_days));
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    private LinkDialog createLinkDialog(Long id, int position) {
+        return LinkDialog.createLinkDialog()
+                .setUrlHinit(getString(R.string.post_apply_top_days))
+                .setTitleStr(getString(R.string.set_post_apply_top_days))
+                .setNameVisible(false)
+                .setNeedNumFomatFilter(true);
     }
 
     /**

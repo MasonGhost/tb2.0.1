@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 public class CircleMembers extends BaseListBean {
 
     public static final String FOUNDER = "founder";
+    public static final String ALL = "all";
     public static final String ADMINISTRATOR = "administrator";
     public static final String MEMBER = "member";
     public static final String BLACKLIST = "blacklist";

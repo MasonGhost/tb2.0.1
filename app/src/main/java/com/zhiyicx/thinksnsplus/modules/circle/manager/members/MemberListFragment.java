@@ -133,8 +133,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
 
-
-                more.setVisibility((mPermissionMember || isOwner) || (isManager && mPermissionManager) ? View
+                boolean moreVisible = !((mPermissionMember || isOwner) || (isManager && mPermissionManager)) && needMore();
+                more.setVisibility(!moreVisible ? View
                         .INVISIBLE : View.VISIBLE);
 
                 ImageUtils.loadCircleUserHeadPic(circleMembers.getUser(), headImage);
@@ -188,14 +188,38 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    public String getMemberType() {
+        return CircleMembers.ALL;
+    }
+
+    /**
+     * 是否需要圈主
+     *
+     * @return
+     */
+    @Override
     public boolean needFounder() {
         return true;
     }
 
+    /**
+     * 是否需要黑名单
+     *
+     * @return
+     */
     @Override
     public boolean needBlackList() {
 //        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
         return false;
+    }
+
+    /**
+     * 是否需要更多操作按钮
+     *
+     * @return
+     */
+    protected boolean needMore() {
+        return true;
     }
 
     @Override
@@ -338,5 +362,19 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         intent.putExtra(CIRCLEID, mListDatas.size());
         mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
+    }
+
+    public enum MemberRole {
+        TYPE_ALL("all"),
+        TYPE_MANAGER("manager"),
+        TYPE_MEMBER("member"),
+        TYPE_BLACKLIST("blacklist"),
+        TYPE_AUDIT("audit");
+
+        public String value;
+
+        MemberRole(String value) {
+            this.value = value;
+        }
     }
 }

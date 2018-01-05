@@ -31,7 +31,6 @@ public class MembersPresenter extends AppBasePresenter<
         MembersContract.View>
         implements MembersContract.Presenter {
 
-    public static final String TYPE_ALL = "all";
     @Inject
     BaseCircleRepository mBaseCircleRepository;
 
@@ -44,7 +43,7 @@ public class MembersPresenter extends AppBasePresenter<
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
         Subscription subscribe = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
-                TSListFragment.DEFAULT_PAGE_SIZE, TYPE_ALL, mRootView.getSearchContent())
+                TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent())
                 .flatMap(circleMembers -> {
                     List<CircleMembers> manager = new ArrayList<>();
                     List<CircleMembers> member = new ArrayList<>();

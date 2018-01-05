@@ -31,6 +31,8 @@ public interface MembersContract {
         void attornSuccess(CircleMembers circleMembers);
 
         String getSearchContent();
+
+        String getMemberType();
     }
 
     interface Presenter extends ITSListPresenter<CircleMembers> {
