@@ -160,7 +160,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void setSynToDynamicCbVisiable(boolean isVisiable) {
         super.setSynToDynamicCbVisiable(isVisiable);
-        if (mCircleInfo == null) {
+        if (mCircleInfo == null && mCbSynToDynamic == null) {
             return;
         }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View
