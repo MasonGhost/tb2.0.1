@@ -74,6 +74,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public static final String PERMISSION_OWNER = "permission_owner";
     public static final String PERMISSION_MANAGER = "permission_manager";
 
+    @BindView(R.id.tv_currency_unit)
+    TextView mTvCurrencyUnit;
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
     @BindView(R.id.ll_head_icon_container)
@@ -342,6 +344,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
             } else {
+                if (mPresenter != null && !TextUtils.isEmpty(mPresenter.getGoldUnit())) {
+                    mTvCurrencyUnit.setText(mPresenter.getGoldUnit());
+                }
                 createCirclepreHandle(emptyFlag != 0 && (mCbFree.isChecked() || mCbToll.isChecked()));
                 mLlFree.setVisibility(View.VISIBLE);
                 mLlCharge.setVisibility(View.VISIBLE);
