@@ -4,11 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +125,10 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
             mTvUserIntro.setText(String.format(getString(R.string.default_intro_format), userInfo.getIntro()));
             ImageUtils.loadCircleUserHeadPic(userInfo, mUserAvatar);
             mShareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mUserAvatar.getIvAvatar().getDrawable(), R.mipmap.icon);
+            if (TextUtils.isEmpty(userInfo.getAvatar())){
+                // 为空那就用默认的头像咯
+                mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
+            }
             Glide.with(getContext())
                     .load(userInfo.getAvatar())
                     .asBitmap()
@@ -133,6 +139,9 @@ public class MyCodeFragment extends TSFragment<MyCodeContract.Presenter> impleme
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             if (resource != null) {
                                 mPresenter.createUserCodePic(resource);
+                            } else {
+                                // 为空那就用默认的头像咯
+                                mPresenter.createUserCodePic(BitmapFactory.decodeResource(getResources(), ImageUtils.getDefaultAvatar(userInfo)));
                             }
                         }
                     });
