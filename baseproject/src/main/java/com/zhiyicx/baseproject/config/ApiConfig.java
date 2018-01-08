@@ -447,7 +447,7 @@ public class ApiConfig {
     /**
      * 问答问题举报
      */
-    public static final String APP_PATH_QA_REPORT = "api/" + API_VERSION_2 + "/qquestions/{question_id}/reports";
+    public static final String APP_PATH_QA_REPORT = "api/" + API_VERSION_2 + "/questions/{question_id}/reports";
 
     /**
      * 问答回答举报
