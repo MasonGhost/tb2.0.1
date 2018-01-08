@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
@@ -71,7 +72,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
@@ -142,6 +143,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 mListDatas);
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
+        infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -515,6 +517,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         goReportComment(position);
         return true;
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
 

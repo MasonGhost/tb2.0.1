@@ -799,6 +799,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
      */
     protected void setLeftClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity,mRootView);
         getActivity().finish();
     }
 
