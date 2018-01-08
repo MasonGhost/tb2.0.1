@@ -53,22 +53,37 @@
                     tools:text="今天天气弱爆了"/>
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/msg_status"
-                style="@style/style_chat_status"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/rl_chat_bubble"/>
+            <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:layout_toLeftOf="@+id/rl_chat_bubble"
+                    android:layout_centerVertical="true">
+
+                <ImageView
+                        android:id="@+id/msg_status"
+                        style="@style/style_chat_status"
+                        android:src="@drawable/msg_box_remind"/>
+                <!--进度-->
+                <skin.support.widget.SkinCompatProgressBar
+                        android:id="@+id/progress_bar"
+                        android:visibility="invisible"
+                        style="@style/style_loading"
+                        android:layout_width="@dimen/margin_20"
+                        android:layout_height="@dimen/margin_20"/>
+            </FrameLayout>
 
             <!--消息已送达，已读等回执-->
             <TextView
                     android:id="@+id/tv_message_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/spacing_normal"
-                    android:layout_toLeftOf="@id/rl_chat_bubble"
                     android:textSize="@dimen/size_note_assist"
-                    tools:text="已读"/>
+                    android:textColor="@color/normal_for_disable_button_text"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:layout_toLeftOf="@+id/rl_chat_bubble"
+                    android:layout_alignBottom="@+id/rl_chat_bubble"
+                    android:text="@string/chat_send_message_read"/>
         </RelativeLayout>
     </RelativeLayout>
 

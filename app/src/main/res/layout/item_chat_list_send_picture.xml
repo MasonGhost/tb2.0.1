@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/spacing_normal"
+              android:paddingRight="@dimen/spacing_normal">
+
+    <include
+            layout="@layout/include_chat_time"/>
+
+
+    <RelativeLayout
+            style="@style/style_chat_content_container">
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+                android:id="@+id/iv_chat_headpic"
+                style="@style/style_chat_headpic"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                app:pressShape="circle"
+                app:ts_avatare_size="@dimen/headpic_for_list"/>
+
+        <TextView
+                android:id="@+id/tv_chat_name"
+                style="@style/style_chat_name"
+                android:layout_toLeftOf="@id/iv_chat_headpic"
+                android:gravity="top|right"
+                android:includeFontPadding="false"
+                tools:text="李四"/>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_chat_name"
+                android:layout_marginTop="@dimen/chat_list_content_margintop"
+                android:layout_toLeftOf="@id/iv_chat_headpic">
+
+            <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/iv_chat_content"
+                    style="@style/style_chat_content"
+                    android:textIsSelectable="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ease_default_image"/>
+
+            <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:layout_toLeftOf="@+id/iv_chat_content"
+                    android:layout_centerVertical="true">
+
+                <ImageView
+                        android:id="@+id/msg_status"
+                        style="@style/style_chat_status"
+                        android:src="@drawable/msg_box_remind"/>
+                <!--进度-->
+                <skin.support.widget.SkinCompatProgressBar
+                        android:id="@+id/progress_bar"
+                        android:visibility="invisible"
+                        style="@style/style_loading"
+                        android:layout_width="@dimen/margin_20"
+                        android:layout_height="@dimen/margin_20"/>
+            </FrameLayout>
+
+            <!--消息已送达，已读等回执-->
+            <TextView
+                    android:id="@+id/tv_message_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_note_assist"
+                    android:textColor="@color/normal_for_disable_button_text"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:layout_toLeftOf="@+id/iv_chat_content"
+                    android:layout_alignBottom="@+id/iv_chat_content"
+                    android:text="@string/chat_send_message_read"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
