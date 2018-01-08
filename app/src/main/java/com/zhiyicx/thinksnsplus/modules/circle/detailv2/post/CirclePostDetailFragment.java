@@ -664,14 +664,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    String name = "";
-                    if (circlePostListBean.getUser() != null) {
-                        name = circlePostListBean.getUser().getName();
-                    }
+
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean
                             (circlePostListBean.getUser(), String.valueOf
                                     (circlePostListBean.getId()),
-                                    name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                    circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mDealPostPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealPostPopWindow.hide())
