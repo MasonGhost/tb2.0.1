@@ -420,7 +420,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         } else {
             int result = 0;
             try {
-                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString().replace("\\.\\d+", "")), mPresenter.getRatio());
+                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -492,7 +492,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         // 金额转换
         String money = mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "0";
-        double result = PayConfig.realCurrency2GameCurrency(Integer.parseInt(money), mPresenter.getRatio());
+        int result = (int) PayConfig.realCurrency2GameCurrency(Integer.parseInt(money), mPresenter.getRatio());
         mEtCircleAmount.setText(result > 0 ? result + "" : "");
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);
