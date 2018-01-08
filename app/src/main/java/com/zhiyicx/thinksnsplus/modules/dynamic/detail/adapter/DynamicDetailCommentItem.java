@@ -70,18 +70,6 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-        holder.getView(R.id.tv_content).setOnClickListener(v -> {
-            if (mOnCommentTextClickListener != null) {
-                mOnCommentTextClickListener.onCommentTextClick(position);
-            }
-        });
-        holder.getView(R.id.tv_content).setOnLongClickListener(v -> {
-            if (mOnCommentTextClickListener != null) {
-                mOnCommentTextClickListener.onCommentTextLongClick(position);
-            }
-            return true;
-        });
-
         holder.setVisible(R.id.fl_tip, dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR ? View.VISIBLE : View.GONE);
 
         RxView.clicks(holder.getView(R.id.fl_tip))
@@ -99,6 +87,17 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
+        holder.getView(R.id.tv_content).setOnClickListener(v -> {
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextClick(position);
+            }
+        });
+        holder.getView(R.id.tv_content).setOnLongClickListener(v -> {
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextLongClick(position);
+            }
+            return true;
+        });
         ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
         setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());

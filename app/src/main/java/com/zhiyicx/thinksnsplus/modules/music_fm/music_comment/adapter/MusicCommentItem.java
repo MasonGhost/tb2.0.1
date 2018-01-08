@@ -100,6 +100,12 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
                     mOnCommentTextClickListener.onCommentTextClick(position);
                 }
             });
+            holder.getView(R.id.tv_content).setOnLongClickListener(v -> {
+                if (mOnCommentTextClickListener != null) {
+                    mOnCommentTextClickListener.onCommentTextLongClick(position);
+                }
+                return true;
+            });
             setUserInfoClick(holder.getView(R.id.tv_name), musicCommentListBean.getFromUserInfoBean());
             setUserInfoClick(holder.getView(R.id.iv_headpic), musicCommentListBean.getFromUserInfoBean());
         }
