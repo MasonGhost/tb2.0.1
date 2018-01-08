@@ -121,36 +121,7 @@
         android:layout_below="@id/dlmv_menu"
         android:layout_toRightOf="@+id/iv_headpic"
         />
-
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
-        android:id="@+id/dcv_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
-
-    <com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView
-        android:visibility="gone"
-        android:id="@+id/group_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
-
-    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
-        android:visibility="gone"
-        android:id="@+id/post_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView>
+    <include
+        layout="@layout/include_dynamic_list_comment_view"
+        />
 </RelativeLayout>
