@@ -14,8 +14,6 @@ import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
-import java.util.ArrayList;
-
 /**
  * @Author Jliuer
  * @Date 2017/12/19/14:40
@@ -43,17 +41,22 @@ public class PublishPostFragment extends MarkdownFragment {
         super.initBundleDataWhenOnCreate();
         mCircleInfo = getArguments().getParcelable(BUNDLE_SOURCE_DATA);
         mDraftBean = getArguments().getParcelable(BUNDLE_DRAFT_DATA);
-        if (mDraftBean != null && mDraftBean.getCircleInfo() != null) {
-            mCircleInfo = mDraftBean.getCircleInfo();
-        }
         isOutCirclePublish = getArguments().getBoolean(BUNDLE_ISOUT_BOOLEAN);
+        if (mDraftBean != null && mDraftBean.getCircleInfo() != null) {
+            // 草稿视为圈外发帖
+            mCircleInfo = mDraftBean.getCircleInfo();
+            isOutCirclePublish = true;
+        }
+
     }
 
     @Override
     protected void initData() {
         super.initData();
-        mLlCircleContainer.setVisibility(View.VISIBLE);
-        mLine.setVisibility(View.VISIBLE);
+        if (isOutCirclePublish) {
+            mLlCircleContainer.setVisibility(View.VISIBLE);
+            mLine.setVisibility(View.VISIBLE);
+        }
         if (mDraftBean != null) {
             mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
         }
