@@ -9,14 +9,21 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
 import skin.support.widget.SkinCompatProgressBar;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_SPACING_TIME;
 
 /**
@@ -96,6 +103,13 @@ public class ChatBaseRow extends EaseChatRow {
         }
         // 用户名
         mTvChatName.setText(mUserInfoBean.getName());
+        RxView.clicks(mIvChatHeadpic)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(mUserInfoBean.getUser_id());
+                    PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+                });
     }
 
     private void onMessageCreate() {
