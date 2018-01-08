@@ -126,11 +126,23 @@
 
     </LinearLayout>
 
+    <TextView
+        android:paddingBottom="@dimen/dynamic_image_padding_bottom"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:id="@+id/tv_from"
+        android:textColor="@color/normal_for_disable_button_text"
+        android:visibility="gone"
+        android:layout_below="@+id/nrv_image"
+        android:textSize="@dimen/size_icon_assist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
-        android:layout_below="@+id/nrv_image"
+        android:layout_below="@+id/tv_from"
         android:background="@color/general_for_line_light"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView

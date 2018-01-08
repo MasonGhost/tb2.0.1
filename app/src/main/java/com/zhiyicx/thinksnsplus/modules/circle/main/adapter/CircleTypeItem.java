@@ -49,6 +49,7 @@ public class CircleTypeItem extends BaseCircleItem {
             button.setRightImage(0);
             RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams)button.getCombinedButtonRightTextView().getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(1,1);
             params.setMargins(button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_normal),
                     0,button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
             Drawable change = button.getContext().getResources().getDrawable(R.mipmap.ico_circle_exchange);

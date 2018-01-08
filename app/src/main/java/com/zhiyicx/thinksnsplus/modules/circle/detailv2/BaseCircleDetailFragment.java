@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,12 +11,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -76,7 +80,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         CirclePostNoPullRecyclerView.OnCommentStateClickListener<CirclePostCommentBean>, CirclePostListCommentView.OnCommentClickListener,
         CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         CirclePostListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
-        , PhotoSelectorImpl.IPhotoBackListener {
+        , PhotoSelectorImpl.IPhotoBackListener, CirclePostListBaseItem.OnPostFromClickListener {
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String CIRCLE_TYPE = "circle_type";
@@ -96,6 +100,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
+    private PayPopWindow mPayPopWindow;
 
     // 类型选择框
     private TypeChoosePopupWindow mTypeChoosePopupWindow;
@@ -105,6 +110,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     private PhotoSelectorImpl mPhotoSelector;
 
     private BaseCircleRepository.CircleMinePostType mCircleMinePostType = BaseCircleRepository.CircleMinePostType.PUBLISH;
+
 
     public static BaseCircleDetailFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
         BaseCircleDetailFragment circleDetailFragment = new BaseCircleDetailFragment();
@@ -342,6 +348,34 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void updateCircleInfo(CircleInfo circleInfo) {
+
+    }
+
+    @Override
+    public void onPostFromClick(int position) {
+        CircleInfo circleInfo = mListDatas.get(position).getGroup();
+        boolean isJoined = circleInfo.getJoined() != null;
+        boolean isPaid = CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
+        String moneyStr;
+        String descStr;
+        if (isJoined) {
+            Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
+            intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
+            startActivity(intent);
+            return;
+        } else if (isPaid) {
+            moneyStr = String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),
+                    mPresenter.getRatio()));
+            descStr = String.format(getString(R.string.buy_pay_circle_desc) + getString(R
+                    .string.buy_pay_member), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),
+                    mPresenter.getRatio()), mPresenter.getGoldName());
+
+        } else {
+            moneyStr = "";
+            descStr = getString(R.string.buy_pay_circle_join);
+        }
+        initPayPopWindow(mActivity, circleInfo, getString(R.string.buy_pay), getString(R.string.buy_pay_in)
+                , getString(R.string.buy_pay_out), moneyStr, descStr);
 
     }
 
@@ -608,7 +642,18 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         circlePostListBaseItem.setOnMoreCommentClickListener(this);
         circlePostListBaseItem.setOnCommentClickListener(this);
         circlePostListBaseItem.setOnCommentStateClickListener(this);
+        circlePostListBaseItem.setOnPostFromClickListener(this);
+        circlePostListBaseItem.setShowPostFrom(showPostFrom());
+        circlePostListBaseItem.setShowToolMenu(showToolMenu());
         adapter.addItemViewDelegate(circlePostListBaseItem);
+    }
+
+    protected boolean showPostFrom() {
+        return false;
+    }
+
+    protected boolean showToolMenu() {
+        return true;
     }
 
     @Override
@@ -629,5 +674,58 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public CircleInfo getCircleInfo() {
         return null;
+    }
+
+    /**
+     * @param context
+     * @param circleInfo
+     * @param titleStrRes 标题
+     * @param item1StrRes 第一个按钮
+     * @param item2StrRes 第二个按钮
+     * @param moneyStr    金额
+     * @param descrStr    描述文字
+     */
+    protected void initPayPopWindow(Activity context, CircleInfo circleInfo,
+                                    String titleStrRes,
+                                    String item1StrRes,
+                                    String item2StrRes,
+                                    String moneyStr,
+                                    String descrStr) {
+
+        mPayPopWindow = PayPopWindow.builder()
+                .with(context)
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(descrStr)
+                .buildLinksStr(context.getString(R.string.buy_pay_member))
+                .buildTitleStr(titleStrRes)
+                .buildItem1Str(item1StrRes)
+                .buildItem2Str(item2StrRes)
+                .buildMoneyStr(moneyStr)
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.dealCircleJoinOrExit(circleInfo);
+                    mPayPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayPopWindow.show();
+
     }
 }
