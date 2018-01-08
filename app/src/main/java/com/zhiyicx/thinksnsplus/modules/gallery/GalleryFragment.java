@@ -57,7 +57,7 @@ public class GalleryFragment extends TSFragment {
 
     private SectionsPagerAdapter mPagerAdapter;
     /**
-     *  点击第几张图片进入的预览界面
+     * 点击第几张图片进入的预览界面
      */
     private int currentItem = 0;
     private List<ImageBean> allImages;
@@ -127,14 +127,16 @@ public class GalleryFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(aLong -> {
+                try {
                     if (position + 1 < allImages.size()) { // 提前加载前后图片
                         handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
                     }
                     if (position - 1 >= 0) {
                         handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
                     }
-                });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
 

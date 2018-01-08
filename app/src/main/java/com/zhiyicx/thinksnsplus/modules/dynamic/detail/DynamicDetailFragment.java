@@ -101,16 +101,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     TextView mTvToolbarLeft;
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
-    @BindView(R.id.toolbar_top_blank)
-    View mToolbarTopBlank;
 
     private List<RewardsListBean> mRewardsListBeens = new ArrayList<>();
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
@@ -219,9 +215,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
-        mToolbar.setOnSystemUiVisibilityChangeListener(visibility -> {
 
-        });
     }
 
     private void initHeaderView() {

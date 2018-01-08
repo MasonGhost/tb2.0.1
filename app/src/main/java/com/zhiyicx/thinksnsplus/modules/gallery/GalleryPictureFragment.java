@@ -108,7 +108,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
     private TSnackbar mSavingTSnackbar;
-    private int screenW, screenH;
+    private int screenW;
     private boolean hasAnim = false;
     private PayPopWindow mPayPopWindow;
 
@@ -134,7 +134,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     protected void initView(View rootView) {
         context = getContext();
         screenW = DeviceUtils.getScreenWidth(context);
-        screenH = DeviceUtils.getScreenHeight(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
         mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
@@ -260,7 +259,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         if (mTvOriginPhoto.getVisibility() == View.VISIBLE) {
             if (isIn) {
                 ViewCompat.animate(mTvOriginPhoto).alpha(1.0f).scaleX(1.0f).scaleY(1.0f)
-                        .setDuration(500)
+                        .setDuration(300)
                         .setInterpolator(INTERPOLATOR).withLayer()
                         .start();
             } else {

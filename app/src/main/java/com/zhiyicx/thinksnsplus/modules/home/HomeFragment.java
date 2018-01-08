@@ -116,9 +116,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     LinearLayout mLlBottomContainer;
 
 
-    private TSViewPagerAdapter mHomePager;
     private PhotoSelectorImpl mPhotoSelector;
-    private JpushAlias mJpushAlias;
 
     private int mCurrenPage;
 
@@ -333,7 +331,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void initViewPager() {
         //设置缓存的个数
         mVpHome.setOffscreenPageLimit(PAGE_NUMS - 1);
-        mHomePager = new TSViewPagerAdapter(getChildFragmentManager());
+        TSViewPagerAdapter homePager = new TSViewPagerAdapter(getChildFragmentManager());
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
@@ -345,8 +343,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             mFragmentList.add(MineFragment.newInstance());
         }
         //将 List 设置给 adapter
-        mHomePager.bindData(mFragmentList);
-        mVpHome.setAdapter(mHomePager);
+        homePager.bindData(mFragmentList);
+        mVpHome.setAdapter(homePager);
 
     }
 
@@ -421,8 +419,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void setJpushAlias() {
         if (mPresenter.isLogin()) {
             // 设置极光推送别名
-            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
-            mJpushAlias.setAlias();
+            JpushAlias jpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
+            jpushAlias.setAlias();
         }
 
     }

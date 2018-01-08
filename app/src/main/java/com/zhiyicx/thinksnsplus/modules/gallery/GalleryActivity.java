@@ -41,10 +41,6 @@ public class GalleryActivity extends TSActivity {
         ((GalleryFragment) mContanierFragment).backPress();
     }
 
-    public void superBackpress() {
-        GalleryActivity.super.onBackPressed();
-    }
-
     public static void startToGallery(Context context, int position, List<ImageBean> imageBeanList, List<AnimationRectBean> animationRectBeanList) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
