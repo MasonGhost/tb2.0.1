@@ -279,7 +279,7 @@
     <string name="post_apply_for_top">申请帖子置顶</string>
     <string name="post_undo_top">撤销置顶</string>
     <string name="post_apply_top">置顶帖子</string>
-    <string name="post_apply_top_days">可选范围1~31天</string>
+    <string name="post_apply_top_days">可选范围1~30天</string>
     <string name="set_post_apply_top_days">设置帖子置顶天数</string>
     <string name="delete_post">删除帖子</string>
     <string name="post_publishing">发贴中</string>

@@ -5,21 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.LoginFilter;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyi.richtexteditorlib.R;
 import com.zhiyi.richtexteditorlib.view.dialogs.base.BaseDialogFragment;
-
-import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -257,6 +255,13 @@ public class LinkDialog extends BaseDialogFragment {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            // 不能以 0  开始
+            String replace = source.toString().replaceAll("^0*", "");
+            return super.filter(replace, start, end, dest, dstart, dend);
         }
     }
 }

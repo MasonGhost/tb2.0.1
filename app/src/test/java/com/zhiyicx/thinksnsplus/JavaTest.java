@@ -104,6 +104,13 @@ public class JavaTest {
     }
 
     @Test
+    public void testFilter() {
+        String source = "001801";
+        String string = source.replaceAll("^0*", "");
+        System.out.print("testFilter = " + string);
+    }
+
+    @Test
     public void testList2Map() {
         CreateCircleBean createCircleBean = new CreateCircleBean();
         CreateCircleBean.TagId tagId = new CreateCircleBean.TagId(2);
