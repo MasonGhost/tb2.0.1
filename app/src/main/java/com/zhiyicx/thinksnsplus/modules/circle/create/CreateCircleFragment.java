@@ -323,6 +323,17 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                     }
                 });
 
+
+        RxTextView.textChanges(mTvLocation)
+                .filter(charSequence -> mCbToll.isChecked() && !charSequence.toString().isEmpty())
+                .subscribe(charSequence -> {
+                    try {
+                        createCirclepreHandle(emptyFlag != 0 && Integer.parseInt(charSequence.toString().trim()) > 0);
+                    } catch (Exception e) {
+                        createCirclepreHandle(false);
+                    }
+                });
+
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 mCbFree.setChecked(false);

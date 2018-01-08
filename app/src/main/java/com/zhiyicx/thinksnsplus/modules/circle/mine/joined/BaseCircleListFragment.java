@@ -113,7 +113,9 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     @Override
     protected void initData() {
         super.initData();
-        mCircleListItem.setPresenter(mPresenter);
+        if (mCircleListItem != null) {
+            mCircleListItem.setPresenter(mPresenter);
+        }
     }
 
     protected void initDagger() {
