@@ -226,7 +226,7 @@ var RE = {
 	},
 	markdownWords: function markdownWords() {
         var _self = this;
-        var content = _self.cache.editor.innerHTML.replace(/<div>|<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').trim();
+        var content = _self.cache.editor.innerHTML.replace(/<div\\s+\\S+>\\s+\\S+<\/div>|<[divimginput]+ class=".*">|\u56FE\u7247\u4E0A\u4F20\u5931\u8D25\uFF0C\u8BF7\u70B9\u51FB\u91CD\u8BD5/g, '').replace(/\n|\t/g,'').trim();
         AndroidInterface.markdownWords(content);
         return content;
     },
