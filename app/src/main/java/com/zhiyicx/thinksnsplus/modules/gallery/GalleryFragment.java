@@ -246,7 +246,8 @@ public class GalleryFragment extends TSFragment {
         return bgAnim;
     }
 
-    public void backPress() {
+    @Override
+    public void onBackPressed() {
         // 退出隐藏圆点指示器，防止显示在透明背景上
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
@@ -254,7 +255,7 @@ public class GalleryFragment extends TSFragment {
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
             fragment.animationExit(bgAnim);
         } else {
-            // ((GalleryActivity) getActivity()).superBackpress();
+            mActivity.finish();
         }
     }
 

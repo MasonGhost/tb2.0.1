@@ -95,10 +95,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
      */
     private boolean rightViewHadTranslated = false;
-    /**
-     * 是否是第一次进入页面
-     */
-    private boolean isFirstIn = true;
+
     /**
      * View 树监听订阅器
      */
