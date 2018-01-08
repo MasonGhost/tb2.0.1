@@ -602,7 +602,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .item3Str(isMine ? getString(R.string.info_delete) : (!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))
                 .item4Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
-                .item5Str(isMine || isBlackList ? getString(R.string.empty) : getString(R.string.report))
+                .item5Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

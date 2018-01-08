@@ -80,9 +80,11 @@ public class PostDetailHeaderView extends BaseWebLoad {
         return mInfoDetailHeader;
     }
 
+
     public PostDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mImgList = new ArrayList<>();
+
         animationRectBeanArrayList = new ArrayList<>();
         mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .item_post_comment_head, null);
@@ -110,7 +112,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
         if (circlePostDetailBean != null) {
             mTitle.setText(circlePostDetailBean.getTitle());
             mChannel.setText("来自");
-            String from = circlePostDetailBean.getUser().getName();
+            String from = circlePostDetailBean.getGroup().getName();
             if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);
             }

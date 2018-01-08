@@ -167,6 +167,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.getCurrentePost().setPinned(true);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                     }
 
                     @Override
