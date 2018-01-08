@@ -196,6 +196,7 @@
     <string name="send_info">投稿</string>
     <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
+    <string name="dynamic_close_pay">暂时关闭发布付费内容</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
