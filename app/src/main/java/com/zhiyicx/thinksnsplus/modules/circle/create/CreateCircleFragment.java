@@ -415,7 +415,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         } else {
             int result = 0;
             try {
-                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString().replace("\\.\\d+","")), mPresenter.getRatio());
+                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString().replace("\\.\\d+", "")), mPresenter.getRatio());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

@@ -194,7 +194,7 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public String getMemberType() {
-        return CircleMembers.ALL;
+        return CircleMembers.AUDIT_MEMBER;
     }
 
     /**
