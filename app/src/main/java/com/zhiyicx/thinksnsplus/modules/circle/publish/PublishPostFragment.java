@@ -123,7 +123,12 @@ public class PublishPostFragment extends MarkdownFragment {
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
-        setSynToDynamicCbVisiable(true);
+    }
+
+    @Override
+    public void onVisibleChange(boolean visible) {
+        super.onVisibleChange(visible);
+        setSynToDynamicCbVisiable(visible);
     }
 
     @Override
@@ -160,7 +165,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void setSynToDynamicCbVisiable(boolean isVisiable) {
         super.setSynToDynamicCbVisiable(isVisiable);
-        if (mCircleInfo == null && mCbSynToDynamic == null) {
+        if (mCircleInfo == null || mCbSynToDynamic == null) {
             return;
         }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View

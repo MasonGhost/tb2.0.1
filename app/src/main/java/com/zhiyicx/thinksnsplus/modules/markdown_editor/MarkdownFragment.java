@@ -51,7 +51,7 @@ import butterknife.BindView;
  */
 public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
+        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener,BottomMenu.BottomMenuVisibleChangeListener {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -131,6 +131,15 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      * @param circleInfo
      */
     protected void onActivityResultForChooseCircle(CircleInfo circleInfo) {
+
+    }
+
+    /**
+     * 圈子底部操作栏show or hide
+     * @param visible
+     */
+    @Override
+    public void onVisibleChange(boolean visible) {
 
     }
 
@@ -273,6 +282,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         });
         mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
+
+        mBottomMenu.setBottomMenuVisibleChangeListener(this);
 
         mLlCircleContainer.setOnClickListener(v -> {
             Intent intent = new Intent(mActivity, ChooseCircleActivity.class);
