@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -481,7 +482,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         initToolBar();
         initLisener();
-        AndroidBug5497Workaround.assistActivity(mActivity);
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(mActivity);
+        }
         onChoosed(ALL);
     }
 

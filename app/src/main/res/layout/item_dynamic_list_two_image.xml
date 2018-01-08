@@ -14,8 +14,8 @@
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginLeft="@dimen/spacing_normal"
-        app:ts_avatare_size="@dimen/headpic_for_list"
         android:src="@drawable/shape_default_image_circle"
+        app:ts_avatare_size="@dimen/headpic_for_list"
         />
 
     <TextView
@@ -69,9 +69,9 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
         android:includeFontPadding="false"
+        android:paddingBottom="@dimen/spacing_normal"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
@@ -83,11 +83,11 @@
         android:layout_below="@+id/tv_title"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:ellipsize="end"
+        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLines="@integer/dynamic_list_content_show_lines"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
@@ -167,35 +167,7 @@
         android:layout_toRightOf="@+id/iv_headpic"
         />
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
-        android:id="@+id/dcv_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
-
-    <com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView
-        android:visibility="gone"
-        android:id="@+id/group_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
-
-    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
-        android:visibility="gone"
-        android:id="@+id/post_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_tip"
-        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_mid">
-    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView>
+    <include
+        layout="@layout/include_dynamic_list_comment_view"
+        />
 </RelativeLayout>
