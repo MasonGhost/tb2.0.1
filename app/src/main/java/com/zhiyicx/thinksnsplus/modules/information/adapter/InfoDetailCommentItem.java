@@ -74,7 +74,12 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
                 mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
-
+        holder.getView(R.id.tv_content).setOnLongClickListener(v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onItemLongClick(v, holder,position);
+            }
+            return true;
+        });
         TextView topFlag=holder.getView(R.id.tv_top_flag);
         topFlag.setVisibility(!infoCommentListBean.isPinned() ? View.GONE : View.VISIBLE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
