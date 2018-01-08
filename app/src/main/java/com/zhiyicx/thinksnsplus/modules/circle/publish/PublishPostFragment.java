@@ -43,21 +43,22 @@ public class PublishPostFragment extends MarkdownFragment {
         super.initBundleDataWhenOnCreate();
         mCircleInfo = getArguments().getParcelable(BUNDLE_SOURCE_DATA);
         mDraftBean = getArguments().getParcelable(BUNDLE_DRAFT_DATA);
+        if (mDraftBean != null && mDraftBean.getCircleInfo() != null) {
+            mCircleInfo = mDraftBean.getCircleInfo();
+        }
         isOutCirclePublish = getArguments().getBoolean(BUNDLE_ISOUT_BOOLEAN);
     }
 
     @Override
     protected void initData() {
         super.initData();
-        if (isOutCirclePublish) {
-            mLlCircleContainer.setVisibility(View.VISIBLE);
-            mLine.setVisibility(View.VISIBLE);
-            if (mDraftBean != null) {
-                mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
-            }
-            if (mCircleInfo != null) {
-                mCircleName.setText(mCircleInfo.getName());
-            }
+        mLlCircleContainer.setVisibility(View.VISIBLE);
+        mLine.setVisibility(View.VISIBLE);
+        if (mDraftBean != null) {
+            mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
+        }
+        if (mCircleInfo != null) {
+            mCircleName.setText(mCircleInfo.getName());
         }
     }
 
