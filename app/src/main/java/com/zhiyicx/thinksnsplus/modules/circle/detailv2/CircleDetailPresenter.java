@@ -636,9 +636,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
         addSubscrebe(subscribe);
