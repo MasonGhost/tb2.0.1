@@ -39,8 +39,9 @@
 
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/iv_chat_content"
-                    style="@style/style_chat_content"
-                    android:textIsSelectable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:src="@drawable/ease_default_image"/>
