@@ -57,7 +57,7 @@ public class GalleryFragment extends TSFragment {
 
     private SectionsPagerAdapter mPagerAdapter;
     /**
-     *  点击第几张图片进入的预览界面
+     * 点击第几张图片进入的预览界面
      */
     private int currentItem = 0;
     private List<ImageBean> allImages;
@@ -127,14 +127,16 @@ public class GalleryFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(aLong -> {
+                try {
                     if (position + 1 < allImages.size()) { // 提前加载前后图片
                         handlePreLoadData(mVpPhotos.getCurrentItem() + 1);
                     }
                     if (position - 1 >= 0) {
                         handlePreLoadData(mVpPhotos.getCurrentItem() - 1);
                     }
-                });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -244,7 +246,8 @@ public class GalleryFragment extends TSFragment {
         return bgAnim;
     }
 
-    public void backPress() {
+    @Override
+    public void onBackPressed() {
         // 退出隐藏圆点指示器，防止显示在透明背景上
         mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
@@ -252,7 +255,7 @@ public class GalleryFragment extends TSFragment {
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
             fragment.animationExit(bgAnim);
         } else {
-            // ((GalleryActivity) getActivity()).superBackpress();
+            mActivity.finish();
         }
     }
 

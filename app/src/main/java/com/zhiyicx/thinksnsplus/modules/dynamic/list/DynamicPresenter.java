@@ -76,17 +76,17 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
 
-    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    private DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    private DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
 
-    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
-    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
+    private SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
+    private TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
 
-    SharePolicy mSharePolicy;
-    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
-    BaseDynamicRepository mDynamicRepository;
+    private SharePolicy mSharePolicy;
+    private AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    private BaseDynamicRepository mDynamicRepository;
 
-    SparseArray<Long> msendingStatus = new SparseArray<>();
+    private SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
     public DynamicPresenter(DynamicContract.View rootView
@@ -178,7 +178,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         Subscription subscribe = Observable.just(1)
                 .observeOn(Schedulers.io())
                 .map(aLong -> {
-                    List<DynamicDetailBeanV2> datas = null;
+                    List<DynamicDetailBeanV2> datas;
                     switch (mRootView.getDynamicType()) {
                         case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                             if (!isLoadMore) {
