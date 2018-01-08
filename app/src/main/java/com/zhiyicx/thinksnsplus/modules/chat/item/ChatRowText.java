@@ -27,19 +27,11 @@ import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_S
  * @contact email:648129313@qq.com
  */
 
-public class ChatRowText extends EaseChatRow {
-
-    private UserAvatarView mIvChatHeadpic;
-    private TextView mTvChatTime;
-    private TextView mTvChatName;
-    private RelativeLayout mRlChatBubble;
+public class ChatRowText extends ChatBaseRow {
     private TextView mTvChatContent;
 
-    private ChatUserInfoBean mUserInfoBean;
-
     public ChatRowText(Context context, EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
-        super(context, message, position, adapter);
-        this.mUserInfoBean = userInfoBean;
+        super(context, message, position, adapter, userInfoBean);
     }
 
     @Override
@@ -50,11 +42,8 @@ public class ChatRowText extends EaseChatRow {
 
     @Override
     protected void onFindViewById() {
-        mIvChatHeadpic = (UserAvatarView) findViewById(R.id.iv_chat_headpic);
-        mTvChatTime = (TextView) findViewById(R.id.tv_chat_time);
-        mTvChatName = (TextView) findViewById(R.id.tv_chat_name);
+        super.onFindViewById();
         mTvChatContent = (TextView) findViewById(R.id.tv_chat_content);
-        mRlChatBubble = (RelativeLayout) findViewById(R.id.rl_chat_bubble);
     }
 
     @Override
@@ -64,27 +53,10 @@ public class ChatRowText extends EaseChatRow {
 
     @Override
     protected void onSetUpView() {
+        super.onSetUpView();
         EMTextMessageBody txtBody = (EMTextMessageBody) message.getBody();
         // 正文
         Spannable span = EaseSmileUtils.getSmiledText(context, txtBody.getMessage());
         mTvChatContent.setText(span, TextView.BufferType.SPANNABLE);
-        // 头像
-        ImageUtils.loadUserHead(mUserInfoBean, mIvChatHeadpic, false);
-        // 时间
-        if (position == 0){
-            mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
-            mTvChatTime.setVisibility(VISIBLE);
-        } else {
-            EMMessage prevMessage = (EMMessage) adapter.getItem(position - 1);
-            if ((message.getMsgTime() - prevMessage.getMsgTime()) >= (MAX_SPACING_TIME * ConstantConfig.MIN)) {
-                mTvChatTime.setText(TimeUtils.getTimeFriendlyForChat(message.getMsgTime()));
-                mTvChatTime.setVisibility(VISIBLE);
-            } else {
-                mTvChatTime.setVisibility(GONE);
-            }
-        }
-
-        // 用户名
-        mTvChatName.setText(mUserInfoBean.getName());
     }
 }
