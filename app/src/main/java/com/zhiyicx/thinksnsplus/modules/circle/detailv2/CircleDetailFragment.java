@@ -1153,12 +1153,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             @Override
             public void onExpand(ExpandableTextView view) {
                 Observable.empty()
-                        .filter(o -> myAppBarLayoutBehavoir != null)
                         .delay(100, TimeUnit.MILLISECONDS)
                         .subscribe(new EmptySubscribe<Object>() {
                             @Override
                             public void onCompleted() {
-                                myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                if (myAppBarLayoutBehavoir != null) {
+                                    myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                    return;
+                                }
+                                unsubscribe();
                             }
                         });
             }
@@ -1166,12 +1169,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             @Override
             public void onShrink(ExpandableTextView view) {
                 Observable.empty()
-                        .filter(o -> myAppBarLayoutBehavoir != null)
                         .delay(100, TimeUnit.MILLISECONDS)
                         .subscribe(new EmptySubscribe<Object>() {
                             @Override
                             public void onCompleted() {
-                                myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                if (myAppBarLayoutBehavoir != null) {
+                                    myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                    return;
+                                }
+                                unsubscribe();
                             }
                         });
             }
@@ -1235,12 +1241,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
         Observable.empty()
-                .filter(o -> myAppBarLayoutBehavoir != null)
                 .delay(100, TimeUnit.MILLISECONDS)
                 .subscribe(new EmptySubscribe<Object>() {
                     @Override
                     public void onCompleted() {
-                        myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                        if (myAppBarLayoutBehavoir != null) {
+                            myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                            return;
+                        }
+                        unsubscribe();
                     }
                 });
 

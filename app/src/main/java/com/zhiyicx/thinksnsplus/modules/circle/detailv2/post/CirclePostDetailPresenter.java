@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
@@ -101,22 +102,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     circlePostDetailBean.setDigList(postDigListBeans);
                     Observable.empty()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new rx.Subscriber<Object>() {
+                            .subscribe(new EmptySubscribe<Object>() {
                                 @Override
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
                                             "" + PayConfig.realCurrency2GameCurrency(circlePostDetailBean.getReward_amount(), getRatio()),
                                             getGoldName()), postRewardList);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(Object o) {
-
                                 }
                             });
                     return circlePostDetailBean;
@@ -141,6 +132,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                             return;
                         }
                         mRootView.showSnackErrorMessage(message);
+                        mRootView.loadAllError();
                     }
 
                     @Override

@@ -6,6 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -122,7 +125,13 @@ public class PostDetailHeaderView extends BaseWebLoad {
                 mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(circlePostDetailBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
-
+                mContent.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        CustomWEBActivity.startToOutWEBActivity(mContext, url);
+                        return true;
+                    }
+                });
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -154,7 +163,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
+//                        CustomWEBActivity.startToOutWEBActivity(mContext, s1);
                     }
 
                     @Override

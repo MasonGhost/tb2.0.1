@@ -105,9 +105,9 @@ public class JavaTest {
 
     @Test
     public void testFilter() {
-        String source = "001801";
-        String string = source.replaceAll("^0*", "");
-        System.out.print("testFilter = " + string);
+        String source = "http://ddd/";
+        String urlRege = "^http://[\\s\\S]+";
+        System.out.print("testFilter = " + source.matches(urlRege));
     }
 
     @Test

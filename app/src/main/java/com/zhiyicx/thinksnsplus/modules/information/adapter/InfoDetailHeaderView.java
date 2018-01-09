@@ -160,7 +160,13 @@ public class InfoDetailHeaderView extends BaseWebLoad {
                 mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setWebChromeClient(mWebChromeClient);
-
+                mContent.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        CustomWEBActivity.startToOutWEBActivity(mContext, url);
+                        return true;
+                    }
+                });
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -192,7 +198,7 @@ public class InfoDetailHeaderView extends BaseWebLoad {
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
+//                        CustomWEBActivity.startToOutWEBActivity(mContext, s1);
                     }
 
                     @Override

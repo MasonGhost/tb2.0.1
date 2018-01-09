@@ -13,7 +13,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.zhiyi.richtexteditorlib.SimpleRichEditor;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -27,8 +26,6 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @SuppressWarnings({"unused"})
 public abstract class RichEditor extends WebView {
@@ -396,7 +393,7 @@ public abstract class RichEditor extends WebView {
 
     public void insertLink(String href, String title) {
         if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
-            href = "zhiyi:" + href;
+            href = MarkdownConfig.SCHEME_ZHIYI + href;
         }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.insertLink('" + title + "', '" + href + "');");

@@ -17,6 +17,8 @@ public class MarkdownConfig {
      * 用于判断是否存在 scheme
      */
     public static final String SCHEME_TAG = "[\\s\\S]+:[\\s\\S]+";
+    public static final String SCHEME_ZHIYI = "zhiyi:";
+    public static final String SCHEME_HTTP = "http://";
 
     /**
      * 短链接 标识
