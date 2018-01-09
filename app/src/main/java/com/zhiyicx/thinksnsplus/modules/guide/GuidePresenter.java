@@ -77,7 +77,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
 
     @Override
     public void getLaunchAdverts() {
-        Subscription subscribe = mCommonRepository.getLaunchAdverts()
+        mCommonRepository.getLaunchAdverts()
                 .observeOn(Schedulers.io())
                 .flatMap(allAdverListBeen -> {
                     List<Object> ids = new ArrayList<>();
@@ -118,7 +118,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
                         super.onException(throwable);
                     }
                 });
-        addSubscrebe(subscribe);
+      
     }
 
     @Override

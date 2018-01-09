@@ -98,9 +98,6 @@ public class InfoDetailHeaderView extends BaseWebLoad {
     private RecyclerView mRvRelateInfo;
     private View mInfoDetailHeader;
     private Context mContext;
-    private int screenWidth;
-    private int picWidth;
-    private Bitmap sharBitmap;
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
     private boolean isReviewIng;
