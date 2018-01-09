@@ -418,7 +418,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private void setJpushAlias() {
         if (mPresenter.isLogin()) {
             // 设置极光推送别名
-            JpushAlias jpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");
+            JpushAlias jpushAlias = new JpushAlias(getContext(), String.valueOf(AppApplication.getMyUserIdWithdefault()));
             jpushAlias.setAlias();
         }
 
