@@ -102,7 +102,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
         tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
-        mVpFragment.setOffscreenPageLimit(mTitle.size());
+//        mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override
@@ -143,7 +143,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
-        mVpFragment.setOffscreenPageLimit(mFragmentList.size());
+        mVpFragment.setOffscreenPageLimit(getOffsetPage());
+//        mVpFragment.setOffscreenPageLimit(mFragmentList.size());
         mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());

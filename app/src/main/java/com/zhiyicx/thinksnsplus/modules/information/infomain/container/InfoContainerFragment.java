@@ -167,7 +167,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
                     });
             mTsvToolbar.notifyDataSetChanged(mTitle);
             tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
-            mVpFragment.setOffscreenPageLimit(mTitle.size());
         }
 
     }
@@ -201,7 +200,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
         tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
-        mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override

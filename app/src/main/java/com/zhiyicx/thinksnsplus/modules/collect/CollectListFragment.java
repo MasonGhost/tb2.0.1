@@ -53,15 +53,6 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
         return true;
     }
 
-    /**
-     * 用的 是 FragmentStatePagerAdapter ，如果 offsetPage != fragments.size() ，会报错的
-     * @return
-     */
-    @Override
-    protected int getOffsetPage() {
-        return 5;
-    }
-
     @Override
     protected String setCenterTitle() {
         return getString(R.string.collect);
