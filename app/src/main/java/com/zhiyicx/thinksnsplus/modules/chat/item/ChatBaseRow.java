@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
@@ -19,8 +18,6 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 import skin.support.widget.SkinCompatProgressBar;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -39,9 +36,9 @@ public class ChatBaseRow extends EaseChatRow {
     protected TextView mTvChatTime;
     protected TextView mTvChatName;
     /**状态view*/
-    private ImageView mMsgStatus;
-    private SkinCompatProgressBar mProgressBar;
-    private TextView mTvMessageStatus;
+    protected ImageView mMsgStatus;
+    protected SkinCompatProgressBar mProgressBar;
+    protected TextView mTvMessageStatus;
 
     protected ChatUserInfoBean mUserInfoBean;
 
@@ -63,6 +60,7 @@ public class ChatBaseRow extends EaseChatRow {
         mMsgStatus = (ImageView) findViewById(R.id.msg_status);
         mProgressBar = (SkinCompatProgressBar) findViewById(R.id.progress_bar);
         mTvMessageStatus = (TextView) findViewById(R.id.tv_message_status);
+        bubbleLayout = findViewById(R.id.rl_chat_bubble);
     }
 
     @Override
