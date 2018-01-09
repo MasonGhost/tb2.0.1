@@ -253,7 +253,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
                 index = mRootView.getListDatas().indexOf(circle);
             }
         }
-        if (index != 1) {
+        if (index != -1) {
             mRootView.getListDatas().set(index, circleInfo);
         }
         mRootView.refreshData(index);
