@@ -53,6 +53,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
@@ -123,6 +124,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -1150,12 +1152,28 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleIntroduce.setExpandListener(new ExpandableTextView.OnExpandListener() {
             @Override
             public void onExpand(ExpandableTextView view) {
-                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+                Observable.empty()
+                        .filter(o -> myAppBarLayoutBehavoir != null)
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                            }
+                        });
             }
 
             @Override
             public void onShrink(ExpandableTextView view) {
-                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+                Observable.empty()
+                        .filter(o -> myAppBarLayoutBehavoir != null)
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                            }
+                        });
             }
         });
 
@@ -1216,7 +1234,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
-        mLlIntroCountContainer.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+        Observable.empty()
+                .filter(o -> myAppBarLayoutBehavoir != null)
+                .delay(100, TimeUnit.MILLISECONDS)
+                .subscribe(new EmptySubscribe<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                    }
+                });
 
         if (!updateHeadImg) {
             updateHeadImg = true;

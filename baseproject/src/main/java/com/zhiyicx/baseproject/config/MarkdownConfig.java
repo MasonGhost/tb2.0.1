@@ -14,6 +14,11 @@ public class MarkdownConfig {
     public static final String IMAGE_TAG = "@![%s](%d)";
 
     /**
+     * 用于判断是否存在 scheme
+     */
+    public static final String SCHEME_TAG = "[\\s\\S]+:[\\s\\S]+";
+
+    /**
      * 短链接 标识
      */
     public static final String LINK_EMOJI = "\uD83D\uDCCE";
