@@ -111,13 +111,13 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null, isLoadMore);
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable, isLoadMore);
+                        mRootView.loadAllError();
                     }
                 });
 

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -122,6 +123,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         }
         mPresenter.checkCertification();
 
+    }
+
+    @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        showLoadViewLoadError();
     }
 
     @Override

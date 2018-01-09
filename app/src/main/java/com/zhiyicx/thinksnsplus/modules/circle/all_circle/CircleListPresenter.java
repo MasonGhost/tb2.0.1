@@ -105,8 +105,9 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.dismissSnackBar();
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         if (isJoined) {
+                            // 退圈操作
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                         } else {
@@ -115,6 +116,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.create_reviewing));
                             circleInfo.setJoined(new CircleJoinedBean());
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }

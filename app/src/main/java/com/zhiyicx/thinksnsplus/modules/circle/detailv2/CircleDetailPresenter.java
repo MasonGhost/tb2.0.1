@@ -461,7 +461,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.dismissSnackBar();
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         boolean isPrivateOrPaid = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
                                 || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
                         if (isJoined) {
