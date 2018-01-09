@@ -126,4 +126,5 @@
     <dimen name="chat_detail_input_menu_height">41dp</dimen>
     <dimen name="chat_detail_input_menu_voice_height">20dp</dimen>
     <dimen name="chat_detail_input_menu_send_voice_height">25dp</dimen>
+    <dimen name="chat_location_title_height">20dp</dimen>
 </resources>
