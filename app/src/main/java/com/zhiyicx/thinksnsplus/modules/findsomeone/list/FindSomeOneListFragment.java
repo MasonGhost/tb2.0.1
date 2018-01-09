@@ -31,14 +31,22 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     public static final int TYPE_RECOMMENT = 2;
     public static final int TYPE_NEARBY = 3;
 
-    // 获取页面类型的key
+    /**
+     * 获取页面类型的key
+     */
     public static final String PAGE_TYPE = "page_type";
 
     @Inject
     FindSomeOneListPresenter mFollowFansListPresenter;
-    private int pageType;// 页面类型，由上一个页面决定
+    /**
+     * 页面类型，由上一个页面决定
+     */
+    private int pageType;
 
-    private int mRecommentUserSize = 0;// 后台推荐用户数量
+    /**
+     * 后台推荐用户数量
+     */
+    private int mRecommentUserSize = 0;
 
     @Override
     protected CommonAdapter<UserInfoBean> getAdapter() {
@@ -67,13 +75,6 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
                 .build().inject(FindSomeOneListFragment.this);
         super.initView(rootView);
 
-    }
-
-    @Override
-    protected void initData() {
-        if (mPresenter != null) {
-            super.initData();
-        }
     }
 
     @Override
@@ -135,7 +136,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
      */
     @Override
     protected Long getMaxId(@NotNull List<UserInfoBean> data) {
-        return Long.valueOf(mListDatas.size() - mRecommentUserSize);
+        return (long) (mListDatas.size() - mRecommentUserSize);
     }
 
     @Override
