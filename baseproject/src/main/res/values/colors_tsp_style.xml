@@ -74,4 +74,7 @@
     <color name="money_gold">#ff9400</color>
     <color name="money_gold_light">#fca308</color>
 
+    <!--voice length-->
+    <color name="text_voice_send_length">#4d4d4d</color>
+    <color name="text_voice_receive_length">#9b9b9b</color>
 </resources>
