@@ -105,7 +105,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 传入的资讯信息
      */
     private InfoListDataBean mInfoMation;
-    private boolean isFirstIn = true;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -113,7 +112,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 打赏
      */
     private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
-    private RewardsCountBean mRewardsCountBean;
     private boolean mIsClose;
 
     public static InfoDetailsFragment newInstance(Bundle params) {
@@ -152,14 +150,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
-        this.mRewardsCountBean = rewardsCountBean;
+        RewardsCountBean rewardsCountBean1 = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        if (mRewardsCountBean != null && !TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
-            mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter
+        if (rewardsCountBean1 != null && !TextUtils.isEmpty(rewardsCountBean1.getAmount())) {
+            rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
                     .getRatio()));
         }
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getGoldName());
     }
 
     @Override
@@ -623,5 +621,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public void onDestroyView() {
         super.onDestroyView();
         mInfoDetailHeader.destroyedWeb();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDealInfoMationPopWindow);
     }
 }

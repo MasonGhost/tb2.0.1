@@ -191,8 +191,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
-    @BindView(R.id.circle_title_layout)
-    RelativeLayout mTitleContainerParent;
     @BindView(R.id.circle_appbar_layout)
     AppBarLayout mAppBarLayout;
     @BindView(R.id.v_shadow)
@@ -223,8 +221,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvOwnerName;
     @BindView(R.id.tv_introduce_content)
     ExpandableTextView mTvCircleIntroduce;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
     @BindView(R.id.iv_share)
     ImageView mIvShare;
     @BindView(R.id.iv_setting)
@@ -237,28 +233,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     CombinationButton mLlMemberContainer;
     @BindView(R.id.ll_circle_navigation_container)
     LinearLayout mLlCircleNavigationContainer;
-    @BindView(R.id.ll_dynamic_count_container)
-    LinearLayout mLlDynamicCountContainer;
     @BindView(R.id.ll_intro_container)
     LinearLayout mLlIntroCountContainer;
-    @BindView(R.id.swipe_target)
-    RecyclerView mSwipeTarget;
-    @BindView(R.id.refreshlayout)
-    SmartRefreshLayout mRefreshlayout;
-    @BindView(R.id.container)
-    CoordinatorLayout mContainer;
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
-    @BindView(R.id.iv_serach)
-    ImageView mIvSerach;
-    private ActionBarDrawerToggle mToggle;
 
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mDeletPostPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
-    private ActionPopupWindow mReSendPostPopWindow;
-
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
 
@@ -276,8 +258,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private int mCurrentPostion;
 
     private long mReplyToUserId;
-
-    private PhotoSelectorImpl mPhotoSelector;
 
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
@@ -1037,7 +1017,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mDrawer.setClipToPadding(false);
         mDrawer.setClipChildren(false);
         mDrawer.setScrimColor(Color.TRANSPARENT);
-        mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -1125,8 +1105,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     startActivity(to);
                 });
 
-        mDrawer.addDrawerListener(mToggle);
-        mToggle.syncState();
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
                 ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
@@ -1489,9 +1469,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
-        dismissPop(mDeletPostPopWindow);
         dismissPop(mReSendCommentPopWindow);
-        dismissPop(mReSendPostPopWindow);
         dismissPop(mOtherPostPopWindow);
         dismissPop(mMyPostPopWindow);
         dismissPop(mTypeChoosePopupWindow);
