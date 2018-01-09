@@ -429,6 +429,10 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.markdownWords();");
     }
 
+    /**
+     * 获取编辑器中内容
+     * @param isPublish
+     */
     public void getResultWords(boolean isPublish) {
         exec("javascript:RE.resultWords(" + isPublish + ");");
     }
