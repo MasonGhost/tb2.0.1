@@ -293,6 +293,13 @@
         <item>最新帖子</item>
         <item>最新回复</item>
     </string-array>
+    <string-array name="default_location_array">
+        <item>金星</item>
+        <item>水星</item>
+        <item>土星</item>
+        <item>火星</item>
+        <item>🌎</item>
+    </string-array>
     <string name="post_typpe_all">全部帖子</string>
     <string name="post_typpe_new">最新帖子</string>
     <string name="post_typpe_reply">最新回复</string>
