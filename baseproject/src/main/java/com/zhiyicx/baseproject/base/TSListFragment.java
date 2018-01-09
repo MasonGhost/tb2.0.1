@@ -215,7 +215,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void getNewDataFromNet() {
         if (isNeedRefreshAnimation() && getUserVisibleHint()) {
-            mRefreshlayout.autoRefresh();
+            mRefreshlayout.autoRefresh(100);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
             mPage = DEFAULT_PAGE;
@@ -583,6 +583,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected boolean isUseTouristLoadLimit() {
         return true;
+    }
+
+    /**
+     * 手动刷新
+     */
+    @Override
+    public void startRefrsh() {
+        if (mRefreshlayout != null) {
+            mRvList.scrollToPosition(0);
+            mRefreshlayout.autoRefresh(10);
+        }
     }
 
     /**

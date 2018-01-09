@@ -4,31 +4,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/circle_title_layout"
     android:layout_width="match_parent"
-    android:gravity="bottom"
     android:layout_height="@dimen/toolbar_height"
+    android:gravity="bottom"
     app:layout_collapseMode="pin">
 
     <ImageView
         android:id="@+id/iv_refresh"
-        android:layout_toRightOf="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_toRightOf="@+id/iv_back"
         android:src="@drawable/frame_loading_grey"
         android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/tv_circle_name"
-        android:singleLine="true"
-        android:ellipsize="middle"
-        android:layout_marginLeft="@dimen/toolbar_center_margin"
-        android:layout_marginRight="@dimen/toolbar_center_margin"
-        android:textColor="@color/general_for_bg_light"
-        android:textSize="@dimen/size_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_toEndOf="@+id/iv_back"
+        android:layout_toLeftOf="@+id/iv_serach"
+        android:layout_toRightOf="@+id/iv_back"
+        android:layout_toStartOf="@+id/iv_serach"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textColor="@color/general_for_bg_light"
+        android:textSize="@dimen/size_sub_title"/>
 
 
     <ImageView
@@ -57,8 +59,8 @@
         android:id="@+id/iv_share"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@+id/iv_setting"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/iv_setting"
         android:paddingLeft="@dimen/spacing_small"
         android:paddingRight="@dimen/spacing_small"
         android:src="@mipmap/topbar_share_white"/>
@@ -69,10 +71,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:paddingLeft="@dimen/spacing_small"
         android:paddingRight="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginEnd="@dimen/spacing_normal"
         android:src="@mipmap/topbar_more_white"/>
 
 </RelativeLayout>

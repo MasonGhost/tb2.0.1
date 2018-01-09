@@ -6,6 +6,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -177,6 +179,13 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
      */
     public void setPagerSelection(int position) {
         mVpFragment.setCurrentItem(position, true);
+    }
+
+    /**
+     * 刷新当前页
+     */
+    public void refreshCurrentPage() {
+        ((ITSListView) mFragmentList.get(mVpFragment.getCurrentItem())).startRefrsh();
     }
 
 }
