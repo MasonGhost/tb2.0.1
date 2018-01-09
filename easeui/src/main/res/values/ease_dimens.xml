@@ -23,4 +23,6 @@
     <dimen name="recall_dimen_256">256dp</dimen>
     <dimen name="recall_size_12">12sp</dimen>
     <dimen name="recall_size_8">8sp</dimen>
+    <dimen name="send_voice_box_height">150dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
 </resources>

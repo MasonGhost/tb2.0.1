@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/send_voice_box_height"
+    android:layout_height="@dimen/send_voice_box_height"
     android:background="@drawable/ease_recording_hint_bg"
-     android:padding="10dp"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/mic_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/ease_record_animate_01" />
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/margin_12"
+            android:orientation="vertical">
+        <ImageView
+                android:id="@+id/mic_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ease_record_animate_01" />
 
-    <TextView
-        android:id="@+id/recording_hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mic_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:padding="2dp"
-        android:text="@string/move_up_to_cancel"
-        android:textSize="10sp" />
+        <TextView
+                android:id="@+id/recording_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:padding="2dp"
+                android:textColor="@color/bottom_text_color_normal"
+                android:text="@string/move_up_to_cancel"
+                android:textSize="@dimen/recall_size_12" />
+    </LinearLayout>
+
+
 
 </RelativeLayout>
