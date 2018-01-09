@@ -28,7 +28,7 @@ public class JpushAlias {
 
     public JpushAlias(Context context, String alias) {
         mAlias = alias;
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     /**
