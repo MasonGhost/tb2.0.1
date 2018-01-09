@@ -1,50 +1,36 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
-import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.ui.EaseChatFragment;
-import com.hyphenate.easeui.widget.EaseChatExtendMenu;
-import com.hyphenate.easeui.widget.EaseChatInputMenu;
-import com.hyphenate.easeui.widget.EaseChatMessageList;
-import com.hyphenate.easeui.widget.EaseTitleBar;
-import com.hyphenate.easeui.widget.EaseVoiceRecorderView;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
-import com.zhiyicx.thinksnsplus.widget.chat.TSChatPrimaryMenu;
-
-import java.util.concurrent.Executors;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVoicePresenter;
+import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
 
 /**
  * @author Catherine
@@ -54,11 +40,6 @@ import java.util.concurrent.Executors;
  */
 
 public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment.EaseChatFragmentHelper {
-
-    private static final int ITEM_VIDEO = 11;
-    private static final int ITEM_FILE = 12;
-    private static final int ITEM_VOICE_CALL = 13;
-    private static final int ITEM_VIDEO_CALL = 14;
 
     private static final int REQUEST_CODE_SELECT_VIDEO = 11;
     private static final int REQUEST_CODE_SELECT_FILE = 12;
@@ -76,6 +57,9 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     static final int ITEM_TAKE_PICTURE = 1;
     static final int ITEM_PICTURE = 2;
     static final int ITEM_LOCATION = 3;
+    private static final int ITEM_VIDEO = 11;
+    private static final int ITEM_VOICE_CALL = 13;
+    private static final int ITEM_VIDEO_CALL = 14;
 
     protected View mDriver;
     protected View mStatusPlaceholderView;
@@ -207,6 +191,34 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 
     @Override
     public boolean onExtendMenuItemClick(int itemId, View view) {
+        LogUtils.d("Cathy", "onExtendMenuItemClick" + itemId);
+        switch (itemId) {
+            case ITEM_TAKE_PICTURE:
+                // 拍照
+                selectPicFromCamera();
+                break;
+            case ITEM_PICTURE:
+                // 相册
+                selectPicFromLocal();
+                break;
+            case ITEM_LOCATION:
+                // 位置
+                startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+                break;
+            case ITEM_VIDEO:
+                // 视频
+                Intent intent = new Intent(getActivity(), ImageGridActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+                break;
+            case ITEM_VIDEO_CALL:
+                // 视频通话
+                break;
+            case ITEM_VOICE_CALL:
+                // 语音
+                break;
+            default:
+                break;
+        }
         return false;
     }
 
@@ -222,14 +234,20 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Override
     protected void registerExtendMenuItem() {
         //use the menu in base class
-        super.registerExtendMenuItem();
+//        super.registerExtendMenuItem();
         //extend menu items
+        // 图片
+        inputMenu.registerExtendMenuItem(R.string.attach_picture, R.mipmap.ico_chat_picture, ITEM_PICTURE, extendMenuItemClickListener);
+        // 拍照
+        inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE, extendMenuItemClickListener);
+        // 视频
         inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO, extendMenuItemClickListener);
-        inputMenu.registerExtendMenuItem(R.string.attach_file, R.mipmap.ico_chat_accessory, ITEM_FILE, extendMenuItemClickListener);
+        // 位置
+        inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION, extendMenuItemClickListener);
+        // 语音电话
         inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL, extendMenuItemClickListener);
+        // 视频通话
         inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL, extendMenuItemClickListener);
-
-        //end of red packet code
     }
 
     /**
@@ -293,38 +311,15 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 EaseChatRowPresenter presenter = new TSChatTextPresenter();
                 return presenter;
             }
+            if (message.getType() == EMMessage.Type.IMAGE){
+                EaseChatRowPresenter presenter = new TSChatPicturePresenter();
+                return presenter;
+            }
+            if (message.getType() == EMMessage.Type.VOICE){
+                EaseChatRowPresenter presenter = new TSChatVoicePresenter();
+                return presenter;
+            }
             return null;
-        }
-
-    }
-
-    /**
-     * handle the click event for extend menu
-     *
-     */
-    class ExtendMenuItemClickListener implements EaseChatExtendMenu.EaseChatExtendMenuItemClickListener{
-
-        @Override
-        public void onClick(int itemId, View view) {
-            if(chatFragmentHelper != null){
-                if(chatFragmentHelper.onExtendMenuItemClick(itemId, view)){
-                    return;
-                }
-            }
-            switch (itemId) {
-                case ITEM_TAKE_PICTURE:
-                    selectPicFromCamera();
-                    break;
-                case ITEM_PICTURE:
-                    selectPicFromLocal();
-                    break;
-                case ITEM_LOCATION:
-                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
-                    break;
-
-                default:
-                    break;
-            }
         }
 
     }

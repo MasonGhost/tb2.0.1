@@ -2,8 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.chat.presenter;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMImageMessageBody;
@@ -11,13 +9,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.presenter.EaseChatImagePresenter;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatRowPicture;
-import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Catherine
