@@ -837,8 +837,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
-                .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
-                        .dynamic_list_collect_dynamic))
                 .item3Str(!feedIdIsNull && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
@@ -847,12 +845,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
-                .item2ClickListener(() -> {
-                    // 收藏
-                    mMyPostPopWindow.hide();
-                    handleCollect(position);
-                    showBottomView(true);
-                })
+
                 .item3ClickListener(() -> {
                     // 置顶
                     mMyPostPopWindow.hide();

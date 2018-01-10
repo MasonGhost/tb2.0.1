@@ -94,20 +94,14 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     CircleDetailPresenter mCircleDetailPresenter;
 
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mDeletPostPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
-    private ActionPopupWindow mReSendPostPopWindow;
 
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
     private PayPopWindow mPayPopWindow;
 
-    // 类型选择框
-    private TypeChoosePopupWindow mTypeChoosePopupWindow;
-
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
-    private PhotoSelectorImpl mPhotoSelector;
 
     private BaseCircleRepository.CircleMinePostType mCircleMinePostType = BaseCircleRepository.CircleMinePostType.PUBLISH;
 
@@ -534,8 +528,6 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         Long feed_id = circlePostListBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyPostPopWindow = ActionPopupWindow.builder()
-                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
-                        .dynamic_list_collect_dynamic))
                 .item3Str(getString(R.string.delete_post))
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
@@ -543,11 +535,6 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {// 收藏
-                    mMyPostPopWindow.hide();
-                    handleCollect(position);
-                    showBottomView(true);
-                })
                 .item3ClickListener(() -> {// 删除
                     mMyPostPopWindow.hide();
                     mPresenter.deletePost(circlePostListBean, position);
@@ -733,5 +720,15 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 .build();
         mPayPopWindow.show();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mReSendCommentPopWindow);
+        dismissPop(mOtherPostPopWindow);
+        dismissPop(mMyPostPopWindow);
+        dismissPop(mPayPopWindow);
     }
 }
