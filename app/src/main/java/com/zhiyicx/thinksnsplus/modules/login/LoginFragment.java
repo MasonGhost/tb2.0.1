@@ -99,7 +99,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      */
     private AccountBean mAccountBean;
 
-    private ArrayAdapter mArrayAdapter;
     private AccountAdapter mAccountAdapter;
 
     UmengSharePolicyImpl mUmengSharePolicy;
@@ -159,9 +158,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                     mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
-                    if (mArrayAdapter != null) {
-                        setAccountListPopHeight(mArrayAdapter.getCount());
-                    }
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)

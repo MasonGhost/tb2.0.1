@@ -206,7 +206,7 @@ public final class TSnackbar {
                     case MSG_DISMISS:
                         ((TSnackbar) message.obj).hideView(message.arg1);
                         return true;
-                        default:
+                    default:
                 }
                 return false;
             }
@@ -318,7 +318,8 @@ public final class TSnackbar {
     }
 
     @NonNull
-    public static TSnackbar make(@NonNull View view, @NonNull CharSequence text, @Duration int duration, @OverSnackAppearDirection int appearDirection) {
+    public static TSnackbar make(@NonNull View view, @NonNull CharSequence text, @Duration int duration, @OverSnackAppearDirection int
+            appearDirection) {
         TSnackbar tSnackbar = new TSnackbar(findSuitableParent(view), appearDirection);
         tSnackbar.setText(text);
         tSnackbar.setDuration(duration);
@@ -405,7 +406,8 @@ public final class TSnackbar {
     public TSnackbar addIcon(int resource_id, int width, int height) {
         final TextView tv = mView.getMessageView();
         if (width > 0 || height > 0) {
-            tv.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(Bitmap.createScaledBitmap(((BitmapDrawable) (mContext.getResources().getDrawable(resource_id))).getBitmap(), width, height, true)), null, null, null);
+            tv.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(Bitmap.createScaledBitmap(((BitmapDrawable) (mContext.getResources()
+                    .getDrawable(resource_id))).getBitmap(), width, height, true)), null, null, null);
         } else {
             addIcon(resource_id);
         }
@@ -780,7 +782,7 @@ public final class TSnackbar {
             animateViewIn();
         } else {
 
-            mView.setOnLayoutChangeListener(new SnackbarLayout.OnLayoutChangeListener() {
+            mView.setOnLayoutChangeListener(new TSnackbar.OnLayoutChangeListener() {
                 @Override
                 public void onLayoutChange(View view, int left, int top, int right, int bottom) {
                     animateViewIn();
@@ -789,7 +791,7 @@ public final class TSnackbar {
             });
         }
 
-        mView.setOnAttachStateChangeListener(new SnackbarLayout.OnAttachStateChangeListener() {
+        mView.setOnAttachStateChangeListener(new TSnackbar.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
             }
@@ -821,7 +823,7 @@ public final class TSnackbar {
             }
         } else {
             // Otherwise, add one of our layout change listeners and show it in when laid out
-            mView.setOnLayoutChangeListener(new SnackbarLayout.OnLayoutChangeListener() {
+            mView.setOnLayoutChangeListener(new TSnackbar.OnLayoutChangeListener() {
                 @Override
                 public void onLayoutChange(View view, int left, int top, int right, int bottom) {
                     mView.setOnLayoutChangeListener(null);
@@ -960,183 +962,17 @@ public final class TSnackbar {
         return false;
     }
 
-
-    public static class SnackbarLayout extends LinearLayout {
-        private TextView mMessageView;
-        private TextView mActionView;
-
-        private int mMaxWidth;
-        private int mMaxInlineActionWidth;
-
-        interface OnLayoutChangeListener {
-            void onLayoutChange(View view, int left, int top, int right, int bottom);
-        }
-
-        interface OnAttachStateChangeListener {
-            void onViewAttachedToWindow(View v);
-
-            void onViewDetachedFromWindow(View v);
-        }
-
-        private OnLayoutChangeListener mOnLayoutChangeListener;
-        private OnAttachStateChangeListener mOnAttachStateChangeListener;
-
-        public SnackbarLayout(Context context) {
-            this(context, null);
-        }
-
-        public SnackbarLayout(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SnackbarLayout);
-            mMaxWidth = a.getDimensionPixelSize(R.styleable.SnackbarLayout_android_maxWidth, -1);
-            mMaxInlineActionWidth = a.getDimensionPixelSize(R.styleable.SnackbarLayout_maxActionInlineWidth, -1);
-            if (a.hasValue(R.styleable.SnackbarLayout_elevation)) {
-                ViewCompat.setElevation(this, a.getDimensionPixelSize(
-                        R.styleable.SnackbarLayout_elevation, 5));
-            }
-            a.recycle();
-            setClickable(true);
-
-            // Now inflate our content. We need to do this manually rather than using an <include>
-            // in the layout since older versions of the Android do not inflate includes with
-            // the correct Context.
-            LayoutInflater.from(context).inflate(R.layout.view_tsnackbar_layout_include, this);
-            ViewCompat.setAccessibilityLiveRegion(this,
-                    ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
-            ViewCompat.setImportantForAccessibility(this,
-                    ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
-//            if (this.isHardwareAccelerated()) {
-//                findViewById(R.id.v_custom_shadow).setVisibility(GONE);
-//            }else {
-//                findViewById(R.id.v_custom_shadow).setVisibility(VISIBLE);
-//            }
-        }
-
-        @Override
-        protected void onFinishInflate() {
-            super.onFinishInflate();
-            mMessageView = (TextView) findViewById(R.id.snackbar_text);
-            mActionView = (TextView) findViewById(R.id.snackbar_action);
-        }
-
-        TextView getMessageView() {
-            return mMessageView;
-        }
-
-        TextView getActionView() {
-            return mActionView;
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-          /*  if (mMaxWidth > 0 && getMeasuredWidth() > mMaxWidth) {
-                widthMeasureSpec = MeasureSpec.makeMeasureSpec(mMaxWidth, MeasureSpec.EXACTLY);
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }
-            final int multiLineVPadding = getResources().getDimensionPixelSize(
-                    R.dimen.design_snackbar_padding_vertical_2lines);
-            final int singleLineVPadding = getResources().getDimensionPixelSize(
-                    R.dimen.design_snackbar_padding_vertical);
-            final boolean isMultiLine = mMessageView.getLayout().getLineCount() > 1;
-            boolean remeasure = false;
-            if (isMultiLine && mMaxInlineActionWidth > 0
-                    && mActionView.getMeasuredWidth() > mMaxInlineActionWidth) {
-                if (updateViewsWithinLayout(VERTICAL, multiLineVPadding,
-                        multiLineVPadding - singleLineVPadding)) {
-                    remeasure = true;
-                }
-            } else {
-                final int messagePadding = isMultiLine ? multiLineVPadding : singleLineVPadding;
-                if (updateViewsWithinLayout(HORIZONTAL, messagePadding, messagePadding)) {
-                    remeasure = true;
-                }
-            }
-            if (remeasure) {
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }*/
-        }
-
-        void animateChildrenIn(int delay, int duration) {
-            ViewCompat.setAlpha(mMessageView, 0f);
-            ViewCompat.animate(mMessageView).alpha(1f).setDuration(duration)
-                    .setStartDelay(delay).start();
-            if (mActionView.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mActionView, 0f);
-                ViewCompat.animate(mActionView).alpha(1f).setDuration(duration)
-                        .setStartDelay(delay).start();
-            }
-        }
-
-        void animateChildrenOut(int delay, int duration) {
-            ViewCompat.setAlpha(mMessageView, 1f);
-            ViewCompat.animate(mMessageView).alpha(0f).setDuration(duration)
-                    .setStartDelay(delay).start();
-            if (mActionView.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mActionView, 1f);
-                ViewCompat.animate(mActionView).alpha(0f).setDuration(duration)
-                        .setStartDelay(delay).start();
-            }
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            super.onLayout(changed, l, t, r, b);
-            if (changed && mOnLayoutChangeListener != null) {
-                mOnLayoutChangeListener.onLayoutChange(this, l, t, r, b);
-            }
-        }
-
-        @Override
-        protected void onAttachedToWindow() {
-            super.onAttachedToWindow();
-            if (mOnAttachStateChangeListener != null) {
-                mOnAttachStateChangeListener.onViewAttachedToWindow(this);
-            }
-        }
-
-        @Override
-        protected void onDetachedFromWindow() {
-            super.onDetachedFromWindow();
-            if (mOnAttachStateChangeListener != null) {
-                mOnAttachStateChangeListener.onViewDetachedFromWindow(this);
-            }
-        }
-
-        void setOnLayoutChangeListener(OnLayoutChangeListener onLayoutChangeListener) {
-            mOnLayoutChangeListener = onLayoutChangeListener;
-        }
-
-        void setOnAttachStateChangeListener(OnAttachStateChangeListener listener) {
-            mOnAttachStateChangeListener = listener;
-        }
-
-        private boolean updateViewsWithinLayout(final int orientation,
-                                                final int messagePadTop, final int messagePadBottom) {
-            boolean changed = false;
-            if (orientation != getOrientation()) {
-                setOrientation(orientation);
-                changed = true;
-            }
-            if (mMessageView.getPaddingTop() != messagePadTop
-                    || mMessageView.getPaddingBottom() != messagePadBottom) {
-                updateTopBottomPadding(mMessageView, messagePadTop, messagePadBottom);
-                changed = true;
-            }
-            return changed;
-        }
-
-        private static void updateTopBottomPadding(View view, int topPadding, int bottomPadding) {
-            if (ViewCompat.isPaddingRelative(view)) {
-                ViewCompat.setPaddingRelative(view,
-                        ViewCompat.getPaddingStart(view), topPadding,
-                        ViewCompat.getPaddingEnd(view), bottomPadding);
-            } else {
-                view.setPadding(view.getPaddingLeft(), topPadding,
-                        view.getPaddingRight(), bottomPadding);
-            }
-        }
+    interface OnLayoutChangeListener {
+        void onLayoutChange(View view, int left, int top, int right, int bottom);
     }
+
+    interface OnAttachStateChangeListener {
+        void onViewAttachedToWindow(View v);
+
+        void onViewDetachedFromWindow(View v);
+    }
+
+
 
     final class Behavior extends SwipeDismissBehavior<SnackbarLayout> {
         @Override
@@ -1158,6 +994,7 @@ public final class TSnackbar {
                     case MotionEvent.ACTION_CANCEL:
                         SnackbarManager.getInstance().restoreTimeout(mManagerCallback);
                         break;
+                        default:
                 }
             }
 

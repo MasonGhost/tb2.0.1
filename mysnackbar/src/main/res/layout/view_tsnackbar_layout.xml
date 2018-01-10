@@ -15,10 +15,10 @@
   ~ limitations under the License.
 -->
 
-<view xmlns:android="http://schemas.android.com/apk/res/android"
-      style="@style/Widget.Design.Snackbar"
-      class="com.trycatch.mysnackbar.TSnackbar$SnackbarLayout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="top"
+<com.trycatch.mysnackbar.SnackbarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Design.Snackbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
     />
