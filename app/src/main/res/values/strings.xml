@@ -244,6 +244,7 @@
 
     <!--圈子-->
     <string name="circle_master">圈主</string>
+    <string name="circle_master_manager">圈主和管理员</string>
     <string name="circle_dealing">操作中</string>
     <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>

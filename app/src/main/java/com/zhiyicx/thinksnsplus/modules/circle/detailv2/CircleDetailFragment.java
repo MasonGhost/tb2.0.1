@@ -1066,12 +1066,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                             showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         } else {
                             // 没有权限发帖
-                            if (mCircleInfo.getPermissions().contains(CircleMembers.FOUNDER)) {
+                            if (mCircleInfo.getPermissions().contains(CircleMembers.ADMINISTRATOR)) {
                                 showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfo.getName(), getString(R
-                                        .string.circle_master)));
+                                        .string.circle_master_manager)));
                             } else {
                                 showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfo.getName(), getString(R
-                                        .string.administrator)));
+                                        .string.circle_master)));
                             }
 
                         }
