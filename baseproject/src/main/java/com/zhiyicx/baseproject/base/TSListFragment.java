@@ -169,6 +169,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mRefreshlayout.setEnableAutoLoadmore(false);
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
+        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -269,8 +271,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected void initData() {
         if (mPresenter != null) {
-            mRefreshlayout.setEnableRefresh(isRefreshEnable());
-            mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
             if (!isLayzLoad()) {
                 // 获取缓存数据
                 requestCacheData(mMaxId, false);

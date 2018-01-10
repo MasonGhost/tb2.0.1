@@ -62,7 +62,6 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
     // 提示需要付钱的
     private ActionPopupWindow mPayAlertPopWindow;
 
-    private SystemConfigBean.NewsConfig mPublishInfoConfig;
     private InfoTypeBean mInfoTypeBean;
 
     @Override
@@ -95,6 +94,11 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
     }
 
     @Override
+    protected void setLeftClick() {
+       onBackPressed();
+    }
+
+    @Override
     protected void musicWindowsStatus(boolean isShow) {
         super.musicWindowsStatus(isShow);
     }
@@ -109,10 +113,10 @@ public class InfoContainerFragment extends TSViewPagerFragment<InfoMainContract.
     public void setUserCertificationInfo(UserCertificationInfo userCertificationInfo) {
         mUserCertificationInfo = userCertificationInfo;
         mSystemConfigBean = mPresenter.getSystemConfigBean();
-        mPublishInfoConfig = mSystemConfigBean.getNewsContribute();
-        if (userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value || !mPublishInfoConfig.hasVerified()) {
-            if (mPresenter.isNeedPayTip() && (mPublishInfoConfig != null
-                    && mPublishInfoConfig.hasPay())) {
+        SystemConfigBean.NewsConfig publishInfoConfig = mSystemConfigBean.getNewsContribute();
+        if (userCertificationInfo.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value || !publishInfoConfig.hasVerified()) {
+            if (mPresenter.isNeedPayTip() && (publishInfoConfig != null
+                    && publishInfoConfig.hasPay())) {
                 mPayAlertPopWindow.show();
             } else {
                 startActivity(new Intent(getActivity(), PublishInfoActivity.class));

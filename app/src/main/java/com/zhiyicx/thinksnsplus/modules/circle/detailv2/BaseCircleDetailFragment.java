@@ -85,6 +85,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         , PhotoSelectorImpl.IPhotoBackListener, CirclePostListBaseItem.OnPostFromClickListener {
 
     public static final String CIRCLE_ID = "circle_id";
+    public static final String CIRCLE = "circle";
     public static final String CIRCLE_TYPE = "circle_type";
 
     @BindView(R.id.v_shadow)
