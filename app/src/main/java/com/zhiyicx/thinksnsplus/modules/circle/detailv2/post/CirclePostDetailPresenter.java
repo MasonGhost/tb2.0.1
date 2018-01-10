@@ -67,8 +67,6 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
@@ -425,7 +423,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
     }
 
