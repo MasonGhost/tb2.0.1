@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.mine.joined;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -164,9 +162,7 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     @Override

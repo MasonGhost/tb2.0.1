@@ -178,6 +178,6 @@ public class TopPostItem extends BaseTopItem implements BaseTopItem.TopReviewEve
     }
 
     protected void toDetail(CirclePostListBean postListBean,boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment,true);
     }
 }

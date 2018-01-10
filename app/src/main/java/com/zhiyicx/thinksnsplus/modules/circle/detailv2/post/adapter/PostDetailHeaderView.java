@@ -6,13 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.dig.adapter.BaseDigItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
@@ -36,6 +37,7 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +47,7 @@ import static android.view.View.GONE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
@@ -74,6 +77,7 @@ public class PostDetailHeaderView extends BaseWebLoad {
     private List<ImageBean> mImgList;
     private ImageView mIvDetail;
     private boolean isReviewIng;
+    private boolean canGotoCircle;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
@@ -114,10 +118,14 @@ public class PostDetailHeaderView extends BaseWebLoad {
     public void setDetail(CirclePostListBean circlePostDetailBean) {
         if (circlePostDetailBean != null) {
             mTitle.setText(circlePostDetailBean.getTitle());
-            mChannel.setText("来自");
+            mChannel.setText(mContext.getText(R.string.from));
             String from = circlePostDetailBean.getGroup().getName();
             if (!TextUtils.isEmpty(from)) {
                 mFrom.setText(from);
+                RxView.clicks(mFrom)
+                        .filter(aVoid -> canGotoCircle)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(aVoid -> CircleDetailActivity.startCircleDetailActivity(mContext, circlePostDetailBean.getGroup_id()));
             }
             mContentSubject.setVisibility(GONE);
 
@@ -331,5 +339,13 @@ public class PostDetailHeaderView extends BaseWebLoad {
 
     public MarkdownView getContentSubWebView() {
         return mContentSubject;
+    }
+
+    public boolean isCanGotoCircle() {
+        return canGotoCircle;
+    }
+
+    public void setCanGotoCircle(boolean canGotoCircle) {
+        this.canGotoCircle = canGotoCircle;
     }
 }

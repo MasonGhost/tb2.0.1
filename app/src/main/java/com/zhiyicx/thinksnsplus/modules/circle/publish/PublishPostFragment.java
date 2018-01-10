@@ -82,6 +82,11 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
+    protected boolean canGotoCircle() {
+        return isOutCirclePublish;
+    }
+
+    @Override
     protected boolean preHandlePublish() {
         mPostPublishBean = new PostPublishBean();
         if (mCircleInfo == null) {

@@ -148,6 +148,14 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         return false;
     }
 
+    /**
+     * 点击 来自 xxx ，可以跳转到相应圈子
+     * @return
+     */
+    protected boolean canGotoCircle(){
+        return true;
+    }
+
     @Override
     protected float getItemDecorationSpacing() {
         return ITEM_SPACING;
@@ -250,7 +258,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         CirclePostDetailActivity.startActivity(getActivity(), mListDatas.get(position)
-                .getGroup_id(), mListDatas.get(position).getId(), false);
+                .getGroup_id(), mListDatas.get(position).getId(), false,canGotoCircle());
     }
 
     @Override
@@ -359,9 +367,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         String moneyStr;
         String descStr;
         if (isJoined) {
-            Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
-            intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-            startActivity(intent);
+            CircleDetailActivity.startCircleDetailActivity(mActivity,circleInfo.getId());
             return;
         } else if (isPaid) {
             moneyStr = String.format(getString(R.string.buy_pay_money), PayConfig.realCurrency2GameCurrency(circleInfo.getMoney(),

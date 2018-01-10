@@ -181,6 +181,14 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         return null;
     }
 
+    /**
+     * 点击 来自 xxx ，可以跳转到相应圈子
+     * @return
+     */
+    protected boolean canGotoCircle(){
+        return true;
+    }
+
     public static MarkdownFragment newInstance(Bundle bundle) {
         MarkdownFragment markdownFragment = new MarkdownFragment();
         markdownFragment.setArguments(bundle);
@@ -391,7 +399,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void sendPostSuccess(CirclePostListBean data) {
         CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
-                false);
+                false,canGotoCircle());
         getActivity().finish();
     }
 

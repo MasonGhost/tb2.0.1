@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,7 +30,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
@@ -720,6 +718,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
+        return (long) mListDatas.size();
+    }
+
+    @Override
     public boolean isOutsideSerach() {
         return false;
     }
@@ -1198,7 +1201,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void goPostDetail(int position, boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position), isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position), isLookMoreComment, false);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 

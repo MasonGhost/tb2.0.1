@@ -76,6 +76,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String POST_ID = "post_id";
+    public static final String BAKC2CIRCLE = "bakc2circle";
     public static final String POST = "post";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
 
@@ -166,6 +167,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        boolean canGotoCircle = false;
         if (mCirclePostDetailBean == null && getArguments() != null) {
             mCirclePostDetailBean = getArguments().getParcelable(POST);
             if (mCirclePostDetailBean == null) {
@@ -173,11 +175,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
                 mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
             }
+            canGotoCircle = getArguments().getBoolean(BAKC2CIRCLE);
             mIsLookMore = getArguments().getBoolean(LOOK_COMMENT_MORE);
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        initHeaderView();
+        initHeaderView(canGotoCircle);
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
@@ -406,9 +409,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
 
-    private void initHeaderView() {
+    private void initHeaderView(boolean canGotoCircle) {
         mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());
         mPostDetailHeaderView.setWebLoadListener(this);
+        mPostDetailHeaderView.setCanGotoCircle(canGotoCircle);
         mHeaderAndFooterWrapper.addHeaderView(mPostDetailHeaderView.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams

@@ -107,9 +107,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mActivity,circleInfo.getId());
     }
 
     @Override
