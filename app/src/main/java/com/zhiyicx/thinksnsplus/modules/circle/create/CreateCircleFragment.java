@@ -21,6 +21,7 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -143,6 +144,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private PoiItem mPoiItem;
 
     private CircleInfo mCircleInfo;
+    private CircleInfo mResultCircleInfo;
     private boolean canUpdate;
     boolean isOwner;
     boolean isManager;
@@ -234,16 +236,28 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void setCircleInfo(CircleInfo data) {
-        if (mCircleInfo == null) {
+        mResultCircleInfo = data;
+    }
+
+    /**
+     * 乔老师说：要等等反馈完了再跳转
+     * @param prompt
+     */
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS) {
+            if (mCircleInfo == null) {
+                mActivity.finish();
+                return;
+            }
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(CIRCLEINFO, mResultCircleInfo);
+            intent.putExtras(bundle);
+            mActivity.setResult(Activity.RESULT_OK, intent);
             mActivity.finish();
-            return;
         }
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CIRCLEINFO, data);
-        intent.putExtras(bundle);
-        mActivity.setResult(Activity.RESULT_OK, intent);
-        mActivity.finish();
     }
 
     @Override

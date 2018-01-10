@@ -50,7 +50,7 @@ public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContrac
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CircleInfo>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<CircleInfo> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.create_reviewing));
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.setCircleInfo(data.getData());
                     }
 
@@ -79,7 +79,7 @@ public class CreateCirclePresenter extends AppBasePresenter< CreateCircleContrac
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<CircleInfo>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<CircleInfo> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.create_reviewing));
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.setCircleInfo(data.getData());
                     }
 
