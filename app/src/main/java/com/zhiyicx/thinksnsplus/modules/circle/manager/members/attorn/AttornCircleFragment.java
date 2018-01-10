@@ -70,6 +70,11 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
     }
 
     @Override
+    protected boolean isAttornCircle() {
+        return true;
+    }
+
+    @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
         return new StickySectionDecoration(mActivity, position -> {
             if (mListDatas.isEmpty() || position >= mListDatas.size()) {

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -120,6 +118,15 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         return mCircleId;
     }
 
+    /**
+     * 是否是转让圈子界面
+     *
+     * @return
+     */
+    protected boolean isAttornCircle() {
+        return false;
+    }
+
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return new CommonAdapter<CircleMembers>(getActivity(), R.layout.item_circle_member,
@@ -150,7 +157,13 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
                 RxView.clicks(holder.itemView)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(mActivity, circleMembers.getUser()));
+                        .subscribe(aVoid -> {
+                            if (isAttornCircle()) {
+                                initPopWindow(more, position, circleMembers);
+                            } else {
+                                PersonalCenterFragment.startToPersonalCenter(mActivity, circleMembers.getUser());
+                            }
+                        });
             }
         };
     }
