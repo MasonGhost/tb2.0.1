@@ -389,11 +389,11 @@ public interface CircleClient {
      *
      * @param postId
      * @param limit
-     * @param offset
+     * @param after
      * @return
      */
     @GET(APP_PATH_COMMENT_POST)
-    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int offset);
+    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int after);
 
     /**
      * 圈子收入记录

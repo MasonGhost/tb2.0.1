@@ -52,13 +52,13 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Inject
     public BaseCircleListPresenter(BaseCircleListContract.View rootView
-    ,CircleInfoGreenDaoImpl circleInfoGreenDao
-    ,CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
-    ,BaseCircleRepository baseCircleRepository) {
+            , CircleInfoGreenDaoImpl circleInfoGreenDao
+            , CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
+            , BaseCircleRepository baseCircleRepository) {
         super(rootView);
-        mCircleInfoGreenDao=circleInfoGreenDao;
-        mCircleSearchBeanGreenDao=circleSearchBeanGreenDao;
-        mBaseCircleRepository=baseCircleRepository;
+        mCircleInfoGreenDao = circleInfoGreenDao;
+        mCircleSearchBeanGreenDao = circleSearchBeanGreenDao;
+        mBaseCircleRepository = baseCircleRepository;
     }
 
     @Override
@@ -227,7 +227,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA,true);
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, true);
     }
 
     @Override
