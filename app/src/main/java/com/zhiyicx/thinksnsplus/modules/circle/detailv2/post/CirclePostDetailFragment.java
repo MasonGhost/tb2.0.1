@@ -473,6 +473,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     break;
                 // 更多
                 case ITEM_POSITION_3:
+                    if (isBlackList && mCirclePostDetailBean.getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                        return;
+                    }
                     initDealPostPopupWindow(mCirclePostDetailBean, mCirclePostDetailBean
                             .getCollected());
                     mDealPostPopWindow.show();
