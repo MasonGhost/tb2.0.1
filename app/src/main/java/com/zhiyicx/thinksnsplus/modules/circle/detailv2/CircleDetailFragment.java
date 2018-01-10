@@ -118,6 +118,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -448,7 +449,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
 
             mCircleInfo.setBlacklist_count(blackListCount);
-            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
+            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
+                    .getBlacklist_count()));
         }
     }
 
@@ -1212,11 +1214,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
-        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" :
-                detail.getLocation()));
+        String location = detail.getLocation();
+        if (TextUtils.isEmpty(location)) {
+            String[] defaultLocation = mActivity.getResources().getStringArray(R.array
+                    .default_location_array);
+            Random random = new Random();
+            location = defaultLocation[random.nextInt(defaultLocation.length - 1) % (defaultLocation.length - 1)];
+        }
+
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
-        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo.getBlacklist_count()));
+        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
+                .getBlacklist_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);

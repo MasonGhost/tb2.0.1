@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1556,5 +1557,13 @@ public class JavaTest {
 //                datas.remove(data);
 //            }
 //        }
+    }
+
+    @Test
+    public void testRomand() {
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            System.out.println("random = " +  random.nextInt(5) % (5));
+        }
     }
 }
