@@ -91,7 +91,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/white"
                     android:hint="@string/edit_circle_name"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:maxLength="@integer/circle_name_input_max_size"
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
