@@ -14,6 +14,12 @@ body {
   outline: none;
 }
 
+#title:empty::before {
+  content: attr(title-placeholder);
+  color: #cccccc;
+  outline: none;
+}
+
 #editor:not(:empty){
   line-height:2;
 }
@@ -42,24 +48,6 @@ p {
   padding-top: 20px;
   margin-left: 10px;
   margin-right: 10px;
-}
-.hide{
-  position: absolute;
-  z-index: -100;
-  visibility: hidden;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  width: 100%;
-  min-height: 30px;
-  font-size: 24px;
-  border: none;
-  outline: none;
-  resize: none;
-  line-height:30px;
-  overflow: hidden;
-  background-color: transparent;
-  color: inherit;
-  border-color: inherit;
 }
 .content .title {
   width: 100%;

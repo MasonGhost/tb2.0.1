@@ -128,7 +128,6 @@ var RE = {
 		_self.initLimit();
 		_self.bind();
 		_self.focus();
-        _self.initTitle();
         console.log("init:::" + document.documentElement.outerHTML);
 	},
 
@@ -173,11 +172,8 @@ var RE = {
 		}, false);
 
 		_self.cache.title.addEventListener('input', function () {
-			var pre = document.getElementById('pre');
-			pre.textContent = _self.cache.title.value;
 			var content=_self.markdownWords();
-			AndroidInterface.setHtmlContent(pre.textContent.length * content.length);
-			_self.cache.title.style.height = pre.offsetHeight + 'px';
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * content.length);
 		}, false);
 	},
 	initCache: function initCache() {
@@ -196,13 +192,6 @@ var RE = {
 	    _self.titleLimit.txtNote=document.getElementById("title");
 	    _self.titleLimit.txtLimit=document.getElementById("txtCount");
 	},
-	initTitle: function initTitle(){
-        var _self = this;
-        var pre = document.getElementById('pre');
-        _self.cache.title.value = pre.textContent;
-        _self.cache.title.style.height = pre.offsetHeight + 'px';
-        console.log("titleHeight:::" + pre.offsetHeight);
-    },
 	focus: function focus() {
 		//聚焦
 		var _self = this;
@@ -232,7 +221,7 @@ var RE = {
     },
     getTitle: function getTitle() {
         var _self = this;
-        var title = _self.cache.title.value;
+        var title = _self.cache.title.innerHTML;
         return title;
     },
 
@@ -251,7 +240,7 @@ var RE = {
     // 暂时没用到
     restoreDraft: function restoreDraft(title,content){
         var _self = this;
-        _self.cache.title.value = title;
+        _self.cache.title.innerHTML = title;
     },
 
 	saveRange: function saveRange() {
@@ -445,22 +434,22 @@ var RE = {
         var noteView = _self.titleLimit.txtNote;
         var limitCount = _self.titleLimit.limitCount;
         var InPutView = document.getElementById("title");
-        if(InPutView.value.length < 10 ){
+        if(InPutView.innerHTML.length < 10 ){
             document.getElementById("stay").style.display="none";
             return
         }
-        if(InPutView.value.length >=10 ){
+        if(InPutView.innerHTML.length >=10 ){
             document.getElementById("stay").style.display="block";
             document.getElementById("stay").style.color="green";
         }
-        if(InPutView.value.length > 15 ){
+        if(InPutView.innerHTML.length > 15 ){
             document.getElementById("stay").style.color="red";
         }
-        if(noteView.value.length > limitCount ){
-            noteView.value=noteView.value.substring(0,limitCount);
+        if(noteView.innerHTML.length > limitCount ){
+            noteView.innerHTML = noteView.innerHTML.substring(0,limitCount);
         }
-        _self.titleLimit.txtLimit.innerText=noteView.value.length;
-        _self.titleLimit.txtlength = noteView.value.length;//记录每次输入后的长度
+        _self.titleLimit.txtLimit.innerText=noteView.innerHTML.length;
+        _self.titleLimit.txtlength = noteView.innerHTML.length;//记录每次输入后的长度
     },
 
     // 删除图片
