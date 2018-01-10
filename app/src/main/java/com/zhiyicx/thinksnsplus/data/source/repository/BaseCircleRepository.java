@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -368,7 +369,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
                     List<CirclePostListBean> data = circlePostBean.getPinneds();
-                    if (data != null) {
+                    // 最新回复不显示置顶内容
+                    if (data != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
                         for (CirclePostListBean postListBean : data) {
                             postListBean.setPinned(true);
                         }
