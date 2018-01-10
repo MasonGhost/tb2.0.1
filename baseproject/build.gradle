@@ -87,6 +87,7 @@ dependencies {
     compile dataDependences.umeng
     compile dataDependences.amapLocation
     compile dataDependences.amapSearch
+    compile dataDependences.a3Dmap
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     compile dataDependences.playServices
