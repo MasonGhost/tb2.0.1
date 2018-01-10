@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.LoginFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -261,6 +262,9 @@ public class LinkDialog extends BaseDialogFragment {
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             // 不能以 0  开始
             String replace = source.toString().replaceAll("^0*", "");
+            if (TextUtils.isEmpty(replace)){
+                return "";
+            }
             return super.filter(replace, start, end, dest, dstart, dend);
         }
     }
