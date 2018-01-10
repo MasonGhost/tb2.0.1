@@ -164,7 +164,7 @@ var RE = {
 		}, false);
 
 		_self.cache.editor.addEventListener('input', function () {
-			AndroidInterface.setHtmlContent(_self.cache.title.value.length * _self.markdownWords().length);
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * _self.markdownWords().length);
 		}, false);
 
 		_self.titleLimit.txtNote.addEventListener('input', function () {
