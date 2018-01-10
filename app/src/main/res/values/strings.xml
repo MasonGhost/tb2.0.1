@@ -271,7 +271,7 @@
     <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给 %2$s 使其成为新的圈主？</string>
     <string name="circle_manager_attorn_success">圈子转让成功</string>
     <string name="circle_manager_attorn_failed">圈子转让失败</string>
-    <string name="circle_manager_format">管理员(%d)</string>
+    <string name="circle_manager_format">圈管理(%d)</string>
     <string name="circle_member_format">成员(%d)</string>
     <string name="circle_post_from">来自	%s</string>
     <string name="circle_blacklist_format">黑名单(%d)</string>
