@@ -1450,10 +1450,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 int day = Integer.valueOf(url);
                 if (day > 0 && day <= 30) {
                     mPresenter.stickTopPost(id, position, day);
+                    dialog.dismiss();
                 } else {
                     dialog.setErrorMessage(getString(R.string.post_apply_top_days));
                 }
-                dialog.dismiss();
+
             }
 
             @Override
