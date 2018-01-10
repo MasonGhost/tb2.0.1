@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  line-height: 2;
 }
 /* 处理占位文字
 [contenteditable=true]:empty:not(:focus):before{
@@ -13,6 +12,10 @@ body {
   content: attr(editor-placeholder);
   color: #cccccc;
   outline: none;
+}
+
+#editor:not(:empty){
+  line-height:2;
 }
 
 textarea::-webkit-input-placeholder {
@@ -77,6 +80,7 @@ p {
   background:#cccccc;
   margin-top: 5px;
 }
+/* 在大多数浏览器中默认行高大约是 20px。*/
 .content #editor {
   margin-top: 10px;
   outline: none;
@@ -152,7 +156,7 @@ p {
 }
 
 .process{
-  height: 5px;
+  height: 3px;
   display: inline-block;
 }
 
