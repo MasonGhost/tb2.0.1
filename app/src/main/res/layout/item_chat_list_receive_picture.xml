@@ -37,20 +37,23 @@
                 android:layout_marginTop="@dimen/chat_list_content_margintop"
                 android:layout_toRightOf="@id/iv_chat_headpic">
 
-            <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_chat_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/ease_default_image"/>
+            <RelativeLayout
+                    android:id="@+id/rl_chat_bubble"
+                    style="@style/style_chat_bubble"
+                    android:background="@drawable/shape_message_bubble_other_no_padding">
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/iv_chat_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ease_default_image"/>
+            </RelativeLayout>
 
             <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_toRightOf="@+id/iv_chat_content"
+                    android:layout_toRightOf="@+id/rl_chat_bubble"
                     android:layout_centerVertical="true"
                     android:visibility="gone">
 
@@ -75,8 +78,8 @@
                     android:textSize="@dimen/size_note_assist"
                     android:textColor="@color/normal_for_disable_button_text"
                     android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_toRightOf="@+id/iv_chat_content"
-                    android:layout_alignBottom="@+id/iv_chat_content"
+                    android:layout_toRightOf="@+id/rl_chat_bubble"
+                    android:layout_alignBottom="@+id/rl_chat_bubble"
                     android:text="@string/chat_send_message_read"
                     android:visibility="gone"/>
 

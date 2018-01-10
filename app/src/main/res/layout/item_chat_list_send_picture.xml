@@ -39,20 +39,25 @@
                 android:layout_marginTop="@dimen/chat_list_content_margintop"
                 android:layout_toLeftOf="@id/iv_chat_headpic">
 
-            <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_chat_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
+            <RelativeLayout
+                    android:id="@+id/rl_chat_bubble"
+                    style="@style/style_chat_bubble"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ease_default_image"/>
+                    android:background="@drawable/shape_message_bubble_my_no_padding">
+
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/iv_chat_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ease_default_image"/>
+            </RelativeLayout>
 
             <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/spacing_mid_small"
-                    android:layout_toLeftOf="@+id/iv_chat_content"
+                    android:layout_toLeftOf="@+id/rl_chat_bubble"
                     android:layout_centerVertical="true">
 
                 <ImageView
@@ -76,8 +81,8 @@
                     android:textSize="@dimen/size_note_assist"
                     android:textColor="@color/normal_for_disable_button_text"
                     android:layout_marginRight="@dimen/spacing_mid_small"
-                    android:layout_toLeftOf="@+id/iv_chat_content"
-                    android:layout_alignBottom="@+id/iv_chat_content"
+                    android:layout_toLeftOf="@+id/rl_chat_bubble"
+                    android:layout_alignBottom="@+id/rl_chat_bubble"
                     android:text="@string/chat_send_message_read"/>
 
         </RelativeLayout>

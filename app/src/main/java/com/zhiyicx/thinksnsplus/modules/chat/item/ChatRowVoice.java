@@ -58,9 +58,9 @@ public class ChatRowVoice extends ChatBaseRow{
             mTvVoiceLength.setVisibility(View.INVISIBLE);
         }
         if (message.direct() == EMMessage.Direct.RECEIVE) {
-            mIvVoicePlay.setImageResource(com.hyphenate.easeui.R.drawable.ease_chatfrom_voice_playing);
+            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_grey003);
         } else {
-            mIvVoicePlay.setImageResource(com.hyphenate.easeui.R.drawable.ease_chatto_voice_playing);
+            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_black003);
         }
         if (message.direct() == EMMessage.Direct.RECEIVE) {
             LogUtils.d(TAG, "it is receive msg");
@@ -102,9 +102,9 @@ public class ChatRowVoice extends ChatBaseRow{
 
     public void startVoicePlayAnimation() {
         if (message.direct() == EMMessage.Direct.RECEIVE) {
-            mIvVoicePlay.setImageResource(R.anim.voice_from_icon);
+            mIvVoicePlay.setImageResource(R.drawable.frame_receive_voice_playing);
         } else {
-            mIvVoicePlay.setImageResource(R.anim.voice_to_icon);
+            mIvVoicePlay.setImageResource(R.drawable.frame_send_voice_playing);
         }
         voiceAnimation = (AnimationDrawable) mIvVoicePlay.getDrawable();
         voiceAnimation.start();
@@ -116,9 +116,9 @@ public class ChatRowVoice extends ChatBaseRow{
         }
 
         if (message.direct() == EMMessage.Direct.RECEIVE) {
-            mIvVoicePlay.setImageResource(R.drawable.ease_chatfrom_voice_playing);
+            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_grey003);
         } else {
-            mIvVoicePlay.setImageResource(R.drawable.ease_chatto_voice_playing);
+            mIvVoicePlay.setImageResource(R.drawable.ico_bofan_black003);
         }
     }
 }

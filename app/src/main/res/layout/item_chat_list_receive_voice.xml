@@ -46,7 +46,8 @@
                         android:id="@+id/iv_voice_play"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ease_chatfrom_voice_playing"/>
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/frame_receive_voice_playing"/>
 
                 <!--语音长度-->
                 <TextView
@@ -55,6 +56,7 @@
                     android:layout_toRightOf="@+id/iv_voice_play"
                     android:layout_marginLeft="@dimen/margin_20"
                     android:textSize="@dimen/size_note_assist"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/text_voice_receive_length"
                     tools:text="50''"/>
             </RelativeLayout>

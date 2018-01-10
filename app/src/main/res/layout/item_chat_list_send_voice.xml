@@ -59,7 +59,8 @@
                         android:id="@+id/iv_voice_play"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ease_chatto_voice_playing"
+                        android:src="@drawable/frame_send_voice_playing"
+                        android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/tv_voice_length"/>
 
             </RelativeLayout>
