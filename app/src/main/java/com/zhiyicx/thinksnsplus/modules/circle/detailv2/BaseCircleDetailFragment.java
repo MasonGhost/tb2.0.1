@@ -56,6 +56,8 @@ import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -719,6 +721,12 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 })
                 .build();
         mPayPopWindow.show();
+
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
+        return (long) mListDatas.size();
 
     }
 
