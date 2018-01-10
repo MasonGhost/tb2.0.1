@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -15,7 +14,6 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
@@ -74,8 +72,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     public static CircleMainFragment newInstance() {
-        CircleMainFragment circleMainFragment = new CircleMainFragment();
-        return circleMainFragment;
+        return new CircleMainFragment();
     }
 
     @Override
