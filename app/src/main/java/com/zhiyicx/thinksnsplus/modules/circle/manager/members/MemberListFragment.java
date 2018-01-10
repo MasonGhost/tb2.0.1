@@ -367,9 +367,9 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra(CIRCLEID, mListDatas.size());
-        mActivity.setResult(Activity.RESULT_OK, intent);
+//        Intent intent = new Intent();
+//        intent.putExtra(CIRCLEID, mListDatas.size());
+//        mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
     }
 
