@@ -26,11 +26,17 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
+import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationFragment;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 
 /**
  * @author Catherine
@@ -46,6 +52,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private static final int REQUEST_CODE_GROUP_DETAIL = 13;
     private static final int REQUEST_CODE_CONTEXT_MENU = 14;
     private static final int REQUEST_CODE_SELECT_AT_USER = 15;
+    public static final int REQUEST_CODE_SELECT_AMAP = 16;
 
 
     private static final int MESSAGE_TYPE_SENT_VOICE_CALL = 1;
@@ -54,12 +61,12 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     private static final int MESSAGE_TYPE_RECV_VIDEO_CALL = 4;
     private static final int MESSAGE_TYPE_RECALL = 9;
 
-    static final int ITEM_TAKE_PICTURE = 1;
-    static final int ITEM_PICTURE = 2;
-    static final int ITEM_LOCATION = 3;
-    private static final int ITEM_VIDEO = 11;
-    private static final int ITEM_VOICE_CALL = 13;
-    private static final int ITEM_VIDEO_CALL = 14;
+    static final int ITEM_TAKE_PICTURE_TS = 31;
+    static final int ITEM_PICTURE_TS = 32;
+    static final int ITEM_LOCATION_TS = 33;
+    private static final int ITEM_VIDEO_TS = 34;
+    private static final int ITEM_VOICE_CALL_TS = 35;
+    private static final int ITEM_VIDEO_CALL_TS = 36;
 
     protected View mDriver;
     protected View mStatusPlaceholderView;
@@ -193,27 +200,29 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     public boolean onExtendMenuItemClick(int itemId, View view) {
         LogUtils.d("Cathy", "onExtendMenuItemClick" + itemId);
         switch (itemId) {
-            case ITEM_TAKE_PICTURE:
+            case ITEM_TAKE_PICTURE_TS:
                 // 拍照
                 selectPicFromCamera();
                 break;
-            case ITEM_PICTURE:
+            case ITEM_PICTURE_TS:
                 // 相册
                 selectPicFromLocal();
                 break;
-            case ITEM_LOCATION:
+            case ITEM_LOCATION_TS:
                 // 位置
-                startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+                Intent intentMap = new Intent(new Intent(getActivity(), SendLocationActivity.class));
+                intentMap.putExtras(new Bundle());
+                startActivityForResult(intentMap, REQUEST_CODE_MAP);
                 break;
-            case ITEM_VIDEO:
+            case ITEM_VIDEO_TS:
                 // 视频
                 Intent intent = new Intent(getActivity(), ImageGridActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
                 break;
-            case ITEM_VIDEO_CALL:
+            case ITEM_VIDEO_CALL_TS:
                 // 视频通话
                 break;
-            case ITEM_VOICE_CALL:
+            case ITEM_VOICE_CALL_TS:
                 // 语音
                 break;
             default:
@@ -237,17 +246,17 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
 //        super.registerExtendMenuItem();
         //extend menu items
         // 图片
-        inputMenu.registerExtendMenuItem(R.string.attach_picture, R.mipmap.ico_chat_picture, ITEM_PICTURE, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_picture, R.mipmap.ico_chat_picture, ITEM_PICTURE_TS, extendMenuItemClickListener);
         // 拍照
-        inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_take_pic, R.mipmap.ico_chat_takephoto, ITEM_TAKE_PICTURE_TS, extendMenuItemClickListener);
         // 视频
-        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_video, R.mipmap.ico_chat_video, ITEM_VIDEO_TS, extendMenuItemClickListener);
         // 位置
-        inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_location, R.mipmap.ico_chat_location, ITEM_LOCATION_TS, extendMenuItemClickListener);
         // 语音电话
-        inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.mipmap.ico_chat_voicecall, ITEM_VOICE_CALL_TS, extendMenuItemClickListener);
         // 视频通话
-        inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL, extendMenuItemClickListener);
+        inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.mipmap.ico_chat_videocall, ITEM_VIDEO_CALL_TS, extendMenuItemClickListener);
     }
 
     /**
@@ -319,8 +328,17 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 EaseChatRowPresenter presenter = new TSChatVoicePresenter();
                 return presenter;
             }
+            if (message.getType() == EMMessage.Type.LOCATION){
+                EaseChatRowPresenter presenter = new TSChatLocationPresenter();
+                return presenter;
+            }
             return null;
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

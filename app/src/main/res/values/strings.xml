@@ -763,4 +763,6 @@
     <string name="chat_my_friends">我的好友</string>
     <string name="chat_send_voice_alert">按住说话</string>
     <string name="chat_send_message_read">已读</string>
+    <string name="chat_location_info">位置信息</string>
+    <string name="chat_send_location">发送</string>
 </resources>
