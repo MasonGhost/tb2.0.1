@@ -405,8 +405,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
             mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
             mCreateCircleBean.setGeo_hash(geoHash);
+            mCreateCircleBean.setLocation(mTvLocation.getText().toString());
         }
-        mCreateCircleBean.setLocation(mTvLocation.getText().toString());
 
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
