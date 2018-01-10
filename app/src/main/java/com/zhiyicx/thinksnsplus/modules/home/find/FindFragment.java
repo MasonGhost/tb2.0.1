@@ -8,35 +8,21 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.impl.share.ShareModule;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.modules.circle.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DaggerDynamicComponent;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
-import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
-import com.zhiyicx.thinksnsplus.modules.report.ReportFragment;
-import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import javax.inject.Inject;
 
 import butterknife.OnClick;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -142,9 +128,7 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-//                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
                     startActivity(new Intent(getActivity(), CircleMainActivity.class));
-
                 } else {
                     showLoginPop();
                 }
