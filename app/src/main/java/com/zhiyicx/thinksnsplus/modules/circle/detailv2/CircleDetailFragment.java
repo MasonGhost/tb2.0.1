@@ -930,7 +930,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item3Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item4Str(!isManager ? getString(R.string.report) : "")
-                .item5Str(getString(isManager ? R.string.info_delete : R.string.empty))
+                .item5Str(getString(isManager ? R.string.delete_post : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

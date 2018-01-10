@@ -607,9 +607,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
-                .item3Str(isMine ? getString(R.string.info_delete) : (!isBlackList ? getString(isCollected ? R
+                .item3Str(isMine ? getString(R.string.delete_post) : (!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))
-                .item4Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
+                .item4Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
                 .item5Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
