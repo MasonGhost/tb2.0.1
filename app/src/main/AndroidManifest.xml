@@ -602,6 +602,9 @@
         <!--环信的聊天页面-->
         <activity android:name=".modules.chat.ChatActivityV2"
                   android:screenOrientation="portrait"/>
+        <!--发送位置-->
+        <activity android:name=".modules.chat.location.SendLocationActivity"
+                android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
