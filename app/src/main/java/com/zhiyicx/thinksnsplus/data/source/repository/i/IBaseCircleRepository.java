@@ -250,7 +250,7 @@ public interface IBaseCircleRepository {
      * @param day    天数
      * @return
      */
-    Observable<BaseJsonV2> stickTopPost(Long postId, int day);
+    Observable<BaseJsonV2<Object>> stickTopPost(Long postId, int day);
 
     /**
      * 圈主和管理员撤销置顶帖子
@@ -258,7 +258,7 @@ public interface IBaseCircleRepository {
      * @param postId
      * @return
      */
-    Observable<BaseJsonV2> undoTopPost(Long postId);
+    Observable<BaseJsonV2<Object>> undoTopPost(Long postId);
 
     void handleFollow(UserInfoBean userInfoBean);
 }

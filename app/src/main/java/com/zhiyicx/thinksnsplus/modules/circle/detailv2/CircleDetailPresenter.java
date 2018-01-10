@@ -628,9 +628,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void undoTopPost(Long postId, int position) {
         Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.getListDatas().get(position).setPinned(false);
                         mRootView.refreshData(position);
                     }

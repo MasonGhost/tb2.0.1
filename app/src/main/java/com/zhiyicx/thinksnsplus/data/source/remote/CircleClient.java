@@ -459,7 +459,7 @@ public interface CircleClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_MANAGER_TOP_POST)
-    Observable<BaseJsonV2> stickTopPost(@Path("post_id") Long postId, @Field("day") int day);
+    Observable<BaseJsonV2<Object>> stickTopPost(@Path("post_id") Long postId, @Field("day") int day);
 
     /**
      * 圈主和管理员撤销置顶帖子
@@ -468,7 +468,7 @@ public interface CircleClient {
      * @return
      */
     @PATCH(APP_PATH_UNDO_TOP_POST)
-    Observable<BaseJsonV2> undoTopPost(@Path("post_id") Long postId);
+    Observable<BaseJsonV2<Object>> undoTopPost(@Path("post_id") Long postId);
 
     /**
      * 帖子打赏

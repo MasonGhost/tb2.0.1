@@ -423,14 +423,14 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2> stickTopPost(Long postId, int day) {
+    public Observable<BaseJsonV2<Object>> stickTopPost(Long postId, int day) {
         return mCircleClient.stickTopPost(postId, day)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<BaseJsonV2> undoTopPost(Long postId) {
+    public Observable<BaseJsonV2<Object>> undoTopPost(Long postId) {
         return mCircleClient.undoTopPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
