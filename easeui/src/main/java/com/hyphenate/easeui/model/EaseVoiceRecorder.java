@@ -72,7 +72,7 @@ public class EaseVoiceRecorder {
                 try {
                     while (isRecording) {
                         android.os.Message msg = new android.os.Message();
-                        msg.what = recorder.getMaxAmplitude() * 13 / 0x7FFF;
+                        msg.what = recorder.getMaxAmplitude() * 5 / 0x7FFF;
                         handler.sendMessage(msg);
                         SystemClock.sleep(100);
                     }

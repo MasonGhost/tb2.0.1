@@ -67,20 +67,12 @@ public class EaseVoiceRecorderView extends RelativeLayout {
         voiceRecorder = new EaseVoiceRecorder(micImageHandler);
 
         // animation resources, used for recording
-        micImages = new Drawable[] { getResources().getDrawable(R.drawable.ease_record_animate_01),
-                getResources().getDrawable(R.drawable.ease_record_animate_02),
-                getResources().getDrawable(R.drawable.ease_record_animate_03),
-                getResources().getDrawable(R.drawable.ease_record_animate_04),
-                getResources().getDrawable(R.drawable.ease_record_animate_05),
-                getResources().getDrawable(R.drawable.ease_record_animate_06),
-                getResources().getDrawable(R.drawable.ease_record_animate_07),
-                getResources().getDrawable(R.drawable.ease_record_animate_08),
-                getResources().getDrawable(R.drawable.ease_record_animate_09),
-                getResources().getDrawable(R.drawable.ease_record_animate_10),
-                getResources().getDrawable(R.drawable.ease_record_animate_11),
-                getResources().getDrawable(R.drawable.ease_record_animate_12),
-                getResources().getDrawable(R.drawable.ease_record_animate_13),
-                getResources().getDrawable(R.drawable.ease_record_animate_14), };
+        micImages = new Drawable[] { getResources().getDrawable(R.drawable.ico_yuyin001),
+                getResources().getDrawable(R.drawable.ico_yuyin002),
+                getResources().getDrawable(R.drawable.ico_yuyin003),
+                getResources().getDrawable(R.drawable.ico_yuyin004),
+                getResources().getDrawable(R.drawable.ico_yuyin005),
+                getResources().getDrawable(R.drawable.ico_yuyin006), };
 
         wakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE)).newWakeLock(
                 PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
@@ -97,8 +89,9 @@ public class EaseVoiceRecorderView extends RelativeLayout {
         case MotionEvent.ACTION_DOWN:
             try {
                 EaseChatRowVoicePlayer voicePlayer = EaseChatRowVoicePlayer.getInstance(context);
-                if (voicePlayer.isPlaying())
+                if (voicePlayer.isPlaying()){
                     voicePlayer.stop();
+                }
                 v.setPressed(true);
                 startRecording();
             } catch (Exception e) {
@@ -167,10 +160,12 @@ public class EaseVoiceRecorderView extends RelativeLayout {
             voiceRecorder.startRecording(context);
         } catch (Exception e) {
             e.printStackTrace();
-            if (wakeLock.isHeld())
+            if (wakeLock.isHeld()){
                 wakeLock.release();
-            if (voiceRecorder != null)
+            }
+            if (voiceRecorder != null){
                 voiceRecorder.discardRecording();
+            }
             this.setVisibility(View.INVISIBLE);
             Toast.makeText(context, R.string.recoding_fail, Toast.LENGTH_SHORT).show();
             return;
@@ -188,8 +183,9 @@ public class EaseVoiceRecorderView extends RelativeLayout {
     }
 
     public void discardRecording() {
-        if (wakeLock.isHeld())
+        if (wakeLock.isHeld()){
             wakeLock.release();
+        }
         try {
             // stop recording
             if (voiceRecorder.isRecording()) {
@@ -202,8 +198,9 @@ public class EaseVoiceRecorderView extends RelativeLayout {
 
     public int stopRecoding() {
         this.setVisibility(View.INVISIBLE);
-        if (wakeLock.isHeld())
+        if (wakeLock.isHeld()){
             wakeLock.release();
+        }
         return voiceRecorder.stopRecoding();
     }
 
