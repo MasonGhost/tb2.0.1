@@ -1336,7 +1336,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 setLeftClick();
                 break;
             case R.id.iv_serach:
-                CirclePostSearchActivity.startCircelPostSearchActivity(mActivity, mCircleInfo.getId());
+                CirclePostSearchActivity.startCircelPostSearchActivity(mActivity, mCircleInfo);
                 break;
             case R.id.iv_share:
                 break;

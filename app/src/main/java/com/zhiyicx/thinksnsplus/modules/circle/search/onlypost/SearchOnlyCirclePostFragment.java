@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCirclePostFragment;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
@@ -28,11 +29,12 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
     @BindView(R.id.fragment_search_cancle)
     View mFragmentSearchCancle;
 
-    public static SearchOnlyCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType, long circleGroupId) {
+    public static SearchOnlyCirclePostFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType, CircleInfo circleInfo) {
         SearchOnlyCirclePostFragment circleDetailFragment = new SearchOnlyCirclePostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(CIRCLE_TYPE, circleMinePostType);
-        bundle.putLong(CIRCLE_ID, circleGroupId);
+        bundle.putLong(CIRCLE_ID, circleInfo.getId());
+        bundle.putSerializable(CIRCLE, circleInfo);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
     }
@@ -83,8 +85,13 @@ public class SearchOnlyCirclePostFragment extends SearchCirclePostFragment {
                 getActivity().finish();
                 break;
             case R.id.bt_do:
+                if (getArguments() != null && getArguments().getSerializable(CIRCLE) != null) {
+                    BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, (CircleInfo) getArguments().getSerializable(CIRCLE));
+                } else {
+                    BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
+
+                }
                 // 创建圈子帖子
-                BaseMarkdownActivity.startActivityForPublishPostOutCircle(mActivity);
                 break;
             default:
         }
