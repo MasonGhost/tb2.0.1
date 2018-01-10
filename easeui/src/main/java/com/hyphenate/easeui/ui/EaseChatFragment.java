@@ -462,6 +462,13 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                     }
                 }
             } else if (requestCode == REQUEST_CODE_MAP) { // location
+                if (data == null){
+                    return;
+                }
+                if (!data.hasExtra("latitude")){
+                    Toast.makeText(getActivity(), R.string.unable_to_get_loaction, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 double latitude = data.getDoubleExtra("latitude", 0);
                 double longitude = data.getDoubleExtra("longitude", 0);
                 String locationAddress = data.getStringExtra("address");

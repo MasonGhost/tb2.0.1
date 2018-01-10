@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.thinksnsplus.modules.chat.ChatFragmentV2.REQUEST_CODE_SELECT_AMAP;
 
 /**
@@ -130,6 +131,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
                     .decodeResource(getResources(),R.mipmap.find_ico_location2)));
             // 将Marker设置为贴地显示，可以双指下拉地图查看效果
             markerOption.setFlat(true);//设置marker平贴地图效果
+            aMap.addMarker(markerOption);
         }
     }
 
@@ -150,11 +152,17 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
 
     @Override
     protected void setRightClick() {
-        Intent intent = new Intent();
-        intent.putExtra(BUNDLE_LOCATION_LATITUDE, mLatitude);
-        intent.putExtra(BUNDLE_LOCATION_LONGITUDE, mLongitude);
-        intent.putExtra(BUNDLE_LOCATION_ADDRESS, mAddress);
-        getActivity().setResult(1, intent);
+        Intent intent = getActivity().getIntent();
+        intent.putExtra("latitude", mLatitude);
+        intent.putExtra("longitude", mLongitude);
+        intent.putExtra("address", mAddress);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         getActivity().finish();
     }
 
@@ -192,7 +200,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
             if (location.getExtras() != null){
-                mAddress = location.getExtras().getString("desc").trim();
+                mAddress = location.getExtras().getString("Address").trim();
             }
         } else {
             showSnackErrorMessage("定位失败");
