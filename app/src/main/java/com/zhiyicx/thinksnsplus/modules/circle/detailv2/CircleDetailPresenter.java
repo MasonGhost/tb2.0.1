@@ -144,8 +144,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
             } else {
                 Subscription subscribe = mBaseCircleRepository
-                        .getPostListFromCircle
-                                (mRootView.getCircleId(), maxId, mRootView.getType())
+                        .getPostListFromCircle(mRootView.getCircleId(), maxId, mRootView.getType())
                         .map(data -> {
                             for (int i = 0; i < data.size(); i++) {
                                 List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
