@@ -273,15 +273,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
         mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-
-//        if (mRootView.getCircleId() == null) {
-//            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-//            return;
-//        }
-//        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
-//        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
