@@ -116,7 +116,6 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
                                     || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
                                 return;
                             }
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.create_reviewing));
                             circleInfo.setJoined(new CircleJoinedBean());
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                         }

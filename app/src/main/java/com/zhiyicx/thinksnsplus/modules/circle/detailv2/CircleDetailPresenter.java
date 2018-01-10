@@ -461,7 +461,6 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         boolean isPrivateOrPaid = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
                                 || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
                         if (isJoined) {
@@ -469,6 +468,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                             mRootView.updateCircleInfo(circleInfo);
                         } else {
+                            mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                             // 如果是 封闭的或者 收费的 ，就不及时更新
                             if (isPrivateOrPaid) {
                                 return;
