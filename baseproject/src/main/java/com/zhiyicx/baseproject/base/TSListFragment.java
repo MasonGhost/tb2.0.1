@@ -51,12 +51,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 默认每页的数量
      */
-    public static final int DEFAULT_PAGE_SIZE = 20;
+    public static final int DEFAULT_PAGE_SIZE = 15;
 
     /**
      * 一个页面显示的最大条数，用来判断是否显示加载更多
      */
-    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 15;
+    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 12;
 
     /**
      * 默认初始化列表 id
@@ -762,6 +762,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
+    /**
+     * 默认加载条数，具体数据又后端确定
+     * @return
+     */
     protected int getPagesize() {
         return DEFAULT_PAGE_SIZE;
     }
