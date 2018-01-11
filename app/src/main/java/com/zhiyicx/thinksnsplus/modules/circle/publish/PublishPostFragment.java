@@ -8,7 +8,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
@@ -20,13 +19,12 @@ import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
  * @Email Jliuer@aliyun.com
  * @Description 发布帖子
  */
-public class PublishPostFragment extends MarkdownFragment {
+public class PublishPostFragment extends MarkdownFragment<PostDraftBean> {
 
     public static final String BUNDLE_ISOUT_BOOLEAN = "isout";
     public static final String BUNDLE_DRAFT_DATA = "draft";
 
     protected CircleInfo mCircleInfo;
-    protected PostDraftBean mDraftBean;
     protected boolean isOutCirclePublish;
     protected PostPublishBean mPostPublishBean;
 
@@ -47,7 +45,22 @@ public class PublishPostFragment extends MarkdownFragment {
             mCircleInfo = mDraftBean.getCircleInfo();
             isOutCirclePublish = true;
         }
+    }
 
+    @Override
+    protected void restoreImageData() {
+        if (mDraftBean != null) {
+            if (mDraftBean.getInsertedImages() != null) {
+                mInsertedImages = mDraftBean.getInsertedImages();
+            }
+            if (mDraftBean.getFailedImages() != null) {
+                mFailedImages = mDraftBean.getFailedImages();
+            }
+            if (mDraftBean.getImages() != null) {
+                mImages = mDraftBean.getImages();
+            }
+        }
+        mRichTextView.addImageClickListener(getImageIds());
     }
 
     @Override
@@ -100,8 +113,9 @@ public class PublishPostFragment extends MarkdownFragment {
         return true;
     }
 
+
     @Override
-    protected void loadDraft(BaseDraftBean draft) {
+    protected void loadDraft(PostDraftBean postDraftBean) {
         mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
         mCbSynToDynamic.setChecked(mDraftBean.getHasSynToDynamic());
     }
@@ -151,6 +165,9 @@ public class PublishPostFragment extends MarkdownFragment {
                     .currentTimeMillis());
         }
         postDraftBean.setMark(mark);
+        postDraftBean.setImages(mImages);
+        postDraftBean.setInsertedImages(mInsertedImages);
+        postDraftBean.setFailedImages(mFailedImages);
         postDraftBean.setHasSynToDynamic(mCbSynToDynamic.isChecked());
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
@@ -167,7 +184,7 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
-    protected BaseDraftBean getDraftData() {
+    protected PostDraftBean getDraftData() {
         return mDraftBean;
     }
 
