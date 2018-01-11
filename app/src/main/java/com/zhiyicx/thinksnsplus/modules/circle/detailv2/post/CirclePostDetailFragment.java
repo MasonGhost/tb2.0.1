@@ -657,7 +657,6 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .item4ClickListener(() -> {
                     // 管理员删除
                     showDeleteTipPopupWindow(getString(R.string.delete_post),true,circlePostListBean);
-                    getActivity().finish();
                     mDealPostPopWindow.hide();
                 })
                 .item5ClickListener(() -> {
@@ -761,6 +760,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     protected void showDeleteTipPopupWindow(String tipStr,
                                             boolean createEveryTime, final CirclePostListBean circlePostListBean) {
-        super.showDeleteTipPopupWindow(tipStr, () -> EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE), createEveryTime);
+        super.showDeleteTipPopupWindow(tipStr, () -> {
+            EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+            mActivity.finish();
+        },createEveryTime);
     }
 }
