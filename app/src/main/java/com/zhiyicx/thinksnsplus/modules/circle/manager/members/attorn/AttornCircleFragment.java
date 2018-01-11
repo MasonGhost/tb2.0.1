@@ -90,9 +90,6 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
 
     @Override
     protected void initPopWindow(View v, int pos, CircleMembers circleMembers) {
-        if (mPopupWindow != null) {
-            return;
-        }
         mPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.info_publish_hint))
                 .desStr(String.format(Locale.getDefault(), getString(R.string.circle_manager_sure_attorn), mCircleName,
