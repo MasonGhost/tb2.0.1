@@ -250,6 +250,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
 
     @Override
     public void onEditChanged(String str) {
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
         if (mSearchContent.equals(str)) {
             return;
         }
@@ -259,8 +260,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
         }
         // 请求网络数据，就隐藏历史
         mRvSearchHistory.setVisibility(View.GONE);
-
-
         if (mRefreshlayout.isRefreshing()) {
             onRefresh(mRefreshlayout);
         } else {

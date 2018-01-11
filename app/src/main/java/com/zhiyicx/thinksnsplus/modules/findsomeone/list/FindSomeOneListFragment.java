@@ -144,8 +144,4 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
         this.mRecommentUserSize = recommentUserSize;
     }
 
-    @Override
-    protected int getPagesize() {
-        return FindSomeOneListPresenter.DEFAULT_PAGE_SIZE;
-    }
 }
