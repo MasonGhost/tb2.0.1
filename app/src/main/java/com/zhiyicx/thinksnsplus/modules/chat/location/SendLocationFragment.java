@@ -2,20 +2,18 @@ package com.zhiyicx.thinksnsplus.modules.chat.location;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -25,7 +23,6 @@ import com.zhiyicx.thinksnsplus.R;
 import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.zhiyicx.thinksnsplus.modules.chat.ChatFragmentV2.REQUEST_CODE_SELECT_AMAP;
 
 /**
  * @author Catherine
@@ -123,15 +120,16 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
         } else {
             // 添加已有的定位点
             MarkerOptions markerOption = new MarkerOptions();
-            LatLng latLng = new LatLng(mLatitude,mLongitude);
-            markerOption.position(latLng);
-            markerOption.title(mAddress);
-            markerOption.draggable(false);//设置Marker可拖动
-            markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                    .decodeResource(getResources(),R.mipmap.find_ico_location2)));
-            // 将Marker设置为贴地显示，可以双指下拉地图查看效果
-            markerOption.setFlat(true);//设置marker平贴地图效果
-            aMap.addMarker(markerOption);
+            LatLng latLng = new LatLng(mLatitude, mLongitude);
+//            markerOption.position(latLng);
+//            markerOption.title(mAddress).snippet("");
+//            markerOption.draggable(false);//设置Marker可拖动
+//            markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
+//                    .decodeResource(getResources(), R.mipmap.find_ico_location2)));
+//            // 将Marker设置为贴地显示，可以双指下拉地图查看效果
+//            markerOption.setFlat(true);//设置marker平贴地图效果
+            aMap.addMarker(new MarkerOptions().position(latLng).title(mAddress).snippet(""));
+            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         }
     }
 
@@ -163,6 +161,8 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent = getActivity().getIntent();
+        getActivity().setResult(RESULT_OK, intent);
         getActivity().finish();
     }
 
@@ -172,7 +172,9 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        if (mMapView != null){
+            mMapView.onResume();
+        }
     }
 
     /**
@@ -181,7 +183,9 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if (mMapView != null){
+            mMapView.onPause();
+        }
     }
 
     /**
@@ -190,7 +194,9 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        if (mMapView != null){
+            mMapView.onDestroy();
+        }
     }
 
     @Override
@@ -199,7 +205,7 @@ public class SendLocationFragment extends TSFragment<SendLocationContract.Presen
         if (location != null) {
             mLatitude = location.getLatitude();
             mLongitude = location.getLongitude();
-            if (location.getExtras() != null){
+            if (location.getExtras() != null) {
                 mAddress = location.getExtras().getString("Address").trim();
             }
         } else {
