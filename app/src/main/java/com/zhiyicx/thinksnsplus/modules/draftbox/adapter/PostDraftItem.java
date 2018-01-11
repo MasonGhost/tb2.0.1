@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.draftbox.adapter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 
@@ -32,7 +33,7 @@ public class PostDraftItem extends BaseDraftItem<PostDraftBean> {
     protected String setTitle(PostDraftBean draftBean) {
         String result = draftBean.getTitle();
         if (TextUtils.isEmpty(result)) {
-            result = draftBean.getContent();
+            result = "暂无标题";
         }
         return result;
     }

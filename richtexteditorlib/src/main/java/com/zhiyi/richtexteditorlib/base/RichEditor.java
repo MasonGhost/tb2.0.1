@@ -104,6 +104,7 @@ public abstract class RichEditor extends WebView {
     private static final String FOCUS_CHANGE_SCHEME = "focus://";
     private static final String IMAGE_CLICK_SCHEME = "image://";
     private boolean isReady = false;
+    private boolean isDraftReady = false;
     private String mContents;
     private long mContentLength;
     private OnTextChangeListener mTextChangeListener;
@@ -380,6 +381,10 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.insertImage('" + url + "'," + id + ", " + width + "," + height + ");");
     }
 
+    public void addImageClickListener(String ids) {
+        exec("javascript:RE.addImageClickListener('" + ids + "');");
+    }
+
     public void deleteImageById(Long id) {
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.removeImage(" + id + ");");
@@ -431,6 +436,7 @@ public abstract class RichEditor extends WebView {
 
     /**
      * 获取编辑器中内容
+     *
      * @param isPublish
      */
     public void getResultWords(boolean isPublish) {
@@ -610,7 +616,6 @@ public abstract class RichEditor extends WebView {
 
                         }
                     });
-
         }
 
     }
