@@ -105,11 +105,29 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                     holder.getTextView(R.id.tv_content).setCompoundDrawables(null, null, null, null);
                 }
                 EMMessage message = messageItemBean.getConversation().getLastMessage();
-                String content;
-                if (message.getBody() instanceof EMTextMessageBody){
-                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": "  + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
-                } else {
-                    content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": " + message.getBody().toString() : message.getBody().toString();
+                String content = "";
+                switch (message.getType()){
+                    case TXT:
+                        // 文字聊天展示聊天内容
+                        content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": "  + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
+                        break;
+                    case IMAGE:
+                        // 图片聊天 展示[图片]
+                        content = mContext.getString(R.string.chat_type_image);
+                        break;
+                    case VOICE:
+                        // 语音聊天 展示[语音]
+                        content = mContext.getString(R.string.chat_type_voice);
+                        break;
+                    case VIDEO:
+                        // 视频聊天 展示[视频]
+                        content = mContext.getString(R.string.chat_type_video);
+                        break;
+                    case LOCATION:
+                        // 位置消息 展示[位置]
+                        content = mContext.getString(R.string.chat_type_location);
+                        break;
+                    default:
                 }
                 holder.setText(R.id.tv_content, content);
             }

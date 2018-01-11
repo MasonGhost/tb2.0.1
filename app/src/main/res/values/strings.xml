@@ -765,4 +765,8 @@
     <string name="chat_send_message_read">已读</string>
     <string name="chat_location_info">位置信息</string>
     <string name="chat_send_location">发送</string>
+    <string name="chat_type_image">[图片]</string>
+    <string name="chat_type_video">[视频]</string>
+    <string name="chat_type_voice">[语音]</string>
+    <string name="chat_type_location">[定位]</string>
 </resources>
