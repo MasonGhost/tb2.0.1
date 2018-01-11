@@ -241,6 +241,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     /**
      * 乔老师说：要等等反馈完了再跳转
+     *
      * @param prompt
      */
     @Override
@@ -483,7 +484,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (!TextUtils.isEmpty(mCircleInfo.getLatitude()) && !TextUtils.isEmpty(mCircleInfo.getLongitude())) {
             mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfo.getLatitude()),
                     Double.parseDouble(mCircleInfo.getLongitude())), "", "");
-            mPoiItem.setAdCode(mCircleInfo.getGeo_hash());
+            mTvLocation.setText(mCircleInfo.getLocation());
         }
         mCircleTypeBean = mCircleInfo.getCategory();
 
@@ -493,7 +494,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mEtCircleName.setText(mCircleInfo.getName());
         mTvCircleType.setText(mCircleInfo.getCategory().getName());
-        mTvLocation.setText(mCircleInfo.getLocation());
         mTvNotice.setText(mCircleInfo.getNotice());
         mEtCircleIntroduce.setText(mCircleInfo.getSummary());
         mWcSynchro.setChecked(mCircleInfo.getAllow_feed() == 1);
@@ -502,7 +502,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()) || isPaidCircle);
         mCbToll.setChecked(isPaidCircle);
-        mCbFree.setChecked(CircleInfo.CirclePayMode.PUBLIC.value.equals(mCircleInfo.getMode()));
+        mCbFree.setChecked(!isPaidCircle);
 
         // 金额转换
         String money = mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "0";
