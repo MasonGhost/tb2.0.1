@@ -605,6 +605,7 @@
         <!--发送位置-->
         <activity android:name=".modules.chat.location.SendLocationActivity"
                 android:screenOrientation="portrait"/>
+        <activity android:name="com.hyphenate.easeui.ui.EaseShowVideoActivity"/>
     </application>
 
 </manifest>

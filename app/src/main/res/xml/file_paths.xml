@@ -3,4 +3,5 @@
     <external-path
         name="TSCameraPhotos"
         path="/DCIM/TSPlusPhotoFolder/"/>
+    <root-path path="" name="." />
 </paths>

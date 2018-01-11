@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.Gravity;
@@ -871,8 +872,15 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 + System.currentTimeMillis() + ".jpg");
         //noinspection ResultOfMethodCallIgnored
         cameraFile.getParentFile().mkdirs();
+        Uri photoFile;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String authority = getActivity().getPackageName() + ".ThinkSNSFileProvider";
+            photoFile = FileProvider.getUriForFile(getActivity().getApplicationContext(), authority, cameraFile);
+        } else {
+            photoFile = Uri.fromFile(cameraFile);
+        }
         startActivityForResult(
-                new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
+                new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, photoFile),
                 REQUEST_CODE_CAMERA);
     }
 

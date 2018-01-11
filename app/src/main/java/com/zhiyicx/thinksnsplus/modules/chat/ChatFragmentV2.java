@@ -21,6 +21,7 @@ import com.hyphenate.easeui.ui.EaseBaiduMapActivity;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
+import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -31,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationFragment;
+import com.zhiyicx.thinksnsplus.modules.chat.location.TSChatVideoPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
@@ -330,6 +332,10 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
             }
             if (message.getType() == EMMessage.Type.LOCATION){
                 EaseChatRowPresenter presenter = new TSChatLocationPresenter();
+                return presenter;
+            }
+            if (message.getType() == EMMessage.Type.VIDEO){
+                EaseChatVideoPresenter presenter = new TSChatVideoPresenter();
                 return presenter;
             }
             return null;
