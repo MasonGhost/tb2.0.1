@@ -39,13 +39,16 @@
 
             <FrameLayout
                 android:id="@+id/rl_chat_bubble"
+                android:layout_width="@dimen/chat_location_item_width"
+                android:layout_height="@dimen/chat_location_item_height"
                 style="@style/style_chat_bubble"
                 android:background="@drawable/shape_message_bubble_other_no_padding">
 
                 <ImageView
                         android:id="@+id/iv_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ease_location_msg"/>
 
                 <!--位置-->
@@ -53,8 +56,13 @@
                     android:id="@+id/tv_location"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/chat_location_title_height"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:paddingLeft="@dimen/spacing_mid_small"
+                    android:paddingRight="@dimen/spacing_mid_small"
                     android:layout_gravity="bottom"
                     android:textSize="@dimen/size_icon_assist"
+                    android:alpha="0.5"
                     android:textColor="@color/important_for_content"
                     android:background="@color/text_location_title_background"
                     android:gravity="center"
