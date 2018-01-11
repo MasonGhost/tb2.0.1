@@ -276,7 +276,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mTvLocation.setText(mPoiItem.getTitle());
                 return;
             }
-            mTvLocation.setText(R.string.create_circle_nolocation);
+//            mTvLocation.setText(R.string.create_circle_nolocation);
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
             mTvCircleType.setText(mCircleTypeBean.getName());
