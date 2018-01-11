@@ -788,6 +788,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         circlePostListBaseItem.setOnCommentStateClickListener(this);
         circlePostListBaseItem.setOnPostFromClickListener(this);
         circlePostListBaseItem.setShowPostFrom(showPostFrom());
+        circlePostListBaseItem.setShowCommentList(showCommentList());
         circlePostListBaseItem.setShowToolMenu(showToolMenu());
         adapter.addItemViewDelegate(circlePostListBaseItem);
     }
@@ -797,6 +798,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     protected boolean showToolMenu() {
+        return true;
+    }
+
+    protected boolean showCommentList(){
         return true;
     }
 
