@@ -646,7 +646,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
                     if (isMine) {
-                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+                        showDeleteTipPopupWindow(getString(R.string.delete_post),true,circlePostListBean);
                         getActivity().finish();
                     } else {
                         mPresenter.handleCollect(!circlePostListBean.getCollected(),
@@ -656,7 +656,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 })
                 .item4ClickListener(() -> {
                     // 管理员删除
-                    EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+                    showDeleteTipPopupWindow(getString(R.string.delete_post),true,circlePostListBean);
                     getActivity().finish();
                     mDealPostPopWindow.hide();
                 })
@@ -757,5 +757,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .setTitleStr(getString(R.string.set_post_apply_top_days))
                 .setNameVisible(false)
                 .setNeedNumFomatFilter(true);
+    }
+
+    protected void showDeleteTipPopupWindow(String tipStr,
+                                            boolean createEveryTime, final CirclePostListBean circlePostListBean) {
+        super.showDeleteTipPopupWindow(tipStr, () -> EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE), createEveryTime);
     }
 }
