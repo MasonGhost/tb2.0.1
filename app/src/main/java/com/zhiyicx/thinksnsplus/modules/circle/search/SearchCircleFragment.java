@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -167,7 +168,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
                                 onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
-
+                            DeviceUtils.hideSoftKeyboard(mActivity.getApplicationContext(), holder.getView(R.id.tv_content));
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
