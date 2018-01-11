@@ -328,7 +328,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .subscribe(this::createCirclepreHandle);
 
         RxTextView.textChanges(mEtCircleAmount)
-                .filter(charSequence -> mCbToll.isChecked() && !charSequence.toString().isEmpty())
+                .filter(charSequence -> mCbToll.isChecked())
                 .subscribe(charSequence -> {
                     try {
                         createCirclepreHandle(emptyFlag != 0 && Integer.parseInt(charSequence.toString().trim()) > 0);
