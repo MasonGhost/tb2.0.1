@@ -129,4 +129,6 @@
     <dimen name="chat_location_title_height">20dp</dimen>
     <dimen name="chat_location_item_width">150dp</dimen>
     <dimen name="chat_location_item_height">100dp</dimen>
+    <dimen name="chat_video_item_width">120dp</dimen>
+    <dimen name="chat_video_item_height">80dp</dimen>
 </resources>
