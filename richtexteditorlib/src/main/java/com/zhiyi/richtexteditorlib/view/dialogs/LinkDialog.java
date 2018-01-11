@@ -75,6 +75,7 @@ public class LinkDialog extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialog = inflater.inflate(R.layout.dialog_fragment_link, container);
         TextView ok = (TextView) dialog.findViewById(R.id.confirm_btn);
+        ok.setEnabled(false);
         errorTip = (TextView) dialog.findViewById(R.id.tv_error_tip);
         TextView title = (TextView) dialog.findViewById(R.id.tv_tittle);
         TextView cancle = (TextView) dialog.findViewById(R.id.cancel_btn);
@@ -85,6 +86,8 @@ public class LinkDialog extends BaseDialogFragment {
             errorTip.setText("");
             errorTip.setVisibility(View.GONE);
         });
+
+        RxTextView.textChanges(ok).subscribe((CharSequence charSequence) -> ok.setEnabled(!TextUtils.isEmpty(charSequence)));
 
         if (titleStr != null) {
             title.setText(titleStr);
@@ -262,7 +265,7 @@ public class LinkDialog extends BaseDialogFragment {
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             // 不能以 0  开始
             String replace = source.toString().replaceAll("^0*", "");
-            if (TextUtils.isEmpty(replace)){
+            if (TextUtils.isEmpty(replace)) {
                 return "";
             }
             return super.filter(replace, start, end, dest, dstart, dend);

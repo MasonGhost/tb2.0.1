@@ -94,7 +94,7 @@
             android:background="@null"
             android:gravity="center"
             android:text="@string/ok"
-            android:textColor="@color/important_for_theme"
+            android:textColor="@color/selector_theme_color_toolbar_text_color"
             android:textSize="@dimen/size_sub_title"/>
 
     </LinearLayout>
