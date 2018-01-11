@@ -247,6 +247,7 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
 
     private void checkEmptyView() {
         setEmptyViewVisiable(false);
+        mRefreshlayout.setEnableRefresh(!mListDatas.isEmpty());
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {
@@ -257,6 +258,8 @@ public class SearchCirclePostFragment extends BaseCircleDetailFragment implement
 
     @Override
     public void onEditChanged(String str) {
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
+
         if (mSearchContent.equals(str)) {
             return;
         }
