@@ -7,16 +7,14 @@
     <title>Zhiyicx</title>
     <link rel="stylesheet" href="./index.css">
 </head>
-<body>
-    <div class="content">
+<body contenteditable="true">
+    <div class="content" contenteditable="false">
         <header>
-            <pre class="hide" id="pre"></pre>
-            <textarea placeholder="请输入标题" class="title" id="title"></textarea>
+            <div class="title" title-placeholder="请输入标题" id="title" contenteditable="true"></div>
             <span id="stay" style="display: none;text-align:right"><span id="txtCount"></span>/20</span>
         </header>
         <div class="line"></div>
-        <div id="editor" contenteditable="true">
-        </div>
+        <div id="editor" contenteditable="true" editor-placeholder="请输入正文"></div>
     </div>
     <script src="./richeditor.js" id="script"></script>
 </body>

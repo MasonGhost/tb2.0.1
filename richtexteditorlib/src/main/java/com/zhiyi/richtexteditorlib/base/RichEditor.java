@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -12,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
@@ -24,8 +26,6 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @SuppressWarnings({"unused"})
 public abstract class RichEditor extends WebView {
@@ -209,6 +209,9 @@ public abstract class RichEditor extends WebView {
         text = text.replaceFirst(LINK_CHANGE_SCHEME, "");
         String[] result = text.split("@_@");
         if (mOnLinkClickListener != null && result.length >= 2) {
+            InputMethodManager imm = (InputMethodManager) getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
             mOnLinkClickListener.onLinkClick(result[0], result[1]);
         }
     }
@@ -389,6 +392,9 @@ public abstract class RichEditor extends WebView {
 
 
     public void insertLink(String href, String title) {
+        if (!href.matches(MarkdownConfig.SCHEME_TAG)) {
+            href = MarkdownConfig.SCHEME_ZHIYI + href;
+        }
         exec("javascript:RE.saveRange();");
         exec("javascript:RE.insertLink('" + title + "', '" + href + "');");
     }
@@ -423,6 +429,10 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.markdownWords();");
     }
 
+    /**
+     * 获取编辑器中内容
+     * @param isPublish
+     */
     public void getResultWords(boolean isPublish) {
         exec("javascript:RE.resultWords(" + isPublish + ");");
     }
@@ -516,9 +526,25 @@ public abstract class RichEditor extends WebView {
     private class Android4JsInterface {
         @JavascriptInterface
         public void setViewEnabled(boolean enabled) {
-            if (mOnFocusChangeListener != null) {
-                mOnFocusChangeListener.onFocusChange(enabled);
-            }
+            Observable.empty()
+                    .filter(o -> mOnFocusChangeListener != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mOnFocusChangeListener.onFocusChange(enabled);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+                    });
         }
 
         @JavascriptInterface
@@ -548,6 +574,7 @@ public abstract class RichEditor extends WebView {
 
         @JavascriptInterface
         public void noMarkdownWords(String noMarkdownWords) {
+            // 注意 js 回调 在异步线程中
             if (mOnNoMarkdownWordChangeListener != null) {
                 mOnNoMarkdownWordChangeListener.onNoMarkdownWordChange(noMarkdownWords);
             }

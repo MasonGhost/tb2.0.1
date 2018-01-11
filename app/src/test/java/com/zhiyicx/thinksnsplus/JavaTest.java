@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,6 +102,13 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testFilter() {
+        String source = "http://ddd/";
+        String urlRege = "^http://[\\s\\S]+";
+        System.out.print("testFilter = " + source.matches(urlRege));
     }
 
     @Test
@@ -1549,5 +1557,13 @@ public class JavaTest {
 //                datas.remove(data);
 //            }
 //        }
+    }
+
+    @Test
+    public void testRomand() {
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            System.out.println("random = " +  random.nextInt(5) % (5));
+        }
     }
 }

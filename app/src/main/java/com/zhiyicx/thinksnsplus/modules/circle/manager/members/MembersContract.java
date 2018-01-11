@@ -24,11 +24,17 @@ public interface MembersContract {
 
         int[] getGroupLengh();
 
-        boolean needManager();
+        boolean needFounder();
+
+        boolean needMember();
 
         boolean needBlackList();
 
         void attornSuccess(CircleMembers circleMembers);
+
+        String getSearchContent();
+
+        String getMemberType();
     }
 
     interface Presenter extends ITSListPresenter<CircleMembers> {

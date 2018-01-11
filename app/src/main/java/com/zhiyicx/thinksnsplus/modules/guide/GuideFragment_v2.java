@@ -122,7 +122,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     protected void initData() {
         mPresenter.initConfig();
-
     }
 
     @Override
@@ -232,13 +231,18 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mGuideBanner != null) {
+            mGuideBanner.releaseBanner();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mTimer != null) {
             mTimer.cancel();
-        }
-        if (mGuideBanner != null) {
-            mGuideBanner.releaseBanner();
         }
     }
 }

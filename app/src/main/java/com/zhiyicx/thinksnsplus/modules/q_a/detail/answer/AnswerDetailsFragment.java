@@ -464,13 +464,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 删除
+                .item1ClickListener(() -> {
+                    // 删除
                     mDealInfoMationPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.delete), () -> {
                         mPresenter.deleteAnswer();
                     }, true);
                 })
-                .item2ClickListener(() -> {// 采纳
+                .item2ClickListener(() -> {
+                    // 采纳
                     mDealInfoMationPopWindow.hide();
                     if (isMineAdopted) {
                         return;
@@ -483,19 +485,22 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                             .getId());
 
                 })
-                .item3ClickListener(() -> {// 申请置顶
+                .item3ClickListener(() -> {
+                    // 收藏
                     mPresenter.handleCollect(!answerInfoBean.getCollected(), answerInfoBean.getId
                             ());
                     mDealInfoMationPopWindow.hide();
                 })
-                .item4ClickListener(() -> {// 编辑
+                .item4ClickListener(() -> {
+                    // 编辑
                     mDealInfoMationPopWindow.hide();
                     PublishAnswerFragment.startQActivity(getActivity(), PublishType
                                     .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody(),
                             mAnswerInfoBean.getQuestion().getSubject(), mAnswerInfoBean.getAnonymity());
 
                 })
-                .item5ClickListener(() -> {                    // 举报帖子
+                .item5ClickListener(() -> {
+                    // 举报帖子
                     String img = "";
 
                     int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
@@ -505,7 +510,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 ImageZipConfig.IMAGE_80_ZIP);
                     }
-                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody()); // 预览的文字
+                    // 预览的文字
+                    String des = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mAnswerInfoBean.getBody());
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mAnswerInfoBean.getUser(), String.valueOf
                             (mAnswerInfoBean.getId()),
                             "", img, des, ReportType.QA));

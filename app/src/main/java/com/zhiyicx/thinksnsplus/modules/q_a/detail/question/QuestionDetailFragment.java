@@ -455,7 +455,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                             mDeleteQuestionPopWindow.show();
                         }
                     })
-                    .item3ClickListener(() -> {                    // 举报帖子
+                    .item3ClickListener(() -> {
+                        // 举报帖子
                         String img = "";
 
                         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mQaListInfoBean.getBody());

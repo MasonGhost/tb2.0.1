@@ -41,9 +41,6 @@ public class BillRepository implements IBillRepository {
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
@@ -67,7 +64,7 @@ public class BillRepository implements IBillRepository {
                         final List<Object> user_ids = new ArrayList<>();
                         for (RechargeSuccessBean rechargeSuccessBean : rechargeListBeen) {
                             if (rechargeSuccessBean.getChannel().equals("user") || rechargeSuccessBean.getChannel().equals("system")) //
-                                // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
+                            // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
                             {
                                 user_ids.add(rechargeSuccessBean.getAccount());
                                 try {
@@ -79,10 +76,7 @@ public class BillRepository implements IBillRepository {
                             }
 
                         }
-                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                            return rechargeListBeen;
-                        });
+                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> rechargeListBeen);
                     }
                 }).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

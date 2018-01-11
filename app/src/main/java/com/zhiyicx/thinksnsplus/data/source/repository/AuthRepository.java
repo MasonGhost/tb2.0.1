@@ -90,8 +90,6 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
     @Inject
-    SystemRepository mSystemRepository;
-    @Inject
     RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
     @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;

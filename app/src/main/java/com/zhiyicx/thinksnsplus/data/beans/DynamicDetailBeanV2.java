@@ -512,28 +512,34 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         imageBean.setCanLook(canLook);
         switch (imageCount) {
             case 1:
-            case 9:
                 currenCloums = part = 1;
                 break;
+            case 9:
+                currenCloums = 3;
+                part = 1;
+                break;
             case 2:
-                part = 2;
-                currenCloums = 1;
+                part = 1;
+                currenCloums = 2;
                 break;
             case 3:
-                part = 3;
-                currenCloums = 1;
+                part = 1;
+                currenCloums = 3;
                 break;
             case 4:
-                part = 2;
-                currenCloums = 1;
+                part = 1;
+                currenCloums = 2;
                 break;
             case 5:
-                if (i == 1 || i == 2) {
+                currenCloums = 3;
+                if (i == 0) {
+                    part = 2;
+                } else if (i == 1 || i == 2) {
                     part = 1;
                 } else {
-                    part = 2;
+                    currenCloums = 2;
+                    part = 1;
                 }
-                currenCloums = 3;
                 break;
             case 6:
                 part = i == 0 ? 2 : 1;

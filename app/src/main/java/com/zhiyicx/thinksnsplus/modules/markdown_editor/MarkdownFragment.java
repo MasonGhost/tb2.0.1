@@ -51,7 +51,7 @@ import butterknife.BindView;
  */
 public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener {
+        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener,BottomMenu.BottomMenuVisibleChangeListener {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -135,6 +135,15 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     }
 
     /**
+     * 圈子底部操作栏show or hide
+     * @param visible
+     */
+    @Override
+    public void onVisibleChange(boolean visible) {
+
+    }
+
+    /**
      * 在这里初始化 编辑器
      */
     protected void editorPreLoad() {
@@ -170,6 +179,14 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
      */
     protected BaseDraftBean getDraftData() {
         return null;
+    }
+
+    /**
+     * 点击 来自 xxx ，可以跳转到相应圈子
+     * @return
+     */
+    protected boolean canGotoCircle(){
+        return true;
     }
 
     public static MarkdownFragment newInstance(Bundle bundle) {
@@ -274,6 +291,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
         mRichTextView.setOnMarkdownWordResultListener(this);
         mRichTextView.setBottomMenu(mBottomMenu);
 
+        mBottomMenu.setBottomMenuVisibleChangeListener(this);
+
         mLlCircleContainer.setOnClickListener(v -> {
             Intent intent = new Intent(mActivity, ChooseCircleActivity.class);
             mActivity.startActivityForResult(intent, ChooseCircleFragment.CHOOSE_CIRCLE);
@@ -309,8 +328,8 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void onImageClick(Long id) {
         if (mInsertedImages.containsKey(id)) {
-//            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
-//                    CharSequence[]{getString(R.string.delete)});
+            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
+                    CharSequence[]{getString(R.string.delete)});
         } else if (mFailedImages.containsKey(id)) {
             showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
                     new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
@@ -380,7 +399,7 @@ public class MarkdownFragment extends TSFragment<MarkdownContract.Presenter> imp
     @Override
     public void sendPostSuccess(CirclePostListBean data) {
         CirclePostDetailActivity.startActivity(getActivity(), data.getGroup_id(), data.getId(),
-                false);
+                false,canGotoCircle());
         getActivity().finish();
     }
 

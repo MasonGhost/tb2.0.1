@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.BaseCircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCirclePostFragment;
@@ -27,18 +28,18 @@ public class CirclePostSearchActivity extends TSActivity<CircleSearchContainerPr
     @Override
     protected SearchCirclePostFragment getFragment() {
         return SearchOnlyCirclePostFragment.newInstance(BaseCircleRepository.CircleMinePostType.SEARCH,
-                getIntent().getExtras().getLong(BaseCircleDetailFragment.CIRCLE_ID));
+                (CircleInfo)getIntent().getExtras().getSerializable(BaseCircleDetailFragment.CIRCLE));
     }
 
     /**
      * @param context not application context
-     * @param groupId 圈子的 id
+     * @param circleInfo 圈子的信息
      */
-    public static void startCircelPostSearchActivity(Context context, long groupId) {
+    public static void startCircelPostSearchActivity(Context context, CircleInfo circleInfo) {
 
         Intent intent = new Intent(context, CirclePostSearchActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(BaseCircleDetailFragment.CIRCLE_ID, groupId);
+        bundle.putSerializable(BaseCircleDetailFragment.CIRCLE, circleInfo);
         intent.putExtras(bundle);
         if (context instanceof Activity) {
             context.startActivity(intent);

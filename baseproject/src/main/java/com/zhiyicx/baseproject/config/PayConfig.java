@@ -21,8 +21,16 @@ public class PayConfig {
      */
 
     public static final String WX_APP_ID = "wx324324324";
-    public static final double MONEY_UNIT = 100; // 人民币以分为单位，* 100  后做计算防止浮点数丢失，处理完再除以 100
-    public static final double RATIO_UNIT = 100; // 转换率单位 %，这个是针对 元 单位的
+
+    /**
+     * 人民币以分为单位，* 100  后做计算防止浮点数丢失，处理完再除以 100
+     */
+    public static final double MONEY_UNIT = 100;
+
+    /**
+     * 转换率单位 %，这个是针对 元 单位的
+     */
+    public static final double RATIO_UNIT = 100;
 
     /**
      * @param d     游戏币

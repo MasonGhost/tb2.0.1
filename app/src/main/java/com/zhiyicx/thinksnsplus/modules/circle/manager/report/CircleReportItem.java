@@ -238,7 +238,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
     }
 
     protected void toDetail(long circleId, long postId, boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mContext, circleId, postId, isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mContext, circleId, postId, isLookMoreComment,true);
     }
 
     @Override

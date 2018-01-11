@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main.adapter;
 
 import android.graphics.drawable.Drawable;
+import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -46,6 +47,11 @@ public class CircleTypeItem extends BaseCircleItem {
 
         if (circleInfo.getId() == RECOMMENDCIRCLE) {
             button.setRightImage(0);
+            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams)button.getCombinedButtonRightTextView().getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(1,1);
+            params.setMargins(button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_normal),
+                    0,button.getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_mid),0);
             Drawable change = button.getContext().getResources().getDrawable(R.mipmap.ico_circle_exchange);
             button.getCombinedButtonRightTextView().setCompoundDrawablePadding(ConvertUtils.dp2px(button.getContext(),4));
             button.getCombinedButtonRightTextView().setCompoundDrawablesWithIntrinsicBounds(change, null, null, null);
@@ -55,7 +61,7 @@ public class CircleTypeItem extends BaseCircleItem {
         }
 
         RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mCircleItemItemEvent == null) {
                         return;

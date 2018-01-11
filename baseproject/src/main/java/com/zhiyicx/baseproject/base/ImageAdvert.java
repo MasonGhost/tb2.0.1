@@ -13,7 +13,7 @@ public class ImageAdvert implements Serializable, Parcelable {
 
     public int getDuration() {
         try {
-            return Integer.parseInt(duration);
+            return Integer.parseInt(duration.replaceAll("\\.\\d+", ""));
         } catch (NumberFormatException e) {
             return 0;
         }

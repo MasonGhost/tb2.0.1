@@ -26,7 +26,7 @@ public interface CircleMainContract {
 
         void setJoinedCircles(List<CircleInfo> circles);
         void setRecommendCircles(List<CircleInfo> circles);
-
+        void loadAllError();
         void setUserCertificationInfo(UserCertificationInfo data);
     }
 

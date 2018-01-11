@@ -19,7 +19,7 @@ import java.io.Serializable;
  * @Description
  */
 @Entity
-public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializable{
+public class PostDraftBean extends BaseDraftBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = -703234318472876036L;
     @Id
@@ -36,6 +36,11 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializ
      * true 圈外发帖
      */
     private boolean isOutCircle;
+
+    /**
+     * true 同步至动态
+     */
+    private boolean hasSynToDynamic;
 
     /**
      * 圈子id
@@ -96,6 +101,14 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializ
 
     public void setOutCircle(boolean outCircle) {
         isOutCircle = outCircle;
+    }
+
+    public boolean hasSynToDynamic() {
+        return hasSynToDynamic;
+    }
+
+    public void setHasSynToDynamic(boolean hasSynToDynamic) {
+        this.hasSynToDynamic = hasSynToDynamic;
     }
 
     public boolean getIsOutCircle() {
@@ -165,7 +178,12 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializ
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.circleInfo, flags);
         dest.writeByte(this.isOutCircle ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasSynToDynamic ? (byte) 1 : (byte) 0);
         dest.writeValue(this.id);
+    }
+
+    public boolean getHasSynToDynamic() {
+        return this.hasSynToDynamic;
     }
 
     public PostDraftBean() {
@@ -181,13 +199,14 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializ
         this.updated_at = in.readString();
         this.circleInfo = in.readParcelable(CircleInfo.class.getClassLoader());
         this.isOutCircle = in.readByte() != 0;
+        this.hasSynToDynamic = in.readByte() != 0;
         this.id = (Long) in.readValue(Long.class.getClassLoader());
     }
 
-    @Generated(hash = 350352856)
+    @Generated(hash = 2015544892)
     public PostDraftBean(Long mark, String html, String title, String content,
             String create_at, String updated_at, CircleInfo circleInfo, boolean isOutCircle,
-            Long id) {
+            boolean hasSynToDynamic, Long id) {
         this.mark = mark;
         this.html = html;
         this.title = title;
@@ -196,6 +215,7 @@ public class PostDraftBean extends BaseDraftBean implements Parcelable ,Serializ
         this.updated_at = updated_at;
         this.circleInfo = circleInfo;
         this.isOutCircle = isOutCircle;
+        this.hasSynToDynamic = hasSynToDynamic;
         this.id = id;
     }
 

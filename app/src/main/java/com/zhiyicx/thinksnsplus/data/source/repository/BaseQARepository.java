@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.CollectAnswerList;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
@@ -25,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyAnswerContainerFragment;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -118,14 +120,11 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
         return observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<QATopicBean>, Observable<List<QATopicBean>>>() {
-                    @Override
-                    public Observable<List<QATopicBean>> call(List<QATopicBean> topicBeanList) {
-                        for (QATopicBean topicBean : topicBeanList) {
-                            topicBean.setHas_follow(true);
-                        }
-                        return Observable.just(topicBeanList);
+                .flatMap(topicBeanList -> {
+                    for (QATopicBean topicBean : topicBeanList) {
+                        topicBean.setHas_follow(true);
                     }
+                    return Observable.just(topicBeanList);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 ;
@@ -311,35 +310,32 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
         return mQAClient.getAnswerDigList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<AnswerDigListBean>, Observable<List<AnswerDigListBean>>>() {
-                    @Override
-                    public Observable<List<AnswerDigListBean>> call(List<AnswerDigListBean> answerDigListBeen) {
+                .flatMap(answerDigListBeen -> {
 
-                        if (!answerDigListBeen.isEmpty()) {
-                            List<Object> userids = new ArrayList<>();
-                            for (int i = 0; i < answerDigListBeen.size(); i++) {
-                                AnswerDigListBean answerDigListBean = answerDigListBeen.get(i);
-                                userids.add(answerDigListBean.getUser_id());
-                                userids.add(answerDigListBean.getTarget_user());
-                            }
-                            // 通过用户id列表请求用户信息和用户关注状态
-                            return mUserInfoRepository.getUserInfo(userids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (AnswerDigListBean answerDigListBean : answerDigListBeen) {
-                                            answerDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(answerDigListBean.getUser_id().intValue()));
-                                            answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean.getTarget_user()
-                                                    .intValue()));
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
-                                        return answerDigListBeen;
-                                    });
-                        } else {
-                            return Observable.just(answerDigListBeen);
+                    if (!answerDigListBeen.isEmpty()) {
+                        List<Object> userids = new ArrayList<>();
+                        for (int i = 0; i < answerDigListBeen.size(); i++) {
+                            AnswerDigListBean answerDigListBean = answerDigListBeen.get(i);
+                            userids.add(answerDigListBean.getUser_id());
+                            userids.add(answerDigListBean.getTarget_user());
                         }
+                        // 通过用户id列表请求用户信息和用户关注状态
+                        return mUserInfoRepository.getUserInfo(userids)
+                                .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (AnswerDigListBean answerDigListBean : answerDigListBeen) {
+                                        answerDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(answerDigListBean.getUser_id().intValue()));
+                                        answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean.getTarget_user()
+                                                .intValue()));
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                    return answerDigListBeen;
+                                });
+                    } else {
+                        return Observable.just(answerDigListBeen);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -352,48 +348,45 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
         return mQAClient.getAnswerCommentList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<AnswerCommentListBean>, Observable<List<AnswerCommentListBean>>>() {
-                    @Override
-                    public Observable<List<AnswerCommentListBean>> call(List<AnswerCommentListBean> answerCommentListBeen) {
-                        if (answerCommentListBeen.isEmpty()) {
-                            return Observable.just(answerCommentListBeen);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (AnswerCommentListBean commentListBean : answerCommentListBeen) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_user());
-                            }
-                            if (user_ids.isEmpty()) {
-                                return Observable.just(answerCommentListBeen);
-                            }
-
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                        SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                            .intValue(), userInfoBean);
-                                }
-                                for (AnswerCommentListBean commentListBean : answerCommentListBeen) {
-                                    commentListBean.setFromUserInfoBean
-                                            (userInfoBeanSparseArray.get(commentListBean
-                                                    .getUser_id().intValue()));
-                                    if (commentListBean.getReply_user() == 0) { // 如果
-                                        // reply_user_id = 0 回复动态
-                                        UserInfoBean userInfoBean = new UserInfoBean();
-                                        userInfoBean.setUser_id(0L);
-                                        commentListBean.setToUserInfoBean(userInfoBean);
-                                    } else {
-                                        commentListBean.setToUserInfoBean
-                                                (userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
-                                    }
-
-                                }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                return answerCommentListBeen;
-                            });
+                .flatMap(answerCommentListBeen -> {
+                    if (answerCommentListBeen.isEmpty()) {
+                        return Observable.just(answerCommentListBeen);
+                    } else {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (AnswerCommentListBean commentListBean : answerCommentListBeen) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_user());
                         }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(answerCommentListBeen);
+                        }
+
+                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                            // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                    SparseArray<>();
+                            for (UserInfoBean userInfoBean : userinfobeans) {
+                                userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                        .intValue(), userInfoBean);
+                            }
+                            for (AnswerCommentListBean commentListBean : answerCommentListBeen) {
+                                commentListBean.setFromUserInfoBean
+                                        (userInfoBeanSparseArray.get(commentListBean
+                                                .getUser_id().intValue()));
+                                if (commentListBean.getReply_user() == 0) { // 如果
+                                    // reply_user_id = 0 回复动态
+                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                    userInfoBean.setUser_id(0L);
+                                    commentListBean.setToUserInfoBean(userInfoBean);
+                                } else {
+                                    commentListBean.setToUserInfoBean
+                                            (userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
+                                }
+
+                            }
+                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                            return answerCommentListBeen;
+                        });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -405,40 +398,37 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
         return mQAClient.getAnswerDetail(answer_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<AnswerInfoBean, Observable<AnswerInfoBean>>() {
-                    @Override
-                    public Observable<AnswerInfoBean> call(AnswerInfoBean answerInfoBean) {
-                        if (answerInfoBean.getLikes() == null) {
-                            return Observable.just(answerInfoBean);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
-                                user_ids.add(answerDigListBean.getUser_id());
-                                user_ids.add(answerDigListBean.getTarget_user());
-                            }
-                            if (user_ids.isEmpty()) {
-                                return Observable.just(answerInfoBean);
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                        SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                            .intValue(), userInfoBean);
-                                }
-                                for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
-                                    answerDigListBean.setDiggUserInfo(
-                                            (userInfoBeanSparseArray.get(answerDigListBean
-                                                    .getUser_id().intValue())));
-                                    answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean
-                                            .getTarget_user().intValue()));
-
-                                }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                return answerInfoBean;
-                            });
+                .flatMap(answerInfoBean -> {
+                    if (answerInfoBean.getLikes() == null) {
+                        return Observable.just(answerInfoBean);
+                    } else {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
+                            user_ids.add(answerDigListBean.getUser_id());
+                            user_ids.add(answerDigListBean.getTarget_user());
                         }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(answerInfoBean);
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                            // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                    SparseArray<>();
+                            for (UserInfoBean userInfoBean : userinfobeans) {
+                                userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                        .intValue(), userInfoBean);
+                            }
+                            for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
+                                answerDigListBean.setDiggUserInfo(
+                                        (userInfoBeanSparseArray.get(answerDigListBean
+                                                .getUser_id().intValue())));
+                                answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean
+                                        .getTarget_user().intValue()));
+
+                            }
+                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                            return answerInfoBean;
+                        });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -519,48 +509,45 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     public Observable<List<QuestionCommentBean>> getQuestionCommentList(Long question_Id, Long max_id) {
         return mQAClient.getQuestionCommentList(String.valueOf(question_Id), max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<QuestionCommentBean>, Observable<List<QuestionCommentBean>>>() {
-                    @Override
-                    public Observable<List<QuestionCommentBean>> call(List<QuestionCommentBean> questionCommentListBeen) {
-                        if (questionCommentListBeen.isEmpty()){
-                            return Observable.just(questionCommentListBeen);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (QuestionCommentBean commentListBean : questionCommentListBeen) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_user());
-                            }
-                            if (user_ids.isEmpty()) {
-                                return Observable.just(questionCommentListBeen);
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(userInfoBeen -> {
-                                        // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                                SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userInfoBeen) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                    .intValue(), userInfoBean);
-                                        }
-                                        for (QuestionCommentBean commentListBean : questionCommentListBeen) {
-                                            commentListBean.setFromUserInfoBean
-                                                    (userInfoBeanSparseArray.get(commentListBean
-                                                            .getUser_id().intValue()));
-                                            if (commentListBean.getReply_user() == 0) { // 如果
-                                                // reply_user_id = 0 回复动态
-                                                UserInfoBean userInfoBean = new UserInfoBean();
-                                                userInfoBean.setUser_id(0L);
-                                                commentListBean.setToUserInfoBean(userInfoBean);
-                                            } else {
-                                                commentListBean.setToUserInfoBean
-                                                        (userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
-                                            }
-
-                                        }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
-                                        return questionCommentListBeen;
-                                    });
+                .flatMap(questionCommentListBeen -> {
+                    if (questionCommentListBeen.isEmpty()) {
+                        return Observable.just(questionCommentListBeen);
+                    } else {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (QuestionCommentBean commentListBean : questionCommentListBeen) {
+                            user_ids.add(commentListBean.getUser_id());
+                            user_ids.add(commentListBean.getReply_user());
                         }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(questionCommentListBeen);
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(userInfoBeen -> {
+                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                            SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeen) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                                .intValue(), userInfoBean);
+                                    }
+                                    for (QuestionCommentBean commentListBean : questionCommentListBeen) {
+                                        commentListBean.setFromUserInfoBean
+                                                (userInfoBeanSparseArray.get(commentListBean
+                                                        .getUser_id().intValue()));
+                                        if (commentListBean.getReply_user() == 0) { // 如果
+                                            // reply_user_id = 0 回复动态
+                                            UserInfoBean userInfoBean = new UserInfoBean();
+                                            userInfoBean.setUser_id(0L);
+                                            commentListBean.setToUserInfoBean(userInfoBean);
+                                        } else {
+                                            commentListBean.setToUserInfoBean
+                                                    (userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
+                                        }
+
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                                    return questionCommentListBeen;
+                                });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
@@ -588,9 +575,26 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Override
     public Observable<List<AnswerInfoBean>> getUserAnswerList(String type, Long maxId) {
+        if (MyAnswerContainerFragment.TYPE_FOLLOW.equals(type)) {
+            return getUserCollectAnswerList((long) TSListFragment.DEFAULT_PAGE_SIZE, maxId);
+        }
         return mQAClient.getUserAnswerList(type, (long) TSListFragment.DEFAULT_PAGE_SIZE, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<AnswerInfoBean>> getUserCollectAnswerList(Long limit, Long maxId) {
+        return mQAClient.getUserCollectAnswerList((long) TSListFragment.DEFAULT_PAGE_SIZE, maxId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(collectAnswerLists -> {
+                    List<AnswerInfoBean> result=new ArrayList<>();
+                    for (CollectAnswerList collect:collectAnswerLists){
+                        result.add(collect.getCollectible());
+                    }
+                    return Observable.just(result);
+                });
     }
 
     @Override

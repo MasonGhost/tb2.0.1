@@ -155,9 +155,7 @@ public class TopCircleJoinRequestItem extends BaseTopItem implements BaseTopItem
     }
 
     protected void toDetail(CircleInfo circleInfo) {
-        Intent intent = new Intent(mContext, CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        mContext.startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mContext,circleInfo.getId());
     }
 
     @Override

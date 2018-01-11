@@ -21,6 +21,7 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -30,6 +31,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.utils.GeoHash;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -65,7 +67,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         implements CreateCircleContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
     private static final int REQUST_CODE_AREA = 8000;
-    private static final int REQUST_CODE_CATEGORY = 5000;
+    public static final int REQUST_CODE_CATEGORY = 5000;
 
     public static final int REQUST_CODE_UPDATE = 1996;
 
@@ -74,6 +76,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public static final String PERMISSION_OWNER = "permission_owner";
     public static final String PERMISSION_MANAGER = "permission_manager";
 
+    @BindView(R.id.tv_currency_unit)
+    TextView mTvCurrencyUnit;
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
     @BindView(R.id.ll_head_icon_container)
@@ -140,6 +144,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     private PoiItem mPoiItem;
 
     private CircleInfo mCircleInfo;
+    private CircleInfo mResultCircleInfo;
     private boolean canUpdate;
     boolean isOwner;
     boolean isManager;
@@ -231,16 +236,29 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void setCircleInfo(CircleInfo data) {
-        if (mCircleInfo == null) {
+        mResultCircleInfo = data;
+    }
+
+    /**
+     * 乔老师说：要等等反馈完了再跳转
+     *
+     * @param prompt
+     */
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS) {
+            if (mCircleInfo == null) {
+                mActivity.finish();
+                return;
+            }
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(CIRCLEINFO, mResultCircleInfo);
+            intent.putExtras(bundle);
+            mActivity.setResult(Activity.RESULT_OK, intent);
             mActivity.finish();
-            return;
         }
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CIRCLEINFO, data);
-        intent.putExtras(bundle);
-        mActivity.setResult(Activity.RESULT_OK, intent);
-        mActivity.finish();
     }
 
     @Override
@@ -259,7 +277,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mTvLocation.setText(mPoiItem.getTitle());
                 return;
             }
-            mTvLocation.setText(R.string.create_circle_nolocation);
+//            mTvLocation.setText(R.string.create_circle_nolocation);
         } else if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
             mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
             mTvCircleType.setText(mCircleTypeBean.getName());
@@ -278,6 +296,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     public void getPhotoSuccess(List<ImageBean> photoList) {
         Glide.with(getActivity())
                 .load(photoList.get(0).getImgUrl())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(mIvHeadIcon);
         mHeadImage = photoList.get(0).getImgUrl();
         hasHeadImage = true;
@@ -309,7 +329,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 .subscribe(this::createCirclepreHandle);
 
         RxTextView.textChanges(mEtCircleAmount)
-                .filter(charSequence -> mCbToll.isChecked() && !charSequence.toString().isEmpty())
+                .filter(charSequence -> mCbToll.isChecked())
                 .subscribe(charSequence -> {
                     try {
                         createCirclepreHandle(emptyFlag != 0 && Integer.parseInt(charSequence.toString().trim()) > 0);
@@ -317,6 +337,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                         createCirclepreHandle(false);
                     }
                 });
+
+
+        RxTextView.textChanges(mTvLocation)
+                .filter(charSequence -> !charSequence.toString().isEmpty() && !charSequence.equals(mTvLocation.getText()))
+                .subscribe(charSequence -> createCirclepreHandle(emptyFlag != 0));
 
         mCbToll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -340,6 +365,9 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
                 mLlCharge.setVisibility(View.GONE);
                 mLlFree.setVisibility(View.GONE);
             } else {
+                if (mPresenter != null && !TextUtils.isEmpty(mPresenter.getGoldUnit())) {
+                    mTvCurrencyUnit.setText(mPresenter.getGoldUnit());
+                }
                 createCirclepreHandle(emptyFlag != 0 && (mCbFree.isChecked() || mCbToll.isChecked()));
                 mLlFree.setVisibility(View.VISIBLE);
                 mLlCharge.setVisibility(View.VISIBLE);
@@ -386,11 +414,15 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mCreateCircleBean = new CreateCircleBean();
         mCreateCircleBean.setName(mEtCircleName.getText().toString());
         if (mPoiItem != null) {
+            String geoHash = GeoHash.getInstance()
+                    .setLocation(new GeoHash.LocationBean(mPoiItem.getLatLonPoint().getLatitude(),
+                            mPoiItem.getLatLonPoint().getLongitude())).getGeoHashBase32();
             mCreateCircleBean.setLatitude(mPoiItem.getLatLonPoint().getLatitude() + "");
             mCreateCircleBean.setLongitude(mPoiItem.getLatLonPoint().getLongitude() + "");
-            mCreateCircleBean.setGeo_hash(mPoiItem.getAdCode());
+            mCreateCircleBean.setGeo_hash(geoHash);
             mCreateCircleBean.setLocation(mTvLocation.getText().toString());
         }
+
         mCreateCircleBean.setAllow_feed(mWcSynchro.isChecked() ? 1 : 0);
         mCreateCircleBean.setMode(mCbToll.isChecked() ? CircleInfo.CirclePayMode.PAID.value : (mWcBlock.isChecked() ?
                 CircleInfo.CirclePayMode.PRIVATE.value : CircleInfo.CirclePayMode.PUBLIC.value));
@@ -401,7 +433,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (!mCbToll.isChecked() || mEtCircleAmount.getText().toString().isEmpty()) {
             money = null;
         } else {
-            int result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+            int result = 0;
+            try {
+                result = (int) PayConfig.gameCurrency2RealCurrency(Integer.parseInt(mEtCircleAmount.getText().toString()), mPresenter.getRatio());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             money = result + "";
         }
 
@@ -440,12 +477,14 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         mToolbarCenter.setText(setCenterTitle());
         Glide.with(getActivity())
                 .load(mCircleInfo.getAvatar())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
                 .into(mIvHeadIcon);
         mHeadImage = null;
         if (!TextUtils.isEmpty(mCircleInfo.getLatitude()) && !TextUtils.isEmpty(mCircleInfo.getLongitude())) {
             mPoiItem = new PoiItem("", new LatLonPoint(Double.parseDouble(mCircleInfo.getLatitude()),
                     Double.parseDouble(mCircleInfo.getLongitude())), "", "");
-            mPoiItem.setAdCode(mCircleInfo.getGeo_hash());
+            mTvLocation.setText(mCircleInfo.getLocation());
         }
         mCircleTypeBean = mCircleInfo.getCategory();
 
@@ -455,7 +494,6 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mEtCircleName.setText(mCircleInfo.getName());
         mTvCircleType.setText(mCircleInfo.getCategory().getName());
-        mTvLocation.setText(mCircleInfo.getLocation());
         mTvNotice.setText(mCircleInfo.getNotice());
         mEtCircleIntroduce.setText(mCircleInfo.getSummary());
         mWcSynchro.setChecked(mCircleInfo.getAllow_feed() == 1);
@@ -464,11 +502,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
         mWcBlock.setChecked(CircleInfo.CirclePayMode.PRIVATE.value.equals(mCircleInfo.getMode()) || isPaidCircle);
         mCbToll.setChecked(isPaidCircle);
-        mCbFree.setChecked(CircleInfo.CirclePayMode.PUBLIC.value.equals(mCircleInfo.getMode()));
+        mCbFree.setChecked(!isPaidCircle);
 
         // 金额转换
         String money = mCircleInfo.getMoney() > 0 ? mCircleInfo.getMoney() + "" : "0";
-        double result = PayConfig.realCurrency2GameCurrency(Integer.parseInt(money), mPresenter.getRatio());
+        int result = (int) PayConfig.realCurrency2GameCurrency(Integer.parseInt(money), mPresenter.getRatio());
         mEtCircleAmount.setText(result > 0 ? result + "" : "");
 
         mToolbarRight.setVisibility(!canUpdate ? View.GONE : View.VISIBLE);

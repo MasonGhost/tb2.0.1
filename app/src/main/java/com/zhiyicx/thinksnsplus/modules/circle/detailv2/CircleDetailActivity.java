@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 /**
  * @author Jliuer
@@ -24,11 +23,17 @@ public class CircleDetailActivity extends TSActivity<CircleDetailPresenter, Circ
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
-        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void componentInject() {
 
+    }
+
+    public static void startCircleDetailActivity(Context context, Long circleId) {
+        Intent intent = new Intent(context, CircleDetailActivity.class);
+        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleId);
+        context.startActivity(intent);
     }
 }

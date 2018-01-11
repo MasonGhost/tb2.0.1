@@ -5,20 +5,17 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.modules.collect.album.CollectAlbumListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragment;
-import com.zhiyicx.thinksnsplus.modules.collect.group_posts.CollectGroupDynamicListFragment;
+import com.zhiyicx.thinksnsplus.modules.collect.group_posts.CollectCirclePostListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment;
+import com.zhiyicx.thinksnsplus.modules.collect.qa.CollectAnswerListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyAnswerContainerFragment;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.RECOMMEND_INFO;
 
 /**
  * @author LiuChao
@@ -34,6 +31,8 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
         return Arrays.asList(
                 getString(R.string.collect_dynamic)
                 , getString(R.string.collect_info)
+                , getString(R.string.collect_answer)
+                , getString(R.string.collect_post)
                 , getString(R.string.collect_album)
         );
     }
@@ -65,9 +64,13 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
             Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
             Fragment infoListFragment = CollectInformationListFragment.newInstance();
             Fragment albumListFragment = CollectAlbumListFragment.newInstance();
+            Fragment postListFragment = CollectCirclePostListFragment.newInstance(BaseCircleRepository.CircleMinePostType.COLLECT);
+            Fragment answerListFragment = CollectAnswerListFragment.instance(MyAnswerContainerFragment.TYPE_FOLLOW);
             mFragmentList = Arrays.asList(
                     dynamicListFragment
                     , infoListFragment
+                    , answerListFragment
+                    , postListFragment
                     , albumListFragment
             );
         }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -31,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -60,8 +62,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     protected Application mContext;
     @Inject
     protected UserInfoRepository mUserInfoRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
     @Inject
@@ -74,7 +75,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         PUBLISH(1),
         HAD_PINNED(2),
         WAIT_PINNED_AUDIT(3),
-        SEARCH(4);
+        SEARCH(4),
+        COLLECT(5);
 
         public int value;
 
@@ -196,7 +198,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                 for (UserInfoBean userInfoBean : listBaseJson) {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                 for (PostDigListBean digListBean : postDigListBeans) {
                                     digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
                                     digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
@@ -330,13 +331,11 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     /**
-     * 获取全部帖子
-     *
      * @param limit    默认 15 ，数据返回条数 默认为15
      * @param offset   默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param keyword  搜索关键词，模糊匹配圈子名称
      * @param group_id 获取某个圈子下面的全部帖子
-     * @return
+     * @return 获取全部帖子
      */
     @Override
     public Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id) {
@@ -345,6 +344,24 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return 用户帖子收藏列表
+     */
+    @Override
+    public Observable<List<CirclePostListBean>> getUserCollectPostList(Integer limit, Integer offset) {
+        return dealWithPostList(mCircleClient.getUserCollectPostList(limit, offset))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param circleId
+     * @param maxId
+     * @param type
+     * @return
+     */
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type) {
         return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, type)
@@ -352,7 +369,8 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
                     List<CirclePostListBean> data = circlePostBean.getPinneds();
-                    if (data != null) {
+                    // 最新回复不显示置顶内容
+                    if (data != null && !type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value)) {
                         for (CirclePostListBean postListBean : data) {
                             postListBean.setPinned(true);
                         }
@@ -407,14 +425,14 @@ public class BaseCircleRepository implements IBaseCircleRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2> stickTopPost(Long postId, int day) {
+    public Observable<BaseJsonV2<Object>> stickTopPost(Long postId, int day) {
         return mCircleClient.stickTopPost(postId, day)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<BaseJsonV2> undoTopPost(Long postId) {
+    public Observable<BaseJsonV2<Object>> undoTopPost(Long postId) {
         return mCircleClient.undoTopPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -487,7 +505,6 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return postListBeans;
                             });
                 })
@@ -534,16 +551,19 @@ public class BaseCircleRepository implements IBaseCircleRepository {
 
 
     /**
-     * 获取圈子成员列表
-     *
-     * @param limit
+     * @param circleId
      * @param after
-     * @param type
+     * @param limit
+     * @param type     默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name     仅仅用于搜索
      * @return
      */
     @Override
-    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type) {
-        return mCircleClient.getCircleMemberList(circleId, limit, after, type)
+    public Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name) {
+        if (TextUtils.isEmpty(name)) {
+            name = null;
+        }
+        return mCircleClient.getCircleMemberList(circleId, limit, after, type, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -616,9 +636,9 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                             .intValue(), userInfoBean);
                                 }
+
                                 dealCommentData(circleCommentZip.getPinneds(), userInfoBeanSparseArray);
                                 dealCommentData(circleCommentZip.getComments(), userInfoBeanSparseArray);
-                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
                                 return circleCommentZip;
                             });
                 });
@@ -654,5 +674,10 @@ public class BaseCircleRepository implements IBaseCircleRepository {
         return mCircleClient.getCircleList(categoryId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void handleFollow(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
     }
 }

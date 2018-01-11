@@ -310,7 +310,7 @@
         <activity
             android:name=".modules.q_a.detail.question.QuestionDetailActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
         <activity
             android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
             android:screenOrientation="portrait"
@@ -645,8 +645,10 @@
         <activity
             android:name=".modules.circle.publish.PublishPostActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity">
-        </activity>
+        <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

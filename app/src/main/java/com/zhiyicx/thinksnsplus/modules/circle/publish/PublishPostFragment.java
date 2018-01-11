@@ -14,8 +14,6 @@ import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 
-import java.util.ArrayList;
-
 /**
  * @Author Jliuer
  * @Date 2017/12/19/14:40
@@ -44,6 +42,12 @@ public class PublishPostFragment extends MarkdownFragment {
         mCircleInfo = getArguments().getParcelable(BUNDLE_SOURCE_DATA);
         mDraftBean = getArguments().getParcelable(BUNDLE_DRAFT_DATA);
         isOutCirclePublish = getArguments().getBoolean(BUNDLE_ISOUT_BOOLEAN);
+        if (mDraftBean != null && mDraftBean.getCircleInfo() != null) {
+            // 草稿视为圈外发帖
+            mCircleInfo = mDraftBean.getCircleInfo();
+            isOutCirclePublish = true;
+        }
+
     }
 
     @Override
@@ -52,12 +56,12 @@ public class PublishPostFragment extends MarkdownFragment {
         if (isOutCirclePublish) {
             mLlCircleContainer.setVisibility(View.VISIBLE);
             mLine.setVisibility(View.VISIBLE);
-            if (mDraftBean != null) {
-                mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
-            }
-            if (mCircleInfo != null) {
-                mCircleName.setText(mCircleInfo.getName());
-            }
+        }
+        if (mDraftBean != null) {
+            mContentLength = mDraftBean.getTitle().length() * mDraftBean.getHtml().length();
+        }
+        if (mCircleInfo != null) {
+            mCircleName.setText(mCircleInfo.getName());
         }
     }
 
@@ -78,6 +82,11 @@ public class PublishPostFragment extends MarkdownFragment {
     }
 
     @Override
+    protected boolean canGotoCircle() {
+        return isOutCirclePublish;
+    }
+
+    @Override
     protected boolean preHandlePublish() {
         mPostPublishBean = new PostPublishBean();
         if (mCircleInfo == null) {
@@ -94,6 +103,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void loadDraft(BaseDraftBean draft) {
         mRichTextView.loadDraft(mDraftBean.getTitle(), mDraftBean.getHtml());
+        mCbSynToDynamic.setChecked(mDraftBean.getHasSynToDynamic());
     }
 
     @Override
@@ -122,7 +132,12 @@ public class PublishPostFragment extends MarkdownFragment {
         super.onActivityResultForChooseCircle(circleInfo);
         mCircleInfo = circleInfo;
         mCircleName.setText(mCircleInfo.getName());
-        setSynToDynamicCbVisiable(true);
+    }
+
+    @Override
+    public void onVisibleChange(boolean visible) {
+        super.onVisibleChange(visible);
+        setSynToDynamicCbVisiable(visible);
     }
 
     @Override
@@ -136,6 +151,7 @@ public class PublishPostFragment extends MarkdownFragment {
                     .currentTimeMillis());
         }
         postDraftBean.setMark(mark);
+        postDraftBean.setHasSynToDynamic(mCbSynToDynamic.isChecked());
         postDraftBean.setTitle(title);
         postDraftBean.setCircleInfo(mCircleInfo);
         postDraftBean.setCreate_at(TimeUtils.getCurrenZeroTimeStr());
@@ -158,7 +174,7 @@ public class PublishPostFragment extends MarkdownFragment {
     @Override
     protected void setSynToDynamicCbVisiable(boolean isVisiable) {
         super.setSynToDynamicCbVisiable(isVisiable);
-        if (mCircleInfo == null) {
+        if (mCircleInfo == null || mCbSynToDynamic == null) {
             return;
         }
         mCbSynToDynamic.setVisibility(isVisiable && mCircleInfo.getAllow_feed() == 1 ? View
