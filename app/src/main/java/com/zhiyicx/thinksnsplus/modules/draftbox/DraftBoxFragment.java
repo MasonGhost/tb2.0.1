@@ -38,7 +38,6 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuest
 public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter, BaseDraftBean>
         implements DraftBoxContract.View, QuestionDraftItem.QuestionDraftItemEvent {
 
-
     public static final String MY_DRAFT_TYPE = "MY_DRAFT_TYPE";
     public static final String MY_DRAFT_TYPE_QUESTION = "0";
     public static final String MY_DRAFT_TYPE_ANSWER = "1";

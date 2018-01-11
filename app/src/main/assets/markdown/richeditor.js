@@ -404,6 +404,29 @@ var RE = {
 		window.scrollTo(0,document.body.scrollHeight);
 	},
 
+	addImageClickListener: function addImageClickListener(ids){
+        var _self = this;
+        console.log("addImageClickListener:::" + ids);
+        var array = ids.split(',');
+
+        for(var item in array) {
+            var img = document.querySelector('img[data-id="' + array[item] + '"]');
+            if(img != null){
+                console.log("addImageClick:::" + array[item]);
+                var imgBlock = img.parentNode;
+                imgBlock.parentNode.contentEditable = false;
+                imgBlock.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var current = e.currentTarget;
+                    var img = current.querySelector('.images');
+                    var id = img.getAttribute('data-id');
+                    window.location.href = _self.schemeCache.IMAGE_SCHEME + encodeURI(id);
+                }, false);
+                _self.imageCache.put(array[item], imgBlock.parentNode);
+            }
+        }
+	},
+
 	// 图片上传进度
 	changeProcess: function changeProcess(id, process,imageId) {
 		var _self = this;

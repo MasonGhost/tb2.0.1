@@ -23,6 +23,11 @@ public class CollectCirclePostListFragment extends BaseCircleDetailFragment {
         return false;
     }
 
+    @Override
+    protected boolean showCommentList() {
+        return false;
+    }
+
     public static CollectCirclePostListFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
         CollectCirclePostListFragment circleDetailFragment = new CollectCirclePostListFragment();
         Bundle bundle = new Bundle();
