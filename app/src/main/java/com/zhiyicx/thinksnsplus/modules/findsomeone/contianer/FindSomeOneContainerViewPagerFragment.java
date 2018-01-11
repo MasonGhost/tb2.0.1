@@ -27,9 +27,6 @@ import java.util.List;
  */
 public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
-    public static final int PAGE_POSITION_HOT = 0;
-    public static final int PAGE_POSITION_NEW = 1;
-    public static final int PAGE_POSITION_RECOMMEND = 2;
     public static final int PAGE_POSITION_NEARBY = 3;
 
 

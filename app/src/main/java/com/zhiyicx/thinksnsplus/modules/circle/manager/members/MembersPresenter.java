@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
 import com.trycatch.mysnackbar.Prompt;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -30,19 +31,19 @@ public class MembersPresenter extends AppBasePresenter<
         MembersContract.View>
         implements MembersContract.Presenter {
 
-    public static final String TYPE_ALL = "all";
     @Inject
     BaseCircleRepository mBaseCircleRepository;
 
     @Inject
-    public MembersPresenter( MembersContract.View rootView) {
-        super( rootView);
+    public MembersPresenter(MembersContract.View rootView) {
+        super(rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int grouLengh[] = new int[4];
-        Subscription subscribe = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(), Integer.MAX_VALUE, TYPE_ALL)
+        Subscription subscribe = mBaseCircleRepository.getCircleMemberList(mRootView.getCIrcleId(), maxId.intValue(),
+                TSListFragment.DEFAULT_PAGE_SIZE, mRootView.getMemberType(), mRootView.getSearchContent())
                 .flatMap(circleMembers -> {
                     List<CircleMembers> manager = new ArrayList<>();
                     List<CircleMembers> member = new ArrayList<>();
@@ -53,7 +54,7 @@ public class MembersPresenter extends AppBasePresenter<
                         }
                         switch (members.getRole()) {
                             case CircleMembers.FOUNDER:
-                                if (mRootView.needManager()) {
+                                if (mRootView.needFounder()) {
                                     grouLengh[0]++;
                                     manager.add(0, members);
                                 }
@@ -63,8 +64,10 @@ public class MembersPresenter extends AppBasePresenter<
                                 grouLengh[1]++;
                                 break;
                             case CircleMembers.MEMBER:
-                                member.add(members);
-                                grouLengh[2]++;
+                                if (mRootView.needMember()){
+                                    member.add(members);
+                                    grouLengh[2]++;
+                                }
                                 break;
                             case CircleMembers.BLACKLIST:
                                 if (mRootView.needBlackList()) {
@@ -183,10 +186,14 @@ public class MembersPresenter extends AppBasePresenter<
                                         manager.add(members1);
                                         break;
                                     case CircleMembers.MEMBER:
-                                        member.add(members1);
+                                        if (mRootView.needMember()){
+                                            member.add(members1);
+                                        }
                                         break;
                                     case CircleMembers.BLACKLIST:
-                                        blacklist.add(members1);
+                                        if (mRootView.needBlackList()){
+                                            blacklist.add(members1);
+                                        }
                                         break;
                                     default:
                                 }

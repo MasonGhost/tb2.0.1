@@ -48,6 +48,8 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
         holder.setVisible(R.id.tv_invite_flag, View.GONE);
         // 是否围观
         holder.setVisible(R.id.tv_to_watch, View.GONE);
+        // 是否显示工具栏(收藏那里不显示)
+        holder.setVisible(R.id.ll_tool_container, showToolMenu() ? View.VISIBLE : View.GONE);
 
         // 时间
         holder.setText(R.id.tv_watcher_count, TimeUtils.getTimeFriendlyNormal(answerInfoBean.getCreated_at()));
@@ -64,6 +66,10 @@ public class MyAnswerAdapterV2 extends MyAnswerAdapter {
 
         ((LinearLayout.LayoutParams) holder.getView(R.id.ll_tool_container).getLayoutParams()).setMargins(holder.getConvertView().getResources()
                 .getDimensionPixelOffset
-                (R.dimen.spacing_normal), 0, 0, 0);
+                        (R.dimen.spacing_normal), 0, 0, 0);
+    }
+
+    protected boolean showToolMenu() {
+        return true;
     }
 }

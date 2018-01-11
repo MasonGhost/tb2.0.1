@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.DigListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,8 +22,4 @@ public class DigListPresenterModule {
         return mView;
     }
 
-    @Provides
-    DigListContract.Repository provideDigListContractRepository(DigListRepository digListRepository) {
-        return digListRepository;
-    }
 }

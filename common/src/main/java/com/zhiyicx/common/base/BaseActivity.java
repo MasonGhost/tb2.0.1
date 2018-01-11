@@ -83,7 +83,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityHandler.getInstance().removeActivity(this);
+        ActivityHandler.getInstance().removeActivityNotFinish(this);
         if (mUnbinder != Unbinder.EMPTY) {
             mUnbinder.unbind();
         }

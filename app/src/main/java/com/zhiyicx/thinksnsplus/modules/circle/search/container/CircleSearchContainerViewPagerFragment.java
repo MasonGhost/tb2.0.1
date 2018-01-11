@@ -90,7 +90,7 @@ public class CircleSearchContainerViewPagerFragment extends TSViewPagerFragment 
     @Override
     protected List<String> initTitles() {
         List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.group_collect_dynamic));
+        titles.add(getString(R.string.circle));
         titles.add(getString(R.string.circle_post));
         return titles;
     }

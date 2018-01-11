@@ -87,8 +87,6 @@ public class UserInfoRepository implements IUserInfoRepository {
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
-    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-    @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
@@ -214,6 +212,7 @@ public class UserInfoRepository implements IUserInfoRepository {
         return getUserInfoByIds(userids)
                 .observeOn(Schedulers.io())
                 .map(users -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(users);
                     List<String> containerUsers = new ArrayList<>();
                     for (Object user_id : user_ids) {
                         try {

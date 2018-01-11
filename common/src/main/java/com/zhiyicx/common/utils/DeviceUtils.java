@@ -765,6 +765,20 @@ public class DeviceUtils {
         return bmp;
     }
 
+    /**
+     * 判断系统是否设置了默认浏览器
+     *
+     * @param context
+     * @param intent
+     * @return
+     */
+    public static boolean hasPreferredApplication(Context context, Intent intent) {
+        PackageManager pm = context.getPackageManager();
+        ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return !"com.android.browser".equals(info.activityInfo.packageName);
+    }
+
+
     public static void gc() {
         System.gc();
         System.runFinalization();

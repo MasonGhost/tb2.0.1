@@ -38,7 +38,4 @@ public interface AccountBindContract {
         void unBindPhoneOrEmail(String password, String verifyCode, boolean isPhone);
     }
 
-    interface Repository {
-
-    }
 }

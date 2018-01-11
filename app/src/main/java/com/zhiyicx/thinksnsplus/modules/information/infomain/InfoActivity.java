@@ -33,8 +33,8 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
 
     @Override
     public void onBackPressed() {
-        BaseFragment fragment = mContanierFragment;
-        fragment.onBackPressed();
+      mContanierFragment.onBackPressed();
+
     }
 
 }

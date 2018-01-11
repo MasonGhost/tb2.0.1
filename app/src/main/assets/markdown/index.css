@@ -1,7 +1,43 @@
 body {
   margin: 0;
-  line-height: 2;
 }
+/* 处理占位文字
+[contenteditable=true]:empty:not(:focus):before{
+  content: attr(placeholder);
+  display: block;
+  color: #cccccc;
+}
+*/
+#editor:empty::before {
+  content: attr(editor-placeholder);
+  color: #cccccc;
+  outline: none;
+}
+
+#title:empty::before {
+  content: attr(title-placeholder);
+  color: #cccccc;
+  outline: none;
+}
+
+#editor:not(:empty){
+  line-height:2;
+}
+
+textarea::-webkit-input-placeholder {
+color: #cccccc;
+/* WebKit browsers /
+}
+input:-moz-placeholder {
+color: #D6D0CA !important; / Mozilla Firefox 4 to 18 /
+}
+input::-moz-placeholder {
+color: #D6D0CA !important; / Mozilla Firefox 19+ /
+}
+input:-ms-input-placeholder {
+color: #D6D0CA !important; / Internet Explorer 10+ */
+}
+
 p {
   padding: 0;
   margin: 0;
@@ -12,23 +48,6 @@ p {
   padding-top: 20px;
   margin-left: 10px;
   margin-right: 10px;
-}
-.hide{
-  position: absolute;
-  z-index: -100;
-  visibility: hidden;
-  word-wrap: break-word;
-  width: 100%;
-  min-height: 30px;
-  font-size: 24px;
-  border: none;
-  outline: none;
-  resize: none;
-  line-height:30px;
-  overflow: hidden;
-  background-color: transparent;
-  color: inherit;
-  border-color: inherit;
 }
 .content .title {
   width: 100%;
@@ -45,11 +64,13 @@ p {
   border-color: inherit;
 }
 .content .line {
-  border: 1px solid #969696;
+  height:1px;
+  background:#cccccc;
   margin-top: 5px;
 }
+/* 在大多数浏览器中默认行高大约是 20px。*/
 .content #editor {
-  margin-top: 20px;
+  margin-top: 10px;
   outline: none;
 }
 .content #editor hr {
@@ -115,7 +136,7 @@ p {
 
 #editor .editor-link{
   text-decoration: none;
-  color: #2AAFF3;
+  color: #59b6d7;
 }
 
 .block{
@@ -123,7 +144,7 @@ p {
 }
 
 .process{
-  height: 5px;
+  height: 3px;
   display: inline-block;
 }
 
@@ -140,12 +161,6 @@ p {
   transform: translateX(-50%);
   z-index: 2;
   background: rgba(255, 255, 255, 0.3);
-}
-
-
-#editor:empty:not(:focus)::before {
-  content: "请输入正文";
-  opacity: .5;
 }
 
 blockquote {

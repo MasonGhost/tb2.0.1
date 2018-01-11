@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
@@ -34,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -65,8 +65,6 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
 
     @Inject
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     CirclePostListBeanGreenDaoImpl mCirclePostListBeanGreenDao;
     @Inject
@@ -101,22 +99,12 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     circlePostDetailBean.setDigList(postDigListBeans);
                     Observable.empty()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new rx.Subscriber<Object>() {
+                            .subscribe(new EmptySubscribe<Object>() {
                                 @Override
                                 public void onCompleted() {
                                     mRootView.updateReWardsView(new RewardsCountBean(circlePostDetailBean.getReward_number(),
                                             "" + PayConfig.realCurrency2GameCurrency(circlePostDetailBean.getReward_amount(), getRatio()),
                                             getGoldName()), postRewardList);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(Object o) {
-
                                 }
                             });
                     return circlePostDetailBean;
@@ -141,6 +129,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                             return;
                         }
                         mRootView.showSnackErrorMessage(message);
+                        mRootView.loadAllError();
                     }
 
                     @Override
@@ -167,31 +156,51 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.getCurrentePost().setPinned(true);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
                     }
                 });
         addSubscrebe(subscribe);
     }
 
     @Override
+    public void handleFollowUser(UserInfoBean userInfoBean) {
+        mBaseCircleRepository.handleFollow(userInfoBean);
+        mRootView.upDateFollowFansState(userInfoBean);
+    }
+
+    @Override
     public void undoTopPost(Long postId) {
         Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.getCurrentePost().setPinned(false);
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
         addSubscrebe(subscribe);
@@ -413,7 +422,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                         mRootView.refreshData();
                     }
 
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
     }
 

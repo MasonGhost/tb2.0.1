@@ -204,7 +204,7 @@ public class MessageReviewPresenter extends AppBasePresenter<
                 observable = mMessageReviewRepository.refuseCircleJoin(result);
                 break;
             case TOP_POST:
-                observable = mMessageReviewRepository.approvedPostTop((long) pinned_id);
+                observable = mMessageReviewRepository.refusePostTop((long) pinned_id);
                 break;
             default:
         }

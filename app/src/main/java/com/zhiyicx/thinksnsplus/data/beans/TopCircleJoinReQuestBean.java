@@ -47,6 +47,11 @@ public class TopCircleJoinReQuestBean extends BaseListBean {
     private CircleMembers member_info;
     private CircleInfo group;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public Long getId() {
         return id;
     }

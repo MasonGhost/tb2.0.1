@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -188,6 +190,13 @@ public class QuestionDetailContent extends FrameLayout {
     private void dealContent(String content, List<ImageBean> list) {
         mMdvQuestionContent.addStyleSheet(MarkDownRule.generateStandardStyle());
         mMdvQuestionContent.loadMarkdown(content);
+        mMdvQuestionContent.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                CustomWEBActivity.startToOutWEBActivity(mContext, url);
+                return true;
+            }
+        });
         mMdvQuestionContent.setOnElementListener(new MarkdownView.OnElementListener() {
             @Override
             public void onButtonTap(String s) {
@@ -218,7 +227,7 @@ public class QuestionDetailContent extends FrameLayout {
 
             @Override
             public void onLinkTap(String s, String s1) {
-                CustomWEBActivity.startToWEBActivity(mContext, s1, s);
+//                CustomWEBActivity.startToOutWEBActivity(mContext, s1);
             }
 
             @Override

@@ -49,7 +49,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -100,8 +100,6 @@ public class BackgroundTaskHandler {
     @Inject
     ServiceManager mServiceManager;
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
     BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
@@ -110,13 +108,11 @@ public class BackgroundTaskHandler {
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
-    SendDynamicRepository mSendDynamicRepository;
+    BaseDynamicRepository mSendDynamicRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
     @Inject
     BaseChannelRepository mBaseChannelRepository;
-    @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
@@ -243,7 +239,7 @@ public class BackgroundTaskHandler {
             wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         }
 
-        if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
+        if (mobNetInfo != null&& !mobNetInfo.isConnected() && !wifiNetInfo.isConnected()){
             //当前无可用的网络
             return false;
         }
@@ -707,7 +703,6 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        mUserInfoBeanGreenDao.insertOrReplace(data);
                         // 用户信息获取成功后就可以通知界面刷新了
                         EventBus.getDefault().post(data, EventBusTagConfig.EVENT_USERINFO_UPDATE);
                     }

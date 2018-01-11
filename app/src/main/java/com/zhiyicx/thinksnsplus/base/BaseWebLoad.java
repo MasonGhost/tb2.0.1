@@ -64,7 +64,6 @@ public class BaseWebLoad {
             webView.setWebChromeClient(null);
             webView.setWebViewClient(null);
             webView.destroy();
-            webView = null;
         }
     }
 

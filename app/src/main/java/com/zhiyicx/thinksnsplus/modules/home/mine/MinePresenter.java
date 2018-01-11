@@ -66,6 +66,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
 
     @Override
     public void getUserInfoFromDB() {
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
         // 尝试从数据库获取当前用户的信息
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
         if (userInfoBean != null) {
@@ -134,6 +137,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
      */
     @Override
     public void updateUserInfo() {
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
         Subscription subscribe = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
@@ -155,6 +161,9 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
 
     @Override
     public void getCertificationInfo() {
+        if (mUserInfoBeanGreenDao == null) {
+            return;
+        }
         Subscription subscribe = mUserInfoRepository.getCertificationInfo()
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {

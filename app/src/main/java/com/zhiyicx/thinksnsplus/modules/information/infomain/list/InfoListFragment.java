@@ -23,9 +23,6 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -57,7 +54,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;
-    private List<RealAdvertListBean> mHeaderAdvert;
 
     private InfoBannerHeader mInfoBannerHeader;
 
@@ -73,11 +69,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     InfoListPresenter mInfoListPresenter;
 
     @Override
-    protected boolean isLayzLoad() {
-        return true;
-    }
-
-    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -85,6 +76,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected boolean needMusicWindowView() {
         return false;
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
     }
 
     @Override
@@ -99,8 +95,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             if (!data.isEmpty()) {
                 RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
                 DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-                long max_id = data.get(data.size() - 1).getMaxId();
-                data.add(DynamicListAdvert.advert2Info(advert, max_id));
+                long maxId = data.get(data.size() - 1).getMaxId();
+                data.add(DynamicListAdvert.advert2Info(advert, maxId));
             }
         } catch (Exception e) {
         }
@@ -201,7 +197,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
-        if (!mInfoType.equals("-1")) {// 只有推荐才加载广告
+        // 只有推荐才加载广告
+        if (!mInfoType.equals(RECOMMEND_INFO)) {
             return;
         }
         List<String> advertTitle = new ArrayList<>();
@@ -209,7 +206,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         List<String> advertLinks = new ArrayList<>();
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
         mListAdvert = mPresenter.getListAdvert();
-        mHeaderAdvert = mPresenter.getBannerAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
@@ -240,11 +236,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected void onEmptyViewClick() {
-        mRefreshlayout.autoRefresh();
-    }
-
-    @Override
     public String getInfoType() {
         return mInfoType;
     }
@@ -252,12 +243,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     public int isRecommend() {
         return mInfoType.equals(RECOMMEND_INFO) ? 1 : 0;
-    }
-
-
-    @Override
-    public void setPresenter(InfoMainContract.InfoListPresenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override

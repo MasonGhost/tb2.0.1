@@ -8,9 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
@@ -25,8 +23,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
@@ -127,7 +123,7 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoLis
     public void requestCacheData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
-        Observable.just(mInfoListDataBeanGreenDao)
+        Subscription subscription = Observable.just(mInfoListDataBeanGreenDao)
                 .observeOn(Schedulers.io())
                 .map(infoListDataBeanGreenDao -> infoListDataBeanGreenDao
                         .getInfoByType(type))
@@ -144,9 +140,8 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoLis
                     return localData;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    mRootView.onCacheResponseSuccess(result, isLoadMore);
-                }, Throwable::printStackTrace);
+                .subscribe(result -> mRootView.onCacheResponseSuccess(result, isLoadMore), Throwable::printStackTrace);
+        addSubscrebe(subscription);
     }
 
     @Override

@@ -85,9 +85,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
     // 动态详情列表，各个item的位置
-    private static final int DYNAMIC_ITEM_CONTENT = 0;
-    private static final int DYNAMIC_ITEM_DIG = 1;
-    //private static final int DYNAMIC_ITEM_COMMENT >1;
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -101,16 +98,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     TextView mTvToolbarLeft;
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
-    @BindView(R.id.toolbar_top_blank)
-    View mToolbarTopBlank;
 
     private List<RewardsListBean> mRewardsListBeens = new ArrayList<>();
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
@@ -219,9 +212,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
-        mToolbar.setOnSystemUiVisibilityChangeListener(visibility -> {
 
-        });
     }
 
     private void initHeaderView() {
@@ -801,5 +792,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mOtherDynamicPopWindow);
+        dismissPop(mMyDynamicPopWindow);
+        dismissPop(mPayImagePopWindow);
+        dismissPop(mReSendCommentPopWindow);
     }
 }

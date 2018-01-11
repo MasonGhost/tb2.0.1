@@ -91,9 +91,8 @@
                     android:layout_height="match_parent"
                     android:background="@color/white"
                     android:hint="@string/edit_circle_name"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:maxLength="@integer/circle_name_input_max_size"
-                    android:maxLines="1"
                     android:paddingRight="@dimen/spacing_mid"
                     android:textColor="@color/important_for_content"
                     android:textColorHint="@color/general_for_hint"
@@ -353,6 +352,7 @@
                     android:textSize="@dimen/size_content"/>
 
                 <TextView
+                    android:id="@+id/tv_currency_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/spacing_mid"

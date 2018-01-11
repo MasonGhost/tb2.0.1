@@ -229,7 +229,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initView(rootView);
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
-
         Observable.create(subscriber -> {
             DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
                     .builder()
@@ -257,6 +256,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     public void onNext(Object o) {
                     }
                 });
+
 
     }
 
@@ -442,7 +442,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             animationRectBeanArrayList.add(rect);
         }
 
-        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+        GalleryActivity.startToGallery(mActivity, position, imageBeanList,
                 animationRectBeanArrayList);
     }
 

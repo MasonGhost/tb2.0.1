@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
@@ -71,7 +72,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Presenter,
         InfoCommentListBean> implements InfoDetailsConstract.View, InputLimitView
-        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener {
+        .OnSendClickListener, BaseWebLoad.OnWebLoadListener, MultiItemTypeAdapter.OnItemClickListener, OnUserInfoClickListener {
 
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
@@ -104,7 +105,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 传入的资讯信息
      */
     private InfoListDataBean mInfoMation;
-    private boolean isFirstIn = true;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -112,7 +112,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * 打赏
      */
     private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
-    private RewardsCountBean mRewardsCountBean;
     private boolean mIsClose;
 
     public static InfoDetailsFragment newInstance(Bundle params) {
@@ -142,6 +141,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 mListDatas);
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
+        infoDetailCommentItem.setOnUserInfoClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -150,14 +150,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
-        this.mRewardsCountBean = rewardsCountBean;
+        RewardsCountBean rewardsCountBean1 = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        if (mRewardsCountBean != null && !TextUtils.isEmpty(mRewardsCountBean.getAmount())) {
-            mRewardsCountBean.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(mRewardsCountBean.getAmount()), mPresenter
+        if (rewardsCountBean1 != null && !TextUtils.isEmpty(rewardsCountBean1.getAmount())) {
+            rewardsCountBean1.setAmount("" + PayConfig.realCurrency2GameCurrency(Double.parseDouble(rewardsCountBean1.getAmount()), mPresenter
                     .getRatio()));
         }
-        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO, mPresenter.getGoldName());
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, rewardsCountBean1, RewardType.INFO, mPresenter.getGoldName());
     }
 
     @Override
@@ -517,6 +517,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         return true;
     }
 
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
+
 
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
@@ -616,5 +621,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     public void onDestroyView() {
         super.onDestroyView();
         mInfoDetailHeader.destroyedWeb();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mDealInfoMationPopWindow);
     }
 }

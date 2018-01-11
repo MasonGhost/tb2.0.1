@@ -88,15 +88,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     protected Application mContext;
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-    @Inject
-    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
-    @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
-    @Inject
-    DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
@@ -289,7 +282,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get
                                                 (dynamicDigListBean.getTarget_user().intValue()));
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     return dynamicDigListBeanList;
                                 });
                     } else {
@@ -352,8 +344,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 ((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
                                     }
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-
                                 return listBaseJson.getPinneds();
                             });
 
@@ -433,7 +423,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return groupDynamicList;
                             });
                 });
@@ -496,7 +485,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     }
 
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return result;
                             });
                 });
@@ -556,7 +544,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                                             ()));
                                                 }
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                             return dynamicBean;
                                         });
                             });
@@ -658,7 +645,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     topDynamicBean.setTopDynamics(topData);
                                     mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
                                 }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return listBaseJson;
                             });
                 })

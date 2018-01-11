@@ -21,7 +21,4 @@ public interface ChooseBindContract {
     interface Presenter extends IBaseTouristPresenter{
     }
 
-    interface Repository extends IThirdPlatformRepository{
-
-    }
 }

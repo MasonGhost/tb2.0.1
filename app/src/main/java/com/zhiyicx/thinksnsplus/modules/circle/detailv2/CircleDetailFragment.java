@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,7 +30,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -51,6 +51,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
@@ -85,6 +86,8 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragmen
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersListActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.attorn.AttornCircleFragment;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.blacklist.BlackListActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.manager.members.blacklist.BlackListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.permission.PermissionFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragment;
@@ -113,12 +116,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -172,6 +177,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     CombinationButton mLlPermissionContainer;
 
     /**
+     * 黑名单
+     */
+    @BindView(R.id.ll_black_container)
+    CombinationButton mLlBlackContainer;
+
+    /**
      * 举报管理
      */
     @BindView(R.id.ll_report_container)
@@ -179,8 +190,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
-    @BindView(R.id.circle_title_layout)
-    RelativeLayout mTitleContainerParent;
     @BindView(R.id.circle_appbar_layout)
     AppBarLayout mAppBarLayout;
     @BindView(R.id.v_shadow)
@@ -211,8 +220,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     TextView mTvOwnerName;
     @BindView(R.id.tv_introduce_content)
     ExpandableTextView mTvCircleIntroduce;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
     @BindView(R.id.iv_share)
     ImageView mIvShare;
     @BindView(R.id.iv_setting)
@@ -225,28 +232,14 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     CombinationButton mLlMemberContainer;
     @BindView(R.id.ll_circle_navigation_container)
     LinearLayout mLlCircleNavigationContainer;
-    @BindView(R.id.ll_dynamic_count_container)
-    LinearLayout mLlDynamicCountContainer;
     @BindView(R.id.ll_intro_container)
     LinearLayout mLlIntroCountContainer;
-    @BindView(R.id.swipe_target)
-    RecyclerView mSwipeTarget;
-    @BindView(R.id.refreshlayout)
-    SmartRefreshLayout mRefreshlayout;
-    @BindView(R.id.container)
-    CoordinatorLayout mContainer;
 
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
-    @BindView(R.id.iv_serach)
-    ImageView mIvSerach;
-    private ActionBarDrawerToggle mToggle;
 
     private ActionPopupWindow mDeletCommentPopWindow;
-    private ActionPopupWindow mDeletPostPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
-    private ActionPopupWindow mReSendPostPopWindow;
-
     private ActionPopupWindow mOtherPostPopWindow;
     private ActionPopupWindow mMyPostPopWindow;
 
@@ -264,8 +257,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     private int mCurrentPostion;
 
     private long mReplyToUserId;
-
-    private PhotoSelectorImpl mPhotoSelector;
 
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
 
@@ -447,6 +438,17 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             mCircleInfo.setUsers_count(data.getIntExtra(MemberListFragment.CIRCLEID, 0));
             mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
+        } else if (requestCode == BlackListFragment.BLACKLISTCODE && resultCode == Activity.RESULT_OK && data != null) {
+            int blackListCount = data.getIntExtra(MemberListFragment.CIRCLEID, 0);
+
+            // 重新统计成员数量
+            mCircleInfo.setUsers_count(mCircleInfo.getUsers_count() + blackListCount - mCircleInfo.getBlacklist_count());
+            mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), mCircleInfo.getUsers_count()));
+            mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count()));
+
+            mCircleInfo.setBlacklist_count(blackListCount);
+            mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
+                    .getBlacklist_count()));
         }
     }
 
@@ -462,7 +464,10 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         super.initView(rootView);
         initToolBar();
         initLisener();
-        AndroidBug5497Workaround.assistActivity(mActivity);
+        // 适配手机无法显示输入焦点
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(mActivity);
+        }
         onChoosed(ALL);
     }
 
@@ -499,6 +504,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .getUsers_count()));
         mLlMemberContainer.setRightText(String.valueOf(circleInfo.getUsers_count()));
         setVisiblePermission(circleInfo);
+        if (circleInfo.getJoined() == null) {
+            mActivity.finish();
+        }
     }
 
     @Override
@@ -605,6 +613,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         for (int i = 0; i < task.size(); i++) {
+            if (i >= 9) {
+                continue;
+            }
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
@@ -704,6 +715,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     @Override
     public void onReSendClick(int position) {
 
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
+        return (long) mListDatas.size();
     }
 
     @Override
@@ -821,8 +837,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mMyPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull || isBlackList ? R.string.empty : R.string.dynamic_list_share_dynamic))
-                .item2Str(getString(feedIdIsNull || isBlackList ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
-                        .dynamic_list_collect_dynamic))
                 .item3Str(!feedIdIsNull && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : null)
                 .item4Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
                 .item5Str(getString(R.string.delete_post))
@@ -831,12 +845,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(mActivity)
-                .item2ClickListener(() -> {
-                    // 收藏
-                    mMyPostPopWindow.hide();
-                    handleCollect(position);
-                    showBottomView(true);
-                })
+
                 .item3ClickListener(() -> {
                     // 置顶
                     mMyPostPopWindow.hide();
@@ -848,7 +857,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId(), position);
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                        managerStickTop(circlePostListBean.getId(), position);
                     }
                     mMyPostPopWindow.hide();
                     showBottomView(true);
@@ -856,7 +865,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item5ClickListener(() -> {
                     // 删除
                     mMyPostPopWindow.hide();
-                    mPresenter.deletePost(circlePostListBean, position);
+                    showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean, position);
                     showBottomView(true);
                 })
                 .item1ClickListener(() -> {
@@ -920,8 +929,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item1Str(getString(R.string.dynamic_list_share_dynamic))
                 .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item3Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
-                .item4Str(getString(R.string.report))
-                .item5Str(getString(isManager ? R.string.info_delete : R.string.empty))
+                .item4Str(!isManager ? getString(R.string.report) : "")
+                .item5Str(getString(isManager ? R.string.delete_post : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -931,7 +940,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .item5ClickListener(() -> {
                     // 管理员删除
                     mOtherPostPopWindow.hide();
-                    mPresenter.deletePost(circlePostListBean, position);
+                    showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean, position);
                     showBottomView(true);
                 })
                 .item4ClickListener(() -> {
@@ -943,13 +952,9 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    String name = "";
-                    if (circlePostListBean.getUser() != null) {
-                        name = circlePostListBean.getUser().getName();
-                    }
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean(circlePostListBean.getUser(), String.valueOf
                             (circlePostListBean.getId()),
-                            name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                            circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
                 })
@@ -958,7 +963,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId(), position);
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), position, 30);
+                        managerStickTop(circlePostListBean.getId(), position);
                     }
                     mOtherPostPopWindow.hide();
                     showBottomView(true);
@@ -1010,7 +1015,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mDrawer.setClipToPadding(false);
         mDrawer.setClipChildren(false);
         mDrawer.setScrimColor(Color.TRANSPARENT);
-        mToggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(getActivity(), mDrawer,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -1061,12 +1066,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                             showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
                         } else {
                             // 没有权限发帖
-                            if (mCircleInfo.getPermissions().contains(CircleMembers.FOUNDER)) {
+                            if (mCircleInfo.getPermissions().contains(CircleMembers.ADMINISTRATOR)) {
                                 showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfo.getName(), getString(R
-                                        .string.circle_master)));
+                                        .string.circle_master_manager)));
                             } else {
                                 showAuditTipPopupWindow(getString(R.string.publish_circle_post_format, mCircleInfo.getName(), getString(R
-                                        .string.administrator)));
+                                        .string.circle_master)));
                             }
 
                         }
@@ -1098,8 +1103,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     startActivity(to);
                 });
 
-        mDrawer.addDrawerListener(mToggle);
-        mToggle.syncState();
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         myAppBarLayoutBehavoir = (AppBarLayoutOverScrollViewBehavior)
                 ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
@@ -1125,12 +1130,34 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleIntroduce.setExpandListener(new ExpandableTextView.OnExpandListener() {
             @Override
             public void onExpand(ExpandableTextView view) {
-                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+                Observable.empty()
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                if (myAppBarLayoutBehavoir != null) {
+                                    myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                    return;
+                                }
+                                unsubscribe();
+                            }
+                        });
             }
 
             @Override
             public void onShrink(ExpandableTextView view) {
-                view.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+                Observable.empty()
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .subscribe(new EmptySubscribe<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                if (myAppBarLayoutBehavoir != null) {
+                                    myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                                    return;
+                                }
+                                unsubscribe();
+                            }
+                        });
             }
         });
 
@@ -1167,7 +1194,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void goPostDetail(int position, boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position), isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mActivity, mListDatas.get(position), isLookMoreComment, false);
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
     }
 
@@ -1183,14 +1210,34 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
-        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), detail.getLocation() == null ? "在火星" :
-                detail.getLocation()));
+        String location = detail.getLocation();
+        if (TextUtils.isEmpty(location)) {
+            String[] defaultLocation = mActivity.getResources().getStringArray(R.array
+                    .default_location_array);
+            Random random = new Random();
+            location = defaultLocation[random.nextInt(defaultLocation.length - 1) % (defaultLocation.length - 1)];
+        }
+
+        mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_usercount), detail.getUsers_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
+        mLlBlackContainer.setLeftText(String.format(Locale.getDefault(), getString(R.string.circle_blacklist_format), mCircleInfo
+                .getBlacklist_count()));
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
-        mLlIntroCountContainer.postDelayed(() -> myAppBarLayoutBehavoir.initial(mAppBarLayout), 100);
+        Observable.empty()
+                .delay(100, TimeUnit.MILLISECONDS)
+                .subscribe(new EmptySubscribe<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        if (myAppBarLayoutBehavoir != null) {
+                            myAppBarLayoutBehavoir.initial(mAppBarLayout);
+                            return;
+                        }
+                        unsubscribe();
+                    }
+                });
 
         if (!updateHeadImg) {
             updateHeadImg = true;
@@ -1240,10 +1287,11 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
         mLlPermissionContainer.setVisibility(!isOwner ? View.GONE : View.VISIBLE);
         mLlReportContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
+        mLlBlackContainer.setVisibility(!isOwner && !isManager ? View.GONE : View.VISIBLE);
         mTvCircleFounder.setVisibility(detail.getFounder().getUser_id() == AppApplication.getMyUserIdWithdefault() ? View.GONE : View.VISIBLE);
     }
 
-    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container,
+    @OnClick({R.id.ll_member_container, R.id.ll_detail_container, R.id.ll_earnings_container, R.id.ll_black_container,
             R.id.ll_permission_container, R.id.ll_report_container, R.id.iv_back, R.id.iv_serach,
             R.id.iv_share, R.id.iv_setting, R.id.tv_circle_subscrib, R.id.tv_exit_circle, R.id.bt_report_circle})
     public void onViewClicked(View view) {
@@ -1288,7 +1336,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 setLeftClick();
                 break;
             case R.id.iv_serach:
-                CirclePostSearchActivity.startCircelPostSearchActivity(mActivity, mCircleInfo.getId());
+                CirclePostSearchActivity.startCircelPostSearchActivity(mActivity, mCircleInfo);
                 break;
             case R.id.iv_share:
                 break;
@@ -1329,6 +1377,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 ReportActivity.startReportActivity(mActivity, new ReportResourceBean(mCircleInfo.getFounder().getUser(), mCircleInfo.getId().toString
                         (), mCircleInfo.getName(), mCircleInfo.getAvatar(), mCircleInfo.getSummary(), ReportType.CIRCLE));
 
+                break;
+            // 黑名单管理
+            case R.id.ll_black_container:
+                Intent intent3 = new Intent(mActivity, BlackListActivity.class);
+                Bundle bundle3 = new Bundle();
+                bundle3.putLong(BlackListFragment.CIRCLEID, mCircleInfo.getId());
+                bundle3.putString(BlackListFragment.ROLE, isJoing ? mCircleInfo.getJoined().getRole() : "");
+                intent3.putExtras(bundle3);
+                mActivity.startActivityForResult(intent3, BlackListFragment.BLACKLISTCODE);
                 break;
             default:
         }
@@ -1377,6 +1434,41 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mAuditTipPop.show();
     }
 
+    private void managerStickTop(Long id, int position) {
+        LinkDialog dialog = createLinkDialog();
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                if (TextUtils.isEmpty(url)) {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                    return;
+                }
+                int day = Integer.valueOf(url);
+                if (day > 0 && day <= 30) {
+                    mPresenter.stickTopPost(id, position, day);
+                    dialog.dismiss();
+                } else {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                }
+
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    private LinkDialog createLinkDialog() {
+        return LinkDialog.createLinkDialog()
+                .setUrlHinit(getString(R.string.post_apply_top_days))
+                .setTitleStr(getString(R.string.set_post_apply_top_days))
+                .setNameVisible(false)
+                .setNeedNumFomatFilter(true);
+    }
+
     /**
      *
      */
@@ -1384,9 +1476,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     public void onDestroyView() {
         super.onDestroyView();
         dismissPop(mDeletCommentPopWindow);
-        dismissPop(mDeletPostPopWindow);
         dismissPop(mReSendCommentPopWindow);
-        dismissPop(mReSendPostPopWindow);
         dismissPop(mOtherPostPopWindow);
         dismissPop(mMyPostPopWindow);
         dismissPop(mTypeChoosePopupWindow);
@@ -1438,5 +1528,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .build();
         mPayPopWindow.show();
 
+    }
+
+
+    protected void showDeleteTipPopupWindow(String tipStr,
+                                            boolean createEveryTime, final CirclePostListBean circlePostListBean,
+                                            int position) {
+        super.showDeleteTipPopupWindow(tipStr, () -> mPresenter.deletePost(circlePostListBean, position), createEveryTime);
     }
 }

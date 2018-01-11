@@ -56,7 +56,4 @@ public interface AccountManagementContract {
         void updaeUserInfo();
     }
 
-    interface Repository {
-
-    }
 }

@@ -2,20 +2,12 @@ package com.zhiyicx.thinksnsplus.base;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-
-import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
-
-import static android.R.attr.value;
-import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
 
 /**
  * @Describe 处理服务器数据 适用 ＲＥＳＥＴＦＵＬ　ＡＰＩ
@@ -49,7 +41,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                     message = ConvertUtils.praseErrorMessage(bodyString);
                     if (!TextUtils.isEmpty(message)) {
                         onFailure(message, ((HttpException) e).code());
-                    }else {
+                    } else {
                         onFailure("", ((HttpException) e).code());
                     }
                 } else {

@@ -43,6 +43,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_ATTORN_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANCEL_CIRCLE_MEMBERS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_POST_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CIRCLE_REPOT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COLLECTLIST_POST_FORMAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_REPOT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_CIRCLE;
@@ -66,6 +67,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_POSTLIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMEND_CIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ROUNDCIRCLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_TOP_POST_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_COLLECT_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LIKE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MANAGER_TOP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_POST;
@@ -276,7 +278,6 @@ public interface CircleClient {
     @GET(APP_PATH_GET_MINE_POSTLIST)
     Observable<List<CirclePostListBean>> getMinePostList(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("type") Integer type);
 
-
     /**
      * 全部帖子列表包含搜索
      *
@@ -292,18 +293,32 @@ public interface CircleClient {
             , @Query("keyword") String keyword
             , @Query("group_id") Long group_id);
 
+
     /**
-     * 获取圈子成员列表
+     * 用户帖子收藏列表
      *
-     * @param limit
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return
+     */
+    @GET(APP_PATH_GET_USER_COLLECT_POST)
+    Observable<List<CirclePostListBean>> getUserCollectPostList(@Query("limit") Integer limit
+            , @Query("offset") Integer offset);
+
+    /**
+     *
+     * @param circle_id
      * @param after
-     * @param type
+     * @param limit
+     * @param type 默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name 仅仅用于搜索
      * @return
      */
     @GET(APP_PATH_GET_CIRCLEMEMBERS)
     Observable<List<CircleMembers>> getCircleMemberList(@Path("circle_id") Long circle_id, @Query("limit") Integer limit
             , @Query("after") Integer after
-            , @Query("type") String type);
+            , @Query("type") String type,
+                                                        @Query("name") String name);
 
     /**
      * 转让圈子
@@ -374,11 +389,11 @@ public interface CircleClient {
      *
      * @param postId
      * @param limit
-     * @param offset
+     * @param after
      * @return
      */
     @GET(APP_PATH_COMMENT_POST)
-    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int offset);
+    Observable<CircleCommentZip> getPostComments(@Path("post_id") long postId, @Query("limit") int limit, @Query("after") int after);
 
     /**
      * 圈子收入记录
@@ -439,12 +454,12 @@ public interface CircleClient {
      * 圈主和管理员置顶帖子
      *
      * @param postId
-     * @param day 天数
+     * @param day    天数
      * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_MANAGER_TOP_POST)
-    Observable<BaseJsonV2> stickTopPost(@Path("post_id") Long postId,@Field("day") int day);
+    Observable<BaseJsonV2<Object>> stickTopPost(@Path("post_id") Long postId, @Field("day") int day);
 
     /**
      * 圈主和管理员撤销置顶帖子
@@ -453,7 +468,7 @@ public interface CircleClient {
      * @return
      */
     @PATCH(APP_PATH_UNDO_TOP_POST)
-    Observable<BaseJsonV2> undoTopPost(@Path("post_id") Long postId);
+    Observable<BaseJsonV2<Object>> undoTopPost(@Path("post_id") Long postId);
 
     /**
      * 帖子打赏

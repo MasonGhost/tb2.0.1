@@ -1,11 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.earning;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -76,9 +76,10 @@ public class CircleEarningFragment extends TSFragment<CircleEarningContract.Pres
 
     @Override
     protected void initData() {
-        mBtMember.setRightText(mCircleInfo.getJoin_income_count() + ".0");
-        mBtTop.setRightText(mCircleInfo.getPinned_income_count() + ".0");
-        mTvMineMoney.setText(String.valueOf(mCircleInfo.getJoin_income_count() + mCircleInfo.getPinned_income_count()));
+        mBtMember.setRightText(PayConfig.realCurrency2GameCurrency(mCircleInfo.getJoin_income_count(), mPresenter.getRatio()) + "");
+        mBtTop.setRightText(PayConfig.realCurrency2GameCurrency(mCircleInfo.getPinned_income_count(), mPresenter.getRatio()) + "");
+        mTvMineMoney.setText(String.valueOf(PayConfig.realCurrency2GameCurrency(mCircleInfo.getJoin_income_count() + mCircleInfo.getPinned_income_count()
+                , mPresenter.getRatio())));
     }
 
     @Override

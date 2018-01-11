@@ -42,9 +42,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_12"
+                android:paddingBottom="@dimen/spacing_normal"
                 android:textColor="@color/normal_for_dynamic_list_content"
                 android:textSize="@dimen/size_content_assist"
-                tool:text="我不要钱,控股发电技术管理经费控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分"/>
+                tool:text="我不要钱,控股发电技术管理经费控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角控股发电技术管理经费控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分色加工费的失落感积分控股发电技术管理经费的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分的失落感更加疯狂楼市的价格轮番看电视剧管理费的角色加工费的失落感积分"/>
         </ScrollView>
 
         <View

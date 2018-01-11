@@ -51,6 +51,11 @@ public class TopPostCommentListBean extends BaseListBean {
 
     private int state;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public int getState() {
         return state;
     }

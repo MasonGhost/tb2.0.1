@@ -74,12 +74,16 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     private AMapLocationClient mLocationClient;
 
     protected AnimationDrawable mAnimationDrawable;
-    private String mCurrentLocation = "";
 
     private List<PoiItem> mPoiItems = new ArrayList<>();
 
     @Override
     protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
         return false;
     }
 
@@ -162,8 +166,6 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                         1000));
                 search.setOnPoiSearchListener(this);
                 search.searchPOIAsyn();
-                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() +
-                        " " + aMapLocation.getCity();
                 mTvCurrentLocation.setText(aMapLocation.getCity());
 
             } else {
@@ -223,16 +225,15 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
 
         //初始化AMapLocationClientOption对象
         mLocationOption = new AMapLocationClientOption();
-
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //获取最近3s内精度最高的一次定位结果：
         //设置setOnceLocationLatest(boolean b)
         // 接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)
         mLocationOption.setOnceLocationLatest(true);
+        mLocationOption.setOnceLocation(true);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
-        mLocationOption.setInterval(Integer.MAX_VALUE);
         mLocationClient = new AMapLocationClient(getContext());
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption);

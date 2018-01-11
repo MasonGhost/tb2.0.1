@@ -9,12 +9,14 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MemberListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.manager.members.MembersContract;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -53,7 +55,7 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
     }
 
     @Override
-    public boolean needManager() {
+    public boolean needFounder() {
         return false;
     }
 
@@ -63,28 +65,13 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
     }
 
     @Override
-    protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<CircleMembers>(getActivity(), R.layout.item_circle_member,
-                mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, CircleMembers circleMembers, int position) {
-                holder.setText(R.id.tv_member_name, circleMembers.getUser().getName());
-                holder.setVisible(R.id.iv_member_more, View.INVISIBLE);
-                TextView tag = holder.getTextView(R.id.tv_member_tag);
+    protected boolean needMore() {
+        return false;
+    }
 
-                boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
-                boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
-
-                tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);
-                tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R
-                        .drawable.shape_bg_circle_radus_gray);
-                tag.setText(isOwner ? R.string.circle_owner : R.string.circle_manager);
-
-                RxView.clicks(holder.itemView)
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .subscribe(aVoid -> initPopupWindow(circleMembers));
-            }
-        };
+    @Override
+    protected boolean isAttornCircle() {
+        return true;
     }
 
     @Override
@@ -101,7 +88,8 @@ public class AttornCircleFragment extends MemberListFragment implements MembersC
         });
     }
 
-    private void initPopupWindow(CircleMembers circleMembers) {
+    @Override
+    protected void initPopWindow(View v, int pos, CircleMembers circleMembers) {
         if (mPopupWindow != null) {
             return;
         }

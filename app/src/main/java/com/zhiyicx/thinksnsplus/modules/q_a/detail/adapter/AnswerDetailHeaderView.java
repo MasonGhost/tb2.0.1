@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -135,6 +136,13 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
                 mContent.addStyleSheet(MarkDownRule.generateStandardStyle());
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setWebChromeClient(mWebChromeClient);
+                mContent.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        CustomWEBActivity.startToOutWEBActivity(mContext, url);
+                        return true;
+                    }
+                });
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -166,7 +174,7 @@ public class AnswerDetailHeaderView extends BaseWebLoad{
 
                     @Override
                     public void onLinkTap(String s, String s1) {
-                        CustomWEBActivity.startToWEBActivity(mContext, s1, s);
+//                        CustomWEBActivity.startToOutWEBActivity(mContext, s1);
                     }
 
                     @Override

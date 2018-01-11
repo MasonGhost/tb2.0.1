@@ -49,7 +49,6 @@ public class ReWardView extends FrameLayout {
     protected ImageView mIvRightArrow;
 
     private OnRewardsClickListener mOnRewardsClickListener;
-    private RecyclerView.LayoutManager mLayoutManager;
     private CommonAdapter mCommonAdapter;
     private List<RewardsListBean> mListData = new ArrayList<>();
     private long mSourceId;
@@ -81,8 +80,8 @@ public class ReWardView extends FrameLayout {
     }
 
     private void initRvUsers() {
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
-        mRVUsers.setLayoutManager(mLayoutManager);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
+        mRVUsers.setLayoutManager(layoutManager);
         mRVUsers.setHasFixedSize(true);
         mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), 0));
         mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, mListData) {
@@ -93,7 +92,6 @@ public class ReWardView extends FrameLayout {
 
                 RxView.clicks(holder.getView(R.id.iv_head))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
                         .subscribe(aVoid -> RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData));
 
             }

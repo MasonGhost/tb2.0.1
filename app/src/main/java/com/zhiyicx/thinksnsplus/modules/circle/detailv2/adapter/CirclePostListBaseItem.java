@@ -39,6 +39,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -68,6 +69,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     private boolean showToolMenu = true;// 是否显示工具栏:默认显示
     private boolean showCommentList = true;// 是否显示评论内容:默认显示
     private boolean showReSendBtn = true;// 是否显示重发按钮
+    private boolean showPostFrom = false;// 是否显示帖子来源
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -95,6 +97,12 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     }
 
     protected OnReSendClickListener mOnReSendClickListener;
+
+    protected OnPostFromClickListener mOnPostFromClickListener;
+
+    public void setOnPostFromClickListener(OnPostFromClickListener onPostFromClickListener) {
+        mOnPostFromClickListener = onPostFromClickListener;
+    }
 
     public void setOnCommentClickListener(CirclePostListCommentView.OnCommentClickListener
                                                   onCommentClickListener) {
@@ -164,9 +172,18 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(circlePostListBean
                     .getCreated_at()));
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
+            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.important_for_content));
 
             String content = circlePostListBean.getSummary();
             TextView contentView = holder.getView(R.id.tv_content);
+            TextView contentFrom = holder.getView(R.id.tv_from);
+
+            contentFrom.setVisibility(showPostFrom ? View.VISIBLE : View.GONE);
+            if (showPostFrom) {
+                contentFrom.setText(String.format(Locale.getDefault(), mContext.getString(R.string.circle_post_from),
+                        circlePostListBean.getGroup().getName()));
+                ConvertUtils.stringLinkConvert(contentFrom, setFromLinks(circlePostListBean.getGroup().getName(), position), true);
+            }
 
             try { // 置顶标识 ,防止没有置顶布局错误
                 // 待审核 也隐藏
@@ -183,7 +200,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             } else {
                 content = content.replaceAll(MarkdownConfig.NETSITE_FORMAT, MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE);
                 contentView.setText(content);
-                ConvertUtils.stringLinkConvert(contentView, setLiknks(circlePostListBean, contentView.getText().toString()), false);
+                ConvertUtils.stringLinkConvert(contentView, setLinkLinks(circlePostListBean, contentView.getText().toString()), false);
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), circlePostListBean);
@@ -398,6 +415,10 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
         void onReSendClick(int position);
     }
 
+    public interface OnPostFromClickListener {
+        void onPostFromClick(int position);
+    }
+
     public CirclePostListBaseItem setShowToolMenu(boolean showToolMenu) {
         this.showToolMenu = showToolMenu;
         return this;
@@ -413,15 +434,20 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
         return this;
     }
 
+    public CirclePostListBaseItem setShowPostFrom(boolean showPostFrom) {
+        this.showPostFrom = showPostFrom;
+        return this;
+    }
+
     public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener
                                                    onSpanTextClickListener) {
         mOnSpanTextClickListener = onSpanTextClickListener;
     }
 
-    protected List<Link> setLiknks(final CirclePostListBean circlePostListBean, String content) {
+    protected List<Link> setLinkLinks(final CirclePostListBean circlePostListBean, String content) {
         List<Link> links = new ArrayList<>();
         if (content.contains(Link.DEFAULT_NET_SITE)) {
-            Link commentNameLink = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
+            Link link = new Link(MarkdownConfig.LINK_EMOJI + Link.DEFAULT_NET_SITE)
                     .setTextColor(ContextCompat.getColor(mContext, R.color
                             .themeColor))
                     .setLinkMetadata(LinkMetadata.builder()
@@ -443,8 +469,29 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
                     })
                     .setUnderlined(false);
-            links.add(commentNameLink);
+            links.add(link);
         }
+        return links;
+    }
+
+    protected List<Link> setFromLinks(String from, int position) {
+        List<Link> links = new ArrayList<>();
+        Link link = new Link(from)
+                .setTextColor(ContextCompat.getColor(mContext, R.color
+                        .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setOnClickListener((clickedText, linkMetadata) -> {
+                    if (mOnPostFromClickListener != null) {
+                        mOnPostFromClickListener.onPostFromClick(position);
+                    }
+                })
+                .setOnLongClickListener((clickedText, linkMetadata) -> {
+
+                })
+                .setUnderlined(false);
+        links.add(link);
         return links;
     }
 }
