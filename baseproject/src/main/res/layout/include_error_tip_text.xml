@@ -7,6 +7,6 @@
     android:layout_marginLeft="@dimen/spacing_mid"
     android:layout_marginRight="@dimen/spacing_mid"
     android:layout_marginTop="@dimen/spacing_mid"
-    android:text=""
+    android:text="ssss"
     android:textColor="@color/important_for_note"
     android:textSize="@dimen/size_icon_assist"/>

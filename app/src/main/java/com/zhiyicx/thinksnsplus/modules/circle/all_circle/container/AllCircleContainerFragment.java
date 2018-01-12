@@ -137,6 +137,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
+        mTsvToolbar.setDefaultTabLeftMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
+        mTsvToolbar.setDefaultTabRightMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
@@ -207,9 +209,11 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item2ClickListener(() -> {// 个人认证
+                    .item2ClickListener(() -> {
+                        // 个人认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        if (mUserCertificationInfo != null
+                                // 待审核
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
@@ -226,9 +230,11 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
                             startActivity(intent);
                         }
                     })
-                    .item3ClickListener(() -> {// 企业认证
+                    .item3ClickListener(() -> {
+                        // 企业认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        if (mUserCertificationInfo != null
+                                // 待审核
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 

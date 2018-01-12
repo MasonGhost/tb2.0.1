@@ -81,6 +81,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected boolean showNoMoreData() {
+        return false;
+    }
+
+    @Override
     public void setJoinedCircles(List<CircleInfo> circles) {
         mJoinedCircle = circles;
     }
