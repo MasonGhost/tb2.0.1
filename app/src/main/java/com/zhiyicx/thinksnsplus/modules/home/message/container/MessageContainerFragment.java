@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.container;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,9 +16,11 @@ import android.widget.TextView;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.chat.select.SelectFriendsActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelist.MessageConversationFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist.NotificationFragment;
@@ -117,6 +120,11 @@ public class MessageContainerFragment extends TSViewPagerFragment implements Eas
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.setRightImg(R.mipmap.ico_spchat, 0);
+        mTsvToolbar.setRightClickListener(this, () -> {
+            Intent intent = new Intent(getContext(), SelectFriendsActivity.class);
+            startActivity(intent);
+        });
         mBadgePagerTitleViews = new ArrayList<>();
         mCommonNavigatorAdapter = getCommonNavigatorAdapter(initTitles());
         mTsvToolbar.initTabView(mVpFragment, initTitles(), mCommonNavigatorAdapter);
