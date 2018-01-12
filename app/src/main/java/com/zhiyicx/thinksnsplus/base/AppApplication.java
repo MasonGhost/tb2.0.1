@@ -46,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
@@ -257,9 +258,11 @@ public class AppApplication extends TSApplication {
      * @param tipStr
      */
     private void handleAuthFail(final String tipStr) {
-        if (!(ActivityHandler
-                .getInstance().currentActivity() instanceof LoginActivity) && ActivityHandler
-                .getInstance().currentActivity() instanceof TSActivity) {
+        boolean showDialog = !(ActivityHandler
+                .getInstance().currentActivity() instanceof LoginActivity || ActivityHandler
+                .getInstance().currentActivity() instanceof GuideActivity) && ActivityHandler
+                .getInstance().currentActivity() instanceof TSActivity;
+        if (showDialog) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
                 // 清理登录信息 token 信息

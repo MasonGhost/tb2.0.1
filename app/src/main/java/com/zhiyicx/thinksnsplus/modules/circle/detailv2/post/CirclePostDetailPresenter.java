@@ -427,6 +427,11 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
     }
 
     @Override
+    public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {
+        mIsNeedDynamicListRefresh = needDynamicListRefresh;
+    }
+
+    @Override
     public void onStart(Share share) {
     }
 

@@ -80,7 +80,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterContract.View> implements
+public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterContract.View> implements
         PersonalCenterContract.Presenter, OnShareCallbackListener {
     private static final int NEED_INTERFACE_NUM = 2;
     @Inject
@@ -115,7 +115,7 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
 
     @Inject
     public PersonalCenterPresenter(PersonalCenterContract.View rootView) {
-        super( rootView);
+        super(rootView);
     }
 
     @Override
@@ -404,10 +404,13 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
 
     @Override
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
-
+        if (position == -1) {
+            return;
+        }
         mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
-        if (mRootView.getListDatas().isEmpty()) { // 增加空数据，用于显示占位图
+        if (mRootView.getListDatas().isEmpty()) {
+            // 增加空数据，用于显示占位图
             DynamicDetailBeanV2 emptyData = new DynamicDetailBeanV2();
             mRootView.getListDatas().add(emptyData);
         }
@@ -675,26 +678,28 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
                 .observeOn(Schedulers.io())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                    DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                    int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
-                    // 是否是更新收费信息
-                    if (bundle.getBoolean(DYNAMIC_UPDATE_TOLL)) {
-                        position = mRootView.getListDatas().indexOf(dynamicBean);
-                    }
+                    int dynamicPosition=-1;
+                    if (isNeedRefresh){
+                        DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
+                        // 是否是更新收费信息
+                        if (bundle.getBoolean(DYNAMIC_UPDATE_TOLL)) {
+                            position = mRootView.getListDatas().indexOf(dynamicBean);
+                        }
 
-                    int size = mRootView.getListDatas().size();
-                    int dynamicPosition = -1;
-                    for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
-                            dynamicPosition = i;
-                            break;
+                        int size = mRootView.getListDatas().size();
+                        dynamicPosition = -1;
+                        for (int i = 0; i < size; i++) {
+                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+                                dynamicPosition = i;
+                                break;
+                            }
+                        }
+                        // 如果列表有当前评论
+                        if (dynamicPosition != -1) {
+                            mRootView.getListDatas().get(position).setImages(dynamicBean.getImages());
                         }
                     }
-                    // 如果列表有当前评论
-                    if (dynamicPosition != -1) {
-                        mRootView.getListDatas().get(position).setImages(dynamicBean.getImages());
-                    }
-
                     return isNeedRefresh ? dynamicPosition : -1;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -705,6 +710,12 @@ public class PersonalCenterPresenter extends AppBasePresenter< PersonalCenterCon
 
                 }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
+    public void deleteDynamic(DynamicDetailBeanV2 dynamicBean) {
+        deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
+        LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
     }
 
     @Override

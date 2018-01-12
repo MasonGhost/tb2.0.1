@@ -75,7 +75,6 @@ public class LinkDialog extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialog = inflater.inflate(R.layout.dialog_fragment_link, container);
         TextView ok = (TextView) dialog.findViewById(R.id.confirm_btn);
-        ok.setEnabled(false);
         errorTip = (TextView) dialog.findViewById(R.id.tv_error_tip);
         TextView title = (TextView) dialog.findViewById(R.id.tv_tittle);
         TextView cancle = (TextView) dialog.findViewById(R.id.cancel_btn);
@@ -87,7 +86,7 @@ public class LinkDialog extends BaseDialogFragment {
             errorTip.setVisibility(View.GONE);
         });
 
-        RxTextView.textChanges(ok).subscribe((CharSequence charSequence) -> ok.setEnabled(!TextUtils.isEmpty(charSequence)));
+        RxTextView.textChanges(urledt).subscribe((CharSequence charSequence) -> ok.setEnabled(!TextUtils.isEmpty(charSequence)));
 
         if (titleStr != null) {
             title.setText(titleStr);

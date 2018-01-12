@@ -21,14 +21,15 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class ReportReviewPresenter extends AppBasePresenter< ReporReviewContract.View>
+public class ReportReviewPresenter extends AppBasePresenter<ReporReviewContract.View>
         implements ReporReviewContract.Presenter {
 
     @Inject
     BaseCircleRepository mBaseCircleRepository;
+
     @Inject
-    public ReportReviewPresenter( ReporReviewContract.View rootView) {
-        super( rootView);
+    public ReportReviewPresenter(ReporReviewContract.View rootView) {
+        super(rootView);
     }
 
     @Override
@@ -61,23 +62,49 @@ public class ReportReviewPresenter extends AppBasePresenter< ReporReviewContract
 
     @Override
     public void approvedCircleReport(Long reportId) {
-        Subscription subscribe = mBaseCircleRepository.approvedCircleReport(reportId).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
-            @Override
-            protected void onSuccess(BaseJsonV2 data) {
-                mRootView.refreshData();
-            }
-        });
+        Subscription subscribe = mBaseCircleRepository.approvedCircleReport(reportId)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.refreshData();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
         addSubscrebe(subscribe);
     }
 
     @Override
     public void refuseCircleReport(Long reportId) {
-        Subscription subscribe = mBaseCircleRepository.refuseCircleReport(reportId).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
-            @Override
-            protected void onSuccess(BaseJsonV2 data) {
-                mRootView.refreshData();
-            }
-        });
+        Subscription subscribe = mBaseCircleRepository.refuseCircleReport(reportId)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.refreshData();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
         addSubscrebe(subscribe);
     }
 
