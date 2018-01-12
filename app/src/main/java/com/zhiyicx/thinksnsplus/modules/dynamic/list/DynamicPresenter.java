@@ -697,11 +697,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                 .observeOn(Schedulers.computation())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                    DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                    int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
-                    // 如果列表有当前评论
-                    if (dynamicPosition != -1) {
-                        mRootView.getListDatas().set(dynamicPosition, dynamicBean);
+                    int dynamicPosition = -1;
+                    if (isNeedRefresh) {
+                        DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
+                        // 如果列表有当前评论
+                        if (dynamicPosition != -1) {
+                            mRootView.getListDatas().set(dynamicPosition, dynamicBean);
+                        }
                     }
                     return isNeedRefresh ? dynamicPosition : -1;
                 })

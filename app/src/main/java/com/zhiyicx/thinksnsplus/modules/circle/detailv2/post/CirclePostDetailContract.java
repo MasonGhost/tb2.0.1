@@ -82,6 +82,8 @@ public interface CirclePostDetailContract {
         void undoTopPost(Long postId);
 
         void handleFollowUser(UserInfoBean userInfoBean);
+
+        void setNeedDynamicListRefresh(boolean needDynamicListRefresh);
     }
 
 }
