@@ -252,9 +252,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item2ClickListener(() -> {// 个人认证
+                    .item2ClickListener(() -> {
+                        // 个人认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
@@ -271,9 +273,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                             startActivity(intent);
                         }
                     })
-                    .item3ClickListener(() -> {// 企业认证
+                    .item3ClickListener(() -> {
+                        // 企业认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 

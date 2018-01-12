@@ -425,7 +425,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             joinedBean.setRole(CircleMembers.MEMBER);
             mCircleInfo.setJoined(joinedBean);
             mCircleInfo.getFounder().setUser(circleMembers.getUser());
-            mCircleInfo.getFounder().setUser_id((int)circleMembers.getUser_id());
+            mCircleInfo.getFounder().setUser_id((int) circleMembers.getUser_id());
             mTvOwnerName.setText(mCircleInfo.getFounder().getUser().getName());
             setVisiblePermission(mCircleInfo);
         } else if (requestCode == CreateCircleFragment.REQUST_CODE_UPDATE && resultCode == Activity.RESULT_OK && data != null) {
@@ -458,6 +458,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
         initTypePop(mPostTypeEnum);
+        mTvCirclePostOrder.setText(getString(R.string.post_typpe_new));
     }
 
     @Override
@@ -1205,7 +1206,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void setCircleData(CircleInfo detail) {
-        mTvCirclePostOrder.setText(getString(R.string.post_typpe_new));
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));
