@@ -605,7 +605,11 @@
         <!--发送位置-->
         <activity android:name=".modules.chat.location.SendLocationActivity"
                 android:screenOrientation="portrait"/>
+        <!--视频播放-->
         <activity android:name="com.hyphenate.easeui.ui.EaseShowVideoActivity"/>
+        <!--选择好友-->
+        <activity android:name=".modules.chat.select.SelectFriendsActivity"
+                android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
