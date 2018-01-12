@@ -117,6 +117,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private String im_pwd_hash;
     /**1.5.1新增 好友数量*/
     private int friends_count;
+    /**1.5.1新增 是否被选中 用于选择好友列表 不存数据库*/
+    @Transient
+    private boolean isSelected;
 
     private boolean initial_password = true; // 在登陆信息中返回，用来判断是否需要设置密码，给个默认值true，false才需要设置
 
@@ -342,6 +345,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public void setFriends_count(int friends_count) {
         this.friends_count = friends_count;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public UserInfoExtraBean getExtra() {
