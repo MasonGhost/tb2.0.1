@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/spacing_mid"
+
     android:paddingLeft="@dimen/spacing_normal_large"
     android:paddingRight="@dimen/spacing_normal_large"
     android:paddingTop="@dimen/spacing_mid">
@@ -18,18 +18,19 @@
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_sub_title"/>
 
-    <include
-        layout="@layout/include_error_tip_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_tittle"/>
-
     <View
         android:id="@+id/line1"
         style="@style/style_divider_horizontal_light"
         android:layout_below="@+id/tv_tittle"
         android:layout_marginBottom="@dimen/spacing_big_large"
         android:layout_marginTop="@dimen/spacing_large"/>
+
+    <include
+        layout="@layout/include_error_tip_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_above="@+id/et_linkurl"/>
 
     <EditText
         android:id="@+id/et_linkurl"
@@ -65,7 +66,6 @@
         android:id="@+id/line2"
         style="@style/style_divider_horizontal_light"
         android:layout_below="@+id/et_linkname"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:layout_marginTop="@dimen/spacing_big_large"/>
 
     <LinearLayout
@@ -78,9 +78,10 @@
         <TextView
             android:id="@+id/cancel_btn"
             android:layout_width="0dp"
+            android:paddingTop="@dimen/spacing_large"
+            android:paddingBottom="@dimen/spacing_mid"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
             android:gravity="center"
             android:text="@string/cancel"
             android:textColor="@color/important_for_theme"
@@ -89,9 +90,11 @@
         <TextView
             android:id="@+id/confirm_btn"
             android:layout_width="0dp"
+            android:paddingTop="@dimen/spacing_large"
+            android:paddingBottom="@dimen/spacing_mid"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
+            android:enabled="false"
             android:gravity="center"
             android:text="@string/ok"
             android:textColor="@color/selector_text_color"

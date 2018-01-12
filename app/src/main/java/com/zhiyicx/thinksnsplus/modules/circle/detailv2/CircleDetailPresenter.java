@@ -473,7 +473,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                             mRootView.updateCircleInfo(circleInfo);
                         }
-                        if (isPrivateOrPaid) {
+                        if (isJoined) {
                             EventBus.getDefault().post(circleInfo, EventBusTagConfig.EVENT_UPDATE_CIRCLE);
                         }
                         mCircleInfoGreenDao.insertOrReplace(circleInfo);
@@ -655,13 +655,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .observeOn(Schedulers.computation())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
-                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
-                    int position = mRootView.getListDatas().indexOf(postListBean);
-                    if (position != -1) {
-                        mRootView.getListDatas().set(position, postListBean);
-                    } else {
-                        // 发帖更新到列表
-                        mRootView.getListDatas().add(0, postListBean);
+                    if (isNeedRefresh){
+                        CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                        int position = mRootView.getListDatas().indexOf(postListBean);
+                        if (position != -1) {
+                            mRootView.getListDatas().set(position, postListBean);
+                        } else {
+                            // 发帖更新到列表
+                            mRootView.getListDatas().add(0, postListBean);
+                        }
                     }
                     return isNeedRefresh;
                 })

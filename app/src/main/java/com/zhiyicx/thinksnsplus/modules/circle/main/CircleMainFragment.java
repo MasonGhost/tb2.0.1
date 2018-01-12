@@ -81,6 +81,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected boolean showNoMoreData() {
+        return false;
+    }
+
+    @Override
     public void setJoinedCircles(List<CircleInfo> circles) {
         mJoinedCircle = circles;
     }
@@ -132,6 +137,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     protected void setRightLeftClick() {
         super.setRightLeftClick();
         CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
@@ -204,7 +214,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        CircleDetailActivity.startCircleDetailActivity(mActivity,circleInfo.getId());
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     /**
@@ -242,9 +252,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item2ClickListener(() -> {// 个人认证
+                    .item2ClickListener(() -> {
+                        // 个人认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
@@ -261,9 +273,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                             startActivity(intent);
                         }
                     })
-                    .item3ClickListener(() -> {// 企业认证
+                    .item3ClickListener(() -> {
+                        // 企业认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 

@@ -693,6 +693,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<
 
     }
 
+    @Override
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {
         mIsNeedDynamicListRefresh = needDynamicListRefresh;
     }

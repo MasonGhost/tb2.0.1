@@ -46,7 +46,10 @@ import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
+import com.zhiyicx.thinksnsplus.widget.EnableCheckBox;
+import com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
+import com.zhiyicx.thinksnsplus.widget.listener.OnTouchEventListener;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -109,21 +112,21 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @BindView(R.id.et_circle_introduce)
     UserInfoInroduceInputView mEtCircleIntroduce;
     @BindView(R.id.wc_synchro)
-    SwitchCompat mWcSynchro;
+    EnableSwitchCompat mWcSynchro;
     @BindView(R.id.ll_synchro)
     LinearLayout mLlSynchro;
     @BindView(R.id.wc_block)
-    SwitchCompat mWcBlock;
+    EnableSwitchCompat mWcBlock;
     @BindView(R.id.ll_block)
     LinearLayout mLlBlock;
     @BindView(R.id.cb_toll)
-    CheckBox mCbToll;
+    EnableCheckBox mCbToll;
     @BindView(R.id.ll_charge)
     LinearLayout mLlCharge;
     @BindView(R.id.ll_free)
     LinearLayout mLlFree;
     @BindView(R.id.cb_free)
-    CheckBox mCbFree;
+    EnableCheckBox mCbFree;
     @BindView(R.id.tv_notice)
     UserInfoInroduceInputView mTvNotice;
     @BindView(R.id.ll_container)
@@ -350,6 +353,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             }
         });
 
+        mCbFree.setOnTouchEventListener(isEnabled -> isEnabled);
+        mCbToll.setOnTouchEventListener(isEnabled -> isEnabled);
+        mWcBlock.setOnTouchEventListener(isEnabled -> isEnabled);
+
         mCbFree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 mCbToll.setChecked(false);
@@ -528,7 +535,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container,
-            R.id.ll_synchro, R.id.ll_block, R.id.tv_user_agreement})
+            R.id.ll_synchro, R.id.ll_block, R.id.tv_user_agreement, R.id.ll_free})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -549,6 +556,11 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             case R.id.ll_synchro:
                 break;
             case R.id.ll_block:
+            case R.id.ll_free:
+                boolean isPaidCircle = CircleInfo.CirclePayMode.PAID.value.equals(mCircleInfo.getMode());
+                if (isPaidCircle) {
+                    showSnackErrorMessage(getString(R.string.close_circle_rule));
+                }
                 break;
             case R.id.tv_user_agreement:
                 startActivity(new Intent(mActivity, RuleForCreateCircleActivity.class));
