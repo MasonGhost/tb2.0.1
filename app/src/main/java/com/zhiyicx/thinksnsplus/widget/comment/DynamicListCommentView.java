@@ -134,25 +134,21 @@ public class DynamicListCommentView extends LinearLayout {
      */
     public void setData(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
-        List<DynamicCommentBean> data = new ArrayList<>();
-
         if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
             //最多显示 SHOW_MORE_COMMENT_SIZE_LIMIT-1 条
             if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+                List<DynamicCommentBean> data = new ArrayList<>();
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
                     data.add(dynamicBean.getComments().get(i));
                 }
+                mDynamicNoPullRecycleView.setData(data);
             } else {
-                data.addAll(dynamicBean.getComments());
+                mDynamicNoPullRecycleView.setData(dynamicBean.getComments());
             }
         }
         mDynamicNoPullRecycleView.setTopFlagPosition(CommentBaseRecycleView.TopFlagPosition.WORDS_RIGHT);
-        mDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
-            mMoreComment.setVisibility(VISIBLE);
-        } else {
-            mMoreComment.setVisibility(GONE);
-        }
+        mMoreComment.setVisibility(dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT ? VISIBLE : GONE);
+
     }
 
     public void setOnMoreCommentClickListener(OnMoreCommentClickListener onMoreCommentClickListener) {
