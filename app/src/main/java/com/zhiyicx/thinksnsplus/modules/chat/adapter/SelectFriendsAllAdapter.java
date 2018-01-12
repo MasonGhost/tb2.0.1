@@ -44,7 +44,7 @@ public class SelectFriendsAllAdapter extends CommonAdapter<UserInfoBean>{
                     if (mListener != null){
                         userInfoBean.setSelected(!userInfoBean.isSelected());
                         cbFriends.setChecked(userInfoBean.isSelected());
-                        mListener.onUserSelected(userInfoBean, position);
+                        mListener.onUserSelected(userInfoBean);
                     }
                 });
     }
@@ -56,8 +56,7 @@ public class SelectFriendsAllAdapter extends CommonAdapter<UserInfoBean>{
         /**
          * 选中好友
          * @param userInfoBean 用户信息
-         * @param position 位置
          */
-        void onUserSelected(UserInfoBean userInfoBean, int position);
+        void onUserSelected(UserInfoBean userInfoBean);
     }
 }

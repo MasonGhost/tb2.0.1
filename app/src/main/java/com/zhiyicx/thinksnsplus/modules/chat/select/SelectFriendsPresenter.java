@@ -38,6 +38,11 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
+                        if (!data.isEmpty()){
+                            for (UserInfoBean userInfoBean : data){
+                                userInfoBean.setSelected(false);
+                            }
+                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -59,11 +64,50 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
         List<UserInfoBean> followFansBeanList = mUserInfoBeanGreenDao.getUserFriendsList(maxId);
+        for (UserInfoBean userInfoBean : followFansBeanList){
+            userInfoBean.setSelected(false);
+        }
         mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void getFriendsListByKey(Long maxId, String key) {
+        Subscription subscription = mRepository.getUserFriendsList(maxId, key)
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<UserInfoBean> data) {
+                        for (UserInfoBean userInfoBean : data){
+                            userInfoBean.setSelected(false);
+                        }
+                        mRootView.getFriendsListByKeyResult(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        LogUtils.e(throwable, throwable.getMessage());
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void createConversation(List<UserInfoBean> list) {
+        if (list.size() == 1){
+            // 创建单聊，判断当前是否与该用户的会话，没有创建会话
+        } else {
+            // 创建群组会话
+
+        }
     }
 }

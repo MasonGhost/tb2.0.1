@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -15,13 +16,13 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectFriendsAllAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectedFriendsAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 /**
  * @author Catherine
@@ -39,6 +40,8 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     RecyclerView mRvSelectResult;
     @BindView(R.id.edit_search_friends)
     AppCompatEditText mEditSearchFriends;
+    @BindView(R.id.fl_search_result)
+    FrameLayout mFlSearchResult;
     @BindView(R.id.rv_search_result)
     RecyclerView mRvSearchResult;
 
@@ -66,16 +69,18 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         mRvSearchResult.setLayoutManager(searchManager);
 
         RxView.focusChanges(mEditSearchFriends)
-                .subscribe(aBoolean -> {
-                    if (aBoolean){
-
-                    }
-                });
+                .subscribe(aBoolean -> mFlSearchResult.setVisibility(aBoolean ? View.VISIBLE : View.GONE));
         RxTextView.textChanges(mEditSearchFriends)
                 .subscribe(charSequence -> {
-                    if (!TextUtils.isEmpty(charSequence)){
+                    if (!TextUtils.isEmpty(charSequence)) {
                         // 搜索
+                        mPresenter.getFriendsListByKey((long) mSearchResultList.size(), charSequence.toString());
                     }
+                });
+        RxView.clicks(mFlSearchResult)
+                .subscribe(aVoid -> {
+                    mEditSearchFriends.clearFocus();
+                    mSearchResultList.clear();
                 });
     }
 
@@ -122,6 +127,9 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     @Override
     protected void setRightClick() {
         // 发起聊天
+        if (mSelectedList.size() > 0) {
+            mPresenter.createConversation(mSelectedList);
+        }
     }
 
     @Override
@@ -132,9 +140,9 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     /**
      * 聊天按钮是否可以点击
      */
-    private void checkData(){
+    private void checkData() {
         mToolbarRight.setEnabled(mSelectedList.size() != 0);
-        if (mSelectedList.size() > 0){
+        if (mSelectedList.size() > 0) {
             setRightText(String.format(getString(R.string.select_friends_right_title), mSelectedList.size()));
             mToolbarRight.setTextColor(getColor(R.color.themeColor));
         } else {
@@ -145,13 +153,70 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
     }
 
     @Override
-    public void onUserSelected(UserInfoBean userInfoBean, int position) {
-        // 选中
-        if (userInfoBean.isSelected()){
+    public void onUserSelected(UserInfoBean userInfoBean) {
+        // 选中的列表中，如果是选中 那么直接加
+        if (userInfoBean.isSelected()) {
             mSelectedList.add(userInfoBean);
         } else {
-            mSelectedList.remove(userInfoBean);
+            for (UserInfoBean userInfoBean1 : mSelectedList) {
+                if (userInfoBean1.getUser_id().equals(userInfoBean.getUser_id())) {
+                    // 列表中已经有这个用户了->取消选中->直接移除这个人，这里因为有搜索列表，所以不能直接remove
+                    mSelectedList.remove(userInfoBean1);
+                }
+            }
+        }
+
+        // 处理全部列表, 搜索有数据，则表示此时为搜索(在隐藏搜索列表时清空了列表)
+        if (mSearchResultList.size() > 0 && mEditSearchFriends.hasFocus()) {
+            int position = 0;
+            for (UserInfoBean userInfoBean1 : mListDatas) {
+                if (userInfoBean1.getUser_id().equals(userInfoBean.getUser_id())) {
+                    position = mListDatas.indexOf(userInfoBean1);
+                    userInfoBean1.setSelected(userInfoBean.isSelected());
+                    mAdapter.notifyItemChanged(position);
+                    break;
+                }
+            }
         }
         checkData();
+    }
+
+    @Override
+    public void getFriendsListByKeyResult(List<UserInfoBean> userInfoBeans) {
+        checkUserIsSelected(userInfoBeans);
+        mSearchResultList.clear();
+        mSearchResultList.addAll(userInfoBeans);
+        mSearchResultAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
+        checkUserIsSelected(data);
+        super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return (long) mListDatas.size();
+    }
+
+    /**
+     * 获取网络数据后，调用此方法来判断是否已选中
+     *
+     * @param list data
+     */
+    private void checkUserIsSelected(List<UserInfoBean> list) {
+        if (list == null || list.size() == 0) {
+            return;
+        }
+        for (UserInfoBean userInfoBean : list) {
+            // 给已经选中的用户手动设置
+            for (int i = 0; i < mSelectedList.size(); i++) {
+                if (userInfoBean.getUser_id().equals(mSelectedList.get(i).getUser_id())) {
+                    userInfoBean.setSelected(true);
+                    break;
+                }
+            }
+        }
     }
 }

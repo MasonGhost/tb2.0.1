@@ -43,7 +43,7 @@
     </LinearLayout>
 
     <View
-            style="@style/style_divider_horizontal_light"/>
+            style="@style/style_divider_horizontal"/>
 
 
     <FrameLayout
@@ -54,11 +54,18 @@
         <include layout="@layout/fragment_tslist"/>
 
         <!--搜索的结果-->
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_search_result"
+        <FrameLayout
+                android:id="@+id/fl_search_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:background="@color/white"
+                android:visibility="gone">
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_search_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </FrameLayout>
+
     </FrameLayout>
 
 </LinearLayout>
