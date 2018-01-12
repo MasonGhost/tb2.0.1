@@ -769,4 +769,8 @@
     <string name="chat_type_video">[视频]</string>
     <string name="chat_type_voice">[语音]</string>
     <string name="chat_type_location">[定位]</string>
+
+    <string name="select_friends_center_title">选择好友</string>
+    <string name="select_friends_right_title_default">聊天</string>
+    <string name="select_friends_right_title">聊天(%d)</string>
 </resources>

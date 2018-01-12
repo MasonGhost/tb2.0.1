@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/select_friends_item_height"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/cb_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:button="@drawable/selector_friends_item"
+            android:clickable="false"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"/>
+
+    <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_user_portrait"
+            android:layout_width="@dimen/headpic_for_answer"
+            android:layout_height="@dimen/headpic_for_answer"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/spacing_mid"/>
+
+
+    <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/size_rank_number"
+            android:textColor="@color/important_for_content"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="xxxxxxxxxx"/>
+
+</LinearLayout>
