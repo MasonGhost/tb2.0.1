@@ -291,7 +291,6 @@
     <string name="post_publish_select_content">你的内容呢..</string>
 
     <string-array name="post_typpe_array">
-        <item>全部帖子</item>
         <item>最新帖子</item>
         <item>最新回复</item>
     </string-array>

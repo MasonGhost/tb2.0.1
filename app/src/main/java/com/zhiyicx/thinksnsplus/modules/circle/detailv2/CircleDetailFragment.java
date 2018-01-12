@@ -127,7 +127,6 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
 import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
@@ -468,7 +467,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(mActivity);
         }
-        onChoosed(ALL);
+        onChoosed(LATEST_POST);
     }
 
     @Override
@@ -733,9 +732,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             return;
         }
         switch (type) {
-            case ALL:
-                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_all));
-                break;
             case LATEST_POST:
                 mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_new));
                 break;
@@ -1207,6 +1203,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     private void setCircleData(CircleInfo detail) {
+        mTvCirclePostOrder.setText(getString(R.string.post_typpe_new));
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count()));

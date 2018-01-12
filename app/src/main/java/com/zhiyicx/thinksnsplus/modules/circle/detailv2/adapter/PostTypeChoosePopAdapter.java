@@ -36,16 +36,6 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
         AppCompatCheckedTextView textView = holder.getView(R.id.tv_title);
         textView.setText(str);
         switch (mMyPostTypeEnum) {
-
-            case ALL:
-                if (getContext().getString(R.string.post_typpe_all).equals(str)) {
-                    textView.setChecked(true);
-
-                } else {
-                    textView.setChecked(false);
-                }
-
-                break;
             case LATEST_POST:
                 if (getContext().getString(R.string.post_typpe_new).equals(str)) {
                     textView.setChecked(true);
@@ -62,8 +52,6 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
                 } else {
                     textView.setChecked(false);
                 }
-
-
                 break;
             default:
 
@@ -71,10 +59,7 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
         RxView.clicks(textView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (getContext().getString(R.string.post_typpe_all).equals(str)) {
-                        mMyPostTypeEnum = MyPostTypeEnum.ALL;
-
-                    } else if (getContext().getString(R.string.post_typpe_new).equals(str)) {
+                    if (getContext().getString(R.string.post_typpe_new).equals(str)) {
                         mMyPostTypeEnum = MyPostTypeEnum.LATEST_POST;
 
                     } else if (getContext().getString(R.string.post_typpe_reply).equals(str)) {
@@ -94,7 +79,6 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
     }
 
     public enum MyPostTypeEnum {
-        ALL("latest_post"),
         LATEST_POST("latest_post"),
         LATEST_COMMENT("latest_reply");
         public String value;
