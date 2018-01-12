@@ -424,6 +424,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
             mCircleInfo.setJoined(joinedBean);
+            mCircleInfo.getFounder().setUser(circleMembers.getUser());
+            mCircleInfo.getFounder().setUser_id((int)circleMembers.getUser_id());
             mTvOwnerName.setText(mCircleInfo.getFounder().getUser().getName());
             setVisiblePermission(mCircleInfo);
         } else if (requestCode == CreateCircleFragment.REQUST_CODE_UPDATE && resultCode == Activity.RESULT_OK && data != null) {
@@ -1270,6 +1272,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         }
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
         mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setText(R.string.circle_exit);
         if (isOwner && detail.getUsers_count() > 1) {
             mTvExitCircle.setText(R.string.circle_transfer);
         } else if (isOwner && detail.getUsers_count() <= 1) {
