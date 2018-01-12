@@ -948,6 +948,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {
+            mSnackBar.setCallback(null);
             if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }
