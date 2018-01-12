@@ -137,8 +137,6 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
-        mTsvToolbar.setDefaultTabLeftMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
-        mTsvToolbar.setDefaultTabRightMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);

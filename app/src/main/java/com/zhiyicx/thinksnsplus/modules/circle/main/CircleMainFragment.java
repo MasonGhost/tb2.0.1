@@ -140,6 +140,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    protected void setLeftClick() {
+        onBackPressed();
+    }
+
+    @Override
     public void onBackPressed() {
         startActivity(new Intent(getActivity(), HomeActivity.class));
     }
@@ -209,7 +214,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        CircleDetailActivity.startCircleDetailActivity(mActivity,circleInfo.getId());
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     /**

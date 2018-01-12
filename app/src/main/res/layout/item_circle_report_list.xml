@@ -44,10 +44,8 @@
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
         app:etv_EnableToggle="false"
-        app:etv_IsNeedShrink="false"
         app:etv_MaxLinesOnShrink="2"
         app:etv_ToExpandHint="@string/circle_report_more"
-        app:etv_ToShrinkHint=""
         tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
 
     <LinearLayout
