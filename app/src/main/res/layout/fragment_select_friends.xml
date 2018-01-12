@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!--选中的和输入框-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/select_friends_result_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/white">
+
+        <ImageView
+                android:id="@+id/iv_search_icon"
+                android:layout_width="@dimen/select_icon_width"
+                android:layout_height="@dimen/select_icon_width"
+                android:src="@mipmap/search_icon_search"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_gravity="center_vertical"/>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_select_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"/>
+
+        <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/edit_search_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minWidth="@dimen/select_edit_min_width"
+                android:background="@null"
+                android:hint="@string/search"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_icon_assist"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"/>
+
+    </LinearLayout>
+
+    <View
+            style="@style/style_divider_horizontal_light"/>
+
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <!--全部结果-->
+        <include layout="@layout/fragment_tslist"/>
+
+        <!--搜索的结果-->
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+    </FrameLayout>
+
+</LinearLayout>
