@@ -28,7 +28,7 @@ android {
         debug {
             buildConfigField "boolean", "USE_DOMAIN_SWITCH", "true"  // 域名切换开关
             buildConfigField "boolean", "USE_LOG", "true"
-            buildConfigField "boolean", "USE_CANARY", "true"
+            buildConfigField "boolean", "USE_CANARY", "false"
             buildConfigField "boolean", "USE_ADVERT", "true"
             buildConfigField "boolean", "USE_TOLL", "true"
             minifyEnabled false

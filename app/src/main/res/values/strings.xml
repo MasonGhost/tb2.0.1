@@ -300,7 +300,7 @@
         <item>水星</item>
         <item>土星</item>
         <item>火星</item>
-        <item>🌎</item>
+        <item>地球</item>
     </string-array>
     <string name="post_typpe_all">全部帖子</string>
     <string name="post_typpe_new">最新帖子</string>
