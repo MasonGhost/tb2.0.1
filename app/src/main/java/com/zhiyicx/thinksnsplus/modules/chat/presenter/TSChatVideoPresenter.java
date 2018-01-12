@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.chat.location;
+package com.zhiyicx.thinksnsplus.modules.chat.presenter;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
