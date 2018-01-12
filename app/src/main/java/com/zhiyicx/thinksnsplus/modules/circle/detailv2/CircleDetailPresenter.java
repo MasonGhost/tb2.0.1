@@ -473,7 +473,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                             mRootView.updateCircleInfo(circleInfo);
                         }
-                        if (isPrivateOrPaid) {
+                        if (isJoined) {
                             EventBus.getDefault().post(circleInfo, EventBusTagConfig.EVENT_UPDATE_CIRCLE);
                         }
                         mCircleInfoGreenDao.insertOrReplace(circleInfo);
