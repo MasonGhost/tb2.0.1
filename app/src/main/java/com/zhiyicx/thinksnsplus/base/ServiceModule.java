@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
@@ -171,6 +172,12 @@ public class ServiceModule {
     @Provides
     RankClient provideRankClient(Retrofit retrofit) {
         return retrofit.create(RankClient.class);
+    }
+
+    @Singleton
+    @Provides
+    EasemobClient provideEasemobClient(Retrofit retrofit){
+        return retrofit.create(EasemobClient.class);
     }
 
 }
