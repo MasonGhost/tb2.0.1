@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
@@ -18,6 +20,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.ui.EaseChatFragment;
+import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
@@ -140,6 +143,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         } else if (chatType == EaseConstant.CHATTYPE_GROUP){
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatUsername);
             titleBar.setTitle(group.getGroupName());
+            groupListener = new GroupListener();
             EMClient.getInstance().groupManager().addGroupChangeListener(groupListener);
         }
         titleBar.setLeftLayoutClickListener(v -> onBackPressed());

@@ -998,7 +998,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
      * listen the group event
      * 
      */
-    class GroupListener extends EaseGroupListener {
+    public class GroupListener extends EaseGroupListener {
 
         @Override
         public void onUserRemoved(final String groupId, String groupName) {
