@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,14 +11,20 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectFriendsAllAdapter;
 import com.zhiyicx.thinksnsplus.modules.chat.adapter.SelectedFriendsAdapter;
+import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2.BUNDLE_CHAT_DATA;
 
 /**
  * @author Catherine
@@ -169,14 +180,18 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         // 处理全部列表, 搜索有数据，则表示此时为搜索(在隐藏搜索列表时清空了列表)
         if (mSearchResultList.size() > 0 && mEditSearchFriends.hasFocus()) {
             int position = 0;
+            List<UserInfoBean> newList = new ArrayList<>();
             for (UserInfoBean userInfoBean1 : mListDatas) {
                 if (userInfoBean1.getUser_id().equals(userInfoBean.getUser_id())) {
                     position = mListDatas.indexOf(userInfoBean1);
                     userInfoBean1.setSelected(userInfoBean.isSelected());
-                    mAdapter.notifyItemChanged(position);
+                    newList.add(userInfoBean1);
                     break;
                 }
             }
+            mListDatas.remove(position);
+            mListDatas.addAll(position, newList);
+            mAdapter.notifyDataSetChanged();
         }
         checkData();
     }
@@ -187,6 +202,23 @@ public class SelectFriendsFragment extends TSListFragment<SelectFriendsContract.
         mSearchResultList.clear();
         mSearchResultList.addAll(userInfoBeans);
         mSearchResultAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void createConversionResult(List<ChatUserInfoBean> list, EMConversation.EMConversationType type, int chatType, String id) {
+        if (type == EMConversation.EMConversationType.Chat){
+            EMClient.getInstance().chatManager().getConversation(id, type, true);
+        } else {
+            EMClient.getInstance().groupManager().getGroup(id);
+        }
+        Intent to = new Intent(getActivity(), ChatActivityV2.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EaseConstant.EXTRA_USER_ID, id);
+        bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, chatType);
+        bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) list);
+        to.putExtra(BUNDLE_CHAT_DATA, bundle);
+        startActivity(to);
+        getActivity().finish();
     }
 
     @Override

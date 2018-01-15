@@ -127,15 +127,7 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
         if (list.size() == 2){
             String id = String.valueOf(list.get(0).getUser_id());
             // 创建单聊，判断当前是否与该用户的会话，没有创建会话
-            EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.Chat, true);
-            Intent to = new Intent(mContext, ChatActivityV2.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, list.get(0));
-            bundle.putString(EaseConstant.EXTRA_USER_ID, id);
-            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-            bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) getChatUser(list));
-            to.putExtra(BUNDLE_CHAT_DATA, bundle);
-            mContext.startActivity(to);
+            mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.Chat, EaseConstant.CHATTYPE_SINGLE, id);
         } else {
             // 创建群组会话
             String groupName = list.get(0).getName() + "、" + list.get(1).getName();
@@ -149,7 +141,9 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
                     .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
                         @Override
                         protected void onSuccess(ChatGroupBean data) {
-
+                            // 创建成功 跳转聊天详情页面
+                            String id = data.getIm_group_id();
+                            mRootView.createConversionResult(getChatUser(list), EMConversation.EMConversationType.GroupChat, EaseConstant.CHATTYPE_GROUP, id);
                         }
 
                         @Override

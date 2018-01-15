@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat.select;
 
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -25,6 +27,8 @@ public interface SelectFriendsContract {
          * @param userInfoBeans 用户列表
          */
         void getFriendsListByKeyResult(List<UserInfoBean> userInfoBeans);
+
+        void createConversionResult(List<ChatUserInfoBean> list, EMConversation.EMConversationType type, int chatType, String id);
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
