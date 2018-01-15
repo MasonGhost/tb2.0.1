@@ -51,6 +51,9 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.In
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
         BaseListBean> implements InfoMainContract.InfoListView, InfoBannerHeader.InfoBannerHeadlerClickEvent {
 
+    /**
+     * 推荐分类
+     */
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;

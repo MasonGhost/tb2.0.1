@@ -34,7 +34,6 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
     @Override
     public void onBackPressed() {
       mContanierFragment.onBackPressed();
-
     }
 
 }
