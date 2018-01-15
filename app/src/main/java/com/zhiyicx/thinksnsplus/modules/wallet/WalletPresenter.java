@@ -27,7 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class WalletPresenter extends AppBasePresenter< WalletContract.View> implements WalletContract.Presenter {
+public class WalletPresenter extends AppBasePresenter<WalletContract.View> implements WalletContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 1;
 
     /**
@@ -47,14 +47,20 @@ public class WalletPresenter extends AppBasePresenter< WalletContract.View> impl
     @Inject
     WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
-    private boolean mIsUsreInfoRequseted = false;// 用户信息是否拿到了
+    /**
+     * 用户信息是否拿到了
+     */
+    private boolean mIsUsreInfoRequseted = false;
 
-    WalletConfigBean mWalletConfigBean; // 钱包配置信息，必须的数据
+    /**
+     * 钱包配置信息，必须的数据
+     */
+    WalletConfigBean mWalletConfigBean;
 
 
     @Inject
     public WalletPresenter(WalletContract.View rootView) {
-        super( rootView);
+        super(rootView);
     }
 
     @Override
@@ -80,8 +86,7 @@ public class WalletPresenter extends AppBasePresenter< WalletContract.View> impl
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
-                        int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),getRatio()) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(), getRatio()) : 0);
                     }
 
                     @Override
@@ -159,7 +164,6 @@ public class WalletPresenter extends AppBasePresenter< WalletContract.View> impl
                         mWalletConfigBeanGreenDao.insertOrReplace(data);
                         if (isNeedTip) {
                             mRootView.dismissSnackBar();
-//                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
                         }
                         mRootView.walletConfigCallBack(data, tag);
                     }
@@ -173,8 +177,8 @@ public class WalletPresenter extends AppBasePresenter< WalletContract.View> impl
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         if (isNeedTip) {
                             mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                         }

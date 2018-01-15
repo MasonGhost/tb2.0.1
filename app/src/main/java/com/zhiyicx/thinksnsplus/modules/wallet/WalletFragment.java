@@ -57,8 +57,10 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     @BindView(R.id.tv_account_unit)
     TextView getTvMineMoney;
 
-
-    private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
+    /**
+     *  充值提示规则选择弹框
+     */
+    private CenterInfoPopWindow mRulePop;
 
     public static WalletFragment newInstance() {
         return new WalletFragment();
@@ -129,17 +131,17 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     private void initListener() {
         // 充值
         RxView.clicks(mBtReCharge)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE,true));
         // 提现
         RxView.clicks(mBtWithdraw)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     mPresenter.checkWalletConfig(WalletPresenter.TAG_SHOWRULE_JUMP,true);
