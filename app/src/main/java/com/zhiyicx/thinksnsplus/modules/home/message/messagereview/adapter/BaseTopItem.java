@@ -14,11 +14,13 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.GroupDynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewContract;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -98,10 +100,12 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
                 intent.putExtra(BUNDLE_INFO, bundle);
                 break;
             case ApiConfig.APP_LIKE_GROUP_POST:
-                intent = new Intent(mContext, GroupDynamicDetailActivity.class);
-                GroupDynamicListBean groupData = new Gson().fromJson(new Gson().toJson(commentedBean.getCommentable()), GroupDynamicListBean.class);
-                bundle.putParcelable(DYNAMIC_DETAIL_DATA, groupData);
-                bundle.putBoolean(LOOK_COMMENT_MORE, false);
+                CirclePostListBean postListBean = new Gson().fromJson(new Gson().toJson(commentedBean.getCommentable()), CirclePostListBean.class);
+                intent = new Intent(mContext, CirclePostDetailActivity.class);
+                bundle = new Bundle();
+                bundle.putParcelable(CirclePostDetailFragment.POST, postListBean);
+                bundle.putBoolean(CirclePostDetailFragment.BAKC2CIRCLE, true);
+                bundle.putBoolean(CirclePostDetailFragment.LOOK_COMMENT_MORE, true);
                 intent.putExtras(bundle);
                 break;
             case ApiConfig.APP_QUESTIONS:
@@ -157,7 +161,7 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
         mInstructionsPopupWindow.show();
     }
 
-    protected void initReviewPopWindow(BaseListBean dataBean,int position) {
+    protected void initReviewPopWindow(BaseListBean dataBean, int position) {
         mReviewPopWindow = ActionPopupWindow.builder()
                 .item1Str(mContext.getString(R.string.review_approved))
                 .item2Str(mContext.getString(R.string.review_refuse))
@@ -168,13 +172,13 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
                 .with((Activity) mContext)
                 .item1ClickListener(() -> {
                     if (mTopReviewEvetnInterface != null) {
-                        mTopReviewEvetnInterface.onReviewApprovedClick(dataBean,position);
+                        mTopReviewEvetnInterface.onReviewApprovedClick(dataBean, position);
                     }
                     mReviewPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     if (mTopReviewEvetnInterface != null) {
-                        mTopReviewEvetnInterface.onReviewRefuseClick(dataBean,position);
+                        mTopReviewEvetnInterface.onReviewRefuseClick(dataBean, position);
                     }
                     mReviewPopWindow.hide();
                 })
@@ -188,8 +192,8 @@ public abstract class BaseTopItem implements ItemViewDelegate<BaseListBean> {
     }
 
     public interface TopReviewEvetnInterface {
-        void onReviewApprovedClick(BaseListBean data,int position);
+        void onReviewApprovedClick(BaseListBean data, int position);
 
-        void onReviewRefuseClick(BaseListBean data,int position);
+        void onReviewRefuseClick(BaseListBean data, int position);
     }
 }

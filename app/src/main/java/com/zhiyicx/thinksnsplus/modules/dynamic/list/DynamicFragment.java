@@ -106,10 +106,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
+
     /**
      * item 间距单位 dp
      */
     public static final long ITEM_SPACING = 5L;
+
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
@@ -124,17 +126,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
-    /**
-     * 每条动态都有三个点点了
-     */
+
     private ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
     private PayPopWindow mPayImagePopWindow;
+
     /**
      * 当前评论的动态位置
      */
     private int mCurrentPostion;
+
     /**
      * 被评论者的 id
      */
@@ -230,7 +232,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         initInputView();
         AndroidBug5497Workaround.assistActivity(mActivity);
         Observable.create(subscriber -> {
-            DaggerDynamicComponent // 在 super.initData();之前，因为initdata 会使用到 presenter
+            // 在 super.initData();之前，因为initdata 会使用到 presenter
+            DaggerDynamicComponent
                     .builder()
                     .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                     .shareModule(new ShareModule(mActivity))
@@ -269,6 +272,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
     }
 
+    /**
+     * 初始化广告数据
+     */
     private void initAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
@@ -368,9 +374,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         try {// 添加广告
             RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
             DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long max_id = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Dynamic(advert, max_id));
-        } catch (Exception e) {
+            long maxId = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
+        } catch (Exception ignore) {
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
@@ -380,9 +386,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         try {// 添加广告
             RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
             DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            long max_id = data.get(data.size() - 1).getMaxId();
-            data.add(DynamicListAdvert.advert2Dynamic(advert, max_id));
-        } catch (Exception e) {
+            long maxId = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Dynamic(advert, maxId));
+        } catch (Exception ignore) {
         }
         super.onCacheResponseSuccess(data, isLoadMore);
     }
@@ -563,8 +569,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
-        switch (viewPosition) { // 0 1 2 3 代表 view item 位置
-            case 0: // 喜欢
+        switch (viewPosition) {
+            // 0 1 2 3 代表 view item 位置
+            case 0:
+                // 喜欢
                 // 还未发送成功的动态列表不查看详情
                 if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
                         mListDatas.get(dataPosition).getId() == null || mListDatas.get
@@ -574,7 +582,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 handleLike(dataPosition);
                 break;
 
-            case 1: // 评论
+            case 1:
+                // 评论
 
                 // 还未发送成功的动态列表不查看详情
                 if ((!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
@@ -585,14 +594,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 showCommentView();
                 mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
                 mCurrentPostion = dataPosition;
-                mReplyToUserId = 0;// 0 代表评论动态
+                // 0 代表评论动态
+                mReplyToUserId = 0;
                 break;
 
-            case 2: // 浏览
+            case 2:
+                // 浏览
                 onItemClick(null, null, dataPosition + mHeaderAndFooterWrapper.getHeadersCount());
                 break;
 
-            case 3: // 更多
+            case 3:
+                // 更多
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
@@ -612,7 +624,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
                     mOtherDynamicPopWindow.show();
-                } else {// 广告
+                } else {
+                    // 广告
 
                 }
 
