@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivityV2;
@@ -119,26 +120,51 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
 
     @Override
     public void createConversation(List<UserInfoBean> list) {
-        if (list.size() == 1){
+        // 没有添加当前用户的情况下 添加在第一个
+        if (list.get(0).getUser_id() != AppApplication.getMyUserIdWithdefault()){
+            list.add(0, mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+        }
+        if (list.size() == 2){
             String id = String.valueOf(list.get(0).getUser_id());
             // 创建单聊，判断当前是否与该用户的会话，没有创建会话
-            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(id);
-            if (conversation == null){
-                conversation =
-                        EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.Chat, true);
-            }
+            EMClient.getInstance().chatManager().getConversation(id, EMConversation.EMConversationType.Chat, true);
             Intent to = new Intent(mContext, ChatActivityV2.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, list.get(0));
             bundle.putString(EaseConstant.EXTRA_USER_ID, id);
             bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-            list.add(0, mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
             bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) getChatUser(list));
             to.putExtra(BUNDLE_CHAT_DATA, bundle);
             mContext.startActivity(to);
         } else {
             // 创建群组会话
+            String groupName = list.get(0).getName() + "、" + list.get(1).getName();
+            String groupIntro = "暂无";
+            StringBuilder members = new StringBuilder();
+            for (UserInfoBean userInfoBean : list){
+                members.append(String.valueOf(userInfoBean.getUser_id())).append(",");
+            }
+            Subscription subscription = mRepository.createGroup(groupName, groupIntro, false,
+                    200, true, false, list.get(0).getUser_id(), members.substring(0, members.length() - 1))
+                    .subscribe(new BaseSubscribeForV2<ChatGroupBean>() {
+                        @Override
+                        protected void onSuccess(ChatGroupBean data) {
 
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            mRootView.showSnackErrorMessage(message);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.showSnackErrorMessage(throwable.getMessage());
+                        }
+                    });
+            addSubscrebe(subscription);
         }
     }
 

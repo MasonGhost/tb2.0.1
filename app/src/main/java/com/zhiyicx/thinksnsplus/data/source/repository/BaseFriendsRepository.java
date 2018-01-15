@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository;
@@ -25,12 +27,14 @@ import rx.schedulers.Schedulers;
 public class BaseFriendsRepository implements IBaseFriendsRepository{
 
     FollowFansClient mClient;
+    EasemobClient mEasemobClient;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public BaseFriendsRepository(ServiceManager manager) {
         mClient = manager.getFollowFansClient();
+        mEasemobClient = manager.getEasemobClient();
     }
 
     @Override
@@ -42,6 +46,15 @@ public class BaseFriendsRepository implements IBaseFriendsRepository{
                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
                     return userInfoBeen;
                 })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<ChatGroupBean> createGroup(String groupName, String groupIntro, boolean isPublic,
+                                                 int maxUser, boolean isMemberOnly, boolean isAllowInvites,
+                                                 long owner, String members) {
+        return mEasemobClient.createGroup(groupName, groupIntro, isPublic ? 1 : 0, maxUser, isMemberOnly, isAllowInvites ? 1 : 0, owner, members)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
