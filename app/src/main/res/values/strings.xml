@@ -201,6 +201,7 @@
     <string name="send_info">投稿</string>
     <string name="open_zhibo">直播</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
+    <string name="dynamic_close_pay">暂时关闭发布付费内容</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
@@ -248,6 +249,7 @@
 
     <!--圈子-->
     <string name="circle_master">圈主</string>
+    <string name="circle_master_manager">圈主和管理员</string>
     <string name="circle_dealing">操作中</string>
     <string name="administrator">管理员</string>
     <string name="joined_group">我加入的</string>
@@ -272,17 +274,21 @@
     <string name="circle_detail_usercount">成员：	%d</string>
     <string name="circle_detail_postcount">%d个帖子</string>
     <string name="circle_manager_attorn">选择新圈主</string>
-    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给 %2$s 使其成为新的圈主？</string>
+    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给%2$s\n使其成为新的圈主？</string>
     <string name="circle_manager_attorn_success">圈子转让成功</string>
     <string name="circle_manager_attorn_failed">圈子转让失败</string>
-    <string name="circle_manager_format">管理员(%d)</string>
+    <string name="circle_manager_format">圈管理(%d)</string>
     <string name="circle_member_format">成员(%d)</string>
+    <string name="circle_post_from">来自	%s</string>
+    <string name="from">来自</string>
     <string name="circle_blacklist_format">黑名单(%d)</string>
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
-    <string name="circle_blocked">封闭圈子!</string>
+    <string name="circle_blocked">需要加入才可进入详情!</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
     <string name="post_undo_top">撤销置顶</string>
     <string name="post_apply_top">置顶帖子</string>
+    <string name="post_apply_top_days">可选范围1~30天</string>
+    <string name="set_post_apply_top_days">设置帖子置顶天数</string>
     <string name="delete_post">删除帖子</string>
     <string name="post_publishing">发贴中</string>
     <string name="post_publish_select_circle">请选择一个圈子</string>
@@ -290,9 +296,15 @@
     <string name="post_publish_select_content">你的内容呢..</string>
 
     <string-array name="post_typpe_array">
-        <item>全部帖子</item>
         <item>最新帖子</item>
         <item>最新回复</item>
+    </string-array>
+    <string-array name="default_location_array">
+        <item>金星</item>
+        <item>水星</item>
+        <item>土星</item>
+        <item>火星</item>
+        <item>地球</item>
     </string-array>
     <string name="post_typpe_all">全部帖子</string>
     <string name="post_typpe_new">最新帖子</string>
@@ -323,6 +335,7 @@
     <string name="edit_circle_charge">收费入圈</string>
     <string name="edit_circle_free">免费入圈</string>
     <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
+    <string name="close_circle_rule">收费圈子不能改成公开或私有圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
     <string name="circle_rule">圈子创建协议</string>
@@ -372,7 +385,9 @@
     <string name="collect_info">资讯</string>
     <string name="collect_activity">活动</string>
     <string name="collect_album">专辑</string>
-    <string name="group_collect_dynamic">圈子</string>
+    <string name="collect_post">帖子</string>
+    <string name="collect_question">问题</string>
+    <string name="collect_answer">回答</string>
 
     <!--动态置顶-->
     <string name="yuan">元</string>
@@ -394,6 +409,8 @@
     <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
     <string name="dynamic_list_top_success">申请置顶成功</string>
     <string name="comment_top_success">申请评论置顶成功</string>
+    <string name="post_top_success">帖子置顶成功</string>
+    <string name="post_top_failed">帖子置顶失败</string>
     <string name="to_top_description">当前平均置顶金额%1$.2f / 天，钱包余额%2$.2f</string>
 
     <!--设置评论收费-->
@@ -818,7 +835,7 @@
     <string name="comment_format_reply">%1$s 回复 %2$s</string>
     <string name="comment_format_reply_you">%s回复了你</string>
     <string name="comment_format_feed">%s评论了你的动态</string>
-    <string name="comment_format_group_feed">%s评论了你的圈子</string>
+    <string name="comment_format_group_feed">%s评论了你的帖子</string>
     <string name="comment_format_music">%s评论了你的音乐</string>
     <string name="comment_format_music_specials">%s评论了你的专辑</string>
     <string name="comment_format_news">%s评论了你的文章</string>

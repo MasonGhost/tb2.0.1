@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -21,6 +22,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -74,6 +76,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String POST_ID = "post_id";
+    public static final String BAKC2CIRCLE = "bakc2circle";
     public static final String POST = "post";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
 
@@ -164,6 +167,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        boolean canGotoCircle = false;
         if (mCirclePostDetailBean == null && getArguments() != null) {
             mCirclePostDetailBean = getArguments().getParcelable(POST);
             if (mCirclePostDetailBean == null) {
@@ -171,12 +175,12 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 mCirclePostDetailBean.setGroup_id(getArguments().getLong(CIRCLE_ID));
                 mCirclePostDetailBean.setId(getArguments().getLong(POST_ID));
             }
+            canGotoCircle = getArguments().getBoolean(BAKC2CIRCLE);
             mIsLookMore = getArguments().getBoolean(LOOK_COMMENT_MORE);
         }
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(getString(R.string.post_detail));
-        initHeaderView();
+        initHeaderView(canGotoCircle);
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
@@ -255,7 +259,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mCirclePostDetailBean = data;
         onNetResponseSuccess(data.getComments(), false);
         initBottomToolData(data);
-//        setToolBarInfo();
+        setToolBarInfo();
     }
 
     @Override
@@ -315,6 +319,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 }
             }
         }
+    }
+
+    @Override
+    public void upDateFollowFansState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -400,9 +409,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
 
-    private void initHeaderView() {
+    private void initHeaderView(boolean canGotoCircle) {
         mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());
         mPostDetailHeaderView.setWebLoadListener(this);
+        mPostDetailHeaderView.setCanGotoCircle(canGotoCircle);
         mHeaderAndFooterWrapper.addHeaderView(mPostDetailHeaderView.getInfoDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -463,6 +473,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     break;
                 // 更多
                 case ITEM_POSITION_3:
+                    if (isBlackList && mCirclePostDetailBean.getUser_id() != AppApplication.getMyUserIdWithdefault()) {
+                        showAuditTipPopupWindow(getString(R.string.circle_member_added_blacklist));
+                        return;
+                    }
                     initDealPostPopupWindow(mCirclePostDetailBean, mCirclePostDetailBean
                             .getCollected());
                     mDealPostPopWindow.show();
@@ -480,8 +494,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .subscribe(aVoid -> getActivity().finish());
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                });
+                .subscribe(aVoid -> mPresenter.handleFollowUser(mCirclePostDetailBean.getUserInfoBean()));
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
@@ -492,9 +505,9 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     mVShadow.setVisibility(View.GONE);
 
                 });
-//        RxView.clicks(mTvToolbarCenter)
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
+        RxView.clicks(mTvToolbarCenter)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
         RxView.clicks(mIvUserPortrait)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mCirclePostDetailBean.getUserInfoBean()));
@@ -520,6 +533,21 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         UserInfoBean userInfoBean = mCirclePostDetailBean.getUserInfoBean();
         mTvToolbarCenter.setText(userInfoBean.getName());
         ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
+    }
+
+    /**
+     * 设置toolBar上面的关注状态
+     */
+    private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
+        mTvToolbarRight.setVisibility(View.VISIBLE);
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother),
+                    null);
+        } else if (userInfoBean1.isFollower()) {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+        } else {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
+        }
     }
 
     private void initBottomToolData(CirclePostListBean circlePostDetailBean) {
@@ -579,10 +607,10 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
         mDealPostPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine && !isBlackList && !isManager ? getString(R.string.post_apply_for_top) : "")
                 .item2Str(getString(isManager ? (isPinned ? R.string.post_undo_top : R.string.post_apply_top) : R.string.empty))
-                .item3Str(isMine ? getString(R.string.info_delete) : (!isBlackList ? getString(isCollected ? R
+                .item3Str(isMine ? getString(R.string.delete_post) : (!isBlackList ? getString(isCollected ? R
                         .string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic) : null))
-                .item4Str(getString(isManager && !isMine ? R.string.info_delete : R.string.empty))
-                .item5Str(isMine || isBlackList ? getString(R.string.empty) : getString(R.string.report))
+                .item4Str(getString(isManager && !isMine ? R.string.delete_post : R.string.empty))
+                .item5Str(isMine || isBlackList || isManager ? getString(R.string.empty) : getString(R.string.report))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -610,7 +638,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     if (isPinned) {
                         mPresenter.undoTopPost(circlePostListBean.getId());
                     } else {
-                        mPresenter.stickTopPost(circlePostListBean.getId(), 30);
+                        managerStickTop(circlePostListBean.getId());
                     }
                     mDealPostPopWindow.hide();
                 })
@@ -618,8 +646,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                     // 收藏
                     // 如果是自己发布的，则不能收藏只能删除
                     if (isMine) {
-                        EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
-                        getActivity().finish();
+                        showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
                     } else {
                         mPresenter.handleCollect(!circlePostListBean.getCollected(),
                                 circlePostListBean.getId());
@@ -628,8 +655,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 })
                 .item4ClickListener(() -> {
                     // 管理员删除
-                    EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
-                    getActivity().finish();
+                    showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean);
                     mDealPostPopWindow.hide();
                 })
                 .item5ClickListener(() -> {
@@ -644,14 +670,11 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                                         .getDimensionPixelOffset(R.dimen.report_resource_img),
                                 100);
                     }
-                    String name = "";
-                    if (circlePostListBean.getUser() != null) {
-                        name = circlePostListBean.getUser().getName();
-                    }
+
                     ReportActivity.startReportActivity(mActivity, new ReportResourceBean
                             (circlePostListBean.getUser(), String.valueOf
                                     (circlePostListBean.getId()),
-                                    name, img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
+                                    circlePostListBean.getTitle(), img, circlePostListBean.getSummary(), ReportType.CIRCLE_POST));
                     mDealPostPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealPostPopWindow.hide())
@@ -698,5 +721,48 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
                 .with(getActivity())
                 .bottomClickListener(() -> mAuditTipPop.hide()).build();
         mAuditTipPop.show();
+    }
+
+    private void managerStickTop(Long id) {
+        LinkDialog dialog = createLinkDialog();
+        dialog.setListener(new LinkDialog.OnDialogClickListener() {
+            @Override
+            public void onConfirmButtonClick(String name, String url) {
+                if (TextUtils.isEmpty(url)) {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                    return;
+                }
+                int day = Integer.valueOf(url);
+                if (day > 0 && day <= 31) {
+                    mPresenter.stickTopPost(id, day);
+                    dialog.dismiss();
+                } else {
+                    dialog.setErrorMessage(getString(R.string.post_apply_top_days));
+                }
+            }
+
+            @Override
+            public void onCancelButtonClick() {
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getFragmentManager(), LinkDialog.Tag);
+    }
+
+    private LinkDialog createLinkDialog() {
+        return LinkDialog.createLinkDialog()
+                .setUrlHinit(getString(R.string.post_apply_top_days))
+                .setTitleStr(getString(R.string.set_post_apply_top_days))
+                .setNameVisible(false)
+                .setNeedNumFomatFilter(true);
+    }
+
+    protected void showDeleteTipPopupWindow(String tipStr,
+                                            boolean createEveryTime, final CirclePostListBean circlePostListBean) {
+        super.showDeleteTipPopupWindow(tipStr, () -> {
+            mPresenter.setNeedDynamicListRefresh(false);
+            EventBus.getDefault().post(circlePostListBean, POST_LIST_DELETE_UPDATE);
+            mActivity.finish();
+        }, createEveryTime);
     }
 }

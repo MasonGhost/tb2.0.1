@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.FeedBackRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class FeedBackPresenterModule {
         return mView;
     }
 
-    @Provides
-    FeedBackContract.Repository provideFeedBackContractRepository(FeedBackRepository feedBackRepository) {
-        return feedBackRepository;
-    }
 }

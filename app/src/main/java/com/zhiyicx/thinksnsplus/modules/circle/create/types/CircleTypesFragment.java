@@ -12,7 +12,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerContract;
+import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerPresenter;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -70,6 +73,18 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        // 发布提示 1、首先需要认证 2、需要付费
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
+        mPresenter.checkCertification();
+
+    }
+
+    @Override
+    protected void setRightLeftClick() {
+        super.setRightLeftClick();
+        CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
     }
 
     @Override
@@ -86,6 +101,16 @@ public class CircleTypesFragment extends TSFragment<AllCircleContainerContract.P
     protected void initView(View rootView) {
         mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
                 DEFAULT_COLUMN));
+        if (getArguments() != null) {
+            boolean isFromAllCircle = getArguments().getBoolean(AllCircleContainerFragment.BUNDLE_ALL_CIRCLE_CATEGORY);
+            if (isFromAllCircle) {
+                setToolBarRightImage(R.mipmap.ico_createcircle);
+                mToolbarRight.setVisibility(View.VISIBLE);
+                mToolbarRightLeft.setVisibility(View.VISIBLE);
+                setToolBarRightLeftImage(R.mipmap.ico_search);
+                mToolbarCenter.setText(R.string.all_group);
+            }
+        }
     }
 
     private CommonAdapter initUnsubscribeAdapter() {

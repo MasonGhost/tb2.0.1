@@ -32,6 +32,8 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 
+import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_SIZE;
+
 /**
  * @author LiuChao
  * @describe
@@ -75,7 +77,7 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
         } else {
             Subscription subscribe = mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
-                    , DEFAULT_NEARBY_RADIUS, FindSomeOneListPresenter.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment
+                    , DEFAULT_NEARBY_RADIUS, DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment
                             .DEFAULT_PAGE)
                     .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
                         @Override

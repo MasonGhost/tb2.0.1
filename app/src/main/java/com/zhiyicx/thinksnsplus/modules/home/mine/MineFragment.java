@@ -74,8 +74,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     TextView mTvUserName;
     @BindView(R.id.tv_user_signature)
     TextView mTvUserSignature;
-    @BindView(R.id.rl_userinfo_container)
-    RelativeLayout mRlUserinfoContainer;
     @BindView(R.id.tv_fans_count)
     TextView mTvFansCount;
     @BindView(R.id.tv_follow_count)
@@ -84,7 +82,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtWallet;
     @BindView(R.id.bt_certification)
     CombinationButton mBtCertification;
-
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
 

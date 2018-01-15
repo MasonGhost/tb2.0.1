@@ -58,7 +58,7 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment {
             .line_height;
 
     public static final String TYPE_ALL = "all";
-    //    public static final String TYPE_NOT_READ = "not_read";
+    public static final String TYPE_FOLLOW = "follow";
     public static final String TYPE_INVITE = "invitation";
     public static final String TYPE_ADOPTION = "adoption";
     public static final String TYPE_OTHER = "other";

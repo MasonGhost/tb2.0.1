@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 
+import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_SIZE;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEARBY;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEW;
@@ -33,18 +34,12 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 @FragmentScoped
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
-    public static final int DEFAULT_PAGE_SIZE = 15;
-    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-
+    @Inject
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView
-            , FollowFansBeanGreenDaoImpl followFansBeanGreenDao
-            , UserInfoRepository userInfoRepository) {
+    public FindSomeOneListPresenter(FindSomeOneListContract.View rootView) {
         super(rootView);
-        mFollowFansBeanGreenDao = followFansBeanGreenDao;
-        mUserInfoRepository = userInfoRepository;
     }
 
     @Override

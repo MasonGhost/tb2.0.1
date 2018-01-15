@@ -4,9 +4,11 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleSearchHistoryBean;
@@ -16,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +45,20 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     Subscription mSearchSub;
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
     @Inject
     public BaseCircleListPresenter(BaseCircleListContract.View rootView
-    ,CircleInfoGreenDaoImpl circleInfoGreenDao
-    ,CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
-    ,BaseCircleRepository baseCircleRepository) {
+            , CircleInfoGreenDaoImpl circleInfoGreenDao
+            , CircleSearchBeanGreenDaoImpl circleSearchBeanGreenDao
+            , BaseCircleRepository baseCircleRepository) {
         super(rootView);
-        mCircleInfoGreenDao=circleInfoGreenDao;
-        mCircleSearchBeanGreenDao=circleSearchBeanGreenDao;
-        mBaseCircleRepository=baseCircleRepository;
+        mCircleInfoGreenDao = circleInfoGreenDao;
+        mCircleSearchBeanGreenDao = circleSearchBeanGreenDao;
+        mBaseCircleRepository = baseCircleRepository;
     }
 
     @Override
@@ -219,7 +227,7 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
 
     @Override
     public List<CircleSearchHistoryBean> getFirstShowHistory() {
-        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA,true);
+        return mCircleSearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA, true);
     }
 
     @Override
@@ -235,6 +243,21 @@ public class BaseCircleListPresenter extends AppBasePresenter<BaseCircleListCont
     @Override
     public void deleteSearchHistory(CircleSearchHistoryBean qaSearchHistoryBean) {
         mCircleSearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CIRCLE)
+    public void updateCircle(CircleInfo circleInfo) {
+        int index = -1;
+        for (CircleInfo circle : mRootView.getListDatas()) {
+            if (circle.equals(circleInfo)) {
+                index = mRootView.getListDatas().indexOf(circle);
+            }
+        }
+        if (index != -1) {
+            mRootView.getListDatas().set(index, circleInfo);
+        }
+        mRootView.refreshData(index);
+        LogUtils.d(EventBusTagConfig.EVENT_UPDATE_CIRCLE);
     }
 
 }

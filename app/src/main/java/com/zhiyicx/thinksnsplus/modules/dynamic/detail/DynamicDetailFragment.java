@@ -85,9 +85,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public static final String DYNAMIC_DETAIL_DATA_POSITION = "dynamic_detail_data_position";
     public static final String LOOK_COMMENT_MORE = "look_comment_more";
     // 动态详情列表，各个item的位置
-    private static final int DYNAMIC_ITEM_CONTENT = 0;
-    private static final int DYNAMIC_ITEM_DIG = 1;
-    //private static final int DYNAMIC_ITEM_COMMENT >1;
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -101,16 +98,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     TextView mTvToolbarLeft;
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
-    @BindView(R.id.toolbar_top_blank)
-    View mToolbarTopBlank;
 
     private List<RewardsListBean> mRewardsListBeens = new ArrayList<>();
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
@@ -219,9 +212,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
-        mToolbar.setOnSystemUiVisibilityChangeListener(visibility -> {
 
-        });
     }
 
     private void initHeaderView() {
@@ -647,15 +638,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item1ClickListener(() -> {
+                    // 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mOtherDynamicPopWindow.hide();
                 })
-                .item2ClickListener(() -> {// 分享
+                .item2ClickListener(() -> {
+                    // 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
                     mOtherDynamicPopWindow.hide();
                 })
-                .item3ClickListener(() -> {                    // 举报帖子
+                .item3ClickListener(() -> {
+                    // 举报
                     String img = "";
                     if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
                         img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()
@@ -688,26 +682,32 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item3ClickListener(() -> {// 置顶
+                .item3ClickListener(() -> {
+                    // 置顶
                     StickTopFragment.startSticTopActivity(getActivity(), StickTopFragment.TYPE_DYNAMIC, dynamicBean.getId());
                     mMyDynamicPopWindow.hide();
                 })
-                .item4ClickListener(() -> {// 删除
+                .item4ClickListener(() -> {
+                    // 删除
                     mMyDynamicPopWindow.hide();
                     showDeleteTipPopupWindow(getString(R.string.dynamic_list_delete_dynamic), () -> {
+                        mPresenter.setNeedDynamicListRefresh(false);
                         EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
                         getActivity().finish();
                     }, true);
                 })
-                .item2ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {
+                    // 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mMyDynamicPopWindow.hide();
                 })
-                .item1ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {
+                    // 分享
                     mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
                     mMyDynamicPopWindow.hide();
                 })
-                .bottomClickListener(() -> {//取消
+                .bottomClickListener(() -> {
+                    //取消
                     mMyDynamicPopWindow.hide();
                 })
                 .build();
@@ -801,5 +801,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissPop(mDeletCommentPopWindow);
+        dismissPop(mOtherDynamicPopWindow);
+        dismissPop(mMyDynamicPopWindow);
+        dismissPop(mPayImagePopWindow);
+        dismissPop(mReSendCommentPopWindow);
     }
 }

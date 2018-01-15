@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
@@ -90,16 +91,16 @@ public class AppApplication extends TSApplication {
     /**
      * 丢帧检查设置
      */
-    static {
-        try {
-            Field field = Choreographer.class.getDeclaredField("SKIPPED_FRAME_WARNING_LIMIT");
-            field.setAccessible(true);
-            // 可设置最大丢帧时显示丢帧日志
-            field.set(Choreographer.class, 20);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+//    static {
+//        try {
+//            Field field = Choreographer.class.getDeclaredField("SKIPPED_FRAME_WARNING_LIMIT");
+//            field.setAccessible(true);
+//            // 可设置最大丢帧时显示丢帧日志
+//            field.set(Choreographer.class, 20);
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Inject
     AuthRepository mAuthRepository;
@@ -113,7 +114,6 @@ public class AppApplication extends TSApplication {
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
-    private static String TOKEN = "none";
     public static List<Integer> sOverRead = new ArrayList<>();
 
     public int mActivityCount = 0;
@@ -293,9 +293,11 @@ public class AppApplication extends TSApplication {
      * @param tipStr
      */
     private void handleAuthFail(final String tipStr) {
-        if (!(ActivityHandler
-                .getInstance().currentActivity() instanceof LoginActivity) && ActivityHandler
-                .getInstance().currentActivity() instanceof TSActivity) {
+        boolean showDialog = !(ActivityHandler
+                .getInstance().currentActivity() instanceof LoginActivity || ActivityHandler
+                .getInstance().currentActivity() instanceof GuideActivity) && ActivityHandler
+                .getInstance().currentActivity() instanceof TSActivity;
+        if (showDialog) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
                 // 清理登录信息 token 信息
@@ -410,9 +412,6 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
-        if (mCurrentLoginAuth != null) {
-            TOKEN = mCurrentLoginAuth.getToken();
-        }
     }
 
     public static String getTOKEN() {
@@ -509,6 +508,7 @@ public class AppApplication extends TSApplication {
     public void onLowMemory() {
         super.onLowMemory();
         LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
+        // TODO: 2018/1/9 内存不够处理
     }
 
 }

@@ -132,8 +132,6 @@ public class MessageRepository implements IMessageRepository {
                                     for (int i = 0; i < datas.size(); i++) {
                                         datas.get(i).setUserInfo(userInfoBeanSparseArray.get(datas.get(i).getUserInfo().getUser_id().intValue()));
                                     }
-                                    // 存储用户信息
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
                                     return datas;
                                 });
 
@@ -337,9 +335,6 @@ public class MessageRepository implements IMessageRepository {
                                         }
                                         messageItemBean.setUserInfo(userInfoBeanSparseArray.get(messageItemBean.getUserInfo().getUser_id()
                                                 .intValue()));
-                                        // 存储用户信息
-                                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
-
                                         return messageItemBean;
                                     });
 

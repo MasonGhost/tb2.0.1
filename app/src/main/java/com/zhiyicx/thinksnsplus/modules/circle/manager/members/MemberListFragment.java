@@ -1,22 +1,25 @@
 package com.zhiyicx.thinksnsplus.modules.circle.manager.members;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.HanziToPinyin;
 import com.zhiyicx.common.utils.recycleviewdecoration.StickySectionDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -60,6 +63,9 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     protected boolean isSearch;
 
+    /**
+     * 用于本地筛选
+     */
     List<CircleMembers> cache = new ArrayList<>();
 
     private long mCircleId;
@@ -68,6 +74,8 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     protected boolean mPermissionManager;
     protected boolean mPermissionOwner;
     protected boolean mPermissionMember;
+
+    private String mSearchContent = "";
 
     public static MemberListFragment newInstance(Bundle bundle) {
         MemberListFragment memberListFragment = new MemberListFragment();
@@ -110,6 +118,15 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
         return mCircleId;
     }
 
+    /**
+     * 是否是转让圈子界面
+     *
+     * @return
+     */
+    protected boolean isAttornCircle() {
+        return false;
+    }
+
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return new CommonAdapter<CircleMembers>(getActivity(), R.layout.item_circle_member,
@@ -118,14 +135,17 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
             protected void convert(ViewHolder holder, CircleMembers circleMembers, int position) {
                 holder.setText(R.id.tv_member_name, circleMembers.getUser().getName());
                 ImageView more = holder.getImageViwe(R.id.iv_member_more);
+                UserAvatarView headImage = holder.getView(R.id.uv_member_head);
                 TextView tag = holder.getTextView(R.id.tv_member_tag);
 
                 boolean isManager = CircleMembers.ADMINISTRATOR.equals(circleMembers.getRole());
                 boolean isOwner = CircleMembers.FOUNDER.equals(circleMembers.getRole());
 
-
-                more.setVisibility((mPermissionMember || isOwner) || (isManager && mPermissionManager) ? View
+                boolean moreVisible = !((mPermissionMember || isOwner) || (isManager && mPermissionManager)) && needMore();
+                more.setVisibility(!moreVisible ? View
                         .INVISIBLE : View.VISIBLE);
+
+                ImageUtils.loadCircleUserHeadPic(circleMembers.getUser(), headImage);
 
                 tag.setVisibility((isManager || isOwner) ? View.VISIBLE : View.GONE);
                 tag.setBackgroundResource(isOwner ? R.drawable.shape_bg_circle_radus_gold : R
@@ -134,6 +154,16 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
                 RxView.clicks(more)
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .subscribe(aVoid -> initPopWindow(more, position, circleMembers));
+
+                RxView.clicks(holder.itemView)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                        .subscribe(aVoid -> {
+                            if (isAttornCircle()) {
+                                initPopWindow(more, position, circleMembers);
+                            } else {
+                                PersonalCenterFragment.startToPersonalCenter(mActivity, circleMembers.getUser());
+                            }
+                        });
             }
         };
     }
@@ -142,8 +172,22 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     protected void initView(View rootView) {
         super.initView(rootView);
         mFragmentInfoSearchEdittext.setHint(getString(R.string.info_search));
-        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData
-                (charSequence));
+//        RxTextView.textChanges(mFragmentInfoSearchEdittext).subscribe(charSequence -> filterData
+//                (charSequence));
+
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext)
+                .filter(textViewEditorActionEvent -> !mSearchContent.equals(mFragmentInfoSearchEdittext.getText().toString()))
+                .subscribe(textViewEditorActionEvent -> {
+                    if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                        mSearchContent = mFragmentInfoSearchEdittext.getText().toString();
+                        if (mRefreshlayout.isRefreshing()) {
+                            onRefresh(mRefreshlayout);
+                        } else {
+                            mRefreshlayout.autoRefresh();
+                        }
+                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+                    }
+                });
     }
 
     @Override
@@ -152,18 +196,53 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
     }
 
     @Override
+    public String getSearchContent() {
+        return mSearchContent;
+    }
+
+    @Override
     public int[] getGroupLengh() {
         return mFrouLengh;
     }
 
     @Override
-    public boolean needManager() {
+    public String getMemberType() {
+        return CircleMembers.AUDIT_MEMBER;
+    }
+
+    /**
+     * 是否需要圈主
+     *
+     * @return
+     */
+    @Override
+    public boolean needFounder() {
         return true;
     }
 
+    /**
+     * 是否需要黑名单
+     *
+     * @return
+     */
     @Override
     public boolean needBlackList() {
-        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
+//        return !CircleMembers.BLACKLIST.equals(mRole) && !CircleMembers.MEMBER.equals(mRole);
+        return false;
+    }
+
+    @Override
+    public boolean needMember() {
+        return true;
+    }
+
+    /**
+     * 是否需要更多操作按钮
+     *
+     * @return
+     */
+    protected boolean needMore() {
+        return true;
     }
 
     @Override
@@ -301,9 +380,23 @@ public class MemberListFragment extends TSListFragment<MembersContract.Presenter
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra(CIRCLEID, mListDatas.size());
-        mActivity.setResult(Activity.RESULT_OK, intent);
+//        Intent intent = new Intent();
+//        intent.putExtra(CIRCLEID, mListDatas.size());
+//        mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
+    }
+
+    public enum MemberRole {
+        TYPE_ALL("all"),
+        TYPE_MANAGER("manager"),
+        TYPE_MEMBER("member"),
+        TYPE_BLACKLIST("blacklist"),
+        TYPE_AUDIT("audit");
+
+        public String value;
+
+        MemberRole(String value) {
+            this.value = value;
+        }
     }
 }

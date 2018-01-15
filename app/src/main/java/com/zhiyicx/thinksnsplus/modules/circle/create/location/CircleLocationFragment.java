@@ -74,12 +74,16 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
     private AMapLocationClient mLocationClient;
 
     protected AnimationDrawable mAnimationDrawable;
-    private String mCurrentLocation = "";
 
     private List<PoiItem> mPoiItems = new ArrayList<>();
 
     @Override
     protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
         return false;
     }
 
@@ -148,11 +152,18 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
-                aMapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
-                double latitude = aMapLocation.getLatitude();//获取纬度
-                double longitude = aMapLocation.getLongitude();//获取经度
+                //获取当前定位结果来源，如网络定位结果，详见定位类型表
+                aMapLocation.getLocationType();
+
+                //获取纬度
+                double latitude = aMapLocation.getLatitude();
+                //获取经度
+                double longitude = aMapLocation.getLongitude();
+                
                 aMapLocation.getAddress();
-                aMapLocation.getAccuracy();//获取精度信息
+
+                //获取精度信息
+                aMapLocation.getAccuracy();
 
                 // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
                 PoiSearch.Query query = new PoiSearch.Query("", LOCATION_DATA, aMapLocation.getAdCode());
@@ -162,8 +173,6 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
                         1000));
                 search.setOnPoiSearchListener(this);
                 search.searchPOIAsyn();
-                mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() +
-                        " " + aMapLocation.getCity();
                 mTvCurrentLocation.setText(aMapLocation.getCity());
 
             } else {
@@ -223,16 +232,15 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
 
         //初始化AMapLocationClientOption对象
         mLocationOption = new AMapLocationClientOption();
-
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //获取最近3s内精度最高的一次定位结果：
         //设置setOnceLocationLatest(boolean b)
         // 接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)
         mLocationOption.setOnceLocationLatest(true);
+        mLocationOption.setOnceLocation(true);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
-        mLocationOption.setInterval(Integer.MAX_VALUE);
         mLocationClient = new AMapLocationClient(getContext());
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption);

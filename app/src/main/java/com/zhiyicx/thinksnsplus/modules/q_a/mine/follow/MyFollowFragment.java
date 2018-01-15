@@ -16,14 +16,8 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivi
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyFollowQuestionAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.QuestionTopicAdapter;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.DaggerMyAnswerComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerPresenterModule;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 

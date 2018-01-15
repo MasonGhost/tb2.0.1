@@ -14,6 +14,10 @@ import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -54,6 +58,11 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<CircleInfo> data) {
+        return (long) mListDatas.size();
     }
 
     public static CircleListFragment newInstance(String type) {
@@ -107,9 +116,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     @Override

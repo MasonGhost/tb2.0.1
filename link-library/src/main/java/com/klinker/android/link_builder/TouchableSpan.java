@@ -91,8 +91,8 @@ public class TouchableSpan extends TouchableBaseSpan {
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
                     String result = targetStr.substring(matcher1.start(), matcher1.end());
-                    result=result.replaceFirst("<", "");
-                    result=result.replaceFirst(">", "");
+                    result = result.replaceFirst("<", "");
+                    result = result.replaceFirst(">", "");
                     splitTextList.add(result);
                 }
             }
@@ -119,8 +119,8 @@ public class TouchableSpan extends TouchableBaseSpan {
                 Matcher matcher1 = pattern.matcher(targetStr);
                 while (matcher1.find()) {
                     String result = targetStr.substring(matcher1.start(), matcher1.end());
-                    result=result.replaceFirst("<", "");
-                    result=result.replaceFirst(">", "");
+                    result = result.replaceFirst("<", "");
+                    result = result.replaceFirst(">", "");
                     splitTextList.add(result);
                 }
             }

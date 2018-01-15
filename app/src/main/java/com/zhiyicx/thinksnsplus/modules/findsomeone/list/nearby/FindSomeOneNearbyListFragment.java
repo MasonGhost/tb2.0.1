@@ -96,8 +96,4 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
         refreshData();
     }
 
-    @Override
-    protected int getPagesize() {
-        return FindSomeOneListPresenter.DEFAULT_PAGE_SIZE;
-    }
 }

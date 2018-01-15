@@ -214,7 +214,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initTollState() {
-        mTvToll.setEnabled(mPresenter.getSystemConfigBean().getFeed().hasPaycontrol());
 //        mLLToll.setVisibility(isToll && dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC ? View.VISIBLE : View.GONE);
     }
 
@@ -380,16 +379,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        // selectedPhotos.size() == 0 这个是为了配合这个
-//        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {
-//            // 占位缺省图
-//            ImageBean camera = new ImageBean();
-//            selectedPhotos.add(camera);
-//            if (mCommonAdapter != null) {
-//                mTvToll.getCombinedButtonImgRight().performClick();
-//            }
-//        }
-
         if (selectedPhotos.size() < MAX_PHOTOS) {
             // 占位缺省图
             ImageBean camera = new ImageBean();
@@ -511,18 +500,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 发布按钮的状态监听
      */
     private void initSendDynamicBtnState() {
-        mEtDynamicTitle.setOnFocusChangeListener((v, hasFocus) -> {
-//                System.out.println("hasFocus = " + hasFocus);
-        });
 
         mEtDynamicContent.setContentChangedListener(s -> {
             hasContent = !TextUtils.isEmpty(s);
             setSendDynamicState();
         });
 
-        mTvToll.setVisibility(BuildConfig.USE_TOLL ? View.VISIBLE : View.GONE);
-
         mTvToll.setRightImageClickListener(v -> {
+            if (!mPresenter.getSystemConfigBean().getFeed().hasPaycontrol()) {
+                showSnackErrorMessage(getString(R.string.dynamic_close_pay));
+                return;
+            }
             isToll = !isToll;
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
@@ -533,23 +521,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 sl_send_dynamic.smoothScrollTo(0, 0);
             } else {
                 mCommonAdapter.notifyDataSetChanged();
-                /*           这里估计是要删的                       */
-//                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
-//                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
-//                        mCommonAdapter.notifyDataSetChanged();
-//                        return; // 九张
-//                    }
-//                    if (isToll) {
-//                        selectedPhotos.remove(selectedPhotos.size() - 1);
-//                    } else {
-//                        // addPlaceHolder();
-//                        selectedPhotos.add(new ImageBean());
-//                    }
-//                    mCommonAdapter.notifyDataSetChanged();
-//                }
-                /*                                                           */
-
-
             }
         });
 

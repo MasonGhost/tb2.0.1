@@ -13,8 +13,10 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 public class CircleMembers extends BaseListBean {
 
     public static final String FOUNDER = "founder";
+    public static final String ALL = "all";
     public static final String ADMINISTRATOR = "administrator";
     public static final String MEMBER = "member";
+    public static final String AUDIT_MEMBER = "audit_user";
     public static final String BLACKLIST = "blacklist";
 
     /**
@@ -45,6 +47,11 @@ public class CircleMembers extends BaseListBean {
     private String created_at;
     private String updated_at;
     private UserInfoBean user;
+
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
 
     public Long getId() {
         return id;

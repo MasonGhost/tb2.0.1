@@ -1,10 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,9 +23,4 @@ public class InfoChannelPresenterModule {
         return mView;
     }
 
-    @Provides
-    InfoChannelConstract.Reppsitory provideInfoChannelReppsitory(ServiceManager serviceManager,
-                                                                 Application application) {
-        return new InfoChannelRepository(serviceManager,application);
-    }
 }

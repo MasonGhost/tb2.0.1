@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.circle.mine.joined;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +11,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.DaggerMyFollowComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowPresenterModule;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +39,8 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
 
     @Inject
     BaseCircleListPresenter mCircleListPresenter;
+
+    private CircleListItem mCircleListItem;
 
     private boolean mIsNeedToolBar;
 
@@ -96,7 +93,8 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        adapter.addItemViewDelegate(new CircleListItem(isMineJoined(), mActivity, this, mPresenter));
+        mCircleListItem = new CircleListItem(isMineJoined(), mActivity, this, mPresenter);
+        adapter.addItemViewDelegate(mCircleListItem);
         return adapter;
     }
 
@@ -108,6 +106,14 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         initDagger();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        if (mCircleListItem != null) {
+            mCircleListItem.setPresenter(mPresenter);
+        }
     }
 
     protected void initDagger() {
@@ -156,9 +162,7 @@ public class BaseCircleListFragment extends TSListFragment<BaseCircleListContrac
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        Intent intent = new Intent(getActivity(), CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     @Override

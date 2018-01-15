@@ -181,6 +181,6 @@ public class TopPostCommentItem extends BaseTopItem implements BaseTopItem.TopRe
     }
 
     protected void toDetail(CirclePostListBean postListBean,boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mContext,postListBean,isLookMoreComment,true);
     }
 }

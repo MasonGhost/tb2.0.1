@@ -485,6 +485,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
                         }
                     }
                     break;
+                    default:
             }
 
             // Try the Scale/Drag detector

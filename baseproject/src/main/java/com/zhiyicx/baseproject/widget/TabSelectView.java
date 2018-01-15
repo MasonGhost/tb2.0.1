@@ -236,7 +236,7 @@ public class TabSelectView extends FrameLayout {
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator linePagerIndicator = new LinePagerIndicator(context);
                 linePagerIndicator.setMode(mLinePagerIndicator);// 适应文字长度
-                //linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
+                linePagerIndicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);// 占满
                 linePagerIndicator.setXOffset(-UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_PADDING)));// 每个item边缘到指示器的边缘距离
                 linePagerIndicator.setLineHeight(UIUtil.dip2px(context, context.getResources().getInteger(DEFAULT_TAB_LINE_HEGIHT)));
                 linePagerIndicator.setColors(ContextCompat.getColor(context, DEFAULT_TAB_LINE_COLOR));

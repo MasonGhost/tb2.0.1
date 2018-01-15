@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputAc
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.CircleListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTyepsActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.create.types.CircleTypesFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
 
@@ -29,6 +30,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.detail.Certificatio
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleFragment.REQUST_CODE_CATEGORY;
 
 /**
  * @Author Jliuer
@@ -38,6 +40,10 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  */
 public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleContainerContract.Presenter>
         implements AllCircleContainerContract.View {
+
+    public static final String BUNDLE_ALL_CIRCLE_CATEGORY = "all_circle_category";
+
+    private CircleTypeBean mCircleTypeBean;
 
     private List<String> mTitle;
 
@@ -96,6 +102,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
         tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
+        mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override
@@ -133,17 +140,30 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         mTsvToolbar.showDivider(false);
         mTsvToolbar.setIndicatorMatchWidth(true);
         mVpFragment = (ViewPager) rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
-        mVpFragment.setOffscreenPageLimit(getOffsetPage());
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
+        mVpFragment.setOffscreenPageLimit(mFragmentList.size());
         mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, () -> setLeftClick());
         mTsvToolbar.setRightClickListener(this, () -> {
             Intent typeIntent = new Intent(getActivity(), CircleTyepsActivity.class);
-            startActivity(typeIntent);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(BUNDLE_ALL_CIRCLE_CATEGORY, true);
+            typeIntent.putExtras(bundle);
+            startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUST_CODE_CATEGORY && data != null && data.getExtras() != null) {
+            mCircleTypeBean = data.getExtras().getParcelable(CircleTypesFragment.BUNDLE_CIRCLE_CATEGORY);
+            mVpFragment.setCurrentItem(mTitle.indexOf(mCircleTypeBean.getName()));
+        }
+
     }
 
     @Override
@@ -187,9 +207,11 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item2ClickListener(() -> {// 个人认证
+                    .item2ClickListener(() -> {
+                        // 个人认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        if (mUserCertificationInfo != null
+                                // 待审核
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
@@ -206,9 +228,11 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
                             startActivity(intent);
                         }
                     })
-                    .item3ClickListener(() -> {// 企业认证
+                    .item3ClickListener(() -> {
+                        // 企业认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        if (mUserCertificationInfo != null
+                                // 待审核
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 

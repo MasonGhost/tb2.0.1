@@ -36,15 +36,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleSearchBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
@@ -146,10 +142,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         });
                 addSubscrebe(subscribe);
 
-            }else{
+            } else {
                 Subscription subscribe = mBaseCircleRepository
-                                .getPostListFromCircle
-                                        (mRootView.getCircleId(), maxId, mRootView.getType())
+                        .getPostListFromCircle(mRootView.getCircleId(), maxId, mRootView.getType())
                         .map(data -> {
                             for (int i = 0; i < data.size(); i++) {
                                 List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
@@ -246,6 +241,28 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     addSubscrebe(mSearchSub);
 
                     break;
+                case COLLECT:
+                    Subscription collectSubscribe = mBaseCircleRepository.getUserCollectPostList(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue())
+                            .subscribe(new BaseSubscribeForV2<List<CirclePostListBean>>() {
+                                @Override
+                                protected void onSuccess(List<CirclePostListBean> data) {
+                                    mRootView.onNetResponseSuccess(data, isLoadMore);
+                                }
+
+                                @Override
+                                protected void onFailure(String message, int code) {
+                                    super.onFailure(message, code);
+                                    mRootView.showMessage(message);
+                                }
+
+                                @Override
+                                protected void onException(Throwable throwable) {
+                                    super.onException(throwable);
+                                    mRootView.onResponseError(throwable, isLoadMore);
+                                }
+                            });
+                    addSubscrebe(collectSubscribe);
+                    break;
                 default:
 
             }
@@ -255,15 +272,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-
         mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-
-//        if (mRootView.getCircleId() == null) {
-//            mRootView.onCacheResponseSuccess(new ArrayList<>(), isLoadMore);
-//            return;
-//        }
-//        List<CirclePostListBean> data = mCirclePostListBeanGreenDao.getDataWithComments(mRootView.getCircleId());
-//        mRootView.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -443,15 +452,16 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        mRootView.dismissSnackBar();
+                        boolean isPrivateOrPaid = CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
+                                || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode());
                         if (isJoined) {
                             circleInfo.setJoined(null);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() - 1);
                             mRootView.updateCircleInfo(circleInfo);
                         } else {
+                            mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                             // 如果是 封闭的或者 收费的 ，就不及时更新
-                            if (CircleInfo.CirclePayMode.PRIVATE.value.equals(circleInfo.getMode())
-                                    || CircleInfo.CirclePayMode.PAID.value.equals(circleInfo.getMode())) {
+                            if (isPrivateOrPaid) {
                                 return;
                             }
                             CircleJoinedBean circleJoinedBean = new CircleJoinedBean(CircleMembers.MEMBER);
@@ -462,6 +472,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             circleInfo.setJoined(circleJoinedBean);
                             circleInfo.setUsers_count(circleInfo.getUsers_count() + 1);
                             mRootView.updateCircleInfo(circleInfo);
+                        }
+                        if (isJoined) {
+                            EventBus.getDefault().post(circleInfo, EventBusTagConfig.EVENT_UPDATE_CIRCLE);
                         }
                         mCircleInfoGreenDao.insertOrReplace(circleInfo);
                     }
@@ -582,14 +595,21 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                         mRootView.getListDatas().get(position).setPinned(true);
                         mRootView.refreshData(position);
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
                     }
                 });
         addSubscrebe(subscribe);
@@ -599,17 +619,24 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     public void undoTopPost(Long postId, int position) {
         Subscription subscribe = mBaseCircleRepository.undoTopPost(postId)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.getListDatas().get(position).setPinned(false);
                         mRootView.refreshData(position);
                     }
 
                     @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.dismissSnackBar();
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
         addSubscrebe(subscribe);
@@ -628,13 +655,15 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .observeOn(Schedulers.computation())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
-                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
-                    int position = mRootView.getListDatas().indexOf(postListBean);
-                    if (position != -1) {
-                        mRootView.getListDatas().set(position, postListBean);
-                    } else {
-                        // 发帖更新到列表
-                        mRootView.getListDatas().add(0, postListBean);
+                    if (isNeedRefresh){
+                        CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                        int position = mRootView.getListDatas().indexOf(postListBean);
+                        if (position != -1) {
+                            mRootView.getListDatas().set(position, postListBean);
+                        } else {
+                            // 发帖更新到列表
+                            mRootView.getListDatas().add(0, postListBean);
+                        }
                     }
                     return isNeedRefresh;
                 })

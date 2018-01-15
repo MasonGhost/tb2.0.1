@@ -51,12 +51,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     /**
      * 默认每页的数量
      */
-    public static final int DEFAULT_PAGE_SIZE = 20;
+    public static final int DEFAULT_PAGE_SIZE = 15;
 
     /**
      * 一个页面显示的最大条数，用来判断是否显示加载更多
      */
-    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 15;
+    public static final int DEFAULT_ONE_PAGE_SHOW_MAX_SIZE = 12;
 
     /**
      * 默认初始化列表 id
@@ -111,6 +111,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private View mTvNoMoredataText;
 
+    /**
+     * 避免 Glide.resume.重复设置增加开销
+     */
+    private static boolean sIsScrolling;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_tslist;
@@ -154,6 +159,9 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mRvList.addItemDecoration(getItemDecoration());
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvList.setHasFixedSize(sethasFixedSize());
+        mRvList.setItemViewCacheSize(setItemCacheSize());
+        mRvList.setDrawingCacheEnabled(true);
+        mRvList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         //设置动画
         mRvList.setItemAnimator(new DefaultItemAnimator());
         mAdapter = getAdapter();
@@ -161,21 +169,36 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mHeaderAndFooterWrapper.addFootView(getFooterView());
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mRefreshlayout.setEnableAutoLoadmore(false);
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
+        mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 // SCROLL_STATE_FLING; //屏幕处于甩动状态
                 // SCROLL_STATE_IDLE; //停止滑动状态
                 // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
-                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        Glide.with(getContext()).resumeRequests();
-                    } else {
-                        Glide.with(getContext()).pauseRequests();
+                if (mActivity != null) {
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                        sIsScrolling = true;
+                        Glide.with(mActivity).pauseRequests();
+                    } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (sIsScrolling) {
+                            if (AndroidLifecycleUtils.canLoadImage(mActivity)) {
+                                Glide.with(mActivity).resumeRequests();
+                            }
+                        }
+                        sIsScrolling = false;
                     }
                 }
             }
         });
+    }
+
+    /**
+     * @return recyclerVeiw item offset cache Size
+     */
+    protected int setItemCacheSize() {
+        return 10;
     }
 
     /**
@@ -194,7 +217,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      */
     private void getNewDataFromNet() {
         if (isNeedRefreshAnimation() && getUserVisibleHint()) {
-            mRefreshlayout.autoRefresh();
+            mRefreshlayout.autoRefresh(100);
         } else {
             mMaxId = DEFAULT_PAGE_MAX_ID;
             mPage = DEFAULT_PAGE;
@@ -237,7 +260,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected boolean showNoMoreData() {
-        return false;
+        return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE ;
     }
 
     protected int setEmptView() {
@@ -248,8 +271,6 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     protected void initData() {
         if (mPresenter != null) {
-            mRefreshlayout.setEnableRefresh(isRefreshEnable());
-            mRefreshlayout.setEnableLoadmore(isLoadingMoreEnable());
             if (!isLayzLoad()) {
                 // 获取缓存数据
                 requestCacheData(mMaxId, false);
@@ -545,9 +566,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void refreshRangeData(int start, int count) {
-        setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
-        int position = start + mHeaderAndFooterWrapper.getHeadersCount();
-        mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
+        if (mHeaderAndFooterWrapper != null) {
+            setEmptyViewVisiable(mListDatas.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0);
+            int position = start + mHeaderAndFooterWrapper.getHeadersCount();
+            mHeaderAndFooterWrapper.notifyItemRangeChanged(position, count);
+        }
     }
 
     @Override
@@ -563,6 +586,17 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     protected boolean isUseTouristLoadLimit() {
         return true;
+    }
+
+    /**
+     * 手动刷新
+     */
+    @Override
+    public void startRefrsh() {
+        if (mRefreshlayout != null) {
+            mRvList.scrollToPosition(0);
+            mRefreshlayout.autoRefresh(10);
+        }
     }
 
     /**
@@ -663,6 +697,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private void handleReceiveData(List<T> data, boolean isLoadMore, boolean isFromCache) {
         // 刷新
         if (!isLoadMore) {
+
+            mTvNoMoredataText.setVisibility(View.GONE);
             if (isLoadingMoreEnable()) {
                 mRefreshlayout.setEnableLoadmore(true);
             }
@@ -690,7 +726,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 }
                 // 内存处理数据
                 mListDatas.addAll(data);
-                refreshData();
+                try {
+                    refreshRangeData(mListDatas.size() - data.size() - 1, data.size());
+                } catch (Exception e) {
+                    refreshData();
+                }
                 mMaxId = getMaxId(data);
             }
         }
@@ -698,7 +738,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
             mRefreshlayout.setEnableLoadmore(false);
             // mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE 当前数量大于一页显示数量时，显示加载更多
-            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE || showNoMoreData()) {
+            if (showNoMoreData()) {
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }
@@ -725,6 +765,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         }
     }
 
+    /**
+     * 默认加载条数，具体数据又后端确定
+     * @return
+     */
     protected int getPagesize() {
         return DEFAULT_PAGE_SIZE;
     }

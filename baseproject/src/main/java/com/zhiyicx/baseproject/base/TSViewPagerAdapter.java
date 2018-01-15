@@ -47,7 +47,7 @@ public class TSViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int  getCount() {
+    public int getCount() {
         return list.size();
     }
 

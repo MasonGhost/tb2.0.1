@@ -95,10 +95,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
      */
     private boolean rightViewHadTranslated = false;
-    /**
-     * 是否是第一次进入页面
-     */
-    private boolean isFirstIn = true;
+
     /**
      * View 树监听订阅器
      */
@@ -802,6 +799,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置左边的点击事件，默认为关闭activity，有必要重写该方法
      */
     protected void setLeftClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity,mRootView);
         getActivity().finish();
     }
 
@@ -950,6 +948,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {
+            mSnackBar.setCallback(null);
             if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }

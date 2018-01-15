@@ -37,17 +37,10 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -83,17 +76,17 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
 
-    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
-    DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
+    private DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    private DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
 
-    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
-    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
+    private SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
+    private TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
 
-    SharePolicy mSharePolicy;
-    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
-    BaseDynamicRepository mDynamicRepository;
+    private SharePolicy mSharePolicy;
+    private AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+    private BaseDynamicRepository mDynamicRepository;
 
-    SparseArray<Long> msendingStatus = new SparseArray<>();
+    private SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
     public DynamicPresenter(DynamicContract.View rootView
@@ -185,7 +178,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
         Subscription subscribe = Observable.just(1)
                 .observeOn(Schedulers.io())
                 .map(aLong -> {
-                    List<DynamicDetailBeanV2> datas = null;
+                    List<DynamicDetailBeanV2> datas;
                     switch (mRootView.getDynamicType()) {
                         case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                             if (!isLoadMore) {
@@ -704,11 +697,14 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.View>
                 .observeOn(Schedulers.computation())
                 .map(bundle -> {
                     boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                    DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                    int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
-                    // 如果列表有当前评论
-                    if (dynamicPosition != -1) {
-                        mRootView.getListDatas().set(dynamicPosition, dynamicBean);
+                    int dynamicPosition = -1;
+                    if (isNeedRefresh) {
+                        DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
+                        // 如果列表有当前评论
+                        if (dynamicPosition != -1) {
+                            mRootView.getListDatas().set(dynamicPosition, dynamicBean);
+                        }
                     }
                     return isNeedRefresh ? dynamicPosition : -1;
                 })

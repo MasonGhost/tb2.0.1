@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseCircleRepository;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public interface CirclePostDetailContract {
         void postHasBeDeleted();
 
         void loadAllError();
+
+        void upDateFollowFansState(UserInfoBean userInfoBean);
     }
 
     interface Presenter extends ITSListPresenter<CirclePostCommentBean> {
@@ -77,6 +80,10 @@ public interface CirclePostDetailContract {
          * @return
          */
         void undoTopPost(Long postId);
+
+        void handleFollowUser(UserInfoBean userInfoBean);
+
+        void setNeedDynamicListRefresh(boolean needDynamicListRefresh);
     }
 
 }

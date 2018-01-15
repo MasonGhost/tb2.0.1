@@ -75,6 +75,11 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_CIRCLE_POST = "event_update_circle_post";
 
     /**
+     * 圈子更新
+     */
+    public static final String EVENT_UPDATE_CIRCLE = "event_update_circle";
+
+    /**
      * 帖子详情界面删除内容通知
      */
     public static final String POST_LIST_DELETE_UPDATE = "post_list_delete_update";

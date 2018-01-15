@@ -99,6 +99,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
                 .id.iv_headpic));
 
         TextView review_flag = holder.getTextView(R.id.tv_review);
+        review_flag.setVisibility(contentIsNull ? View.GONE : View.VISIBLE);
         if (circleReportListBean.getStatus() == CircleReportListBean.TOP_REVIEW) {
             review_flag.setTextColor(holder.itemView.getResources().getColor(R.color
                     .dyanmic_top_flag));
@@ -141,7 +142,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
         contentView.setExpandListener(new ExpandableTextView.OnExpandListener() {
             @Override
             public void onExpand(ExpandableTextView view) {
-                showRulePopupWindow(circleReportListBean.getContent(),view);
+                showRulePopupWindow(circleReportListBean.getContent(), view);
             }
 
             @Override
@@ -238,7 +239,7 @@ public class CircleReportItem extends BaseTopItem implements BaseTopItem.TopRevi
     }
 
     protected void toDetail(long circleId, long postId, boolean isLookMoreComment) {
-        CirclePostDetailActivity.startActivity(mContext, circleId, postId, isLookMoreComment);
+        CirclePostDetailActivity.startActivity(mContext, circleId, postId, isLookMoreComment, true);
     }
 
     @Override

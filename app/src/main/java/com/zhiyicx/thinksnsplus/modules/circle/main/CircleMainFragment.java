@@ -14,7 +14,6 @@ import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetail
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.create.CreateCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.CircleDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleTypeItem;
@@ -63,11 +62,6 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
     protected boolean isLoadingMoreEnable() {
         return false;
     }
@@ -78,13 +72,17 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     public static CircleMainFragment newInstance() {
-        CircleMainFragment circleMainFragment = new CircleMainFragment();
-        return circleMainFragment;
+        return new CircleMainFragment();
     }
 
     @Override
     public List<CircleInfo> getJoinedCircles() {
         return mJoinedCircle;
+    }
+
+    @Override
+    protected boolean showNoMoreData() {
+        return false;
     }
 
     @Override
@@ -130,9 +128,20 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    public void loadAllError() {
+        setLoadViewHolderImag(R.mipmap.img_default_internet);
+        showLoadViewLoadError();
+    }
+
+    @Override
     protected void setRightLeftClick() {
         super.setRightLeftClick();
         CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
@@ -205,9 +214,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
             showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
-        Intent intent = new Intent(mActivity, CircleDetailActivity.class);
-        intent.putExtra(CircleDetailFragment.CIRCLE_ID, circleInfo.getId());
-        startActivity(intent);
+        CircleDetailActivity.startCircleDetailActivity(mActivity, circleInfo.getId());
     }
 
     /**
@@ -245,9 +252,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item2ClickListener(() -> {// 个人认证
+                    .item2ClickListener(() -> {
+                        // 个人认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
                             Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
@@ -264,9 +273,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
                             startActivity(intent);
                         }
                     })
-                    .item3ClickListener(() -> {// 企业认证
+                    .item3ClickListener(() -> {
+                        // 企业认证
                         mCertificationAlertPopWindow.hide();
-                        if (mUserCertificationInfo != null // 待审核
+                        // 待审核
+                        if (mUserCertificationInfo != null
                                 && mUserCertificationInfo.getId() != 0
                                 && mUserCertificationInfo.getStatus() != UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
 

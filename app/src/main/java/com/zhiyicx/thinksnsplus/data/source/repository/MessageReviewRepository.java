@@ -46,9 +46,6 @@ public class MessageReviewRepository implements IMessageReviewRepository {
     UserInfoRepository mUserInfoRepository;
 
     @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    @Inject
     public MessageReviewRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
         mInfoMainClient = serviceManager.getInfoMainClient();
@@ -180,7 +177,6 @@ public class MessageReviewRepository implements IMessageReviewRepository {
                 for (int i = 0; i < rechargeListBeen.size(); i++) {
                     rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
                 }
-                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                 return rechargeListBeen;
             });
         }).subscribeOn(Schedulers.io())
@@ -205,7 +201,6 @@ public class MessageReviewRepository implements IMessageReviewRepository {
                         rechargeListBeen.get(i).setCommentUser(userInfoBeanSparseArray.get((int) rechargeListBeen.get(i).getUser_id()));
                         rechargeListBeen.get(i).setReplyUser(userInfoBeanSparseArray.get((int) rechargeListBeen.get(i).getTarget_user()));
                     }
-                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                     return rechargeListBeen;
                 });
             }

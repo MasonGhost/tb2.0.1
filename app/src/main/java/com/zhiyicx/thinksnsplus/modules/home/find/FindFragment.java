@@ -128,9 +128,7 @@ public class FindFragment extends TSFragment {
                  */
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-//                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
                     startActivity(new Intent(getActivity(), CircleMainActivity.class));
-
                 } else {
                     showLoginPop();
                 }

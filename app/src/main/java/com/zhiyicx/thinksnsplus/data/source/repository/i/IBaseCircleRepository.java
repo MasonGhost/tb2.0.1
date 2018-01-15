@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.PostPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
 
@@ -79,6 +80,15 @@ public interface IBaseCircleRepository {
      */
     @GET(APP_PATH_GET_ALL_POSTLIST)
     Observable<List<CirclePostListBean>> getAllePostList(Integer limit, Integer offset, String keyword, Long group_id);
+
+    /**
+     * 用户帖子收藏列表
+     *
+     * @param limit  默认 15 ，数据返回条数 默认为15
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @return
+     */
+    Observable<List<CirclePostListBean>> getUserCollectPostList(Integer limit, Integer offset);
 
     /**
      * 获取我加入的圈子
@@ -203,7 +213,15 @@ public interface IBaseCircleRepository {
      */
     Observable<BaseJsonV2> refuseCircleReport(Long reportId);
 
-    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type);
+    /**
+     * @param circleId
+     * @param after
+     * @param limit
+     * @param type     默认 all, all-所有, manager-管理员, member-成员, blacklist-黑名单, audit - 带审核
+     * @param name     仅仅用于搜索
+     * @return
+     */
+    Observable<List<CircleMembers>> getCircleMemberList(long circleId, int after, int limit, String type, String name);
 
     Observable<CircleMembers> attornCircle(long circleId, long userId);
 
@@ -229,10 +247,10 @@ public interface IBaseCircleRepository {
      * 圈主和管理员置顶帖子
      *
      * @param postId
-     * @param day 天数
+     * @param day    天数
      * @return
      */
-    Observable<BaseJsonV2> stickTopPost(Long postId,int day);
+    Observable<BaseJsonV2<Object>> stickTopPost(Long postId, int day);
 
     /**
      * 圈主和管理员撤销置顶帖子
@@ -240,6 +258,7 @@ public interface IBaseCircleRepository {
      * @param postId
      * @return
      */
-    Observable<BaseJsonV2> undoTopPost(Long postId);
+    Observable<BaseJsonV2<Object>> undoTopPost(Long postId);
 
+    void handleFollow(UserInfoBean userInfoBean);
 }

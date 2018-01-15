@@ -103,6 +103,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     }
 
     @Override
+    protected void setLeftClick() {
+        DeviceUtils.hideSoftKeyboard(mActivity,mIlvContainer.getEtContent());
+        super.setLeftClick();
+    }
+
+    @Override
     protected String setCenterTitle() {
         return "";
     }

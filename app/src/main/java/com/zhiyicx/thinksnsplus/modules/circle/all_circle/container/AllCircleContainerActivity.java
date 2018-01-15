@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -14,6 +16,12 @@ public class AllCircleContainerActivity extends TSActivity<AllCircleContainerPre
     @Override
     protected AllCircleContainerFragment getFragment() {
         return new AllCircleContainerFragment();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

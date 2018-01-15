@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings.bind;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.AccountBindRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,11 +21,6 @@ public class AccountBindPresenterModule {
     @Provides
     public AccountBindContract.View provideAccountBindContractView(){
         return mView;
-    }
-
-    @Provides
-    public AccountBindContract.Repository provideAccountBindContractRepository(AccountBindRepository repository){
-        return repository;
     }
 
 }

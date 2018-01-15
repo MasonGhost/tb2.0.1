@@ -24,8 +24,6 @@ public interface ICommentRepository {
 
     Observable<BaseJsonV2<String>> paykNote(int note);
 
-    Observable<WalletConfigBean> getWalletConfig();
-
     Observable<UserInfoBean> getCurrentLoginUserInfo();
 
 }

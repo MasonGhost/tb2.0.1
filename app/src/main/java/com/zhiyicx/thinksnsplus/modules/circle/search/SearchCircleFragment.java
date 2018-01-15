@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -167,7 +168,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
                                 onEditChanged(qaSearchHistoryBean.getContent());
                                 mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
                             }
-
+                            DeviceUtils.hideSoftKeyboard(mActivity.getApplicationContext(), holder.getView(R.id.tv_content));
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -234,6 +235,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
 
     private void checkEmptyView() {
         setEmptyViewVisiable(false);
+        mRefreshlayout.setEnableRefresh(!mListDatas.isEmpty());
         if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
         } else {
@@ -249,6 +251,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
 
     @Override
     public void onEditChanged(String str) {
+        mRefreshlayout.setEnableRefresh(isRefreshEnable());
         if (mSearchContent.equals(str)) {
             return;
         }
@@ -258,8 +261,6 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
         }
         // 请求网络数据，就隐藏历史
         mRvSearchHistory.setVisibility(View.GONE);
-
-
         if (mRefreshlayout.isRefreshing()) {
             onRefresh(mRefreshlayout);
         } else {

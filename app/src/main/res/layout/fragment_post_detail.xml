@@ -38,7 +38,6 @@
                         android:paddingLeft="@dimen/toolbar_padding_left"
                         android:paddingRight="@dimen/toolbar_padding_right">
                     <com.zhiyicx.baseproject.widget.UserAvatarView
-                        android:visibility="gone"
                             android:id="@+id/iv_user_portrait"
                             android:layout_width="@dimen/headpic_for_assist"
                             android:layout_height="@dimen/headpic_for_assist"/>
@@ -55,30 +54,6 @@
                             android:layout_marginLeft="@dimen/spacing_small"
                             tools:text="xxx"/>
                 </LinearLayout>
-
-                <!--<com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView-->
-                    <!--android:id="@+id/tv_toolbar_center"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:layout_marginLeft="@dimen/toolbar_center_margin"-->
-                    <!--android:layout_marginRight="@dimen/toolbar_center_margin"-->
-                    <!--android:drawableLeft="@mipmap/pic_default_portrait1"-->
-                    <!--android:drawablePadding="@dimen/spacing_small"-->
-                    <!--android:ellipsize="end"-->
-                    <!--android:gravity="center"-->
-                    <!--android:maxLines="1"-->
-                    <!--android:paddingBottom="@dimen/divider_line"-->
-                    <!--android:paddingLeft="@dimen/toolbar_padding_left"-->
-                    <!--android:paddingRight="@dimen/toolbar_padding_right"-->
-                    <!--android:textColor="@color/important_for_content"-->
-                    <!--android:textSize="@dimen/size_sub_title"-->
-                    <!--android:visibility="invisible"-->
-                    <!--app:compoundDrawableHeight="@dimen/headpic_for_assist"-->
-                    <!--app:compoundDrawableWidth="@dimen/headpic_for_assist"-->
-                    <!--tools:text="中间"-->
-                    <!--/>-->
 
                 <TextView
                     android:id="@+id/tv_toolbar_left"
