@@ -57,6 +57,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLLBUNDLE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
@@ -290,7 +291,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
-            if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
+            String spaceReg = "\n|\t";
+            if (TextUtils.isEmpty(charSequence.toString().replaceAll(spaceReg, ""))) {
                 return;
             }
             mRbDaysGroup.clearCheck();
@@ -328,7 +330,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     /**
      * 初始化图片选择弹框
+     * 现在不提供图片选择弹窗，进入界面是选择动态类型
      */
+    @Deprecated
     private void initPhotoPopupWindow() {
         if (mPhotoPopupWindow != null) {
             return;
@@ -400,7 +404,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-//        Glide.with(getActivity()).load("");
     }
 
     @Override
@@ -413,7 +416,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
             mCommonAdapter.notifyDataSetChanged();
         }
-
     }
 
     private void addPlaceHolder() {
@@ -438,12 +440,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             // 图片选择器界面数据保存操作
             if (data != null) {
                 Bundle tollBundle = new Bundle();
-                data.putExtra("tollBundle", tollBundle);
+                data.putExtra(TOLLBUNDLE, tollBundle);
                 List<ImageBean> oldData = mCommonAdapter.getDatas();
                 if (oldData == null) {
                     oldData = new ArrayList<>();
                 }
-                tollBundle.putParcelableArrayList("tollBundle", new ArrayList<>(oldData));
+                tollBundle.putParcelableArrayList(TOLLBUNDLE, new ArrayList<>(oldData));
             }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
@@ -704,9 +706,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     if (!isToll) {
                         imageBean.setToll(null);
                     }
-                    if (imageBean.getToll() != null) {
-                        LogUtils.e("imageBean.getToll::" + imageBean.getToll().toString());
-                    }
 
                     if (imageBean.getToll_type() > 0) {
                         hasTollPic = true;
@@ -813,7 +812,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 hasTollPic = true;
-                mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
+                // 隐藏图片控件
+                mRvPhotoList.setVisibility(View.GONE);
                 mEtDynamicContent.getEtContent().setHint(getString(R.string
                         .dynamic_content_no_pic_hint));
                 break;

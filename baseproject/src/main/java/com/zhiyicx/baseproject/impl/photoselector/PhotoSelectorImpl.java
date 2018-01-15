@@ -48,32 +48,76 @@ import static android.app.Activity.RESULT_OK;
  * @date 2017/1/13
  * @contact email:450127106@qq.com
  */
-
 public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     public static final int DEFAULT_CROP_IMAGE_MAX_SIZE = 500;
 
     public static final int PHOTO_CLUMS_SIZE = 4;
     public static final int MAX_DEFAULT_COUNT = 9;
-    // 添加几种默认的裁剪框形状
-    public static final int NO_CRAFT = 0;// 不剪切
-    public static final int SHAPE_SQUARE = 1;// 正方形
-    public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
-    public static final int SHAPE_RECTANGLE = 3;// 长方形，宽度占满，认证裁剪
-    private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
+    /**
+     * 添加几种默认的裁剪框形状
+     * NO_CRAFT = 0;// 不剪切
+     * SHAPE_SQUARE = 1;// 正方形
+     * SHAPE_RCTANGLE = 2;// 长方形，宽度占满
+     * SHAPE_RECTANGLE = 3;// 长方形，宽度占满，认证裁剪
+     * SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
+     */
+    public static final int NO_CRAFT = 0;
+    public static final int SHAPE_SQUARE = 1;
+    public static final int SHAPE_RCTANGLE = 2;
+    public static final int SHAPE_RECTANGLE = 3;
+    private static final int SQUARE_LEFT_MARGIN = 36;
+
     public static final int CAMERA_PHOTO_CODE = 8888;
 
+    /**
+     * 收费类型
+     */
     public static final String TOLL_TYPE = "toll_type";
-    public static final String TOLL = "toll";
+
+    /**
+     * 收费金额
+     */
     public static final String TOLL_MONEY = "toll_money";
+
+    /**
+     * 收费信息返回
+     */
+    public static final String TOLL = "toll";
+
+    /**
+     * 传递过来的收费信息
+     */
+    public static final String TOLLBUNDLE = "tollBundle";
+
+    /**
+     * 图片路径
+     */
+    public static final String PHOTOS = "photos";
 
     private IPhotoBackListener mTIPhotoBackListener;
     private BaseFragment mFragment;
     private Context mContext;
-    private File takePhotoFolder;// 拍照后照片的存放目录
-    private String mTakePhotoPath;// 拍照后照片的图片路径
+
+    /**
+     * 拍照后照片的存放目录
+     */
+    private File takePhotoFolder;
+
+    /**
+     * 拍照后照片的图片路径
+     */
+    private String mTakePhotoPath;
     private int mCropShape;
-    private int maxCount;// 可选的最大图片数量
-    private ArrayList<ImageBean> photosList;// 存储已选择图片
+
+    /**
+     * 可选的最大图片数量
+     */
+    private int maxCount;
+
+    /**
+     * 存储已选择图片
+     */
+    private ArrayList<ImageBean> photosList;
     private ActionPopupWindow mActionPopupWindow;
     private ArrayList<ImageBean> mTolls = new ArrayList<>();
     private ArrayList<ImageBean> mOldTolls = new ArrayList<>();
@@ -94,11 +138,20 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
-                .setPreviewEnabled(maxCount != 1) // 是否可预览
-                .setGridColumnCount(PHOTO_CLUMS_SIZE)      // 每行的图片数量
-                .setPhotoCount(maxCount)    //  每次能够选择的最
-                .setShowCamera(true)        // 是否需要展示相机
-                .setSelected(selectedPhotos)// 已经选择的图片
+                // 是否可预览
+                .setPreviewEnabled(maxCount != 1)
+
+                // 每行的图片数量
+                .setGridColumnCount(PHOTO_CLUMS_SIZE)
+
+                //  每次能够选择的最
+                .setPhotoCount(maxCount)
+
+                // 是否需要展示相机
+                .setShowCamera(true)
+
+                // 已经选择的图片
+                .setSelected(selectedPhotos)
                 .start(mContext, mFragment);
     }
 
@@ -131,7 +184,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         if (!getCameraPermissonSuccess) {
             return;
         }
-        this.maxCount = 1;// 从相机拿到的是单张的图片
+        // 从相机拿到的是单张的图片
+        this.maxCount = 1;
         // 在sd卡中创建文件夹，用来保存app拍摄的图片
         boolean suc = FileUtils.createOrExistsDir(takePhotoFolder);
         File toFile = new File(takePhotoFolder, "IMG" + format() + ".jpg");
@@ -180,28 +234,43 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         UCrop.Options options = new UCrop.Options();
         initCropShape(uCrop, options);
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setCompressionQuality(100);    // 图片质量压缩
-        options.setCircleDimmedLayer(false); // 是否裁剪圆形
-        options.setHideBottomControls(true);// 是否隐藏底部的控制面板
-        options.setCropFrameColor(Color.TRANSPARENT);// 设置内矩形边框线条颜色
-        options.setShowCropGrid(false);// 是否展示内矩形的分割线
+        // 图片质量压缩
+        options.setCompressionQuality(100);
+
+        // 是否裁剪圆形
+        options.setCircleDimmedLayer(false);
+
+        // 是否隐藏底部的控制面板
+        options.setHideBottomControls(true);
+
+        // 设置内矩形边框线条颜色
+        options.setCropFrameColor(Color.TRANSPARENT);
+
+        // 是否展示内矩形的分割线
+        options.setShowCropGrid(false);
         options.setToolbarCancelDrawable(R.mipmap.topbar_back);
         switch (mCropShape) {
-            case SHAPE_SQUARE:// 更换头像
+            case SHAPE_SQUARE:
+                // 更换头像
                 options.setToolbarTitle(mContext.getString(R.string.change_head_icon));
                 options.withMaxResultSize(DEFAULT_CROP_IMAGE_MAX_SIZE, DEFAULT_CROP_IMAGE_MAX_SIZE);
                 break;
-            case SHAPE_RCTANGLE:// 更换封面
+            case SHAPE_RCTANGLE:
+                // 更换封面
                 options.setToolbarTitle(mContext.getString(R.string.change_bg_cover));
                 break;
             case SHAPE_RECTANGLE:
                 options.setToolbarTitle(mContext.getString(R.string.select_certification));
                 break;
-            default:// 一般不会发生
+            default:
+                // 一般不会发生
                 options.setToolbarTitle(mContext.getString(R.string.crop_photo));
         }
-        options.setDimmedLayerColor(Color.argb(0xcc, 0xff, 0xff, 0xff));// 设置蒙层的颜色
-        options.setRootViewBackgroundColor(Color.WHITE);// 设置图片背景颜色
+        // 设置蒙层的颜色
+        options.setDimmedLayerColor(Color.argb(0xcc, 0xff, 0xff, 0xff));
+
+        // 设置图片背景颜色
+        options.setRootViewBackgroundColor(Color.WHITE);
         options.setToolbarColor(ContextCompat.getColor(mContext, R.color.white));
         uCrop.withOptions(options);
         uCrop.start(mContext, mFragment);
@@ -253,7 +322,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 final Uri resultUri = UCrop.getOutput(data);
                 if (resultUri != null) {
                     ImageBean imageBean = packageCropResult(data);
-                    photosList.add(imageBean);// 获取裁剪图片的路径
+                    // 获取裁剪图片的路径
+                    photosList.add(imageBean);
                     mTIPhotoBackListener.getPhotoSuccess(photosList);
                 } else {
                     // 无法裁剪
@@ -262,7 +332,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             }
             // 从本地相册获取图片
             if (requestCode == 1000) {
-                photosList.clear();// 清空之前的图片，重新装载
+                // 清空之前的图片，重新装载
+                photosList.clear();
                 ArrayList<ImageBean> tolls;
                 try {
                     tolls = data.getBundleExtra(TOLL).getParcelableArrayList(TOLL);
@@ -270,14 +341,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     mTolls.addAll(tolls);
                 } catch (Exception e) {
                     try {
-                        tolls = data.getBundleExtra("tollBundle").getParcelableArrayList("tollBundle");
+                        tolls = data.getBundleExtra(TOLLBUNDLE).getParcelableArrayList(TOLLBUNDLE);
                         mTolls.clear();
                         mTolls.addAll(tolls);
                     } catch (Exception e1) {
                     }
 
                 }
-                ArrayList<String> photos = data.getStringArrayListExtra("photos");
+                ArrayList<String> photos = data.getStringArrayListExtra(PHOTOS);
                 String craftPath = "";
                 if (photos == null || photos.isEmpty()) {
                     craftPath = "";
@@ -365,16 +436,21 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
      */
     private void initCropShape(UCrop uCrop, UCrop.Options options) {
         switch (mCropShape) {
-            case SHAPE_SQUARE:// 更换头像
+            case SHAPE_SQUARE:
+                // 更换头像
                 uCrop.withAspectRatio(1, 1);
                 options.setCropViewPadding(ConvertUtils.dp2px(mContext, SQUARE_LEFT_MARGIN), 0);
                 break;
-            case SHAPE_RCTANGLE:// 更换封面
-                uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
+            case SHAPE_RCTANGLE:
+                // 更换封面
+                uCrop.withAspectRatio(1, 0.5f);
+                // 矩形高度为屏幕宽度的一半
                 options.setCropViewPadding(0, 0);
                 break;
-            case SHAPE_RECTANGLE: // 认证的照片
-                uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
+            case SHAPE_RECTANGLE:
+                // 认证的照片
+                uCrop.withAspectRatio(1, 0.5f);
+                // 矩形高度为屏幕宽度的一半
                 options.setCropViewPadding(0, 0);
                 break;
             default:

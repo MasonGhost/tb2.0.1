@@ -40,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.PHOTOS;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
@@ -69,12 +70,12 @@ public class PhotoViewFragment extends TSFragment {
     @BindView(R.id.rl_bottom_container)
     RelativeLayout mRlBottomContainer;
 
-    private ArrayList<String> seletedPaths;
-    private ArrayList<String> allPaths;
     private SectionsPagerAdapter mPagerAdapter;
 
     public final static String ARG_MAX_COUNT = "MAX_COUNT";
     public final static String RIGHTTITLE = "righttitle";
+
+
     public final static String OLDTOLL = "oldtoll";
 
     private int maxCount = 0;
@@ -84,17 +85,36 @@ public class PhotoViewFragment extends TSFragment {
 
     private final ColorMatrix colorizerMatrix = new ColorMatrix();
 
-    private int currentItem = 0;// 点击第几张图片进入的预览界面
+    /**
+     * 点击第几张图片进入的预览界面
+     */
+    private int currentItem = 0;
 
-    private ArrayList<ImageBean> tolls;
+    /**
+     * 当前显示的图片
+     */
+    private ImageBean mImageBean;
 
-    // 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择
+    /**
+     * 所有要发布的图片
+     */
+    private ArrayList<ImageBean> mSeletedPic;
+
+    /**
+     * 这两个用来记录图片选中的信息，因为要点击完成才能真正的处理图片是否选择
+     */
     private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
     private ArrayList<String> unCheckImagePath = new ArrayList<>();
 
+    private ArrayList<String> seletedPaths;
+
+    private ArrayList<String> allPaths;
+
+    /**
+     * 已选中的图片
+     */
     private ArrayList<String> checkImagePath = new ArrayList<>();
 
-    private ImageBean mImageBean;
 
     @Override
     protected String setRightTitle() {
@@ -131,8 +151,8 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        if (tolls.size() != 0) {
-            mImageBean = tolls.get(currentItem);
+        if (mSeletedPic.size() != 0) {
+            mImageBean = mSeletedPic.get(currentItem);
         }
 
         mViewPager.setBackgroundColor(Color.argb(0, 255, 255, 255));
@@ -149,12 +169,13 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onPageSelected(int position) {
                 try {// 越界处理(切换图片时切换图片收费信息，也许之前没有图片收费信息)
-                    mImageBean = tolls.get(position);
+                    mImageBean = mSeletedPic.get(position);
                 } catch (Exception e) {
                     mImageBean = null;
                 }
 
                 hasAnim = currentItem == position;
+
                 // 是否包含了已经选中的图片
                 mRbSelectPhoto.setChecked(checkImagePath.contains(allPaths.get(position)));
 
@@ -165,10 +186,12 @@ public class PhotoViewFragment extends TSFragment {
 
             }
         });
+
         // 初始化设置当前选择的数量
         mBtComplete.setEnabled(seletedPaths.size() > 0);
         mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
                 maxCount));
+
         // 初始化选择checkbox
         if (!allPaths.isEmpty()) {
             mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
@@ -192,7 +215,7 @@ public class PhotoViewFragment extends TSFragment {
                     checkImagePath.add(path);
 
                     seletedPaths.add(path);
-                    tolls.add(mImageBean);
+                    mSeletedPic.add(mImageBean);
                     unCheckImagePath.remove(path);
                     unCheckImage.remove(mImageBean);
                 } else {
@@ -258,14 +281,16 @@ public class PhotoViewFragment extends TSFragment {
         if (sPhotoViewDataCacheBean != null) {
             seletedPaths = sPhotoViewDataCacheBean.getSelectedPhoto();
             checkImagePath.addAll(seletedPaths);
-            seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
+
+            // 由于是静态的，克隆一份，防止改变数据源
+            seletedPaths = (ArrayList<String>) seletedPaths.clone();
             allPaths = sPhotoViewDataCacheBean.getAllPhotos();
             currentItem = sPhotoViewDataCacheBean.getCurrentPosition();
             hasRightTitle = sPhotoViewDataCacheBean.isToll();
             rectList = sPhotoViewDataCacheBean.getAnimationRectBeanArrayList();
             maxCount = sPhotoViewDataCacheBean.getMaxCount();
-            tolls = sPhotoViewDataCacheBean.getSelectedPhotos();
-            removePlaceHolder(tolls);
+            mSeletedPic = sPhotoViewDataCacheBean.getSelectedPhotos();
+            removePlaceHolder(mSeletedPic);
             mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         }
     }
@@ -396,12 +421,12 @@ public class PhotoViewFragment extends TSFragment {
         // 完成图片选择，处理图片返回结果
         if (!backToPhotoAlbum) {
             seletedPaths.removeAll(unCheckImagePath);
-            tolls.removeAll(unCheckImage);
+            mSeletedPic.removeAll(unCheckImage);
         }
         Intent it = new Intent();
-        it.putStringArrayListExtra("photos", seletedPaths);
+        it.putStringArrayListExtra(PHOTOS, seletedPaths);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(TOLL, tolls);
+        bundle.putParcelableArrayList(TOLL, mSeletedPic);
         it.putExtra(TOLL, bundle);
         it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
         getActivity().setResult(Activity.RESULT_OK, it);
