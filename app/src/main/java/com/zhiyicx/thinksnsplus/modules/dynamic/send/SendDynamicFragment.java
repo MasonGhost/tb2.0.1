@@ -35,7 +35,6 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
@@ -222,7 +221,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private void handleBack() {
         boolean noPic = selectedPhotos == null || !isToll && selectedPhotos.size() <= 1;
-        if (!hasContent || noPic) {
+        if (hasContent || !noPic) {
             DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
             initCanclePopupWindow();
             mCanclePopupWindow.show();
@@ -262,9 +261,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mSelectMoney.add(1f);
         mSelectMoney.add(5f);
         mSelectMoney.add(10f);
+
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+
+        if (mSystemConfigBean != null) {
+            int[] amount = new int[]{};
+            if (mSystemConfigBean.getFeed() != null) {
+                amount = mSystemConfigBean.getFeed().getItems();
+            }
+            if (amount != null && amount.length > 2) {
+                mSelectMoney.add(0,(float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+            }
+        }
         initSelectMoney(mSelectMoney);
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(mPresenter.getGoldName());
     }
 
     @Override
