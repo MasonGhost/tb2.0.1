@@ -60,7 +60,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.In
 
     @Inject
     public InfoContainerPresenter(InfoMainContract.InfoContainerView rootContainerView) {
-        super( rootContainerView);
+        super(rootContainerView);
     }
 
     @Override
@@ -119,9 +119,6 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.In
             mRootView.setUserCertificationInfo(userCertificationInfo);
             return;
         }
-//        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 1) {
-//            mRootView.setUserCertificationInfo(userCertificationInfo);
-//        } else {
         Subscription subscribe = Observable.zip(mSystemRepository.getBootstrappersInfo(), mUserInfoRepository.getCertificationInfo(),
                 (systemConfigBean, userCertificationInfo1) -> {
                     Map data = new HashMap();
@@ -134,6 +131,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.In
                 .subscribe(new BaseSubscribeForV2<Map>() {
                     @Override
                     protected void onSuccess(Map zipData) {
+                        mRootView.dismissSnackBar();
                         UserCertificationInfo data = (UserCertificationInfo) zipData.get("userCertificationInfo");
                         SystemConfigBean systemConfigBean = (SystemConfigBean) zipData.get("systemConfigBean");
                         mSystemRepository.saveComponentStatus(systemConfigBean, mContext);
