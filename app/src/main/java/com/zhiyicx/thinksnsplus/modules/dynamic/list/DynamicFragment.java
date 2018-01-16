@@ -282,11 +282,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
             return;
         }
+        mHeaderAdvert = mPresenter.getBannerAdvert();
+
+        if (mHeaderAdvert == null || mHeaderAdvert.isEmpty()) {
+            return;
+        }
+
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
         mListAdvert = mPresenter.getListAdvert();
-        mHeaderAdvert = mPresenter.getBannerAdvert();
+
         for (RealAdvertListBean advert : mHeaderAdvert) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());

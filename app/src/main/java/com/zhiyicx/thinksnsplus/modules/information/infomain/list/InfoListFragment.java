@@ -204,10 +204,16 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!mInfoType.equals(RECOMMEND_INFO)) {
             return;
         }
+        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+
+        if (advertList == null || advertList.isEmpty()) {
+            return;
+        }
+
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
-        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+
         mListAdvert = mPresenter.getListAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
