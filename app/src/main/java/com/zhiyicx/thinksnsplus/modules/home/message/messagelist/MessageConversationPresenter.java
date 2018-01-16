@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.hyphenate.chat.EMClient;
@@ -13,6 +14,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -21,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerF
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,11 +167,17 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
             Subscription subscribe = mRepository.getConversationList((int) AppApplication.getMyUserIdWithdefault())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(messageItemBeanV2s -> {
+                        List<MessageItemBeanV2> singleList = new ArrayList<>();
+                        for (MessageItemBeanV2 itemBeanV2 : messageItemBeanV2s){
+                            if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat){
+                                singleList.add(itemBeanV2);
+                            }
+                        }
                         if (mCopyConversationList == null){
                             mCopyConversationList = new ArrayList<>();
                         }
-                        mCopyConversationList = messageItemBeanV2s;
-                        mRootView.getMessageListSuccess(messageItemBeanV2s);
+                        mCopyConversationList = singleList;
+                        mRootView.getMessageListSuccess(singleList);
                         mRootView.hideStickyMessage();
                         checkBottomMessageTip();
                     });
@@ -213,5 +222,35 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         addSubscrebe(subscribe);
 
 
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)
+    public void getGroupList(Bundle bundle){
+        if (bundle != null && bundle.containsKey(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO)){
+            List<ChatGroupBean> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO);
+            if (list == null){
+                return;
+            }
+            List<MessageItemBeanV2> messageItemBeanList = new ArrayList<>();
+            for (ChatGroupBean chatGroupBean : list){
+                MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                itemBeanV2.setEmKey(chatGroupBean.getId());
+                itemBeanV2.setList(chatGroupBean.getAffiliations());
+                itemBeanV2.setConversation(EMClient.getInstance().chatManager().getConversation(chatGroupBean.getId()));
+                messageItemBeanList.add(itemBeanV2);
+            }
+            if (!messageItemBeanList.isEmpty()){
+                mRootView.getRealMessageList().addAll(messageItemBeanList);
+                if (mCopyConversationList == null){
+                    mCopyConversationList = new ArrayList<>();
+                }
+                mCopyConversationList = mRootView.getRealMessageList();
+            }
+        }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 }

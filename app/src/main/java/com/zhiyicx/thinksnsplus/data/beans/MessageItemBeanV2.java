@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.cache.CacheBean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Catherine
@@ -22,6 +23,7 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
     private EMConversation conversation;
     private String emKey;
     private EMConversation.EMConversationType type;
+    private List<UserInfoBean> list;
 
     public UserInfoBean getUserInfo() {
         return userInfo;
@@ -55,6 +57,14 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
         this.type = type;
     }
 
+    public List<UserInfoBean> getList() {
+        return list;
+    }
+
+    public void setList(List<UserInfoBean> list) {
+        this.list = list;
+    }
+
     @Override
     public String toString() {
         return "MessageItemBeanV2{" +
@@ -62,6 +72,7 @@ public class MessageItemBeanV2 extends CacheBean implements Serializable {
                 ", conversation=" + conversation +
                 ", emKey='" + emKey + '\'' +
                 ", type=" + type +
+                ", list=" + list +
                 '}';
     }
 }

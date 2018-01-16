@@ -1,20 +1,29 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.EasemobClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,9 +51,11 @@ public class BaseMessageRepository implements IBaseMessageRepository{
     @Inject
     SystemRepository mSystemRepository;
 
+    protected EasemobClient mClient;
+
     @Inject
     public BaseMessageRepository(ServiceManager manager) {
-
+        mClient = manager.getEasemobClient();
     }
 
     @Override
@@ -108,15 +119,33 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                 .observeOn(Schedulers.io())
                 .flatMap(list1 -> {
                     List<Object> users = new ArrayList<>();
+                    String groupIds = "";
                     for (MessageItemBeanV2 itemBeanV2 : list1) {
                         if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.Chat) {
-                            // 单聊处理用户信息
-                            if (itemBeanV2.getEmKey().equals("admin")) {
-                                users.add(1L);
-                            } else {
-                                users.add(itemBeanV2.getEmKey());
+                            // 单聊处理用户信息，首先过滤掉环信后台的管理员有用户 admin
+                            if (!itemBeanV2.getEmKey().equals("admin")) {
+                                itemBeanV2.setUserInfo(mUserInfoBeanGreenDao.getSingleDataFromCache(Long.parseLong(itemBeanV2.getEmKey())));
+                                if (itemBeanV2.getUserInfo() == null){
+                                    users.add(itemBeanV2.getEmKey());
+                                }
                             }
+                        } else if (itemBeanV2.getConversation().getType() == EMConversation.EMConversationType.GroupChat){
+                            // 群聊
+                            groupIds += itemBeanV2.getConversation().conversationId();
                         }
+                    }
+                    if (!TextUtils.isEmpty(groupIds)){
+                        groupIds = groupIds.substring(0, groupIds.length());
+                        BackgroundRequestTaskBean backgroundRequestTaskBean;
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("group_ids", groupIds);
+                        // 后台处理
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.GET_CHAT_GROUP_INFO, params);
+                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                                .APP_PATH_GET_GROUP_INFO, groupIds));
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                                (backgroundRequestTaskBean);
                     }
                     if (users.isEmpty()) {
                         return Observable.just(list1);
@@ -144,5 +173,12 @@ public class BaseMessageRepository implements IBaseMessageRepository{
                                 return list1;
                             });
                 });
+    }
+
+    @Override
+    public Observable<List<ChatGroupBean>> getGroupInfo(String ids) {
+        return mClient.getGroupInfo(ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -123,6 +123,7 @@ public class EventBusTagConfig {
     public static final String EVENT_IM_ONMESSAGERECEIVED_V2 = "onMessageReceivedV2";
     /**重新登录*/
     public static final String EVENT_IM_RELOGIN_V2 = "imReLoginV2";
+    public static final String EVENT_IM_GET_GROUP_INFO = "getChatGroupInfo";
 
     /**
      * 消息底部提示信息相关

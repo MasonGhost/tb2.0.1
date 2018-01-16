@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface IBaseMessageRepository {
     Observable<List<MessageItemBeanV2>> getConversationList(int user_id);
 
     Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list);
+
+    Observable<List<ChatGroupBean>> getGroupInfo(String ids);
 }
