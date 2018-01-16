@@ -30,7 +30,7 @@ public class DynamicListItemForNineImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getId() != null && (item.getImages() != null && item.getImages().size
+        return (item.getImages() != null && item.getImages().size
                 () >= getImageCounts());
     }
 

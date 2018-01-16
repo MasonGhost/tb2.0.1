@@ -29,14 +29,12 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
@@ -58,6 +56,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLLBUNDLE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
@@ -73,8 +72,15 @@ import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
 public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements
         SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
-    private static final int ITEM_COLUM = 4;// recyclerView的每行item个数
-    private static final int MAX_PHOTOS = 9;// 一共可选的图片数量
+    /**
+     * recyclerView的每行item个数
+     */
+    private static final int ITEM_COLUM = 4;
+
+    /**
+     * 一共可选的图片数量
+     */
+    private static final int MAX_PHOTOS = 9;
 
     @BindView(R.id.rv_photo_list)
     RecyclerView mRvPhotoList;
@@ -110,28 +116,59 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @BindView(R.id.tv_custom_money)
     TextView mCustomMoney;
 
-    private List<ImageBean> selectedPhotos;// 已经选择的图片
+    /**
+     * // 已经选择的图片
+     */
+    private List<ImageBean> selectedPhotos;
+
     private CommonAdapter<ImageBean> mCommonAdapter;
+
     private List<ImageBean> cachePhotos;
 
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
-    private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
+    /**
+     * 图片选择弹框
+     */
+    private ActionPopupWindow mPhotoPopupWindow;
+
+    private ActionPopupWindow mCanclePopupWindow;
     private PhotoSelectorImpl mPhotoSelector;
 
-    private boolean hasContent, hasPics;// 状态值用来判断发送状态
-    private int dynamicType;// 需要发送的动态类型
+    /**
+     * 状态值用来判断发送状态
+     */
+    private boolean hasContent;
 
-    private boolean isToll;// 是否开启收费
+    /**
+     * 需要发送的动态类型
+     */
+    private int dynamicType;
+
+    /**
+     * 是否开启收费
+     */
+    private boolean isToll;
 
     private boolean isFromGroup;
 
-    private boolean hasTollPic;// 是否有图片设置了收费
+    /**
+     * 是否有图片设置了收费
+     */
+    private boolean hasTollPic;
 
-    private ArrayList<Float> mSelectMoney;// 文字收费选择
+    /**
+     * 文字收费选择
+     */
+    private ArrayList<Float> mSelectMoney;
 
-    private double mTollMoney;// 文字收费金额
+    /**
+     * 文字收费金额
+     */
+    private double mTollMoney;
 
-    private ActionPopupWindow mInstructionsPopupWindow;// 各类提示信息弹窗
+    /**
+     * 各类提示信息弹窗
+     */
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -183,10 +220,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 处理取消发布动态
      */
     private void handleBack() {
-        if (!TextUtils.isEmpty(mEtDynamicContent.getInputContent()) // 有正文
-                // || !TextUtils.isEmpty(mEtDynamicTitle.getInputContent())//
-                // 有图片，并且长度大于1，因为为1的时候是，占位图
-                || (selectedPhotos != null && selectedPhotos.size() > 1)) {
+        boolean noPic = selectedPhotos == null || !isToll && selectedPhotos.size() <= 1;
+        if (hasContent || !noPic) {
             DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
             initCanclePopupWindow();
             mCanclePopupWindow.show();
@@ -202,11 +237,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
-        initSendDynamicBtnState();// 设置右边发布文字监听
-        setLeftTextColor();// 设置左边取消文字的颜色为主题色
+        // 设置右边发布文字监听
+        initSendDynamicBtnState();
+        // 设置左边取消文字的颜色为主题色
+        setLeftTextColor();
         initDynamicType();
         setSendDynamicState();
         initWordsToll();
+        // 配置收费按钮隐藏显示
         initTollState();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AndroidBug5497Workaround.assistActivity(getActivity());
@@ -223,9 +261,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mSelectMoney.add(1f);
         mSelectMoney.add(5f);
         mSelectMoney.add(10f);
+
+        mSystemConfigBean = mPresenter.getSystemConfigBean();
+
+        if (mSystemConfigBean != null) {
+            int[] amount = new int[]{};
+            if (mSystemConfigBean.getFeed() != null) {
+                amount = mSystemConfigBean.getFeed().getItems();
+            }
+            if (amount != null && amount.length > 2) {
+                mSelectMoney.add(0,(float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+            }
+        }
         initSelectMoney(mSelectMoney);
-        String moneyName = mPresenter.getGoldName();
-        mCustomMoney.setText(moneyName);
+        mCustomMoney.setText(mPresenter.getGoldName());
     }
 
     @Override
@@ -252,7 +303,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
-            if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
+            String spaceReg = "\n|\t";
+            if (TextUtils.isEmpty(charSequence.toString().replaceAll(spaceReg, ""))) {
                 return;
             }
             mRbDaysGroup.clearCheck();
@@ -290,7 +342,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     /**
      * 初始化图片选择弹框
+     * 现在不提供图片选择弹窗，进入界面是选择动态类型
      */
+    @Deprecated
     private void initPhotoPopupWindow() {
         if (mPhotoPopupWindow != null) {
             return;
@@ -362,7 +416,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
-//        Glide.with(getActivity()).load("");
     }
 
     @Override
@@ -375,7 +428,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
             mCommonAdapter.notifyDataSetChanged();
         }
-
     }
 
     private void addPlaceHolder() {
@@ -400,12 +452,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             // 图片选择器界面数据保存操作
             if (data != null) {
                 Bundle tollBundle = new Bundle();
-                data.putExtra("tollBundle", tollBundle);
+                data.putExtra(TOLLBUNDLE, tollBundle);
                 List<ImageBean> oldData = mCommonAdapter.getDatas();
                 if (oldData == null) {
                     oldData = new ArrayList<>();
                 }
-                tollBundle.putParcelableArrayList("tollBundle", new ArrayList<>(oldData));
+                tollBundle.putParcelableArrayList(TOLLBUNDLE, new ArrayList<>(oldData));
             }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
@@ -531,7 +583,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private void setSendDynamicState() {
         // 没有内容，并且只有占位图时不能够发送
-        if (!hasContent && (selectedPhotos == null || !isToll && selectedPhotos.size() <= 1)) {
+        boolean noPic = selectedPhotos == null || !isToll && selectedPhotos.size() <= 1;
+        if (!hasContent && noPic) {
             mToolbarRight.setEnabled(false);
         } else {
             // 有内容或者有图片时都可以发送
@@ -551,12 +604,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
 
-        dynamicDetailBeanV2.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
+        // 浏览量没有 0 ，从1 开始
+        dynamicDetailBeanV2.setFeed_view_count(1);
         dynamicDetailBeanV2.setFeed_mark(feedMark);
         dynamicDetailBeanV2.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         dynamicDetailBeanV2.setFeed_content(mEtDynamicContent.getInputContent());
         dynamicDetailBeanV2.setFeed_from(ApiConfig.ANDROID_PLATFORM);
-        dynamicDetailBeanV2.setIsFollowed(true);// 因为关注里面需要显示我的动态
+        // 因为关注里面需要显示我的动态
+        dynamicDetailBeanV2.setIsFollowed(true);
         dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
         dynamicDetailBeanV2.setComments(new ArrayList<>());
         dynamicDetailBeanV2.setUser_id(userId);
@@ -662,9 +717,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
                     if (!isToll) {
                         imageBean.setToll(null);
-                    }
-                    if (imageBean.getToll() != null) {
-                        LogUtils.e("imageBean.getToll::" + imageBean.getToll().toString());
                     }
 
                     if (imageBean.getToll_type() > 0) {
@@ -772,7 +824,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 hasTollPic = true;
-                mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
+                // 隐藏图片控件
+                mRvPhotoList.setVisibility(View.GONE);
                 mEtDynamicContent.getEtContent().setHint(getString(R.string
                         .dynamic_content_no_pic_hint));
                 break;
