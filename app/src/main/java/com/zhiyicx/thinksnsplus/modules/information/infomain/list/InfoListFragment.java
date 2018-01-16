@@ -51,6 +51,9 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.In
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
         BaseListBean> implements InfoMainContract.InfoListView, InfoBannerHeader.InfoBannerHeadlerClickEvent {
 
+    /**
+     * 推荐分类
+     */
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;
@@ -201,10 +204,16 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!mInfoType.equals(RECOMMEND_INFO)) {
             return;
         }
+        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+
+        if (advertList == null || advertList.isEmpty()) {
+            return;
+        }
+
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
-        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+
         mListAdvert = mPresenter.getListAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());

@@ -356,8 +356,8 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     @Override
     public void onImageClick(Long id) {
         if (mInsertedImages.containsKey(id)) {
-            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
-                    CharSequence[]{getString(R.string.delete)});
+//            showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id), new
+//                    CharSequence[]{getString(R.string.delete)});
         } else if (mFailedImages.containsKey(id)) {
             showPictureClickDialog(PictureHandleDialog.createDeleteDialog(id),
                     new CharSequence[]{getString(R.string.delete), getString(R.string.retry)});
