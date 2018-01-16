@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class FollowFansListPresenter extends AppBasePresenter<
 
     @Inject
     public FollowFansListPresenter(
-                                   FollowFansListContract.View rootView) {
+            FollowFansListContract.View rootView) {
         super(rootView);
     }
 
@@ -62,7 +63,7 @@ public class FollowFansListPresenter extends AppBasePresenter<
 
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
-        mRootView.onCacheResponseSuccess(null,isLoadMore);
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
     }
 
     @Override
@@ -104,18 +105,23 @@ public class FollowFansListPresenter extends AppBasePresenter<
 
     @Override
     public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
-        List<UserInfoBean> followFansBeanList = null;
-        if(userId!= AppApplication.getmCurrentLoginAuth().getUser_id()){
-            return null;
-        }
-        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowingUserInfo(maxId.intValue());
-        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
-        }
-        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+///        取消缓存，因为需要首先显示最新关注用户
+//        List<UserInfoBean> followFansBeanList = null;
+//        if(userId!= AppApplication.getmCurrentLoginAuth().getUser_id()){
+//            return null;
+//        }
+//        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+//            followFansBeanList = mUserInfoBeanGreenDao.getFollowingUserInfo(maxId.intValue());
+//        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
+//            followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
+//        }
+//        mRootView.onCacheResponseSuccess(followFansBeanList, isLoadMore);
+//
+//        return followFansBeanList;
+        mRootView.onCacheResponseSuccess(null, isLoadMore);
+        return new ArrayList<>();
 
-        return followFansBeanList;
+
     }
 
     @Override
@@ -153,7 +159,8 @@ public class FollowFansListPresenter extends AppBasePresenter<
                 break;
             }
             // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
-            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE&&followFansBean.isFollower()) {
+            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE &&
+                    followFansBean.isFollower()) {
                 followFansBeanList.add(0, followFansBean);
                 mRootView.upDateFollowFansState();
             }
