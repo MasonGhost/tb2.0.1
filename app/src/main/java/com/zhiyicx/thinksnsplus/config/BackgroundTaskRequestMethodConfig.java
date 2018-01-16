@@ -26,7 +26,8 @@ public enum BackgroundTaskRequestMethodConfig {
     PUT(15),
     SEND_CERTIFICATION(16), // 发布认证申请
     SEND_ANSWER_COMMENT(17),// 评论问题答案
-    SEND_QUESTION_COMMENT(18);// 评论问题
+    SEND_QUESTION_COMMENT(18),// 评论问题
+    GET_CHAT_GROUP_INFO(19);// 获取群聊信息
 
 
     public final int id;

@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -24,6 +26,7 @@ import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
@@ -50,6 +53,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseMessageRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendCertificationRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -139,6 +143,9 @@ public class BackgroundTaskHandler {
 
     @Inject
     SendCertificationRepository mSendCertificationRepository;
+
+    @Inject
+    BaseMessageRepository mMessageRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -402,6 +409,9 @@ public class BackgroundTaskHandler {
                 break;
             case SEND_QUESTION_COMMENT:
                 sendQuestionComment(backgroundRequestTaskBean);
+                break;
+            case GET_CHAT_GROUP_INFO:
+                getGroupInfo(backgroundRequestTaskBean);
                 break;
             default:
         }
@@ -1379,6 +1389,39 @@ public class BackgroundTaskHandler {
                         EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
                     }
 
+                });
+    }
+
+    /**
+     * 批量获取群信息
+     */
+    private void getGroupInfo(BackgroundRequestTaskBean backgroundRequestTaskBean){
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final String ids = (String) params.get("group_ids");
+        mMessageRepository.getGroupInfo(ids)
+                .subscribe(new BaseSubscribeForV2<List<ChatGroupBean>>() {
+                    @Override
+                    protected void onSuccess(List<ChatGroupBean> data) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelableArrayList(EventBusTagConfig.EVENT_IM_GET_GROUP_INFO, (ArrayList<? extends Parcelable>) data);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_IM_GET_GROUP_INFO);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
                 });
     }
 

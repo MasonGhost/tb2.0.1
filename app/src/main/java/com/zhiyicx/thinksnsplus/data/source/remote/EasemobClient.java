@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatGroupBean;
 
+import java.util.List;
+
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -32,4 +34,12 @@ public interface EasemobClient {
     Observable<ChatGroupBean> createGroup(@Query("groupname") String groupName, @Query("desc") String groupIntro, @Query("public") int isPublic,
                                           @Query("maxusers") int maxUser, @Query("members_only") boolean isMemberOnly, @Query("allowinvites") int isAllowInvites,
                                           @Query("owner") long owner, @Query("members") String members);
+
+    /**
+     * 批量获取群信息
+     *
+     * @param ids im_group_id 以逗号隔开
+     */
+    @GET(ApiConfig.APP_PATH_CREATE_CHAT_GROUP)
+    Observable<List<ChatGroupBean>> getGroupInfo(@Query("im_group_id") String ids);
 }

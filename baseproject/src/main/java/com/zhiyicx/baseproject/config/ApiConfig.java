@@ -118,6 +118,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION_2 + "/im/conversations/list/all";// 获取登陆用户的对话列表
     public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations/{cid}";// 获取单个对话信息
     public static final String APP_PATH_CREATE_CHAT_GROUP = "api/" + API_VERSION_2 + "/easemob/group";// 创建群聊
+    public static final String APP_PATH_GET_GROUP_INFO = "api/" + API_VERSION_2 + "/easemob/group?im_group_id=%s";// 获取群信息
 
     /**
      * 关注粉丝 FollowFansClient
