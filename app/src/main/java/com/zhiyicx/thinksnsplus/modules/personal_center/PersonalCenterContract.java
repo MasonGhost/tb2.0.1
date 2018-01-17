@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -144,5 +145,7 @@ public interface PersonalCenterContract {
          * @param userInfoBean
          */
         void shareUserInfo(UserInfoBean userInfoBean);
+
+        List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean);
     }
 }

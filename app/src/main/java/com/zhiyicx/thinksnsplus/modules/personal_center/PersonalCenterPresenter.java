@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -270,6 +272,31 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         shareContent.setUrl(String.format(ApiConfig.APP_DOMAIN + ApiConfig.APP_PATH_SHARE_USERINFO, userInfoBean.getUser_id()));
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean) {
+        List<ChatUserInfoBean> list = new ArrayList<>();
+        list.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
+        list.add(getChatUser(userInfoBean));
+        return list;
+    }
+
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+        ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+        chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+        chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+        chatUserInfoBean.setName(userInfoBean.getName());
+        chatUserInfoBean.setSex(userInfoBean.getSex());
+        if (userInfoBean.getVerified() != null){
+            ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+            verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+            verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+            verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+            verifiedBean.setType(userInfoBean.getVerified().getType());
+            chatUserInfoBean.setVerified(verifiedBean);
+        }
+        return chatUserInfoBean;
     }
 
     @Override
