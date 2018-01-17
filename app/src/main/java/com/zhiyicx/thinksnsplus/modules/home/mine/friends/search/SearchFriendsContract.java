@@ -1,9 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends.search;
 
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.mine.friends.IBaseFriendsRepository;
+
+import java.util.List;
 
 /**
  * @author Catherine
@@ -24,6 +27,7 @@ public interface SearchFriendsContract {
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
+        List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean);
     }
 
     interface Repository extends IBaseFriendsRepository {

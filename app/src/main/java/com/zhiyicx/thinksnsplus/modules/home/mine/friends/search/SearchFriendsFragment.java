@@ -35,7 +35,7 @@ public class SearchFriendsFragment extends TSListFragment<SearchFriendsContract.
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new MyFriendsListAdapter(getContext(), mListDatas);
+        return new MyFriendsListAdapter(getContext(), mListDatas, mPresenter);
     }
 
     @Override

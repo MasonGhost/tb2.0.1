@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine.friends;
 
+import com.hyphenate.easeui.bean.ChatUserInfoBean;
+import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -10,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,7 +30,7 @@ public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContra
         implements MyFriendsListContract.Presenter{
 
     @Inject
-    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public MyFriendsListPresenter(MyFriendsListContract.Repository repository, MyFriendsListContract.View rootView) {
@@ -67,5 +70,30 @@ public class MyFriendsListPresenter extends AppBasePresenter<MyFriendsListContra
     @Override
     public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public List<ChatUserInfoBean> getChatUserList(UserInfoBean userInfoBean) {
+        List<ChatUserInfoBean> list = new ArrayList<>();
+        list.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
+        list.add(getChatUser(userInfoBean));
+        return list;
+    }
+
+    private ChatUserInfoBean getChatUser(UserInfoBean userInfoBean){
+        ChatUserInfoBean chatUserInfoBean = new ChatUserInfoBean();
+        chatUserInfoBean.setUser_id(userInfoBean.getUser_id());
+        chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
+        chatUserInfoBean.setName(userInfoBean.getName());
+        chatUserInfoBean.setSex(userInfoBean.getSex());
+        if (userInfoBean.getVerified() != null){
+            ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+            verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+            verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+            verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+            verifiedBean.setType(userInfoBean.getVerified().getType());
+            chatUserInfoBean.setVerified(verifiedBean);
+        }
+        return chatUserInfoBean;
     }
 }
