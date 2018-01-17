@@ -10,62 +10,63 @@
               android:paddingRight="@dimen/spacing_normal">
 
     <include
-        layout="@layout/include_chat_time"/>
+            layout="@layout/include_chat_time"/>
 
     <RelativeLayout
-        style="@style/style_chat_content_container">
+            style="@style/style_chat_content_container">
 
         <com.zhiyicx.baseproject.widget.UserAvatarView
-            android:id="@+id/iv_chat_headpic"
-            style="@style/style_chat_headpic"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
-            app:ts_avatare_size="@dimen/headpic_for_list"/>
+                android:id="@+id/iv_chat_headpic"
+                style="@style/style_chat_headpic"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                app:ts_avatare_size="@dimen/headpic_for_list"/>
 
         <TextView
-            android:id="@+id/tv_chat_name"
-            style="@style/style_chat_name"
-            android:layout_toEndOf="@id/iv_chat_headpic"
-            android:layout_toRightOf="@id/iv_chat_headpic"
-            android:gravity="top|start"
-            tools:text="李四"/>
+                android:id="@+id/tv_chat_name"
+                style="@style/style_chat_name"
+                android:layout_toEndOf="@id/iv_chat_headpic"
+                android:layout_toRightOf="@id/iv_chat_headpic"
+                android:gravity="top|start"
+                tools:text="李四"/>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_chat_name"
-            android:layout_marginTop="@dimen/chat_list_content_margintop"
-            android:layout_toRightOf="@id/iv_chat_headpic">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_chat_name"
+                android:layout_marginTop="@dimen/chat_list_content_margintop"
+                android:layout_toRightOf="@id/iv_chat_headpic">
 
             <RelativeLayout
-                android:id="@+id/rl_chat_bubble"
-                android:layout_width="@dimen/chat_file_item_width"
-                android:layout_height="@dimen/chat_file_item_height"
-                style="@style/style_chat_bubble"
-                android:background="@drawable/shape_message_bubble_other_no_padding">
+                    android:id="@+id/rl_chat_bubble"
+                    android:layout_width="@dimen/chat_file_item_width"
+                    android:layout_height="@dimen/chat_file_item_height"
+                    style="@style/style_chat_bubble"
+                    android:background="@drawable/shape_message_bubble_other_no_padding">
 
                 <ImageView
                         android:id="@+id/iv_file"
-                        android:layout_width="@dimen/spacing_bigger_large_35"
-                        android:layout_height="@dimen/spacing_bigger_large_35"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:scaleType="centerCrop"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/spacing_normal"
-                        android:src="@drawable/ease_location_msg"/>
+                        android:src="@mipmap/pic_chat_accessory"/>
 
                 <!--文件名-->
                 <TextView
-                    android:id="@+id/tv_file_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/chat_location_title_height"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/size_icon_assist"
-                    android:textColor="@color/important_for_content"
-                    android:layout_toRightOf="@+id/iv_file"
-                    android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_alignTop="@+id/iv_file"
-                    tools:text="环球中心"/>
+                        android:id="@+id/tv_file_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/chat_location_title_height"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/size_icon_assist"
+                        android:textColor="@color/important_for_content"
+                        android:layout_toRightOf="@+id/iv_file"
+                        android:layout_marginLeft="@dimen/spacing_mid_small"
+                        android:layout_alignTop="@+id/iv_file"
+                        android:layout_marginRight="@dimen/spacing_normal"
+                        tools:text="环球中心"/>
 
                 <TextView
                         android:id="@+id/tv_file_length"
