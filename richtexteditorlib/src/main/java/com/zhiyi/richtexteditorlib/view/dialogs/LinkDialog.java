@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputFilter;
-import android.text.LoginFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -19,6 +18,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyi.richtexteditorlib.R;
 import com.zhiyi.richtexteditorlib.view.dialogs.base.BaseDialogFragment;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author Jliuer
@@ -248,26 +250,61 @@ public class LinkDialog extends BaseDialogFragment {
         void onCancelButtonClick();
     }
 
-    class MyNumFormatInputFilter extends LoginFilter.UsernameFilterGeneric {
+    public class MyNumFormatInputFilter implements InputFilter {
+        Pattern mPattern;
 
-        private String digits = "1234567890";
+        /**
+         * 输入的最大天数
+         */
+        private static final int MAX_VALUE = 30;
 
-        @Override
-        public boolean isAllowed(char c) {
-            if (digits.indexOf(c) != -1) {
-                return true;
-            }
-            return false;
+        private static final String ZERO = "0";
+
+        public MyNumFormatInputFilter() {
+            mPattern = Pattern.compile("([0-9])*");
         }
 
+        /**
+         * @param source 新输入的字符串
+         * @param start  新输入的字符串起始下标，一般为0
+         * @param end    新输入的字符串终点下标，一般为source长度-1
+         * @param dest   输入之前文本框内容
+         * @param dstart 原内容起始坐标，一般为0
+         * @param dend   原内容终点坐标，一般为dest长度-1
+         * @return 输入内容
+         */
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            // 不能以 0  开始
-            String replace = source.toString().replaceAll("^0*", "");
-            if (TextUtils.isEmpty(replace)) {
+            String sourceText = source.toString();
+            String destText = dest.toString();
+
+
+            if (TextUtils.isEmpty(sourceText)) {
                 return "";
             }
-            return super.filter(replace, start, end, dest, dstart, dend);
+
+            // 只能两位数
+            if (dest.length() > 1) {
+                return dest.subSequence(dstart, dend);
+            }
+
+            Matcher matcher = mPattern.matcher(source);
+
+            if (!matcher.matches()) {
+                return dest.subSequence(dstart, dend);
+            } else {
+                //首位不能输入 0
+                if ((ZERO.equals(source.toString())) && TextUtils.isEmpty(destText)) {
+                    return "";
+                }
+            }
+
+            //验证输入金额的大小
+            int day = Integer.parseInt(destText + sourceText);
+            if (day > MAX_VALUE) {
+
+            }
+            return dest.subSequence(dstart, dend) + sourceText;
         }
     }
 }
