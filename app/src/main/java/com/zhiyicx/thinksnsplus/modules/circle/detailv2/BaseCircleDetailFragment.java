@@ -168,6 +168,15 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         return ITEM_SPACING;
     }
 
+    @Override
+    public CircleZipBean getCircleZipBean() {
+        return null;
+    }
+
+    @Override
+    public void scrollToTop() {
+        mRvList.scrollToPosition(0);
+    }
 
     @Override
     public Long getCircleId() {
