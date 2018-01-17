@@ -16,6 +16,7 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -25,7 +26,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class CirclePostListBean extends BaseListBean implements Serializable{
+public class CirclePostListBean extends BaseListBean implements Serializable, Cloneable {
 
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
@@ -74,10 +75,10 @@ public class CirclePostListBean extends BaseListBean implements Serializable{
     private int reward_amount;
     private int reward_number;
     private String body;
-    @Convert(converter = CircleInfoConvert.class,columnType = String.class)
+    @Convert(converter = CircleInfoConvert.class, columnType = String.class)
     private CircleInfo group;
-    private boolean pinned ;
-    @Convert(converter = PostDigListConvert.class,columnType = String.class)
+    private boolean pinned;
+    @Convert(converter = PostDigListConvert.class, columnType = String.class)
     private List<PostDigListBean> digs;
 
     @Override
@@ -558,5 +559,15 @@ public class CirclePostListBean extends BaseListBean implements Serializable{
     }
 
     public static class CircleInfoConvert extends BaseConvert<CircleInfo> {
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

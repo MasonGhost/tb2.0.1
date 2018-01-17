@@ -265,6 +265,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private CircleInfo mCircleInfo;
 
+    private CircleZipBean mCircleZipBean;
+
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
         Bundle bundle = new Bundle();
@@ -368,6 +370,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfo detail = circleZipBean.getCircleInfo();
+        mCircleZipBean = circleZipBean;
         mCircleInfo = detail;
         setVisiblePermission(mCircleInfo);
         setCircleData(mCircleInfo);
@@ -720,8 +723,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public CircleZipBean getCircleZipBean() {
+        return mCircleZipBean;
+    }
+
+    @Override
+    public void scrollToTop() {
+        mRvList.scrollToPosition(0);
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        return (long) mListDatas.size();
+        int pinnedCount=mCircleZipBean==null?0:mCircleZipBean.getPinnedCount();
+        return (long) mListDatas.size() - pinnedCount;
     }
 
     @Override
