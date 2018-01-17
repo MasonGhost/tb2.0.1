@@ -238,6 +238,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
+                        mEtRegistVertifyCode.requestFocus();
                     } else {
                         if (mPresenter
                                 .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
@@ -247,6 +248,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         }
                         mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
                                 .trim());
+                        mEtRegistVertifyCode.requestFocus();
                     }
                 });
         // 点击注册按钮

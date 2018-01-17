@@ -821,7 +821,7 @@
     <string name="reward_type_error">打赏类型错误</string>
     <!--评论的、赞的-->
     <string name="digg_format_feed">%s赞了你的动态</string>
-    <string name="digg_format_group_feed">%s赞了你的圈子</string>
+    <string name="digg_format_group_feed">%s赞了你的帖子</string>
     <string name="digg_format_music">%s赞了你的音乐</string>
     <string name="digg_format_news">%s赞了你的文章</string>
     <string name="digg_format_questions">%s赞了你的问题</string>
