@@ -70,11 +70,9 @@ public class ChatRowVideo extends ChatBaseRow{
                     videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.PENDING ||
                     videoBody.thumbnailDownloadStatus() == EMFileMessageBody.EMDownloadStatus.FAILED) {
                 progressBar.setVisibility(View.INVISIBLE);
-                percentageView.setVisibility(View.INVISIBLE);
                 mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
             } else {
                 progressBar.setVisibility(View.GONE);
-                percentageView.setVisibility(View.GONE);
                 mIvVideoAvatar.setImageResource(com.hyphenate.easeui.R.drawable.ease_default_image);
                 showVideoThumbView(localThumb, mIvVideoAvatar, videoBody.getThumbnailUrl(), message);
             }

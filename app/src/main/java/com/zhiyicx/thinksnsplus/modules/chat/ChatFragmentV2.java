@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +26,7 @@ import com.hyphenate.easeui.ui.EaseGroupListener;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.easeui.widget.presenter.EaseChatVideoPresenter;
+import com.hyphenate.util.PathUtil;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -37,6 +40,9 @@ import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatTextPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVoicePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.video.ImageGridActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * @author Catherine
@@ -345,5 +351,27 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode) {
+                case REQUEST_CODE_SELECT_VIDEO: //send the video
+                    if (data != null) {
+                        int duration = data.getIntExtra("dur", 0);
+                        String videoPath = data.getStringExtra("path");
+                        File file = new File(PathUtil.getInstance().getImagePath(), "thvideo" + System.currentTimeMillis());
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            Bitmap ThumbBitmap = ThumbnailUtils.createVideoThumbnail(videoPath, 3);
+                            ThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            fos.close();
+                            sendVideoMessage(videoPath, file.getAbsolutePath(), duration);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

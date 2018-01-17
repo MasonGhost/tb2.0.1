@@ -610,6 +610,9 @@
         <!--选择好友-->
         <activity android:name=".modules.chat.select.SelectFriendsActivity"
                 android:screenOrientation="portrait"/>
+        <!--选择视频-->
+        <activity android:name=".modules.chat.video.ImageGridActivity"
+                android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
