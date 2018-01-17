@@ -144,6 +144,11 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                         content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
                                 + mContext.getString(R.string.chat_type_location) :mContext.getString(R.string.chat_type_location);
                         break;
+                    case FILE:
+                        // 文件消息 展示[文件]
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + mContext.getString(R.string.chat_type_file) :mContext.getString(R.string.chat_type_file);
+                        break;
                     default:
                 }
                 holder.setText(R.id.tv_content, content);

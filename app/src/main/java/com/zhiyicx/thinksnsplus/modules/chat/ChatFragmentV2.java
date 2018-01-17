@@ -34,6 +34,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatFilePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVideoPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatPicturePresenter;
@@ -340,7 +341,11 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 return presenter;
             }
             if (message.getType() == EMMessage.Type.VIDEO){
-                EaseChatVideoPresenter presenter = new TSChatVideoPresenter();
+                EaseChatRowPresenter presenter = new TSChatVideoPresenter();
+                return presenter;
+            }
+            if (message.getType() == EMMessage.Type.FILE){
+                EaseChatRowPresenter presenter = new TSChatFilePresenter();
                 return presenter;
             }
             return null;
