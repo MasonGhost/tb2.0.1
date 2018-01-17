@@ -608,7 +608,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                             mRootView.scrollToTop();
                         }
                         mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() + 1);
-                        mRootView.refreshData(position);
+                        mRootView.refreshData();
                     }
 
                     @Override
@@ -673,11 +673,18 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         if (position != -1) {
                             CirclePostListBean nowListData = mRootView.getListDatas().get(position);
                             if (postListBean.getPinned() && !nowListData.getPinned()) {
+                                // 在详情页面置顶
                                 CirclePostListBean pinned = (CirclePostListBean) nowListData.clone();
                                 mRootView.getListDatas().add(0, pinned);
                                 mRootView.scrollToTop();
+                            } else if (!postListBean.getPinned() && nowListData.getPinned()) {
+                                // 在详情页面撤销置顶
+                                mRootView.getListDatas().remove(nowListData);
                             }
-                            mRootView.getListDatas().set(position, postListBean);
+                            if (postListBean.getPinned() == nowListData.getPinned()) {
+                                // 在详情页面没有置顶操作
+                                mRootView.getListDatas().set(position, postListBean);
+                            }
                         } else {
                             // 发帖更新到列表
                             mRootView.getListDatas().add(0, postListBean);
