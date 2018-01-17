@@ -180,7 +180,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
 
-                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
+                        // 保存登录认证信息
+                        mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
@@ -226,7 +227,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.View>
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
 
-                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
+                        // 保存登录认证信息
+                        mAuthRepository.saveAuthBean(data);
                         mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
