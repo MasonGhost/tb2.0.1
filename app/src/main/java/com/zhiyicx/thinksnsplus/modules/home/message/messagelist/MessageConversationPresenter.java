@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.bean.ChatVerifiedBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -24,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerF
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,8 +110,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
     public List<ChatUserInfoBean> getChatUserList(int position) {
         List<ChatUserInfoBean> chatUserInfoBeans = new ArrayList<>();
         // 当前用户
-        chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
-        chatUserInfoBeans.add(getChatUser(mRootView.getRealMessageList().get(position).getUserInfo()));
+        if (mRootView.getRealMessageList().get(position).getConversation().getType() == EMConversation.EMConversationType.Chat){
+            chatUserInfoBeans.add(getChatUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault())));
+            chatUserInfoBeans.add(getChatUser(mRootView.getRealMessageList().get(position).getUserInfo()));
+        } else {
+            for (UserInfoBean userInfoBean : mRootView.getRealMessageList().get(position).getList()){
+                chatUserInfoBeans.add(getChatUser(userInfoBean));
+            }
+        }
         return chatUserInfoBeans;
     }
 
@@ -148,12 +156,14 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
         chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
         chatUserInfoBean.setName(userInfoBean.getName());
         chatUserInfoBean.setSex(userInfoBean.getSex());
-        ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
-        verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
-        verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
-        verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
-        verifiedBean.setType(userInfoBean.getVerified().getType());
-        chatUserInfoBean.setVerified(verifiedBean);
+        if (userInfoBean.getVerified() != null){
+            ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+            verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+            verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+            verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+            verifiedBean.setType(userInfoBean.getVerified().getType());
+            chatUserInfoBean.setVerified(verifiedBean);
+        }
         return chatUserInfoBean;
     }
 
@@ -247,10 +257,85 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 mCopyConversationList = mRootView.getRealMessageList();
             }
         }
+        mRootView.refreshData();
     }
 
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    /**
+     * 收到聊天消息
+     *
+     * @param bundle 聊天类容
+     */
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
+    private void onNewMessageReceived(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        LogUtils.d("Cathy", "MessagePresenter onMessageReceived" + bundle);
+        List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
+        Subscription subscribe = Observable.just(list)
+                .observeOn(Schedulers.io())
+                .flatMap(messageList -> {
+                    LogUtils.d("Cathy", "MessagePresenter onMessageReceived -----");
+                    int size = mRootView.getRealMessageList().size();
+                    // 对话是否存在
+                    // 用来装新的会话item
+                    List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
+                    for (EMMessage emMessage : messageList) {
+                        // 用收到的聊天的item的会话id去本地取出会话
+                        EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
+                        if (conversationNew != null) {
+                            // 会话已经存在
+                            for (int i = 0; i < size; i++) {
+                                // 检测列表中是否已经存在了
+                                EMConversation conversationOld = mRootView.getRealMessageList().get(i).getConversation();
+                                if (conversationOld.conversationId().equals(conversationNew.conversationId())) {
+                                    // 直接替换会话
+                                    MessageItemBeanV2 itemBeanV2 = mRootView.getRealMessageList().get(i);
+                                    itemBeanV2.setConversation(conversationNew);
+                                    messageItemBeanV2List.add(itemBeanV2);
+                                    break;
+                                } else if (i == size - 1) {
+                                    // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
+                                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                                    itemBeanV2.setConversation(conversationNew);
+                                    itemBeanV2.setEmKey(conversationNew.conversationId());
+                                    messageItemBeanV2List.add(itemBeanV2);
+                                }
+                            }
+                        } else {
+                            // 居然不存在 exm？？？
+                            // 那还能怎么办呢，当然新来一条的，不过这种情况目前没有遇到过的样子呢(*╹▽╹*)
+                            EMConversation conversation =
+                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType.Chat, true);
+                            conversation.insertMessage(emMessage);
+                            MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                            itemBeanV2.setConversation(conversation);
+                            itemBeanV2.setEmKey(emMessage.conversationId());
+                            messageItemBeanV2List.add(itemBeanV2);
+                        }
+                    }
+                    return mRepository.completeEmConversation(messageItemBeanV2List)
+                            .map(list12 -> list12);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list1 -> {
+                    for (MessageItemBeanV2 messageItemBeanV2 : list1) {
+                        // 移除原来的
+                        if (mRootView.getRealMessageList().indexOf(messageItemBeanV2) != -1) {
+                            mRootView.getRealMessageList().remove(messageItemBeanV2);
+                        }
+                    }
+                    // 加载到第一条
+                    mRootView.getRealMessageList().addAll(0, list1);
+                    mRootView.refreshData();
+                    // 小红点是否要显示
+                    checkBottomMessageTip();
+                });
+        addSubscrebe(subscribe);
     }
 }

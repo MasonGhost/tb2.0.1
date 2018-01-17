@@ -170,12 +170,14 @@ public class SelectFriendsPresenter extends AppBasePresenter<SelectFriendsContra
             chatUserInfoBean.setAvatar(userInfoBean.getAvatar());
             chatUserInfoBean.setName(userInfoBean.getName());
             chatUserInfoBean.setSex(userInfoBean.getSex());
-            ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
-            verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
-            verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
-            verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
-            verifiedBean.setType(userInfoBean.getVerified().getType());
-            chatUserInfoBean.setVerified(verifiedBean);
+            if (userInfoBean.getVerified() != null){
+                ChatVerifiedBean verifiedBean = new ChatVerifiedBean();
+                verifiedBean.setDescription(userInfoBean.getVerified().getDescription());
+                verifiedBean.setIcon(userInfoBean.getVerified().getIcon());
+                verifiedBean.setStatus(userInfoBean.getVerified().getStatus());
+                verifiedBean.setType(userInfoBean.getVerified().getType());
+                chatUserInfoBean.setVerified(verifiedBean);
+            }
             list.add(chatUserInfoBean);
         }
         return list;

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
@@ -190,14 +191,18 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
      * @param position        当前点击位置
      */
     private void toChatV2(MessageItemBeanV2 messageItemBean, int position) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
+        if (messageItemBean == null) {
             return;
         }
         Intent to = new Intent(getActivity(), ChatActivityV2.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
         bundle.putString(EaseConstant.EXTRA_USER_ID, messageItemBean.getEmKey());
-        bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
+        if (messageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat){
+            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
+        } else {
+            bundle.putInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_GROUP);
+        }
         bundle.putParcelableArrayList(ChatConfig.MESSAGE_CHAT_MEMBER_LIST, (ArrayList<? extends Parcelable>) mPresenter.getChatUserList(position));
         to.putExtra(BUNDLE_CHAT_DATA, bundle);
         startActivity(to);
@@ -224,5 +229,19 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
     public void onRightClick(int position) {
         mPresenter.deleteConversation(position);
         refreshData();
+    }
+
+    @Override
+    public void refreshData() {
+        setEmptyView();
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void setEmptyView() {
+        if (mMessageItemBeanList.isEmpty() && mHeaderAndFooterWrapper.getHeadersCount() <= 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 }
