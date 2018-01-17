@@ -613,6 +613,9 @@
         <!--选择视频-->
         <activity android:name=".modules.chat.video.ImageGridActivity"
                 android:screenOrientation="portrait"/>
+        <!--录制视频-->
+        <activity android:name=".modules.chat.video.RecorderVideoActivity"
+                android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

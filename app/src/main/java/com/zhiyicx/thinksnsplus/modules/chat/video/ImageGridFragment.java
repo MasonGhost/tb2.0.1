@@ -170,10 +170,9 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
         mImageResizer.setPauseWork(true);
 
         if (position == 0) {
-
-//            Intent intent = new Intent();
-//            intent.setClass(getActivity(), RecorderVideoActivity.class);
-//            startActivityForResult(intent, 100);
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), RecorderVideoActivity.class);
+            startActivityForResult(intent, 100);
         } else {
             VideoEntity vEntty = mList.get(position - 1);
             Intent intent = getActivity().getIntent().putExtra("path", vEntty.filePath).putExtra("dur", vEntty.duration);
