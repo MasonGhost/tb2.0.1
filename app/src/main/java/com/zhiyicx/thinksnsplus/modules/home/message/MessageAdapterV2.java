@@ -11,6 +11,8 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.jakewharton.rxbinding.view.RxView;
@@ -78,9 +80,9 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 break;
             case GroupChat:
                 // 群组
-                userAvatarView.getIvAvatar().setImageResource(R.drawable.shape_default_image_circle);
-//                holder.setText(R.id.tv_name, TextUtils.isEmpty(messageItemBean.getConversation().getName())
-//                        ? mContext.getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
+                EMGroup group = EMClient.getInstance().groupManager().getGroup(messageItemBean.getEmKey());
+                userAvatarView.getIvAvatar().setImageResource(R.mipmap.ico_ts_assistant);
+                holder.setText(R.id.tv_name, group.getGroupName());
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
@@ -90,6 +92,16 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
         if (messageItemBean.getConversation().getLastMessage() == null) {
             holder.setText(R.id.tv_content, "");
         } else {
+            // 最新的消息的发言人，只有群组才管这个
+            String lastUserName = "";
+            if (messageItemBean.getList() != null){
+                for (UserInfoBean userInfoBean : messageItemBean.getList()){
+                    if (messageItemBean.getConversation().getLastMessage().getFrom().equals(String.valueOf(userInfoBean.getUser_id()))){
+                        lastUserName = userInfoBean.getName();
+                        break;
+                    }
+                }
+            }
             if (messageItemBean.getConversation().getLastMessage().status() == EMMessage.Status.FAIL) {
                 holder.setText(R.id.tv_content, holder.getConvertView().getResources().getString(R.string.send_fail));
                 holder.getTextView(R.id.tv_content).setCompoundDrawablePadding(mContext.getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.spacing_small));
@@ -109,23 +121,28 @@ public class MessageAdapterV2 extends CommonAdapter<MessageItemBeanV2> implement
                 switch (message.getType()){
                     case TXT:
                         // 文字聊天展示聊天内容
-                        content = messageItemBean.getConversation().isGroup() ? message.getFrom() + ": "  + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + ((EMTextMessageBody) message.getBody()).getMessage() : ((EMTextMessageBody) message.getBody()).getMessage();
                         break;
                     case IMAGE:
                         // 图片聊天 展示[图片]
-                        content = mContext.getString(R.string.chat_type_image);
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + mContext.getString(R.string.chat_type_image) :mContext.getString(R.string.chat_type_image);
                         break;
                     case VOICE:
                         // 语音聊天 展示[语音]
-                        content = mContext.getString(R.string.chat_type_voice);
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + mContext.getString(R.string.chat_type_voice) :mContext.getString(R.string.chat_type_voice);
                         break;
                     case VIDEO:
                         // 视频聊天 展示[视频]
-                        content = mContext.getString(R.string.chat_type_video);
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + mContext.getString(R.string.chat_type_video) :mContext.getString(R.string.chat_type_video);
                         break;
                     case LOCATION:
                         // 位置消息 展示[位置]
-                        content = mContext.getString(R.string.chat_type_location);
+                        content = messageItemBean.getConversation().isGroup() ? lastUserName + ": "
+                                + mContext.getString(R.string.chat_type_location) :mContext.getString(R.string.chat_type_location);
                         break;
                     default:
                 }
