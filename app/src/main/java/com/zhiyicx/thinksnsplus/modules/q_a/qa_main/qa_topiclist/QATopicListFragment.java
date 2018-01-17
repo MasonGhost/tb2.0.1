@@ -148,6 +148,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (mPresenter.handleTouristControl()) {
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), TopicDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(BUNDLE_TOPIC_BEAN, mListDatas.get(position));
