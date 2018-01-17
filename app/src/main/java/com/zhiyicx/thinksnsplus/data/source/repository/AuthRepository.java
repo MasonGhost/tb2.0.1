@@ -38,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -115,6 +116,8 @@ public class AuthRepository implements IAuthRepository {
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
     @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
+    @Inject
+    MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -215,6 +218,7 @@ public class AuthRepository implements IAuthRepository {
         MessageDao.getInstance(mContext).delDataBase();
         mUserInfoBeanGreenDao.clearTable();
         mUserTagBeanGreenDaoimpl.clearTable();
+        mMusicAlbumListDao.clearTable();
         AppApplication.setmCurrentLoginAuth(null);
 
         //处理 Ts 助手

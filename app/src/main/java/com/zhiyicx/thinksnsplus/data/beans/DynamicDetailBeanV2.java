@@ -594,19 +594,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
             imageBean.setImageViewHeight(height);
         }
         imageBean.setPropPart(proportion);
-        float net = netHeight / netWidth;
-        float result = 0;
-        if (net >3 || net < .3f) {
-
-            result = ImageUtils.getmWidthPixels() / netWidth;
-
-            if (result < .3f) {
-
-            } else {
-                result = result * netHeight / ImageUtils.getmHightPixels();
-            }
-        }
-        imageBean.setLongImage(result > 3 || result < .3f);
+        imageBean.setLongImage(ImageUtils.isLongImage(netHeight,netWidth));
     }
 
     public static class ImagesBean implements Parcelable, Serializable {
