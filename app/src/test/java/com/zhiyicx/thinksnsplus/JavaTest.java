@@ -102,7 +102,7 @@ public class JavaTest {
         int sw, sh;
         sw = 720;
         sh = 1080;
-        netWidth = 720;
+        netWidth = 900;
         netHeight = 800;
         isLongImage(netHeight, netWidth, sw, sh);
 
@@ -125,7 +125,7 @@ public class JavaTest {
         System.out.println("result:::" + result + "");
         System.out.println("isLongImage:::" + isLong + "");
         if (!isLong) {
-            netHeight += 20;
+            netWidth += 20;
             isLongImage(netHeight, netWidth, sw, sh);
         }
     }
