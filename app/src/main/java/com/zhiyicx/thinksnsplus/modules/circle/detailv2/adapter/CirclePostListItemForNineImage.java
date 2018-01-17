@@ -35,7 +35,7 @@ public class CirclePostListItemForNineImage extends CirclePostListBaseItem {
 
     @Override
     public boolean isForViewType(CirclePostListBean item, int position) {
-        boolean isForViewType = item.getId() != null && (item.getImages() != null && item.getImages().size
+        boolean isForViewType =(item.getImages() != null && item.getImages().size
                 () >= getImageCounts());
         return isForViewType;
     }

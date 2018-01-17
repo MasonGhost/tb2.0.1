@@ -603,7 +603,11 @@ public abstract class RichEditor extends WebView {
                     .subscribe(new Subscriber<Object>() {
                         @Override
                         public void onCompleted() {
-                            mOnMarkdownWordResultListener.onMarkdownWordResult(title, markdown, noMarkdownWords, isPublish);
+                            String result = noMarkdownWords;
+                            if (noMarkdownWords.length() >= 191) {
+                                result = noMarkdownWords.substring(0, 191);
+                            }
+                            mOnMarkdownWordResultListener.onMarkdownWordResult(title, markdown, result, isPublish);
                         }
 
                         @Override

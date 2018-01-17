@@ -193,5 +193,7 @@ public interface DynamicDetailContract {
 
         void allDataReady();
 
+        void setNeedDynamicListRefresh(boolean needDynamicListRefresh);
+
     }
 }

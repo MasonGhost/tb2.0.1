@@ -83,26 +83,11 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.InfoLis
                     @Override
                     protected void onSuccess(List<InfoListDataBean> data) {
                         List<BaseListBean> list = new ArrayList<>();
-                        List<InfoRecommendBean> recommendList;
-//                        try {
-//                            recommendList = data.getRecommend();
-//                        } catch (Exception e) {
-//                            recommendList = data.getNetRecommend();
-//                        }
-//                        if (recommendList != null) {
-//                            for (InfoRecommendBean recommendBean : recommendList) {
-//                                recommendBean.setInfo_type(type);
-//                            }
-//                            list.addAll(recommendList);
-//                            mInfoRecommendBeanGreenDao.saveMultiData(recommendList);
-//                        }
                         for (InfoListDataBean listDataBean : data) {
                             listDataBean.setInfo_type(type);
                         }
                         list.addAll(data);
                         mInfoListDataBeanGreenDao.saveMultiData(data);
-//                        data.setInfo_type(type);
-//                        mInfoListBeanGreenDao.insertOrReplace(data);
                         mRootView.onNetResponseSuccess(list, isLoadMore);
                     }
 

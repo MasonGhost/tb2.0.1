@@ -260,7 +260,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected boolean showNoMoreData() {
-        return false;
+        return mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE ;
     }
 
     protected int setEmptView() {
@@ -735,7 +735,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         if (!isFromCache && (data == null || data.size() < getPagesize())) {
             mRefreshlayout.setEnableLoadmore(false);
             // mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE 当前数量大于一页显示数量时，显示加载更多
-            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SHOW_MAX_SIZE || showNoMoreData()) {
+            if (showNoMoreData()) {
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }

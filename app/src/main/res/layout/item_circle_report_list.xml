@@ -43,11 +43,9 @@
         android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
-        app:etv_IsNeedShrink="false"
-        app:etv_MaxLinesOnShrink="2"
         app:etv_EnableToggle="false"
+        app:etv_MaxLinesOnShrink="2"
         app:etv_ToExpandHint="@string/circle_report_more"
-        app:etv_ToShrinkHint=""
         tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
 
     <LinearLayout
@@ -55,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_content"
-        android:layout_marginBottom="@dimen/spacing_normal"
+
         android:layout_marginRight="@dimen/spacing_mid_small_8dp"
         android:layout_toRightOf="@id/iv_headpic"
         android:background="@color/bgColor"
@@ -94,6 +92,7 @@
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_normal"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
@@ -109,6 +108,7 @@
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:paddingLeft="@dimen/spacing_mid_small_8dp"
         android:paddingRight="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_normal"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>

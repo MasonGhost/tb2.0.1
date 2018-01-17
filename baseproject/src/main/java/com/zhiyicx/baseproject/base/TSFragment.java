@@ -288,8 +288,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                 .setPromptThemBackground(prompt)
                 .setCallback(new TSnackbar.Callback() {
                     @Override
-                    public void onDismissed(TSnackbar TSnackbar, @DismissEvent int event) {
-                        super.onDismissed(TSnackbar, event);
+                    public void onDismissed(TSnackbar tsnackbar, @DismissEvent int event) {
+                        super.onDismissed(tsnackbar, event);
                         switch (event) {
                             case DISMISS_EVENT_TIMEOUT:
                                 try {
@@ -948,6 +948,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     @Override
     public void onDestroyView() {
         if (mSnackBar != null) {
+            mSnackBar.setCallback(null);
             if (mSnackBar.isShownOrQueued()) {
                 mSnackBar.dismiss();
             }

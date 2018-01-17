@@ -269,7 +269,7 @@
     <string name="circle_detail_usercount">成员：	%d</string>
     <string name="circle_detail_postcount">%d个帖子</string>
     <string name="circle_manager_attorn">选择新圈主</string>
-    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给 %2$s 使其成为新的圈主？</string>
+    <string name="circle_manager_sure_attorn">确定将圈子 %1$s 转让给%2$s\n使其成为新的圈主？</string>
     <string name="circle_manager_attorn_success">圈子转让成功</string>
     <string name="circle_manager_attorn_failed">圈子转让失败</string>
     <string name="circle_manager_format">圈管理(%d)</string>
@@ -278,7 +278,7 @@
     <string name="from">来自</string>
     <string name="circle_blacklist_format">黑名单(%d)</string>
     <string name="circle_blacklist">黑名单用户只能查看不能操作!</string>
-    <string name="circle_blocked">封闭圈子!</string>
+    <string name="circle_blocked">需要加入才可进入详情!</string>
     <string name="post_apply_for_top">申请帖子置顶</string>
     <string name="post_undo_top">撤销置顶</string>
     <string name="post_apply_top">置顶帖子</string>
@@ -291,7 +291,6 @@
     <string name="post_publish_select_content">你的内容呢..</string>
 
     <string-array name="post_typpe_array">
-        <item>全部帖子</item>
         <item>最新帖子</item>
         <item>最新回复</item>
     </string-array>
@@ -330,7 +329,8 @@
     <string name="edit_circle_block">设置为封闭圈子</string>
     <string name="edit_circle_charge">收费入圈</string>
     <string name="edit_circle_free">免费入圈</string>
-    <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子,收费圈子不可更改成公开和私有圈子</string>
+    <string name="edit_circle_join">注：用户需经过圈管理员同意方可加入封闭圈子</string>
+    <string name="close_circle_rule">收费圈子不能改成公开或私有圈子</string>
     <string name="edit_circle_notice">公告</string>
     <string name="edit_circle_rule">点击创建即代表同意《%s圈子创建协议》</string>
     <string name="circle_rule">圈子创建协议</string>

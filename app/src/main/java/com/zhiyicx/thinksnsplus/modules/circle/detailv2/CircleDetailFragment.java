@@ -127,7 +127,6 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.ALL;
 import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
@@ -425,6 +424,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             CircleJoinedBean joinedBean = mCircleInfo.getJoined();
             joinedBean.setRole(CircleMembers.MEMBER);
             mCircleInfo.setJoined(joinedBean);
+            mCircleInfo.getFounder().setUser(circleMembers.getUser());
+            mCircleInfo.getFounder().setUser_id((int) circleMembers.getUser_id());
             mTvOwnerName.setText(mCircleInfo.getFounder().getUser().getName());
             setVisiblePermission(mCircleInfo);
         } else if (requestCode == CreateCircleFragment.REQUST_CODE_UPDATE && resultCode == Activity.RESULT_OK && data != null) {
@@ -457,6 +458,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
         initTypePop(mPostTypeEnum);
+        mTvCirclePostOrder.setText(getString(R.string.post_typpe_new));
     }
 
     @Override
@@ -468,7 +470,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(mActivity);
         }
-        onChoosed(ALL);
+        onChoosed(LATEST_POST);
     }
 
     @Override
@@ -733,9 +735,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
             return;
         }
         switch (type) {
-            case ALL:
-                mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_all));
-                break;
             case LATEST_POST:
                 mTvCirclePostOrder.setText(mActivity.getString(R.string.post_typpe_new));
                 break;
@@ -1273,6 +1272,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         }
         mTvCircleSubscrib.setVisibility(isJoined ? View.GONE : View.VISIBLE);
         mTvExitCircle.setVisibility(!isJoined ? View.GONE : View.VISIBLE);
+        mTvExitCircle.setText(R.string.circle_exit);
         if (isOwner && detail.getUsers_count() > 1) {
             mTvExitCircle.setText(R.string.circle_transfer);
         } else if (isOwner && detail.getUsers_count() <= 1) {

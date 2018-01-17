@@ -287,7 +287,7 @@
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content"/>
 
-                <android.support.v7.widget.SwitchCompat
+                <com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat
                     android:id="@+id/wc_synchro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -314,7 +314,7 @@
                     android:textColor="@color/important_for_content"
                     android:textSize="@dimen/size_content"/>
 
-                <android.support.v7.widget.SwitchCompat
+                <com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat
                     android:id="@+id/wc_block"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -333,7 +333,7 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <CheckBox
+                <com.zhiyicx.thinksnsplus.widget.EnableCheckBox
                     android:id="@+id/cb_toll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -373,7 +373,7 @@
                 android:gravity="center_vertical"
                 android:visibility="gone">
 
-                <CheckBox
+                <com.zhiyicx.thinksnsplus.widget.EnableCheckBox
                     android:id="@+id/cb_free"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/create_circle_button_height"

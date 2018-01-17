@@ -21,11 +21,13 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.circle.group_dynamic.GroupDynamicDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
@@ -194,10 +196,12 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 intent.putExtras(bundle);
                 break;
             case APP_LIKE_GROUP_POST:
-                intent = new Intent(mContext, GroupDynamicDetailActivity.class);
-                GroupDynamicListBean groupData = new Gson().fromJson(new Gson().toJson(digedBean.getLikeable()), GroupDynamicListBean.class);
-                bundle.putParcelable(DYNAMIC_DETAIL_DATA, groupData);
-                bundle.putBoolean(LOOK_COMMENT_MORE, false);
+                CirclePostListBean postListBean = new Gson().fromJson(new Gson().toJson(digedBean.getLikeable()), CirclePostListBean.class);
+                intent = new Intent(mContext, CirclePostDetailActivity.class);
+                bundle = new Bundle();
+                bundle.putParcelable(CirclePostDetailFragment.POST, postListBean);
+                bundle.putBoolean(CirclePostDetailFragment.BAKC2CIRCLE, true);
+                bundle.putBoolean(CirclePostDetailFragment.LOOK_COMMENT_MORE, false);
                 intent.putExtras(bundle);
                 break;
             case APP_LIKE_MUSIC:
