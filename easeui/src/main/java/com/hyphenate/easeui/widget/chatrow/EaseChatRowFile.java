@@ -74,6 +74,7 @@ public class EaseChatRowFile extends EaseChatRow{
             case INPROGRESS:
                 onMessageInProgress();
                 break;
+            default:
         }
     }
 
