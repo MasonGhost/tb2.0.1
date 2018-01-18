@@ -1,6 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.integration;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.widget.Toolbar;
+
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.wallet.DaggerWalletComponent;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletFragment;
@@ -29,7 +35,7 @@ public class MineIntegrationActivity extends TSActivity<MineIntegrationPresenter
 
     @Override
     protected MineIntegrationFragment getFragment() {
-        return MineIntegrationFragment.newInstance();
+        return MineIntegrationFragment.Companion.newInstance();
     }
 
 }
