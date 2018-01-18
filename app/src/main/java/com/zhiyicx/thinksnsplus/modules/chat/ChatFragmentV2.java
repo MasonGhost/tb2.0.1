@@ -32,6 +32,7 @@ import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatFilePresenter;
@@ -232,6 +233,7 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 break;
             case ITEM_VOICE_CALL_TS:
                 // 语音
+                startVoiceCall();
                 break;
             default:
                 break;
@@ -377,6 +379,22 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     * make a voice call
+     */
+    protected void startVoiceCall() {
+        if (!EMClient.getInstance().isConnected()) {
+            Toast.makeText(getActivity(), R.string.not_connect_to_server, Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(getActivity(), VoiceCallActivity.class);
+            intent.putExtra("username", toChatUsername);
+            intent.putExtra("isComingCall", false);
+            startActivity(intent);
+            // voiceCallBtn.setEnabled(false);
+            inputMenu.hideExtendMenuContainer();
         }
     }
 }

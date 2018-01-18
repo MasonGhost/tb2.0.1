@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -46,6 +47,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.chat.receiver.CallReceiver;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -162,6 +164,10 @@ public class AppApplication extends TSApplication {
         options.setRequireDeliveryAck(true);
         //初始化
         EaseUI.getInstance().init(getApplicationContext(), options);
+        // service
+        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
+        CallReceiver callReceiver = new CallReceiver();
+        getApplicationContext().registerReceiver(callReceiver, callFilter);
     }
 
     /**
