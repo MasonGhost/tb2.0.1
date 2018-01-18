@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,18 +12,15 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.integration.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
 
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
@@ -32,10 +29,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRULE_POP;
 
@@ -45,7 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRU
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class WalletFragment extends TSFragment<WalletContract.Presenter> implements WalletContract.View {
+public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.Presenter> implements MineIntegrationContract.View {
 
     @BindView(R.id.tv_mine_money)
     TextView mTvMineMoney;
@@ -53,8 +48,6 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     CombinationButton mBtReCharge;
     @BindView(R.id.bt_withdraw)
     CombinationButton mBtWithdraw;
-    @BindView(R.id.bt_mine_integration)
-    CombinationButton btMineIntegration;
     @BindView(R.id.tv_recharge_and_withdraw_rule)
     TextView mTvReChargeAndWithdrawRule;
     @BindView(R.id.tv_account_unit)
@@ -65,8 +58,8 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
      */
     private CenterInfoPopWindow mRulePop;
 
-    public static WalletFragment newInstance() {
-        return new WalletFragment();
+    public static MineIntegrationFragment newInstance() {
+        return new MineIntegrationFragment();
     }
 
     @Override
@@ -141,15 +134,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));     // 提现
-        // 我的积分
-        RxView.clicks(btMineIntegration)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid ->{
-                    Intent intent = new Intent(mActivity, MineIntegrationActivity.class);
-                    startActivity(intent);
-                } );
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW,true));
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
