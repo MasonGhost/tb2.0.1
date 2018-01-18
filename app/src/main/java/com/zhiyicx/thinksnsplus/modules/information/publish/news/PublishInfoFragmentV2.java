@@ -129,7 +129,8 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
     @Override
     protected void initPhotoPopupWindow() {
         if (mInsertedImages.size() + mFailedImages.size() >= 9) {
-            initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault(), getString(R.string.choose_max_photos), 9));
+            initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault
+                    (), getString(R.string.choose_max_photos), 9));
             return;
         }
         super.initPhotoPopupWindow();
@@ -180,21 +181,29 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
 
         }
         LogUtils.d(result);
-        mRichTextView.insertHtml(result);
+        mRichTextView.insertHtmlDIV(result);
     }
 
     private String getImageHtml(long tagId, int id, String name, String imagePath) {
         String markdown = "@![" + name + "](" + id + ")";
-        return "<div><br></div><div class=\"block\">\n\t\t\t\t" +
-                "<div class=\"img-block\"><div style=\"width: 100% \" class=\"process\">\n\t\t\t\t\t" +
-                "<div class=\"fill\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t" +
-                "<img class=\"images\" data-id=\"" + tagId + "\" style=\"width: 100% ; height: auto ;\" src =\"" + imagePath + "\"/>\n\t\t\t\t" +
-                "<div class=\"cover\" style=\"width: 100% ; height: auto \"></div>\n\t\t\t\t" +
-                "<div class=\"delete\">\n\t\t\t\t\t<img class=\"error\" src =\"./reload.png\">\n\t\t\t\t\t" +
-                "<div class=\"tips\">图片上传失败，请点击重试</div>\n\t\t\t\t\t" +
-                "<div class=\"markdown\">\"" + markdown + "\"</div>\n\t\t\t\t</div></div>\n\t\t\t\t" +
-                "<input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">\n\t\t\t" +
-                "</div><div><br></div>";
+        return  "<div><br></div>" +
+                "<div class=\"block\" contenteditable=\"false\">" +
+                "   <div class=\"img-block\">" +
+                "       <div style=\"width: 100% \" class=\"process\">" +
+                "           <div class=\"fill\"></div>" +
+                "       </div>"+
+                "       <img class=\"images\" data-id=\""+tagId+"\" style=\"width: 100% ; height: auto\"" +
+                "           src=\""+imagePath+"\">" +
+                "       <div class=\"cover\" style=\"width: 100% ; height: auto\"></div>"+
+                "       <div class=\"delete\">" +
+                "           <img class=\"error\" src=\"./reload.png\">" +
+                "           <div class=\"tips\">图片上传失败，请点击重试</div>" +
+                "           <div class=\"markdown\">"+markdown+"</div>" +
+                "       </div>" +
+                "   </div>" +
+                "   <input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">" +
+                "</div>"+
+                "<div><br></div>";
 
     }
 }

@@ -327,6 +327,12 @@ var RE = {
 		var _self = this;
 		document.execCommand('insertHtml', false, html);
 	},
+
+	insertHtmlDIV: function insertHtmlDIV(html) {
+	    console.log("insertHtmlDIV:::" + html);
+        document.getElementById('editor').innerHTML=html;
+    },
+
 	setBackgroundColor: function setBackgroundColor(color) {
 	    var _self = this;
 	    document.body.style.backgroundColor = color;

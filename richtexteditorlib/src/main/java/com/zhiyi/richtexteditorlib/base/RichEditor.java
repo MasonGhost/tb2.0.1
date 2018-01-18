@@ -394,7 +394,13 @@ public abstract class RichEditor extends WebView {
 
     public void insertHtml(String html) {
         exec("javascript:RE.saveRange();");
-        exec("javascript:RE.insertHtml('" + html + "';");
+        exec("javascript:RE.insertHtml('" + html + "');");
+    }
+
+
+    public void insertHtmlDIV(String html) {
+        exec("javascript:RE.saveRange();");
+        exec("javascript:RE.insertHtmlDIV('" + html + "');");
     }
 
     public void addImageClickListener(String ids) {
