@@ -35,7 +35,7 @@ public class MineIntegrationActivity extends TSActivity<MineIntegrationPresenter
 
     @Override
     protected MineIntegrationFragment getFragment() {
-        return MineIntegrationFragment.Companion.newInstance();
+        return MineIntegrationFragment.newInstance();
     }
 
 }

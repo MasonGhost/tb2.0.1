@@ -84,7 +84,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 头部左边的刷新控件
      */
-    private ImageView mIvRefresh;
+    protected ImageView mIvRefresh;
 
     protected ViewGroup mSnackRootView;
     /**
@@ -886,7 +886,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mStatusPlaceholderView.setBackgroundColor(resId);
         }
     }
-
+    /**
+     * 设置状态栏占位图背景色
+     *
+     * @param resId
+     */
+    public void setStatusPlaceholderViewBackground(int resId) {
+        if (mStatusPlaceholderView != null) {
+            mStatusPlaceholderView.setBackgroundResource(resId);
+        }
+    }
     /**
      * 登录跳转
      */
