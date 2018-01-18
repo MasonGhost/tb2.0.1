@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#252C39"
+        android:orientation="vertical"
+        android:id="@+id/root_layout"
+        android:paddingTop="120dp">
+
+    <!--对方的信息-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+                android:id="@+id/swing_card"
+                android:layout_width="@dimen/chat_call_avatar_width"
+                android:layout_height="@dimen/chat_call_avatar_width"
+                android:scaleType="fitXY"
+                android:layout_marginTop="10dp"
+                app:ts_avatare_size="@dimen/chat_call_avatar_width"
+                app:pressShape="circle"/>
+
+        <TextView
+                android:id="@+id/tv_nick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/size_primary_title"
+                tools:text="张三"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/tv_network_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"/>
+    </LinearLayout>
+
+    <!--通话信息-->
+    <LinearLayout
+            android:id="@+id/topLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        <!--通话状态-->
+        <TextView
+                android:id="@+id/tv_call_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/voip_interface_text_color"
+                android:textSize="@dimen/size_primary_title"
+                tools:text="通话中"
+                android:visibility="visible"/>
+
+        <com.zhiyicx.thinksnsplus.widget.chat.MyChronometer
+                android:visibility="invisible"
+                android:id="@+id/chronometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/spacing_mid"
+                android:text="Chronometer"/>
+
+        <TextView
+                android:id="@+id/tv_is_p2p"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_bigger_large"
+            android:orientation="horizontal">
+
+        <!--静音-->
+        <LinearLayout
+                android:id="@+id/ll_mute"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/iv_mute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/btn_chat_mute"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:text="@string/mute"/>
+
+        </LinearLayout>
+
+        <!--挂断-->
+        <LinearLayout
+                android:id="@+id/ll_refuse_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/btn_refuse_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@mipmap/btn_chat_hungup"
+                    android:background="@null"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:text="@string/hang_up"/>
+
+        </LinearLayout>
+
+        <!--挂断-->
+        <LinearLayout
+                android:id="@+id/ll_hangup_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/btn_hangup_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@mipmap/btn_chat_hungup"
+                    android:background="@null"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:text="@string/hang_up"/>
+
+        </LinearLayout>
+
+        <!--接听-->
+        <LinearLayout
+                android:id="@+id/ll_answer_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/btn_answer_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@mipmap/btn_chat_answer"
+                    android:background="@null"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:text="@string/answer"/>
+
+        </LinearLayout>
+
+
+        <!--免提-->
+        <LinearLayout
+                android:id="@+id/ll_handsfree"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/iv_handsfree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/btn_chat_handsfree"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:text="@string/Hands_free"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
