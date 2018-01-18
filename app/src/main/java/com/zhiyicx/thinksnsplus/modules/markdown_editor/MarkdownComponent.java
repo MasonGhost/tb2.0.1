@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
 import com.zhiyicx.thinksnsplus.modules.circle.publish.PublishPostActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.news.PublishInfoActivityV2;
 
 import dagger.Component;
 
@@ -16,5 +17,5 @@ import dagger.Component;
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = MarkdownPresenterModule.class)
 public interface MarkdownComponent extends InjectComponent<PublishPostActivity> {
-
+    void inject(PublishInfoActivityV2 infoActivity);
 }

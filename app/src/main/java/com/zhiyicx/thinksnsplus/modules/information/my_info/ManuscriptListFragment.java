@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.news.PublishInfoActivityV2;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
@@ -101,7 +102,7 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
                         infoPublishBean.setCover(realData.getImage() == null ? -1 : realData.getImage().getId());
                         infoPublishBean.setRefuse(true);
                         infoPublishBean.setTags(realData.getTags());
-                        Intent intent = new Intent(getActivity(), PublishInfoActivity.class);
+                        Intent intent = new Intent(getActivity(), PublishInfoActivityV2.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(INFO_REFUSE, infoPublishBean);
                         intent.putExtras(bundle);

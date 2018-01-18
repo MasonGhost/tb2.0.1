@@ -39,11 +39,8 @@ import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 
@@ -55,7 +52,8 @@ import butterknife.BindView;
  */
 public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<MarkdownContract.Presenter> implements
         SimpleRichEditor.OnEditorClickListener, PhotoSelectorImpl.IPhotoBackListener,
-        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener, BottomMenu.BottomMenuVisibleChangeListener {
+        MarkdownContract.View, RichEditor.OnMarkdownWordResultListener, RichEditor.OnImageDeleteListener,
+        BottomMenu.BottomMenuVisibleChangeListener {
 
     public static final String BUNDLE_SOURCE_DATA = "sourceId";
 
@@ -269,6 +267,12 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
         }
     }
 
+    @Override
+    public void onImageDelete(long tagId) {
+        mInsertedImages.remove(tagId);
+        mFailedImages.remove(tagId);
+    }
+
     protected String getImageIds() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<Long, String> entry : mInsertedImages.entrySet()) {
@@ -313,6 +317,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
 
     protected void initListener() {
         mRichTextView.setOnEditorClickListener(this);
+        mRichTextView.setOnImageDeleteListener(this);
         mRichTextView.setOnTextLengthChangeListener(length -> {
 
         });
@@ -450,7 +455,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     /**
      * 初始化图片选择弹框
      */
-    private void initPhotoPopupWindow() {
+    protected void initPhotoPopupWindow() {
 
         if (mPhotoPopupWindow != null) {
             mPhotoPopupWindow.show();

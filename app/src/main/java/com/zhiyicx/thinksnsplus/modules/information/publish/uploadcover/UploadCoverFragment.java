@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -72,7 +71,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
-    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
+    public void addImageViewAtIndex(String iamge, int iamgeId, String markdonw, boolean isLast) {
 
     }
 

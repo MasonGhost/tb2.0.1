@@ -42,8 +42,7 @@ public class MarkdownPresenter extends AppBasePresenter<
     PostDraftBeanGreenDaoImpl mPostDraftBeanGreenDao;
 
     @Inject
-    public MarkdownPresenter(MarkdownContract.View
-                                     rootView) {
+    public MarkdownPresenter(MarkdownContract.View rootView) {
         super(rootView);
     }
 

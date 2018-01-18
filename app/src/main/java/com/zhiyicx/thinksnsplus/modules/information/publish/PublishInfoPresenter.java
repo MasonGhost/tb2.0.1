@@ -115,12 +115,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.V
     @Override
     public void pareseBody(String body) {
         Observable.just(body)
-                .flatMap(new Func1<String, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(String s) {
-                        return Observable.from(RegexUtils.cutStringByImgTag(s));
-                    }
-                })
+                .flatMap(s -> Observable.from(RegexUtils.cutStringByImgTag(s)))
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
