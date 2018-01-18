@@ -139,4 +139,6 @@
     <dimen name="select_icon_width">12dp</dimen>
     <dimen name="select_user_portrait">25dp</dimen>
     <dimen name="chat_call_avatar_width">100dp</dimen>
+    <dimen name="chat_call_local_surface_view_width">95dp</dimen>
+    <dimen name="chat_call_local_surface_view_height">143dp</dimen>
 </resources>
