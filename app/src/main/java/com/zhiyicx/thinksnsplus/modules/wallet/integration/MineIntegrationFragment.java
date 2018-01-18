@@ -24,6 +24,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletContract;
@@ -193,8 +194,8 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    Intent intent = new Intent(mActivity, MineIntegrationActivity.class);
-                    startActivity(intent);
+                    TSDevelopActivity.startDeveloperAcitvity(mActivity,getString(R.string.integration_shop)
+                    ,R.mipmap.pic_default_mall);
                 });
         // 积分规则
         RxView.clicks(mTvReChargeAndWithdrawRule)

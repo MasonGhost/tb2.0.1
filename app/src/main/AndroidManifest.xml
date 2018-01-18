@@ -679,6 +679,11 @@
         <activity
             android:name=".modules.wallet.integration.MineIntegrationActivity"
             android:screenOrientation="portrait"/>
+        <!--开发中的默认页面-->
+        <activity
+            android:name=".modules.develop.TSDevelopActivity"
+            android:screenOrientation="portrait"/>
+
 
     </application>
 
