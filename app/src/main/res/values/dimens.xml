@@ -138,4 +138,5 @@
     <dimen name="select_friends_item_height">66dp</dimen>
     <dimen name="select_icon_width">12dp</dimen>
     <dimen name="select_user_portrait">25dp</dimen>
+    <dimen name="chat_call_avatar_width">100dp</dimen>
 </resources>

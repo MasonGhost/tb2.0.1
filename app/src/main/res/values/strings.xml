@@ -774,4 +774,9 @@
     <string name="select_friends_center_title">选择好友</string>
     <string name="select_friends_right_title_default">聊天</string>
     <string name="select_friends_right_title">聊天(%d)</string>
+
+    <string name="call_version_inconsistent">通话协议版本不一致</string>
+    <string name="have_connected_with">已经和对方建立连接</string>
+    <string name="network_unstable">网络不稳定</string>
+    <string name="no_call_data">没有通话数据</string>
 </resources>
