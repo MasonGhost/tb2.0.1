@@ -114,6 +114,12 @@
     <dimen name="type_item_rank_num_width">42dp</dimen>
     <dimen name="item_channel_detial_header_des_with">280dp</dimen>
     <dimen name="info_title_size">25sp</dimen>
+
+    <!--扫码-->
+    <dimen name="qr_code_width">147dp</dimen>
+    <dimen name="qr_code_user_avatar_width">50dp</dimen>
+    <dimen name="qr_code_content_padding_top">59dp</dimen>
+    <dimen name="qr_code_content_padding_bottom">74dp</dimen>
     <dimen name="report_resource_img">42dp</dimen>
     <dimen name="typchoose_with">100dp</dimen>
     <dimen name="circle_detail_toolbar_height">48dp</dimen>

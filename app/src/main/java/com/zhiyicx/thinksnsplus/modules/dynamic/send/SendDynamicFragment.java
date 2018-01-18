@@ -252,7 +252,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initTollState() {
-//        mLLToll.setVisibility(isToll && dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC ? View.VISIBLE : View.GONE);
+        boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
+        mLLToll.setVisibility(canPay ? View.VISIBLE : View.GONE);
     }
 
     @Override

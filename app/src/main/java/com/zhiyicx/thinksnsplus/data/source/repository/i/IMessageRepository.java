@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 
@@ -81,4 +82,10 @@ public interface IMessageRepository {
      * @return
      */
     Observable<Object> makeNotificationAllReaded();
+
+
+    Observable<List<MessageItemBeanV2>> getConversationListV2(int user_id);
+
+
+    Observable<List<MessageItemBeanV2>> completeEmConversation(List<MessageItemBeanV2> list);
 }

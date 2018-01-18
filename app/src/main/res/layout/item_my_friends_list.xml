@@ -1,0 +1,78 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_mid">
+
+    <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_headpic"
+            android:layout_width="@dimen/headpic_for_list"
+            android:layout_height="@dimen/headpic_for_list"
+            android:layout_marginRight="@dimen/spacing_mid"
+            app:ts_avatare_size="@dimen/headpic_for_list"
+            android:src="@mipmap/pic_default_secret"
+            app:pressShape="circle"/>
+
+    <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/textview_spacing_offset_height"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="张三 "
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+    <TextView
+            android:id="@+id/tv_user_signature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:layout_marginTop="@dimen/spacing_mid_small"
+            android:layout_toLeftOf="@+id/iv_user_follow"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:ellipsize="end"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="走在风中今天阳光突然好温柔，天的温柔地的温柔想你抱着我"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"/>
+    <!--点赞数量因为需求，不需要显示，所以暂时隐藏掉，万一以后要显示咧-->
+    <TextView
+            android:id="@+id/tv_dig_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_user_signature"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:ellipsize="end"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="点赞 56万"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
+            android:visibility="gone"/>
+
+    <!--点击聊天-->
+    <ImageView
+            android:id="@+id/iv_to_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:src="@mipmap/ico_me_follow"/>
+
+</RelativeLayout>

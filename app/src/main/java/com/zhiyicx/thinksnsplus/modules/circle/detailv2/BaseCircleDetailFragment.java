@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -59,7 +58,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
-import com.zhiyicx.thinksnsplus.widget.popwindow.TypeChoosePopupWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -170,6 +168,15 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         return ITEM_SPACING;
     }
 
+    @Override
+    public CircleZipBean getCircleZipBean() {
+        return null;
+    }
+
+    @Override
+    public void scrollToTop() {
+        mRvList.scrollToPosition(0);
+    }
 
     @Override
     public Long getCircleId() {
@@ -298,7 +305,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void onCommentContentClick(CirclePostListBean dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
-        CircleInfo mCircleInfo=dynamicBean.getGroup();
+        CircleInfo mCircleInfo = dynamicBean.getGroup();
         boolean isJoined = mCircleInfo.getJoined() != null;
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
@@ -326,7 +333,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         if (mPresenter.handleTouristControl()) {
             return;
         }
-        CircleInfo mCircleInfo=dynamicBean.getGroup();
+        CircleInfo mCircleInfo = dynamicBean.getGroup();
         boolean isJoined = mCircleInfo.getJoined() != null;
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
 
@@ -454,7 +461,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
         dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
-        CircleInfo mCircleInfo=mListDatas.get(dataPosition).getGroup();
+        CircleInfo mCircleInfo = mListDatas.get(dataPosition).getGroup();
         boolean isJoined = mCircleInfo.getJoined() != null;
         boolean isBlackList = isJoined && CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole());
         boolean canNotDeal;
@@ -605,7 +612,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
 
         boolean isManager = false;
-        CircleInfo mCircleInfo=circlePostListBean.getGroup();
+        CircleInfo mCircleInfo = circlePostListBean.getGroup();
         if (mCircleInfo.getJoined() != null) {
             isManager = CircleMembers.FOUNDER.equals(mCircleInfo.getJoined().getRole()) ||
                     CircleMembers.ADMINISTRATOR.equals(mCircleInfo.getJoined().getRole());
@@ -801,7 +808,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         return true;
     }
 
-    protected boolean showCommentList(){
+    protected boolean showCommentList() {
         return true;
     }
 

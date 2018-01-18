@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -19,6 +18,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
@@ -30,13 +30,11 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReview
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -47,18 +45,26 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean>
-        implements MessageContract.View, MessageAdapter.OnSwipItemClickListener,
+        implements MessageContract.View, MessageAdapterV2.OnSwipeItemClickListener,
         OnUserInfoClickListener, BlankClickRecycleView.BlankClickListener {
+
     private View mHeaderView;
 
     @Inject
     protected MessagePresenter mMessagePresenter;
+
+    private List<MessageItemBeanV2> messageItemBeanList;
 
     public static MessageFragment newInstance() {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_home_message_list;
     }
 
     @Override
@@ -72,8 +78,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_home_message_list;
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
@@ -114,9 +120,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();
-        // 通知的未读数检查
-        mPresenter.checkUnreadNotification();
-
     }
 
 
@@ -135,20 +138,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && mPresenter != null && mListDatas.isEmpty()) {
+        if (isVisibleToUser && mPresenter != null && messageItemBeanList.isEmpty()) {
             mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         }
-        if (mAdapter != null && ((MessageAdapter) mAdapter).hasItemOpend()) {
-            ((MessageAdapter) mAdapter).closeAllItems();
+        if (mAdapter != null && ((MessageAdapterV2) mAdapter).hasItemOpend()) {
+            ((MessageAdapterV2) mAdapter).closeAllItems();
         }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-
+        messageItemBeanList = new ArrayList<>();
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout
-                .item_message_list, mListDatas);
+        MessageAdapterV2 commonAdapter = new MessageAdapterV2(getActivity(), messageItemBeanList);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
@@ -195,8 +197,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(rlCritical)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toCommentList();
@@ -209,8 +211,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(liked)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toLikeList();
@@ -222,8 +224,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         RxView.clicks(review)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (((MessageAdapter) mAdapter).hasItemOpend()) {
-                        ((MessageAdapter) mAdapter).closeAllItems();
+                    if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+                        ((MessageAdapterV2) mAdapter).closeAllItems();
                         return;
                     }
                     toReviewList();
@@ -363,6 +365,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return this;
     }
 
+    @Override
+    public void getMessageListSuccess(List<MessageItemBeanV2> list) {
+        messageItemBeanList.clear();
+        messageItemBeanList.addAll(list);
+        mAdapter.notifyDataSetChanged();
+        hideLoading();
+    }
+
+    @Override
+    public List<MessageItemBeanV2> getRealMessageList() {
+        return messageItemBeanList;
+    }
+
 
     @Override
     public void refreshData() {
@@ -404,15 +419,35 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
+    /**
+     * 进入聊天页
+     *
+     * @param messageItemBean 当前 item 内容
+     * @param positon         当前点击位置
+     */
+    private void toChatV2(MessageItemBeanV2 messageItemBean, int positon) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
+            return;
+        }
+        Intent to = new Intent(getActivity(), ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, messageItemBean.getUserInfo());
+        bundle.putString(ChatFragment.BUNDLE_CHAT_ID, messageItemBean.getEmKey());
+        to.putExtras(bundle);
+        startActivity(to);
+    }
+
     @Override
     public void onLeftClick(int position) {
-        position = position - 1;// 减去 header
-        toChat(mListDatas.get(position), position);
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
+        toChatV2(messageItemBeanList.get(position), position);
     }
 
     @Override
     public void onRightClick(int position) {
-        position = position - 1;// 减去 header
+        // 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();
         mPresenter.deletConversation(position);
         refreshData();
     }
@@ -431,8 +466,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void onBlickClick() {
-        if (((MessageAdapter) mAdapter).hasItemOpend()) {
-            ((MessageAdapter) mAdapter).closeAllItems();
+        if (((MessageAdapterV2) mAdapter).hasItemOpend()) {
+            ((MessageAdapterV2) mAdapter).closeAllItems();
         }
     }
 }

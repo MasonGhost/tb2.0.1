@@ -484,7 +484,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                setTopTipVisible(View.GONE);
+                try {
+                    setTopTipVisible(View.GONE);
+                } catch (Exception ignored) {
+                }
             }
         }, DEFAULT_TIP_STICKY_TIME);
     }

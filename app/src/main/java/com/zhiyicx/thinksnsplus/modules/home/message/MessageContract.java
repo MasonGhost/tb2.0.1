@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
@@ -31,22 +32,16 @@ public interface MessageContract {
     interface View extends ITSListView<MessageItemBean, Presenter> {
         /**
          * 更新评论的
-         *
-         * @param messageItemBean
          */
         void updateCommnetItemData(MessageItemBean messageItemBean);
 
         /**
          * 更新喜欢的
-         *
-         * @param messageItemBean
          */
         void updateLikeItemData(MessageItemBean messageItemBean);
 
         /**
          * 更新置顶的
-         *
-         * @param messageItemBean
          */
         void updateReviewItemData(MessageItemBean messageItemBean);
 
@@ -61,6 +56,20 @@ public interface MessageContract {
         void closeTopRightLoading();
 
         BaseFragment getCureenFragment();
+
+        /**
+         * 获取环信消息列表成功
+         *
+         * @param list 消息列表
+         */
+        void getMessageListSuccess(List<MessageItemBeanV2> list);
+
+        /**
+         * 获取环信的消息列表
+         *
+         * @return list
+         */
+        List<MessageItemBeanV2> getRealMessageList();
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -78,8 +87,6 @@ public interface MessageContract {
 
         /**
          * 删除本地对话
-         *
-         * @param position
          */
         void deletConversation(int position);
 
@@ -87,7 +94,6 @@ public interface MessageContract {
          * 通过 对话 id 获取对话信息
          *
          * @param cid 对话 id
-         * @return
          */
         void getSingleConversation(int cid);
 

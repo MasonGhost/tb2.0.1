@@ -30,8 +30,6 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.View> implements
         MessageCommentContract.Presenter {
     @Inject
-    CommentRepository mCommentRepository;
-    @Inject
     CommentedBeanGreenDaoImpl mCommentedBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;

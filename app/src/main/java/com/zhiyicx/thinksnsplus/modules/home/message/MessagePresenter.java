@@ -1,15 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.hyphenate.EMError;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.util.NetUtils;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
-import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -25,6 +30,8 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UnReadNotificaitonBean;
 import com.zhiyicx.thinksnsplus.data.beans.UnreadCountBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
@@ -41,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +79,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     ChatRepository mChatRepository;
 
     @Inject
-    UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
-
-    @Inject
-    SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-
+    MessageRepository mMessageRepository;
 
     /**
      * 评论的
@@ -106,9 +107,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     private Subscription mUnreadNotiSub;
 
     @Inject
-    MessageRepository mMessageRepository;
-
-    @Inject
     public MessagePresenter(MessageContract.View rootView) {
         super(rootView);
     }
@@ -123,7 +121,30 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        creatTsHelperConversation();
+        getAllConversationV2(isLoadMore);
+    }
+
+    /**
+     * 获取环信的所有会话列表
+     * @param isLoadMore 是否加载更多
+     */
+    private void getAllConversationV2(boolean isLoadMore) {
+        // 已连接才去获取
+        if (EMClient.getInstance().isLoggedInBefore() && EMClient.getInstance().isConnected()) {
+            Subscription subscribe = mMessageRepository.getConversationListV2((int) AppApplication.getMyUserIdWithdefault())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(messageItemBeanV2s -> {
+                        mRootView.getMessageListSuccess(messageItemBeanV2s);
+                        mRootView.hideStickyMessage();
+                        checkBottomMessageTip();
+                    });
+            addSubscrebe(subscribe);
+        } else {
+            mRootView.showStickyMessage(mContext.getString(R.string.chat_unconnected));
+            mRootView.hideLoading();
+            // 尝试重新登录，在homepresenter接收
+            mAuthRepository.loginIM();
+        }
     }
 
     /**
@@ -198,9 +219,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     /**
      * 没有加载更多，一次全部取出
      *
-     * @param maxId
      * @param isLoadMore 加载状态
-     * @return
      */
     @Override
     public void requestCacheData(Long maxId, boolean isLoadMore) {
@@ -210,8 +229,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
             initHeaderItemData();
             // 处理本地通知数据
             mRootView.updateLikeItemData(mItemBeanDigg);
-            creatTsHelperConversation();
-
+            getAllConversationV2(isLoadMore);
         }
     }
 
@@ -245,66 +263,32 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    for (int i = 0; i < mRootView.getListDatas().size(); i++) {
-                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation()
-                                .getCid());
-                        if (message != null) {
-                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView
-                                    .getListDatas().get(i).getConversation().getCid()));
-                        } else {
-                            mRootView.getListDatas().remove(i);
-                        }
-                    }
                     checkBottomMessageTip();
                     return mRootView.getListDatas();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    mRootView.refreshData();
-                }, Throwable::printStackTrace);
+                .subscribe(data -> mRootView.refreshData(), Throwable::printStackTrace);
         addSubscrebe(represhSu);
     }
 
     /**
      * 删除对话信息
-     *
-     * @param position
      */
     @Override
     public void deletConversation(int position) {
-        final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
-        // ts 助手标记为已删除
-        Subscription subscribe = Observable.empty()
-                .observeOn(Schedulers.newThread())
-                .subscribe(new rx.Subscriber<Object>() {
-                    @Override
-                    public void onCompleted() {
-                        String[] uidsTmp = messageItemBean.getConversation().getUsids().split(",");
-                        long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1]
-                                : uidsTmp[0]));
-                        SystemRepository.updateTsHelperDeletStatus(mContext, toChatUser_id, true);
-                        MessageDao.getInstance(mContext).delEverMessageByCid(messageItemBean.getConversation().getCid());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-
-                    }
+        // 改为环信的删除
+        MessageItemBeanV2 messageItemBeanV2 = mRootView.getRealMessageList().get(position);
+        Subscription subscription = Observable.just(messageItemBeanV2)
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(itemBeanV2 -> {
+                    LogUtils.d("Cathy", "deletConversation");
+                    mRootView.getRealMessageList().remove(itemBeanV2);
+                    mRootView.refreshData();
+                    checkBottomMessageTip();
+                    EMClient.getInstance().chatManager().deleteConversation(itemBeanV2.getEmKey(), true);
                 });
-
-        // 删除对话信息
-        ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType
-                ());
-        mRootView.getListDatas().remove(position);
-        checkBottomMessageTip();
-        addSubscrebe(subscribe);
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -389,45 +373,83 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
      * IM 相关
      *********************************************/
 
+    @Subscriber(mode = ThreadMode.MAIN, tag = "hhhhhhhhh")
+    private void onHHHH(String text) {
+        LogUtils.d("Cathy", text);
+    }
+
     /**
      * 收到聊天消息
      *
-     * @param messageData 聊天类容
+     * @param bundle 聊天类容
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED)
-    private void onMessageReceived(Message messageData) {
-        Subscription subscribe = Observable.just(messageData)
+    @Subscriber(mode = ThreadMode.MAIN, tag = EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2)
+    private void onNewMessageReceived(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        LogUtils.d("Cathy", "MessagePresenter onMessageReceived" + bundle);
+        List<EMMessage> list = bundle.getParcelableArrayList(EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED_V2);
+        Subscription subscribe = Observable.just(list)
                 .observeOn(Schedulers.io())
-                .map(message -> {
-                    int size = mRootView.getListDatas().size();
+                .flatMap(messageList -> {
+                    LogUtils.d("Cathy", "MessagePresenter onMessageReceived -----");
+                    int size = mRootView.getRealMessageList().size();
                     // 对话是否存在
-                    for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getConversation().getCid() == message.getCid()) {
-                            mRootView.getListDatas().get(i).setUnReadMessageNums(mRootView.getListDatas().get(i).getUnReadMessageNums() + 1);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                            // 加到第一个
-                            mRootView.getListDatas().add(0, mRootView.getListDatas().get(i));
-                            // 加上 header 的位置
-                            mRootView.getListDatas().remove(i + 1);
-                            return 0;
+                    // 用来装新的会话item
+                    List<MessageItemBeanV2> messageItemBeanV2List = new ArrayList<>();
+                    for (EMMessage emMessage : messageList) {
+                        // 用收到的聊天的item的会话id去本地取出会话
+                        EMConversation conversationNew = EMClient.getInstance().chatManager().getConversation(emMessage.conversationId());
+                        if (conversationNew != null) {
+                            // 会话已经存在
+                            for (int i = 0; i < size; i++) {
+                                // 检测列表中是否已经存在了
+                                EMConversation conversationOld = mRootView.getRealMessageList().get(i).getConversation();
+                                if (conversationOld.conversationId().equals(conversationNew.conversationId())) {
+                                    // 直接替换会话
+                                    MessageItemBeanV2 itemBeanV2 = mRootView.getRealMessageList().get(i);
+                                    itemBeanV2.setConversation(conversationNew);
+                                    messageItemBeanV2List.add(itemBeanV2);
+                                    break;
+                                } else if (i == size - 1) {
+                                    // 循环到最后一条，仍然没有会话，那则证明是需要新增一条到会话列表
+                                    MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                                    itemBeanV2.setConversation(conversationNew);
+                                    itemBeanV2.setEmKey(conversationNew.conversationId());
+                                    messageItemBeanV2List.add(itemBeanV2);
+                                }
+                            }
+                        } else {
+                            // 居然不存在 exm？？？
+                            // 那还能怎么办呢，当然新来一条的，不过这种情况目前没有遇到过的样子呢(*╹▽╹*)
+                            EMConversation conversation =
+                                    EMClient.getInstance().chatManager().getConversation(emMessage.getFrom(), EMConversation.EMConversationType.Chat, true);
+                            conversation.insertMessage(emMessage);
+                            MessageItemBeanV2 itemBeanV2 = new MessageItemBeanV2();
+                            itemBeanV2.setConversation(conversation);
+                            itemBeanV2.setEmKey(emMessage.conversationId());
+                            messageItemBeanV2List.add(itemBeanV2);
                         }
                     }
-                    // 不存在本地对话，直接服务器获取
-                    return message.cid;
+                    return mMessageRepository.completeEmConversation(messageItemBeanV2List)
+                            .map(list12 -> list12);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(cid -> {
-                    if (cid == 0) {
-                        mRootView.refreshData();
-                    } else {
-                        getSingleConversation(cid);
+                .subscribe(list1 -> {
+                    for (MessageItemBeanV2 messageItemBeanV2 : list1) {
+                        // 移除原来的
+                        if (mRootView.getRealMessageList().indexOf(messageItemBeanV2) != -1) {
+                            mRootView.getRealMessageList().remove(messageItemBeanV2);
+                        }
                     }
-
-                }, Throwable::printStackTrace);
+                    // 加载到第一条
+                    mRootView.getRealMessageList().addAll(0, list1);
+                    mRootView.refreshData();
+                    // 小红点是否要显示
+                    checkBottomMessageTip();
+                });
         addSubscrebe(subscribe);
-
-
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONMESSAGEACKRECEIVED)
@@ -442,13 +464,25 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONNECTED)
-    private void onConnected() {
+    private void onConnected(String content) {
         mRootView.hideStickyMessage();
+        getAllConversationV2(false);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONDISCONNECT)
     private void onDisconnect(int code, String reason) {
         mRootView.showStickyMessage(reason);
+        if (code == EMError.USER_REMOVED) {
+            // 显示帐号已经被移除
+        } else if (code == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+            // 显示帐号在其他设备登录
+        } else {
+            if (NetUtils.hasNetwork(mContext)) {
+                //连接不到聊天服务器
+            } else {
+                //当前网络不可用，请检查网络设置
+            }
+        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONERROR)
@@ -463,13 +497,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     /**
      * 新对话创建回调
-     *
-     * @param messageItemBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED)
-    private void onConversationCreated(MessageItemBean messageItemBean) {
+    private void onConversationCreated(MessageItemBeanV2 messageItemBean) {
 
-        mRootView.getListDatas().add(0, messageItemBean);
+        mRootView.getRealMessageList().add(0, messageItemBean);
         mRootView.refreshData();
 
     }
@@ -477,8 +509,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     /**
      * 推送相关
-     *
-     * @param jpushMessageBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST)
     private void onJpushMessageRecieved(JpushMessageBean jpushMessageBean) {
@@ -505,8 +535,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     /**
      * 处理聊天推送
-     *
-     * @param jpushMessageBean
      */
     private void handleIMPush(JpushMessageBean jpushMessageBean) {
         String extras = jpushMessageBean.getExtras();
@@ -524,8 +552,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     /**
      * 处理 获取用户收到的最新消息
-     *
-     * @return
      */
     @Override
     public void handleFlushMessage() {
@@ -645,10 +671,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
     /**
      * 获取用户文字显示  张三、李四评论了我
-     *
-     * @param commentsNoti
-     * @param maxNum
-     * @return
      */
     private String getItemTipStr(List<UnreadCountBean> commentsNoti, int maxNum) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -724,8 +746,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
                         isShowMessgeTip = true;
                     }
                     if (!isShowMessgeTip) {
-                        for (MessageItemBean messageItemBean : mRootView.getListDatas()) {
-                            if (messageItemBean.getUnReadMessageNums() > 0) {
+                        for (MessageItemBeanV2 messageItemBean : mRootView.getRealMessageList()) {
+                            if (messageItemBean.getConversation().getUnreadMsgCount() > 0) {
                                 isShowMessgeTip = true;
                                 break;
                             } else {
@@ -750,5 +772,4 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.View> imp
 
 
     }
-
 }

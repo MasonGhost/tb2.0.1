@@ -53,6 +53,10 @@ public interface CircleDetailContract {
          * @return
          */
         boolean isOutsideSerach();
+
+        CircleZipBean getCircleZipBean();
+
+        void scrollToTop();
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {

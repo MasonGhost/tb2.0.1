@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.hyphenate.chat.EMConversation;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -50,7 +51,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
     protected RecyclerView mRecyclerView;
     protected Conversation conversation;
-    protected int chatType;
+    protected EMConversation.EMConversationType chatType;
     protected String toChatUsername;
     protected MultiItemTypeAdapter messageAdapter;
     protected boolean showUserNick;
@@ -119,6 +120,8 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
         mLinearLayoutManager = new LinearLayoutManager(context);
+        // 让最后一个item始终在recycleview内，解决当item过长，弹起键盘recycleview被遮挡的问题
+        mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 //        mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0),-1);//设置最后一个 Item 的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -220,7 +223,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      * @param toChatUsername
      * @param chatType
      */
-    public void init(String toChatUsername, int chatType, List<ChatItemBean> datas) {
+    public void init(String toChatUsername, EMConversation.EMConversationType chatType, List<ChatItemBean> datas) {
         this.chatType = chatType;
         this.toChatUsername = toChatUsername;
         messageAdapter = new MultiItemTypeAdapter(mContext, datas);
@@ -281,9 +284,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
     public void refreshSoomthBottom() {
         if (messageAdapter != null) {
             messageAdapter.notifyDataSetChanged();
-//            messageAdapter.notifyItemInserted(messageAdapter.getItemCount()-1);
             smoothScrollToBottom();
-
         }
     }
 
@@ -316,7 +317,9 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      * 直接滑动到底部
      */
     public void scrollToBottom() {
-        mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        if (mLinearLayoutManager != null){
+            mLinearLayoutManager.scrollToPosition(messageAdapter.getItemCount()-1);
+        }
     }
 
     public RecyclerView getListView() {

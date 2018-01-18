@@ -34,6 +34,9 @@ import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.friends.MyFriendsListActivity;
+import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
+import com.zhiyicx.thinksnsplus.modules.home.mine.scan.ScanCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -51,8 +54,6 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
-import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
@@ -152,6 +153,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
+    protected int setRightImg() {
+        return R.mipmap.ico_code;
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return "";
+    }
+
+    @Override
     protected int setLeftImg() {
         return 0;
     }
@@ -184,7 +195,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+        startActivity(new Intent(getActivity(), MyCodeActivity.class));
         if (mPresenter != null) {
             mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
         }
@@ -192,7 +203,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group,
+            R.id.bt_my_friends})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -290,6 +302,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 // 我的圈子
                 startActivity(new Intent(getActivity(), MyCircleContainerActivity.class));
                 break;
+            case R.id.bt_my_friends:
+                // 我的朋友
+                startActivity(new Intent(getActivity(), MyFriendsListActivity.class));
+                break;
             default:
         }
     }
@@ -341,7 +357,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void setNewSystemInfo(boolean isShow) {
-        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
+//        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
     @Override

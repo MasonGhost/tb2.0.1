@@ -10,10 +10,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.adapter.MyAnswerAdapter;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.question.DaggerMyPublishQuestionComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.question.MyPublishQuestionFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.mine.question.MyPublishQuestionPresenterModule;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;

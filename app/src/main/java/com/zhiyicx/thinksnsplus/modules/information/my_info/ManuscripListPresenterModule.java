@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.ManuscriptListRepository;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +23,4 @@ public class ManuscripListPresenterModule {
         return mView;
     }
 
-    @Provides
-    ManuscriptListContract.Repository provideManuscriptContractRepository(ManuscriptListRepository repository){
-        return repository;
-    }
 }

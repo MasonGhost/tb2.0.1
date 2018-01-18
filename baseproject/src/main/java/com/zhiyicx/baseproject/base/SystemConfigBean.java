@@ -303,8 +303,17 @@ public class SystemConfigBean implements Serializable {
         private String method;// 注册类型
         private String type;// 注册方式
         private String rules;
+        private String fixed;// 是否完善资料
         private boolean completeData;
         private String content;// 用户协议
+
+        public String getFixed() {
+            return fixed;
+        }
+
+        public void setFixed(String fixed) {
+            this.fixed = fixed;
+        }
 
         public String getRules() {
             return rules;

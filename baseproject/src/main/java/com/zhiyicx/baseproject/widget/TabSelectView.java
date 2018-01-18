@@ -176,7 +176,7 @@ public class TabSelectView extends FrameLayout {
 
     public void setLeftClickListener(final TSFragment fragment, final TabLeftRightClickListener tabLeftClickListener) {
         RxView.clicks(tvToolbarLeft)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(fragment.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -190,7 +190,7 @@ public class TabSelectView extends FrameLayout {
 
     public void setRightClickListener(TSFragment fragment, final TabLeftRightClickListener tabRightClickListener) {
         RxView.clicks(tvToolbarRight)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(fragment.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override

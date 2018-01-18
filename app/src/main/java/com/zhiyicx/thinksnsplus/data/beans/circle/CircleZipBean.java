@@ -13,9 +13,21 @@ import java.util.List;
  */
 public class CircleZipBean {
 
+
+
     public CircleZipBean(CircleInfo CircleInfo, List<CirclePostListBean> circlePostListBeanList) {
         mCircleInfo = CircleInfo;
         mCirclePostListBeanList = circlePostListBeanList;
+    }
+
+    private int pinnedCount;
+
+    public int getPinnedCount() {
+        return pinnedCount;
+    }
+
+    public void setPinnedCount(int pinnedCount) {
+        this.pinnedCount = pinnedCount;
     }
 
     private CircleInfo mCircleInfo;
