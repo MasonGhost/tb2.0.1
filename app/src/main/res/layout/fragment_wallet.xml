@@ -54,6 +54,8 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/recharge"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:leftImage="@mipmap/ico_wallet_recharge"
+                app:dividerLeftMargin="@dimen/spacing_normal"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--提现-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -62,6 +64,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/withdraw"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:leftImage="@mipmap/ico_wallet_drawmoney"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
             <!--我的积分-->
@@ -69,9 +72,10 @@
                 android:id="@+id/bt_mine_integration"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                app:leftText="@string/mine_integration"
+                app:leftText="@string/recharge_integration"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_integral_recharge"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
         </LinearLayout>
