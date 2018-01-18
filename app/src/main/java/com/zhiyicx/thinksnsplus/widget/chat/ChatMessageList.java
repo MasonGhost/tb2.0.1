@@ -121,7 +121,7 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
         mLinearLayoutManager = new LinearLayoutManager(context);
         // 让最后一个item始终在recycleview内，解决当item过长，弹起键盘recycleview被遮挡的问题
-//        mLinearLayoutManager.setStackFromEnd(true);
+        mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 //        mRecyclerView.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), RECYCLEVIEW_ITEMDECORATION_SPACING), 0, 0),-1);//设置最后一个 Item 的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -317,8 +317,8 @@ public class ChatMessageList extends FrameLayout implements OnRefreshListener {
      * 直接滑动到底部
      */
     public void scrollToBottom() {
-        if (messageAdapter != null){
-            mRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        if (mLinearLayoutManager != null){
+            mLinearLayoutManager.scrollToPosition(messageAdapter.getItemCount()-1);
         }
     }
 
