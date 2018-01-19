@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.recharge;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -27,7 +24,6 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.develop.TSDevelopActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletContract;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
@@ -45,8 +41,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
@@ -58,7 +52,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.TAG_SHOWRU
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.Presenter> implements MineIntegrationContract.View {
+public class IntegrationRechargeFragment extends TSFragment<IntegrationRechargeContract.Presenter> implements IntegrationRechargeContract.View {
 
     @BindView(R.id.tv_mine_money)
     TextView mTvMineMoney;
@@ -89,8 +83,8 @@ public class MineIntegrationFragment extends TSFragment<MineIntegrationContract.
     private CenterInfoPopWindow mRulePop;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
 
-    public static MineIntegrationFragment newInstance() {
-        return new MineIntegrationFragment();
+    public static IntegrationRechargeFragment newInstance() {
+        return new IntegrationRechargeFragment();
     }
 
     @Override

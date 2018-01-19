@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
 
 import dagger.Module;

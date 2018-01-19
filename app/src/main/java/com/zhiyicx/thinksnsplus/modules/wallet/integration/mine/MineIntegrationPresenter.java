@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletContract;
 
 import java.util.concurrent.TimeUnit;
 

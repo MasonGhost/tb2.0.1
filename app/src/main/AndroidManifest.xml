@@ -677,11 +677,15 @@
             android:screenOrientation="portrait"/>
         <!--我的积分-->
         <activity
-            android:name=".modules.wallet.integration.MineIntegrationActivity"
+            android:name=".modules.wallet.integration.mine.MineIntegrationActivity"
             android:screenOrientation="portrait"/>
         <!--开发中的默认页面-->
         <activity
             android:name=".modules.develop.TSDevelopActivity"
+            android:screenOrientation="portrait"/>
+        <!--积分充值-->
+        <activity
+            android:name=".modules.wallet.integration.recharge.IntegrationRechargeActivity"
             android:screenOrientation="portrait"/>
 
 

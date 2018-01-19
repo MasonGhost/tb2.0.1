@@ -1,10 +1,8 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenterModule;
 
 import dagger.Component;
 

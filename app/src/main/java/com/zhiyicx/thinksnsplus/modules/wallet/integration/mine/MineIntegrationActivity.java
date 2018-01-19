@@ -1,17 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.integration;
-
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.widget.Toolbar;
+package com.zhiyicx.thinksnsplus.modules.wallet.integration.mine;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.wallet.DaggerWalletComponent;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenterModule;
 
 /**
  * @Describe 我的积分
