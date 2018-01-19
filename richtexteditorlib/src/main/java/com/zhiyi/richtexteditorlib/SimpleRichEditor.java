@@ -64,7 +64,9 @@ public class SimpleRichEditor extends RichEditor {
 
         void onTextStypeClick(boolean isSelect);
 
-        void onInputListener(int titleLength,int contentLength);
+        void onInputListener(int titleLength, int contentLength);
+
+        void onAfterInitialLoad(boolean ready);
     }
 
     @SuppressWarnings("unused")
@@ -208,7 +210,7 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnTextChangeListener((tittle,content) -> mOnEditorClickListener.onInputListener(tittle,content));
+        setOnTextChangeListener((tittle, content) -> mOnEditorClickListener.onInputListener(tittle, content));
         setOnFocusChangeListener(isFocus -> {
             if (!isFocus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -226,6 +228,7 @@ public class SimpleRichEditor extends RichEditor {
             if (isReady) {
                 focusEditor();
             }
+            mOnEditorClickListener.onAfterInitialLoad(isReady);
         });
 
         mBottomMenu.setOnItemClickListener(new AbstractBottomMenuItem.OnItemClickListener() {

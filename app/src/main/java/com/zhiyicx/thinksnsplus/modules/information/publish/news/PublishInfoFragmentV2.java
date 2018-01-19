@@ -167,74 +167,10 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
         mRichTextView.loadDraft("", mDraftBean.getHtml());
     }
 
-    private String pareseBody(String body) {
-        String result;
-        String reg = "@!(\\[(.*?)])\\(((\\d+))\\)";
-        String replace = "-星星-tym-星星-";
-        Matcher matcher = Pattern.compile(reg).matcher(body);
-        result = body.replaceAll(MarkdownConfig.IMAGE_FORMAT, replace);
-        while (matcher.find()) {
-            String name = matcher.group(2);
-            int id = Integer.parseInt(matcher.group(3));
-            mImages.add(id);
-            long tagId = SystemClock.currentThreadTimeMillis();
-            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            mInsertedImages.put(tagId, imagePath);
-            result = result.replaceFirst(replace, getImageHtml(tagId, id, name, imagePath));
-        }
+    @Override
+    protected void pareseBodyResult() {
         mDraftBean.setFailedImages(mFailedImages);
         mDraftBean.setInsertedImages(mInsertedImages);
         mDraftBean.setImages(mImages);
-        return result;
     }
-
-    private String getImageHtml(long tagId, int id, String name, String imagePath) {
-        String markdown = "@![" + name + "](" + id + ")";
-        return "<div><br></div>" +
-                "<div class=\"block\" contenteditable=\"false\">" +
-                "   <div class=\"img-block\">" +
-                "       <div style=\"width: 100% \" class=\"process\">" +
-                "           <div class=\"fill\"></div>" +
-                "       </div>" +
-                "       <img class=\"images\" data-id=\"" + tagId + "\" style=\"width: 100% ; height: auto\"" +
-                "           src=\"" + imagePath + "\">" +
-                "       <div class=\"cover\" style=\"width: 100% ; height: auto\"></div>" +
-                "       <div class=\"delete\">" +
-                "           <img class=\"error\" src=\"./reload.png\">" +
-                "           <div class=\"tips\">图片上传失败，请点击重试</div>" +
-                "           <div class=\"markdown\">" + markdown + "</div>" +
-                "       </div>" +
-                "   </div>" +
-                "   <input class=\"dec\" type=\"text\" placeholder=\"请输入图片名字\">" +
-                "</div>" +
-                "<div><br></div>";
-
-    }
-
-    private String getHtml(String title, String content) {
-        onInputListener(title.length() , content.length());
-        return "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
-                "    <title>Zhiyicx</title>\n" +
-                "    <link rel=\"stylesheet\" href=\"./index.css\">\n" +
-                "</head>\n" +
-                "<body contenteditable=\"false\">\n" +
-                "    <div class=\"content\" contenteditable=\"false\">\n" +
-                "        <header>\n" +
-                "            <div class=\"title\" title-placeholder=\"请输入标题\" id=\"title\" contenteditable=\"true\">" + title + "</div>\n" +
-                "            <span id=\"stay\" style=\"display: none;text-align:right\"><span id=\"txtCount\"></span>/20</span>\n" +
-                "        </header>\n" +
-                "        <div class=\"line\"></div>\n" +
-                "        <div id=\"editor\" contenteditable=\"true\" editor-placeholder=\"请输入正文\">" + content + "</div>\n" +
-                "    </div>\n" +
-                "    <script src=\"./richeditor.js\" id=\"script\"></script>\n" +
-                "</body>\n" +
-                "</html>";
-    }
-
-
 }

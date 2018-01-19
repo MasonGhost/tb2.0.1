@@ -404,8 +404,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public void hideTitle() {
-        exec("javascript:RE.saveRange();",1000);
-        exec("javascript:RE.hideTitle();",2000);
+        exec("javascript:RE.hideTitle();");
     }
 
     public void addImageClickListener(String ids) {

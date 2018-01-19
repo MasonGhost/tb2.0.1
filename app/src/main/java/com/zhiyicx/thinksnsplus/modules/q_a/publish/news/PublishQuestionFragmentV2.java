@@ -2,12 +2,21 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.news;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.TextUtils;
 
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.PostDraftBean;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.MarkdownFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 
 /**
  * @Author Jliuer
@@ -16,6 +25,8 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFrag
  * @Description
  */
 public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
+
+    private boolean isBack;
 
     @Override
     protected String setRightTitle() {
@@ -34,9 +45,42 @@ public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-        mRichTextView.hideTitle();
+    protected PostDraftBean getDraftData() {
+        if (PublishQuestionFragment.mDraftQuestion != null && !TextUtils.isEmpty(PublishQuestionFragment.mDraftQuestion.getBody())) {
+            mDraftBean = new PostDraftBean();
+            mDraftBean.setHtml(getHtml("", pareseBody(PublishQuestionFragment.mDraftQuestion.getBody())));
+        }
+        return mDraftBean;
+    }
+
+    @Override
+    protected boolean openDraft() {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        isBack = true;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        isBack = false;
+    }
+
+    @Override
+    protected void loadDraft(PostDraftBean postDraftBean) {
+        super.loadDraft(postDraftBean);
+        mRichTextView.loadDraft("", mDraftBean.getHtml());
+    }
+
+    @Override
+    public void onAfterInitialLoad(boolean ready) {
+        if (ready) {
+            mRichTextView.hideTitle();
+        }
     }
 
     @Override
@@ -47,9 +91,20 @@ public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
     @Override
     protected void handlePublish(String title, String markdwon, String noMarkdown) {
         super.handlePublish(title, markdwon, noMarkdown);
+        if (!isBack) {
+            PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
+            Intent intent = new Intent(getActivity(), AddTopicActivity.class);
+            startActivity(intent);
+        } else {
+            onBackPressed();
+        }
+
+    }
+
+    @Override
+    protected boolean contentIsNull(String title, String markdwon, String noMarkdown) {
         PublishQuestionFragment.mDraftQuestion.setBody(markdwon);
-        Intent intent = new Intent(getActivity(), AddTopicActivity.class);
-        startActivity(intent);
+        return super.contentIsNull(title, markdwon, noMarkdown);
     }
 
     @Override
@@ -57,4 +112,12 @@ public class PublishQuestionFragmentV2 extends MarkdownFragment<PostDraftBean> {
         super.onInputListener(titleLength, contentLength);
         setRightClickable(contentLength > 0);
     }
+
+    @Override
+    protected void pareseBodyResult() {
+        mDraftBean.setFailedImages(mFailedImages);
+        mDraftBean.setInsertedImages(mInsertedImages);
+        mDraftBean.setImages(mImages);
+    }
+
 }

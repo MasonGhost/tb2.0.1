@@ -486,8 +486,7 @@ var RE = {
 	    console.log("hideTitle:::");
 	    _self.cache.title.style.display="none";
 	    _self.cache.line.style.display="none";
-	    document.getElementById("content").style.padding-top="0px";
-	    _self.cache.editor.style.
+	    document.getElementById("content").style.paddingTop="0px";
 	},
 
 	// 限制标题输入字数
