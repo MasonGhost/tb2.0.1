@@ -164,6 +164,10 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
     @Override
     public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
+
+        if (handleTouristControl()) {
+            return;
+        }
         if (circleInfo.getAudit() != 1) {
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
