@@ -64,7 +64,7 @@ public class SimpleRichEditor extends RichEditor {
 
         void onTextStypeClick(boolean isSelect);
 
-        void onInputListener(int length);
+        void onInputListener(int titleLength,int contentLength);
     }
 
     @SuppressWarnings("unused")
@@ -208,7 +208,7 @@ public class SimpleRichEditor extends RichEditor {
             }
 
         });
-        setOnTextChangeListener(text -> mOnEditorClickListener.onInputListener(text));
+        setOnTextChangeListener((tittle,content) -> mOnEditorClickListener.onInputListener(tittle,content));
         setOnFocusChangeListener(isFocus -> {
             if (!isFocus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

@@ -164,7 +164,7 @@ var RE = {
 		}, false);
 
 		_self.cache.editor.addEventListener('input', function () {
-			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * _self.markdownWords().length);
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length , _self.markdownWords().length);
 		}, false);
 
 		_self.titleLimit.txtNote.addEventListener('input', function () {
@@ -173,7 +173,7 @@ var RE = {
 
 		_self.cache.title.addEventListener('input', function () {
 			var content=_self.markdownWords();
-			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length * content.length);
+			AndroidInterface.setHtmlContent(_self.cache.title.innerHTML.length , content.length);
 		}, false);
 	},
 	initCache: function initCache() {
@@ -479,6 +479,15 @@ var RE = {
 			imgBlock.removeChild(cover);
 			imgBlock.removeChild(process);
 		}
+	},
+
+	hideTitle: function hideTitle(){
+	    var _self = this;
+	    console.log("hideTitle:::");
+	    _self.cache.title.style.display="none";
+	    _self.cache.line.style.display="none";
+	    document.getElementById("content").style.padding-top="0px";
+	    _self.cache.editor.style.
 	},
 
 	// 限制标题输入字数

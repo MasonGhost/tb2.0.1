@@ -375,9 +375,9 @@ public class MarkdownFragment<Draft extends BaseDraftBean> extends TSFragment<Ma
     }
 
     @Override
-    public void onInputListener(int length) {
-        mContentLength = length;
-        setRightClickable(length > 0);
+    public void onInputListener(int titleLength, int contentLength) {
+        mContentLength = titleLength * contentLength;
+        setRightClickable(mContentLength > 0);
     }
 
     protected void setRightClickable(boolean clickable) {

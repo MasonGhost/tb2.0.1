@@ -212,7 +212,7 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
     }
 
     private String getHtml(String title, String content) {
-        onInputListener(title.length() + content.length());
+        onInputListener(title.length() , content.length());
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -235,4 +235,6 @@ public class PublishInfoFragmentV2 extends MarkdownFragment<PostDraftBean> {
                 "</body>\n" +
                 "</html>";
     }
+
+
 }

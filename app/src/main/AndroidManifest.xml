@@ -650,6 +650,7 @@
         <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.information.publish.news.PublishInfoActivityV2"/>
+        <activity android:name=".modules.q_a.publish.news.PublishQuestionActivityV2"/>
     </application>
 
 </manifest>

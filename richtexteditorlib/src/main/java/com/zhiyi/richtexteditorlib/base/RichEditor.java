@@ -59,7 +59,7 @@ public abstract class RichEditor extends WebView {
     }
 
     public interface OnTextChangeListener {
-        void onTextChange(int textlength);
+        void onTextChange(int titleLenght,int contentLenght);
     }
 
     public interface OnStateChangeListener {
@@ -213,7 +213,7 @@ public abstract class RichEditor extends WebView {
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
-            mTextChangeListener.onTextChange(mContents.length());
+            mTextChangeListener.onTextChange(mContents.length(),text.length());
         }
     }
 
@@ -403,6 +403,11 @@ public abstract class RichEditor extends WebView {
         exec("javascript:RE.insertHtmlDIV('" + html + "');");
     }
 
+    public void hideTitle() {
+        exec("javascript:RE.saveRange();",1000);
+        exec("javascript:RE.hideTitle();",2000);
+    }
+
     public void addImageClickListener(String ids) {
         exec("javascript:RE.addImageClickListener('" + ids + "');");
     }
@@ -478,6 +483,14 @@ public abstract class RichEditor extends WebView {
             load(trigger);
         } else {
             postDelayed(() -> exec(trigger), 100);
+        }
+    }
+
+    protected void exec(final String trigger,long delay) {
+        if (isReady) {
+            load(trigger);
+        } else {
+            postDelayed(() -> exec(trigger), delay);
         }
     }
 
@@ -561,12 +574,12 @@ public abstract class RichEditor extends WebView {
         }
 
         @JavascriptInterface
-        public void setHtmlContent(int htmlContentLength) {
-            mContents = htmlContentLength + "";
+        public void setHtmlContent(int titleLenght,int contentLenght) {
+            mContents = titleLenght*contentLenght + "";
             Observable.just(mTextChangeListener)
                     .filter(listener -> listener!=null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(listener -> listener.onTextChange(htmlContentLength));
+                    .subscribe(listener -> listener.onTextChange(titleLenght,contentLenght));
         }
 
         @JavascriptInterface

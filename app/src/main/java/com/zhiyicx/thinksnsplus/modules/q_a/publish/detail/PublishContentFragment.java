@@ -34,6 +34,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.richtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.richtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.utils.DealPhotoUtils;
@@ -78,7 +79,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     RelativeLayout mRlPublishTool;
 
     protected PhotoSelectorImpl mPhotoSelector;
-    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mPhotoPopupWindow;
     private ActionPopupWindow mInstructionsPopupWindow;
     private int mPicTag;// 已经添加的图片数量
     protected int mAnonymity;

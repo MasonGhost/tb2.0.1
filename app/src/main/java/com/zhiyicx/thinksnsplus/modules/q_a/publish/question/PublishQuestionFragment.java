@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.news.PublishQuestionActivityV2;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -41,8 +42,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
-        QAListInfoBean>
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
@@ -55,10 +55,13 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     View mLine;
 
     private String mQuestionStr = "";
-    private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
-    private QAPublishBean mDraftQuestion;
-    private QAPublishBean mDraftQuestionCopy;
+    /**
+     * 退出编辑警告弹框
+     */
+    private ActionPopupWindow mEditWarningPopupWindow;
+
+    public static QAPublishBean mDraftQuestion;
 
     public static PublishQuestionFragment newInstance(Bundle args) {
         PublishQuestionFragment fragment = new PublishQuestionFragment();
@@ -105,7 +108,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void setRightClick() {
-        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
+        boolean isCorrectFormat = (mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1;
+        if (isCorrectFormat) {
             addTopic();
         } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_hint));
@@ -113,7 +117,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     private void addTopic() {
-        Intent intent = new Intent(getActivity(), PublishContentActivity.class);
+        Intent intent = new Intent(getActivity(), PublishQuestionActivityV2.class);
         Bundle bundle = new Bundle();
         saveQuestion();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
@@ -142,21 +146,10 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (mDraftQuestion != null) {
-            mDraftQuestion = mPresenter.getDraftQuestion(mDraftQuestion.getMark());
-        }
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         if (mDraftQuestion != null) {
             mEtQustion.setText(mDraftQuestion.getSubject());
-            mDraftQuestionCopy = mDraftQuestion;
-            mDraftQuestionCopy.setMark(mDraftQuestion.getMark() + 1);
-            mPresenter.saveQuestion(mDraftQuestionCopy);
         }
         initListener();
     }
@@ -202,16 +195,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         bundle.putSerializable(BUNDLE_QUESTION_BEAN, mListDatas.get(position));
         intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
         startActivity(intent);
-//        mEtQustion.setText(mListDatas.get(position).getSubject());
-//        if (mDraftQuestion == null) {
-//            mDraftQuestion = new QAPublishBean();
-//        }
-//        mDraftQuestion.setAnonymity(data.getAnonymity());
-//        mDraftQuestion.setCreated_at(data.getCreated_at());
-//        mDraftQuestion.setBody(data.getBody());
-//        mDraftQuestion.setSubject(data.getSubject());
-//        mDraftQuestion.setAutomaticity(data.getAutomaticity());
-//        addTopic();
     }
 
     @Override
@@ -238,26 +221,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    if (mDraftQuestionCopy != null) {
-                        mPresenter.deleteQuestion(mDraftQuestionCopy);
-                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
-                        if (!mDraftQuestionCopy.isHasAgainEdite()) {
-                            mPresenter.saveQuestion(mDraftQuestionCopy);
-                        } else {
-                            mPresenter.deleteQuestion(mDraftQuestionCopy);
-                        }
-                    }
+                    mDraftQuestion = null;
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
-                    if (mDraftQuestionCopy != null) {
-                        mPresenter.deleteQuestion(mDraftQuestionCopy);
-                        mDraftQuestionCopy.setMark(mDraftQuestionCopy.getMark() - 1);
-                        mPresenter.deleteQuestion(mDraftQuestionCopy);
-                    }
                     saveQuestion();
                     mEditWarningPopupWindow.hide();
+                    mDraftQuestion = null;
                     getActivity().finish();
                 })
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
@@ -270,16 +241,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     mToolbarRight.setEnabled(!TextUtils.isEmpty(mQuestionStr));
                     requestNetData(mQuestionStr, 0L, "all", false);
                 }, throwable -> mToolbarRight.setEnabled(false));
-
-//        mEtQustion.setOnEditorActionListener(
-//                (v, actionId, event) -> {
-//                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//                        mToolbarRight.performClick();
-//                        DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
-//                        return true;
-//                    }
-//                    return false;
-//                });
     }
 
     @Override
