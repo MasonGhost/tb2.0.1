@@ -19,6 +19,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.easeui.EaseConstant;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.recycleview.BlankClickRecycleView;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -145,11 +146,17 @@ public class MessageConversationFragment extends TSListFragment<MessageConversat
         mMessageItemBeanList.addAll(list);
         mAdapter.notifyDataSetChanged();
         hideLoading();
+        setEmptyView();
     }
 
     @Override
     public List<MessageItemBeanV2> getRealMessageList() {
         return mMessageItemBeanList;
+    }
+
+    @Override
+    public BaseFragment getCurrentFragment() {
+        return this;
     }
 
     @Override

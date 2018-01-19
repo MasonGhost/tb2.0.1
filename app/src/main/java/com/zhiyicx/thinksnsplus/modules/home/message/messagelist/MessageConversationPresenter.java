@@ -77,7 +77,16 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
 
     @Override
     public void refreshConversationReadMessage() {
-
+        Subscription represhSu = Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(s -> {
+                    checkBottomMessageTip();
+                    return mRootView.getListDatas();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(data -> mRootView.refreshData(), Throwable::printStackTrace);
+        addSubscrebe(represhSu);
     }
 
     @Override
@@ -221,13 +230,10 @@ public class MessageConversationPresenter extends AppBasePresenter<MessageConver
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isShowMessageTip -> {
-//                    Fragment containerFragment = mRootView.getCureenFragment().getParentFragment();
-//                    if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
-//                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(mNotificaitonRedDotIsShow, 1);
-//                    }
-//                    boolean messageContainerRedDotIsShow = isShowMessgeTip || mNotificaitonRedDotIsShow;
-//                    EventBus.getDefault().post(messageContainerRedDotIsShow, EventBusTagConfig.EVENT_IM_SET_MESSAGE_TIP_VISABLE);
-
+                    Fragment containerFragment = mRootView.getCurrentFragment().getParentFragment();
+                    if (containerFragment != null && containerFragment instanceof MessageContainerFragment) {
+                        ((MessageContainerFragment) containerFragment).setNewMessageNoticeState(isShowMessageTip, 1);
+                    }
                 }, Throwable::printStackTrace);
         addSubscrebe(subscribe);
 

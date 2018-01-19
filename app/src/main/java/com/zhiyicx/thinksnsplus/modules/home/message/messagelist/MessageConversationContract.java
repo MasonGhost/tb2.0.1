@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelist;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseMessageRepository;
@@ -37,6 +38,8 @@ public interface MessageConversationContract {
          * @return list
          */
         List<MessageItemBeanV2> getRealMessageList();
+
+        BaseFragment getCurrentFragment();
     }
 
     /**
