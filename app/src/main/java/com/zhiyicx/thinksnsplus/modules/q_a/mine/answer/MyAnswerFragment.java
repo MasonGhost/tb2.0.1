@@ -42,6 +42,8 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
     private String mType;
 
+    private MyAnswerAdapterV2 mAdapterV2;
+
     public static MyAnswerFragment instance(String type) {
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_MY_QUESTION_TYPE, type);
@@ -62,13 +64,13 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        MyAnswerAdapterV2 answerAdapter = new MyAnswerAdapterV2(getContext(), mListDatas, mAnswerPresenter) {
+        mAdapterV2 = new MyAnswerAdapterV2(getContext(), mListDatas, mPresenter) {
             @Override
             protected boolean showToolMenu() {
                 return showBottomToolMenu();
             }
         };
-        answerAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+        mAdapterV2.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 AnswerInfoBean answerInfoBean = mListDatas.get(position);
@@ -88,7 +90,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
                 return false;
             }
         });
-        return answerAdapter;
+        return mAdapterV2;
     }
 
     protected boolean showBottomToolMenu() {
@@ -117,6 +119,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
                     @Override
                     public void onCompleted() {
                         initData();
+                        mAdapterV2.setPresenter(mPresenter);
                     }
 
                     @Override
