@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.hyphenate.chat.EMConversation;
 import com.jakewharton.rxbinding.view.RxView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -19,6 +20,7 @@ import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
@@ -51,7 +53,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
     private ActionPopupWindow mDeletCommentPopWindow;
 
     protected List<ChatItemBean> mDatas = new ArrayList<>();
-    protected MessageItemBean mMessageItemBean;
+    protected MessageItemBeanV2 mMessageItemBean;
     protected boolean mKeyboradIsOpen;// 软键盘是否打开
 
     @Override
@@ -129,7 +131,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
 
     @Override
     protected void initData() {
-        mMessageItemBean = initMessageItemBean();
+        mMessageItemBean = initMessageItemBeanV2();
         if (mMessageItemBean == null) {
             throw new NullPointerException("mMessageItemBean must not be null");
         }
@@ -141,6 +143,8 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * @return
      */
     protected abstract MessageItemBean initMessageItemBean();
+
+    protected abstract MessageItemBeanV2 initMessageItemBeanV2();
 
     @Override
     public void hideLoading() {
@@ -239,7 +243,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * 初始化消息列表
      */
     protected void initMessageList() {
-        mMessageList.init(mMessageItemBean.getConversation().getType() == ChatType.CHAT_TYPE_PRIVATE ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
+        mMessageList.init(mMessageItemBean.getConversation().getType() == EMConversation.EMConversationType.Chat ? mMessageItemBean.getUserInfo().getName() : getString(R.string.default_message_group)
                 , mMessageItemBean.getConversation().getType(), mDatas);
         mMessageList.scrollToBottom();
     }

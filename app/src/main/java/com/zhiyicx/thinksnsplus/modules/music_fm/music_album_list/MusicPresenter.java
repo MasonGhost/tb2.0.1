@@ -35,10 +35,6 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.View>
     @Inject
     MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
     @Inject
-    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
-    @Inject
-    CommentRepository mCommentRepository;
-    @Inject
     BaseMusicRepository mBaseMusicRepository;
 
     @Inject

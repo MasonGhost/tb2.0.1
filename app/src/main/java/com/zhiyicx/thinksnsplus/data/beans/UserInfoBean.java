@@ -113,6 +113,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
     private List<UserTagBean> tags;
 
+    /**1.5.0新增 环信登陆的密码  用户名是uid*/
+    private String im_pwd_hash;
+
     private boolean initial_password = true; // 在登陆信息中返回，用来判断是否需要设置密码，给个默认值true，false才需要设置
 
     private boolean has_deleted; // 标记用户是否被删除了，默认没有被删除
@@ -321,6 +324,14 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     public void setFollower(boolean follower) {
         this.follower = follower;
+    }
+
+    public String getIm_pwd_hash() {
+        return im_pwd_hash;
+    }
+
+    public void setIm_pwd_hash(String im_pwd_hash) {
+        this.im_pwd_hash = im_pwd_hash;
     }
 
     public UserInfoExtraBean getExtra() {
@@ -605,6 +616,62 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
 
+    @Generated(hash = 703875029)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags, String im_pwd_hash, boolean initial_password, boolean has_deleted) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
+        this.im_pwd_hash = im_pwd_hash;
+        this.initial_password = initial_password;
+        this.has_deleted = has_deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", extra=" + extra +
+                ", verified=" + verified +
+                ", tags=" + tags +
+                ", im_pwd_hash='" + im_pwd_hash + '\'' +
+                ", initial_password=" + initial_password +
+                ", has_deleted=" + has_deleted +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -634,6 +701,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
         dest.writeTypedList(this.tags);
+        dest.writeString(this.im_pwd_hash);
         dest.writeByte(this.initial_password ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_deleted ? (byte) 1 : (byte) 0);
     }
@@ -661,33 +729,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.im_pwd_hash = in.readString();
         this.initial_password = in.readByte() != 0;
         this.has_deleted = in.readByte() != 0;
-    }
-
-    @Generated(hash = 793304063)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
-            List<UserTagBean> tags, boolean initial_password, boolean has_deleted) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-        this.initial_password = initial_password;
-        this.has_deleted = has_deleted;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -701,33 +745,4 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                ", verified=" + verified +
-                ", tags=" + tags +
-                ", initial_password=" + initial_password +
-                ", has_deleted=" + has_deleted +
-                '}';
-    }
 }

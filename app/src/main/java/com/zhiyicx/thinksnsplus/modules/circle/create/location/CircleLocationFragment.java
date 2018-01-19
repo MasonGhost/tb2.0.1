@@ -49,7 +49,7 @@ public class CircleLocationFragment extends TSListFragment<CircleLocationContrac
 
     public static final String BUNDLE_DATA = "data";
 
-    public static final String LOCATION_DATA = "地名地址信息";
+    public static final String LOCATION_DATA = "";
 
     @BindView(R.id.tv_cancel)
     TextView mTvSearchCancel;

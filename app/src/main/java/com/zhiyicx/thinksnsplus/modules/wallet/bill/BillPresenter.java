@@ -36,11 +36,12 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscribe = mBillRepository.getBillList(maxId.intValue())
+        Subscription subscribe = mBillRepository.getBillList(maxId.intValue(), mRootView.getBillType())
                 .subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
                     @Override
                     protected void onSuccess(List<RechargeSuccessBean> data) {
-                        Collections.sort(data, new TimeStringSortClass());
+//                        Collections.sort(data, new TimeStringSortClass());
+                        mRootView.setMaxId(data.isEmpty() ? 0 : data.get(data.size() - 1).getMaxId());
                         removeAction(data, mRootView.getBillType());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
@@ -84,8 +85,8 @@ public class BillPresenter extends AppBasePresenter<BillContract.View> implement
         requestCacheData(1L, false);
     }
 
-    public void removeAction(List<RechargeSuccessBean> list, int action) {
-        if (action == 0) {
+    private void removeAction(List<RechargeSuccessBean> list, Integer action) {
+        if (action == null) {
             return;
         }
         Iterator<RechargeSuccessBean> rechargesIterator = list.iterator();

@@ -109,7 +109,11 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                         CircleZipBean::new)
                         .map(circleZipBean -> {
                             List<CirclePostListBean> data = circleZipBean.getCirclePostListBeanList();
+                            int pinnedCount = 0;
                             for (int i = 0; i < data.size(); i++) {
+                                if (data.get(i).getPinned()) {
+                                    pinnedCount++;
+                                }
                                 List<CirclePostCommentBean> circlePostCommentBeans = mCirclePostCommentBeanGreenDao.getMySendingComment(data.get(i)
                                         .getMaxId().intValue());
                                 if (!circlePostCommentBeans.isEmpty()) {
@@ -118,6 +122,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                                     data.get(i).getComments().addAll(circlePostCommentBeans);
                                 }
                             }
+                            circleZipBean.setPinnedCount(pinnedCount);
                             return circleZipBean;
                         }).subscribe(new BaseSubscribeForV2<CircleZipBean>() {
                             @Override
@@ -426,6 +431,10 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 
     @Override
     public void dealCircleJoinOrExit(CircleInfo circleInfo) {
+
+        if (handleTouristControl()) {
+            return;
+        }
         if (circleInfo.getAudit() != 1) {
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;
@@ -596,14 +605,20 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
-                        mRootView.getListDatas().get(position).setPinned(true);
-                        mRootView.refreshData(position);
+                        CirclePostListBean currentPost = (CirclePostListBean) mRootView.getListDatas().get(position).clone();
+                        if (currentPost != null) {
+                            currentPost.setPinned(true);
+                            mRootView.getListDatas().add(0, currentPost);
+                            mRootView.scrollToTop();
+                        }
+                        mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() + 1);
+                        mRootView.refreshData();
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.post_top_failed));
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
@@ -623,8 +638,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.showSnackSuccessMessage(data.getMessage().get(0));
-                        mRootView.getListDatas().get(position).setPinned(false);
-                        mRootView.refreshData(position);
+                        mRootView.getListDatas().remove(mRootView.getListDatas().get(position));
+                        mRootView.getCircleZipBean().setPinnedCount(mRootView.getCircleZipBean().getPinnedCount() - 1);
+                        mRootView.refreshData();
                     }
 
                     @Override
@@ -654,12 +670,25 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.computation())
                 .map(bundle -> {
-                    boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH);
-                    if (isNeedRefresh){
-                        CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                    CirclePostListBean postListBean = bundle.getParcelable(CirclePostDetailFragment.POST_DATA);
+                    boolean isNeedRefresh = bundle.getBoolean(CirclePostDetailFragment.POST_LIST_NEED_REFRESH) && postListBean != null;
+                    if (isNeedRefresh) {
                         int position = mRootView.getListDatas().indexOf(postListBean);
                         if (position != -1) {
-                            mRootView.getListDatas().set(position, postListBean);
+                            CirclePostListBean nowListData = mRootView.getListDatas().get(position);
+                            if (postListBean.getPinned() && !nowListData.getPinned()) {
+                                // 在详情页面置顶
+                                CirclePostListBean pinned = (CirclePostListBean) nowListData.clone();
+                                mRootView.getListDatas().add(0, pinned);
+                                mRootView.scrollToTop();
+                            } else if (!postListBean.getPinned() && nowListData.getPinned()) {
+                                // 在详情页面撤销置顶
+                                mRootView.getListDatas().remove(nowListData);
+                            }
+                            if (postListBean.getPinned() == nowListData.getPinned()) {
+                                // 在详情页面没有置顶操作
+                                mRootView.getListDatas().set(position, postListBean);
+                            }
                         } else {
                             // 发帖更新到列表
                             mRootView.getListDatas().add(0, postListBean);

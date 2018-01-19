@@ -833,6 +833,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item3ClickListener(() -> {                    // 举报帖子
+                    if (mPresenter.handleTouristControl()) {
+                        return;
+                    }
+
                     String img = "";
                     if (dynamicBean.getImages() != null && !dynamicBean.getImages().isEmpty()) {
                         img = ImageUtils.imagePathConvertV2(dynamicBean.getImages().get(0).getFile(), getResources()

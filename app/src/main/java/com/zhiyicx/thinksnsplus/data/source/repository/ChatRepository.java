@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.util.SparseArray;
 
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -13,6 +16,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
@@ -28,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.MAX_RETRY_COUNTS;
@@ -42,12 +47,16 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.RET
 
 public class ChatRepository implements ChatContract.Repository {
     private static final String TAG = "ChatRepository";
+
+    private ChatInfoClient mChatInfoClient;
+
     @Inject
     protected Application mContext;
     @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    private ChatInfoClient mChatInfoClient;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public ChatRepository(ServiceManager serviceManager) {
@@ -181,6 +190,70 @@ public class ChatRepository implements ChatContract.Repository {
             chatItemBeen.add(itemBean);
         }
         return chatItemBeen;
+    }
+
+    @Override
+    public List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize) {
+        EMConversation conversation = itemBeanV2.getConversation();
+        List<EMMessage> msgs = new ArrayList<>();
+        if ("0".equals(msgId)){
+            // 表示是第一次拿消息，先取出有的，再给msgId赋值，取历史记录
+            msgs = conversation.getAllMessages();
+            if (!msgs.isEmpty()){
+                msgId = msgs.get(0).getMsgId();
+            }
+        }
+        // 从传过来的msgId开始取出历史消息
+        msgs.addAll(0, conversation.loadMoreMsgFromDB(msgId, pageSize));
+        if (!msgs.isEmpty()){
+            List<ChatItemBean> list = new ArrayList<>();
+            for (EMMessage message : msgs){
+                ChatItemBean chatItemBean = new ChatItemBean();
+                chatItemBean.setMessage(message);
+                long userId = Long.parseLong("admin".equals(message.getFrom()) ? "1" : message.getFrom());
+                UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(userId);
+                chatItemBean.setUserInfo(userInfoBean);
+                list.add(chatItemBean);
+            }
+            return list;
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list) {
+        return Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(list1 -> {
+                    List<Object> users = new ArrayList<>();
+                    for (ChatItemBean chatItemBean : list1){
+                        if ("admin".equals(chatItemBean.getMessage().getFrom())) {
+                            users.add(1L);
+                        } else {
+                            users.add(chatItemBean.getMessage().getFrom());
+                        }
+                    }
+                    return mUserInfoRepository.getUserInfo(users)
+                            .map(userInfoBeans -> {
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                for (UserInfoBean userInfoBean : userInfoBeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    // 更新数据库
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                                }
+                                for (int i = 0; i < list1.size(); i++) {
+                                    int key;
+                                    if ("admin".equals(list1.get(i).getMessage().getFrom())) {
+                                        key = 1;
+                                    } else {
+                                        key = Integer.parseInt(list1.get(i).getMessage().getFrom());
+                                    }
+                                    list1.get(i).setUserInfo(userInfoBeanSparseArray.get(key));
+                                }
+                                return list1;
+                            });
+                });
     }
 
 

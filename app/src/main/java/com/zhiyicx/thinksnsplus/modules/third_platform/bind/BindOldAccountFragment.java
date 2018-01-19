@@ -53,7 +53,7 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
     private boolean mIsPasswordEdited;
     private ThridInfoBean mThridInfoBean;
 
-    public BindOldAccountFragment instance(Bundle bundle) {
+    public static BindOldAccountFragment instance(Bundle bundle) {
         BindOldAccountFragment fragment = new BindOldAccountFragment();
         fragment.setArguments(bundle);
         return fragment;

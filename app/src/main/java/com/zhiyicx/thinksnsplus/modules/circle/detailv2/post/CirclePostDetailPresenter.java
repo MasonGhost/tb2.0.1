@@ -155,6 +155,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
+                        mIsNeedDynamicListRefresh = true;
                         mRootView.getCurrentePost().setPinned(true);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.post_top_success));
                     }
@@ -187,6 +188,7 @@ public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetail
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
+                        mIsNeedDynamicListRefresh = true;
                         mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                         mRootView.getCurrentePost().setPinned(false);
                     }

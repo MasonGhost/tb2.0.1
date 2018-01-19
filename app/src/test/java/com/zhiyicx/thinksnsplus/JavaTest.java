@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -17,9 +18,9 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -93,6 +94,40 @@ public class JavaTest {
             }
         });
         LogUtils.d(TAG, "data2 = " + data2.toString());
+    }
+
+    @Test
+    public void testLongImage() {
+        float netHeight, netWidth;
+        int sw, sh;
+        sw = 720;
+        sh = 1080;
+        netWidth = 900;
+        netHeight = 800;
+        isLongImage(netHeight, netWidth, sw, sh);
+
+    }
+
+    public void isLongImage(float netHeight, float netWidth, int sw, int sh) {
+        float net = netHeight / netWidth;
+        float result = 0;
+        if (net >= 3 || net <= .3f) {
+
+            result = sw / netWidth;
+
+            if (result <= .3f) {
+
+            } else {
+                result = result * netHeight / sh;
+            }
+        }
+        boolean isLong = (result >= 3 || result <= .3f) && result > 0;
+        System.out.println("result:::" + result + "");
+        System.out.println("isLongImage:::" + isLong + "");
+        if (!isLong) {
+            netWidth += 20;
+            isLongImage(netHeight, netWidth, sw, sh);
+        }
     }
 
     @Test
@@ -1563,7 +1598,7 @@ public class JavaTest {
     public void testRomand() {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
-            System.out.println("random = " +  random.nextInt(5) % (5));
+            System.out.println("random = " + random.nextInt(5) % (5));
         }
     }
 }

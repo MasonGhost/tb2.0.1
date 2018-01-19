@@ -58,6 +58,17 @@
                 style="@style/style_chat_status"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/rl_chat_bubble"/>
+
+            <!--消息已送达，已读等回执-->
+            <TextView
+                    android:id="@+id/tv_message_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_toLeftOf="@id/rl_chat_bubble"
+                    android:textSize="@dimen/size_note_assist"
+                    tools:text="已读"/>
         </RelativeLayout>
     </RelativeLayout>
 

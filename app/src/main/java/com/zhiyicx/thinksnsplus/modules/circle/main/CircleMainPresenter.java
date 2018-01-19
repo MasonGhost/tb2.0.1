@@ -72,25 +72,28 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
         Subscription subscription = Observable.zip(mBaseCircleRepository.getCircleCount(),
-                mBaseCircleRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
+                isTourist() ? Observable.just(new ArrayList<CircleInfo>()) : mBaseCircleRepository.getMyJoinedCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.JOIN.value),
                 mBaseCircleRepository.getRecommendCircle(CircleMainFragment.DATALIMIT, 0, CircleClient.MineCircleType.RANDOM.value),
                 (integerBaseJsonV2, myJoinedCircle, recommendCircle) -> {
 
                     mRootView.updateCircleCount(integerBaseJsonV2.getData());
 
-                    CircleInfo moreJoined = new CircleInfo();
-                    moreJoined.setName(mContext.getString(R.string.joined_group));
-                    moreJoined.setSummary(mContext.getString(R.string.more_group));
-                    moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
+                    // 游客模式没有 我加入的
+                    if (!isTourist()) {
+                        CircleInfo moreJoined = new CircleInfo();
+                        moreJoined.setName(mContext.getString(R.string.joined_group));
+                        moreJoined.setSummary(mContext.getString(R.string.more_group));
+                        moreJoined.setId(BaseCircleItem.MYJOINEDCIRCLE);
+                        myJoinedCircle.add(0, moreJoined);
+                    }
 
                     CircleInfo changeCircle = new CircleInfo();
                     changeCircle.setName(mContext.getString(R.string.recommend_group));
                     changeCircle.setSummary(mContext.getString(R.string.exchange_group));
                     changeCircle.setId(BaseCircleItem.RECOMMENDCIRCLE);
 
-                    myJoinedCircle.add(0, moreJoined);
+
                     myJoinedCircle.add(changeCircle);
 
                     mRootView.setJoinedCircles(new ArrayList<>(myJoinedCircle));
@@ -161,6 +164,10 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
 
     @Override
     public void dealCircleJoinOrExit(int position, CircleInfo circleInfo) {
+
+        if (handleTouristControl()) {
+            return;
+        }
         if (circleInfo.getAudit() != 1) {
             mRootView.showSnackErrorMessage(mContext.getString(R.string.reviewing_circle));
             return;

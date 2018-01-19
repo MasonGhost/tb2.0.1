@@ -252,7 +252,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initTollState() {
-//        mLLToll.setVisibility(isToll && dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC ? View.VISIBLE : View.GONE);
+        boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol();
+        mTvToll.setVisibility(canPay ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -268,11 +269,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             int[] amount = new int[]{};
             if (mSystemConfigBean.getFeed() != null) {
                 amount = mSystemConfigBean.getFeed().getItems();
+                int wordLimit = mSystemConfigBean.getFeed().getLimit();
+                mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
             }
             if (amount != null && amount.length > 2) {
-                mSelectMoney.add(0,(float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(1,(float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
-                mSelectMoney.add(2,(float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(0, (float) PayConfig.realCurrency2GameCurrency(amount[0], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(1, (float) PayConfig.realCurrency2GameCurrency(amount[1], mSystemConfigBean.getWallet_ratio()));
+                mSelectMoney.add(2, (float) PayConfig.realCurrency2GameCurrency(amount[2], mSystemConfigBean.getWallet_ratio()));
             }
         }
         initSelectMoney(mSelectMoney);
@@ -299,8 +302,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initWordsToll() {
-        int wordLimit = mPresenter.getSystemConfigBean().getFeed().getLimit();
-        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), wordLimit > 0 ? wordLimit : 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String spaceReg = "\n|\t";

@@ -47,6 +47,11 @@
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
     <string name="system_info">系统消息</string>
+    <string name="my_qr_code_content">uid=%d</string>
+    <string name="my_qr_code_title">扫一扫</string>
+    <string name="qr_scan_alert">扫描二维码，添加关注</string>
+    <string name="qr_scan_failed_alert">扫码失败，请重新扫描</string>
+    <string name="my_qr_code_share">分享我的二维码</string>
 
     <!--发现-->
     <string name="information">资讯</string>
@@ -821,7 +826,7 @@
     <string name="reward_type_error">打赏类型错误</string>
     <!--评论的、赞的-->
     <string name="digg_format_feed">%s赞了你的动态</string>
-    <string name="digg_format_group_feed">%s赞了你的圈子</string>
+    <string name="digg_format_group_feed">%s赞了你的帖子</string>
     <string name="digg_format_music">%s赞了你的音乐</string>
     <string name="digg_format_news">%s赞了你的文章</string>
     <string name="digg_format_questions">%s赞了你的问题</string>
@@ -881,6 +886,7 @@
     <string name="app_name_anster">%s 回答</string>
     <string name="delete_comment">删除评论</string>
     <string name="delete_info">删除资讯</string>
+    <string name="camera_permission_tip">相机权限已被您禁止使用，请前往权限管理中心修改设置！</string>
     <string name="has_apply">已提交申请</string>
     <string name="create_wait_audit">创建待审核</string>
     <string name="join_wait_audit">申请加入待审核</string>
@@ -911,4 +917,8 @@
     <string name="publish_post">发帖</string>
     <string name="syn_to_dynamic">同步至动态</string>
 
+    <!--聊天-->
+    <string name="chat_delete_conversation_failed">删除聊天失败</string>
+    <string name="chat_unconnected">聊天服务器未连接</string>
+    <string name="chat_my_friends">我的好友</string>
 </resources>

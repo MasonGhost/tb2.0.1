@@ -25,8 +25,6 @@ import rx.Subscription;
 public class SystemConversationPresenter extends AppBasePresenter< SystemConversationContract.View> implements SystemConversationContract.Presenter {
     @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-@Inject
-    SystemRepository mSystemRepository;
 
     @Inject
     public SystemConversationPresenter( SystemConversationContract.View rootView) {

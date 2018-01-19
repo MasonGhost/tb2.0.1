@@ -58,7 +58,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
-import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleZipBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
@@ -265,6 +265,8 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
 
     private CircleInfo mCircleInfo;
 
+    private CircleZipBean mCircleZipBean;
+
     public static CircleDetailFragment newInstance(long circle_id) {
         CircleDetailFragment circleDetailFragment = new CircleDetailFragment();
         Bundle bundle = new Bundle();
@@ -368,6 +370,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
         mIvRefresh.setVisibility(View.INVISIBLE);
         CircleInfo detail = circleZipBean.getCircleInfo();
+        mCircleZipBean = circleZipBean;
         mCircleInfo = detail;
         setVisiblePermission(mCircleInfo);
         setCircleData(mCircleInfo);
@@ -720,8 +723,19 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
     }
 
     @Override
+    public CircleZipBean getCircleZipBean() {
+        return mCircleZipBean;
+    }
+
+    @Override
+    public void scrollToTop() {
+        mRvList.scrollToPosition(0);
+    }
+
+    @Override
     protected Long getMaxId(@NotNull List<CirclePostListBean> data) {
-        return (long) mListDatas.size();
+        int pinnedCount=mCircleZipBean==null?0:mCircleZipBean.getPinnedCount();
+        return (long) mListDatas.size() - pinnedCount;
     }
 
     @Override
@@ -1093,11 +1107,12 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         RxView.clicks(mTvCircleFounder)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    MessageItemBean messageItemBean = new MessageItemBean();
+                    MessageItemBeanV2 messageItemBean = new MessageItemBeanV2();
                     messageItemBean.setUserInfo(mCircleInfo.getFounder().getUser());
                     Intent to = new Intent(getActivity(), ChatActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+                    bundle.putSerializable(ChatFragment.BUNDLE_CHAT_USER, mCircleInfo.getFounder().getUser());
+                    bundle.putString(ChatFragment.BUNDLE_CHAT_ID, String.valueOf(mCircleInfo.getFounder().getUser_id()));
                     to.putExtras(bundle);
                     startActivity(to);
                 });

@@ -18,7 +18,7 @@ import rx.Observable;
 public interface IBillRepository {
 
 
-    Observable<List<RechargeSuccessBean>> getBillList(int after);
+    Observable<List<RechargeSuccessBean>> getBillList(int after,Integer action);
     Observable<List<RechargeSuccessBean>> dealRechargeList(Observable<List<RechargeSuccessBean>> data);
 
     Observable<WalletConfigBean> getWalletConfig();

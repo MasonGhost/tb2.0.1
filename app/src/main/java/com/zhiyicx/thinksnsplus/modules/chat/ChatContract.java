@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMConversation;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -7,6 +9,7 @@ import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.MessageItemBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +48,11 @@ public interface ChatContract {
         void refreshData();
 
         /**
+         * 刷新列表数据
+         */
+        void refreshData(int position);
+
+        /**
          * 滑动内容到底部
          */
         void smoothScrollToBottom();
@@ -58,17 +66,35 @@ public interface ChatContract {
 
         /**
          * 刷新消息状态
-         *
-         * @param message
          */
         void updateMessageStatus(Message message);
 
         /**
          * 更新对话信息
-         *
-         * @param conversation
          */
-        void updateConversation(Conversation conversation);
+        void updateConversation(EMConversation conversation);
+
+        /**
+         * 获取会话的信息
+         *
+         * @return MessageItemBeanV2
+         */
+        MessageItemBeanV2 getMessItemBean();
+
+        /**
+         * 获取历史聊天记录成功
+         *
+         * @param list   历史聊天记录
+         * @param isInit 是否为初始化
+         */
+        void getHistoryMessageSuccess(List<ChatItemBean> list, boolean isInit);
+
+        /**
+         * 获取当前的数据
+         *
+         * @return List<ChatItemBean>
+         */
+        List<ChatItemBean> getListDatas();
 
     }
 
@@ -80,7 +106,6 @@ public interface ChatContract {
          * @param name 会话名称
          * @param pwd  会话加入密码,type=`0`时该参数无效
          * @param uids 会话初始成员，数组集合或字符串列表``"1,2,3,4"` type=`0`时需要两个uid、type=`1`时需要至少一个、type=`2`时此参数将忽略;注意：如果不合法的uid或uid未注册到IM,将直接忽略
-         * @return
          */
         Observable<Conversation> createConveration(int type, String name, String pwd, String uids);
 
@@ -88,7 +113,6 @@ public interface ChatContract {
          * 插入或者更新数据库
          *
          * @param conversation 对话信息
-         * @return
          */
         boolean insertOrUpdateConversation(Conversation conversation);
 
@@ -96,26 +120,35 @@ public interface ChatContract {
          * 插入或者更新数据库
          *
          * @param data 对话列表
-         * @return
          */
         boolean insertOrUpdateMessageItemBean(List<MessageItemBean> data);
 
         /**
          * 获取聊天对话列表信息
-         *
-         * @param userId
-         * @return
          */
         List<MessageItemBean> getConversionListData(long userId);
 
         /**
          * 获取聊天列表信息
-         *
-         * @param cid
-         * @param mid
-         * @return
          */
         List<ChatItemBean> getChatListData(int cid, long mid);
+
+        /**
+         * 获取环信的聊天记录列表
+         *
+         * @param itemBeanV2 会话信息
+         * @param msgId      当前的第一条的消息id
+         * @param pageSize   一页数量
+         * @return List<ChatItemBean>
+         */
+        List<ChatItemBean> getChatListDataV2(MessageItemBeanV2 itemBeanV2, String msgId, int pageSize);
+
+        /**
+         * 根据每条聊天 来完善用户信息
+         *
+         * @return Observable<List<ChatItemBean>>
+         */
+        Observable<List<ChatItemBean>> completeUserInfo(List<ChatItemBean> list);
 
     }
 
@@ -137,6 +170,16 @@ public interface ChatContract {
         List<ChatItemBean> getHistoryMessages(int cid, long mid);
 
         /**
+         * 获取环信的历史消息
+         *
+         * @param id                   聊天的id 单聊对方用户id 群聊则为群聊的id
+         * @param pageSize             一页大小
+         * @param isNeedScrollToBottom 是否需要滚动到底部
+         * @return List<ChatItemBean>
+         */
+        List<ChatItemBean> getHistoryMessagesV2(String id, int pageSize, boolean isNeedScrollToBottom);
+
+        /**
          * 发送文本消息
          *
          * @param text 文本内容
@@ -145,9 +188,15 @@ public interface ChatContract {
         void sendTextMessage(String text, int cid);
 
         /**
-         * 消息重发
+         * 发送环信文本消息
          *
-         * @param chatItemBean
+         * @param content 内容
+         * @param userId  用户id即为会话id 群聊则为群聊的id，就是这样喵
+         */
+        void sendTextMessageV2(String content, String userId);
+
+        /**
+         * 消息重发
          */
         void reSendText(ChatItemBean chatItemBean);
 

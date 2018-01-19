@@ -19,6 +19,7 @@ task clean(type: Delete) {
 }
 allprojects {
     repositories {
+        maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
         google()
     }
 }

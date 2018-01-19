@@ -72,10 +72,9 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
         dealLikeUI(answerInfoBean, tvLikeCount);
         RxView.clicks(tvLikeCount)
+                .filter(aVoid -> mPresenter != null)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    mPresenter.handleLike(position, answerInfoBean);
-                });
+                .subscribe(aVoid -> mPresenter.handleLike(position, answerInfoBean));
         // 评论数量
         holder.setText(R.id.tv_comment_count, String.valueOf(answerInfoBean.getComments_count()));
     }
@@ -87,5 +86,9 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null, null);
         // 回答数量
         tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
+    }
+
+    public void setPresenter(MyAnswerContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

@@ -44,7 +44,7 @@ public interface WalletClient {
     Observable<RechargeSuccessBean> rechargeSuccess(@Path("charge") String charge);
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
-    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after);
+    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after,@Query("action") Integer action);
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK)
     Observable<RechargeSuccessBean> rechargeSuccessCallBack(@Path("charge") String charge);

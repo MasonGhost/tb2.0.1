@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.hyphenate.chat.EMMessage;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.imsdk.entity.Message;
 
@@ -15,7 +16,10 @@ import com.zhiyicx.imsdk.entity.Message;
 
 public class ChatItemBean extends CacheBean implements Parcelable {
     private UserInfoBean userInfo;
-    private Message lastMessage; // 最后一条消息
+    /**最后一条消息*/
+    private Message lastMessage;
+    /**消息体 基于环信的*/
+    private EMMessage message;
 
     public UserInfoBean getUserInfo() {
         if (userInfo == null) {
@@ -36,6 +40,13 @@ public class ChatItemBean extends CacheBean implements Parcelable {
         this.lastMessage = lastMessage;
     }
 
+    public EMMessage getMessage() {
+        return message;
+    }
+
+    public void setMessage(EMMessage message) {
+        this.message = message;
+    }
 
     @Override
     public int describeContents() {

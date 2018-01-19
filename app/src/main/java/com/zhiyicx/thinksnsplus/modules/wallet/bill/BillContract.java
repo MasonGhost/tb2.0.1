@@ -19,7 +19,9 @@ import rx.Observable;
 public interface BillContract {
     interface View extends ITSListView<RechargeSuccessBean, Presenter> {
         HeaderAndFooterWrapper getTSAdapter();
-        int getBillType();
+        Integer getBillType();
+
+        void setMaxId(long maxId);
     }
 
     interface Presenter extends ITSListPresenter<RechargeSuccessBean> {

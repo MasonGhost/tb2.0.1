@@ -22,6 +22,15 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!--环信相关permission-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全  android:persistent="true" 应用保持活与自启动 -->
     <application
@@ -648,6 +657,17 @@
         <activity android:name=".modules.circle.create.rule.RuleForCreateCircleActivity"
                   android:screenOrientation="portrait"/>
         <activity android:name=".modules.circle.manager.members.blacklist.BlackListActivity"
+                  android:screenOrientation="portrait"/>
+        <!--扫码相关页面-->
+        <activity android:name=".modules.home.mine.scan.ScanCodeActivity"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".modules.home.mine.mycode.MyCodeActivity"
+                android:screenOrientation="portrait"/>
+        <!--我的好友列表-->
+        <activity android:name=".modules.home.mine.friends.MyFriendsListActivity"
+                  android:screenOrientation="portrait"/>
+        <!--搜索好友-->
+        <activity android:name=".modules.home.mine.friends.search.SearchFriendsActivity"
                   android:screenOrientation="portrait"/>
     </application>
 

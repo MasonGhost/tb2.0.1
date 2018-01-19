@@ -115,6 +115,13 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+        pickFirst 'lib/x86/libsqlcipher.so'
+        pickFirst 'lib/armeabi/libsqlcipher.so'
+        pickFirst 'lib/armeabi-v7a/libsqlcipher.so'
+        pickFirst 'lib/armeabi-v8a/libsqlcipher.so'
+        pickFirst 'lib/x86_64/libsqlcipher.so'
+        pickFirst 'lib/mips/libsqlcipher.so'
+        pickFirst 'lib/mips64/libsqlcipher.so'
     }
     dexOptions {
         dexInProcess true
@@ -133,7 +140,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 84
+    schemaVersion 85
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'

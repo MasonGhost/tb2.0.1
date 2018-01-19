@@ -24,7 +24,6 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.register.rule.UserRuleActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
@@ -34,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
@@ -240,6 +238,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
 
                     if (mCurrentRegisterType == REGISTER_PHONE) {
                         mPresenter.getVertifyCode(mEtRegistPhone.getText().toString().trim());
+                        mEtRegistVertifyCode.requestFocus();
                     } else {
                         if (mPresenter
                                 .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
@@ -249,6 +248,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         }
                         mPresenter.getVerifyCodeByEmail(mEtRegisterEmail.getText().toString()
                                 .trim());
+                        mEtRegistVertifyCode.requestFocus();
                     }
                 });
         // 点击注册按钮
@@ -264,7 +264,9 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                         showMessage(getString(R.string.can_not_use_protected_name));
                         return;
                     }
-                    if (permission.granted) {// 获取到了权限
+
+                    // 获取到了权限
+                    if (permission.granted) {
                         // 手机号注册
                         if (mCurrentRegisterType == REGISTER_PHONE) {
                             mPresenter.register(mEtRegistUsername.getText().toString().trim()
@@ -346,7 +348,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
         boolean needCompleteUserInfo = mSystemConfigBean.getRegisterSettings() == null
-                || mSystemConfigBean.getRegisterSettings().isCompleteData();
+                || mSystemConfigBean.getRegisterSettings().isCompleteData() || "need".equals(mSystemConfigBean.getRegisterSettings().getFixed());
         if (needCompleteUserInfo) {
             EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
         } else {

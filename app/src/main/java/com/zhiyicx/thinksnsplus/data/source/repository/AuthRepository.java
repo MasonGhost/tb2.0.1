@@ -1,13 +1,17 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
@@ -15,10 +19,12 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
@@ -32,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -44,6 +51,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.Map;
 
@@ -107,6 +116,8 @@ public class AuthRepository implements IAuthRepository {
     CirclePostCommentBeanGreenDaoImpl mCirclePostCommentBeanGreenDao;
     @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
+    @Inject
+    MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
@@ -130,7 +141,7 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public Observable<IMBean> getImInfo() {
-        return mUserInfoClient.getIMInfo()
+        return mUserInfoClient.getIMInfoV2()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -185,6 +196,8 @@ public class AuthRepository implements IAuthRepository {
         BackgroundTaskManager.getInstance(mContext).closeBackgroundTask();// 关闭后台任务
         new JpushAlias(mContext, "").setAlias(); // 注销极光
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
+        /*退出环信*/
+        EMClient.getInstance().logout(true);
         mDynamicBeanGreenDao.clearTable();
         mAnswerDraftBeanGreenDaoImpl.clearTable();
         mQAPublishBeanGreenDaoImpl.clearTable();
@@ -205,6 +218,7 @@ public class AuthRepository implements IAuthRepository {
         MessageDao.getInstance(mContext).delDataBase();
         mUserInfoBeanGreenDao.clearTable();
         mUserTagBeanGreenDaoimpl.clearTable();
+        mMusicAlbumListDao.clearTable();
         AppApplication.setmCurrentLoginAuth(null);
 
         //处理 Ts 助手
@@ -295,9 +309,44 @@ public class AuthRepository implements IAuthRepository {
         return SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }
 
+    /**
+     *
+     */
     @Override
     public void loginIM() {
-        ZBIMClient.getInstance().login(getIMConfig());
+        // 此处替换为环信的登陆
+        IMConfig config = getIMConfig();
+        //回调，如果都取不出来聊天用户信息，那么则必须再去获取，如果有那么只需要再次登录即可
+        if (config != null && !TextUtils.isEmpty(config.getToken()) && !EMClient.getInstance().isConnected()){
+            String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
+            String imPassword = config.getToken();
+            EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    EMClient.getInstance().groupManager().loadAllGroups();
+                    EMClient.getInstance().chatManager().loadAllConversations();
+                    LogUtils.d("main", "登录聊天服务器成功！");
+                    EventBus.getDefault().post("", EventBusTagConfig.EVENT_IM_ONCONNECTED);
+                }
+
+                @Override
+                public void onProgress(int progress, String status) {
+
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    LogUtils.d("main", "登录聊天服务器失败！error message: " + message);
+                }
+            });
+        } else if (!EMClient.getInstance().isConnected()){
+            // 再次去请求聊天用户信息
+            handleIMLogin();
+        }
+    }
+
+    private void handleIMLogin() {
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }
 
 

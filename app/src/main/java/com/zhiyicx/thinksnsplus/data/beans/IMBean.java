@@ -18,6 +18,8 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
     public static final long serialVersionUID = 5368710083L;
     private int user_id;
     private String im_password;
+    /**1.5.0新增 环信登陆的密码  用户名是uid*/
+    private String im_pwd_hash;
 
     public int getUser_id() {
         return user_id;
@@ -35,6 +37,26 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
         this.im_password = im_password;
     }
 
+    public String getIm_pwd_hash() {
+        return im_pwd_hash;
+    }
+
+    public void setIm_pwd_hash(String im_pwd_hash) {
+        this.im_pwd_hash = im_pwd_hash;
+    }
+
+    public IMBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "IMBean{" +
+                "user_id=" + user_id +
+                ", im_password='" + im_password + '\'' +
+                ", im_pwd_hash='" + im_pwd_hash + '\'' +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -44,17 +66,16 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.user_id);
         dest.writeString(this.im_password);
-    }
-
-    public IMBean() {
+        dest.writeString(this.im_pwd_hash);
     }
 
     protected IMBean(Parcel in) {
         this.user_id = in.readInt();
         this.im_password = in.readString();
+        this.im_pwd_hash = in.readString();
     }
 
-    public static final Parcelable.Creator<IMBean> CREATOR = new Parcelable.Creator<IMBean>() {
+    public static final Creator<IMBean> CREATOR = new Creator<IMBean>() {
         @Override
         public IMBean createFromParcel(Parcel source) {
             return new IMBean(source);
@@ -65,13 +86,5 @@ public class IMBean extends CacheBean implements Serializable, Parcelable {
             return new IMBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "IMBean{" +
-                "user_id=" + user_id +
-                ", im_password='" + im_password + '\'' +
-                '}';
-    }
 }
 
