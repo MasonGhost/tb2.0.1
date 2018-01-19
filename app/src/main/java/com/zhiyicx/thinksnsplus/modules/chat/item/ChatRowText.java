@@ -2,23 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.chat.item;
 
 import android.content.Context;
 import android.text.Spannable;
-import android.view.View;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.bean.ChatUserInfoBean;
 import com.hyphenate.easeui.utils.EaseSmileUtils;
-import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
-import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.common.config.ConstantConfig;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
-import static com.zhiyicx.thinksnsplus.widget.chat.MessageTextItemDelagate.MAX_SPACING_TIME;
 
 /**
  * @author Catherine

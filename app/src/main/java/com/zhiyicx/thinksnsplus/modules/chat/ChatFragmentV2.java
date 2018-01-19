@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.call.VideoCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.call.VoiceCallActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.item.ChatConfig;
 import com.zhiyicx.thinksnsplus.modules.chat.location.SendLocationActivity;
+import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatCallPresneter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatFilePresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatVideoPresenter;
 import com.zhiyicx.thinksnsplus.modules.chat.presenter.TSChatLocationPresenter;
@@ -333,6 +334,11 @@ public class ChatFragmentV2 extends EaseChatFragment implements EaseChatFragment
         public EaseChatRowPresenter getCustomChatRow(EMMessage message, int position, BaseAdapter adapter, ChatUserInfoBean userInfoBean) {
             if(message.getType() == EMMessage.Type.TXT){
                 // voice call or video call
+                if (message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VOICE_CALL, false) ||
+                        message.getBooleanAttribute(EaseConstant.MESSAGE_ATTR_IS_VIDEO_CALL, false)){
+                    EaseChatRowPresenter presenter = new TSChatCallPresneter();
+                    return presenter;
+                }
                 EaseChatRowPresenter presenter = new TSChatTextPresenter();
                 return presenter;
             }
